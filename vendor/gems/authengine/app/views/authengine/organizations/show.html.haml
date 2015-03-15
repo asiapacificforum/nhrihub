@@ -1,0 +1,25 @@
+%h1= @organization.name
+
+%table
+  %tr
+    %td Name
+    %td.name= @organization.name
+  %tr
+    %td Street address
+    %td.street= @organization.street
+  %tr
+    %td City
+    %td.city= @organization.city
+  %tr
+    %td Zip
+    %td.zip= @organization.zip
+  %tr{:style => "vertical-align:top"}
+    %td Phone
+    %td.phone= @organization.phone
+  %tr
+    %td email
+    %td.email= @organization.email
+
+%br/
+= link_to "Back", authengine_organizations_path
+

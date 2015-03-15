@@ -1,0 +1,40 @@
+= form_for [:authengine,@organization] do |f|
+  %table
+    %tr
+      %td= f.label :name
+      %td= f.text_field :name
+    %tr
+      %td= f.label :street
+      %td= f.text_field :street
+    %tr
+      %td= f.label :city
+      %td= f.text_field :city
+    %tr
+      %td= f.label :zip
+      %td= f.text_field :zip
+    - @organization.contacts.each do |contact|
+      = fields_for "organization[contacts[]]", contact do |contact_fields|
+        %tr
+          %td Phone
+          %td= contact_fields.text_field :phone
+          %td= link_to 'remove', "javascript: void(0)", :onclick => "$(this).closest('tr').remove()"
+    %tr
+      %td
+      %td= link_to "add another phone number:", "javascript: void(0)", :onclick => "$(this).closest('tr').before($('#new_phone').html())"
+    %tr
+      %td= f.label :email
+      %td= f.text_field :email
+    %tr
+      %td= f.label :active
+      %td= f.check_box :active
+    %tr
+      %td= f.label :pantry
+      %td= f.check_box :pantry
+    %tr
+      %td= f.label :referrer, 'Referral agency'
+      %td= f.check_box :referrer
+
+  - submit_or_return_to authengine_organizations_path
+
+%script#new_phone{:type => 'html/template'}
+  = fields_for 'organization[contacts[]]', Contact.new({})  do |contact_form| render(:partial => 'new_phone_template', :locals => {:contact_form => contact_form}); end

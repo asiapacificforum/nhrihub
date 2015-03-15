@@ -1,0 +1,25 @@
+= message_block :on => [:user]
+%h2>Edit Profile
+
+= form_for @user, :url => requested_user_or_self, :html => { :method => :put } do |f|
+  %p
+    First Name:
+    %br/
+    = f.text_field :firstName, :size => 60
+  %p
+    Last Name:
+    %br/
+    = f.text_field :lastName, :size => 60
+  %p
+    Email:
+    %br/
+    = f.text_field :email, :size => 60
+  %p
+    Select pantry
+    %br/
+    = f.select :organization_id, Organization.active.collect { |o| [o.name, o.id] }, :include_blank => true
+
+  - submit_or_return_to authengine_users_path
+
+%script{:type=>'text/javascript'}
+  document.getElementById('user_email').focus()

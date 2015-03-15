@@ -1,0 +1,98 @@
+- if organizations.empty?
+  %table{:class => "#{name}"}
+    %tr
+      %td (none)
+- else
+
+  :javascript
+    $(function(){
+      $('.accept_referrer').on('ajax:success', function(e,data,status,xhr){
+        var orgName = data.name;
+        $('tr.organization:contains('+orgName+') td.verified').text("");
+        $(this).closest('td').find('a').hide();
+       });
+       $('.reject_unverified_referrer').on('click', function(){ show_reassign_form(this) });
+       $('#cancel_reassign').on('click', function(){ cancel_reassign() });
+       $('#reassign_referrer').on('click', function(){ check_and_submit() })
+       $('select#referrer_substitute_id').on('change', function(){ show_hide_error_message() })
+    })
+
+    var show_hide_error_message = function(){
+      if($('select#referrer_substitute_id').prop('selectedIndex')==0){
+        $('span#substitute_error').show()
+      }
+      else{
+        $('span#substitute_error').hide()
+      }
+    }
+
+    var check_and_submit = function(){
+      if($('select#referrer_substitute_id').prop('selectedIndex')==0){
+        $('span#substitute_error').show()
+      }
+      else{ $('#reject_form').submit() }
+    }
+
+    show_reassign_form = function(el){
+      var ref_position = $(el).position()
+      $('#reassign_div').show()
+      $('#reassign_table').show()
+      $('#reassign_div').css('height',(window.innerHeight + window.scrollY) + 'px')
+      $('#reassign_table').css('top',(ref_position['top']-50)+'px')
+      var table_width = parseInt($('#reassign_table').css('width'))
+      $('#reassign_table').css('left',(ref_position['left'] - $(el).width() - table_width)+'px')
+      var delete_id = $(el).attr('id').replace(/[^\d]*/,'')
+      $('#reject_form').attr("action",$('#reject_form').attr("action").replace(/REFERRER_ID/,delete_id))
+      $('span#substitute_error').hide()
+    }
+
+    cancel_reassign = function(){
+      $('#reassign_div').hide()
+      $('#reassign_table').hide()
+    }
+
+  %table{:class => "#{name}"}
+    %tr
+      %th Name
+      %th Pantry
+      %th Referrer
+      %th Verified?
+    - for organization in organizations do
+      %tr.organization
+        %td.organization_name= link_to organization.name, authengine_organization_path(organization), :method => :get
+        %td{:style => "text-align:center"}
+          - if organization.pantry?
+            Y
+        %td{:style => "text-align:center"}
+          - if organization.referrer?
+            Y
+        %td.verified{:style => "text-align:center"}<
+          - if organization.referrer? && !organization.verified
+            N
+        %td
+        %td= link_to "edit", edit_authengine_organization_path(organization)
+        %td
+          -if organization.users.empty?
+            = link_to "delete", authengine_organization_path(organization), :method => :delete, :data => {:confirm => 'are you sure?'}
+          -else
+            = link_to "delete", "javascript:void(0)", :onclick => "$(this).after('Can\\'t delete an organization that already has users. De-activate instead')"
+        %td
+          -if organization.referrer? && !organization.verified
+            = link_to "accept", authengine_organization_path(organization, :organization => {:verified => true}, :format => :json), {:remote => true, :method => :put, :class => :accept_referrer}
+            = link_to "reject", "javascript:void(0)", :class => :reject_unverified_referrer, :id => "reject_id_#{organization.id}"
+
+  %div#reassign_div{:style => "position:absolute;top:0px;left:0px;width:100%;height:0px;background-color:#808080;opacity:0.8;display:none"}
+  %div#reassign_table{:style => "position:absolute;width:400px;height:100px;background-color:white;border-radius:6px;border-color:black;border-width:1px;border-style:solid;padding-top:6px;display:none;box-shadow: 2px 2px 6px #000;"}
+    %table
+      %tr
+        %td{:colspan => 3, :style=>"padding-left:18px"} Reassign households to:
+      %tr
+        %td{:style => "padding-left:30px", :colspan => 3}
+          = form_for :referrer, :url => authengine_organization_path("REFERRER_ID"), :html => {:method => :delete, :id => :reject_form}  do |r|
+            = r.select :substitute_id, verified_referrer_options, :prompt => 'select referrer'
+          %span#substitute_error{:style => 'color:red'} you must choose a substitute referrer
+      %tr{:style => "height:40px"}
+        %td{:style => "padding-left:30px;width:80px"}
+          %input{:type => :button, :value => :reassign, :id => :reassign_referrer}
+        %td{:style => "width:28px"} or
+        %td= link_to "cancel", "javascript:void(0)", :id => :cancel_reassign

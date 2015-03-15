@@ -1,0 +1,136 @@
+%h1 User login activity
+%table{:style => "padding-bottom:20px"}
+  %tr{:style => "height:30px"}
+    %td All #{@scope} users, past 7 days
+    %td= button_tag "Fetch", :type => :button, :id => :week
+  %tr{:style => "height:30px"}
+    %td All #{@scope} users, past 30 days
+    %td= button_tag "Fetch", :type => :button, :id => :month
+  %tr
+    %td{:style => "padding-top:9px"} Specify:
+  %tr{:style => "vertical-align:bottom"}
+    %td
+      = form_for :session_list, :html => {:id => :date_range_params} do |f|
+        %table{:style => "padding-left:12px"}
+          %tr
+            %td User:
+            %td= f.select :user_id, @users
+          %tr
+            %td From
+            %td= f.date_select :start_date, :start_year => 2014, :end_year => Time.now.year, :default => 0.days.ago # uses the application's timezone
+          %tr
+            %td To
+            %td= f.date_select :end_date, :start_year => 2014, :end_year => Time.now.year, :default => 0.days.ago # uses the application's timezone
+    %td= button_tag "Fetch", :type => :button, :id => :date_range
+
+%script{:type => 'html/template', :id => :header_template}
+  %tr
+    %th User name
+    %th login date/time
+    %th logout date/time
+
+%script{:type => 'html/template', :id => :log_item_template}
+  %tr
+    %td {{ log_item.user_name }}
+    %td{:style => "padding-left:18px"} {{ log_item.formatted_login_date }}
+    %td{:style => "padding-left:18px"} {{ log_item.formatted_logout_date }}
+
+.description{:style => "padding-bottom:12px"}
+%table#login_activity
+
+:javascript
+  var collection = []
+  var user_ids = #{@user_ids.to_json}
+
+  $(function(){
+    _.templateSettings = { interpolate : /\{\{(.+?)\}\}/g, evaluate :  /\{\{#([\s\S]+?)\}\}/g };
+    compiled_template = _.template($('#log_item_template').html())
+    $('#week').on('click', {start_date : week_ago, end_date : today, user : all_users}, fetch_log)
+    $('#month').on('click', {start_date : month_ago, end_date : today, user : all_users}, fetch_log)
+    $('#date_range').on('click', {start_date : form_start_date, end_date : form_end_date, user : form_user}, fetch_log)
+  })
+
+  var fetch_log = function(event){
+    var start_date = event.data.start_date() // date obj
+    var end_date = event.data.end_date() // date obj
+    var user = event.data.user()
+    var data = {start_date : start_date.toUTCString(), // all times are sent as UTC
+                end_date : end_date.toUTCString(),
+                user : user,
+                authenticity_token : "#{ form_authenticity_token }",
+                utf8 : "&#x2713;"}
+    show_list_params(start_date, end_date, user)
+    var url = "#{authengine_sessions_path}"
+    $.get( url, data, list_handler, 'json' )
+  }
+
+  var show_list_params = function(start, end, user){
+    var user_name = user == "all" ? "all users" : user_ids[user]
+    description = "Login activity for user: "+user_name+", starting on: "+date_in_new_jersey(start)+", ending on: "+date_in_new_jersey(end)+"."
+    description += "<br/>(includes users who logged in prior to "+date_in_new_jersey(start)+" and have not logged out."
+    $('.description').html(description)
+  }
+
+  var weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+
+  var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+
+  var date_in_new_jersey = function(utc_date){
+    var date_in_nj = new Date(utc_date.valueOf() - (4*3600*1000))
+    var nj_date = date_in_nj.getUTCDate()
+    var nj_month_num = date_in_nj.getUTCMonth()
+    var nj_month_str = months[nj_month_num]
+    var nj_day_num = date_in_nj.getUTCDay()
+    var nj_day_str = weekdays[nj_day_num]
+    var nj_year = date_in_nj.getFullYear()
+    return nj_day_str+" "+nj_month_str+" "+nj_date+" "+nj_year
+  }
+
+  var list_handler = function(data){
+    collection = data;
+    render_collection();
+  }
+
+  var form_user = function(){ return $('#session_list_user_id option:selected').val() }
+
+  var all_users = function(){ return "all" }
+
+  // n.days.ago uses the Rails app timezone, configured to EDT
+  var week_ago = function(){return new Date("#{7.days.ago.to_date.in_time_zone.getutc.to_formatted_s(:rfc822)}")}
+
+  var month_ago = function(){return new Date("#{30.days.ago.to_date.in_time_zone.getutc.to_formatted_s(:rfc822)}")}
+
+  // Time.now returns local time on the machine it's running on, but we want utc
+  var today = function(){ return new Date("#{Time.now.getutc.to_formatted_s(:rfc822)}") }
+
+  var form_start_date = function(){
+    start_year = $("select[id^='session_list_start_date'][id$='1i'] option:selected").val()
+    start_month = $("select[id^='session_list_start_date'][id$='2i'] option:selected").val()
+    start_day = $("select[id^='session_list_start_date'][id$='3i'] option:selected").val()
+    start_month = parseInt(start_month) < 10 ? "0"+start_month : start_month
+    start_day = parseInt(start_day) < 10 ? "0"+start_day : start_day
+    date = new Date( start_year + "-" + start_month + "-" + start_day + "T00:01-04:00") // value from form is in EDT time
+    return date
+  }
+
+  var form_end_date = function(){
+    end_year = $("select[id^='session_list_end_date'][id$='1i'] option:selected").val()
+    end_month = $("select[id^='session_list_end_date'][id$='2i'] option:selected").val()
+    end_day = $("select[id^='session_list_end_date'][id$='3i'] option:selected").val()
+    end_month = parseInt(end_month) < 10 ? "0"+end_month : end_month
+    end_day = parseInt(end_day) < 10 ? "0"+end_day : end_day
+    date = new Date( end_year + "-" + end_month + "-" + end_day + "T23:59-04:00") // value from form is in EDT time, end time is the end of the day
+    return date
+  }
+
+  var render_collection = function(){
+    $('#login_activity').empty();
+    if(collection.length == 0){
+      $('#login_activity').append("no logins in the specified date range")
+    }else{
+      $('#login_activity').append($('#header_template').html())
+      _(collection).each(function(log_item){
+        $('#login_activity').append(compiled_template({log_item : log_item}))
+      })
+    }
+  }

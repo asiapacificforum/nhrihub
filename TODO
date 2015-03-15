@@ -1,0 +1,17 @@
+User Stories
+  User logs in and reaches the welcome page
+
+Engineering Tasks
+  Nav bar menus are in-place according to the video
+  Admin can add users and configure user roles
+
+Todo for current task
+  install Rcov
+  ensure all login paths are tested
+  roles and permissions control which nav elements are shown
+  permissions have friendly names
+  override native rails link_to with link_to_with_permissions
+  configure a rake task to run all tests
+  configure routes to carry locale parameter, so that I18n translations are functional from the start
+  look into simple_form gem for built-in hints and translations
+  write custom rake task to run all the tests and also run i18n-tasks gem tests https://github.com/glebm/i18n-tasks

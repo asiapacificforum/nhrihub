@@ -1,0 +1,17 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title Apf
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+  %body
+    #banner
+    - if logged_in?
+      #nav
+        %ul
+          %li= link_to t('layout.nav.admin'), admin_path
+          %li= link_to t('layout.nav.logout'), logout_path
+    #content
+      = yield

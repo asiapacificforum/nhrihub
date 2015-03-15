@@ -1,0 +1,35 @@
+= message_block :on => [:user]
+
+%h1 Create a new user account:
+
+=form_for [:authengine, @user] do |f|
+  %table
+    %tr
+      %td
+        %label{:for=>"firstName"} First Name
+      %td= f.text_field :firstName
+
+    %tr
+      %td
+        %label{:for=>"lastName"} Last Name
+      %td= f.text_field :lastName
+
+    %tr
+      %td
+        %label{:for=>"email"} Email
+      %td= f.text_field :email
+
+    %tr
+      %td= f.label :user_organization_id, "Select pantry"
+      %td= f.select :organization_id, Organization.active.collect { |o| [o.name, o.id] }, :include_blank => true
+
+    %tr
+      %td
+        %label{:for => "role_id"} Database access role
+      %td
+        = f.fields_for :user_roles do |role_form|
+          = role_form.collection_select(:role_id, @roles, :id, :name)
+
+  - submit_or_return_to(authengine_users_path)
+%script{:type=>'text/javascript'}
+  document.getElementById('user_firstName').focus()

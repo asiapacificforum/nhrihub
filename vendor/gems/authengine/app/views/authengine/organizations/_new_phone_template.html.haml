@@ -1,0 +1,4 @@
+%tr
+  %td Phone
+  %td= contact_form.text_field :phone
+  %td= link_to 'remove', "javascript: void(0)", :onclick => "$(this).closest('tr').remove()"
