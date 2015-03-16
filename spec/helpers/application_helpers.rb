@@ -4,7 +4,7 @@ module ApplicationHelpers
   end
 
   def navigation_menu
-    page.all("#nav li").map(&:text)
+    page.all(".nav.navbar-nav li a").map(&:text)
   end
 
   def page_heading

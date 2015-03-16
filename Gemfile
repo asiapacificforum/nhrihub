@@ -42,7 +42,8 @@ gem 'authengine', :path => 'vendor/gems/authengine'
 gem 'haml'
 gem 'haml-rails'
 
-gem 'rspec-rails'
-gem 'selenium-webdriver'
-gem 'database_cleaner'
+gem 'rspec-rails', group: [:development, :test]
+gem 'selenium-webdriver', group: [:development, :test]
+gem 'database_cleaner', group: [:development, :test]
+gem 'bootstrap-sass', '~> 3.3.3'
 

@@ -10,6 +10,11 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require_tree .
- *= require_self
+ * see https://github.com/twbs/bootstrap-sass
+ * for changes that have been made here to accommodate bootstrap
  */
+
+
+@import "bootstrap-sprockets";
+@import "bootstrap";
+

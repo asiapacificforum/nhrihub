@@ -21,6 +21,14 @@ module ApplicationHelper
   #end
 
   def current_user_permitted?(path)
+    user_is_developer? || permissions_granted?(path)
+  end
+
+  def user_is_developer?
+    current_user.is_developer?
+  end
+
+  def permissions_granted?(path)
     controller = Controller.find_by_controller_name(path[:controller])
     action = Action.find_by_action_name_and_controller_id(path[:action],controller.id) unless controller.nil?
     user_roles = current_user.user_roles

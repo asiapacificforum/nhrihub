@@ -179,6 +179,10 @@ class User < ActiveRecord::Base
     self.roles.find_by_name(name) ? true : false
   end
 
+  def is_developer?
+    has_role?("developer")
+  end
+
   def self.create_by_sql(attributes)
     user = User.new(attributes)
     user.send('encrypt_password')

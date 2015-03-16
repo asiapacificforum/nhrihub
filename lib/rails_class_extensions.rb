@@ -1,9 +1,8 @@
 module ActionView::Helpers::UrlHelper
-
 # here we overwrite the link_to  and button_to methods,
 # to produce a zero length string if the current user is not permitted
 # for this action, otherwise a proper link is generated
-  def link_to_with_permission_check(name, options = {}, html_options = {})
+  def link_to_with_permission_check(name, options = {}, html_options = {}, &block)
     url = case options
           when String
             options
@@ -23,7 +22,7 @@ module ActionView::Helpers::UrlHelper
     end
 
     if current_user_permitted?({:controller => controller, :action => action})
-      link_to_without_permission_check name, options, html_options
+      link_to_without_permission_check name, options, html_options, &block
     else
       ""
     end
