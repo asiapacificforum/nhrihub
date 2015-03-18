@@ -21,7 +21,7 @@ SimpleNavigation::Configuration.run do |navigation|
     end
     primary.item :spec_inv, t('layout.nav.spec_inv'), home_path
     primary.item :reports, t('layout.nav.reports'), home_path
-    primary.item :admin, t('layout.nav.admin') do |ad|
+    primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path
     end
     primary.item :logout, t('layout.nav.logout'), logout_path

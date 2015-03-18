@@ -183,6 +183,10 @@ class User < ActiveRecord::Base
     has_role?("developer")
   end
 
+  def is_admin?
+    has_role?("admin")
+  end
+
   def self.create_by_sql(attributes)
     user = User.new(attributes)
     user.send('encrypt_password')

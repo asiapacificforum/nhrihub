@@ -21,7 +21,7 @@ feature "Unregistered user tries to log in" do
   end
 end
 
-feature "Registered user logs in with valid credentials", :js => true do
+feature "Registered user logs in with valid credentials" do
   include RegisteredUserHelper
   scenario "admin logs in" do
     visit "/en"

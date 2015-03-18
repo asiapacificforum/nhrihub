@@ -1,4 +1,4 @@
-class Authengine::UserRolesController < ApplicationController
+class Admin::UserRolesController < ApplicationController
   # authengine_user_user_roles GET    /authengine/users/:user_id/user_roles/index(.:format)
   def index
     @user = User.find(params[:user_id])
