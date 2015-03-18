@@ -6,60 +6,14 @@
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
-  %body
+  %body{:role => :document}
     #banner
     - if logged_in?
       %nav.navbar.navbar-default.navbar-fixed-top
-        .container
-          %ul
-      %nav.navbar.navbar-default.navbar-fixed-top
         .container-fluid
-          .navbar-header
-            %button.navbar-toggle.collapsed{:type=>"button",:"data-toggle"=>"collapse", :"data-target"=>"#bs-example-navbar-collapse-6"}
-              %span.sr-only Toggle navigation
-              %span.icon-bar
-              %span.icon-bar
-              %span.icon-bar
-            %a.navbar-brand{:href=>"#"} Logo
-
-          .collapse.navbar-collapse#bs-example-navbar-collapse-6
-            %ul.nav.navbar-nav
-              %li.dropdown
-                = link_to "javascript(void)", {:class=>"dropdown-toggle", :"data-toggle"=>"dropdown", :role=>"button", :"aria-expanded"=>"false"} do
-                  =t('layout.nav.nhri')
-                  %span.caret
-                %ul.dropdown-menu{:role=>"menu"}
-                  %li= link_to t('layout.nav.hre')
-                  %li= link_to t('layout.nav.adv_council')
-                  %li= link_to t('layout.nav.nhr_indicators')
-                  %li= link_to t('layout.nav.hr_prot')
-                  %li= link_to t('layout.nav.icc')
-              %li.dropdown
-                = link_to "javascript(void)", {:class=>"dropdown-toggle", :"data-toggle"=>"dropdown", :role=>"button", :"aria-expanded"=>"false"} do
-                  =t('layout.nav.gg')
-                  %span.caret
-                %ul.dropdown-menu{:role=>"menu"}
-                  %li= link_to "bish"
-                  %li= link_to "bash"
-                  %li= link_to "bosh"
-              %li.dropdown
-                = link_to "javascript(void)", {:class=>"dropdown-toggle", :"data-toggle"=>"dropdown", :role=>"button", :"aria-expanded"=>"false"} do
-                  =t('layout.nav.corporate_services')
-                  %span.caret
-                %ul.dropdown-menu{:role=>"menu"}
-                  %li= link_to t('layout.nav.int_docs')
-                  %li= link_to t('layout.nav.perf_rev')
-                  %li= link_to t('layout.nav.strat_plan')
-              %li.dropdown
-                = link_to "javascript(void)", {:class=>"dropdown-toggle", :"data-toggle"=>"dropdown", :role=>"button", :"aria-expanded"=>"false"} do
-                  =t('layout.nav.outreach_media')
-                  %span.caret
-                %ul.dropdown-menu{:role=>"menu"}
-                  %li= link_to t('layout.nav.outreach')
-                  %li= link_to t('layout.nav.media')
-              %li= link_to t('layout.nav.spec_inv'), admin_path
-              %li= link_to t('layout.nav.reports'), admin_path
-              %li= link_to t('layout.nav.admin'), admin_path
-              %li= link_to t('layout.nav.logout'), logout_path
-    #content
+          = render_navigation(level: 1..2, renderer: :bootstrap, expand_all: true)
+    //%ol.breadcrumb
+    //  %li Admin
+    //  %li User management
+    .container.theme-showcase{:role => :main}
       = yield

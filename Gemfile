@@ -5,6 +5,8 @@ source 'https://rubygems.org'
 gem 'rails', '4.1.5'
 # Use postgresql as the database for Active Record
 gem 'pg'
+#gem 'mysql'
+#gem 'mysql2'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -45,5 +47,6 @@ gem 'haml-rails'
 gem 'rspec-rails', group: [:development, :test]
 gem 'selenium-webdriver', group: [:development, :test]
 gem 'database_cleaner', group: [:development, :test]
-gem 'bootstrap-sass', '~> 3.3.3'
+gem 'bootstrap-sass', '~> 3.3.4'
+gem 'simple-navigation-bootstrap'
 

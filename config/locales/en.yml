@@ -23,6 +23,7 @@ en:
   layout:
     nav:
       admin: "Admin"
+      user: "User management"
       logout: "Logout"
       corporate_services: "Corporate Services"
       nhri: "NHRI"
@@ -56,5 +57,15 @@ en:
         password: "Password"
         login: "Log in..."
   admin:
+    users:
+      index:
+        title: "User management"
+        heading: "User management"
+        firstname: 'First Name'
+        lastname: 'Last Name'
+        roles: 'Role(s)'
+        last_login: 'Last login date'
+        enabled: 'Enabled?'
+        manage: 'Manage'
     index:
       heading: "Site administration dashboard"

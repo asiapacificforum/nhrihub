@@ -23,6 +23,7 @@ fr:
   layout:
     nav:
       admin: "Admin"
+      user: "Gestion des utilisateurs"
       logout: "Déconnecter"
       corporate_services: "Services Corporatifs"
       nhri: "NHRI"

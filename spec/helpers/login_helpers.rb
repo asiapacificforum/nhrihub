@@ -45,3 +45,14 @@ private
       reject{|a| a.controller_name =~ /admin/}
   end
 end
+
+module LoggedInAdminUserHelper
+  extend RSpec::Core::SharedContext
+  include RegisteredUserHelper
+  before do
+    visit "/en"
+    fill_in "User name", :with => "admin"
+    fill_in "Password", :with => "password"
+    click_button "Log in..."
+  end
+end

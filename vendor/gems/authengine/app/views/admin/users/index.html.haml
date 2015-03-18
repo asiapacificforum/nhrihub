@@ -1,0 +1,12 @@
+= message_block :on => :all
+%h1= t('.heading')
+%table
+  %tr
+    %th= t '.firstname'
+    %th= t '.lastname'
+    %th= t '.roles'
+    %th= t '.last_login'
+    %th{:colspan=>"2"}= t '.enabled'
+    %th{:colspan=>"5"}= t '.manage'
+  = render :partial => 'user', :collection => @users
+%p= link_to "New User", new_admin_user_path

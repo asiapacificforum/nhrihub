@@ -3,7 +3,7 @@
 # This permits access to be explicitly controlled via the
 # check_permissions filter, distinguishing between actions on one's own
 # model vs. actions on other users' models.
-class Authengine::UsersController < ApplicationController
+class Admin::UsersController < ApplicationController
   #before_filter :not_logged_in_required, :only => [:new, :create]
   #before_filter :login_required, :only => [:show, :edit, :update]
   #before_filter :check_administrator_role, :only => [:index, :destroy, :enable]
@@ -14,11 +14,12 @@ class Authengine::UsersController < ApplicationController
   skip_before_filter :check_permissions, :only=>[:activate, :signup, :new_password, :change_password]
 
   def index
+    @title = t('.title')
     @users = User.
       joins("left join sessions on users.id = sessions.user_id").
       select("users.id as id, users.*, max(sessions.login_date) as last_login").
       group("users.id").
-      order("lastName, firstName")
+      order(:lastName, :firstName)
   end
 
   def show

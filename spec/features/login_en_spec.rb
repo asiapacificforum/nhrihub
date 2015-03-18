@@ -5,7 +5,7 @@ feature "Unregistered user tries to log in" do
   scenario "navigation not available before user logs in" do
     visit "/en"
     expect(page_heading).to eq "Please log in"
-    expect(page).not_to have_selector("#nav")
+    expect(page).not_to have_selector(".nav")
   end
 
   scenario "admin logs in" do
@@ -16,12 +16,12 @@ feature "Unregistered user tries to log in" do
     click_button "Log in..."
 
     expect(flash_message).to have_text("Your username or password is incorrect.")
-    expect(page).not_to have_selector("#nav")
+    expect(page).not_to have_selector(".nav")
     expect(page_heading).to eq "Please log in"
   end
 end
 
-feature "Registered user logs in with valid credentials" do
+feature "Registered user logs in with valid credentials", :js => true do
   include RegisteredUserHelper
   scenario "admin logs in" do
     visit "/en"
@@ -70,6 +70,6 @@ feature "Registered user logs in with invalid credentials" do
 
     expect(flash_message).to have_text("Your username or password is incorrect.")
     expect(page_heading).to eq "Please log in"
-    expect(page).not_to have_selector("#nav")
+    expect(page).not_to have_selector(".nav")
   end
 end

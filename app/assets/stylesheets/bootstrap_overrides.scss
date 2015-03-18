@@ -1,0 +1,11 @@
+/*
+*  see http://stackoverflow.com/a/11008050/451893
+*/
+body {
+  padding-top: 60px;
+}
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
+}

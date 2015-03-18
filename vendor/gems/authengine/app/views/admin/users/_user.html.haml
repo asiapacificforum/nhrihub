@@ -1,0 +1,21 @@
+%tr{:class => "#{cycle('odd', 'even')}"}
+  %td= user.firstName
+  %td= user.lastName
+  %td= user.roles.map(&:name).join(', ')
+  %td= user.last_login ? user.last_login.to_date.to_formatted_s(:app_default) : "before 2014, Jul 7"
+  %td{:style => "padding-left:10px"}= user.enabled ? 'yes' : 'no'
+  %td{:style => "padding-left:10px"}
+    - unless user == current_user
+      - if user.enabled
+        = link_to('disable', disable_admin_user_path(user.id), :method => :put)
+      - else
+        = link_to('enable', enable_admin_user_path(user.id), :method => :put)
+  %td{:style => "padding-left:10px"}= link_to "show", admin_user_path(user)
+  -#%td
+    - unless user == current_user
+      = link_to "delete", [:admin, user], :data => {:confirm => "are you sure you want to delete #{user.first_last_name} ?"}, :method => :delete
+  %td{:style => "padding-left:10px"}
+    - unless user == current_user
+      = link_to 'edit roles', admin_user_user_roles_path(user)
+  %td{:style => "padding-left:10px"}= link_to 'edit profile', edit_admin_user_path(user)
+  %td{:style => "padding-left:10px"}= link_to 'reset password', admin_send_change_password_email_path(user), :method => :post

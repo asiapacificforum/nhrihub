@@ -3,6 +3,35 @@ Rails.application.routes.draw do
   scope ':locale', locale: /en|fr/ do
     root :to => "authengine/sessions#new"
 
+    namespace :admin do
+      resources :users do
+        resource :account
+        resources :user_roles, :only => [:destroy] do
+          collection do
+            get 'index' # shows user_roles for a user, from which to add/remove roles
+            get 'edit'
+            put 'update', :as => 'update'
+            post 'create', :as => 'create'
+          end
+        end
+
+        member do
+          put 'enable'
+          put 'disable'
+          put 'update_self'
+
+          get 'signup'
+        end
+
+        collection do
+          get 'edit_self'
+
+          post ':activation_code/activate' => 'users#activate'
+        end
+      end
+      post '/send_change_password_email(/:user_id)' => "users#send_change_password_email", :as => :send_change_password_email
+    end
+
     namespace :authengine do
       resources :accounts
       resources :actions

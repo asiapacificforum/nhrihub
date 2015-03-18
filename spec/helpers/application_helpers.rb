@@ -10,4 +10,8 @@ module ApplicationHelpers
   def page_heading
     page.find("h1").text
   end
+
+  def page_title
+    page.driver.title
+  end
 end
