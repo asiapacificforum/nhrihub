@@ -1,0 +1,15 @@
+fr:
+  authengine:
+    sessions:
+      new:
+        title: "Bureau de l'Ombudsman, Samoa. Mesure et évaluation Connexion"
+        heading: "S'il vous plaît connecter"
+        user_name: "Nom d'usilateur"
+        password: "Mot de pass"
+        login: "S'identifier..."
+      create:
+        success: "Connecté avec succès"
+        bad_credentials: "Votre nom d'utilisateur ou mot de passe est incorrect."
+        account_not_activated: "Votre compte ne est pas actif, se il vous plaît vérifier votre e-mail pour le code d'activation."
+        account_disabled: "Votre compte a été désactivé, se il vous plaît contacter l'administrateur."
+      destroy: "Vous avez été déconnecté."

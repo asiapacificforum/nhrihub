@@ -1,0 +1,16 @@
+en:
+  authengine:
+    sessions:
+      new:
+        title: 'Office of the Ombudsman, Samoa. Measurement and Evaluation Login'
+        heading: 'Please log in'
+        user_name: 'User name'
+        password: 'Password'
+        login: 'Log in...'
+      create:
+        success: 'Logged in successfully'
+        bad_credentials: 'Your username or password is incorrect.'
+        account_not_activated: 'Your account is not active, please check your email for the activation code.'
+        account_disabled: 'Your account has been disabled, please contact administrator.'
+      destroy:
+        logout: 'You have been logged out.'

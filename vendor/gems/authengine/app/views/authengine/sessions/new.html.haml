@@ -3,7 +3,7 @@
 - unless logged_in?
   %h1=t '.heading'
   =form_tag authengine_sessions_path do
-    %table
+    %table.table{:style => 'width:280px'}
       %tr
         %td= label_tag :login, t(".user_name")
         %td=text_field_tag "login"

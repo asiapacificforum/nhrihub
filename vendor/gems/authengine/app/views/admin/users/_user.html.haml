@@ -7,15 +7,16 @@
   %td{:style => "padding-left:10px"}
     - unless user == current_user
       - if user.enabled
-        = link_to('disable', disable_admin_user_path(user.id), :method => :put)
+        = link_to(t('.disable'), disable_admin_user_path(user.id), :method => :put)
       - else
-        = link_to('enable', enable_admin_user_path(user.id), :method => :put)
-  %td{:style => "padding-left:10px"}= link_to "show", admin_user_path(user)
-  -#%td
+        = link_to(t('.enable'), enable_admin_user_path(user.id), :method => :put)
+  %td{:style => "padding-left:10px"}= link_to t('.show'), admin_user_path(user)
+  %td
     - unless user == current_user
-      = link_to "delete", [:admin, user], :data => {:confirm => "are you sure you want to delete #{user.first_last_name} ?"}, :method => :delete
+      = link_to t('.delete'), [:admin, user], :data => {:confirm => t('.delete_confirm')+user.first_last_name+'?'}, :method => :delete
   %td{:style => "padding-left:10px"}
     - unless user == current_user
-      = link_to 'edit roles', admin_user_user_roles_path(user)
-  %td{:style => "padding-left:10px"}= link_to 'edit profile', edit_admin_user_path(user)
-  %td{:style => "padding-left:10px"}= link_to 'reset password', admin_send_change_password_email_path(user), :method => :post
+      = link_to t('.edit_roles'), admin_user_user_roles_path(user)
+  %td{:style => "padding-left:10px"}= link_to t('.edit_profile'), edit_admin_user_path(user)
+  %td{:style => "padding-left:10px"}= link_to t('.reset_password'), admin_send_change_password_email_path(user), :method => :post
+

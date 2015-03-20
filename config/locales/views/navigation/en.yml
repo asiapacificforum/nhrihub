@@ -1,0 +1,22 @@
+en:
+  layout:
+    nav:
+      admin: 'Admin'
+      user: 'User management'
+      logout: 'Logout'
+      corporate_services: 'Corporate Services'
+      nhri: 'NHRI'
+      hre: 'Human rights education'
+      adv_council: 'Advisory council'
+      nhr_indicators: 'National human rights indicators'
+      hr_prot: 'Human rights protection'
+      icc: 'ICC'
+      gg: 'Good Governance'
+      outreach_media: 'Outreach and media'
+      outreach: 'Outreach'
+      media: 'Media'
+      spec_inv: 'Special Investigations Unit'
+      reports: 'Reports'
+      int_docs: 'Internal documents'
+      perf_rev: 'Performance reviews'
+      strat_plan: 'Strategic plan'

@@ -30,7 +30,7 @@ feature "Registered user logs in with valid credentials" do
     fill_in "Mot de pass", :with => "password"
     click_button "S'identifier..."
 
-    expect(flash_message).to have_text("connecté avec succès")
+    expect(flash_message).to have_text("Connecté avec succès")
     expect(navigation_menu).to include("Admin")
     expect(navigation_menu).to include("Déconnecter")
   end
@@ -42,7 +42,7 @@ feature "Registered user logs in with valid credentials" do
     fill_in "Mot de pass", :with => "password"
     click_button "S'identifier..."
 
-    expect(flash_message).to have_text("connecté avec succès")
+    expect(flash_message).to have_text("Connecté avec succès")
     expect(navigation_menu).not_to include("Admin")
     expect(navigation_menu).to include("Déconnecter")
   end

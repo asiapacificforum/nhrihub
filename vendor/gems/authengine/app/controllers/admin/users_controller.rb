@@ -14,7 +14,6 @@ class Admin::UsersController < ApplicationController
   skip_before_filter :check_permissions, :only=>[:activate, :signup, :new_password, :change_password]
 
   def index
-    @title = t('.title')
     @users = User.
       joins("left join sessions on users.id = sessions.user_id").
       select("users.id as id, users.*, max(sessions.login_date) as last_login").

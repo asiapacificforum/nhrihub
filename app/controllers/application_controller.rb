@@ -4,8 +4,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   around_action :with_locale
+  before_action :set_title
 
   private
+
+  def set_title
+    @title = t('.title')
+  end
 
   def with_locale
     I18n.with_locale(params[:locale]) { yield }

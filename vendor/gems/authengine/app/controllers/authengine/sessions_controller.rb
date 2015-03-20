@@ -11,7 +11,7 @@ class Authengine::SessionsController < ApplicationController
 
   # user logs in
   def create
-    logger.info "session controller: create"
+    logger.info "user logging in with #{params[:login]}"
     authenticate_with_password(params[:login], params[:password])
   end
 
@@ -22,7 +22,7 @@ class Authengine::SessionsController < ApplicationController
     remove_session_user_roles
     cookies.delete :auth_token
     reset_session
-    flash[:notice] = t 'flash.logout'
+    flash[:notice] = t '.logout'
     redirect_to login_path
   end
 
@@ -59,11 +59,11 @@ protected
   def authenticate_with_password(login, password)
     user = User.authenticate(login, password)
     if user == nil
-      failed_login(t 'flash.login.bad_credentials')
+      failed_login(t '.bad_credentials')
     elsif user.activated_at.blank?
-      failed_login(t 'flash.login.account_not_activated')
+      failed_login(t '.account_not_activated')
     elsif user.enabled == false
-      failed_login(t 'flash.login.account_disabled')
+      failed_login(t '.account_disabled')
     else
       self.current_user = user
       session[:role] = SessionRole.new
@@ -87,7 +87,7 @@ private
       #cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
     #end
 #   user is already logged-in
-    flash[:notice] = t 'flash.login.success'
+    flash[:notice] = t '.success'
     #parameters = ActionController::Parameters.new({:session_id => session[:session_id], :user_id => session[:user_id], :login_date => Time.now})
     #Session.create_or_update(parameters.permit(:session_id, :user_id, :login_date))
     Session.create_or_update(:session_id => session[:session_id], :user_id => session[:user_id], :login_date => Time.now)

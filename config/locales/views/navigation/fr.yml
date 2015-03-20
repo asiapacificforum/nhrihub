@@ -1,0 +1,22 @@
+fr:
+  layout:
+    nav:
+      admin: "Admin"
+      user: "Gestion des utilisateurs"
+      logout: "Déconnecter"
+      corporate_services: "Services Corporatifs"
+      nhri: "NHRI"
+      hre: "L'éducation aux droits de l'homme"
+      adv_council: "Conseil consultatif"
+      nhr_indicators: "Indicateurs nationales des droits de l'homme"
+      hr_prot: "Protection des droits humains"
+      icc: "ICC"
+      gg: "Bonne gouvernance"
+      outreach_media: "Sensibilisation et les médias"
+      outreach: "Sensibilisation"
+      media: "Médias"
+      spec_inv: "Unité des enquêtes spéciales"
+      reports: "Rapports"
+      int_docs: "Documents internes"
+      perf_rev: "Évaluations de rendement"
+      strat_plan: "Plan stratégique"

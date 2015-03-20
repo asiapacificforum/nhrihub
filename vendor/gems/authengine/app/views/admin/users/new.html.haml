@@ -1,31 +1,28 @@
 = message_block :on => [:user]
 
-%h1 Create a new user account:
+%h1= t('.heading')
 
-=form_for [:authengine, @user] do |f|
-  %table
+=form_for [:admin, @user] do |f|
+  %table.table{:style => "width:340px"}
     %tr
-      %td
-        %label{:for=>"firstName"} First Name
+      %td= f.label :firstName
       %td= f.text_field :firstName
 
     %tr
-      %td
-        %label{:for=>"lastName"} Last Name
+      %td= f.label :lastName
       %td= f.text_field :lastName
 
     %tr
-      %td
-        %label{:for=>"email"} Email
+      %td= f.label :email
       %td= f.text_field :email
 
     %tr
-      %td= f.label :user_organization_id, "Select pantry"
-      %td= f.select :organization_id, Organization.active.collect { |o| [o.name, o.id] }, :include_blank => true
+      %td= f.label :organization_id
+      %td= f.select :organization_id, Organization.pluck { |o| [o.name, o.id] }, :include_blank => true
 
     %tr
       %td
-        %label{:for => "role_id"} Database access role
+        %label{:for => "role_id"}= t('.role')
       %td
         = f.fields_for :user_roles do |role_form|
           = role_form.collection_select(:role_id, @roles, :id, :name)
