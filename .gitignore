@@ -17,3 +17,6 @@
 
 /config/secrets.yml
 .DS_Store
+
+# the application's constants file
+lib/constants.rb

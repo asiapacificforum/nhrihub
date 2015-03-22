@@ -2,4 +2,4 @@ en:
   authengine:
     user_mailer:
       signup_notification:
-        subject: 'Please activate your Ombudsman M & E database account'
+        subject: "Please activate your %{org_name} %{app_name} account"

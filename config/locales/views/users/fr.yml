@@ -1,0 +1,26 @@
+fr:
+  admin:
+    users:
+      index:
+        title: 'Gestion de utilisateurs'
+        heading: 'Gestion de utilisateurs'
+        firstname: 'Prénom'
+        lastname: 'Nom de famille'
+        roles: 'rôle(s)'
+        last_login: 'Dernière date de connexion'
+        enabled: 'Permis?'
+        manage: 'Administrer'
+        new_user: 'Nouvel utilisateur'
+      user:
+        disable: 'désactiver'
+        enable: 'permettre'
+        show: 'manifester'
+        delete: 'effacer'
+        edit_roles: 'modifier les rôles'
+        edit_profile: 'editer le profil'
+        reset_password: 'réinitialiser le mot de passe'
+        delete_confirm: 'êtes-vous sûr que vous voulez effacer'
+      new:
+        title: 'Créer un nouveau compte utilisateur'
+        heading: 'Créer un nouveau compte utilisateur'
+        role: "rôle d'accès de base de données"

@@ -1,0 +1,4 @@
+fr:
+  defaults:
+    save: 'Conserver'
+    cancel: 'Décommander'

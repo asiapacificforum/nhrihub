@@ -1,6 +1,6 @@
 # for the mailer
-SITE_URL = "pantrypath.org"
+SITE_URL = "www.ombudsman.gov.ws"
 ADMIN_EMAIL = "support@#{SITE_URL}"
-APPLICATION_NAME = "PATH"
-ORGANIZATION_NAME = "Paterson Alliance"
+APPLICATION_NAME = "M & E Database"
+ORGANIZATION_NAME = "Office of the Ombudsman"
 

@@ -1,0 +1,7 @@
+fr:
+  activerecord:
+    attributes:
+      user:
+        firstName: 'Prénom'
+        lastName: 'Nom de famille'
+        email: 'Email'

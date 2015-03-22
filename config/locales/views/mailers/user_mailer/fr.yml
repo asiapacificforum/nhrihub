@@ -1,0 +1,5 @@
+fr:
+  authengine:
+    user_mailer:
+      signup_notification:
+        subject: "S'il vous plaît activer votre compte %{org_name} %{app_name}"

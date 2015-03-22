@@ -46,7 +46,7 @@ private
   end
 end
 
-module LoggedInAdminUserHelper
+module LoggedInEnAdminUserHelper
   extend RSpec::Core::SharedContext
   include RegisteredUserHelper
   before do
@@ -54,5 +54,16 @@ module LoggedInAdminUserHelper
     fill_in "User name", :with => "admin"
     fill_in "Password", :with => "password"
     click_button "Log in..."
+  end
+end
+
+module LoggedInFrAdminUserHelper
+  extend RSpec::Core::SharedContext
+  include RegisteredUserHelper
+  before do
+    visit "/fr"
+    fill_in "Nom d'usilateur", :with => "admin"
+    fill_in "Mot de pass", :with => "password"
+    click_button "S'identifier..."
   end
 end

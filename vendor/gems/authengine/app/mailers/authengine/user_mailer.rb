@@ -3,7 +3,7 @@ class Authengine::UserMailer < ActionMailer::Base
     setup_email(user)
     @url = authengine_activate_url(:activation_code => user.activation_code, :locale => I18n.locale)
     mail( :to => @recipients,
-          :subject => @subject,
+          :subject => t('.subject', org_name: ORGANIZATION_NAME, app_name: APPLICATION_NAME),
           :date => @sent_on,
           :from => @from
         )
