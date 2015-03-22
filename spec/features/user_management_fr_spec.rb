@@ -2,7 +2,7 @@ require "rails_helper"
 require File.expand_path('../../helpers/login_helpers',__FILE__)
 require File.expand_path('../../helpers/navigation_helpers',__FILE__)
 
-feature "User management" do
+feature "User management -- French translation" do
   include LoggedInFrAdminUserHelper # sets up logged in french admin user
   include NavigationHelpers
   before do

@@ -1,31 +1,22 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
-
-Ruby version
+=== Ruby version
 configured in the .ruby-version file, look in that file for the currently-configured version
+
+=== Internationalization
+The basic structure for internationalization has been included, and the test suite tests the French translation of the navigation menu, the new user process, and the ActionMailer views pertaining to new user registration.
+This provides an outline of the locale translation files that need to be added in the config/locales directory and subdirectories.
+The url format for translated versions are (e.g.) your_domain/fr/admin/users.
+
+=== System dependencies
+
+=== Configuration
+  email
+  app-specific constants (orgname etc)
+
+=== Database creation and initialization
+  Configuring the first user
+
+=== Running the test suite
+
+=== Deployment
