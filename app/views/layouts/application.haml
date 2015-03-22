@@ -7,11 +7,14 @@
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
   %body{:role => :document}
-    #banner
     - if logged_in?
       %nav.navbar.navbar-default.navbar-fixed-top
         .container-fluid
+          .navbar-header
+            %a.navbar-brand{:href=>"#"}
           = render_navigation(level: 1..2, renderer: :bootstrap, expand_all: true)
+    - else
+      #banner
     //%ol.breadcrumb
     //  %li Admin
     //  %li User management

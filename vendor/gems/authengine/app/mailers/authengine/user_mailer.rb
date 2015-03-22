@@ -1,7 +1,6 @@
 class Authengine::UserMailer < ActionMailer::Base
   def signup_notification(user)
     setup_email(user)
-    @subject    += 'Please activate your new account'  
     @url = authengine_activate_url(:activation_code => user.activation_code, :locale => I18n.locale)
     mail( :to => @recipients,
           :subject => @subject,
@@ -51,7 +50,6 @@ protected
   def setup_email(user)
     @recipients  = "#{user.email}"
     @from        = "#{APPLICATION_NAME || "database"} Administrator<#{ADMIN_EMAIL}>"
-    @subject     = "#{APPLICATION_NAME || "database"} - "
     @sent_on     = Time.now
     @user        = user
   end

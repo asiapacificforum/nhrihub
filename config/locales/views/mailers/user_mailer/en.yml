@@ -1,0 +1,5 @@
+en:
+  authengine:
+    user_mailer:
+      signup_notification:
+        subject: 'Please activate your Ombudsman M & E database account'

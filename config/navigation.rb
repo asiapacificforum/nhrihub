@@ -1,6 +1,6 @@
 SimpleNavigation::Configuration.run do |navigation|  
   navigation.items do |primary|
-    primary.item :music, t('layout.nav.nhri') do |nhri|
+    primary.item :nhri, t('layout.nav.nhri') do |nhri|
       nhri.item :hre, t('layout.nav.hre'), home_path
       nhri.item :adv_council, t('layout.nav.adv_council'), home_path
       nhri.item :nhr_indicators, t('layout.nav.nhr_indicators'), home_path

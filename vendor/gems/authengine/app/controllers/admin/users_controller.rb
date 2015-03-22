@@ -50,7 +50,7 @@ class Admin::UsersController < ApplicationController
     cookies.delete :auth_token
     @user = User.new(user_params)
     @user.save!
-    redirect_to authengine_users_path
+    redirect_to admin_users_path
   rescue ActiveRecord::RecordInvalid
     flash[:error] = "There was a problem creating the user account."
     @roles=Role.all
