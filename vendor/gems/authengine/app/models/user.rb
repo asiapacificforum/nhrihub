@@ -7,21 +7,34 @@ class User < ActiveRecord::Base
   validates_presence_of     :firstName, :lastName, :email
   validates_length_of       :email,    :within => 6..100
   validate :create_with_unique_email, :on => :create
+  validate :create_with_unique_first_last_name, :on => :create
   validate :update_with_unique_email, :on => :update
+  validate :update_with_unique_first_last_name, :on => :update
 
   # custom validator rather than built-in helper, in order to get custom message
   def create_with_unique_email
     if User.where("email like ?", email).exists?
-      errors.add(:base,"There is already a user with that email address.")
+      errors.add(:base, :duplicate_email)
     end
   end
 
   def update_with_unique_email
     if User.where("email like ? AND id != ?", email, id).exists?
-      errors.add(:base,"There is already a user with that email address.")
+      errors.add(:base, :duplicate_email)
     end
   end
 
+  def create_with_unique_first_last_name
+    if User.where("\"firstName\" like ? and \"lastName\" like ?", firstName, lastName).exists?
+      errors.add(:base, :duplicate_first_last_name)
+    end
+  end
+
+  def update_with_unique_first_last_name
+    if User.where("\"firstName\" like ? AND \"lastName\" like ? AND id != ?", firstName, lastName, id).exists?
+      errors.add(:base, :duplicate_first_last_name)
+    end
+  end
 # the next action on the user's record is account activation
 # at this time, login and password must be present and valid
   validates_presence_of     :login,                      :on => :update
@@ -39,12 +52,9 @@ class User < ActiveRecord::Base
   has_many :useractions, :dependent=>:delete_all
   has_many :actions, :through=>:useractions
 
-  has_many :households
-  has_many :clients
   belongs_to :organization
 
   has_many :sessions
-  has_many :distribution_alerts
 
   before_save :encrypt_password
   before_create :make_activation_code

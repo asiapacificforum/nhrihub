@@ -76,14 +76,14 @@ class Admin::UsersController < ApplicationController
       redirect_to root_path
     else
       flash[:warn] = user.errors.full_messages
-      redirect_to signup_authengine_user_path(user)
+      redirect_to signup_admin_user_path(user)
     end
   rescue User::ArgumentError
     flash[:notice] = 'Activation code not found. Please ask the database administrator to create an account for you.'
-    redirect_to new_authengine_user_path
+    redirect_to new_admin_user_path
   rescue User::ActivationCodeNotFound
     flash[:notice] = 'Activation code not found. Please ask the database administrator to create an account for you.'
-    redirect_to new_authengine_user_path
+    redirect_to new_admin_user_path
   rescue User::AlreadyActivated
     flash[:notice] = 'Your account has already been activated. You can log in below.'
     redirect_to login_path
@@ -93,7 +93,7 @@ class Admin::UsersController < ApplicationController
     @user = User.find(current_user.id)
     if @user.update_attributes(user_params)
       flash[:notice] = "Your profile has been updated"
-      redirect_to authengine_users_path
+      redirect_to admin_users_path
     else
       render :action => 'edit'
     end
@@ -103,7 +103,7 @@ class Admin::UsersController < ApplicationController
     @user = User.find(params[:id])
     if @user.update_attributes(user_params)
       flash[:notice] = "User updated"
-      redirect_to authengine_users_path
+      redirect_to admin_users_path
     else
       render :action => 'edit'
     end
@@ -112,7 +112,7 @@ class Admin::UsersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     @user.destroy
-    redirect_to authengine_users_path
+    redirect_to admin_users_path
   end
 
   def disable
@@ -120,7 +120,7 @@ class Admin::UsersController < ApplicationController
     unless @user.update_attribute(:enabled, false)
       flash[:error] = "There was a problem disabling this user."
     end
-    redirect_to authengine_users_path
+    redirect_to admin_users_path
   end
 
   def enable
@@ -128,7 +128,7 @@ class Admin::UsersController < ApplicationController
     unless @user.update_attribute(:enabled, true)
       flash[:error] = "There was a problem enabling this user."
     end
-    redirect_to authengine_users_path
+    redirect_to admin_users_path
   end
 
   def signup
@@ -141,9 +141,11 @@ class Admin::UsersController < ApplicationController
     @user.prepare_to_send_reset_email
     @users = User.order("lastName, firstName").all
     if @user.save
-      redirect_to authengine_users_path, :notice => "A password reset email has been sent to #{@user.first_last_name}, #{@user.email}"
+      flash[:notice] = "A password reset email has been sent to #{@user.first_last_name}, #{@user.email}"
+      redirect_to admin_users_path
     else
-      redirect_to authengine_users_path, :error => "Failed to send password reset email to #{@user.first_last_name}, #{@user.email}"
+      flash[:error] = "Failed to send password reset email to #{@user.first_last_name}, #{@user.email}"
+      redirect_to admin_users_path
     end
   end
 
@@ -172,7 +174,7 @@ class Admin::UsersController < ApplicationController
       redirect_to root_path, :notice => "Your new password has been saved, you may login below."
     else
       flash[:warn] = user.errors.full_messages
-      redirect_to authengine_new_password_path
+      redirect_to admin_new_password_path
     end
 
     rescue User::ArgumentError

@@ -1,4 +1,5 @@
 class Authengine::UserMailer < ActionMailer::Base
+  # subject for each email type is configured in config/locales/views/mailers/user_mailer/**.yml
   def signup_notification(user)
     setup_email(user)
     @url = authengine_activate_url(:activation_code => user.activation_code, :locale => I18n.locale)
@@ -11,10 +12,8 @@ class Authengine::UserMailer < ActionMailer::Base
 
   def activation(user)
     setup_email(user)
-    @subject    += 'Your account has been activated!'
     @url = login_url(:locale => I18n.locale)
     mail( :to => @recipients,
-          :subject => @subject,
           :date => @sent_on,
           :from => @from
         )
@@ -22,10 +21,8 @@ class Authengine::UserMailer < ActionMailer::Base
 
   def forgot_password(user)
     setup_email(user)
-    @subject    += 'You have requested to change your password'
     @url  = "http://#{SITE_URL}/#{I18n.locale}/authengine/new_password/#{user.password_reset_code}"
     mail( :to => @recipients,
-          :subject => @subject,
           :date => @sent_on,
           :from => @from
         )

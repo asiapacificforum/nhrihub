@@ -1,7 +1,0 @@
-en:
-  activerecord:
-    attributes:
-      user:
-        firstName: 'First name'
-        lastName: 'Last name'
-        email: 'Email'

@@ -30,6 +30,8 @@ Rails.application.routes.draw do
         end
       end
       post '/send_change_password_email(/:user_id)' => "users#send_change_password_email", :as => :send_change_password_email
+      get '/new_password(/:password_reset_code)' => "users#new_password", :as => :new_password
+      post '/change_password(/:password_reset_code)' => "users#change_password", :as => :change_password
     end
 
     namespace :authengine do
@@ -70,9 +72,6 @@ Rails.application.routes.draw do
       end
 
       get '/activate(/:activation_code)' => "accounts#show", :as => :activate # actually activation_code is always required, but handling it as optional permits its absence to be communicated to the user as a flash message
-      post '/send_change_password_email(/:user_id)' => "users#send_change_password_email", :as => :send_change_password_email
-      get '/new_password(/:password_reset_code)' => "users#new_password", :as => :new_password
-      post '/change_password(/:password_reset_code)' => "users#change_password", :as => :change_password
     end
     get '/login' => "authengine/sessions#new"
     get '/logout' => "authengine/sessions#destroy"

@@ -239,6 +239,7 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   database_cleaner
   debugger
+  faker
   haml
   haml-rails
   jbuilder (~> 2.0)

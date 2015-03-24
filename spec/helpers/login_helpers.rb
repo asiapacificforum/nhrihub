@@ -12,10 +12,10 @@ module RegisteredUserHelper
 private
   def create_user(login)
     user = User.create(:login => login,
-                :email => 'user@example.com',
+                :email => Faker::Internet.email,
                 :enabled => true,
-                :firstName => 'A',
-                :lastName => 'User')
+                :firstName => Faker::Name.first_name,
+                :lastName => Faker::Name.last_name)
     user.update_attribute(:salt, '1641b615ad281759adf85cd5fbf17fcb7a3f7e87')
     user.update_attribute(:activation_code, '9bb0db48971821563788e316b1fdd53dd99bc8ff')
     user.update_attribute(:activated_at, DateTime.new(2011,1,1))

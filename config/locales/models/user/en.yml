@@ -1,0 +1,12 @@
+en:
+  activerecord:
+    attributes:
+      user:
+        firstName: 'First name'
+        lastName: 'Last name'
+        email: 'Email'
+    errors:
+      models:
+        user:
+          duplicate_email: "There is already a user with that email address."
+          duplicate_first_last_name: "There is already a user with that first and last name."

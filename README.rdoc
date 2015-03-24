@@ -18,5 +18,10 @@ The url format for translated versions are (e.g.) your_domain/fr/admin/users.
   Configuring the first user
 
 === Running the test suite
+Integration testing uses Rspec. The tests are in spec/features.
+Run the entire integration test suite with:
+    rspec spec/features
 
 === Deployment
+
+=== Customizing the theme
