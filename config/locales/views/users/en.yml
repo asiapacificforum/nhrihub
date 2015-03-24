@@ -1,6 +1,7 @@
 en:
   admin:
     users:
+      # view
       index:
         title: 'User management'
         heading: 'User management'
@@ -11,6 +12,7 @@ en:
         enabled: 'Enabled?'
         manage: 'Manage'
         new_user: 'New User'
+      # partial
       user:
         disable: 'disable'
         enable: 'enable'
@@ -20,7 +22,35 @@ en:
         edit_profile: 'edit profile'
         reset_password: 'reset password'
         delete_confirm: 'are you sure you want to delete '
+      # view
       new:
         title: 'Create a new user account'
         heading: 'Create a new user account'
         role: 'Database access role'
+      # controller
+      create:
+        record_invalid: "There was a problem creating the user account."
+      activate:
+        argument_error: 'Activation code not found. Please ask the database administrator to create an account for you.'
+        not_found: 'Activation code not found. Please ask the database administrator to create an account for you.'
+        already_activated: 'Your account has already been activated. You can log in below.'
+      update_self:
+        flash_notice: "Your profile has been updated"
+      update:
+        flash_notice: "User updated"
+      disable:
+        flash_error: "There was a problem disabling this user."
+      enable:
+        flash_error: "There was a problem enabling this user."
+      send_change_password_email:
+        flash_notice: "A password reset email has been sent to #{name}, #{email}"
+        flash_error: "Failed to send password reset email to #{name}, #{email}"
+      new_password:
+        flash_notice:
+          invalid: 'Invalid password reset.'
+          not_found: "User not found"
+      change_password:
+        flash_notice:
+          no_errors: "Your new password has been saved, you may login below."
+          invalid: 'Invalid password reset.'
+          not_found: 'Invalid password reset.'

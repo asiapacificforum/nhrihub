@@ -52,7 +52,7 @@ class Admin::UsersController < ApplicationController
     @user.save!
     redirect_to admin_users_path
   rescue ActiveRecord::RecordInvalid
-    flash[:error] = "There was a problem creating the user account."
+    flash[:error] = t('.record_invalid')
     @roles=Role.all
     render :action => 'new'
   end
@@ -79,20 +79,20 @@ class Admin::UsersController < ApplicationController
       redirect_to signup_admin_user_path(user)
     end
   rescue User::ArgumentError
-    flash[:notice] = 'Activation code not found. Please ask the database administrator to create an account for you.'
+    flash[:notice] = t('.argument_error')
     redirect_to new_admin_user_path
   rescue User::ActivationCodeNotFound
-    flash[:notice] = 'Activation code not found. Please ask the database administrator to create an account for you.'
+    flash[:notice] = t('.not_found')
     redirect_to new_admin_user_path
   rescue User::AlreadyActivated
-    flash[:notice] = 'Your account has already been activated. You can log in below.'
+    flash[:notice] = t('.already_activated')
     redirect_to login_path
   end
 
   def update_self
     @user = User.find(current_user.id)
     if @user.update_attributes(user_params)
-      flash[:notice] = "Your profile has been updated"
+      flash[:notice] = t('.flash_notice')
       redirect_to admin_users_path
     else
       render :action => 'edit'
@@ -102,7 +102,7 @@ class Admin::UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     if @user.update_attributes(user_params)
-      flash[:notice] = "User updated"
+      flash[:notice] = t('.flash_notice')
       redirect_to admin_users_path
     else
       render :action => 'edit'
@@ -118,7 +118,7 @@ class Admin::UsersController < ApplicationController
   def disable
     @user = User.find(params[:id])
     unless @user.update_attribute(:enabled, false)
-      flash[:error] = "There was a problem disabling this user."
+      flash[:error] = t('.flash_error')
     end
     redirect_to admin_users_path
   end
@@ -126,7 +126,7 @@ class Admin::UsersController < ApplicationController
   def enable
     @user = User.find(params[:id])
     unless @user.update_attribute(:enabled, true)
-      flash[:error] = "There was a problem enabling this user."
+      flash[:error] = t('.flash_error')
     end
     redirect_to admin_users_path
   end
@@ -141,10 +141,10 @@ class Admin::UsersController < ApplicationController
     @user.prepare_to_send_reset_email
     @users = User.order("lastName, firstName").all
     if @user.save
-      flash[:notice] = "A password reset email has been sent to #{@user.first_last_name}, #{@user.email}"
+      flash[:notice] = t('.flash_notice', :name => @user.first_last_name, :email => @user.email )
       redirect_to admin_users_path
     else
-      flash[:error] = "Failed to send password reset email to #{@user.first_last_name}, #{@user.email}"
+      flash[:error] = t('.flash_error', :name => @user.first_last_name, :email => @user.email)
       redirect_to admin_users_path
     end
   end
@@ -153,11 +153,13 @@ class Admin::UsersController < ApplicationController
   def new_password
     password_reset_code = params[:password_reset_code]
     if password_reset_code.nil?
-      redirect_to root_path, :notice => 'Invalid password reset.'
+      flash[:notice] = t('.flash_notice.invalid')
+      redirect_to root_path
     else
       @user = User.find_by_password_reset_code(password_reset_code)
       if @user.nil?
-        redirect_to root_path, :notice => "User not found"
+        flash[:notice] = t('.flash_notice.not_found')
+        redirect_to root_path
       end
     end
   end
@@ -171,16 +173,19 @@ class Admin::UsersController < ApplicationController
     raise User::ResetCodeNotFound if user.nil?
 
     if user.update_attributes(params.require(:user).permit(:password, :password_confirmation))
-      redirect_to root_path, :notice => "Your new password has been saved, you may login below."
+      flash[:notice] = t('.flash_notice.no_errors')
+      redirect_to root_path
     else
       flash[:warn] = user.errors.full_messages
       redirect_to admin_new_password_path
     end
 
     rescue User::ArgumentError
-      redirect_to root_path, :notice => 'Invalid password reset.'
+      flash[:notice] = t('.flash_notice.invalid')
+      redirect_to root_path
     rescue User::ResetCodeNotFound
-      redirect_to root_path, :notice => 'Invalid password reset.'
+      flash[:notice] = t('.flash_notice.not_found')
+      redirect_to root_path
   end
 
 

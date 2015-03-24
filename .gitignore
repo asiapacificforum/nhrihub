@@ -20,3 +20,5 @@
 
 # the application's constants file
 lib/constants.rb
+
+coverage
