@@ -6,7 +6,7 @@ class Authengine::SessionsController < ApplicationController
   skip_before_filter :check_permissions, :only => [:new, :create, :destroy]
 
   def new
-    @title = t(".title")
+    @title = BANNER
   end
 
   # user logs in

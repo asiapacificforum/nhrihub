@@ -20,6 +20,7 @@ fr:
         edit_profile: 'editer le profil'
         reset_password: 'réinitialiser le mot de passe'
         delete_confirm: 'êtes-vous sûr que vous voulez effacer'
+        no_prev: 'aucune connexion précédente'
       new:
         title: 'Créer un nouveau compte utilisateur'
         heading: 'Créer un nouveau compte utilisateur'

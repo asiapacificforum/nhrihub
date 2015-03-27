@@ -1,12 +1,16 @@
 = message_block :on => :role
-%h1 Edit roles
-%table{:cellspacing =>'0', :cellpadding => '4'}
+%h1= t('.heading')
+%table.table{:style => 'width:200px'}
   %tr
-    %th Role
-  - for role in @all_roles
+    %th= t('.roles')
+  - if @all_roles.length > 0
+    - for role in @all_roles
+      %tr.role
+        %td.name= role.name
+        %td= (link_to t('defaults.remove'), authengine_role_path(role), :method => :delete) unless role.is_developer?
+  - else
     %tr
-      %td= role.name
-      %td= (link_to "Remove", authengine_role_path(role), :method => :delete) unless role.is_developer?
+      %td= t('defaults.none')
 
-%p= link_to 'Add new role', :controller=>:roles, :action=>:new
-%p= link_to "Cancel", admin_index_path
+%p= link_to t('.new_role'), :controller=>:roles, :action=>:new
+%p= link_to t('defaults.cancel'), admin_users_path

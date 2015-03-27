@@ -21,4 +21,9 @@
 # the application's constants file
 lib/constants.rb
 
+# database configuration
+config/database.yml
+
 coverage
+TODO
+Questions

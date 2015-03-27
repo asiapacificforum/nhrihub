@@ -2,7 +2,6 @@ fr:
   authengine:
     sessions:
       new:
-        title: "Bureau de l'Ombudsman, Samoa. Mesure et évaluation Connexion"
         heading: "S'il vous plaît connecter"
         user_name: "Nom d'usilateur"
         password: "Mot de pass"

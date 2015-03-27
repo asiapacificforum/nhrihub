@@ -21,7 +21,7 @@ class Authengine::UserMailer < ActionMailer::Base
 
   def forgot_password(user)
     setup_email(user)
-    @url  = "http://#{SITE_URL}/#{I18n.locale}/authengine/new_password/#{user.password_reset_code}"
+    @url  = "http://#{SITE_URL}/#{I18n.locale}/admin/new_password/#{user.password_reset_code}"
     mail( :to => @recipients,
           :date => @sent_on,
           :from => @from

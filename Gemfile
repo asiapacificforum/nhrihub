@@ -51,4 +51,5 @@ gem 'bootstrap-sass', '~> 3.3.4'
 gem 'simple-navigation-bootstrap'
 gem 'faker', group: [:development, :test]
 gem 'simplecov', :require => false, :group => :test
+gem 'poltergeist', group: :test
 

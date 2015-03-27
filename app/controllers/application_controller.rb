@@ -8,8 +8,19 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # @title must be set in the specific
+  # controller if title has some dynamic content
+  # otherwise it's set here to be either the same
+  # as the heading or else the translation in the
+  # locale xx.yml file
   def set_title
-    @title = t('.title')
+    if t('.title').match /translation missing/
+      # yml file doesn't have an entry for the .title key
+      # so use the heading value
+      @title = t('.heading')
+    else
+      @title = t('.title')
+    end
   end
 
   def with_locale

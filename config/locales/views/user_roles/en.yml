@@ -1,0 +1,7 @@
+en:
+  admin:
+    user_roles:
+      index:
+        roles_for: 'Roles for %{name}'
+        roles_assigned: 'Roles assigned'
+        roles_available: 'Roles available'

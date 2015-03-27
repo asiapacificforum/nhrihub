@@ -2,3 +2,5 @@ fr:
   defaults:
     save: 'Conserver'
     cancel: 'Décommander'
+    y: 'oui'
+    n: 'non'

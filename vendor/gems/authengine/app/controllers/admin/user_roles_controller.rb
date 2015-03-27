@@ -11,7 +11,7 @@ class Admin::UserRolesController < ApplicationController
   def create
     @user = User.find(params[:user_id])
     @user.user_roles.create(user_role_params)
-    redirect_to authengine_user_user_roles_path(@user)
+    redirect_to admin_user_user_roles_path(@user)
   end
 
   def user_role_params
@@ -23,7 +23,7 @@ class Admin::UserRolesController < ApplicationController
   def destroy
     user_role = UserRole.find_by_role_id_and_user_id(params[:id],params[:user_id])
     user_role.destroy
-    redirect_to authengine_user_user_roles_path(params[:user_id])
+    redirect_to admin_user_user_roles_path(params[:user_id])
   end
 
   # edit_authengine_user_user_roles GET    /authengine/users/:user_id/user_roles/edit(.:format)

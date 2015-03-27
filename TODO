@@ -6,13 +6,19 @@ Engineering Tasks
   Admin can add users and configure user roles
 
 Todo for current task
-  install Rcov
   ensure all login paths are tested
   roles and permissions control which nav elements are shown
   permissions have friendly names
-  override native rails link_to with link_to_with_permissions
-  configure a rake task to run all tests
-  configure routes to carry locale parameter, so that I18n translations are functional from the start
+  configure a rake task to run all tests, for webkit and also firefox
   look into simple_form gem for built-in hints and translations
-  write custom rake task to run all the tests and also run i18n-tasks gem tests https://github.com/glebm/i18n-tasks
+  rake task to run i18n-tasks gem tests https://github.com/glebm/i18n-tasks
   check all validation error messages and flash messages for i18n translations
+  it should not be possible to delete a role that is assigned to some user
+  Provide a configurable timezone (hours offset from GMT) and use this to set all times on the UI
+  Discuss license issues with Ash
+  check that all pages have a title configured
+  Ensure that the actual application and author are cited in the LICENSE.txt file (near the end)
+
+
+good reference for optimizing test setup:
+http://www.railsonmaui.com/tips/rails/capybara-phantomjs-poltergeist-rspec-rails-tips.html

@@ -2,3 +2,9 @@ en:
   defaults:
     save: 'Save'
     cancel: 'Cancel'
+    submit: 'Submit'
+    back: 'Back'
+    y: 'yes'
+    n: 'no'
+    remove: 'Remove'
+    none: 'None'

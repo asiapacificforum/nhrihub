@@ -1,12 +1,23 @@
 == README
 
+=== Description
+NHRIDocs is an internal web application for National Human Rights Institutions ("NHRI") and other complaint handling institutions or human rights monitoring civil society organisations. It has a range of functionality designed to improve the efficiency and capacity of your organisation, including:
+  -  A dynamic human rights indicators monitoring tool aligned to the UN framework of indicators
+  -  A complaints handling database (set up for complaints relating to human rights or good governance but also customisable)
+  -  Strategic plan monitoring – link all of your organisations work to your strategic plan and be able to continuously monitor progress and have a downloadable report available at the click of a button
+  -  ICC Accreditation module to help you collate all required documentation for accreditation and reaccreditation
+  -  Internal document file management system to store all of your organisation’s files and folders that can be accessible at any time via any computer with an internet connection
+  -  Media monitoring tool to track information in the media and collect data that can be used to identify trends and emerging issues
+
 === Ruby version
-configured in the .ruby-version file, look in that file for the currently-configured version
+Configured in the .ruby-version file, to support the RVM version manager, look in that file for the currently-configured version
 
 === Internationalization
 The basic structure for internationalization has been included, and the test suite tests the French translation of the navigation menu, the new user process, and the ActionMailer views pertaining to new user registration.
 This provides an outline of the locale translation files that need to be added in the config/locales directory and subdirectories.
 The url format for translated versions are (e.g.) your_domain/fr/admin/users.
+The default locale is 'en', a different default may be configured within the config/application.rb file, as indicated by the notes within that file.
+Page titles automatically default to the text in the i18n translation for the page .heading key, unless a translation for .title is provided.
 
 === System dependencies
 
@@ -18,10 +29,24 @@ The url format for translated versions are (e.g.) your_domain/fr/admin/users.
   Configuring the first user
 
 === Running the test suite
-Integration testing uses Rspec. The tests are in spec/features.
+Integration testing uses Rspec. The tests are in spec/features. Headless testing uses the Poltergeist gem.
 Run the entire integration test suite with:
     rspec spec/features
 
 === Deployment
+Development updates are pushed manually to a git repository, using the normal git push procedure.
+Deployment is automated using the Capistrano gem. The included capistrano deployment recipe is invoked by:
+    cap deploy
+This pulls from the git repo to a cached copy on the server, copies the update to a into the 'releases' directory, and symlinks the 'current' directory to point to the most recent release.
+The 5 most recent releases are kept on the server.
+Capistrano deployment also symlinks the config/database.yml and lib/constants files to copies in the 'shared' directory.
+These files contain sensitive information and should be manually copied into the 'shared' directory. This is typically done just once when the app is first installed, as the information will typically remain unchanged for the life of the app.
 
 === Customizing the theme
+
+=== Log rotation
+
+=== Document storage
+
+=== License
+GPL V3, see LICENSE.txt

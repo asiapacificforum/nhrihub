@@ -1,15 +1,12 @@
 = message_block :on => :role
-%h1 Add role
+%h1= t('.heading')
 
 = form_for @role, :url => authengine_roles_path  do |f|
-  %table
+  %table.table{:style => "width:280px"}
     %tr
-      %td
-        %label{:for => :name} Name:
-      %td{:colspan=>"3"}= f.text_field :name, :autocomplete => 'off'
+      %td= f.label :name
+      %td= f.text_field :name, :autocomplete => 'off', :autofocus => true
     %tr
-      %td= f.label(:parent_id, "Parent:")
-      %td{:colspan=>"3"}= f.select :parent_id, @roles.collect{|r| [r.name, r.id]}
+      %td= f.label :parent_id, t('.parent')
+      %td= f.select :parent_id, @roles.collect{|r| [r.name, r.id]}
   - submit_or_return_to authengine_roles_path
-
--focus('role_name')

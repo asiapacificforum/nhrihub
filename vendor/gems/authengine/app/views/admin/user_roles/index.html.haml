@@ -1,0 +1,15 @@
+%h1= t('.roles_for', :name => @user.first_last_name)
+%h2= t('.roles_assigned')
+%ul#assigned_roles
+  - for role in @user.user_roles.map(&:role)
+    %li.name #{role.name} [ #{link_to "remove role", admin_user_user_role_path(@user,role), :method => :delete} ]
+
+%h2= t('.roles_available')
+%ul#available_roles
+  - for role in (@all_roles - @user.user_roles.map(&:role))
+    %li
+      = form_for @user_role, :url => create_admin_user_user_roles_path(@user), :method => :post do |f|
+        #{role.name} [ #{ link_to "assign role", "#", :onclick => "$(this).closest('form').submit()"} ]
+        = hidden_field :user_role, :role_id, :value => role.id
+
+%p= link_to t('defaults.back'), admin_users_path

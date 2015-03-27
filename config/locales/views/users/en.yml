@@ -3,8 +3,7 @@ en:
     users:
       # view
       index:
-        title: 'User management'
-        heading: 'User management'
+        heading: 'Manage users'
         firstname: 'First Name'
         lastname: 'Last Name'
         roles: 'Role(s)'
@@ -22,11 +21,17 @@ en:
         edit_profile: 'edit profile'
         reset_password: 'reset password'
         delete_confirm: 'are you sure you want to delete '
+        no_prev: 'no previous login'
       # view
       new:
         title: 'Create a new user account'
         heading: 'Create a new user account'
         role: 'Database access role'
+      show:
+        roles: 'Role(s)'
+      edit:
+        title: 'Edit profile'
+        heading: 'Edit profile of %{name}'
       # controller
       create:
         record_invalid: "There was a problem creating the user account."
@@ -43,12 +48,15 @@ en:
       enable:
         flash_error: "There was a problem enabling this user."
       send_change_password_email:
-        flash_notice: "A password reset email has been sent to #{name}, #{email}"
-        flash_error: "Failed to send password reset email to #{name}, #{email}"
+        flash_notice: "A password reset email has been sent to %{name}, %{email}"
+        flash_error: "Failed to send password reset email to %{name}, %{email}"
       new_password:
         flash_notice:
           invalid: 'Invalid password reset.'
           not_found: "User not found"
+        heading: "Select new password for %{name}"
+        password: 'Enter a new password'
+        password_confirmation: 'Re-enter the password to confirm'
       change_password:
         flash_notice:
           no_errors: "Your new password has been saved, you may login below."

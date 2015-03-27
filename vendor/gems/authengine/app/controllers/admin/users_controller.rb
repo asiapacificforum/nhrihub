@@ -59,6 +59,7 @@ class Admin::UsersController < ApplicationController
 
   def edit # edit a user profile with id given
     @user = User.find(params[:id])
+    @title = t('.heading', :name => @user.first_last_name)
   end
 
   def edit_self # edit profile of current user
@@ -149,7 +150,10 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-  # where a user enters new password values, login not required
+  # after a password reset
+  # show a form in which
+  # a user enters new password values,
+  # login not required
   def new_password
     password_reset_code = params[:password_reset_code]
     if password_reset_code.nil?
@@ -169,15 +173,14 @@ class Admin::UsersController < ApplicationController
     password_reset_code = params[:password_reset_code]
     raise User::ArgumentError if password_reset_code.nil?
 
-    user = User.find_by_password_reset_code(password_reset_code)
-    raise User::ResetCodeNotFound if user.nil?
+    @user = User.find_by_password_reset_code(password_reset_code)
+    raise User::ResetCodeNotFound if @user.nil?
 
-    if user.update_attributes(params.require(:user).permit(:password, :password_confirmation))
+    if @user.update_attributes(params.require(:user).permit(:password, :password_confirmation))
       flash[:notice] = t('.flash_notice.no_errors')
       redirect_to root_path
     else
-      flash[:warn] = user.errors.full_messages
-      redirect_to admin_new_password_path
+      render :new_password
     end
 
     rescue User::ArgumentError

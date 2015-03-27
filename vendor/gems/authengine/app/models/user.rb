@@ -222,7 +222,8 @@ protected
   end
 
   def password_required?
-    crypted_password.blank? || !password.blank?
+    crypted_password.blank? || # validate the password field if there's no crypted password
+      !password.blank? # validate the password field if it's being provided
   end
 
   def make_activation_code

@@ -3,15 +3,12 @@ require 'rspec/core/shared_context'
 module UnactivatedUserHelpers
   extend RSpec::Core::SharedContext
   before do
-    user = create_user
-  end
-
-private
-  def create_user
     user = User.create(
-                :email => 'user@example.com',
+                :email => Faker::Internet.email,
                 :enabled => true,
-                :firstName => 'A',
-                :lastName => 'User')
+                :firstName => Faker::Name.first_name,
+                :lastName => Faker::Name.last_name)
+    role = Role.create(:name => 'intern')
+    UserRole.create(:user_id => user.id, :role_id => role.id)
   end
 end

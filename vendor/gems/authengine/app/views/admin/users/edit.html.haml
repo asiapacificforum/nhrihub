@@ -1,25 +1,19 @@
 = message_block :on => [:user]
-%h2>Edit Profile
+%h1= t('.heading', :name => @user.first_last_name)
 
-= form_for @user, :url => requested_user_or_self, :html => { :method => :put } do |f|
-  %p
-    First Name:
-    %br/
-    = f.text_field :firstName, :size => 60
-  %p
-    Last Name:
-    %br/
-    = f.text_field :lastName, :size => 60
-  %p
-    Email:
-    %br/
-    = f.text_field :email, :size => 60
-  %p
-    Select pantry
-    %br/
-    = f.select :organization_id, Organization.active.collect { |o| [o.name, o.id] }, :include_blank => true
+= form_for [:admin, @user], :html => { :method => :put } do |f|
+  %table.table{:style => 'width:360px'}
+    %tr
+      %td= f.label :firstName, t('activerecord.attributes.user.firstName')
+      %td= f.text_field :firstName, :size => 20
+    %tr
+      %td= f.label :lastName, t('activerecord.attributes.user.lastName')
+      %td= f.text_field :lastName, :size => 20
+    %tr
+      %td= f.label :email, t('activerecord.attributes.user.email')
+      %td= f.text_field :email, :size => 40
+    %tr
+      %td= f.label :organization_id, t('activerecord.models.organization')
+      %td= f.select :organization_id, Organization.all.collect { |o| [o.name, o.id] }, :include_blank => true
 
-  - submit_or_return_to authengine_users_path
-
-%script{:type=>'text/javascript'}
-  document.getElementById('user_email').focus()
+  - submit_or_return_to admin_users_path

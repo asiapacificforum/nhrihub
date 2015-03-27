@@ -26,4 +26,8 @@ module UserManagementHelpers
     "http://"+local_url
   end
 
+  def new_password_activation_link
+    email_activation_link
+  end
+
 end

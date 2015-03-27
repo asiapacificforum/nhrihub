@@ -1,22 +1,20 @@
-%h2
-%table
+- scope = 'activerecord.attributes.user'
+%h1= @user.first_last_name
+%table.table{:style => 'width:360px'}
   %tr
-    %td User:
-    %td= @user.firstName+" "+@user.lastName
-  %tr
-    %td Login name:
+    %td= t('login', :scope => scope)
     %td= @user.login
   %tr
-    %td email:
+    %td= t('email', :scope => scope)
     %td= @user.email
   %tr
-    %td Joined on:
+    %td= t('created_at', :scope => scope)
     %td= @user.created_at.to_s(:long)
   %tr
-    %td Pantry name:
+    %td= t('activerecord.attributes.organization.name')
     %td= @user.organization && @user.organization.name
   %tr
-    %td Role(s):
+    %td= t('.roles')
     %td= @user.roles.map(&:name).join(", ")
 %br/
 = link_to "Back", :back

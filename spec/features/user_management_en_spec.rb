@@ -1,21 +1,29 @@
 require "rails_helper"
+require File.expand_path('../../helpers/application_helpers',__FILE__)
 require File.expand_path('../../helpers/login_helpers',__FILE__)
 require File.expand_path('../../helpers/navigation_helpers',__FILE__)
 require File.expand_path('../../helpers/user_management_helpers',__FILE__)
 require File.expand_path('../../helpers/unactivated_user_helpers',__FILE__)
+require File.expand_path('../../helpers/async_helper',__FILE__)
+require File.expand_path('../../helpers/role_presets_helper',__FILE__)
+require File.expand_path('../../helpers/organization_presets_helper',__FILE__)
 
-feature "User management" do
+feature "Manage users" do
+  include ApplicationHelpers
+  include RolePresetsHelper
+  include OrganizationPresetsHelper
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   include UserManagementHelpers
+  include AsyncHelper
   before do
     toggle_navigation_dropdown("Admin")
-    select_dropdown_menu_item("User management")
+    select_dropdown_menu_item("Manage users")
   end
 
   scenario "navigate to user manaagement page" do
-    expect(page_heading).to eq "User management"
-    expect(page_title).to eq "User management"
+    expect(page_heading).to eq "Manage users"
+    expect(page_title).to eq "Manage users"
   end
 
   scenario "add a new user" do
@@ -27,24 +35,113 @@ feature "User management" do
     fill_in("Email", :with => "norm@normco.com")
     # ensure that mail was actually sent
     expect{click_button("Save")}.to change { ActionMailer::Base.deliveries.count }.by(1)
-    expect(page_heading).to eq "User management"
+    expect(page_heading).to eq "Manage users"
     email = ActionMailer::Base.deliveries.last
-    expect( email.subject ).to eq "Please activate your Office of the Ombudsman M & E Database account"
+    expect( email.subject ).to eq "Please activate your #{ORGANIZATION_NAME} #{APPLICATION_NAME} account"
     expect( email.to.first ).to eq "norm@normco.com"
-    expect( email.from.first ).to eq "support@www.ombudsman.gov.ws"
+    expect( email.from.first ).to eq ADMIN_EMAIL
     lines = Nokogiri::HTML(email.body.to_s).xpath(".//p").map(&:text)
     # lin[0] is addressee
     expect( lines[0] ).to eq "Norman Normal"
-    expect( lines[1] ).to match "Ombudsman M & E Database"
+    expect( lines[1] ).to match "#{ORGANIZATION_NAME} #{APPLICATION_NAME}"
     # activation url is embedded in the email
     url = Nokogiri::HTML(email.body.to_s).xpath(".//p/a").attr('href').value
     expect( url ).to match (/\/en\/authengine\/activate\/[\d|a|b|c|d|e|f]{40}$/) # activation code
-    expect( url ).to match (/^http:\/\/www\.ombudsman\.gov\.ws/)
-    expect( lines[-1]).to match /M & E Database administrator/
+    expect( url ).to match (/^http:\/\/#{SITE_URL}/)
+    expect( lines[-1]).to match /#{APPLICATION_NAME} administrator/
     expect( norman_normal_to_be_in_the_database ).to eq true
     expect( norman_normal_account_is_activated ).to eq false
   end
 
+  scenario "show user information" do
+    within(:xpath, ".//tr[contains(td[3],'staff')]") do
+      click_link("show")
+    end
+    eventually(:interval => 0.001) do # hack required due to Firefox timing
+      expect(page_heading).to eq User.last.first_last_name
+    end
+    click_link("Back")
+    eventually(:interval => 0.001) do # hack required due to Firefox timing
+      expect(page_heading).to eq "Manage users"
+    end
+  end
+
+  scenario "disable a user" do
+    within(:xpath, ".//tr[contains(td[3],'staff')]") do
+      click_link("disable")
+    end
+    expect(page.find(:xpath, ".//tr[contains(td[3],'staff')]/td[5]").text ).to match /no/
+    expect(page.find(:xpath, ".//tr[contains(td[3],'staff')]/td[6]/a").text ).to eq 'enable'
+  end
+
+  scenario "delete a user" do
+    within(:xpath, ".//tr[contains(td[3],'staff')]") do
+      click_link("delete")
+    end
+    #page.accept_confirm # requires javascript, but poltergeist ignores modal dialogs!
+    expect(page.all(".user").count).to eq 1
+  end
+
+  scenario "edit roles for a user", :js => true do
+    within(:xpath, ".//tr[contains(td[3],'staff')]") do
+      click_link("edit roles")
+    end
+    eventually do
+      expect(page_heading).to eq "Roles for #{User.last.first_last_name}"
+    end
+    expect(page.all('#assigned_roles li.name').map(&:text)).to include 'staff [ remove role ]'
+    page.find('#available_roles li', :text => 'intern [ assign role ]').find('a').click
+    eventually do
+      expect(page.all('#assigned_roles li.name').map(&:text)).to include 'intern [ remove role ]'
+    end
+  end
+
+  scenario "edit roles for a user, and cancel without saving" do
+    within(:xpath, ".//tr[contains(td[3],'staff')]") do
+      click_link("edit roles")
+    end
+    eventually do
+      expect(page_heading).to eq "Roles for #{User.last.first_last_name}"
+    end
+    click_link("Back")
+    expect(page_heading).to eq "Manage users"
+  end
+
+  scenario "edit profile of a user" do
+    within(:xpath, ".//tr[contains(td[3],'staff')]") do
+      click_link("edit profile")
+    end
+    fill_in "First name", :with => "Anastacia"
+    fill_in "Last name", :with => "Friesen"
+    fill_in "Email", :with => "ole_medhurst@parisianschamberger.info"
+    select "Government of Illyria", :from => "Organization"
+    click_button "Save"
+    expect(page_heading).to eq "Manage users"
+    within(:xpath, ".//tr[contains(td[3],'staff')]") do
+      expect( find(:xpath, './td[1]').text ).to eq 'Anastacia'
+      expect( find(:xpath, './td[2]').text ).to eq 'Friesen'
+    end
+  end
+end
+
+feature "Edit profile of unactivated user" do
+  include UnactivatedUserHelpers # creates unactivated user
+  include ApplicationHelpers
+  include NavigationHelpers
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  before do
+    toggle_navigation_dropdown("Admin")
+    select_dropdown_menu_item("Manage users")
+  end
+
+  # should not be able to change the profile of an unactivated user
+  # as the registration email has already been sent
+  # if the email address is a problem, must delete and create new
+  scenario "edit profile link should be disabled" do
+    within(:xpath, ".//tr[contains(td[3],'intern')]") do
+      expect(find('a', :text => "edit profile")).to be_disabled
+    end
+  end
 end
 
 feature "user account activation" do
@@ -74,22 +171,5 @@ feature "user account activation" do
     visit url_with_wrong_activation_code
     expect(flash_message).to eq 'Activation code not found. Please contact database administrator.'
     expect(page_heading).to eq 'Please log in'
-  end
-end
-
-feature "User management" do
-  include LoggedInEnAdminUserHelper # logs in as admin
-  include NavigationHelpers
-  before do
-    toggle_navigation_dropdown("Admin")
-    select_dropdown_menu_item("User management")
-  end
-
-  scenario "reset user password" do
-    within(:xpath, ".//tr[contains(td[3],'staff')]") do
-      click_link('reset password')
-    end
-    expect(page_heading).to eq "User management"
-    expect(flash_message).to match /A password reset email has been sent to/
   end
 end

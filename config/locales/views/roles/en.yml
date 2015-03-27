@@ -1,0 +1,10 @@
+en:
+  authengine:
+    roles:
+      index:
+        heading: 'Access roles defined for this database'
+        roles: 'Roles'
+        new_role: 'Add new role'
+      new:
+        heading: "Add role"
+        parent: "Parent"

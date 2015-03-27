@@ -2,7 +2,7 @@ en:
   layout:
     nav:
       admin: 'Admin'
-      user: 'User management'
+      user: 'Manage users'
       logout: 'Logout'
       corporate_services: 'Corporate Services'
       nhri: 'NHRI'
@@ -20,3 +20,4 @@ en:
       int_docs: 'Internal documents'
       perf_rev: 'Performance reviews'
       strat_plan: 'Strategic plan'
+      role: 'Manage roles'

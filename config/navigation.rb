@@ -23,6 +23,7 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.item :reports, t('layout.nav.reports'), home_path
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path
+      ad.item :roles, t('layout.nav.role'), authengine_roles_path
     end
     primary.item :logout, t('layout.nav.logout'), logout_path
     primary.dom_class = 'nav navbar-nav'

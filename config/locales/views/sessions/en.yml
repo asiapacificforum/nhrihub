@@ -2,7 +2,6 @@ en:
   authengine:
     sessions:
       new:
-        title: 'Office of the Ombudsman, Samoa. Measurement and Evaluation Login'
         heading: 'Please log in'
         user_name: 'User name'
         password: 'Password'
