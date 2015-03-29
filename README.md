@@ -2,12 +2,14 @@
 
 === Description
 NHRIDocs is an internal web application for National Human Rights Institutions ("NHRI") and other complaint handling institutions or human rights monitoring civil society organisations. It has a range of functionality designed to improve the efficiency and capacity of your organisation, including:
-  -  A dynamic human rights indicators monitoring tool aligned to the UN framework of indicators
+  -  A dynamic human rights indicators monitoring tool aligned to the UN framework of indicators with the ability to download all data and evaluate trends. (ref: http://www.ohchr.org/Documents/Publications/Human_rights_indicators_en.pdf, page 88)
   -  A complaints handling database (set up for complaints relating to human rights or good governance but also customisable)
   -  Strategic plan monitoring – link all of your organisations work to your strategic plan and be able to continuously monitor progress and have a downloadable report available at the click of a button
-  -  ICC Accreditation module to help you collate all required documentation for accreditation and reaccreditation
+  -  ICC Accreditation module to help you collate all required documentation for accreditation and reaccreditation (ref: http://nhri.ohchr.org/EN/AboutUs/ICCAccreditation/Pages/default.aspx )
   -  Internal document file management system to store all of your organisation’s files and folders that can be accessible at any time via any computer with an internet connection
   -  Media monitoring tool to track information in the media and collect data that can be used to identify trends and emerging issues
+
+All modules of the application have a range of functionality to assist in the course of your work such as the setting of automatic reminders, logging historical versions of all documents, assigning projects, complaints or other matters to registered users and setting different permission levels to protect the confidentiality and integrity of your documents. Each module can be enabled/disabled to reflect the work undertaken by your organisation.
 
 === Ruby version
 Configured in the .ruby-version file, to support the RVM version manager, look in that file for the currently-configured version
@@ -24,6 +26,8 @@ Page titles automatically default to the text in the i18n translation for the pa
 === Configuration
   email
   app-specific constants (orgname etc)
+  timezone
+  All dates and times are entered and displayed in the timezone configured for the application.
 
 === Database creation and initialization
   Configuring the first user

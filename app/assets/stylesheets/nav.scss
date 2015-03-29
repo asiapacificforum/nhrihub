@@ -1,4 +1,5 @@
-$banner_bg: #d0a63a;
+$banner_bg: #b52138;
+$banner_border: #FCCD0F;
 
 @mixin gradient($from, $to, $height) {
     background-color: $to;
@@ -28,16 +29,8 @@ $banner_bg: #d0a63a;
   padding-left: 69px;
 }
 
-.navbar {
-  border: none;
-  background-color: $banner_bg;
-}
 
-.container-fluid {
-  padding-left: 0px;
-  padding-right: 0px;
-}
-
+// define all the colors for the navbar menu, top-level items
 // Normal
 $nav_gradient_top: #F59B9B;
 $nav_gradient_bottom: #7E0404;
@@ -50,6 +43,16 @@ $nav_hover_text : lighten($nav_text, 8%);
 $nav_active_gradient_top: #ffffff;
 $nav_active_gradient_bottom: #ffffff;
 $nav_active_text : #645252;
+
+.navbar {
+  border: none;
+  @include gradient($nav_gradient_top, $nav_gradient_bottom, 30px);
+}
+
+.container-fluid {
+  padding-left: 0px;
+  padding-right: 0px;
+}
 
 // Normal
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a {
@@ -85,4 +88,121 @@ $nav_active_text : #645252;
 // show dropdown menu on hover of menu item
 .dropdown:hover .dropdown-menu {
     display: block;
+}
+
+@mixin gradient($from, $to, $height) {
+    background-color: $to;
+
+    background-image: -webkit-gradient(linear, left top, left bottom, from($from), to($to));
+    background-image: -webkit-linear-gradient($from, $to);
+    background-image: -moz-linear-gradient($from, $to);
+    background-image: -o-linear-gradient($from, $to);
+    background-image: -ms-linear-gradient($from, $to);
+    background-image: linear-gradient($from, $to);
+
+    background-repeat: repeat-x;
+
+    // parameters are width and height
+    //-webkit-background-size: 100% $height;
+    //-moz-background-size: 100% $height;
+    //-o-background-size: 100% $height;
+    //background-size: 100% $height;
+}
+
+.navbar-brand {
+  background-image: url("omb_logo.png");
+  background-position-x: 15px;
+  background-repeat: no-repeat;
+  background-size: 56px;
+  background-color: #D0A63A;
+  padding-left: 69px;
+}
+
+
+// define all the colors for the navbar menu, top-level items
+// Normal
+$nav_gradient_top: #F59B9B;
+$nav_gradient_bottom: #7E0404;
+$nav_text : #F2F2E7;
+// hover
+$nav_hover_gradient_top: lighten($nav_gradient_top, 8%);
+$nav_hover_gradient_bottom: lighten($nav_gradient_bottom, 8%);
+$nav_hover_text : lighten($nav_text, 8%);
+// active
+$nav_active_gradient_top: #ffffff;
+$nav_active_gradient_bottom: #ffffff;
+$nav_active_text : #645252;
+
+.navbar {
+  border: none;
+  @include gradient($nav_gradient_top, $nav_gradient_bottom, 30px);
+}
+
+.container-fluid {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+// Normal
+.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a {
+  @include gradient($nav_gradient_top, $nav_gradient_bottom, 30px);
+  color : $nav_text;
+}
+
+// hover
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  @include gradient($nav_hover_gradient_top, $nav_hover_gradient_bottom, 30px);
+  color : $nav_hover_text;
+}
+
+//menu open
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+  @include gradient($nav_gradient_top, $nav_gradient_bottom, 30px);
+  color : $nav_text;
+}
+
+// active
+.navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+  @include gradient($nav_active_gradient_top, $nav_active_gradient_bottom, 30px);
+  color : $nav_active_text;
+}
+
+.navbar-default .navbar-nav > .active > a {
+  @include gradient($nav_active_gradient_top, $nav_active_gradient_top, 30px);
+  color : $nav_active_text;
+}
+
+// show dropdown menu on hover of menu item
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+#banner {
+  background-color: $banner_bg;
+  position: relative;
+  padding-left: 130px;
+  -webkit-box-shadow: 9px 4px 34px 0px rgba(0,0,0,0.57);
+  -moz-box-shadow: 9px 4px 34px 0px rgba(0,0,0,0.57);
+  box-shadow: 9px 4px 34px 0px rgba(0,0,0,0.57);
+  top: -60px; // b/c body padding is 60px
+  border-color: $banner_border;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 7px;
+  width: 100%;
+}
+
+#main {
+  font-family:sans-serif;
+  font-size:46px;
+  font-weight: bold;
+  color: #dbaa47;
+}
+
+#sub { 
+  font-family: times;
+  font-size:24px;
+  color: #E4E2D9;
 }

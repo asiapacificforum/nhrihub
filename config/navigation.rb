@@ -1,26 +1,26 @@
 SimpleNavigation::Configuration.run do |navigation|  
   navigation.items do |primary|
     primary.item :nhri, t('layout.nav.nhri') do |nhri|
-      nhri.item :hre, t('layout.nav.hre'), home_path
-      nhri.item :adv_council, t('layout.nav.adv_council'), home_path
-      nhri.item :nhr_indicators, t('layout.nav.nhr_indicators'), home_path
-      nhri.item :hr_prot, t('layout.nav.hr_prot'), home_path
-      nhri.item :icc, t('layout.nav.icc'), home_path
+      nhri.item :hre, t('layout.nav.hre'), placeholder_path
+      nhri.item :adv_council, t('layout.nav.adv_council'), placeholder_path
+      nhri.item :nhr_indicators, t('layout.nav.nhr_indicators'), placeholder_path
+      nhri.item :hr_prot, t('layout.nav.hr_prot'), placeholder_path
+      nhri.item :icc, t('layout.nav.icc'), placeholder_path
     end
     primary.item :gg, t('layout.nav.gg') do |gg|
-      gg.item :action, '??',home_path
+      gg.item :action, '??',placeholder_path
     end
     primary.item :corporate_services, t('layout.nav.corporate_services') do |cs|
-      cs.item :int_docs, t('layout.nav.int_docs'), home_path
-      cs.item :perf_rev, t('layout.nav.perf_rev'), home_path
-      cs.item :strat_plan, ('layout.nav.strat_plan'), home_path
+      cs.item :int_docs, t('layout.nav.int_docs'), placeholder_path
+      cs.item :perf_rev, t('layout.nav.perf_rev'), placeholder_path
+      cs.item :strat_plan, ('layout.nav.strat_plan'), placeholder_path
     end
     primary.item :outreach_media, t('layout.nav.outreach_media') do |om|
-      om.item :outreach, t('layout.nav.outreach'), home_path
-      om.item :media, t('layout.nav.media'), home_path
+      om.item :outreach, t('layout.nav.outreach'), placeholder_path
+      om.item :media, t('layout.nav.media'), placeholder_path
     end
-    primary.item :spec_inv, t('layout.nav.spec_inv'), home_path
-    primary.item :reports, t('layout.nav.reports'), home_path
+    primary.item :spec_inv, t('layout.nav.spec_inv'), placeholder_path
+    primary.item :reports, t('layout.nav.reports'), placeholder_path
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path
       ad.item :roles, t('layout.nav.role'), authengine_roles_path

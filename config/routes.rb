@@ -59,5 +59,6 @@ Rails.application.routes.draw do
   scope "/:locale" do
     get 'home', :to => 'home#index'
     get 'admin', :to => 'admin#index'
+    get 'placeholder', :to => 'placeholder#index'
   end
 end
