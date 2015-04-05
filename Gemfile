@@ -53,5 +53,5 @@ gem 'simplecov', :require => false, :group => :test
 gem 'poltergeist', group: :test
 gem 'factory_girl_rails', '~> 4.0', group: [:development, :test]
 gem 'faker', group: :test
-#gem "thin", group: :test
 
+gem 'quiet_assets', group: :development

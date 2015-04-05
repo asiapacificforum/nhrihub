@@ -37,4 +37,7 @@ Rails.application.configure do
 
   # Raise error on unpermitted parameters.
   config.action_controller.action_on_unpermitted_parameters = :raise
+
+  # Disable quiet_assets gem and allow asset requests to be reported in the log
+  # config.quiet_assets = false
 end
