@@ -1,8 +1,9 @@
 %h1= t('.heading')
-= form_tag update_all_authengine_action_roles_path,:method => :put do
+= form_tag authengine_action_roles_path,:method => :put do
   %table{:style=>"width:780px"}
     %tr
       %th{:style=>"width:200px"}= t('.controller_action')
+      %th{:style=>"width:200px"}
       - for role in @roles do
         %th{:style=>"width:70px"}
           = role
@@ -12,9 +13,10 @@
       - for action in @actions do
         %tr{:class=>"#{cycle('odd', 'even')}"}
           %td{:style=>"width:200px"}
-            = action.controller_name
+            = action[:controller_name]
             \#
             = action.action_name
+          %td{:style => "width:200px"}= text_field_tag "human_names[#{action.id}]", action.human_name
           - for role in @roles do
             %td{:style=>"width:70px"}
               %input{:name=>"permission[#{role.id}][#{action.id}]" , :type=>"hidden", :value=>'0'}

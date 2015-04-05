@@ -40,7 +40,8 @@ Rails.application.routes.draw do
       resources :actions
       resources :useractions
       resources :action_roles do
-        put 'update_all', :on => :collection
+        get 'index', :on => :collection
+        put 'update', :on => :collection
       end
 
       resources :sessions

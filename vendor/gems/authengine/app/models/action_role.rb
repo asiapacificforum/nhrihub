@@ -28,4 +28,48 @@ class ActionRole < ActiveRecord::Base
       find_or_create_by(:action_id => a.id, :role_id => role.id)
     end
   end
+
+  def create_corresponding_create_and_update
+    case action_name
+    when "new"
+      create_create
+    when "edit"
+      create_update
+    end
+  end
+
+  def delete_corresponding_create_and_update
+    case action_name
+    when "new"
+      delete_create
+    when "edit"
+      delete_update
+    end
+  end
+
+  private
+  def action_name
+    @action ||= Action.find(action_id)
+    @action_name = @action.action_name
+  end
+
+  def create_create
+    corresponding_action = Action.where(:controller_id => @action.controller_id, :action_name => "create").first
+    ActionRole.create(:action_id => corresponding_action.id, :role_id => role_id)
+  end
+
+  def create_update
+    corresponding_action = Action.where(:controller_id => @action.controller_id, :action_name => "update").first
+    ActionRole.create(:action_id => corresponding_action.id, :role_id => role_id)
+  end
+
+  def delete_create
+    corresponding_action = Action.where(:controller_id => @action.controller_id, :action_name => "create").first
+    ActionRole.where(:action_id => corresponding_action.id, :role_id => role_id).delete_all
+  end
+
+  def delete_update
+    corresponding_action = Action.where(:controller_id => @action.controller_id, :action_name => "update").first
+    ActionRole.where(:action_id => corresponding_action.id, :role_id => role_id).delete_all
+  end
 end
