@@ -11,6 +11,9 @@ NHRIDocs is an internal web application for National Human Rights Institutions (
 
 All modules of the application have a range of functionality to assist in the course of your work such as the setting of automatic reminders, logging historical versions of all documents, assigning projects, complaints or other matters to registered users and setting different permission levels to protect the confidentiality and integrity of your documents. Each module can be enabled/disabled to reflect the work undertaken by your organisation.
 
+=== Current Status
+At this time NHRIdocs is a work in progress. This first release includes the functionality for managing users, organizations, and access privileges. The basic structure for internationalization is also present. None of the main functionality of the app is yet developed.
+
 === Ruby version
 Configured in the .ruby-version file, to support the RVM version manager, look in that file for the currently-configured version
 
@@ -21,8 +24,6 @@ The url format for translated versions are (e.g.) your_domain/fr/admin/users.
 The default locale is 'en', a different default may be configured within the config/application.rb file, as indicated by the notes within that file.
 Page titles automatically default to the text in the i18n translation for the page .heading key, unless a translation for .title is provided.
 
-=== System dependencies
-
 === Configuration
   email
   app-specific constants (orgname etc)
@@ -31,6 +32,11 @@ Page titles automatically default to the text in the i18n translation for the pa
 
 === Database creation and initialization
   Configuring the first user
+
+=== Access control
+A role-based access control is included. The access is bootstrapped at installation time with a single administrator. This administrator may then define further roles (e.g. "staff", "intern")
+Users with the role "admin" have access to the configuration of access permissions for each of the other roles.
+When new users are added, they are assigned to the appropriate role in order to limit access to sensitive information.
 
 === Running the test suite
 Integration testing uses Rspec. The tests are in spec/features. Headless testing uses the Poltergeist gem.

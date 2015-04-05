@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     root :to => "authengine/sessions#new"
 
     namespace :admin do
+      resources :organizations
       resources :users do
         resource :account
         resources :user_roles, :only => [:destroy] do
@@ -41,7 +42,6 @@ Rails.application.routes.draw do
       resources :action_roles do
         put 'update_all', :on => :collection
       end
-      resources :organizations
 
       resources :sessions
       resources :roles

@@ -28,8 +28,10 @@ feature "Manage users" do
 
   scenario "add a new user" do
     click_link('New User')
-    expect(page_heading).to eq "Create a new user account"
-    expect(page_title).to eq "Create a new user account"
+    eventually do
+      expect(page_heading).to eq "Create a new user account"
+      expect(page_title).to eq "Create a new user account"
+    end
     fill_in("First name", :with => "Norman")
     fill_in("Last name", :with => "Normal")
     fill_in("Email", :with => "norm@normco.com")
@@ -79,7 +81,9 @@ feature "Manage users" do
       click_link("delete")
     end
     #page.accept_confirm # requires javascript, but poltergeist ignores modal dialogs!
-    expect(page.all(".user").count).to eq 1
+    eventually do
+      expect(page.all(".user").count).to eq 2
+    end
   end
 
   scenario "edit roles for a user", :js => true do
@@ -104,7 +108,9 @@ feature "Manage users" do
       expect(page_heading).to eq "Roles for #{User.last.first_last_name}"
     end
     click_link("Back")
-    expect(page_heading).to eq "Manage users"
+    eventually do
+      expect(page_heading).to eq "Manage users"
+    end
   end
 
   scenario "edit profile of a user" do

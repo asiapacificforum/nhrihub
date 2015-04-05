@@ -100,7 +100,7 @@ module ActionView::Helpers::UrlHelper
 
 private
   def javascript?(url)
-    url == '#' || url == 'javascript:void(0)'
+    url == '#' || url == 'javascript:void(0)' || url == 'javascript: void(0)'
   end
 
 end

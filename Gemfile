@@ -49,7 +49,9 @@ gem 'selenium-webdriver', group: [:development, :test]
 gem 'database_cleaner', group: [:development, :test]
 gem 'bootstrap-sass', '~> 3.3.4'
 gem 'simple-navigation-bootstrap'
-gem 'faker', group: [:development, :test]
 gem 'simplecov', :require => false, :group => :test
 gem 'poltergeist', group: :test
+gem 'factory_girl_rails', '~> 4.0', group: [:development, :test]
+gem 'faker', group: :test
+#gem "thin", group: :test
 

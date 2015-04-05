@@ -18,9 +18,14 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'faker'
 require 'capybara/poltergeist'
+# use this configuration to show the messages between poltergeist and phantomjs
+#Capybara.register_driver :poltergeist do |app|
+  #Capybara::Poltergeist::Driver.new(app, :debug => true)
+#end
 Capybara.javascript_driver = :poltergeist
-require 'simplecov'
-SimpleCov.start
+
+#require 'simplecov'
+#SimpleCov.start
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -99,10 +104,23 @@ RSpec.configure do |config|
     #end
   end
 
-  config.around(:each) do |example|
+  #config.around(:each) do |example|
+    #DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
+    #DatabaseCleaner.start
+    #example.run
+    #DatabaseCleaner.clean
+  #end
+
+  # see https://github.com/DatabaseCleaner/database_cleaner/issues/273
+  # note that @jfine suggests deletion, but truncation seems to work
+  # I can't imagine why this works but the around hooks above do not
+  config.before(:each) do |example|
     DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
+    #DatabaseCleaner.strategy = example.metadata[:js] ? :deletion : :transaction
     DatabaseCleaner.start
-    example.run
+  end
+  config.after(:each) do
     DatabaseCleaner.clean
   end
+
 end

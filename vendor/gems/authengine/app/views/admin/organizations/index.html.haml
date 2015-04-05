@@ -1,0 +1,33 @@
+= message_block :on => :organization
+%h1= t('.heading')
+
+= link_to t('.add'), new_admin_organization_path
+
+%table#organizations.table{:style => "width:360px"}
+  %tr
+    %th= t('activerecord.attributes.organization.name')
+    - if @organizations.empty?
+      %tr
+        %td
+          (
+          = t('defaults.none')
+          )
+    - else
+      - for organization in @organizations do
+        %tr.organization
+          %td.organization_name= link_to organization.name, admin_organization_path(organization), :method => :get
+          %td
+          %td= link_to "edit", edit_admin_organization_path(organization)
+          %td
+            -if organization.users.empty?
+              = link_to "delete", admin_organization_path(organization), :method => :delete, :data => {:confirm => t('defaults.sure')}
+            -else
+              = link_to "delete", "javascript:void(0)", :onclick => 'show_warning(this)'
+
+:coffeescript
+  @show_warning = (element)->
+    table_width = $(element).closest('table').css('width')
+    new_table_width = 400 + parseInt(table_width)
+
+    $(element).closest('table').css('width', new_table_width + 'px')
+    $(element).closest('tr').append("<td style='width:400px'>#{t('.warning')}</td>")

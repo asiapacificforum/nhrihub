@@ -1,0 +1,28 @@
+%h1= t('.heading', :name => @organization.name)
+- scope = 'activerecord.attributes.organization'
+%table.table{:style => "width: 340px"}
+  %tr
+    %td= t('name', :scope => scope)
+    %td#name= @organization.name
+  %tr
+    %td= t('street', :scope => scope)
+    %td#street= @organization.street
+  %tr
+    %td= t('city', :scope => scope)
+    %td#city= @organization.city
+  %tr
+    %td= t('state', :scope => scope)
+    %td#state= @organization.state
+  %tr
+    %td= t('zip', :scope => scope)
+    %td#zip= @organization.zip
+  %tr{:style => "vertical-align:top"}
+    %td= t('.phones')
+    %td#phone= @organization.contacts
+  %tr
+    %td= t('email', :scope => scope)
+    %td#email= @organization.email
+
+%br/
+= link_to t('defaults.back'), admin_organizations_path
+

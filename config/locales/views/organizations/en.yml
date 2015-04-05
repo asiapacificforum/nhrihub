@@ -1,0 +1,26 @@
+en:
+  admin:
+    organizations:
+      index:
+        heading: 'Organizations list'
+        add: 'Add organization'
+        warning: "Can't delete an organization that has active users."
+      new:
+        heading: 'New organization'
+      organization_form:
+        phone: 'Phone number'
+        add: 'add another phone number'
+      new_phone_template:
+        phone: 'Phone number'
+      edit:
+        heading: 'Edit organization'
+      show:
+        heading: 'Organization: %{name}'
+        phones: 'Phone number(s)'
+      # controller methods
+      create:
+        flash_notice: 'Organization saved'
+      destroy:
+        flash_notice: 'Organization deleted'
+      update:
+        flash_notice: 'Organization updated'

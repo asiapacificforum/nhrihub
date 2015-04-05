@@ -13,7 +13,7 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.item :corporate_services, t('layout.nav.corporate_services') do |cs|
       cs.item :int_docs, t('layout.nav.int_docs'), placeholder_path
       cs.item :perf_rev, t('layout.nav.perf_rev'), placeholder_path
-      cs.item :strat_plan, ('layout.nav.strat_plan'), placeholder_path
+      cs.item :strat_plan, t('layout.nav.strat_plan'), placeholder_path
     end
     primary.item :outreach_media, t('layout.nav.outreach_media') do |om|
       om.item :outreach, t('layout.nav.outreach'), placeholder_path
@@ -24,6 +24,7 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path
       ad.item :roles, t('layout.nav.role'), authengine_roles_path
+      ad.item :organizations, t('layout.nav.organization'), admin_organizations_path
     end
     primary.item :logout, t('layout.nav.logout'), logout_path
     primary.dom_class = 'nav navbar-nav'

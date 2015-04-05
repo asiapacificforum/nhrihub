@@ -9,7 +9,7 @@ FactoryGirl.define do
     firstName {Faker::Name.first_name}
     lastName {Faker::Name.last_name}
 
-    association :organization, :pantry, strategy: :create
+    association :organization, strategy: :create
 
     trait :admin do
       after(:build) do |u|

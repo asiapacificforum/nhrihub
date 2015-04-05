@@ -3,3 +3,9 @@ en:
     attributes:
       organization:
         name: 'Organization name'
+        street: 'Street'
+        city: 'City'
+        state: 'State'
+        zip: 'Postcode'
+        phone: 'Phone'
+        email: 'Email'

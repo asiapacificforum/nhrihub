@@ -18,7 +18,7 @@
 
     %tr
       %td= f.label :organization_id
-      %td= f.select :organization_id, Organization.pluck { |o| [o.name, o.id] }, :include_blank => true
+      %td= f.select :organization_id, Organization.all.collect { |o| [o.name, o.id] }, :include_blank => true
 
     %tr
       %td

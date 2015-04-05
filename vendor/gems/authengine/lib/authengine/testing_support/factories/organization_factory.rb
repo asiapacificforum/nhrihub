@@ -8,22 +8,6 @@ FactoryGirl.define  do
     email  {Faker::Internet.email}
     contacts []
 
-    trait :pantry do
-      pantry true
-    end
-
-    trait :referrer do
-      referrer true
-    end
-
-    trait :active do
-      active true
-    end
-
-    trait :inactive do
-      active false
-    end
-
     trait :with_users do
       after(:build) do |o|
         o.users << FactoryGirl.build(:user, :organization_id => o.id)

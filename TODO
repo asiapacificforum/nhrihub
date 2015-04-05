@@ -30,3 +30,7 @@ good reference for optimizing test setup:
 http://www.railsonmaui.com/tips/rails/capybara-phantomjs-poltergeist-rspec-rails-tips.html
 good reference for dealing with timezones:
 http://danilenko.org/2012/7/6/rails_timezones/
+check the code on codeclimate.com b/c it's free for open-source
+other free resources at https://github.com/ripienaar/free-for-dev
+consider background job to index documents for quick searching
+scan the app with brakeman
