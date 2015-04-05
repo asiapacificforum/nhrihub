@@ -1,0 +1,6 @@
+en:
+  authengine:
+    actions:
+      index:
+        heading: 'Configure Permissions for Roles'
+        controller_action: 'Controller#Action'

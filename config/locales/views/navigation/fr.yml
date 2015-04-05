@@ -3,6 +3,9 @@ fr:
     nav:
       admin: "Admin"
       user: "Gestion des utilisateurs"
+      role: 'Gestion des rôles'
+      organization: 'Gestion des organisations'
+      access: 'Gestion des rôles'
       logout: "Déconnecter"
       corporate_services: "Services Corporatifs"
       nhri: "NHRI"
@@ -20,5 +23,3 @@ fr:
       int_docs: "Documents internes"
       perf_rev: "Évaluations de rendement"
       strat_plan: "Plan stratégique"
-      role: 'Gérer les rôles'
-      organization: 'Gérer les organisations'
