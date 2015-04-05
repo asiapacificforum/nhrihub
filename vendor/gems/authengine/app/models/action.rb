@@ -10,8 +10,12 @@ class Action < ActiveRecord::Base
 
   delegate :controller_name, :to=>:controller
 
+  def self.not_enabled_for_developer
+    where.not(:id => ActionRole.for_developer.pluck(:action_id))
+  end
+
   def <=>(other)
-      sort_field <=> other.sort_field
+    sort_field <=> other.sort_field
   end
 
   def sort_field

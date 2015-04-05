@@ -10,6 +10,9 @@ class Role < ActiveRecord::Base
 
   belongs_to :parent, :class_name => 'Role'
 
+  scope :except_developer, -> { where("name != 'developer'") }
+  scope :developer, -> { where(:name => 'developer') }
+
 
   validates_presence_of :name
   validates_uniqueness_of :name
@@ -55,14 +58,6 @@ class Role < ActiveRecord::Base
 
   def is_developer?
     name == 'developer'
-  end
-
-  def self.developer
-    where("name = 'developer'").first
-  end
-
-  def self.developer_id
-    developer && developer.id
   end
 
   def to_s

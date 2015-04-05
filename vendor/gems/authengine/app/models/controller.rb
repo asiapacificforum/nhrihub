@@ -78,9 +78,9 @@ class Controller < ActiveRecord::Base
   # in the /app/controllers directory
   def self.update_table
     cc = Controller.all.inject({}){ |hash,controller| hash[controller.controller_name]=controller; hash } # from the database
+    admin_name = Role.find_by_name("administrator") ? "administrator" : "admin"
     all_controller_names.each do |f| # f is of the form "ItemsController"
       cont = f.tableize.gsub!("_controllers","") # cont is of the form "items"
-      admin_name = Role.find_by_name("administrator") ? "administrator" : "admin"
       if !cc.keys.include?(cont) # it's not in the db
         new_controller = new(:controller_name=>f.underscore.gsub!("_controller", ""), :last_modified=>Date.today) # add controller to controllers table as there's not a record corresponding with the file
         new_controller.actions << new_controller.action_list.map { |a| Action.new(:action_name=>a[1]) }# when a new controller is added, its actions must be added to the actions.file
