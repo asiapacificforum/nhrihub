@@ -1,4 +1,4 @@
-SimpleNavigation::Configuration.run do |navigation|  
+SimpleNavigation::Configuration.run do |navigation|
   navigation.items do |primary|
     primary.item :nhri, t('layout.nav.nhri') do |nhri|
       nhri.item :hre, t('layout.nav.hre'), placeholder_path
@@ -11,9 +11,9 @@ SimpleNavigation::Configuration.run do |navigation|
       gg.item :action, '??',placeholder_path
     end
     primary.item :corporate_services, t('layout.nav.corporate_services') do |cs|
-      cs.item :int_docs, t('layout.nav.int_docs'), placeholder_path
-      cs.item :perf_rev, t('layout.nav.perf_rev'), placeholder_path
-      cs.item :strat_plan, t('layout.nav.strat_plan'), placeholder_path
+      cs.item :int_docs, t('layout.nav.int_docs'), corporate_services_internal_documents_path
+      cs.item :perf_rev, t('layout.nav.perf_rev'), corporate_services_performance_reviews_path
+      cs.item :strat_plan, t('layout.nav.strat_plan'), corporate_services_strategic_plan_documents_path
     end
     primary.item :outreach_media, t('layout.nav.outreach_media') do |om|
       om.item :outreach, t('layout.nav.outreach'), placeholder_path

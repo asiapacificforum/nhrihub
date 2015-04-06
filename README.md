@@ -58,5 +58,38 @@ These files contain sensitive information and should be manually copied into the
 
 === Document storage
 
+=== Modules
+The application is structures as modules, located in the vendor/gems directory. The framework for a new module may be generated
+with:
+````RUBY
+  rails plugin new vendor/gems/modname --mountable
+```
+
+This inserts the framework for a "modname" module in the vendor/gems directory, and functionality may be added as required.
+Modules should configure all the routes required for navigation within the module.
+Included modules may be excluded simply by deleting them from the vendor/gems library and removing the links from
+the top-level navigation menu.
+The added module should be included in the Gemfile, see the note regarding NHRIModules.
+Change the lib/modname/engine.rb to:
+
+````RUBY
+    module Newmod
+      class Engine < ::Rails::Engine
+        config.mount_at = '/'
+
+        # include the locales translations from the module
+        config.i18n.load_path += Dir.glob(config.root.join('config','locales','views','*.{rb,yml}'))
+
+        # append module migrations to the main app
+        initializer :append_migrations do |app|
+          unless app.root.to_s.match root.to_s
+            app.config.paths["db/migrate"] << config.paths["db/migrate"].expanded
+          end
+        end
+      end
+    end
+```
+
+
 === License
 GPL V3, see LICENSE.txt

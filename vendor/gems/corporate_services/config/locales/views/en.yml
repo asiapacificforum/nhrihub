@@ -1,0 +1,11 @@
+en:
+  corporate_services:
+    internal_documents:
+      index:
+        heading: "Internal Documents"
+    performance_reviews:
+      index:
+        heading: "Performance Reviews"
+    strategic_plan_documents:
+      index:
+        heading: "Strategic Plan"
