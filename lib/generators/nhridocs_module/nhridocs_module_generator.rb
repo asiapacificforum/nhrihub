@@ -46,6 +46,7 @@ module Rails
       template "spec/rails_helper.rb"
       template "spec/features/example_spec.rb"
       template "spec/models/example_spec.rb"
+      empty_directory_with_keep_file "spec/helpers"
     end
 
   end
