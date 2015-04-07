@@ -1,7 +1,7 @@
 require "rails_helper"
-require File.expand_path('../../helpers/login_helpers',__FILE__)
-require File.expand_path('../../helpers/navigation_helpers',__FILE__)
-require File.expand_path('../../helpers/user_management_helpers',__FILE__)
+require 'login_helpers'
+require 'navigation_helpers'
+require 'user_management_helpers'
 #require File.expand_path('../../helpers/unactivated_user_helpers',__FILE__)
 
 feature "Password management" do

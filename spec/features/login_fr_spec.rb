@@ -1,5 +1,5 @@
 require "rails_helper"
-require File.expand_path('../../helpers/login_helpers',__FILE__)
+require 'login_helpers'
 
 feature "Unregistered user tries to log in" do
   scenario "navigation not available before user logs in" do

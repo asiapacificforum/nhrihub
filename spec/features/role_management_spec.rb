@@ -1,6 +1,6 @@
 require "rails_helper"
-require File.expand_path('../../helpers/login_helpers',__FILE__)
-require File.expand_path('../../helpers/navigation_helpers',__FILE__)
+require 'login_helpers'
+require 'navigation_helpers'
 
 feature "Manage users" do
   include LoggedInEnAdminUserHelper # sets up logged in admin user

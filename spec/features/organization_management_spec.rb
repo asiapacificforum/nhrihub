@@ -1,12 +1,12 @@
 require "rails_helper"
-require File.expand_path('../../helpers/application_helpers',__FILE__)
-require File.expand_path('../../helpers/login_helpers',__FILE__)
-require File.expand_path('../../helpers/navigation_helpers',__FILE__)
-require File.expand_path('../../helpers/user_management_helpers',__FILE__)
-require File.expand_path('../../helpers/unactivated_user_helpers',__FILE__)
-require File.expand_path('../../helpers/async_helper',__FILE__)
-require File.expand_path('../../helpers/role_presets_helper',__FILE__)
-require File.expand_path('../../helpers/organization_presets_helper',__FILE__)
+require 'application_helpers'
+require 'login_helpers'
+require 'navigation_helpers'
+require 'user_management_helpers'
+require 'unactivated_user_helpers'
+require 'async_helper'
+require 'role_presets_helper'
+require 'organization_presets_helper'
 
 feature "Manage organizations:" do
   #include ApplicationHelpers
