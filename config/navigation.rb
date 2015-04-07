@@ -1,11 +1,11 @@
 SimpleNavigation::Configuration.run do |navigation|
   navigation.items do |primary|
     primary.item :nhri, t('layout.nav.nhri') do |nhri|
-      nhri.item :hre, t('layout.nav.hre'), placeholder_path
-      nhri.item :adv_council, t('layout.nav.adv_council'), placeholder_path
-      nhri.item :nhr_indicators, t('layout.nav.nhr_indicators'), placeholder_path
-      nhri.item :hr_prot, t('layout.nav.hr_prot'), placeholder_path
-      nhri.item :icc, t('layout.nav.icc'), placeholder_path
+      nhri.item :hre, t('layout.nav.hre'), nhri_hr_education_index_path
+      nhri.item :adv_council, t('layout.nav.adv_council'), nhri_advisory_council_index_path
+      nhri.item :nhr_indicators, t('layout.nav.nhr_indicators'), nhri_nhr_indicators_path
+      nhri.item :hr_prot, t('layout.nav.hr_prot'), nhri_hr_protection_index_path
+      nhri.item :icc, t('layout.nav.icc'), nhri_icc_index_path
     end
     primary.item :gg, t('layout.nav.gg') do |gg|
       gg.item :action, '??',placeholder_path

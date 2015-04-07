@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
-  scope ':locale', locale: /#{I18n.available_locales.join("|")}/ do
+  scope ':locale' do
     namespace :nhri do
-      # insert your routes here
+      resources :hr_education
+      resources :advisory_council
+      resources :nhr_indicators
+      resources :hr_protection
+      resources :icc
     end
   end
 end

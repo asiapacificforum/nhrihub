@@ -1,0 +1,17 @@
+en:
+  nhri:
+    advisory_council:
+      index:
+        heading: "Advisory Council"
+    hr_education:
+      index:
+        heading: "Human Rights Education"
+    hr_protection:
+      index:
+        heading: "Human Rights Protection"
+    icc:
+      index:
+        heading: "ICC"
+    nhr_indicators:
+      index:
+        heading: "National Human Rights Indicators"
