@@ -38,9 +38,12 @@ Users with the role "admin" have access to the configuration of access permissio
 When new users are added, they are assigned to the appropriate role in order to limit access to sensitive information.
 
 ## Running the test suite
-Integration testing uses Rspec. The tests are in spec/features. Headless testing uses the Poltergeist gem.
-Run the entire integration test suite with:
+Integration testing uses Rspec with poltergeist/phantomjs as the headless client.
+The tests are in spec/features.
+Run the main application integration test suite with:
     rspec spec/features
+Each of the modules includes its own integration tests. The rails_helper from the main app is included
+in the module spec/features tests, so the same testing environment applies.
 
 ## Deployment
 Development updates are pushed manually to a git repository, using the normal git push procedure.
