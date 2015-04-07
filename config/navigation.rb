@@ -16,8 +16,8 @@ SimpleNavigation::Configuration.run do |navigation|
       cs.item :strat_plan, t('layout.nav.strat_plan'), corporate_services_strategic_plan_documents_path
     end
     primary.item :outreach_media, t('layout.nav.outreach_media') do |om|
-      om.item :outreach, t('layout.nav.outreach'), placeholder_path
-      om.item :media, t('layout.nav.media'), placeholder_path
+      om.item :outreach, t('layout.nav.outreach'), outreach_media_outreach_index_path
+      om.item :media, t('layout.nav.media'), outreach_media_media_path
     end
     primary.item :spec_inv, t('layout.nav.spec_inv'), placeholder_path
     primary.item :reports, t('layout.nav.reports'), placeholder_path

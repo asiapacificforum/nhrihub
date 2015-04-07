@@ -58,3 +58,4 @@ gem 'quiet_assets', group: :development
 
 # NHRI Modules:
 gem 'corporate_services', :path => 'vendor/gems/corporate_services'
+gem 'outreach_media', :path => 'vendor/gems/outreach_media'
