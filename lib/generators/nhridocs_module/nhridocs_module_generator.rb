@@ -5,6 +5,15 @@ require 'rails/generators'
 require 'rails/generators/rails/plugin/plugin_generator'
 
 module Rails
+  module Generators
+    class PluginGenerator < AppBase
+      # uses the spec method in PluginBuilder, below
+      def spec
+        build(:spec)
+      end
+    end
+  end
+
   class PluginBuilder
 
     def license
@@ -31,6 +40,12 @@ module Rails
       empty_directory_with_keep_file 'app/helpers'
       empty_directory_with_keep_file 'app/mailers'
       empty_directory_with_keep_file "app/assets/images/#{name}"
+    end
+
+    def spec
+      template "spec/rails_helper.rb"
+      template "spec/features/example_spec.rb"
+      template "spec/models/example_spec.rb"
     end
 
   end
