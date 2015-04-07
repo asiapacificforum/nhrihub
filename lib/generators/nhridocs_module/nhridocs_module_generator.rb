@@ -1,6 +1,8 @@
 require 'active_support/core_ext/hash/slice'
 require "rails/generators/rails/app/app_generator"
 require 'date'
+require 'rails/generators'
+require 'rails/generators/rails/plugin/plugin_generator'
 
 module Rails
   class PluginBuilder
@@ -34,8 +36,6 @@ module Rails
   end
 end
 
-require 'rails/generators'
-require 'rails/generators/rails/plugin/plugin_generator'
 
 class NhridocsModuleGenerator < Rails::Generators::NamedBase
   Rails::Generators::PluginGenerator.source_paths << File.expand_path('../templates', __FILE__)

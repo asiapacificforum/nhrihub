@@ -21,6 +21,12 @@ PATH
       rails (~> 4.1.5)
 
 PATH
+  remote: vendor/gems/nhri
+  specs:
+    nhri (0.0.1)
+      rails (~> 4.1.5)
+
+PATH
   remote: vendor/gems/outreach_media
   specs:
     outreach_media (0.0.1)
@@ -275,6 +281,7 @@ DEPENDENCIES
   haml-rails
   jbuilder (~> 2.0)
   jquery-rails
+  nhri!
   outreach_media!
   pg
   poltergeist
