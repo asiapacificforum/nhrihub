@@ -18,7 +18,19 @@ module Rails
 
     def config
       template "config/routes.rb" if engine?
+      empty_directory_with_keep_file "config/locales/models"
+      empty_directory_with_keep_file "config/locales/views"
     end
+
+    def app
+      empty_directory_with_keep_file 'app/models'
+      empty_directory_with_keep_file "app/controllers/#{name}"
+      empty_directory_with_keep_file "app/views/#{name}"
+      empty_directory_with_keep_file 'app/helpers'
+      empty_directory_with_keep_file 'app/mailers'
+      empty_directory_with_keep_file "app/assets/images/#{name}"
+    end
+
   end
 end
 
