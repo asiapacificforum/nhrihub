@@ -55,6 +55,7 @@ gem 'factory_girl_rails', '~> 4.0', group: [:development, :test]
 gem 'faker', group: :test
 
 gem 'quiet_assets', group: :development
+gem 'jquery-fileupload-rails'
 
 # NHRI Modules:
 gem 'corporate_services', :path => 'vendor/gems/corporate_services'
