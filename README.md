@@ -1,3 +1,4 @@
+[![Code Climate](https://codeclimate.com/github/asiapacificforum/nhridocs/badges/gpa.svg)](https://codeclimate.com/github/asiapacificforum/nhridocs)
 # NHRIDocs
 ## Description
 NHRIDocs is an internal web application for National Human Rights Institutions ("NHRI") and other complaint handling institutions or human rights monitoring civil society organisations. It has a range of functionality designed to improve the efficiency and capacity of your organisation, including:
