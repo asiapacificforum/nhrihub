@@ -49,12 +49,24 @@ module Rails
       empty_directory_with_keep_file "spec/helpers"
     end
 
+    def rakefile
+      # no rakefile needed
+    end
+
+    def readme
+      # no readme needed
+    end
+
+    def gemspec
+      template "%name%.gemspec"
+    end
+
   end
 end
 
 
 class NhridocsModuleGenerator < Rails::Generators::NamedBase
   Rails::Generators::PluginGenerator.source_paths << File.expand_path('../templates', __FILE__)
-  args = ["vendor/gems/"+ARGV[0], "--skip-bundle", "--skip-test-unit", "--full"]
+  args = ["vendor/gems/"+ARGV[0], "--skip-bundle", "--skip-test-unit", "--skip-gemfile", "--full"]
   Rails::Generators::PluginGenerator.start(args)
 end
