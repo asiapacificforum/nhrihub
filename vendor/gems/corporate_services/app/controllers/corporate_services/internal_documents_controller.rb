@@ -1,6 +1,5 @@
 class CorporateServices::InternalDocumentsController < ApplicationController
   def index
-    render :upload
   end
 
   def create
