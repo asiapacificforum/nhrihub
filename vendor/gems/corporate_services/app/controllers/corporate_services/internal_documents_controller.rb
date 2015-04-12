@@ -3,6 +3,6 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   end
 
   def create
-    render :json => {:files => [{:name => "kablooie"}, {:name => "kablonka"}]}
+    render :json => {:files => [{:name =>params[:files][0].original_filename}]}
   end
 end

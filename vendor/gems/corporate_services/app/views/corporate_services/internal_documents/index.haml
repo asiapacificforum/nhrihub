@@ -11,17 +11,17 @@
         / The fileinput-button span is used to style the file input field as button
         %span.btn.btn-success.fileinput-button
           %i.glyphicon.glyphicon-plus
-          %span Add files...
+          %span= t('.add')
           %input{:multiple => "multiple", :name => "files[]", :type => "file"}/
         %button.btn.btn-primary.start{:type => "submit"}
           %i.glyphicon.glyphicon-upload
-          %span Start upload
+          %span= t('.start')
         %button.btn.btn-warning.cancel{:type => "reset"}
           %i.glyphicon.glyphicon-ban-circle
-          %span Cancel upload
+          %span= t('.cancel')
         %button.btn.btn-danger.delete{:type => "button"}
           %i.glyphicon.glyphicon-trash
-          %span Delete
+          %span= t('.delete')
         %input.toggle{:type => "checkbox"}/
         / The global file processing state
         %span.fileupload-process
@@ -44,20 +44,23 @@
     %td
       %p.name {%= file.name %}
       %strong.error.text-danger
+    %td.title
+      = label_tag :docname, 'Document name'
+      = text_field_tag 'docname[]', '',:required => true
     %td
-      %p.size Processing...
+      %p.size= t('.processing')
       %div.progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
         %div.progress-bar.progress-bar-success{:style => "width:0%"}
     %td
       {% if (!i && !o.options.autoUpload) { %}
       %button.btn.btn-primary.start{:disabled => true}
-      %i.glyphicon.glyphicon-upload
-      %span Start
+        %i.glyphicon.glyphicon-upload
+        %span= t('.start_one')
       {% } %}
       {% if (!i) { %}
       %button.btn.btn-warning.cancel
-      %i.glyphicon.glyphicon-ban-circle
-      %span Cancel
+        %i.glyphicon.glyphicon-ban-circle
+        %span= t('.cancel_one')
       {% } %}
   {% } %}
 %script#template-download{:type => 'text/x-tmpl'}
@@ -88,7 +91,7 @@
       {% if (file.error ) { %}
       %div
         %span.label.label-danger
-          Error
+          = t('.error')
           {%= file.error %}
       {% } %}
     %td
@@ -98,16 +101,16 @@
       {% if (file.deleteWithCredentials) { %}
       %button.btn.btn-danger.delete{:data_type=>"{%=file.deleteType%}", :data_url=>"{%=file.deleteUrl%}", :data_xhr_fields=>'{"withCredentials":true}'}
         %i.glyphicon.glyphicon-trash
-        %span Delete
+        %span= t('.delete')
       {% } else { %}
       %button.btn.btn-danger.delete{:data_type=>"{%=file.deleteType%}", :data_url=>"{%=file.deleteUrl%}"}
         %i.glyphicon.glyphicon-trash
-        %span Delete
+        %span= t('.delete')
       {% } %}
       %input.toggle{:type => "checkbox", :name => "delete", :value => "1"}
       {% } else { %}
       %button.btn.btn-warning.cancel
         %i.glyphicon.glyphicon-ban-circle
-        %span Cancel
+        %span= t('.cancel_one')
       {% } %}
   {% } %}
