@@ -47,7 +47,7 @@ gem 'haml-rails'
 gem 'rspec-rails', group: [:development, :test]
 gem 'selenium-webdriver', group: [:development, :test]
 gem 'database_cleaner', group: [:development, :test]
-gem 'bootstrap-sass', '~> 3.3.4'
+gem 'bootstrap-sass'
 gem 'simple-navigation-bootstrap'
 gem 'simplecov', :require => false, :group => :test
 gem 'poltergeist', group: :test
@@ -56,6 +56,7 @@ gem 'faker', group: :test
 
 gem 'quiet_assets', group: :development
 gem 'jquery-fileupload-rails'
+gem "refile", require: "refile/rails"
 
 # NHRI Modules:
 gem 'corporate_services', :path => 'vendor/gems/corporate_services'
