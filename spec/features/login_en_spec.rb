@@ -73,3 +73,11 @@ feature "Registered user logs in with invalid credentials" do
     expect(page).not_to have_selector(".nav")
   end
 end
+
+feature "User is not logged in but tries to access a page" do
+  include RegisteredUserHelper
+  scenario "visit a protected page" do
+    visit "/en/nhri/icc"
+    expect(page_heading).to eq "Please log in"
+  end
+end

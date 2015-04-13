@@ -5,11 +5,11 @@ module AuthorizedSystem
   # may be modified later if user's roles are modified
   # or if session is downgraded
   def current_role_ids=(ids)
-    session[:role].current_role_ids = ids
+    Marshal.load(session[:role]).current_role_ids = ids
   end
 
   def current_role_ids
-    session[:role].current_role_ids
+    Marshal.load(session[:role]).current_role_ids
   end
 
   def action_permitted?(controller, action)

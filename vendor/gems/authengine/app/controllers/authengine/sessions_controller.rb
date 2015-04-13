@@ -53,7 +53,7 @@ class Authengine::SessionsController < ApplicationController
 protected
 
   def remove_session_user_roles
-    session[:role] = SessionRole.new
+    session[:role] = Marshal.dump SessionRole.new
   end
 
   def authenticate_with_password(login, password)
@@ -66,8 +66,9 @@ protected
       failed_login(t '.account_disabled')
     else
       self.current_user = user
-      session[:role] = SessionRole.new
-      session[:role].add_roles(user.role_ids)
+      session_role = SessionRole.new
+      session_role.add_roles(user.role_ids)
+      session[:role] = Marshal.dump(session_role)
       successful_login
     end
   end
