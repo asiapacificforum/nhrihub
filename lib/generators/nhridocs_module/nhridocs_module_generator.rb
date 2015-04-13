@@ -11,6 +11,10 @@ module Rails
       def spec
         build(:spec)
       end
+
+      def db
+        build(:db)
+      end
     end
   end
 
@@ -59,6 +63,10 @@ module Rails
 
     def gemspec
       template "%name%.gemspec"
+    end
+
+    def db
+      empty_directory_with_keep_file 'db/migrate'
     end
 
   end
