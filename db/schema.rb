@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150405214438) do
+ActiveRecord::Schema.define(version: 20150413132818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,10 @@ ActiveRecord::Schema.define(version: 20150405214438) do
   end
 
   add_index "controllers", ["controller_name"], name: "index_controllers_on_controller_name", using: :btree
+
+  create_table "internal_documents", force: true do |t|
+    t.string "document_id"
+  end
 
   create_table "organizations", force: true do |t|
     t.string   "name"
