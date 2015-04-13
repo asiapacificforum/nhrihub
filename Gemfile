@@ -36,6 +36,7 @@ gem 'spring',        group: :development
 
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
+# NOTE passenger restart is now a separate gem
 
 # Use debugger
 gem 'debugger', group: [:development, :test]
@@ -49,6 +50,8 @@ gem 'selenium-webdriver', group: [:development, :test]
 gem 'database_cleaner', group: [:development, :test]
 gem 'bootstrap-sass'
 gem 'simple-navigation-bootstrap'
+#gem 'simple-navigation', '~> 4.0.3' seems to have some problems with simple-navigation-bootstrap
+gem 'simple-navigation', '~> 3.14.0'
 gem 'simplecov', :require => false, :group => :test
 gem 'poltergeist', group: :test
 gem 'factory_girl_rails', '~> 4.0', group: [:development, :test]
