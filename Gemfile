@@ -14,7 +14,7 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer',  platforms: :ruby
+gem 'therubyracer',  platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -37,6 +37,10 @@ gem 'spring',        group: :development
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
 # NOTE passenger restart is now a separate gem
+# capistrano add-ons
+gem 'capistrano-bundler'
+gem 'capistrano-rvm'
+gem 'capistrano-passenger', '= 0.0.2'
 
 # Use debugger
 gem 'debugger', group: [:development, :test]
@@ -60,6 +64,7 @@ gem 'faker', group: :test
 gem 'quiet_assets', group: :development
 gem 'jquery-fileupload-rails'
 gem "refile", require: "refile/rails"
+
 
 # NHRI Modules:
 gem 'corporate_services', :path => 'vendor/gems/corporate_services'
