@@ -35,6 +35,3 @@ $(function () {
   });
 
 });
-
-//adding a note to trigger asset compile
-function(){};
