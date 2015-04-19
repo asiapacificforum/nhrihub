@@ -3,8 +3,10 @@ $(function () {
 
   // Initialize the jQuery File Upload widget:
   $('#fileupload').fileupload({
-      url: 'internal_documents'
+      url: 'internal_documents',
+      paramName: 'document[file]'
   });
+
 
   // Load existing files:
   //$('#fileupload').addClass('fileupload-processing');
@@ -33,3 +35,6 @@ $(function () {
   });
 
 });
+
+//adding a note to trigger asset compile
+function(){};
