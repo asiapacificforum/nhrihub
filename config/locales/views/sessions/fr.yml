@@ -11,4 +11,5 @@ fr:
         bad_credentials: "Votre nom d'utilisateur ou mot de passe est incorrect."
         account_not_activated: "Votre compte ne est pas actif, se il vous plaît vérifier votre e-mail pour le code d'activation."
         account_disabled: "Votre compte a été désactivé, se il vous plaît contacter l'administrateur."
-      destroy: "Vous avez été déconnecté."
+      destroy:
+        logout: "Vous avez été déconnecté."
