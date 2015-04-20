@@ -33,7 +33,7 @@ class Admin::UsersController < ApplicationController
   def new
     @user = User.new
     @user.user_roles.build
-    @roles = Role.all
+    @roles = Role.except_developer
   end
 
   def user_params
