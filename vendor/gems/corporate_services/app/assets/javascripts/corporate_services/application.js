@@ -11,3 +11,9 @@
 // about supported directives.
 //
 //= require_tree .
+
+var foo = function(bar){
+  if(var bar == 0){
+    return 33
+  }
+}
