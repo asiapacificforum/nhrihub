@@ -45,6 +45,7 @@ Run the main application integration test suite with:
     rspec spec/features
 Each of the modules includes its own integration tests. The rails_helper from the main app is included
 in the module spec/features tests, so the same testing environment applies.
+Note that phantomjs 2.0.0 has issues with file uploading (see https://github.com/teampoltergeist/poltergeist/issues/594). So use phantomjs 1.9.2 for headless testing.
 
 ## Deployment
 Development updates are pushed manually to a git repository, using the normal git push procedure.
