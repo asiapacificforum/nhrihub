@@ -34,13 +34,18 @@ gem 'spring',        group: :development
 # Use unicorn as the app server
 # gem 'unicorn'
 
-# Use Capistrano for deployment
-gem 'capistrano-rails', group: :development
-# NOTE passenger restart is now a separate gem
-# capistrano add-ons
-gem 'capistrano-bundler'
-gem 'capistrano-rvm'
-gem 'capistrano-passenger', '= 0.0.2'
+group :development do
+  # Use Capistrano for deployment
+  gem 'capistrano-rails', group: :development
+  # capistrano add-ons
+  gem 'capistrano-bundler'
+  gem 'capistrano-rvm'
+  gem 'capistrano-passenger', '= 0.0.2'
+  gem 'capistrano-faster-assets', :git => "git@github.com:lazylester/capistrano-faster-assets.git"
+  # specify higher rev than required by capistrano in order to get
+  # fixed connection pooling and faster deploys
+  gem 'sshkit', '~> 1.5'
+end
 
 # Use debugger
 gem 'debugger', group: [:development, :test]

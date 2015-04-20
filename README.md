@@ -49,12 +49,13 @@ Note that phantomjs 2.0.0 has issues with file uploading (see https://github.com
 
 ## Deployment
 Development updates are pushed manually to a git repository, using the normal git push procedure.
-Deployment is automated using the Capistrano gem. The included capistrano deployment recipe is invoked by:
-    cap deploy
+Deployment is automated using the Capistrano gem using:
+    cap production deploy
 This pulls from the git repo to a cached copy on the server, copies the update to a into the 'releases' directory, and symlinks the 'current' directory to point to the most recent release.
 The 5 most recent releases are kept on the server.
 Capistrano deployment also symlinks the config/database.yml and lib/constants files to copies in the 'shared' directory.
 These files contain sensitive information and should be manually copied into the 'shared' directory. This is typically done just once when the app is first installed, as the information will typically remain unchanged for the life of the app.
+A list of all the files that the application requires to be present in the shared directory is found in the conifg/deploy_example.rb file.
 
 ## Customizing the theme
 
