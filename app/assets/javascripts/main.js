@@ -37,3 +37,4 @@ $(function () {
 });
 
 // changes to trigger asset precompile
+function(){}
