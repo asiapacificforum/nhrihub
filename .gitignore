@@ -27,6 +27,8 @@ config/deploy/production.rb
 
 app/assets/images/banner_logo.png
 
+config/locales/site_specific/*.yml
+
 coverage
 TODO
 Questions

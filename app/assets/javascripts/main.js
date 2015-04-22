@@ -4,7 +4,7 @@ $(function () {
   // Initialize the jQuery File Upload widget:
   $('#fileupload').fileupload({
       url: 'internal_documents',
-      paramName: 'document[file]'
+      paramName: 'document[file]',
   });
 
 
@@ -33,5 +33,7 @@ $(function () {
     }
     data.formData = inputs.serializeArray();
   });
+
+  function(){}
 
 });
