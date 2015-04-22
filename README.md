@@ -68,7 +68,8 @@ The application is structures as modules, located in the vendor/gems directory. 
 with:
     rails generate nhridocs_module modname
 
-This inserts the framework for a "modname" module as a Rails engine in the vendor/gems directory, and functionality may be added here as required.
+This inserts the framework for a "modname" module as a Rails engine in the vendor/gems directory,
+and functionality may be added here as required.
 Modules should configure all the routes required for navigation within the module, in the module's own config/routes.rb file.
 A newly-generated module is connected into the application by
 1. Add it to the Gemfile
