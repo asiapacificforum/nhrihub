@@ -34,6 +34,4 @@ $(function () {
     data.formData = inputs.serializeArray();
   });
 
-  var foo = function(){};
-
 });
