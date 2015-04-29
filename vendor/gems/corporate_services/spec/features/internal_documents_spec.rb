@@ -15,7 +15,7 @@ feature "internal document management", :js => true do
     expect(page_title).to eq "Internal Documents"
     page.attach_file("file", upload_document, :visible => false)
     # not sure how this field has become visible, but it works!
-    page.find("#document_title").set("some file name")
+    page.find("#internal_document_title").set("some file name")
     expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(0).to(1)
     expect(page).to have_css(".files .template-download", :count => 1)
   end
@@ -23,7 +23,7 @@ feature "internal document management", :js => true do
   scenario "add a new document but omit document name" do
     expect(page_heading).to eq "Internal Documents"
     page.attach_file("file", upload_document, :visible => false)
-    page.find("#document_title").set("")
+    page.find("#internal_document_title").set("")
     expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}
     expect(page).to have_css(".title", :text => 'first_upload_file')
   end
@@ -72,10 +72,14 @@ feature "internal document management", :js => true do
   scenario "edit filename and revision" do
     create_a_document
     visit corporate_services_internal_documents_path('en')
-    page.find('.template-download .title').set("new document title")
+    click_the_edit_icon
+    page.find('.template-download input.title').set("new document title")
+    page.find('.template-download input.revision').set("3.3")
     expect{
-      page.find('.template-download .title').native.send_keys(:return)
-    }.to change{ InternalDocument.first.title }.to("new document title")
+      page.find('.glyphicon-ok').click
+      sleep(0.1)
+    }.to change{ InternalDocument.first.title }.to("new document title").
+     and change{ InternalDocument.first.revision }.to("3.3")
   end
 
   xscenario "download a file" do
@@ -99,6 +103,11 @@ feature "internal document management", :js => true do
     # error is in ajax response, must handle it appropriately
   end
 
+end
+
+def click_the_edit_icon
+  page.find('.glyphicon-edit').click
+  sleep(0.1)
 end
 
 def create_a_document

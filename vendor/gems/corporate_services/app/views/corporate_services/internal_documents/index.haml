@@ -34,10 +34,11 @@
     %table.table.table-striped{:role => "presentation", :style => "width:600px"}
       %tbody.files{:name => 'internal_document[file]'}
 
-= render :partial => 'popover'
-= render :partial => 'details_content'
-= render :partial => 'details_title'
-
+= render :partial => 'details_popover'
+= render :partial => 'details_popover_content'
+= render :partial => 'details_popover_title'
+= render :partial => 'upload_template'
+= render :partial => 'template_download'
 
 :coffeescript
   $ ->
@@ -112,114 +113,28 @@
         ).fail ->
         alert 'fail'
 
-/ The template to display files ready for upload and set the title/revision
-%script#template-upload{:type => 'text/x-tmpl'}
-  {% for (var i=0, file; file=o.files[i]; i++) { %}
-  %tr.template-upload.fade
-    %td
-      %p.name {%= file.name %}
-      %strong.error.text-danger
-      = hidden_field_tag 'internal_document[lastModifiedDate]', "{%= file.lastModifiedDate %}"
-      = hidden_field_tag 'internal_document[original_type]', "{%= file.type %}"
-      = hidden_field_tag 'internal_document[filesize]', "{%= file.size %}"
-    %td.title
-      = label_tag :internal_document_title, t('.doc_title')
-      = text_field_tag 'internal_document[title]', '',:required => true
-    %td.revision
-      = label_tag :internal_document_revision, t('.revision')
-      = text_field_tag 'internal_document[revision]', '', :style => "width:40px"
-    %td
-      %p.size= t('.processing')
-      %div.progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
-        %div.progress-bar.progress-bar-success{:style => "width:0%"}
-    %td
-      {% if (!i && !o.options.autoUpload) { %}
-      %button.btn.btn-primary.start{:disabled => true}
-        %i.glyphicon.glyphicon-upload
-        %span= t('.start_one')
-      {% } %}
-      {% if (!i) { %}
-      %button.btn.btn-warning.cancel
-        %i.glyphicon.glyphicon-ban-circle
-        %span= t('.cancel_one')
-      {% } %}
-  {% } %}
+:coffeescript
+  files = #{@internal_documents.map(&:presentation_attributes).to_json}
 
--# replaces the upload template after a file has been uploaded
-%script#template-download{:type => 'text/x-tmpl'}
-  {% for (var i=0, file; file=o.files[i]; i++) { %}
-  %tr.template-download(data-created_at = "{%= file.created_at %}" data-formatted_filesize = "{%= file.formatted_filesize %}" data-id = "{%= file.id %}" data-lastModifiedDate = "{%= file.lastModifiedDate %}" data-original_filename = "{%= file.original_filename %}" data-original_type = "{%= file. original_type %}" data-revision = "{%= file.revision %}")
-    %td.title
-      %div{:'data-toggle' => 'edit'}
-        %div.edit
-          %input.title{:'data-name' => :title, :'data-value' => "{%= file.title %}"}
-        %div.no_edit
-          %span {%= file.title %}
-    %td.revision{:'data-name' => 'revision'}
-      %div{:'data-toggle' => 'edit'}
-        %div.fade.edit
-          %input.revision{:'data-name' => :revision, :'data-value' => "{%= file.revision %}"}
-        %div.fade.no_edit
-          %div{:style => "width:30px;"} {%= file.revision %}
-    <!-- make sure it's on top of the next td, even though it precedes in the html -->
-    %td{:style => 'z-index:16; position:relative;'}
-      %div{:'data-toggle' => 'edit'}
-        %div.edit
-          %i.glyphicon.glyphicon-remove
-        %div.no_edit
-          %i.glyphicon.glyphicon-info-sign.details <!-- popover is attached as a sibling below this -->
-    %td{:style => 'z-index:15; position:relative;'}
-      %div{:'data-toggle' => 'edit'}
-        %div.edit
-          %i.glyphicon.glyphicon-ok
-        %div.no_edit
-          %i.glyphicon.glyphicon-edit
-    %td
-      %button.btn.btn-danger.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
-        %i.glyphicon.glyphicon-trash
-        %span= t('defaults.delete')
-      %input.toggle{:type => "checkbox", :name => "delete", :value => "1"}
-  {% } %}
+  $ ->
+    'use strict'
 
-:javascript
-  var files = #{@internal_documents.map(&:presentation_attributes).to_json};
-
-  $(function () {
-    'use strict';
-
-    // Initialize the jQuery File Upload widget
-    // from the InternalDocument class attributes
-    // set in its initializer
-    $('#fileupload').fileupload({
+    # Initialize the jQuery File Upload widget
+    # from the InternalDocument class attributes
+    # set in its initializer
+    $('#fileupload').fileupload
         url: 'internal_documents',
         paramName: 'internal_document[file]',
         acceptFileTypes: new RegExp("\\.(#{InternalDocument.acceptFileTypes.join('|')})$",'i'),
         maxFileSize: parseInt("#{InternalDocument.maxFileSize}"),
-        completed: function(e,data){},
-        //finished: function(){} // another callback that's available
+        # completed: function(e,data){},
+        # finished: function(){} // another callback that's available
         prependFiles : false
-    });
 
 
-    /*
-     *   INITIALIZE THE FILE LIST FROM JSON DATA AT DOCUMENT LOAD
-     */
-    // render the files in the json files object supplied in this page
-    var that = $('#fileupload').data('blueimp-fileupload')
-
-    var result = that.options.downloadTemplate({
-                files: files,
-                formatFileSize: that._formatFileSize,
-                options: that.options
-            });
-
-    // add all the attributes as data in the tr element b/c it can't be done in a haml template!
-    // var $result = $(result)
-    // $result.filter('.template-download').data(files[0])
-
-    $(result)[ that.options.prependFiles ? 'prependTo' : 'appendTo' ]($('.files'));
-
-  });
+    #   INITIALIZE THE FILE LIST FROM JSON DATA AT DOCUMENT LOAD
+    result = tmpl($('#template-download').html(),{files: files})
+    $(result)[ 'appendTo' ]($('.files'))
 
 
 :coffeescript

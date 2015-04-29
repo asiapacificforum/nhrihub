@@ -7,17 +7,18 @@ en:
         start: "Start upload"
         cancel: "Cancel upload"
         delete: "Delete"
-        processing: "Processing..."
-        start_one: "Start"
-        cancel_one: "Cancel"
         error: "Error"
-        doc_title: 'Document title'
-        revision: "Revision"
         details: "File details"
         flash:
           no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
       internal_document:
         details: "File details"
+      upload_template:
+        start_one: "Start"
+        cancel_one: "Cancel"
+        doc_title: 'Document title'
+        revision: "Revision"
+        processing: "Processing..."
     performance_reviews:
       index:
         heading: "Performance Reviews"
