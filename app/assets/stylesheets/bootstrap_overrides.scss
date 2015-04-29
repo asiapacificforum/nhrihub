@@ -14,3 +14,10 @@ body {
 h1 {
   font-size: 26px;
 }
+
+.popover {
+  max-width: 1000px;
+}
+
+//chrome has an annoying outline... be gone!
+:focus {outline:none}

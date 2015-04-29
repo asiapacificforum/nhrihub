@@ -1,0 +1,30 @@
+// the text before editing and
+// the input with which to edit
+div[data-toggle="edit"]{
+  position: relative;
+
+  .no_edit {
+    position: relative;
+  }
+
+  .edit {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+}
+
+.template-download div.edit{
+  opacity:0;
+  z-index: 9;
+}
+
+.template-download div.no_edit{
+  opacity:1;
+  z-index:10;
+}
+
+.glyphicon {
+  cursor: pointer;
+}
+

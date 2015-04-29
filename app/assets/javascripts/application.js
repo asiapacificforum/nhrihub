@@ -10,11 +10,11 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
 // see https://github.com/twbs/bootstrap-sass
-//= require bootstrap-sprockets
+//= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require bootstrap-sprockets
 //= require jquery-fileupload/vendor/jquery.ui.widget
 //= require jquery-fileupload/vendor/tmpl
 //= require jquery-fileupload/vendor/load-image.all.min
@@ -27,4 +27,4 @@
 //= require jquery-fileupload/jquery.fileupload-video
 //= require jquery-fileupload/jquery.fileupload-validate
 //= require jquery-fileupload/jquery.fileupload-ui
-//= require main
+//= require corporate_services

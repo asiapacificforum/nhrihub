@@ -22,6 +22,7 @@ require 'capybara/poltergeist'
 #Capybara.register_driver :poltergeist do |app|
   #Capybara::Poltergeist::Driver.new(app, :debug => true)
 #end
+#comment this line out to use the default javascript server firefox
 Capybara.javascript_driver = :poltergeist
 
 #require 'simplecov'

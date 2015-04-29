@@ -42,6 +42,7 @@ group :development do
   gem 'capistrano-rvm'
   gem 'capistrano-passenger', '= 0.0.2'
   gem 'capistrano-faster-assets', :git => "git@github.com:lazylester/capistrano-faster-assets.git"
+  #gem 'capistrano-faster-assets'
   # specify higher rev than required by capistrano in order to get
   # fixed connection pooling and faster deploys
   gem 'sshkit', '~> 1.5'

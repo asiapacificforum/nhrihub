@@ -20,6 +20,7 @@ Configured in the .ruby-version file, to support the RVM version manager, look i
 ## Internationalization
 The basic structure for internationalization has been included, and the test suite tests the French translation of the navigation menu, the new user process, and the ActionMailer views pertaining to new user registration.
 This provides an outline of the locale translation files that need to be added in the config/locales directory and subdirectories.
+Translations may also be required for javascript, these may be found in lib/assets/javascripts/xx.js
 The url format for translated versions are (e.g.) your_domain/fr/admin/users.
 The default locale is 'en', a different default may be configured within the config/application.rb file, as indicated by the notes within that file.
 Page titles automatically default to the text in the i18n translation for the page .heading key, unless a translation for .title is provided.
@@ -29,6 +30,7 @@ email
 app-specific constants (orgname etc)
 timezone
 All dates and times are entered and displayed in the timezone configured for the application.
+Acceptable file types and maximum file size for uploading internal documents are set in the vendor/gems/corporate_services/config/initializers/internal_documents.rb
 
 ## Database creation and initialization
   Configuring the first user
@@ -44,6 +46,7 @@ The tests are in spec/features.
 Run the main application integration test suite with:
     rspec spec/features
 Each of the modules includes its own integration tests. The rails_helper from the main app is included
+Each module also includes translation files in its config/locales directory, and for javascript in lib/assets/javascripts/locales
 in the module spec/features tests, so the same testing environment applies.
 Note that phantomjs 2.0.0 has issues with file uploading (see https://github.com/teampoltergeist/poltergeist/issues/594). So use phantomjs 1.9.2 for headless testing.
 
@@ -73,6 +76,7 @@ Modules should configure all the routes required for navigation within the modul
 A newly-generated module is connected into the application by
 1. Add it to the Gemfile
 2. Add links to the top-level navigation menu (config/navigation.rb)
+3. If it includes javascripts in its app/assets/javascript/modname/ directory, then //= require modname must be added to the app/javascripts/application.js of the main app.
 Included modules may be excluded simply by deleting them from the vendor/gems library and removing the links from
 the top-level navigation menu and removing it from the Gemfile.
 Database migrations pertaining to the module's resources should be added in the module's own db/migrate directory. They

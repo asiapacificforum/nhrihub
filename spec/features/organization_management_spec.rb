@@ -28,7 +28,7 @@ feature "Manage organizations:" do
 
   scenario "add an organization", :js => true do
     click_link('Add organization')
-    expect(page_heading).to eq "Organizations list"
+    expect(page_heading).to eq "New organization"
     fill_in("Organization name", :with => "Acme Corp")
     fill_in("Street", :with => "234 Gravenstein Highway")
     fill_in("City", :with => "New York")

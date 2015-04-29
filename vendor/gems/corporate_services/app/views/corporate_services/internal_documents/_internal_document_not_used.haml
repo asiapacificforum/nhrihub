@@ -1,0 +1,31 @@
+%tr.template-download{:data => internal_document.presentation_attributes}
+  %td.title
+    %div{:'data-toggle' => 'edit'}
+      %div.edit
+        %input.title{:'data-name' => :title, :'data-value' => internal_document.title}
+      %div.no_edit
+        %span= internal_document.title
+  %td.revision{:'data-name' => 'revision'}
+    %div{:'data-toggle' => 'edit'}
+      %div.fade.edit
+        %input.revision{:'data-name' => :revision, :'data-value' => internal_document.revision}
+      %div.fade.no_edit
+        %div{:style => "width:30px;"}= internal_document.revision || "&nbsp;".html_safe
+  <!-- make sure it's on top of the next td, even though it precedes in the html -->
+  %td{:style => 'z-index:16; position:relative;'}
+    %div{:'data-toggle' => 'edit'}
+      %div.edit
+        %i.glyphicon.glyphicon-remove
+      %div.no_edit
+        %i.glyphicon.glyphicon-info-sign.details <!-- popover is attached as a sibling below this -->
+  %td{:style => 'z-index:15; position:relative;'}
+    %div{:'data-toggle' => 'edit'}
+      %div.edit
+        %i.glyphicon.glyphicon-ok
+      %div.no_edit
+        %i.glyphicon.glyphicon-edit
+  %td
+    %button.btn.btn-danger.delete{:data=> {:url => "#{internal_document.deleteUrl}"}}
+      %i.glyphicon.glyphicon-trash
+      %span= t('defaults.delete')
+    %input.toggle{:type => "checkbox", :name => "delete", :value => "1"}
