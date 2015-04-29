@@ -68,7 +68,7 @@ gem 'factory_girl_rails', '~> 4.0', group: [:development, :test]
 gem 'faker', group: :test
 
 gem 'quiet_assets', group: :development
-gem 'jquery-fileupload-rails'
+gem 'jquery-fileupload-rails', :path => 'vendor/gems'
 gem "refile", require: "refile/rails"
 
 
