@@ -5,20 +5,20 @@
     %td.title
       %div{:'data-toggle' => 'edit'}
         %div.edit
-          %input.title{:'data-name' => :title, :'data-value' => "{%= file.title %}"}
+          %input.title{:'data-name' => :title, :'value' => "{%= file.title %}"}
         %div.no_edit
           %span {%= file.title %}
     %td.revision{:'data-name' => 'revision'}
       %div{:'data-toggle' => 'edit'}
         %div.fade.edit
-          %input.revision{:'data-name' => :revision, :'data-value' => "{%= file.revision %}"}
+          %input.revision{:'data-name' => :revision, :'value' => "{%= file.revision %}"}
         %div.fade.no_edit
           %div{:style => "width:30px;"} {%= file.revision %}
     <!-- make sure it's on top of the next td, even though it precedes in the html -->
     %td{:style => 'z-index:16; position:relative;'}
       %div{:'data-toggle' => 'edit'}
         %div.edit
-          %i.glyphicon.glyphicon-remove
+          %i.glyphicon.glyphicon-remove#edit_cancel
         %div.no_edit
           %i.glyphicon.glyphicon-info-sign.details <!-- popover is attached as a sibling below this -->
     %td{:style => 'z-index:15; position:relative;'}
@@ -26,7 +26,7 @@
         %div.edit
           %i.glyphicon.glyphicon-ok
         %div.no_edit
-          %i.glyphicon.glyphicon-edit
+          %i.glyphicon.glyphicon-edit#edit_start
     %td{:style => 'z-index:15; position:relative;'}
       %i.glyphicon.glyphicon-cloud-download
     %td

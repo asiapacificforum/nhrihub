@@ -13,7 +13,7 @@ en:
           no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
       internal_document:
         details: "File details"
-      upload_template:
+      template_upload:
         start_one: "Start"
         cancel_one: "Cancel"
         doc_title: 'Document title'

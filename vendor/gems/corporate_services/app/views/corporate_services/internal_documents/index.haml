@@ -37,7 +37,7 @@
 = render :partial => 'details_popover'
 = render :partial => 'details_popover_content'
 = render :partial => 'details_popover_title'
-= render :partial => 'upload_template'
+= render :partial => 'template_upload'
 = render :partial => 'template_download'
 
 :coffeescript
@@ -56,47 +56,69 @@
       # return false
 
 :coffeescript
-    ##############
-    # IN-PAGE EDIT
-    ##############
+  ##############
+  # IN-PAGE EDIT
+  ##############
   $ ->
-    # remove the text spans and add in the input fields, for in-page editing
-    $('body').on 'click', '.template-download div.no_edit .glyphicon-edit', ->
-      context = $(@).closest('.template-download')
-      edit_toggle = context.find("[data-toggle='edit']")
-      edit_toggle.each (i,el) ->
-        $el = $(el)
-        edit = $el.find('.edit')
-        no_edit = $el.find('.no_edit')
-        no_edit.css("opacity",0).css("z-index",9)
-        input = $el.find('.edit input')
-        input_val = input.data('value')
-        $el.find('.edit input').val(input_val)
-        edit.css("opacity",1).css("z-index",10)
+    class @InpageEditElement
+      constructor : (@el) ->
 
-      # set the edit inputs wide enough for the contents
-      $('.title .edit input').css 'width', ->
-        $('.title .no_edit span').width() + 10
-      revisionSpanWidth = $('td.revision .no_edit div').width()
-      $('td.revision .edit input').css 'width', revisionSpanWidth + 10
+      switch_to_edit : ->
+        @set_field_width()
+        @show(@input())
+        @hide(@text())
 
-      # ensure the revision td is large enough, in case no rev is set
-      $('td.revision').css 'width', revisionSpanWidth + 30
-      $(@).closest('.template-download').find('input.title').focus()
+      switch_to_show : ->
+        @show(@text())
+        @hide(@input())
 
-    # bring in the text spans and remove the input fields
-    $('body').on 'click', '.template-download div.edit .glyphicon-remove', ->
-      context = $(@).closest('.template-download')
-      edit_toggle = context.find("[data-toggle='edit']")
-      edit_toggle.each (i,el) ->
-        $el = $(el)
-        edit = $el.find('.edit')
-        no_edit = $el.find('.no_edit')
-        no_edit.css("opacity",1).css('z-index',10)
-        input = $el.find('.edit input')
-        input_val = input.data('value')
-        $el.find('.edit input').val(input_val)
-        edit.css("opacity",0).css('z-index',9)
+      set_field_width : ->
+        @input().find('input').css('width',@text_width()+10)
+
+      input : ->
+        $(@el).find('.edit')
+
+      text : ->
+        $(@el).find('.no_edit')
+
+      text_width : ->
+        @text().find(':first-child').width()
+
+      show : (element)->
+        element.css("opacity",1).css("z-index",10)
+
+      hide : (element)->
+        element.css("opacity",0).css("z-index",9)
+
+    class @InpageEdit
+      constructor : ->
+        $('body').on 'click', '#edit_start', (e)=>
+          $target = $(e.target)
+          @context = $target.closest('.template-download')
+          @edit()
+          @title_element().focus()
+          voo = "bar"
+        $('body').on 'click', '#edit_cancel', (e)=>
+          $target = $(e.target)
+          @context = $target.closest('.template-download')
+          @show()
+
+      edit : ->
+        @elements().each (i,el) ->
+          el.switch_to_edit()
+
+      show : ->
+        @elements().each (i,el) ->
+          el.switch_to_show()
+
+      elements : ->
+        @context.find("[data-toggle='edit']").map (i,el)->
+          new document.InpageEditElement(el)
+
+      title_element : ->
+        @context.find('input.title')
+
+    window.inpage_edit = new @InpageEdit
 
     # send changes to the server via ajax
     $('body').on 'click', ".glyphicon-ok", (e)->
