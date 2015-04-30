@@ -31,7 +31,7 @@
         / The extended global progress state
         .progress-extended  
     / The table listing the files available for upload/download
-    %table.table.table-striped{:role => "presentation", :style => "width:600px"}
+    %table.table.table-striped#accordion{:role => "presentation", :style => "width:600px"}
       %tbody.files{:name => 'internal_document[file]'}
 
 = render :partial => 'details_popover'
@@ -53,7 +53,11 @@
     $('.fileupload-buttonbar .fileinput-button, .fileupload-buttonbar .cancel, .fileupload-buttonbar .delete').on 'click', ->
       # remove any flash msg
       $('#message_block').text("")
-      # return false
+
+    $('body').on 'click', '.download', (e)->
+      $target = $(e.target)
+      id = $target.closest('.template-download').data('id')
+      window.location = "#{corporate_services_internal_document_path('id')}".replace(/id/,id)
 
 :coffeescript
   ##############
@@ -131,7 +135,9 @@
       data['internal_document']['revision'] = $el.closest('.template-download').find('.edit .revision').val()
       $.post(url, data, (response, text, jqXhr)->
         id = response.id
-        alert 'success'
+        source = $(".template-download[data-id='"+id+"']")
+        new_template = tmpl($('#template-download').html(),{files: [response]})
+        source.replaceWith(new_template)
         ).fail ->
         alert 'fail'
 
@@ -162,6 +168,7 @@
 :coffeescript
   $ ->
     # configure the "information" popover for the files
+    # it's a twitter-bootstrap popover
     $("body").popover
       selector : '.details',
       html : true,

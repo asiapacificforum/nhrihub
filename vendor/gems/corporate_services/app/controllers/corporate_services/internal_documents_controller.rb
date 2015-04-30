@@ -27,8 +27,18 @@ class CorporateServices::InternalDocumentsController < ApplicationController
     render :nothing => true, :status => 500
   end
 
+  def show
+    internal_document = InternalDocument.find(params[:id])
+    send_opts = { :filename => internal_document.original_filename,
+                  :type => internal_document.original_type,
+                  :disposition => :attachment }
+    send_file internal_document.file.to_io, send_opts
+  end
+
   private
   def doc_params
-    params.require(:internal_document).permit(:title, :revision, :file, :original_filename, :original_type, :lastModifiedDate, :filesize)
+    params.
+      require(:internal_document).
+      permit(:title, :revision, :file, :original_filename, :original_type, :lastModifiedDate, :filesize)
   end
 end

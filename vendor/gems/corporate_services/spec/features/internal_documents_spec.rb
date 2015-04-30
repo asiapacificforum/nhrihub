@@ -82,8 +82,12 @@ feature "internal document management", :js => true do
      and change{ InternalDocument.first.revision }.to("3.3")
   end
 
-  xscenario "download a file" do
-    
+  scenario "download a file" do
+    create_a_document
+    visit corporate_services_internal_documents_path('en')
+    click_the_download_icon
+    expect(page.response_headers['Content-Type']).to eq('application/pdf')
+    expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"my_test_file.pdf\"")
   end
 
   xscenario "view archives" do
@@ -103,6 +107,10 @@ feature "internal document management", :js => true do
     # error is in ajax response, must handle it appropriately
   end
 
+end
+
+def click_the_download_icon
+  page.find('.download').click
 end
 
 def click_the_edit_icon

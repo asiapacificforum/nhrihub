@@ -60,6 +60,7 @@ gem 'selenium-webdriver', group: [:development, :test]
 gem 'database_cleaner', group: [:development, :test]
 gem 'bootstrap-sass'
 gem 'simple-navigation-bootstrap'
+gem 'font-awesome-sass'
 #gem 'simple-navigation', '~> 4.0.3' seems to have some problems with simple-navigation-bootstrap
 gem 'simple-navigation', '~> 3.14.0'
 gem 'simplecov', :require => false, :group => :test
