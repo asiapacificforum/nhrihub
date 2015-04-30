@@ -6,8 +6,8 @@ feature "internal document management", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   before do
-    toggle_navigation_dropdown("Corporate Services")
-    select_dropdown_menu_item("Internal documents")
+    create_a_document
+    visit corporate_services_internal_documents_path('en')
   end
 
   scenario "add a new document" do
@@ -16,8 +16,8 @@ feature "internal document management", :js => true do
     page.attach_file("file", upload_document, :visible => false)
     # not sure how this field has become visible, but it works!
     page.find("#internal_document_title").set("some file name")
-    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(0).to(1)
-    expect(page).to have_css(".files .template-download", :count => 1)
+    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+    expect(page).to have_css(".files .template-download", :count => 2)
   end
 
   scenario "add a new document but omit document name" do
@@ -49,20 +49,14 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete a file from database" do
-    create_a_document
-    visit corporate_services_internal_documents_path('en')
     expect{ page.find('.template-download .delete').click; sleep(0.3) }.to change{InternalDocument.count}.from(1).to(0)
   end
 
   scenario "delete a file from filesystem" do
-    create_a_document
-    visit corporate_services_internal_documents_path('en')
     expect{ page.find('.template-download .delete').click; sleep(0.3)}.to change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
   end
 
   scenario "view file details" do
-    create_a_document
-    visit corporate_services_internal_documents_path('en')
     page.find('.template-download .details').click
     expect(page).to have_css('.fileDetails')
     page.find('.closepopover').click
@@ -70,8 +64,6 @@ feature "internal document management", :js => true do
   end
 
   scenario "edit filename and revision" do
-    create_a_document
-    visit corporate_services_internal_documents_path('en')
     click_the_edit_icon
     page.find('.template-download input.title').set("new document title")
     page.find('.template-download input.revision').set("3.3")
@@ -83,11 +75,12 @@ feature "internal document management", :js => true do
   end
 
   scenario "download a file" do
-    create_a_document
-    visit corporate_services_internal_documents_path('en')
     click_the_download_icon
     expect(page.response_headers['Content-Type']).to eq('application/pdf')
     expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"my_test_file.pdf\"")
+  end
+
+  xscenario "add a new revision" do
   end
 
   xscenario "view archives" do

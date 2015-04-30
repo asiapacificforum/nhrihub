@@ -31,7 +31,8 @@
         / The extended global progress state
         .progress-extended  
     / The table listing the files available for upload/download
-    #accordion.panel-group.files{:role => "tablist", :style => "width:600px", :name => 'internal_document[file]'}
+    %table.table.table-striped#accordion{:role => "presentation", :style => "width:600px"}
+      %tbody.files{:name => 'internal_document[file]'}
 
 = render :partial => 'details_popover'
 = render :partial => 'details_popover_content'
