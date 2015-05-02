@@ -80,18 +80,11 @@ feature "internal document management", :js => true do
     expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"my_test_file.pdf\"")
   end
 
-  scenario "create two documents in different document groups" do
-    create_a_document
-    expect( InternalDocument.count ).to eq 2
-    # no nils and all different:
-    expect( InternalDocument.all.map(&:document_group_id).compact.uniq.count ).to eq(InternalDocument.count)
-  end
-
   xscenario "add a new revision" do
   end
 
-  xscenario "view archives" do
-    
+  scenario "view archives" do
+    create_a_document_in_the_same_group
   end
 end
 
