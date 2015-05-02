@@ -1,33 +1,32 @@
 / The template to display files ready for upload and set the title/revision
 %script#template-upload{:type => 'html/template'}
   {% for (var i=0, file; file=o.files[i]; i++) { %}
-  %tr.template-upload.fade
-    %td
-      %p.name {%= file.name %}
-      %strong.error.text-danger
-      = hidden_field_tag 'internal_document[lastModifiedDate]', "{%= file.lastModifiedDate %}"
-      = hidden_field_tag 'internal_document[original_type]', "{%= file.type %}"
-      = hidden_field_tag 'internal_document[filesize]', "{%= file.size %}"
-    %td.title
-      = label_tag :internal_document_title, t('.doc_title')
-      = text_field_tag 'internal_document[title]', '',:required => true
-    %td.revision
-      = label_tag :internal_document_revision, t('.revision')
-      = text_field_tag 'internal_document[revision]', '', :style => "width:40px"
-    %td
-      %p.size= t('.processing')
-      %div.progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
-        %div.progress-bar.progress-bar-success{:style => "width:0%"}
-    %td
-      {% if (!i && !o.options.autoUpload) { %}
-      %button.btn.btn-primary.start{:disabled => true}
-        %i.glyphicon.glyphicon-upload
-        %span= t('.start_one')
-      {% } %}
-      {% if (!i) { %}
-      %button.btn.btn-warning.cancel
-        %i.glyphicon.glyphicon-ban-circle
-        %span= t('.cancel_one')
-      {% } %}
+  .panel.panel-default.fade.template-upload
+    .panel-heading
+      %table{:width => '100%'}
+        %tr
+          %td{:colspan => 2}
+            %p.name {%= file.name %}
+            %strong.error.text-danger
+            = hidden_field_tag 'internal_document[lastModifiedDate]', "{%= file.lastModifiedDate %}"
+            = hidden_field_tag 'internal_document[original_type]', "{%= file.type %}"
+            = hidden_field_tag 'internal_document[filesize]', "{%= file.size %}"
+          %td{:colspan => 2}
+            .size= t('.processing')
+            .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
+              .progress-bar.progress-bar-success{:style => "width:0%"}
+        %tr
+          %td.title
+            = label_tag :internal_document_title, t('.doc_title')
+            = text_field_tag 'internal_document[title]', '',:required => true
+          %td.revision
+            = label_tag :internal_document_revision, t('.revision')
+            = text_field_tag 'internal_document[revision]', '', :style => "width:40px"
+          %td
+            %div.start{:disabled => true}
+              %i.glyphicon.glyphicon-upload
+          %td
+            %div.cancel
+              %i.glyphicon.glyphicon-ban-circle
   {% } %}
 

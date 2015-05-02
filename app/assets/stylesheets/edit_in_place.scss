@@ -8,19 +8,19 @@ div[data-toggle="edit"]{
   }
 
   .edit {
-    position: absolute;
+    position: absolute; // to position over the no-edit div
     top: 0px;
     left: 0px;
   }
 }
 
 .template-download div.edit{
-  opacity:0;
+  opacity: 0;
   z-index: 9;
 }
 
 .template-download div.no_edit{
-  opacity:1;
+  opacity: 1;
   z-index:10;
 }
 

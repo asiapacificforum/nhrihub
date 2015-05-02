@@ -33,6 +33,9 @@
     / The table listing the files available for upload/download
     #accordion.panel-group.files{:role => "tablist", :style => "width:600px", :name => 'internal_document[file]'}
 
+
+    #accordion.panel-group.new_files{:role => "tablist", :style => "width:600px", :name => 'internal_document[file]'}
+
 = render :partial => 'details_popover'
 = render :partial => 'details_popover_content'
 = render :partial => 'details_popover_title'
@@ -157,11 +160,22 @@
         # completed: function(e,data){},
         # finished: function(){} // another callback that's available
         prependFiles : false
+        filesContainer: '.files'
 
 
     #   INITIALIZE THE FILE LIST FROM JSON DATA AT DOCUMENT LOAD
     result = tmpl($('#template-download').html(),{files: files})
     $(result)[ 'appendTo' ]($('.files'))
+
+    $('#new_fileupload').fileupload
+        url: 'internal_documents',
+        paramName: 'internal_document[file]',
+        acceptFileTypes: new RegExp("\\.(#{InternalDocument.acceptFileTypes.join('|')})$",'i'),
+        maxFileSize: parseInt("#{InternalDocument.maxFileSize}"),
+        # completed: function(e,data){},
+        # finished: function(){} // another callback that's available
+        prependFiles : false
+        filesContainer: '.new_files'
 
 
 :coffeescript

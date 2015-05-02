@@ -7,34 +7,38 @@
         %tr.template-download(data-created_at = "{%= file.created_at %}" data-formatted_filesize = "{%= file.formatted_filesize %}" data-id = "{%= file.id %}" data-lastModifiedDate = "{%= file.lastModifiedDate %}" data-original_filename = "{%= file.original_filename %}" data-original_type = "{%= file. original_type %}" data-revision = "{%= file.revision %}")
           %td.title
             %div{:'data-toggle' => 'edit'}
-              .edit
+              .fade.edit
                 %input.title{:'data-name' => :title, :'value' => "{%= file.title %}"}
-              .no_edit
+              .fade.no_edit
                 %span {%= file.title %}
           %td.revision{:'data-name' => 'revision'}
             %div{:'data-toggle' => 'edit'}
               .fade.edit
-                %input.revision{:'data-name' => :revision, :'value' => "{%= file.revision %}"}
+                %input.revision{:'data-name' => :revision, :'value' => "{%= file.revision %}", :style => 'width:40px'}
               .fade.no_edit
-                %div{:style => "width:30px;"} {%= file.revision %}
+                %div{:style => "width:30px; height:26px;"} {%= file.revision %} <!-- height required to properly position the tag -->
           <!-- make sure it's on top of the next td, even though it precedes in the html -->
-          %td{:style => 'z-index:16; position:relative;'}
+          %td.include_popover
             %div{:'data-toggle' => 'edit'}
-              .edit
+              .fade.edit
                 %i.glyphicon.glyphicon-remove#edit_cancel
-              .no_edit
+              .fade.no_edit
                 %i.glyphicon.glyphicon-info-sign.details <!-- popover is attached as a sibling below this -->
-          %td{:style => 'z-index:15; position:relative;'}
+          %td.under_popover
             %div{:'data-toggle' => 'edit'}
-              .edit
+              .fade.edit
                 %i.glyphicon.glyphicon-ok
-              .no_edit
+              .fade.no_edit
                 %i.glyphicon.glyphicon-edit#edit_start
-          %td{:style => 'z-index:15; position:relative;'}
+          %td.under_popover
             %i.glyphicon.glyphicon-cloud-download.download
-          %td{:style => 'z-index:15; position:relative;'}
+          %td.under_popover
             %div{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{%= file.id %}"}
               %i.fa.fa-archive
+          %td.under_popover
+            #new_fileupload
+              %i.fa.fa-plus{:onClick => "$(this).parent().find('input:file').click()"}
+              %input{:multiple => "multiple", :name => "file", :type => "file", :style => "position:absolute; opacity:0; top:0px; left:400px; cursor:pointer;"}
           %td
             %div.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
               %i.glyphicon.glyphicon-trash
