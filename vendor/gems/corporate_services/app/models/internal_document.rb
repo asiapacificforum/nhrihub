@@ -4,11 +4,17 @@ class InternalDocument < ActiveRecord::Base
   include Rails.application.routes.url_helpers
   include ActiveSupport::NumberHelper
 
+  belongs_to :document_group
+
   attachment :file
 
   before_save do |doc|
     if doc.title.blank?
       doc.title = doc.original_filename.split('.')[0]
+    end
+
+    if doc.document_group_id.blank?
+      doc.document_group_id = DocumentGroup.create.id
     end
   end
 

@@ -16,8 +16,9 @@
               .fade.edit
                 %input.revision{:'data-name' => :revision, :'value' => "{%= file.revision %}", :style => 'width:40px'}
               .fade.no_edit
-                %div{:style => "width:30px; height:26px;"} {%= file.revision %} <!-- height required to properly position the tag -->
-          <!-- make sure it's on top of the next td, even though it precedes in the html -->
+                -# height required to properly position the tag
+                %div{:style => "width:30px; height:26px;"} {%= file.revision %}
+          -# make sure it's on top of the next td, even though it precedes in the html
           %td.include_popover
             %div{:'data-toggle' => 'edit'}
               .fade.edit
