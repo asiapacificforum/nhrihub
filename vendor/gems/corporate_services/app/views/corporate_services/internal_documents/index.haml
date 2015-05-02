@@ -34,7 +34,7 @@
     #accordion.panel-group.files{:role => "tablist", :style => "width:600px", :name => 'internal_document[file]'}
 
 
-    #accordion.panel-group.new_files{:role => "tablist", :style => "width:600px", :name => 'internal_document[file]'}
+    #accordion.panel-group.replace_files{:role => "tablist", :style => "width:600px", :name => 'internal_document[file]'}
 
 = render :partial => 'details_popover'
 = render :partial => 'details_popover_content'
@@ -103,7 +103,7 @@
           @context = $target.closest('.template-download')
           @edit()
           @title_element().focus()
-          voo = "bar"
+
         $('body').on 'click', '#edit_cancel', (e)=>
           $target = $(e.target)
           @context = $target.closest('.template-download')
@@ -141,7 +141,7 @@
         new_template = tmpl($('#template-download').html(),{files: [response]})
         source.replaceWith(new_template)
         ).fail ->
-        alert 'fail'
+        alert 'Changes were not saved, for some reason.'
 
 :coffeescript
   files = #{@internal_documents.map(&:presentation_attributes).to_json}
@@ -167,7 +167,7 @@
     result = tmpl($('#template-download').html(),{files: files})
     $(result)[ 'appendTo' ]($('.files'))
 
-    $('#new_fileupload').fileupload
+    $('#file_replace').fileupload
         url: 'internal_documents',
         paramName: 'internal_document[file]',
         acceptFileTypes: new RegExp("\\.(#{InternalDocument.acceptFileTypes.join('|')})$",'i'),
@@ -175,7 +175,7 @@
         # completed: function(e,data){},
         # finished: function(){} // another callback that's available
         prependFiles : false
-        filesContainer: '.new_files'
+        filesContainer: '.replace_files'
 
 
 :coffeescript

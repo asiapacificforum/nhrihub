@@ -88,7 +88,7 @@
                 data.context = that._renderUpload(data.files) // data.context is the rendered upload template
                     .data('data', data)                       // it has all the data attached to it
                     .addClass('processing');
-                options.filesContainer[   // options.filesContainer is the table into which the download and upload templates will be rencered
+                options.filesContainer[   // options.filesContainer is the table into which the download and upload templates will be rendered
                     options.prependFiles ? 'prepend' : 'append'
                 ](data.context);
                 that._forceReflow(data.context);
