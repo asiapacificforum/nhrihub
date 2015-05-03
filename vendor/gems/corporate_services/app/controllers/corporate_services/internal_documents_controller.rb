@@ -1,7 +1,7 @@
 class CorporateServices::InternalDocumentsController < ApplicationController
   def index
     @internal_document = InternalDocument.new
-    @internal_documents = InternalDocument.all
+    @internal_documents = InternalDocument.primary
   end
 
   def create

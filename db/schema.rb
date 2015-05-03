@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150502200620) do
+ActiveRecord::Schema.define(version: 20150502233729) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(version: 20150502200620) do
     t.datetime "lastModifiedDate"
     t.string   "original_type"
     t.integer  "document_group_id"
+    t.boolean  "primary",           default: false
   end
 
   create_table "organizations", force: true do |t|

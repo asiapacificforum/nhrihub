@@ -1,17 +1,18 @@
 %div#detailsContent{:style=>"display: none"}
+  - scope = 'activerecord.attributes.internal_document'
   %table{:style => 'width:500px'}
     %tr
-      %td Original file name
+      %td= t('original_filename', :scope => scope)
       %td {%= o.original_filename %}
     %tr
-      %td File size
+      %td= t('filesize', :scope => scope)
       %td {%= o.formatted_filesize %}
     %tr
-      %td Revision
+      %td= t('revision', :scope => scope)
       %td {%= o.revision %}
     %tr
-      %td Last modified
+      %td= t('lastModified', :scope => scope)
       %td {%= o.lastmodifieddate %}
     %tr
-      %td Uploaded on
+      %td= t('uploadedOn', :scope => scope)
       %td {%= o.created_at %}

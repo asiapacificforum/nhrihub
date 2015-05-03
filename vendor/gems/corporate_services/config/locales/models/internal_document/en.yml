@@ -1,0 +1,9 @@
+en:
+  activerecord:
+    attributes:
+      internal_document:
+        original_filename: 'Original file name'
+        filesize: 'File size'
+        revision: 'Revision'
+        lastModified: 'Last modified'
+        uploadedOn: 'Uploaded on'

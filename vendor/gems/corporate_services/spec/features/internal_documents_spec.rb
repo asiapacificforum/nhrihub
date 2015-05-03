@@ -83,8 +83,18 @@ feature "internal document management", :js => true do
   xscenario "add a new revision" do
   end
 
+  xscenario "delete primary file while archive files remain" do
+    
+  end
+
   scenario "view archives" do
     create_a_document_in_the_same_group
+    visit corporate_services_internal_documents_path('en')
+    expect(page_heading).to eq "Internal Documents"
+    click_the_archive_icon
+    expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
+    expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
+    expect(page.find('.template-download .panel-body')).to have_selector('table.document')
   end
 end
 
@@ -102,6 +112,16 @@ feature "internal document management", :js => true do
 
 end
 
+def click_the_archive_icon
+  page.find('.template-download .fa-archive').click
+  sleep(0.2)
+end
+
+def create_a_document_in_the_same_group
+  group_id = InternalDocument.first.document_group_id
+  FactoryGirl.create(:internal_document, :document_group_id => group_id)
+end
+
 def click_the_download_icon
   page.find('.download').click
 end
@@ -112,7 +132,7 @@ def click_the_edit_icon
 end
 
 def create_a_document
-  FactoryGirl.create(:internal_document)
+  FactoryGirl.create(:internal_document, :primary => true)
 end
 
 def add_document_link

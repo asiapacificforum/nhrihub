@@ -24,3 +24,15 @@ describe "create internal documents and supply document_group_id" do
     expect( InternalDocument.all.map(&:document_group_id).compact.uniq.count ).to eq(1)
   end
 end
+
+describe "archive_files" do
+  before do
+    @doc = FactoryGirl.create(:internal_document)
+    @same_group = FactoryGirl.create(:internal_document, :document_group_id => @doc.id)
+    @different_group = FactoryGirl.create(:internal_document)
+  end
+
+  it "should return docs in the same group" do
+    expect(@doc.archive_files).to eq([@same_group])
+  end
+end

@@ -1,10 +1,10 @@
 -# replaces the upload template after a file has been uploaded
 %script#template-download{:type => 'html/template'}
   {% for (var i=0, file; file=o.files[i]; i++) { %}
-  .panel.panel-default
+  .panel.panel-default.template-download(data-created_at = "{%= file.created_at %}" data-formatted_filesize = "{%= file.formatted_filesize %}" data-id = "{%= file.id %}" data-lastModifiedDate = "{%= file.lastModifiedDate %}" data-original_filename = "{%= file.original_filename %}" data-original_type = "{%= file. original_type %}" data-revision = "{%= file.revision %}")
     #headingOne.panel-heading{:role => "tab"}
-      %table{:style => "width:100%"}
-        %tr.template-download(data-created_at = "{%= file.created_at %}" data-formatted_filesize = "{%= file.formatted_filesize %}" data-id = "{%= file.id %}" data-lastModifiedDate = "{%= file.lastModifiedDate %}" data-original_filename = "{%= file.original_filename %}" data-original_type = "{%= file. original_type %}" data-revision = "{%= file.revision %}")
+      %table.document{:style => "width:100%"}
+        %tr
           %td.title{:width => '340px'}
             %div{:'data-toggle' => 'edit'}
               .fade.edit
@@ -46,5 +46,48 @@
               %i.glyphicon.glyphicon-trash
     .panel-collapse.collapse{:role => "tabpanel", :id => "collapse{%= file.id %}"}
       .panel-body
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+        %h4 Archive
+        {% for (var j=0, archive_file; archive_file=file.archive_files[j]; j++) { %}
+        %table.document{:style => "width:100%"}
+          %tr(data-created_at = "{%= archive_file.created_at %}" data-formatted_filesize = "{%= archive_file.formatted_filesize %}" data-id = "{%= archive_file.id %}" data-lastModifiedDate = "{%= archive_file.lastModifiedDate %}" data-original_filename = "{%= archive_file.original_filename %}" data-original_type = "{%= archive_file. original_type %}" data-revision = "{%= archive_file.revision %}")
+            %td.title{:width => '340px'}
+              %div{:'data-toggle' => 'edit'}
+                .fade.edit
+                  %input.title{:'data-name' => :title, :'value' => "{%= archive_file.title %}"}
+                .fade.no_edit
+                  %span {%= archive_file.title %}
+            %td.revision{:'data-name' => 'revision', :width => '58px'}
+              %div{:'data-toggle' => 'edit'}
+                .fade.edit
+                  %input.revision{:'data-name' => :revision, :'value' => "{%= archive_file.revision %}", :style => 'width:40px'}
+                .fade.no_edit
+                  -# height required to properly position the tag
+                  %div{:style => "width:30px; height:26px;"} {%= archive_file.revision %}
+            -# make sure it's on top of the next td, even though it precedes in the html
+            %td.include_popover
+              %div{:'data-toggle' => 'edit'}
+                .fade.edit
+                  %i.glyphicon.glyphicon-remove#edit_cancel
+                .fade.no_edit
+                  %i.glyphicon.glyphicon-info-sign.details <!-- popover is attached as a sibling below this -->
+            %td.under_popover
+              %div{:'data-toggle' => 'edit'}
+                .fade.edit
+                  %i.glyphicon.glyphicon-ok
+                .fade.no_edit
+                  %i.glyphicon.glyphicon-edit#edit_start
+            %td.under_popover
+              %i.glyphicon.glyphicon-cloud-download.download
+            %td.under_popover
+              %div{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{%= archive_file.id %}"}
+                %i.fa.fa-archive
+            %td.under_popover
+              -# next tag is where the fileupload is attached
+              #file_replace
+                %i.fa.fa-plus{:onClick => "$(this).parent().find('input:file').click()"}
+                %input{:multiple => "multiple", :name => "replaceFile", :type => "file", :style => "position:absolute; opacity:0; top:0px; left:400px; cursor:pointer;"}
+            %td
+              %div.delete{:data=> {:url => "{%= archive_file.deleteUrl %}"}}
+                %i.glyphicon.glyphicon-trash
+        {% } %}
   {% } %}

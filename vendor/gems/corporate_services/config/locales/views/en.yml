@@ -11,7 +11,7 @@ en:
         details: "File details"
         flash:
           no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
-      internal_document:
+      details_popover_title:
         details: "File details"
       template_upload:
         start_one: "Start"

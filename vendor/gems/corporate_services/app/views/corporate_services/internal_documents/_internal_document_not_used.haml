@@ -11,13 +11,14 @@
         %input.revision{:'data-name' => :revision, :'data-value' => internal_document.revision}
       %div.fade.no_edit
         %div{:style => "width:30px;"}= internal_document.revision || "&nbsp;".html_safe
-  <!-- make sure it's on top of the next td, even though it precedes in the html -->
+  -# make sure it's on top of the next td, even though it precedes in the html
   %td{:style => 'z-index:16; position:relative;'}
     %div{:'data-toggle' => 'edit'}
       %div.edit
         %i.glyphicon.glyphicon-remove
       %div.no_edit
-        %i.glyphicon.glyphicon-info-sign.details <!-- popover is attached as a sibling below this -->
+        -# popover is attached as a sibling below this
+        %i.glyphicon.glyphicon-info-sign.details
   %td{:style => 'z-index:15; position:relative;'}
     %div{:'data-toggle' => 'edit'}
       %div.edit

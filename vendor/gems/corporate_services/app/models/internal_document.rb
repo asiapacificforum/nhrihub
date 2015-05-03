@@ -8,6 +8,9 @@ class InternalDocument < ActiveRecord::Base
 
   attachment :file
 
+  scope :archive_files_for, ->(doc){ where('document_group_id = ? and id != ?', doc.document_group_id, doc.id) }
+  scope :primary, ->{ where(:primary => true) }
+
   before_save do |doc|
     if doc.title.blank?
       doc.title = doc.original_filename.split('.')[0]
@@ -43,8 +46,12 @@ class InternalDocument < ActiveRecord::Base
     corporate_services_internal_document_path(I18n.locale, id)
   end
 
+  def archive_files
+    self.class.archive_files_for(self)
+  end
+
   def presentation_attributes
-    methods = [:url, :deleteUrl, :revision, :formatted_filesize].inject({}){|h, m| h[m.to_s]= send(m); h}
+    methods = [:url, :deleteUrl, :revision, :formatted_filesize, :archive_files].inject({}){|h, m| h[m.to_s]= send(m); h}
     attributes.
       except!("updated_at", "revision_minor", "revision_major", "filesize").
       merge(methods)
