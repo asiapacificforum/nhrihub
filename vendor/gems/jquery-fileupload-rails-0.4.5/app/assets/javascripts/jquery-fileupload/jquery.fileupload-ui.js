@@ -358,13 +358,22 @@
                 }
                 var that = $(this).data('blueimp-fileupload') ||
                         $(this).data('fileupload'),
-                    removeNode = function () {
+                    removeNode = function (resp, stat, jqx) {
+                      if(parseInt(resp.id) == $(this).find('table.document').data('id')){
+												// remove the deleted file from the page, response it just {id : xxx}
                         that._transition(data.context).done(
                             function () {
+                                // where the actual tag is removed
                                 $(this).remove();
                                 that._trigger('destroyed', e, data);
                             }
                         );
+                      }else{
+												// we just deleted the primay file but there were archive files
+												// so we promoted one of them to primary, and we replace the deleted
+												// file with the newly promoted file!
+												$(this).replaceWith(that.options.downloadTemplate({files : [resp]}))
+                      }
                     };
                 if (data.url) {
                     data.dataType = data.dataType || that.options.dataType;

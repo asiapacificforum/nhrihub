@@ -3,16 +3,17 @@
   %table{:style => 'width:500px'}
     %tr
       %td= t('original_filename', :scope => scope)
-      %td {%= o.original_filename %}
+      %td.name {%= o.original_filename %}
     %tr
       %td= t('filesize', :scope => scope)
-      %td {%= o.formatted_filesize %}
+      %td.size {%= o.formatted_filesize %}
     %tr
       %td= t('revision', :scope => scope)
-      %td {%= o.revision %}
+      %td.rev {%= o.revision %}
     %tr
       %td= t('lastModified', :scope => scope)
-      %td {%= o.lastmodifieddate %}
+      %td.lastModified {%= o.formatted_modification_date %}
     %tr
       %td= t('uploadedOn', :scope => scope)
-      %td {%= o.created_at %}
+      %td.uploadedOn {%= o.formatted_creation_date %}
+

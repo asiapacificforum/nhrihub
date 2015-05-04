@@ -8,8 +8,9 @@ class InternalDocument < ActiveRecord::Base
 
   attachment :file
 
-  scope :archive_files_for, ->(doc){ where('document_group_id = ? and id != ?', doc.document_group_id, doc.id) }
+  scope :archive_files_for, ->(doc){ where('"document_group_id" = ? and "id" != ?', doc.document_group_id, doc.id) }
   scope :primary, ->{ where(:primary => true) }
+  scope :archive, ->{ where(:primary => false) }
 
   before_save do |doc|
     if doc.title.blank?
@@ -47,18 +48,48 @@ class InternalDocument < ActiveRecord::Base
   end
 
   def archive_files
-    self.class.archive_files_for(self)
+    # in real life archive_files will never be primary, but it can happen in testing
+    primary? ? self.class.archive_files_for(self).archive.all : []
+  end
+
+  def archive_files_presentation_attributes
+    archive_files.map(&:presentation_attributes)
   end
 
   def presentation_attributes
-    methods = [:url, :deleteUrl, :revision, :formatted_filesize, :archive_files].inject({}){|h, m| h[m.to_s]= send(m); h}
+    methods = [:url, :deleteUrl, :revision, :formatted_modification_date, :formatted_creation_date, :formatted_filesize, :archive_files_presentation_attributes].inject({}){|h, m| h[m.to_s]= send(m); h}
     attributes.
-      except!("updated_at", "revision_minor", "revision_major", "filesize").
+      except!("updated_at", "created_at", "lastModifiedDate", "revision_minor", "revision_major", "filesize").
       merge(methods)
   end
 
   def formatted_filesize
     number_to_human_size(filesize)
+  end
+
+  def formatted_modification_date
+    lastModifiedDate.to_s
+  end
+
+  def formatted_creation_date
+    created_at.to_s
+  end
+
+  def has_revision?
+    revision_major.is_a?(Integer)
+  end
+
+  def has_archive_files?
+    archive_files.count > 0
+  end
+
+  def inheritor
+    archive_files.sort_by{|f| [f.revision.to_f, f.created_at]}.last
+  end
+
+  def promoted
+    update_attribute(:primary, true)
+    self
   end
 
 end

@@ -12,8 +12,18 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   end
 
   def destroy
-    InternalDocument.destroy(params[:id])
-    render :json => {:id => params[:id]}
+    doc = InternalDocument.find(params[:id])
+    if doc.primary? && doc.has_archive_files?
+      # doc being deleted is primary with archive
+      # so promote an inheritor
+      new_primary = doc.inheritor.promoted
+      InternalDocument.destroy(params[:id])
+      render :json => new_primary.presentation_attributes
+    else
+      # delete it and move on
+      InternalDocument.destroy(params[:id])
+      render :json => {:id => params[:id]}
+    end
   end
 
   def update

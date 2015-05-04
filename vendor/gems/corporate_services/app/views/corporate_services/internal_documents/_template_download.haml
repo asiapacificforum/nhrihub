@@ -1,9 +1,9 @@
 -# replaces the upload template after a file has been uploaded
 %script#template-download{:type => 'html/template'}
   {% for (var i=0, file; file=o.files[i]; i++) { %}
-  .panel.panel-default.template-download(data-created_at = "{%= file.created_at %}" data-formatted_filesize = "{%= file.formatted_filesize %}" data-id = "{%= file.id %}" data-lastModifiedDate = "{%= file.lastModifiedDate %}" data-original_filename = "{%= file.original_filename %}" data-original_type = "{%= file. original_type %}" data-revision = "{%= file.revision %}")
+  .panel.panel-default.template-download
     #headingOne.panel-heading{:role => "tab"}
-      %table.document{:style => "width:100%"}
+      %table.document{:style => "width:100%"}(data-formatted_creation_date = "{%= file.formatted_creation_date %}" data-formatted_filesize = "{%= file.formatted_filesize %}" data-id = "{%= file.id %}" data-formatted_modification_date = "{%= file.formatted_modification_date %}" data-original_filename = "{%= file.original_filename %}" data-original_type = "{%= file. original_type %}" data-revision = "{%= file.revision %}")
         %tr
           %td.title{:width => '340px'}
             %div{:'data-toggle' => 'edit'}
@@ -40,16 +40,18 @@
             -# next tag is where the fileupload is attached
             #file_replace
               %i.fa.fa-plus{:onClick => "$(this).parent().find('input:file').click()"}
-              %input{:multiple => "multiple", :name => "replaceFile", :type => "file", :style => "position:absolute; opacity:0; top:0px; left:400px; cursor:pointer;"}
           %td
             %div.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
               %i.glyphicon.glyphicon-trash
     .panel-collapse.collapse{:role => "tabpanel", :id => "collapse{%= file.id %}"}
       .panel-body
         %h4 Archive
-        {% for (var j=0, archive_file; archive_file=file.archive_files[j]; j++) { %}
-        %table.document{:style => "width:100%"}
-          %tr(data-created_at = "{%= archive_file.created_at %}" data-formatted_filesize = "{%= archive_file.formatted_filesize %}" data-id = "{%= archive_file.id %}" data-lastModifiedDate = "{%= archive_file.lastModifiedDate %}" data-original_filename = "{%= archive_file.original_filename %}" data-original_type = "{%= archive_file. original_type %}" data-revision = "{%= archive_file.revision %}")
+        {% if (file.archive_files_presentation_attributes && (file.archive_files_presentation_attributes.length == 0)) { %}
+        %p empty
+        {% } else { %}
+        {% for (var j=0, archive_file; archive_file=file.archive_files_presentation_attributes[j]; j++) { %}
+        %table.document{:style => "width:100%"}(data-formatted_creation_date = "{%= archive_file.formatted_creation_date %}" data-formatted_filesize = "{%= archive_file.formatted_filesize %}" data-id = "{%= archive_file.id %}" data-formatted_modification_date = "{%= archive_file.formatted_modification_date %}" data-original_filename = "{%= archive_file.original_filename %}" data-original_type = "{%= archive_file. original_type %}" data-revision = "{%= archive_file.revision %}")
+          %tr
             %td.title{:width => '340px'}
               %div{:'data-toggle' => 'edit'}
                 .fade.edit
@@ -79,15 +81,15 @@
             %td.under_popover
               %i.glyphicon.glyphicon-cloud-download.download
             %td.under_popover
-              %div{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{%= archive_file.id %}"}
+              -# just to keep the spacing the same
+              %div{:style => 'visibility:hidden'}
                 %i.fa.fa-archive
             %td.under_popover
-              -# next tag is where the fileupload is attached
-              #file_replace
-                %i.fa.fa-plus{:onClick => "$(this).parent().find('input:file').click()"}
-                %input{:multiple => "multiple", :name => "replaceFile", :type => "file", :style => "position:absolute; opacity:0; top:0px; left:400px; cursor:pointer;"}
+              -# just to keep the spacing the same
+              #file_replace{:style => 'visibility:hidden'}
+                %i.fa.fa-plus
             %td
-              %div.delete{:data=> {:url => "{%= archive_file.deleteUrl %}"}}
+              %div.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
                 %i.glyphicon.glyphicon-trash
-        {% } %}
+        {% }} %}
   {% } %}

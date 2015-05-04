@@ -1,18 +1,24 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require 'active_support/number_helper'
 
 feature "internal document management", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
+  extend ActiveSupport::NumberHelper
+
   before do
-    create_a_document
+    create_a_document(:revision => "3.0", :title => "my important document")
+    @doc = InternalDocument.first
     visit corporate_services_internal_documents_path('en')
   end
 
   scenario "add a new document" do
     expect(page_heading).to eq "Internal Documents"
     expect(page_title).to eq "Internal Documents"
+    expect(page.find('td.title .no_edit').text).to eq "my important document"
+    expect(page.find('td.revision .no_edit').text).to eq "3.0"
     page.attach_file("file", upload_document, :visible => false)
     # not sure how this field has become visible, but it works!
     page.find("#internal_document_title").set("some file name")
@@ -59,6 +65,11 @@ feature "internal document management", :js => true do
   scenario "view file details" do
     page.find('.template-download .details').click
     expect(page).to have_css('.fileDetails')
+    expect(page.find('.popover-content .name' ).text).to         eq (@doc.original_filename)
+    expect(page.find('.popover-content .size' ).text).to         eq (@doc.formatted_filesize)
+    expect(page.find('.popover-content .rev' ).text).to          eq (@doc.revision)
+    expect(page.find('.popover-content .lastModified' ).text).to eq (@doc.formatted_modification_date)
+    expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.formatted_creation_date)
     page.find('.closepopover').click
     expect(page).not_to have_css('.fileDetails')
   end
@@ -70,25 +81,38 @@ feature "internal document management", :js => true do
     expect{
       page.find('.glyphicon-ok').click
       sleep(0.1)
-    }.to change{ InternalDocument.first.title }.to("new document title").
-     and change{ InternalDocument.first.revision }.to("3.3")
+    }.to change{ @doc.title }.to("new document title").
+     and change{ @doc.revision }.to("3.3")
   end
 
   scenario "download a file" do
     click_the_download_icon
     expect(page.response_headers['Content-Type']).to eq('application/pdf')
-    expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"my_test_file.pdf\"")
+    filename = @doc.original_filename
+    expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
   end
 
   xscenario "add a new revision" do
   end
 
-  xscenario "delete primary file while archive files remain" do
-    
+  scenario "delete primary file while archive files remain" do
+    create_a_document_in_the_same_group(:revision => "2.0")
+    create_a_document_in_the_same_group(:revision => "1.0") # now there are revs 3,2,1 in the db
+    visit corporate_services_internal_documents_path('en')
+    expect(page_heading).to eq "Internal Documents"
+    page.find('.template-download .delete').click
+    sleep(0.2) # ajax, javascript
+    expect(page.find('td.revision .no_edit').text).to eq "2.0"
+    expect(InternalDocument.primary.first.revision).to eq "2.0"
+    # now there should be a single archive file
+    click_the_archive_icon
+    expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
+    expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
+    expect(page.find('.template-download .panel-body')).to have_selector('table.document')
   end
 
   scenario "view archives" do
-    create_a_document_in_the_same_group
+    create_a_document_in_the_same_group(:revision => "2.0")
     visit corporate_services_internal_documents_path('en')
     expect(page_heading).to eq "Internal Documents"
     click_the_archive_icon
@@ -117,9 +141,11 @@ def click_the_archive_icon
   sleep(0.2)
 end
 
-def create_a_document_in_the_same_group
-  group_id = InternalDocument.first.document_group_id
-  FactoryGirl.create(:internal_document, :document_group_id => group_id)
+def create_a_document_in_the_same_group(**options)
+  revision_major, revision_minor = options.delete(:revision).split('.') if options && options[:revision]
+  group_id = @doc.document_group_id
+  options = options.merge({ :revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9), :document_group_id => group_id})
+  FactoryGirl.create(:internal_document, :archive, options)
 end
 
 def click_the_download_icon
@@ -131,8 +157,10 @@ def click_the_edit_icon
   sleep(0.1)
 end
 
-def create_a_document
-  FactoryGirl.create(:internal_document, :primary => true)
+def create_a_document(**options)
+  revision_major, revision_minor = options.delete(:revision).split('.') if options && options[:revision]
+  options = options.merge({:primary => true, :revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9)})
+  FactoryGirl.create(:internal_document, options)
 end
 
 def add_document_link
