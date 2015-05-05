@@ -1,3 +1,3 @@
 json.files do
-  json.partial! 'index'
+  json.partial! 'files'
 end

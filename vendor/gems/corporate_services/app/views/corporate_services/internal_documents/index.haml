@@ -144,7 +144,7 @@
         alert 'Changes were not saved, for some reason.'
 
 :coffeescript
-  files = #{ render :partial => 'index.json' }
+  files = #{ render :partial => 'files', :formats => [:json] }
 
   $ ->
     'use strict'
