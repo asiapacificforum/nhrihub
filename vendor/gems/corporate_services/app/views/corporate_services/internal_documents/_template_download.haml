@@ -38,8 +38,9 @@
               %i.fa.fa-archive
           %td.under_popover
             -# next tag is where the fileupload is attached
-            #file_replace
+            .file_replace
               %i.fa.fa-plus{:onClick => "$(this).parent().find('input:file').click()"}
+              %input{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:400px; opacity:0;"}
           %td
             %div.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
               %i.glyphicon.glyphicon-trash

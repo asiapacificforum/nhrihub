@@ -10,7 +10,7 @@
         %span.btn.btn-success.fileinput-button
           %i.glyphicon.glyphicon-plus
           %span= t('.add')
-          %input{:multiple => "multiple", :name => "file", :type => "file"}/
+          %input{:multiple => "multiple", :name => "file", :type => "file"}
         %button.btn.btn-primary.start{:type => "submit"}
           %i.glyphicon.glyphicon-upload
           %span= t('.start')
@@ -161,17 +161,22 @@
         # finished: function(){} // another callback that's available
         prependFiles : false
         filesContainer: '.files'
+        formData: ->
+          inputs = @.context.find(':input')
+          arr = inputs.serializeArray()
+          arr[arr.length] =  {name: "internal_document[primary]", value: true}
+          return arr
 
-    $('#fileupload').bind 'fileuploadsubmit', (e, data) ->
-        inputs = data.context.find(':input')
-        data.formData = inputs.serializeArray()
+    # $('#fileupload').bind 'fileuploadsubmit', (e, data) ->
+    #     inputs = data.context.find(':input')
+    #     data.formData = inputs.serializeArray()
 
 
     #   INITIALIZE THE FILE LIST FROM JSON DATA AT DOCUMENT LOAD
     result = tmpl($('#template-download').html(),{files: files})
     $(result)[ 'appendTo' ]($('.files'))
 
-    $('#file_replace').fileupload
+    $('.file_replace').fileupload
         url: 'internal_documents',
         paramName: 'internal_document[file]',
         acceptFileTypes: new RegExp("\\.(#{InternalDocument.acceptFileTypes.join('|')})$",'i'),
@@ -180,6 +185,11 @@
         # finished: function(){} // another callback that's available
         prependFiles : false
         filesContainer: '.replace_files'
+        formData: ->
+          inputs = @.context.find(':input')
+          arr = inputs.serializeArray()
+          arr[arr.length] =  {name: "internal_document[primary]", value: false}
+          return arr
 
 
 :coffeescript

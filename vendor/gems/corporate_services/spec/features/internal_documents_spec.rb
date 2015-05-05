@@ -23,7 +23,7 @@ feature "internal document management", :js => true do
     # not sure how this field has become visible, but it works!
     page.find("#internal_document_title").set("some file name")
     page.find('#internal_document_revision').set("3.3")
-    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.primary.count}.from(1).to(2)
     expect(page).to have_css(".files .template-download", :count => 2)
     doc = InternalDocument.last
     expect( doc.title ).to eq "some file name"
@@ -41,7 +41,7 @@ feature "internal document management", :js => true do
     expect(page_heading).to eq "Internal Documents"
     page.attach_file("file", upload_document, :visible => false)
     page.find("#internal_document_title").set("")
-    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}
+    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.primary.count}
     expect(page).to have_css(".title", :text => 'first_upload_file')
   end
 
@@ -66,7 +66,7 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete a file from database" do
-    expect{ page.find('.template-download .delete').click; sleep(0.3) }.to change{InternalDocument.count}.from(1).to(0)
+    expect{ page.find('.template-download .delete').click; sleep(0.3) }.to change{InternalDocument.primary.count}.from(1).to(0)
   end
 
   scenario "delete a file from filesystem" do
@@ -103,7 +103,17 @@ feature "internal document management", :js => true do
     expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
   end
 
-  xscenario "add a new revision" do
+  scenario "add a new revision" do
+    expect(page_heading).to eq "Internal Documents"
+    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find("#internal_document_title").set("some replacement file name")
+    page.find('#internal_document_revision').set("3.5")
+    expect{upload_replace_files_link.click; sleep(0.5)}.not_to change{InternalDocument.primary.count}
+    expect(InternalDocument.archive.count).to eq 1
+  end
+
+  xscenario "add a new file and then add a new revision to it" do
+    
   end
 
   scenario "delete primary file while archive files remain" do
@@ -176,6 +186,10 @@ end
 
 def add_document_link
   page.find('.fileinput-button')
+end
+
+def upload_replace_files_link
+  page.find('.template-upload .start .glyphicon-upload')
 end
 
 def upload_files_link
