@@ -6,9 +6,8 @@ class CorporateServices::InternalDocumentsController < ApplicationController
 
   def create
     params["internal_document"]["original_filename"] = params[:internal_document][:file].original_filename
-    internal_document = InternalDocument.create(doc_params)
-    data = internal_document.presentation_attributes
-    render :json => {:files => [data]} # b/c this is how jquery-fileupload-ui expects the data to be formatted
+    @internal_documents = [InternalDocument.create(doc_params)]
+    render :layout => false # see jbuilder template in views
   end
 
   def destroy
@@ -16,9 +15,9 @@ class CorporateServices::InternalDocumentsController < ApplicationController
     if doc.primary? && doc.has_archive_files?
       # doc being deleted is primary with archive
       # so promote an inheritor
-      new_primary = doc.inheritor.promoted
+      @internal_document = doc.inheritor.promoted
       InternalDocument.destroy(params[:id])
-      render :json => new_primary.presentation_attributes
+      render :partial => 'internal_document', :layout => false, :locals => {:internal_document => @internal_document}
     else
       # delete it and move on
       InternalDocument.destroy(params[:id])
@@ -27,9 +26,9 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   end
 
   def update
-    doc = InternalDocument.find(params[:id])
-    if doc.update(doc_params)
-      render :json => doc.presentation_attributes, :status => 200
+    @internal_document = InternalDocument.find(params[:id])
+    if @internal_document.update(doc_params)
+      render :partial => 'internal_document', :layout => false, :status => 200, :locals => {:internal_document => @internal_document}
     else
       render :nothing => true, :status => 500
     end
@@ -49,6 +48,6 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   def doc_params
     params.
       require(:internal_document).
-      permit(:title, :revision, :file, :original_filename, :original_type, :lastModifiedDate, :filesize)
+      permit(:title, :revision, :file, :original_filename, :original_type, :lastModifiedDate, :filesize, :primary)
   end
 end

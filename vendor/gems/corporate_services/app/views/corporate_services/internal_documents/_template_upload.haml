@@ -11,6 +11,8 @@
             = hidden_field_tag 'internal_document[lastModifiedDate]', "{%= file.lastModifiedDate %}"
             = hidden_field_tag 'internal_document[original_type]', "{%= file.type %}"
             = hidden_field_tag 'internal_document[filesize]', "{%= file.size %}"
+            -# this will not work for uploading archive files:
+            = hidden_field_tag 'internal_document[primary]', "true"
           %td{:colspan => 2}
             .size= t('.processing')
             .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}

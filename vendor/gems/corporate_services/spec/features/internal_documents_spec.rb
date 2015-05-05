@@ -22,8 +22,19 @@ feature "internal document management", :js => true do
     page.attach_file("file", upload_document, :visible => false)
     # not sure how this field has become visible, but it works!
     page.find("#internal_document_title").set("some file name")
+    page.find('#internal_document_revision').set("3.3")
     expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
     expect(page).to have_css(".files .template-download", :count => 2)
+    doc = InternalDocument.last
+    expect( doc.title ).to eq "some file name"
+    expect( doc.filesize ).to eq 7945
+    expect( doc.original_filename ).to eq 'first_upload_file.pdf'
+    expect( doc.revision_major ).to eq 3
+    expect( doc.revision_minor ).to eq 3
+    expect( doc.lastModifiedDate ).to eq "2015-05-04 22:37:57.000000000 +0000"
+    expect( doc.document_group_id ).to eq @doc.document_group_id.succ
+    expect( doc.primary ).to eq true
+    expect( doc.original_type ).to eq "application/pdf"
   end
 
   scenario "add a new document but omit document name" do
@@ -66,10 +77,10 @@ feature "internal document management", :js => true do
     page.find('.template-download .details').click
     expect(page).to have_css('.fileDetails')
     expect(page.find('.popover-content .name' ).text).to         eq (@doc.original_filename)
-    expect(page.find('.popover-content .size' ).text).to         eq (@doc.formatted_filesize)
+    expect(page.find('.popover-content .size' ).text).to         match /\d\d\.\d KB/
     expect(page.find('.popover-content .rev' ).text).to          eq (@doc.revision)
-    expect(page.find('.popover-content .lastModified' ).text).to eq (@doc.formatted_modification_date)
-    expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.formatted_creation_date)
+    expect(page.find('.popover-content .lastModified' ).text).to eq (@doc.lastModifiedDate.to_s)
+    expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.created_at.to_s)
     page.find('.closepopover').click
     expect(page).not_to have_css('.fileDetails')
   end
@@ -77,12 +88,12 @@ feature "internal document management", :js => true do
   scenario "edit filename and revision" do
     click_the_edit_icon
     page.find('.template-download input.title').set("new document title")
-    page.find('.template-download input.revision').set("3.3")
+    page.find('.template-download input.revision').set("4.4")
     expect{
       page.find('.glyphicon-ok').click
       sleep(0.1)
-    }.to change{ @doc.title }.to("new document title").
-     and change{ @doc.revision }.to("3.3")
+    }.to change{ @doc.reload.title }.to("new document title").
+     and change{ @doc.reload.revision }.to("4.4")
   end
 
   scenario "download a file" do

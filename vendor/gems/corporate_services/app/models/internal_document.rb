@@ -4,6 +4,8 @@ class InternalDocument < ActiveRecord::Base
   include Rails.application.routes.url_helpers
   include ActiveSupport::NumberHelper
 
+  attr_reader :url, :deleteUrl
+
   belongs_to :document_group
 
   attachment :file
@@ -39,40 +41,9 @@ class InternalDocument < ActiveRecord::Base
     self.revision_major, self.revision_minor = val.split('.').map(&:to_i)
   end
 
-  def url
-    corporate_services_internal_document_path(I18n.locale, id)
-  end
-
-  def deleteUrl
-    corporate_services_internal_document_path(I18n.locale, id)
-  end
-
   def archive_files
     # in real life archive_files will never be primary, but it can happen in testing
     primary? ? self.class.archive_files_for(self).archive.all : []
-  end
-
-  def archive_files_presentation_attributes
-    archive_files.map(&:presentation_attributes)
-  end
-
-  def presentation_attributes
-    methods = [:url, :deleteUrl, :revision, :formatted_modification_date, :formatted_creation_date, :formatted_filesize, :archive_files_presentation_attributes].inject({}){|h, m| h[m.to_s]= send(m); h}
-    attributes.
-      except!("updated_at", "created_at", "lastModifiedDate", "revision_minor", "revision_major", "filesize").
-      merge(methods)
-  end
-
-  def formatted_filesize
-    number_to_human_size(filesize)
-  end
-
-  def formatted_modification_date
-    lastModifiedDate.to_s
-  end
-
-  def formatted_creation_date
-    created_at.to_s
   end
 
   def has_revision?
