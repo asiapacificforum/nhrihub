@@ -28,7 +28,8 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   def update
     @internal_document = InternalDocument.find(params[:id])
     if @internal_document.update(doc_params)
-      render :partial => 'internal_document', :layout => false, :status => 200, :locals => {:internal_document => @internal_document}
+      # it's a jbuilder partial
+      render :layout => false, :status => 200
     else
       render :nothing => true, :status => 500
     end
@@ -48,6 +49,9 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   def doc_params
     params.
       require(:internal_document).
-      permit(:title, :revision, :file, :original_filename, :original_type, :lastModifiedDate, :filesize, :primary)
+      permit(:title, :revision, :file, :original_filename, :original_type,
+             :lastModifiedDate, :filesize, :primary,
+             :archive_files =>[:title, :revision, :file, :original_filename, :original_type,
+             :lastModifiedDate, :filesize, :primary, :document_group_id])
   end
 end

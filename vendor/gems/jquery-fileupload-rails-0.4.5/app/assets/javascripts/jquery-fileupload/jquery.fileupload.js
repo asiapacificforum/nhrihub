@@ -482,7 +482,7 @@
                     if (that._isInstanceOf('FormData', options.formData)) {
                         formData = options.formData;
                     } else {
-												// options.formData is an array of the form's field/value objects
+                        // options.formData is an array of the form's field/value objects
                         formData = new FormData();
                         $.each(this._getFormData(options), function (index, field) {
                             formData.append(field.name, field.value);

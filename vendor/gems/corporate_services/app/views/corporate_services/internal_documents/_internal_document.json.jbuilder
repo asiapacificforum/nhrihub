@@ -2,7 +2,8 @@ attrs = [:id,
          :title,
          :original_filename,
          :original_type,
-         :revision]
+         :revision,
+         :document_group_id]
 
 json.(internal_document, *attrs)
 json.url corporate_services_internal_document_path(I18n.locale, internal_document)

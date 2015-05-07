@@ -110,9 +110,18 @@ feature "internal document management", :js => true do
     page.find('#internal_document_revision').set("3.5")
     expect{upload_replace_files_link.click; sleep(0.5)}.not_to change{InternalDocument.primary.count}
     expect(InternalDocument.archive.count).to eq 1
+    expect(page.all('.template-download').count).to eq 1
   end
 
   xscenario "add a new file and then add a new revision to it" do
+    
+  end
+
+  xscenario "initiate adding a revision but cancel" do
+    
+  end
+
+  xscenario "ensure all functions in download-template work for newly added docs and edited docs" do
     
   end
 

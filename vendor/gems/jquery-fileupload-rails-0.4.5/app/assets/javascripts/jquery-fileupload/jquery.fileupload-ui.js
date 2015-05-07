@@ -166,11 +166,22 @@
                         that._transition($(this)).done(
                             function () {
                                 var node = $(this);
-                                template = that._renderDownload([file]) // the rendered download template, not yet in the page
-                                    .replaceAll(node);
+                                // if the received id is the same as one of the template-download table.document ids
+                                // an archive file is being uploaded, so replace the original template-download
+                                // otherwise append the new file
+                                var received_id = file.id
+                                var target_el = $("table.document[data-id='"+received_id+"']")
+                                if(target_el.length > 0){ // replace it
+                                  template = that._renderDownload([file])
+                                      .replaceAll(target_el.closest('.template-download'));
+                                }else{ //append it
+                                  template = that._renderDownload([file])
+                                      .replaceAll(node);
+                                }
                                 that._forceReflow(template);
                                 that._transition(template).done( // put the template in the page, and grigger events when the fade transition is complete
                                     function () {
+                                        data.context.remove()
                                         data.context = $(this);
                                         that._trigger('completed', e, data);
                                         that._trigger('finished', e, data);
@@ -360,7 +371,7 @@
                         $(this).data('fileupload'),
                     removeNode = function (resp, stat, jqx) {
                       if(parseInt(resp.id) == $(this).find('table.document').data('id')){
-												// remove the deleted file from the page, response it just {id : xxx}
+                        // remove the deleted file from the page, response it just {id : xxx}
                         that._transition(data.context).done(
                             function () {
                                 // where the actual tag is removed
@@ -369,10 +380,10 @@
                             }
                         );
                       }else{
-												// we just deleted the primay file but there were archive files
-												// so we promoted one of them to primary, and we replace the deleted
-												// file with the newly promoted file!
-												$(this).replaceWith(that.options.downloadTemplate({files : [resp]}))
+                        // we just deleted the primay file but there were archive files
+                        // so we promoted one of them to primary, and we replace the deleted
+                        // file with the newly promoted file!
+                        $(this).replaceWith(that.options.downloadTemplate({files : [resp]}))
                       }
                     };
                 if (data.url) {

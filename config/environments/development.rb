@@ -40,4 +40,7 @@ Rails.application.configure do
 
   # Disable quiet_assets gem and allow asset requests to be reported in the log
   # config.quiet_assets = false
+
+  # autoload vendor/gems files for every request
+  config.autoload_paths += Dir.glob(Rails.root.join("vendor", "gems", "**", "app", "**", "{models,views,controllers}"))
 end

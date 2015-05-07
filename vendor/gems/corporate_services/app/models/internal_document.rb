@@ -4,6 +4,9 @@ class InternalDocument < ActiveRecord::Base
   include Rails.application.routes.url_helpers
   include ActiveSupport::NumberHelper
 
+  AcceptFileTypes = [:pdf, :doc, :docx]
+  MaxFileSize = 3000000
+
   attr_reader :url, :deleteUrl
 
   belongs_to :document_group
@@ -44,6 +47,13 @@ class InternalDocument < ActiveRecord::Base
   def archive_files
     # in real life archive_files will never be primary, but it can happen in testing
     primary? ? self.class.archive_files_for(self).archive.all : []
+  end
+
+  def archive_files=(files)
+    files.each do |file|
+      file[:document_group_id] = document_group_id
+      self.class.create(file)
+    end
   end
 
   def has_revision?

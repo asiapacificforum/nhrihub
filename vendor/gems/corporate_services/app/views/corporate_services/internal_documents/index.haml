@@ -10,7 +10,7 @@
         %span.btn.btn-success.fileinput-button
           %i.glyphicon.glyphicon-plus
           %span= t('.add')
-          %input{:multiple => "multiple", :name => "file", :type => "file"}
+          %input#primary_fileinput{:multiple => "multiple", :name => "file", :type => "file"}
         %button.btn.btn-primary.start{:type => "submit"}
           %i.glyphicon.glyphicon-upload
           %span= t('.start')
@@ -42,6 +42,9 @@
 = render :partial => 'template_upload'
 = render :partial => 'template_download'
 
+= javascript_include_tag 'corporate_services/in_page_edit'
+= javascript_include_tag 'corporate_services/popover'
+
 :coffeescript
   $ ->
     $('.fileupload-buttonbar .start').on 'click', ->
@@ -61,87 +64,6 @@
       id = $target.closest('table.document').data('id')
       window.location = "#{corporate_services_internal_document_path('id')}".replace(/id/,id)
 
-:coffeescript
-  ##############
-  # IN-PAGE EDIT
-  ##############
-  $ ->
-    class @InpageEditElement
-      constructor : (@el) ->
-
-      switch_to_edit : ->
-        @set_field_width()
-        @show(@input())
-        @hide(@text())
-
-      switch_to_show : ->
-        @show(@text())
-        @hide(@input())
-
-      set_field_width : ->
-        @input().find('input').css('width',@text_width()+10)
-
-      input : ->
-        $(@el).find('.edit')
-
-      text : ->
-        $(@el).find('.no_edit')
-
-      text_width : ->
-        @text().find(':first-child').width()
-
-      show : (element)->
-        element.css("opacity",1).css("z-index",10)
-
-      hide : (element)->
-        element.css("opacity",0).css("z-index",9)
-
-    class @InpageEdit
-      constructor : ->
-        $('body').on 'click', '#edit_start', (e)=>
-          $target = $(e.target)
-          @context = $target.closest('.template-download')
-          @edit()
-          @title_element().focus()
-
-        $('body').on 'click', '#edit_cancel', (e)=>
-          $target = $(e.target)
-          @context = $target.closest('.template-download')
-          @show()
-
-      edit : ->
-        @elements().each (i,el) ->
-          el.switch_to_edit()
-
-      show : ->
-        @elements().each (i,el) ->
-          el.switch_to_show()
-
-      elements : ->
-        @context.find("[data-toggle='edit']").map (i,el)->
-          new document.InpageEditElement(el)
-
-      title_element : ->
-        @context.find('input.title')
-
-    window.inpage_edit = new @InpageEdit
-
-    # after edit, send changes to the server via ajax
-    $('body').on 'click', ".glyphicon-ok", (e)->
-      $el = $(e.target)
-      data = {'_method':'put'}
-      id = $el.closest('table.document').data('id')
-      url = "#{corporate_services_internal_document_path('id')}".replace(/id/,id)
-      data['internal_document'] = {}
-      data['internal_document']['title'] = $el.closest('.template-download').find('.edit .title').val()
-      data['internal_document']['revision'] = $el.closest('.template-download').find('.edit .revision').val()
-      $.post(url, data, (response, text, jqXhr)->
-        id = response.id
-        source = $("table.document[data-id='"+id+"']").closest('.template-download')
-        new_template = tmpl($('#template-download').html(),{files: [response]})
-        source.replaceWith(new_template)
-        ).fail ->
-        alert 'Changes were not saved, for some reason.'
 
 :coffeescript
   files = #{ render :partial => 'files', :formats => [:json] }
@@ -149,70 +71,48 @@
   $ ->
     'use strict'
 
+    #   INITIALIZE THE FILE LIST FROM JSON DATA AT DOCUMENT LOAD
+    result = tmpl($('#template-download').html(),{files: files})
+    $(result)[ 'appendTo' ]($('.files'))
+
     # Initialize the jQuery File Upload widget
     # from the InternalDocument class attributes
     # set in its initializer
     $('#fileupload').fileupload
         url: 'internal_documents.json',
         paramName: 'internal_document[file]',
-        acceptFileTypes: new RegExp("\\.(#{InternalDocument.acceptFileTypes.join('|')})$",'i'),
-        maxFileSize: parseInt("#{InternalDocument.maxFileSize}"),
+        # TODO move these ruby interpolations out of coffeescript and into javascript, for better performance
+        acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i'),
+        maxFileSize: parseInt("#{InternalDocument::MaxFileSize}"),
         # completed: function(e,data){},
         # finished: function(){} // another callback that's available
         prependFiles : false
         filesContainer: '.files'
+        fileInput: '#primary_fileinput'
         formData: ->
           inputs = @.context.find(':input')
           arr = inputs.serializeArray()
           arr[arr.length] =  {name: "internal_document[primary]", value: true}
           return arr
 
-    # $('#fileupload').bind 'fileuploadsubmit', (e, data) ->
-    #     inputs = data.context.find(':input')
-    #     data.formData = inputs.serializeArray()
-
-
-    #   INITIALIZE THE FILE LIST FROM JSON DATA AT DOCUMENT LOAD
-    result = tmpl($('#template-download').html(),{files: files})
-    $(result)[ 'appendTo' ]($('.files'))
-
-    $('.file_replace').fileupload
-        url: 'internal_documents',
-        paramName: 'internal_document[file]',
-        acceptFileTypes: new RegExp("\\.(#{InternalDocument.acceptFileTypes.join('|')})$",'i'),
-        maxFileSize: parseInt("#{InternalDocument.maxFileSize}"),
-        # completed: function(e,data){},
-        # finished: function(){} // another callback that's available
-        prependFiles : false
-        filesContainer: '.replace_files'
-        formData: ->
-          inputs = @.context.find(':input')
-          arr = inputs.serializeArray()
-          arr[arr.length] =  {name: "internal_document[primary]", value: false}
-          return arr
-
-
-:coffeescript
-  $ ->
-    # configure the "information" popover for the files
-    # it's a twitter-bootstrap popover
-    $("body").popover
-      selector : '.details',
-      html : true,
-      title : ->
-        $('#detailsTitle').html() # in the partial, above
-      content : ->
-        data = $(@).closest('table.document').data() # in the partial, above
-        tmpl('detailsContent', data) # in the partial, above
-      template : $('#popover_template').html() # in the partial, above
-
-    # click on the 'x' close icon in the popover to close it
-    $('body').on 'click', '.closepopover', ->
-      $(@).closest('.template-download').find('.details').popover('hide')
-
-    # click anywhere to close the popover
-    $('html').on 'click', (e)->
-      target_class = $(e.target).attr('class')
-      if typeof(target_class) == "undefined" or !(target_class.match(/glyphicon-info-sign/) or target_class.match(/glyphicon-remove/))
-        $('.details').popover('hide')
-
+    $('.file_replace').each (index)->
+      $("#"+@.id).fileupload
+          url: 'internal_documents/'+@.id.replace('upload','')
+          paramName: 'internal_document[archive_files][][file]'
+          # TODO move these ruby interpolations out of coffeescript and into javascript, for better performance
+          acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i')
+          maxFileSize: parseInt("#{InternalDocument::MaxFileSize}")
+          # completed: function(e,data){}
+          # finished: function(){} // another callback that's available
+          prependFiles : false
+          filesContainer: '.replace_files'
+          fileInput: "#"+@.id+" #archive_fileinput"
+          type: 'put' # updating the primary file by adding an archive file
+          fail: ->
+            alert("The update failed for some reason")
+          formData: ->
+            inputs = @.context.find(':input')
+            arr = inputs.serializeArray()
+            o['name'] = o['name'].replace('internal_document','internal_document[archive_files][]') for o in arr
+            arr[arr.length] =  {name: "internal_document[archive_files][][primary]", value: false}
+            return arr

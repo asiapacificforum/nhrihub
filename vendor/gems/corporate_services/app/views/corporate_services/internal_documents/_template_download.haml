@@ -3,7 +3,7 @@
   {% for (var i=0, file; file=o.files[i]; i++) { %}
   .panel.panel-default.template-download
     #headingOne.panel-heading{:role => "tab"}
-      %table.document{:style => "width:100%"}(data-formatted_creation_date = "{%= file.formatted_creation_date %}" data-formatted_filesize = "{%= file.formatted_filesize %}" data-id = "{%= file.id %}" data-formatted_modification_date = "{%= file.formatted_modification_date %}" data-original_filename = "{%= file.original_filename %}" data-original_type = "{%= file. original_type %}" data-revision = "{%= file.revision %}")
+      %table.document{:style => "width:100%"}(data-formatted_creation_date = "{%= file.formatted_creation_date %}" data-formatted_filesize = "{%= file.formatted_filesize %}" data-id = "{%= file.id %}" data-formatted_modification_date = "{%= file.formatted_modification_date %}" data-original_filename = "{%= file.original_filename %}" data-original_type = "{%= file. original_type %}" data-revision = "{%= file.revision %}" data-document_group_id = "{%= file.document_group_id %}")
         %tr
           %td.title{:width => '340px'}
             %div{:'data-toggle' => 'edit'}
@@ -38,9 +38,9 @@
               %i.fa.fa-archive
           %td.under_popover
             -# next tag is where the fileupload is attached
-            .file_replace
+            .file_replace{:id => "upload{%= file.id %}"}
               %i.fa.fa-plus{:onClick => "$(this).parent().find('input:file').click()"}
-              %input{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:400px; opacity:0;"}
+              %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:600px; opacity:0; width:0px;"}
           %td
             %div.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
               %i.glyphicon.glyphicon-trash
