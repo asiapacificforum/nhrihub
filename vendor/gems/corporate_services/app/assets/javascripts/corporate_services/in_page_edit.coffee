@@ -74,9 +74,13 @@ $ ->
     $.post(url, data, (response, text, jqXhr)->
       # TODO eventually need to return an object and not an array, the array is 'legacy'
       # but tmpl needs to be modified to deal with single objects
+      console.log text
+      console.log JSON.stringify(response)
       id = response.files[0].id
       source = $("table.document[data-id='"+id+"']").closest('.template-download')
       new_template = tmpl($('#template-download').html(), response)
       source.replaceWith(new_template)
       ).fail ->
-      alert 'Changes were not saved, for some reason.'
+        #console.log "Changes were not saved, for some reason"
+        #alerts seem to cause test failures
+        alert 'Changes were not saved, for some reason.'

@@ -222,6 +222,7 @@
                 if (data.context) {
                     data.context.each(function (index) {
                         if (data.errorThrown !== 'abort') {
+                            // in the case of a server error, data.files[index] is the file data sent to the server
                             var file = data.files[index];
                             file.error = file.error || data.errorThrown ||
                                 data.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.unknownError');
@@ -372,7 +373,7 @@
                 var that = $(this).data('blueimp-fileupload') ||
                         $(this).data('fileupload'),
                     removeNode = function (resp, stat, jqx) {
-                      if(typeof(resp.deleted_id) != 'undefined'){
+                      if((typeof(resp) != 'undefined') && (typeof(resp.deleted_id) != 'undefined')){
                         // remove the deleted file from the page, response it just {deleted_id : xxx}
                         that.deleted_id = resp.deleted_id
                         that._transition(data.context).done(
@@ -383,7 +384,7 @@
                                 that._trigger('destroyed', e, data);
                             }
                         );
-                      }else{
+                      }else if(typeof(resp) != 'undefined'){
                         // we have deleted the primay file but there were archive files
                         // so we promoted one of them to primary, and we replace the deleted
                         // file with the newly promoted file!
@@ -392,6 +393,10 @@
                         var replacement_id = $(replacement).find('.collapse').attr('id')
                         $(this).replaceWith(replacement);
                         this_parent.find('.collapse#'+replacement_id).collapse('show')
+                      }else{ // there was no ajax request/response b/c there had been an upload fail
+                        // so just remove the template-download
+                        //TODO anything to unbind here?
+                        data.context.remove();
                       }
                     };
                 if (data.url) {

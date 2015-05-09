@@ -143,6 +143,10 @@ feature "internal document management", :js => true do
     
   end
 
+  xscenario "upload a revision then edit the title and revision" do
+    
+  end
+
   scenario "delete an archive file" do
     create_a_document_in_the_same_group
     visit corporate_services_internal_documents_path('en')

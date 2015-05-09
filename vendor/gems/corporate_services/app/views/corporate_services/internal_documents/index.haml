@@ -100,9 +100,9 @@
               #console.log($._data(e,'events').change[0].namespace)
         #done: (e,data)->
           #console.log "done"
-        # failed: (e,data)->
-        #   if data.errorThrown != 'abort'
-        #     alert("The update failed for some reason")
+        failed: (e,data)->
+          if data.errorThrown != 'abort'
+            alert("The update failed for some reason")
         prependFiles : false
         filesContainer: '.files'
         fileInput: '#primary_fileinput'
@@ -126,9 +126,12 @@
           filesContainer: '.replace_files'
           fileInput: "#"+id+" #archive_fileinput"
           type: 'put' # updating the primary file by adding an archive file
-          #failed: (e,data)->
-          #  if data.errorThrown != 'abort'
-          #    alert("The update failed for some reason")
+          failed: (e,data)->
+            if data.errorThrown != 'abort'
+              console.log("update fail")
+              console.dir(e)
+              console.dir(data)
+              #alert("The update failed for some reason")
           formData: ->
             inputs = @.context.find(':input')
             arr = inputs.serializeArray()
