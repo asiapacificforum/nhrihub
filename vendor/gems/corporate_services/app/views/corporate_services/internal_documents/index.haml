@@ -64,6 +64,10 @@
       id = $target.closest('table.document').data('id')
       window.location = "#{corporate_services_internal_document_path('id')}".replace(/id/,id)
 
+    $('body').on 'click', '.template-upload i.circle', ->
+      #TODO need to unbind too
+      $('.template-upload').remove()
+
 
 :coffeescript
   files = #{ render :partial => 'files', :formats => [:json], :locals => {:internal_documents => @internal_documents} }
@@ -90,11 +94,15 @@
           #console.log "completed"
         finished: (e,data)->
           #console.log "finished"
-          attach_fileupload_to data.context.find('.file_replace')
-          #$('input:file').each (i,e)->
-            #console.log($._data(e,'events').change[0].namespace)
+          if data.errorThrown != 'abort'
+            attach_fileupload_to data.context.find('.file_replace')
+            #$('input:file').each (i,e)->
+              #console.log($._data(e,'events').change[0].namespace)
         #done: (e,data)->
           #console.log "done"
+        # failed: (e,data)->
+        #   if data.errorThrown != 'abort'
+        #     alert("The update failed for some reason")
         prependFiles : false
         filesContainer: '.files'
         fileInput: '#primary_fileinput'
@@ -118,8 +126,9 @@
           filesContainer: '.replace_files'
           fileInput: "#"+id+" #archive_fileinput"
           type: 'put' # updating the primary file by adding an archive file
-          fail: ->
-            alert("The update failed for some reason")
+          #failed: (e,data)->
+          #  if data.errorThrown != 'abort'
+          #    alert("The update failed for some reason")
           formData: ->
             inputs = @.context.find(':input')
             arr = inputs.serializeArray()

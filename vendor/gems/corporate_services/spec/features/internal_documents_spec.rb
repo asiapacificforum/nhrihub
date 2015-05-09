@@ -54,14 +54,14 @@ feature "internal document management", :js => true do
   scenario "upload an unpermitted file type and cancel" do
     page.attach_file("primary_file", upload_image, :visible => false)
     expect(page).to have_css('.error', :text => "File type not allowed")
-    page.find(".template-upload .cancel").click
+    page.find(".template-upload i.cancel").click
     expect(page).not_to have_css(".files .template_upload")
   end
 
   scenario "upload a file that exceeds size limit" do
     page.attach_file("primary_file", big_upload_document, :visible => false)
     expect(page).to have_css('.error', :text => "File is too large")
-    page.find(".template-upload .cancel").click
+    page.find(".template-upload i.cancel").click
     expect(page).not_to have_css(".files .template_upload")
   end
 
@@ -130,8 +130,13 @@ feature "internal document management", :js => true do
     expect(page.all('.template-download').count).to eq 2
   end
 
-  xscenario "initiate adding a revision but cancel" do
-    
+  scenario "initiate adding a revision but cancel" do
+    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find("#internal_document_title").set("some replacement file name")
+    page.find('#internal_document_revision').set("3.5")
+    expect(page).to have_selector('.template-upload', :visible => true)
+    click_cancel_icon
+    expect(page).not_to have_selector('.template-upload', :visible => true)
   end
 
   xscenario "ensure all functions in download-template work for newly added docs and edited docs" do
@@ -209,6 +214,10 @@ feature "internal document management", :js => true do
     # error is in ajax response, must handle it appropriately
   end
 
+end
+
+def click_cancel_icon
+  page.find(".template-upload .glyphicon-ban-circle").click
 end
 
 def archive_panel

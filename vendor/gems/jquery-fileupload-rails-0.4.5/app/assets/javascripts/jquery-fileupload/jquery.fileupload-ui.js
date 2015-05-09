@@ -122,7 +122,7 @@
             },
             // Callback for the start of each file upload request:
             send: function (e, data) {
-                console.log("sending: "+$(this).data().blueimpFileupload.eventNamespace)
+                //console.log("sending: "+$(this).data().blueimpFileupload.eventNamespace)
                 if (e.isDefaultPrevented()) {
                     return false;
                 }

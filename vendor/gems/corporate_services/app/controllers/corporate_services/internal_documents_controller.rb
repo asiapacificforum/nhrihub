@@ -23,7 +23,7 @@ class CorporateServices::InternalDocumentsController < ApplicationController
       doc.destroy
       render :partial => 'internal_document', :layout => false, :locals => {:internal_document => @internal_document}
     else
-      # either it's a primary file with no archive
+      # it's a primary file with no archive
       # delete it and move on
       doc.destroy
       render :json => {:deleted_id => params[:id]}
