@@ -14,6 +14,7 @@ class InternalDocument < ActiveRecord::Base
   attachment :file
 
   scope :archive_files_for, ->(doc){ where('"document_group_id" = ? and "id" != ?', doc.document_group_id, doc.id) }
+  scope :in_group_with,     ->(doc){ where('"document_group_id" = ? and "id" != ?', doc.document_group_id, doc.id) }
   scope :primary, ->{ where(:primary => true) }
   scope :archive, ->{ where(:primary => false) }
 
@@ -35,13 +36,17 @@ class InternalDocument < ActiveRecord::Base
     end
   end
 
+  def associated_primary
+    InternalDocument.in_group_with(self).primary.first
+  end
+
   def revision
     revs = [revision_major, revision_minor]
     revs.join('.') unless revs.all?(&:blank?)
   end
 
   def revision=(val)
-    self.revision_major, self.revision_minor = val.split('.').map(&:to_i)
+    self.revision_major, self.revision_minor = val.split('.').map(&:to_i) if val
   end
 
   def archive_files
@@ -71,6 +76,10 @@ class InternalDocument < ActiveRecord::Base
   def promoted
     update_attribute(:primary, true)
     self
+  end
+
+  def archive?
+    !primary?
   end
 
 end

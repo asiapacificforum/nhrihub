@@ -122,6 +122,7 @@
             },
             // Callback for the start of each file upload request:
             send: function (e, data) {
+                console.log("sending: "+$(this).data().blueimpFileupload.eventNamespace)
                 if (e.isDefaultPrevented()) {
                     return false;
                 }
@@ -181,6 +182,7 @@
                                 that._forceReflow(template);
                                 that._transition(template).done( // put the template in the page, and grigger events when the fade transition is complete
                                     function () {
+                                        //$('input:file').each(function(i,e){console.log($._data(e,'events').change[0].namespace)})
                                         data.context.remove()
                                         data.context = $(this);
                                         that._trigger('completed', e, data);
@@ -370,20 +372,26 @@
                 var that = $(this).data('blueimp-fileupload') ||
                         $(this).data('fileupload'),
                     removeNode = function (resp, stat, jqx) {
-                      if(parseInt(resp.id) == $(this).find('table.document').data('id')){
-                        // remove the deleted file from the page, response it just {id : xxx}
+                      if(typeof(resp.deleted_id) != 'undefined'){
+                        // remove the deleted file from the page, response it just {deleted_id : xxx}
+                        that.deleted_id = resp.deleted_id
                         that._transition(data.context).done(
                             function () {
-                                // where the actual tag is removed
-                                $(this).remove();
+                                // last file in the group so the template is removed
+                                // TODO shouldn't we unbind first?
+                                $("table.document[data-id="+that.deleted_id+"]").closest('.template-download').remove();
                                 that._trigger('destroyed', e, data);
                             }
                         );
                       }else{
-                        // we just deleted the primay file but there were archive files
+                        // we have deleted the primay file but there were archive files
                         // so we promoted one of them to primary, and we replace the deleted
                         // file with the newly promoted file!
-                        $(this).replaceWith(that.options.downloadTemplate({files : [resp]}))
+                        var replacement = that.options.downloadTemplate({files : [resp]});
+                        var this_parent = $(this).parent()
+                        var replacement_id = $(replacement).find('.collapse').attr('id')
+                        $(this).replaceWith(replacement);
+                        this_parent.find('.collapse#'+replacement_id).collapse('show')
                       }
                     };
                 if (data.url) {

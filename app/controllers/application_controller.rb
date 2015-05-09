@@ -43,6 +43,9 @@ private
 
   def with_locale
     I18n.with_locale(params[:locale]) { yield }
+  rescue => e
+    logger.error e.message
+    logger.error e.backtrace.join("\n")
   end
 
   def default_url_options(options = {})

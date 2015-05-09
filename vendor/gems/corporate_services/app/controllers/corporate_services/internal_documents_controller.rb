@@ -16,17 +16,26 @@ class CorporateServices::InternalDocumentsController < ApplicationController
       # doc being deleted is primary with archive
       # so promote an inheritor
       @internal_document = doc.inheritor.promoted
-      InternalDocument.destroy(params[:id])
+      doc.destroy
+      render :partial => 'internal_document', :layout => false, :locals => {:internal_document => @internal_document}
+    elsif doc.archive?
+      @internal_document = doc.associated_primary
+      doc.destroy
       render :partial => 'internal_document', :layout => false, :locals => {:internal_document => @internal_document}
     else
+      # either it's a primary file with no archive
       # delete it and move on
-      InternalDocument.destroy(params[:id])
-      render :json => {:id => params[:id]}
+      doc.destroy
+      render :json => {:deleted_id => params[:id]}
     end
   end
 
   def update
     @internal_document = InternalDocument.find(params[:id])
+    if params[:internal_document][:archive_files]
+      params["internal_document"][:archive_files][0]["original_filename"] =
+        params[:internal_document][:archive_files][0][:file].original_filename
+    end
     if @internal_document.update(doc_params)
       # it's a jbuilder partial
       render :layout => false, :status => 200

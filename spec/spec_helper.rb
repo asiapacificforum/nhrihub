@@ -22,6 +22,11 @@ require 'capybara/poltergeist'
 #Capybara.register_driver :poltergeist do |app|
   #Capybara::Poltergeist::Driver.new(app, :debug => true)
 #end
+# use this configuration to enable the page.driver.debug interface
+# see https://github.com/teampoltergeist/poltergeist
+#Capybara.register_driver :poltergeist do |app|
+  #Capybara::Poltergeist::Driver.new(app, :inspector => true, :timeout => 300)
+#end
 #comment this line out to use the default javascript server firefox
 Capybara.javascript_driver = :poltergeist
 

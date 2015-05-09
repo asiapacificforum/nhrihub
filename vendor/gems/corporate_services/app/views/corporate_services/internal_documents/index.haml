@@ -10,7 +10,7 @@
         %span.btn.btn-success.fileinput-button
           %i.glyphicon.glyphicon-plus
           %span= t('.add')
-          %input#primary_fileinput{:multiple => "multiple", :name => "file", :type => "file"}
+          %input#primary_fileinput{:multiple => "multiple", :name => "primary_file", :type => "file"}
         %button.btn.btn-primary.start{:type => "submit"}
           %i.glyphicon.glyphicon-upload
           %span= t('.start')
@@ -66,7 +66,7 @@
 
 
 :coffeescript
-  files = #{ render :partial => 'files', :formats => [:json] }
+  files = #{ render :partial => 'files', :formats => [:json], :locals => {:internal_documents => @internal_documents} }
 
   $ ->
     'use strict'
@@ -77,15 +77,24 @@
 
     # Initialize the jQuery File Upload widget
     # from the InternalDocument class attributes
-    # set in its initializer
+    # set in the model
     $('#fileupload').fileupload
         url: 'internal_documents.json',
         paramName: 'internal_document[file]',
         # TODO move these ruby interpolations out of coffeescript and into javascript, for better performance
         acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i'),
         maxFileSize: parseInt("#{InternalDocument::MaxFileSize}"),
-        # completed: function(e,data){},
         # finished: function(){} // another callback that's available
+        # completed: function(){} // another callback that's available
+        completed: ->
+          #console.log "completed"
+        finished: (e,data)->
+          #console.log "finished"
+          attach_fileupload_to data.context.find('.file_replace')
+          #$('input:file').each (i,e)->
+            #console.log($._data(e,'events').change[0].namespace)
+        #done: (e,data)->
+          #console.log "done"
         prependFiles : false
         filesContainer: '.files'
         fileInput: '#primary_fileinput'
@@ -95,9 +104,10 @@
           arr[arr.length] =  {name: "internal_document[primary]", value: true}
           return arr
 
-    $('.file_replace').each (index)->
-      $("#"+@.id).fileupload
-          url: 'internal_documents/'+@.id.replace('upload','')
+    attach_fileupload_to = ($element)->
+      id = $element.attr('id')
+      $("#"+id).fileupload
+          url: 'internal_documents/'+id.replace('upload','')
           paramName: 'internal_document[archive_files][][file]'
           # TODO move these ruby interpolations out of coffeescript and into javascript, for better performance
           acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i')
@@ -106,7 +116,7 @@
           # finished: function(){} // another callback that's available
           prependFiles : false
           filesContainer: '.replace_files'
-          fileInput: "#"+@.id+" #archive_fileinput"
+          fileInput: "#"+id+" #archive_fileinput"
           type: 'put' # updating the primary file by adding an archive file
           fail: ->
             alert("The update failed for some reason")
@@ -116,3 +126,6 @@
             o['name'] = o['name'].replace('internal_document','internal_document[archive_files][]') for o in arr
             arr[arr.length] =  {name: "internal_document[archive_files][][primary]", value: false}
             return arr
+
+    $('.file_replace').each ->
+      attach_fileupload_to($(@))

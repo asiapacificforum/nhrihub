@@ -1,3 +1,3 @@
 json.files do
-  json.partial! 'files'
+  json.partial! 'files', :locals => {:internal_documents => @internal_documents}
 end

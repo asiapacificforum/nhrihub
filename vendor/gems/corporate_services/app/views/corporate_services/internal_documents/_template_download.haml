@@ -1,4 +1,3 @@
--# replaces the upload template after a file has been uploaded
 %script#template-download{:type => 'html/template'}
   {% for (var i=0, file; file=o.files[i]; i++) { %}
   .panel.panel-default.template-download
@@ -40,7 +39,9 @@
             -# next tag is where the fileupload is attached
             .file_replace{:id => "upload{%= file.id %}"}
               %i.fa.fa-plus{:onClick => "$(this).parent().find('input:file').click()"}
-              %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:600px; opacity:0; width:0px;"}
+              -# wierd opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
+              -# only required for testing, it actually works in firefox in real life!
+              %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:400px; opacity:0.01; width:0.01px;"}
           %td
             %div.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
               %i.glyphicon.glyphicon-trash
@@ -90,7 +91,7 @@
               #file_replace{:style => 'visibility:hidden'}
                 %i.fa.fa-plus
             %td
-              %div.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
+              %div.delete{:data=> {:url => "{%= archive_file.deleteUrl %}"}}
                 %i.glyphicon.glyphicon-trash
         {% }} %}
   {% } %}
