@@ -15,10 +15,5 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap-sprockets
-//= require jquery-fileupload/vendor/jquery.ui.widget
-//= require jquery-fileupload/vendor/tmpl
-//= require jquery-fileupload/jquery.fileupload
-//= require jquery-fileupload/jquery.fileupload-process
-//= require jquery-fileupload/jquery.fileupload-validate
-//= require jquery-fileupload/jquery.fileupload-ui
+//= require jquery-fileupload
 //= require corporate_services
