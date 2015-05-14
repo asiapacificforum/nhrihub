@@ -645,7 +645,7 @@
             this._on(this.options.filesContainer, {
                 'click .start': this._startHandler,
                 'click .cancel': this._cancelHandler,
-                'click .delete': this._deleteHandler,
+                'click .delete': this._deleteHandler
             });
             this._initButtonBarEventHandlers();
         },

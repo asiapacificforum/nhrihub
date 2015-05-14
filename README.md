@@ -50,6 +50,26 @@ Each module also includes translation files in its config/locales directory, and
 in the module spec/features tests, so the same testing environment applies.
 Note that phantomjs 2.0.0 has issues with file uploading (see https://github.com/teampoltergeist/poltergeist/issues/594). So use phantomjs 1.9.2 for headless testing.
 
+Running integration tests with Internet Explorer is a little more complex. A windows computer is required, running IE >= 10.
+This computer also needs to have Java, selenium-server-standalone, and IEDriver loaded. If it has a firewall, permissions must be configured sufficient to support this test configuration.
+On the windows computer, start selenium-server with:
+    java -jar /path/to/selenium-server-standalone-xxx.jar -Dwebdriver.ie.driver=/path/to/IEDriverServer.exe -browser "browserName=internet explorer, version=11"
+
+On the computer (typically a Mac) that is running the tests and the application, the spec_helper file includes Capybara configuration for remote IE testing. Uncomment the configuration as indicated in the file.
+The computer on which Internet Explorer is running should also have pdf files for testing file upload. The following pdf files are required:
+first_upload_file.pdf (size less than the configured size limit)
+big_upload_file.pdf (size greater than configured size limit)
+first_upload_image_file.png (for testing of unpermitted file upload check)
+
+The computer 'driving' the test and hosting the application must have a running instance of the application, in the test environment. The Capybara config specifies port 3010. Initiate the app with rails server -e test -p 3010.
+
+Two parameters related to the windows computer must be configured for Capybara: in the file lib/capybara_remote.rb, configure local values for the local network address of the windows computer, and the path to the test upload files (see above for which files are required to be present).
+
+A couple of windows configurations must be set in order to support this test scenario:
+1. Registry key configuration, see https://code.google.com/p/selenium/wiki/InternetExplorerDriver
+2. If the tests, in particular the character entry in text fields, is running very slowsly, you may need to use the 32-bit version of IEDriverServer. See https://www.microsoft.com/en-us/download/details.aspx?id=44069
+3. Zone permissions under the windows "Internet options" configuration menu may need to be configured to be the same for all zones.
+
 ## Deployment
 Development updates are pushed manually to a git repository, using the normal git push procedure.
 Deployment is automated using the Capistrano gem using:

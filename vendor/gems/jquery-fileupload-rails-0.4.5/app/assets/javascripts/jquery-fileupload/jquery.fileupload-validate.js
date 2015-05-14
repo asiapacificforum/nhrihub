@@ -66,7 +66,7 @@
 
             // Function returning the current number of files,
             // has to be overriden for maxNumberOfFiles validation:
-            getNumberOfFiles: $.noop,
+            getNumberOfFiles: $.noop
         },
 
         processActions: {

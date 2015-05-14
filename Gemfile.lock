@@ -5,6 +5,18 @@ GIT
     capistrano-faster-assets (1.0.2)
       capistrano (>= 3.1)
 
+GIT
+  remote: git@github.com:lazylester/capybara.git
+  revision: 211d4fa259fe62974b58f9f0345028397851c464
+  branch: attach_file_remote
+  specs:
+    capybara (2.5.0.dev)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      xpath (~> 2.0)
+
 PATH
   remote: vendor/gems
   specs:
@@ -98,12 +110,6 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
-    capybara (2.4.4)
-      mime-types (>= 1.16)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      xpath (~> 2.0)
     childprocess (0.5.6)
       ffi (~> 1.0, >= 1.0.11)
     cliver (0.3.2)
@@ -167,7 +173,7 @@ GEM
       rails (>= 3.1.0)
     mime-types (1.25.1)
     mini_portile (0.6.2)
-    minitest (5.6.0)
+    minitest (5.6.1)
     multi_json (1.11.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
@@ -184,7 +190,7 @@ GEM
     polyglot (0.3.5)
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
-    rack (1.5.2)
+    rack (1.5.3)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -251,7 +257,7 @@ GEM
       multi_json (~> 1.0)
       rubyzip (~> 1.0)
       websocket (~> 1.0)
-    sexp_processor (4.5.0)
+    sexp_processor (4.5.1)
     simple-navigation (3.14.0)
       activesupport (>= 2.3.2)
     simple-navigation-bootstrap (1.0.0)
@@ -266,13 +272,13 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
-    spring (1.3.4)
+    spring (1.3.6)
     sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sprockets-rails (2.2.4)
+    sprockets-rails (2.3.1)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
@@ -315,6 +321,7 @@ DEPENDENCIES
   capistrano-passenger (= 0.0.2)
   capistrano-rails
   capistrano-rvm
+  capybara!
   coffee-rails (~> 4.0.0)
   corporate_services!
   database_cleaner

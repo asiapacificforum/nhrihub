@@ -1,4 +1,5 @@
 require 'rspec/core/shared_context'
+require 'ie_remote_detector'
 
 module RegisteredUserHelper
   extend RSpec::Core::SharedContext
@@ -50,21 +51,28 @@ end
 module LoggedInEnAdminUserHelper
   extend RSpec::Core::SharedContext
   include RegisteredUserHelper
+  include IERemoteDetector
   before do
     visit "/en"
-    fill_in "User name", :with => "admin"
-    fill_in "Password", :with => "password"
-    click_button "Log in..."
+    #unless ie_remote?(page) # IE doesn't delete cookies and terminate session between scenarios, so no need for login
+    if page.has_selector?("h1", :text => "Please log in")
+      fill_in "User name", :with => "admin"
+      fill_in "Password", :with => "password"
+      click_button "Log in..."
+    end
   end
 end
 
 module LoggedInFrAdminUserHelper
   extend RSpec::Core::SharedContext
   include RegisteredUserHelper
+  include IERemoteDetector
   before do
     visit "/fr"
-    fill_in "Nom d'usilateur", :with => "admin"
-    fill_in "Mot de pass", :with => "password"
-    click_button "S'identifier..."
+    if page.has_selector?("h1", :text => "S'il vous plaît connecter")
+      fill_in "Nom d'usilateur", :with => "admin"
+      fill_in "Mot de pass", :with => "password"
+      click_button "S'identifier..."
+    end
   end
 end

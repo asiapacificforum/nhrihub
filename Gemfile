@@ -55,9 +55,12 @@ gem 'authengine', :path => 'vendor/gems/authengine'
 gem 'haml'
 gem 'haml-rails'
 
-gem 'rspec-rails', group: [:development, :test]
-gem 'selenium-webdriver', group: [:development, :test]
-gem 'database_cleaner', group: [:development, :test]
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'capybara', :git => "git@github.com:lazylester/capybara.git", :branch => "attach_file_remote"
+  gem 'selenium-webdriver'
+  gem 'database_cleaner'
+end
 gem 'bootstrap-sass'
 gem 'simple-navigation-bootstrap'
 gem 'font-awesome-sass'

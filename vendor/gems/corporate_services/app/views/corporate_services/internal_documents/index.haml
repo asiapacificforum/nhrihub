@@ -59,14 +59,21 @@
       # remove any flash msg
       $('#message_block').text("")
 
+    # download a file
     $('body').on 'click', '.download', (e)->
       $target = $(e.target)
       id = $target.closest('table.document').data('id')
       window.location = "#{corporate_services_internal_document_path('id')}".replace(/id/,id)
 
+    # cancel an upload
     $('body').on 'click', '.template-upload i.circle', ->
       #TODO need to unbind too
       $('.template-upload').remove()
+
+    $('.fileupload-buttonbar .fileinput-button').on 'click', '.glyphicon-plus', (e)->
+      $(@).parent().find('input:file').click()
+    $('.fileupload-buttonbar .fileinput-button').on 'click', 'span', (e)->
+      $(@).parent().find('input:file').click()
 
 
 :coffeescript

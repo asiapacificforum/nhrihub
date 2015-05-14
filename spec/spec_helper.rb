@@ -18,6 +18,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'faker'
 require 'capybara/poltergeist'
+require 'capybara_remote'
 # use this configuration to show the messages between poltergeist and phantomjs
 #Capybara.register_driver :poltergeist do |app|
   #Capybara::Poltergeist::Driver.new(app, :debug => true)
@@ -28,13 +29,42 @@ require 'capybara/poltergeist'
   #Capybara::Poltergeist::Driver.new(app, :inspector => true, :timeout => 300)
 #end
 #comment this line out to use the default javascript server firefox
-Capybara.javascript_driver = :poltergeist
+#Capybara.javascript_driver = :poltergeist
 
 #require 'simplecov'
 #SimpleCov.start
 
-RSpec.configure do |config|
-  # rspec-expectations config goes here. You can use an alternate
+
+# CONFIGURATION FOR REMOTE TESTING OF IE
+require 'capybara/rspec'
+require 'selenium-webdriver'
+
+url = CapybaraRemote.url # it's in lib directory
+capabilities = Selenium::WebDriver::Remote::Capabilities.internet_explorer
+capabilities.version = "11"
+Capybara.register_driver :remote do |app|
+  Capybara::Selenium::Driver.new(app,
+    :browser => :remote,
+    :url => url,
+    :desired_capabilities => capabilities)
+end
+Capybara.server_port = 3010
+ip = `ifconfig | grep 'inet ' | grep -v 127.0.0.1 | cut -d ' ' -f2`.strip
+puts "this machine ip is #{ip}"
+Capybara.app_host = "http://#{ip}:#{Capybara.server_port}"
+Capybara.current_driver = :remote
+Capybara.javascript_driver = :remote
+Capybara.run_server = false
+Capybara.remote = true
+
+# END OF REMOTE TESTING CONFIGURATION FOR IE
+
+# config for firefox with port 3010
+#require 'capybara/rspec'
+#Capybara.server_port = 3010
+# /config
+
+RSpec.configure do |config| # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
   config.expect_with :rspec do |expectations|
