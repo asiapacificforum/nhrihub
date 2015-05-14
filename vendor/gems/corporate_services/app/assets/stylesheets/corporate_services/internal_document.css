@@ -7,3 +7,44 @@
   z-index:16;
   position:relative;
 }
+
+.popover {
+  max-width: 1000px !important;
+}
+
+.fa-info-circle {
+  color: #337AB7;
+}
+
+.close .fa-remove {
+  color: black;
+}
+
+.fa-trash-o, .fa-remove, .fa-ban {
+  color: #C12E2A; /* red */
+}
+
+.fa-plus, .fa-check {
+  color: #5CB85C; /* green */
+}
+
+.fa-cloud-download {
+  color: #29ccbe; /* turquoise */
+}
+
+div[aria-expanded='false'] .fa-folder-o:before {
+  content: "\f114";
+}
+
+[aria-expanded='true'] .fa-folder-o:before {
+  content: "\f115";
+}
+
+div.icon {
+  width:20px;
+}
+
+.editable { /* so that switch to edit leaves text in precise same position */
+  padding-left:3px;
+  padding-top:3px;
+}

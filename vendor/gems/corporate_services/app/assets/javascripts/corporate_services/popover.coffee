@@ -18,5 +18,5 @@ $ ->
   # click anywhere to close the popover
   $('html').on 'click', (e)->
     target_class = $(e.target).attr('class')
-    if typeof(target_class) == "undefined" or !(target_class.match(/glyphicon-info-sign/) or target_class.match(/glyphicon-remove/))
+    if typeof(target_class) == "undefined" or !(target_class.match(/fa-info-circle/) or target_class.match(/glyphicon-remove/))
       $('.details').popover('hide')

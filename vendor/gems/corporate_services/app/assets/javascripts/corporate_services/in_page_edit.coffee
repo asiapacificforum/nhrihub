@@ -63,7 +63,7 @@ $ ->
   window.inpage_edit = new @InpageEdit
 
   # after edit, send changes to the server via ajax
-  $('body').on 'click', ".glyphicon-ok", (e)->
+  $('body').on 'click', ".edit-save", (e)->
     $el = $(e.target)
     data = {'_method':'put'}
     id = $el.closest('table.document').data('id')

@@ -9,43 +9,44 @@
             %div{:'data-toggle' => 'edit'}
               .fade.edit
                 %input.title{:'data-name' => :title, :'value' => "{%= file.title %}"}
-              .fade.no_edit
+              .fade.no_edit.editable
                 %span {%= file.title %}
           %td.revision{:'data-name' => 'revision', :width => '58px'}
             %div{:'data-toggle' => 'edit'}
               .fade.edit
                 %input.revision{:'data-name' => :revision, :'value' => "{%= file.revision %}", :style => 'width:40px'}
-              .fade.no_edit
+              .fade.no_edit.editable
                 -# height required to properly position the tag
                 %div{:style => "width:30px; height:26px;"} {%= file.revision %}
           -# make sure it's on top of the next td, even though it precedes in the html
           %td.include_popover
-            %div{:'data-toggle' => 'edit'}
+            %div.icon{:'data-toggle' => 'edit'}
               .fade.edit
-                %i.glyphicon.glyphicon-remove#edit_cancel
+                %i.fa.fa-remove.fa-lg#edit_cancel
               .fade.no_edit
-                %i.glyphicon.glyphicon-info-sign.details <!-- popover is attached as a sibling below this -->
+                %i.fa.fa-info-circle.fa-lg.details <!-- popover is attached as a sibling below this -->
           %td.under_popover
-            %div{:'data-toggle' => 'edit'}
+            %div.icon{:'data-toggle' => 'edit'}
               .fade.edit
-                %i.glyphicon.glyphicon-ok
+                %i.fa.fa-check.fa-lg.edit-save
               .fade.no_edit
-                %i.glyphicon.glyphicon-edit#edit_start
+                %i.fa.fa-pencil-square-o.fa-lg#edit_start
           %td.under_popover
-            %i.glyphicon.glyphicon-cloud-download.download
+            %div.icon
+              %i.fa.fa-cloud-download.fa-lg.download
           %td.under_popover
-            %div{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{%= file.id %}"}
-              %i.fa.fa-archive
+            %div.icon{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{%= file.id %}"}
+              %i.fa.fa-folder-o.fa-lg
           %td.under_popover
             -# next tag is where the fileupload is attached
             .file_replace{:id => "upload{%= file.id %}"}
-              %i.fa.fa-plus{:onClick => "$(this).parent().find('input:file').click()"}
+              %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
               -# wierd opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
               -# only required for testing, it actually works in firefox in real life!
               %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:400px; opacity:0.01; width:0.01px;"}
           %td
-            %div.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
-              %i.glyphicon.glyphicon-trash
+            %div.icon.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
+              %i.fa.fa-trash-o.fa-lg
     .panel-collapse.collapse{:role => "tabpanel", :id => "collapse{%= file.id %}"}
       .panel-body
         %h4 Archive
@@ -59,40 +60,41 @@
               %div{:'data-toggle' => 'edit'}
                 .fade.edit
                   %input.title{:'data-name' => :title, :'value' => "{%= archive_file.title %}"}
-                .fade.no_edit
+                .fade.no_edit.editable
                   %span {%= archive_file.title %}
             %td.revision{:'data-name' => 'revision', :width => '58px'}
               %div{:'data-toggle' => 'edit'}
                 .fade.edit
                   %input.revision{:'data-name' => :revision, :'value' => "{%= archive_file.revision %}", :style => 'width:40px'}
-                .fade.no_edit
+                .fade.no_edit.editable
                   -# height required to properly position the tag
                   %div{:style => "width:30px; height:26px;"} {%= archive_file.revision %}
             -# make sure it's on top of the next td, even though it precedes in the html
             %td.include_popover
-              %div{:'data-toggle' => 'edit'}
+              %div.icon{:'data-toggle' => 'edit'}
                 .fade.edit
-                  %i.glyphicon.glyphicon-remove#edit_cancel
+                  %i.fa.fa-remove.fa-lg#edit_cancel
                 .fade.no_edit
-                  %i.glyphicon.glyphicon-info-sign.details <!-- popover is attached as a sibling below this -->
+                  %i.fa.fa-info-circle.fa-lg.details <!-- popover is attached as a sibling below this -->
             %td.under_popover
-              %div{:'data-toggle' => 'edit'}
+              %div.icon{:'data-toggle' => 'edit'}
                 .fade.edit
-                  %i.glyphicon.glyphicon-ok
+                  %i.fa.fa-check.fa-lg.edit-save
                 .fade.no_edit
-                  %i.glyphicon.glyphicon-edit#edit_start
+                  %i.fa.fa-pencil-square-o.fa-lg#edit_start
             %td.under_popover
-              %i.glyphicon.glyphicon-cloud-download.download
+              %div.icon
+                %i.fa.fa-cloud-download.fa-lg.download
             %td.under_popover
               -# just to keep the spacing the same
-              %div{:style => 'visibility:hidden'}
-                %i.fa.fa-archive
+              %div.icon{:style => 'visibility:hidden'}
+                %i.fa.fa-archive.fa-lg
             %td.under_popover
               -# just to keep the spacing the same
               #file_replace{:style => 'visibility:hidden'}
-                %i.fa.fa-plus
+                %i.fa.fa-plus.fa-lg
             %td
-              %div.delete{:data=> {:url => "{%= archive_file.deleteUrl %}"}}
-                %i.glyphicon.glyphicon-trash
+              %div.icon.delete{:data=> {:url => "{%= archive_file.deleteUrl %}"}}
+                %i.fa.fa-trash-o.fa-lg
         {% }} %}
   {% } %}

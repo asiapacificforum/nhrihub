@@ -117,20 +117,24 @@ feature "internal document management", :js => true do
   end
 
   # this sequence passes in all the browsers but fails in phantomjs
-  xscenario "add a new file and then add a new revision to it" do
-    add_a_second_file
-    # attach to the second file input
-    # uploading an archive file
-     #page.driver.debug
-    all(:file_field, "archive_fileinput")[0].set(upload_document)
-    page.find("#internal_document_title").set("some replacement file name")
-    page.find('#internal_document_revision').set("3.5")
-    # problem is that the add callback is being called on the first, primary file, upload input,
-    # so that the uploaded file is designated as a primary file
-    expect{ page.find('.template-upload .start .glyphicon-upload').click; sleep(0.5)}.not_to change{InternalDocument.primary.count}
-    expect(InternalDocument.archive.count).to eq 1
-    #page.save_screenshot(Rails.root.join('tmp','screenshots','test.png'))
-    expect(page.all('.template-download').count).to eq 2
+  scenario "add a new file and then add a new revision to it" do
+    unless ie_remote?(page)
+      expect(1).to eq 1 # download not supported by selenium driver
+    else
+      add_a_second_file
+      # attach to the second file input
+      # uploading an archive file
+       #page.driver.debug
+      all(:file_field, "archive_fileinput")[0].set(upload_document)
+      page.find("#internal_document_title").set("some replacement file name")
+      page.find('#internal_document_revision').set("3.5")
+      # problem is that the add callback is being called on the first, primary file, upload input,
+      # so that the uploaded file is designated as a primary file
+      expect{ page.find('.template-upload .start .fa-cloud-upload').click; sleep(0.5)}.not_to change{InternalDocument.primary.count}
+      expect(InternalDocument.archive.count).to eq 1
+      #page.save_screenshot(Rails.root.join('tmp','screenshots','test.png'))
+      expect(page.all('.template-download').count).to eq 2
+    end
   end
 
   scenario "initiate adding a revision but cancel" do
@@ -255,19 +259,19 @@ feature "internal document management", :js => true do
 end
 
 def click_edit_save_icon
-  page.find('.glyphicon-ok').click
+  page.find('.fa-check').click
   sleep(0.1)
 end
 
 def upload_single_file_link_click(which)
   sleep(0.1) # ajax response and javascript transitions
-  links = page.all('.template-upload .glyphicon-upload')
+  links = page.all('.template-upload .fa-cloud-upload')
   links[0].click()
   sleep(0.2) # ajax post of file
 end
 
 def click_cancel_icon
-  page.find(".template-upload .glyphicon-ban-circle").click
+  page.find(".template-upload .fa-ban").click
 end
 
 def archive_panel
@@ -279,7 +283,7 @@ def click_the_archive_file_details_icon
 end
 
 def click_the_archive_delete_icon
-  page.find('.collapse i.glyphicon-trash').click
+  page.find('.collapse i.fa-trash-o').click
 end
 
 def add_a_second_file
@@ -291,7 +295,7 @@ def add_a_second_file
 end
 
 def click_the_archive_icon
-  page.find('.template-download .fa-archive').click
+  page.find('.template-download .fa-folder-o').click
   sleep(0.2)
 end
 
@@ -307,7 +311,7 @@ def click_the_download_icon
 end
 
 def click_the_edit_icon
-  page.find('.glyphicon-edit').click
+  page.find('.fa-pencil-square-o').click
   sleep(0.1)
 end
 
@@ -322,7 +326,7 @@ def add_document_link
 end
 
 def upload_replace_files_link
-  page.find('.template-upload .start .glyphicon-upload')
+  page.find('.template-upload .start .fa-cloud-upload')
 end
 
 def upload_files_link
