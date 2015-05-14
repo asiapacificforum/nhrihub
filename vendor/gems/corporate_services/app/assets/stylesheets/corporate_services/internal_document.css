@@ -48,3 +48,7 @@ div.icon {
   padding-left:3px;
   padding-top:3px;
 }
+
+.tooltip {
+  width: 120px;
+}

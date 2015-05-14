@@ -27,7 +27,7 @@
         / The extended global progress state
         .progress-extended  
     / The table listing the files available for upload/download
-    #accordion.panel-group.files{:role => "tablist", :style => "width:600px", :name => 'internal_document[file]'}
+    #accordion.panel-group.files{:role => "tablist", :style => "width:700px", :name => 'internal_document[file]'}
 
 
     #accordion.panel-group.replace_files{:role => "tablist", :style => "width:600px", :name => 'internal_document[file]'}
@@ -71,7 +71,10 @@
     $('.fileupload-buttonbar .fileinput-button').on 'click', 'span', (e)->
       $(@).parent().find('input:file').click()
 
-
+    # tooltip init
+    $('body').tooltip
+      selector : '[data-toggle="tooltip"]'
+      delay: { "show": 1200, "hide": 0 }
 :coffeescript
   files = #{ render :partial => 'files', :formats => [:json], :locals => {:internal_documents => @internal_documents} }
 

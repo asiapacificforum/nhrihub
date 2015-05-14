@@ -21,16 +21,17 @@
           -# make sure it's on top of the next td, even though it precedes in the html
           %td.include_popover
             %div.icon{:'data-toggle' => 'edit'}
+              %i.fa.fa-info-circle.fa-lg.details <!-- popover is attached as a sibling below this -->
+          %td.under_popover
+            %div.icon{:'data-toggle' => 'edit', :style => 'height:20px'}
               .fade.edit
                 %i.fa.fa-remove.fa-lg#edit_cancel
-              .fade.no_edit
-                %i.fa.fa-info-circle.fa-lg.details <!-- popover is attached as a sibling below this -->
           %td.under_popover
             %div.icon{:'data-toggle' => 'edit'}
               .fade.edit
                 %i.fa.fa-check.fa-lg.edit-save
               .fade.no_edit
-                %i.fa.fa-pencil-square-o.fa-lg#edit_start
+                %i.fa.fa-pencil-square-o.fa-lg#edit_start{:'data-toggle' => 'tooltip', :'data-placement' => 'top', :title => "#{t('.tooltip.edit')}"}
           %td.under_popover
             %div.icon
               %i.fa.fa-cloud-download.fa-lg.download
@@ -72,10 +73,11 @@
             -# make sure it's on top of the next td, even though it precedes in the html
             %td.include_popover
               %div.icon{:'data-toggle' => 'edit'}
+                %i.fa.fa-info-circle.fa-lg.details <!-- popover is attached as a sibling below this -->
+            %td.under_popover
+              %div.icon{:'data-toggle' => 'edit', :style => 'height:20px'}
                 .fade.edit
                   %i.fa.fa-remove.fa-lg#edit_cancel
-                .fade.no_edit
-                  %i.fa.fa-info-circle.fa-lg.details <!-- popover is attached as a sibling below this -->
             %td.under_popover
               %div.icon{:'data-toggle' => 'edit'}
                 .fade.edit

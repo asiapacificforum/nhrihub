@@ -19,6 +19,9 @@ en:
         doc_title: 'Document title'
         revision: "Revision"
         processing: "Processing..."
+      template_download:
+        tooltip:
+          edit: "Edit file name and revision"
     performance_reviews:
       index:
         heading: "Performance Reviews"
