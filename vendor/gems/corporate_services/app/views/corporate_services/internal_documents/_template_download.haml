@@ -34,20 +34,20 @@
                 %i.fa.fa-pencil-square-o.fa-lg#edit_start{:'data-toggle' => 'tooltip', :'data-placement' => 'top', :title => "#{t('.tooltip.edit')}"}
           %td.under_popover
             %div.icon
-              %i.fa.fa-cloud-download.fa-lg.download
+              %i.fa.fa-cloud-download.fa-lg.download{:'data-toggle' => 'tooltip', :'data-placement' => 'top', :title => "#{t('.tooltip.download')}"}
           %td.under_popover
             %div.icon{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{%= file.id %}"}
-              %i.fa.fa-folder-o.fa-lg
+              %i.fa.fa-folder-o.fa-lg{:'data-toggle' => 'tooltip', :'data-placement' => 'top', :title => "#{t('.tooltip.folder')}"}
           %td.under_popover
             -# next tag is where the fileupload is attached
             .file_replace{:id => "upload{%= file.id %}"}
-              %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
+              %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()", :'data-toggle' => 'tooltip', :'data-placement' => 'top', :title => "#{t('.tooltip.replace')}"}
               -# wierd opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
               -# only required for testing, it actually works in firefox in real life!
               %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:400px; opacity:0.01; width:0.01px;"}
           %td
             %div.icon.delete{:data=> {:url => "{%= file.deleteUrl %}"}}
-              %i.fa.fa-trash-o.fa-lg
+              %i.fa.fa-trash-o.fa-lg{:'data-toggle' => 'tooltip', :'data-placement' => 'top', :title => "#{t('.tooltip.delete')}"}
     .panel-collapse.collapse{:role => "tabpanel", :id => "collapse{%= file.id %}"}
       .panel-body
         %h4 Archive
@@ -83,10 +83,10 @@
                 .fade.edit
                   %i.fa.fa-check.fa-lg.edit-save
                 .fade.no_edit
-                  %i.fa.fa-pencil-square-o.fa-lg#edit_start
+                  %i.fa.fa-pencil-square-o.fa-lg#edit_start{:'data-toggle' => 'tooltip', :'data-placement' => 'top', :title => "#{t('.tooltip.edit')}"}
             %td.under_popover
               %div.icon
-                %i.fa.fa-cloud-download.fa-lg.download
+                %i.fa.fa-cloud-download.fa-lg.download{:'data-toggle' => 'tooltip', :'data-placement' => 'top', :title => "#{t('.tooltip.download')}"}
             %td.under_popover
               -# just to keep the spacing the same
               %div.icon{:style => 'visibility:hidden'}
@@ -97,6 +97,6 @@
                 %i.fa.fa-plus.fa-lg
             %td
               %div.icon.delete{:data=> {:url => "{%= archive_file.deleteUrl %}"}}
-                %i.fa.fa-trash-o.fa-lg
+                %i.fa.fa-trash-o.fa-lg{:'data-toggle' => 'tooltip', :'data-placement' => 'top', :title => "#{t('.tooltip.delete')}"}
         {% }} %}
   {% } %}
