@@ -1,0 +1,55 @@
+%table.document{:style => "width:100%"}(data-formatted_creation_date = "{%= #{file}.formatted_creation_date %}" data-formatted_filesize = "{%= #{file}.formatted_filesize %}" data-id = "{%= #{file}.id %}" data-formatted_modification_date = "{%= #{file}.formatted_modification_date %}" data-original_filename = "{%= #{file}.original_filename %}" data-original_type = "{%= #{file}. original_type %}" data-revision = "{%= #{file}.revision %}" data-document_group_id = "{%= #{file}.document_group_id %}")
+  %tr
+    %td.title{:width => '340px'}
+      %div{:'data-toggle' => 'edit'}
+        .fade.edit
+          %input.title{:'data-name' => :title, :'value' => "{%= #{file}.title %}"}
+        .fade.no_edit.editable
+          %span {%= #{file}.title %}
+    %td.revision{:'data-name' => 'revision', :width => '58px'}
+      %div{:'data-toggle' => 'edit'}
+        .fade.edit
+          %input.revision{:'data-name' => :revision, :'value' => "{%= #{file}.revision %}", :style => 'width:40px'}
+        .fade.no_edit.editable
+          -# height required to properly position the tag
+          %div{:style => "width:30px; height:26px;"} {%= #{file}.revision %}
+    -# make sure it's on top of the next td, even though it precedes in the html
+    %td.include_popover
+      %div.icon{:'data-toggle' => 'edit'}
+        %i.fa.fa-info-circle.fa-lg.details <!-- popover is attached as a sibling below this -->
+    %td.under_popover
+      %div.icon{:'data-toggle' => 'edit', :style => 'height:20px'}
+        .fade.edit
+          %i.fa.fa-remove.fa-lg#edit_cancel
+    %td.under_popover
+      %div.icon{:'data-toggle' => 'edit'}
+        .fade.edit
+          %i.fa.fa-check.fa-lg.edit-save
+        .fade.no_edit
+          %i.fa.fa-pencil-square-o.fa-lg#edit_start
+    %td.under_popover
+      %div.icon
+        %i.fa.fa-cloud-download.fa-lg.download
+    %td.under_popover
+      -if file == "file"
+        %div.icon{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{%= #{file}.id %}"}
+          %i.fa.fa-folder-o.fa-lg
+      -else
+        -# just to keep the spacing the same
+        %div.icon{:style => 'visibility:hidden'}
+          %i.fa.fa-archive.fa-lg
+    %td.under_popover
+      -if file == "file"
+        -# next tag is where the fileupload is attached
+        .file_replace{:id => "upload{%= #{file}.id %}"}
+          %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
+          -# wierd opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
+          -# only required for testing, it actually works in firefox in real life!
+          %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:400px; opacity:0.01; width:0.01px;"}
+      -else
+        -# just to keep the spacing the same
+        #file_replace{:style => 'visibility:hidden'}
+          %i.fa.fa-plus.fa-lg
+    %td
+      %div.icon.delete{:data=> {:url => "{%= #{file}.deleteUrl %}"}}
+        %i.fa.fa-trash-o.fa-lg

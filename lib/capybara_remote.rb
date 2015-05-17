@@ -8,6 +8,6 @@ class CapybaraRemote
   end
 
   def self.url
-    "http://192.168.1.105:4444/wd/hub"
+    "http://192.168.1.7:4444/wd/hub"
   end
 end
