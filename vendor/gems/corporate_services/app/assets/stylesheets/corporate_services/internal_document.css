@@ -32,6 +32,7 @@
   color: #29ccbe; /* turquoise */
 }
 
+/* the next two change the icon from a closed folder to an open folder */
 div[aria-expanded='false'] .fa-folder-o:before {
   content: "\f114";
 }
@@ -41,14 +42,10 @@ div[aria-expanded='false'] .fa-folder-o:before {
 }
 
 div.icon {
-  width:20px;
+  /*width:20px;*/
 }
 
 .editable { /* so that switch to edit leaves text in precise same position */
   padding-left:3px;
   padding-top:3px;
-}
-
-.tooltip {
-  width: 120px;
 }

@@ -27,10 +27,21 @@
         / The extended global progress state
         .progress-extended  
     / The table listing the files available for upload/download
-    #accordion.panel-group.files{:role => "tablist", :style => "width:700px", :name => 'internal_document[file]'}
+    .headings{:style => "width: 830px; background-color: #b2896d; color: #F2F2E7; height: 40px; padding-top:10px; margin-bottom:4px"}
+      %table{:style => "width:800px; margin-left:15px; margin-right:15px"}
+        %tr
+          %td{:style => "width:36%"} Document title
+          %td{:style => "width:8%"} Revision
+          %td{:style => "text-align:center; width:8%"} Information
+          %td{:style => "text-align:center; width:16%"} Edit
+          %td{:style => "text-align:center; width:8%"} Download
+          %td{:style => "text-align:center; width:8%"} Archive
+          %td{:style => "text-align:center; width:8%"} Add file
+          %td{:style => "text-align:center; width:8%"} Delete
+    #accordion.panel-group.files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
 
 
-    #accordion.panel-group.replace_files{:role => "tablist", :style => "width:700px", :name => 'internal_document[file]'}
+    #accordion.panel-group.replace_files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
 
 = render :partial => 'details_popover'
 = render :partial => 'details_popover_content'
