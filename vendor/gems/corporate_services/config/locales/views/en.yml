@@ -19,13 +19,6 @@ en:
         doc_title: 'Document title'
         revision: "Revision"
         processing: "Processing..."
-      template_download:
-        tooltip:
-          edit: "Edit file name and revision"
-          download: "Download the file"
-          folder: "Open archive"
-          replace: "Replace and archive file"
-          delete: "Delete file"
     performance_reviews:
       index:
         heading: "Performance Reviews"
