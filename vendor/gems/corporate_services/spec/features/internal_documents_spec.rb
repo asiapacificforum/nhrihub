@@ -74,15 +74,19 @@ feature "internal document management", :js => true do
     expect{ page.find('.template-download .delete').click; sleep(0.3)}.to change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
   end
 
-  scenario "view file details" do
-    page.find('.template-download .details').click
+  scenario "view file details", :js => true do
+    #page.find('.template-download .details').click
+    expect(page).to have_css(".files .template-download", :count => 1)
+    expect(page).to have_css("div.icon i.details")
+    page.execute_script("$('div.icon i.details').first().trigger('mouseenter')")
+    sleep(0.2) # transition animation
     expect(page).to have_css('.fileDetails')
     expect(page.find('.popover-content .name' ).text).to         eq (@doc.original_filename)
     expect(page.find('.popover-content .size' ).text).to         match /\d+\.?\d+ KB/
     expect(page.find('.popover-content .rev' ).text).to          eq (@doc.revision)
     expect(page.find('.popover-content .lastModified' ).text).to eq (@doc.lastModifiedDate.to_s)
     expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.created_at.to_s)
-    page.find('.closepopover').click
+    page.execute_script("$('div.icon i.details').first().trigger('mouseout')")
     expect(page).not_to have_css('.fileDetails')
   end
 
@@ -96,13 +100,13 @@ feature "internal document management", :js => true do
   end
 
   scenario "download a file" do
-    if ie_remote?(page)
-      expect(1).to eq 1 # download not supported by selenium driver
-    else
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
       click_the_download_icon
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
       filename = @doc.original_filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+    else
+      expect(1).to eq 1 # download not supported by selenium driver
     end
   end
 
@@ -178,14 +182,14 @@ feature "internal document management", :js => true do
     create_a_document_in_the_same_group
     visit corporate_services_internal_documents_path('en')
     click_the_archive_icon
-    click_the_archive_file_details_icon
+    page.execute_script("$('div.icon i.details').last().trigger('mouseenter')")
     expect(page).to have_css('.fileDetails')
     expect(page.find('.popover-content .name' ).text).to         eq (@archive_doc.original_filename)
     expect(page.find('.popover-content .size' ).text).to         match /\d\d\.\d KB/
     expect(page.find('.popover-content .rev' ).text).to          eq (@archive_doc.revision)
     expect(page.find('.popover-content .lastModified' ).text).to eq (@archive_doc.lastModifiedDate.to_s)
     expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@archive_doc.created_at.to_s)
-    page.find('.closepopover').click
+    page.execute_script("$('div.icon i.details').last().trigger('mouseout')")
     expect(page).not_to have_css('.fileDetails')
   end
 

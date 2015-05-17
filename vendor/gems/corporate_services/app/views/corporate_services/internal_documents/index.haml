@@ -30,7 +30,7 @@
     #accordion.panel-group.files{:role => "tablist", :style => "width:700px", :name => 'internal_document[file]'}
 
 
-    #accordion.panel-group.replace_files{:role => "tablist", :style => "width:600px", :name => 'internal_document[file]'}
+    #accordion.panel-group.replace_files{:role => "tablist", :style => "width:700px", :name => 'internal_document[file]'}
 
 = render :partial => 'details_popover'
 = render :partial => 'details_popover_content'
@@ -62,8 +62,9 @@
       window.location = "#{corporate_services_internal_document_path('id')}".replace(/id/,id)
 
     # cancel an upload
-    $('body').on 'click', '.template-upload i.circle', ->
+    $('body').on 'click', '.template-upload i.cancel', ->
       #TODO need to unbind too
+      # or even better... see what jquery fileupload does to cancel
       $('.template-upload').remove()
 
     $('.fileupload-buttonbar .fileinput-button').on 'click', '.glyphicon-plus', (e)->
@@ -71,10 +72,6 @@
     $('.fileupload-buttonbar .fileinput-button').on 'click', 'span', (e)->
       $(@).parent().find('input:file').click()
 
-    # tooltip init
-    $('body').tooltip
-      selector : '[data-toggle="tooltip"]'
-      delay: { "show": 1200, "hide": 0 }
 :coffeescript
   files = #{ render :partial => 'files', :formats => [:json], :locals => {:internal_documents => @internal_documents} }
 
