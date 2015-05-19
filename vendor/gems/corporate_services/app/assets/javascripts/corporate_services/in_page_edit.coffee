@@ -36,13 +36,13 @@ $ ->
     constructor : ->
       $('body').on 'click', '#edit_start', (e)=>
         $target = $(e.target)
-        @context = $target.closest('.template-download')
+        @context = $target.closest('table.document')
         @edit()
         @title_element().focus()
 
       $('body').on 'click', '#edit_cancel', (e)=>
         $target = $(e.target)
-        @context = $target.closest('.template-download')
+        @context = $target.closest('table.document')
         @show()
 
     edit : ->
@@ -65,12 +65,13 @@ $ ->
   # after edit, send changes to the server via ajax
   $('body').on 'click', ".edit-save", (e)->
     $el = $(e.target)
-    data = {'_method':'put'}
     id = $el.closest('table.document').data('id')
-    url = "internal_documents/id".replace(/id/,id)
-    data['internal_document'] = {}
-    data['internal_document']['title'] = $el.closest('.template-download').find('.edit .title').val()
-    data['internal_document']['revision'] = $el.closest('.template-download').find('.edit .revision').val()
+    url = "internal_documents/"+id
+    #data['internal_document'] = {}
+    #data['internal_document']['title'] = $el.closest('.template-download').find('.edit .title').val()
+    #data['internal_document']['revision'] = $el.closest('.template-download').find('.edit .revision').val()
+    data = $el.closest('table.document').find('input').serializeArray()
+    data[data.length] = {name : '_method', value : 'put'}
     $.post(url, data, (response, text, jqXhr)->
       # TODO eventually need to return an object and not an array, the array is 'legacy'
       # but tmpl needs to be modified to deal with single objects
@@ -81,6 +82,6 @@ $ ->
       new_template = tmpl($('#template-download').html(), response)
       source.replaceWith(new_template)
       ).fail ->
-        #console.log "Changes were not saved, for some reason"
+        console.log "Changes were not saved, for some reason"
         #alerts seem to cause test failures
-        alert 'Changes were not saved, for some reason.'
+        #alert 'Changes were not saved, for some reason.'

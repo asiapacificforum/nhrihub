@@ -1,22 +1,14 @@
 require 'active_support/number_helper'
 
 class InternalDocument < ActiveRecord::Base
-  include Rails.application.routes.url_helpers
-  include ActiveSupport::NumberHelper
-
   AcceptFileTypes = [:pdf, :doc, :docx]
   MaxFileSize = 3000000
-
-  attr_reader :url, :deleteUrl
 
   belongs_to :document_group
 
   attachment :file
 
-  scope :archive_files_for, ->(doc){ where('"document_group_id" = ? and "id" != ?', doc.document_group_id, doc.id) }
-  scope :in_group_with,     ->(doc){ where('"document_group_id" = ? and "id" != ?', doc.document_group_id, doc.id) }
-  scope :primary, ->{ where(:primary => true) }
-  scope :archive, ->{ where(:primary => false) }
+  default_scope ->{ order(:revision_major, :revision_minor) }
 
   before_save do |doc|
     if doc.title.blank?
@@ -26,6 +18,19 @@ class InternalDocument < ActiveRecord::Base
     if doc.document_group_id.blank?
       doc.document_group_id = DocumentGroup.create.id
     end
+
+    if doc.revision_major.nil?
+      doc.revision = document_group.next_minor_revision
+    end
+  end
+
+  after_destroy do |doc|
+    # if it's the last document in the group, delete the group too
+    doc.document_group.destroy if doc.document_group.empty?
+  end
+
+  def <=>(other)
+    [revision.major, revision.minor] <=> [other.revision_major, other.revision_minor]
   end
 
   # called from the initializer: config/intializers/internal_document.rb
@@ -36,8 +41,8 @@ class InternalDocument < ActiveRecord::Base
     end
   end
 
-  def associated_primary
-    InternalDocument.in_group_with(self).primary.first
+  def document_group_primary
+    document_group.primary
   end
 
   def revision
@@ -49,9 +54,16 @@ class InternalDocument < ActiveRecord::Base
     self.revision_major, self.revision_minor = val.split('.').map(&:to_i) if val
   end
 
+  def primary?
+    document_group_primary == self
+  end
+
   def archive_files
-    # in real life archive_files will never be primary, but it can happen in testing
-    primary? ? self.class.archive_files_for(self).archive.all : []
+    if primary?
+      document_group.internal_documents.reject{|doc| doc == self}
+    else
+      []
+    end
   end
 
   def archive_files=(files)
@@ -67,19 +79,6 @@ class InternalDocument < ActiveRecord::Base
 
   def has_archive_files?
     archive_files.count > 0
-  end
-
-  def inheritor
-    archive_files.sort_by{|f| [f.revision.to_f, f.created_at]}.last
-  end
-
-  def promoted
-    update_attribute(:primary, true)
-    self
-  end
-
-  def archive?
-    !primary?
   end
 
 end

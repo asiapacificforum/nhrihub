@@ -28,9 +28,9 @@ end
 describe "archive_files" do
   context "when self is a primary file" do
     before do
-      @doc = FactoryGirl.create(:internal_document, :primary)
-      @same_group = FactoryGirl.create(:internal_document, :archive, :document_group_id => @doc.document_group_id)
-      @different_group = FactoryGirl.create(:internal_document, :archive)
+      @doc = FactoryGirl.create(:internal_document, :revision_major => 3, :revision_minor => 3)
+      @same_group = FactoryGirl.create(:internal_document, :document_group_id => @doc.document_group_id, :revision_major => 3, :revision_minor => 2)
+      @different_group = FactoryGirl.create(:internal_document, :revision_major => 3, :revision_minor => 2)
     end
 
     it "should return docs in the same group" do
@@ -40,9 +40,9 @@ describe "archive_files" do
 
   context "when self is not a primary file" do
     before do
-      @doc = FactoryGirl.create(:internal_document, :archive)
-      @same_group = FactoryGirl.create(:internal_document, :archive, :document_group_id => @doc.document_group_id)
-      @different_group = FactoryGirl.create(:internal_document, :archive)
+      @doc = FactoryGirl.create(:internal_document, :revision_major => 3, :revision_minor => 2)
+      @same_group = FactoryGirl.create(:internal_document, :document_group_id => @doc.document_group_id, :revision_major => 3, :revision_minor => 3)
+      @different_group = FactoryGirl.create(:internal_document)
     end
 
     it "should return empty set" do
@@ -51,73 +51,19 @@ describe "archive_files" do
   end
 end
 
-describe "inheritor" do
-  context "when revision values are present" do
-    before do
-      @primary = FactoryGirl.create(:internal_document, :primary)
-      dgi = @primary.document_group_id
-      @archive1 = FactoryGirl.create(:internal_document, :archive, :document_group_id => dgi, :revision => "4.1")
-      @archive2 = FactoryGirl.create(:internal_document, :archive, :document_group_id => dgi, :revision => "3.0")
-    end
-
-    it "should return the archive file with the highest revision value" do
-      expect(@primary.inheritor).to eq @archive1
+describe "automatic revision assigment" do
+  context "when document is the first in a new group" do
+    it "should assign 1.0 rev" do
+      document = FactoryGirl.create(:internal_document, :revision_major => nil, :revision_minor => nil)
+      expect(document.reload.revision).to eq "1.0"
     end
   end
 
-  context "when two of the archive revision values are the same" do
-    before do
-      @primary = FactoryGirl.create(:internal_document, :primary)
-      dgi = @primary.document_group_id
-      @archive1 = FactoryGirl.create(:internal_document, :archive, :document_group_id => dgi, :revision => "4.1", :created_at => 1.week.ago)
-      @archive2 = FactoryGirl.create(:internal_document, :archive, :document_group_id => dgi, :revision => "4.1", :created_at => 2.weeks.ago)
+  context "when a document is already present in the group" do
+    it "should increment the minor rev" do
+      document = FactoryGirl.create(:internal_document, :revision_major => nil, :revision_minor => nil)
+      new_doc = FactoryGirl.create(:internal_document, :document_group_id => document.document_group_id, :revision_major => nil, :revision_minor => nil)
+      expect(new_doc.reload.revision).to eq "1.1"
     end
-
-    it "should return the archive file with the most recent created_at date" do
-      expect(@primary.inheritor).to eq @archive1
-    end
-  end
-
-  context "when some revision values are missing" do
-    before do
-      @primary = FactoryGirl.create(:internal_document, :primary)
-      dgi = @primary.document_group_id
-      @archive1 = FactoryGirl.create(:internal_document, :archive, :document_group_id => dgi, :revision => "4.1")
-      @archive2 = FactoryGirl.create(:internal_document, :archive, :null_revision, :document_group_id => dgi)
-    end
-
-    it "should return the archive file with the highest non-null revision value" do
-      expect(@primary.inheritor).to eq @archive1
-    end
-  end
-
-  context "when all revision values are missing" do
-    before do
-      @primary = FactoryGirl.create(:internal_document, :primary)
-      dgi = @primary.document_group_id
-      @archive1 = FactoryGirl.create(:internal_document, :archive, :null_revision, :document_group_id => dgi, :created_at => 1.week.ago)
-      @archive2 = FactoryGirl.create(:internal_document, :archive, :null_revision, :document_group_id => dgi, :created_at => 2.weeks.ago)
-    end
-
-    it "should return the archive file with the highest non-null revision value" do
-      expect(@primary.inheritor).to eq @archive1
-    end
-  end
-end
-
-describe "delete primary with archive_files" do
-  before do
-    @primary = FactoryGirl.create(:internal_document, :primary)
-    dgi = @primary.document_group_id
-    @archive1 = FactoryGirl.create(:internal_document, :archive, :document_group_id => dgi, :revision => "4.1")
-    @archive2 = FactoryGirl.create(:internal_document, :archive, :document_group_id => dgi, :revision => "3.0")
-    @primary.destroy
-    @archive1.reload
-    @archive2.reload
-  end
-
-  it "should return the archive file with the highest revision value" do
-    expect(@archive1.primary).to be true
-    expect(@archive2.primary).to be false
   end
 end

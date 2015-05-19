@@ -170,8 +170,8 @@
                                 // if the received id is the same as one of the template-download table.document ids
                                 // an archive file is being uploaded, so replace the original template-download
                                 // otherwise append the new file
-                                var received_id = file.id
-                                var target_el = $("table.document[data-id='"+received_id+"']")
+                                var received_group_id = file.document_group_id
+                                var target_el = $(".panel-heading table.document[data-document_group_id='"+received_group_id+"']")
                                 if(target_el.length > 0){ // replace it
                                   template = that._renderDownload([file])
                                       .replaceAll(target_el.closest('.template-download'));
@@ -385,14 +385,12 @@
                             }
                         );
                       }else if(typeof(resp) != 'undefined'){
-                        // we have deleted the primay file but there were archive files
-                        // so we promoted one of them to primary, and we replace the deleted
-                        // file with the newly promoted file!
+                        // files remain in the group
+                        // replace the download template
                         var replacement = that.options.downloadTemplate({files : [resp]});
-                        var this_parent = $(this).parent()
                         var replacement_id = $(replacement).find('.collapse').attr('id')
-                        $(this).replaceWith(replacement);
-                        this_parent.find('.collapse#'+replacement_id).collapse('show')
+                        $(this).closest('.template-download').replaceWith(replacement);
+                        $('#'+replacement_id).collapse('show')
                       }else{ // there was no ajax request/response b/c there had been an upload fail
                         // so just remove the template-download
                         //TODO anything to unbind here?
@@ -561,8 +559,9 @@
         _deleteHandler: function (e) {
             e.preventDefault();
             var button = $(e.currentTarget);
+            console.log("_deleteHandler");
             this._trigger('destroy', e, $.extend({
-                context: button.closest('.template-download'),
+                context: button.closest('table.document'),
                 type: 'DELETE'
             }, button.data()));
         },

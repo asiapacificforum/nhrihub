@@ -49,3 +49,24 @@ div.icon {
   padding-left:3px;
   padding-top:3px;
 }
+
+.headings{
+
+  width: 830px;
+  background-color: #b2896d;
+  color: #F2F2E7;
+  height: 40px;
+  padding-top:10px;
+  margin-bottom:4px;
+
+  table {
+    width:800px;
+    margin-left:15px;
+    margin-right:15px;
+
+    td {
+      width: 8%;
+      text-align: center;
+    }
+  }
+}

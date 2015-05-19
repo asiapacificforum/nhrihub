@@ -3,13 +3,13 @@
     %td.title{:style => "width:36%"}
       %div{:'data-toggle' => 'edit'}
         .fade.edit
-          %input.title{:'data-name' => :title, :'value' => "{%= #{file}.title %}"}
+          %input.title{:'data-name' => :title, :name => "internal_document[title]", :'value' => "{%= #{file}.title %}"}
         .fade.no_edit.editable
           %span {%= #{file}.title %}
     %td.revision{:'data-name' => 'revision', :style => "width:8%"}
       %div{:'data-toggle' => 'edit'}
         .fade.edit
-          %input.revision{:'data-name' => :revision, :'value' => "{%= #{file}.revision %}", :style => 'width:40px'}
+          %input.revision{:'data-name' => :revision, :name => "internal_document[revision]", :'value' => "{%= #{file}.revision %}", :style => 'width:40px'}
         .fade.no_edit.editable
           -# height required to properly position the tag
           %div{:style => "width:30px; height:26px;"} {%= #{file}.revision %}

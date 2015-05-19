@@ -27,17 +27,17 @@
         / The extended global progress state
         .progress-extended  
     / The table listing the files available for upload/download
-    .headings{:style => "width: 830px; background-color: #b2896d; color: #F2F2E7; height: 40px; padding-top:10px; margin-bottom:4px"}
-      %table{:style => "width:800px; margin-left:15px; margin-right:15px"}
+    .headings
+      %table
         %tr
-          %td{:style => "width:36%"} Document title
-          %td{:style => "width:8%"} Revision
-          %td{:style => "text-align:center; width:8%"} Information
-          %td{:style => "text-align:center; width:16%"} Edit
-          %td{:style => "text-align:center; width:8%"} Download
-          %td{:style => "text-align:center; width:8%"} Archive
-          %td{:style => "text-align:center; width:8%"} Add file
-          %td{:style => "text-align:center; width:8%"} Delete
+          %td{:style => "width:36%; text-align:left"} Document title
+          %td{:style => "text-align:left"} Revision
+          %td Information
+          %td{:style => "width:16%"} Edit
+          %td Download
+          %td Archive
+          %td Add file
+          %td Delete
     #accordion.panel-group.files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
 
 
@@ -136,8 +136,11 @@
           maxFileSize: parseInt("#{InternalDocument::MaxFileSize}")
           # completed: function(e,data){}
           # finished: function(){} // another callback that's available
+          finished: (e,data)->
+            if data.errorThrown != 'abort'
+              attach_fileupload_to data.context.find('.file_replace')
           prependFiles : false
-          filesContainer: '.replace_files'
+          filesContainer: '.files'
           fileInput: "#"+id+" #archive_fileinput"
           type: 'put' # updating the primary file by adding an archive file
           failed: (e,data)->

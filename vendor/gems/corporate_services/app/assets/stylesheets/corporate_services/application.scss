@@ -11,7 +11,8 @@
  * file per style scope.
  *
  * require_tree .
- *= require corporate_services/internal_document
+ * require corporate_services/internal_document
  *= require_self
  */
 
+@import 'internal_document'

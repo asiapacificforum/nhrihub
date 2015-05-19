@@ -24,7 +24,7 @@ feature "internal document management", :js => true do
     # not sure how this field has become visible, but it works!
     page.find("#internal_document_title").set("some file name")
     page.find('#internal_document_revision').set("3.3")
-    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.primary.count}.from(1).to(2)
+    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
     expect(page).to have_css(".files .template-download", :count => 2)
     doc = InternalDocument.last
     expect( doc.title ).to eq "some file name"
@@ -42,7 +42,7 @@ feature "internal document management", :js => true do
     expect(page_heading).to eq "Internal Documents"
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("")
-    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.primary.count}
+    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}
     expect(page).to have_css(".title", :text => 'first_upload_file')
   end
 
@@ -67,7 +67,7 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete a file from database" do
-    expect{ page.find('.template-download .delete').click; sleep(0.3) }.to change{InternalDocument.primary.count}.from(1).to(0)
+    expect{ page.find('.template-download .delete').click; sleep(0.3) }.to change{InternalDocument.count}.from(1).to(0)
   end
 
   scenario "delete a file from filesystem" do
@@ -91,10 +91,10 @@ feature "internal document management", :js => true do
   end
 
   scenario "edit filename and revision" do
-    click_the_edit_icon
+    click_the_edit_icon(page)
     page.find('.template-download input.title').set("new document title")
     page.find('.template-download input.revision').set("4.4")
-    expect{ click_edit_save_icon }.
+    expect{ click_edit_save_icon(page) }.
                to change{ @doc.reload.title }.to("new document title").
                and change{ @doc.reload.revision }.to("4.4")
   end
@@ -110,14 +110,23 @@ feature "internal document management", :js => true do
     end
   end
 
-  scenario "add a new revision" do
-    expect(page_heading).to eq "Internal Documents"
-    page.attach_file("replace_file", upload_document, :visible => false)
-    page.find("#internal_document_title").set("some replacement file name")
-    page.find('#internal_document_revision').set("3.5")
-    expect{upload_replace_files_link.click; sleep(0.5)}.not_to change{InternalDocument.primary.count}
-    expect(InternalDocument.archive.count).to eq 1
-    expect(page.all('.template-download').count).to eq 1
+  feature "add a new revision" do
+    before do
+      expect(page_heading).to eq "Internal Documents"
+      page.attach_file("replace_file", upload_document, :visible => false)
+      page.find("#internal_document_title").set("some replacement file name")
+      page.find('#internal_document_revision').set("3.5")
+    end
+
+    scenario "using the single-upload icon" do
+      expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+      expect(page.all('.template-download').count).to eq 1
+    end
+
+    scenario "using the buttonbar upload icon" do
+      expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+      expect(page.all('.template-download').count).to eq 1
+    end
   end
 
   # this sequence passes in all the browsers but fails in phantomjs
@@ -134,8 +143,7 @@ feature "internal document management", :js => true do
       page.find('#internal_document_revision').set("3.5")
       # problem is that the add callback is being called on the first, primary file, upload input,
       # so that the uploaded file is designated as a primary file
-      expect{ page.find('.template-upload .start .fa-cloud-upload').click; sleep(0.5)}.not_to change{InternalDocument.primary.count}
-      expect(InternalDocument.archive.count).to eq 1
+      expect{ page.find('.template-upload .start .fa-cloud-upload').click; sleep(0.5)}.not_to change{InternalDocument.count}
       #page.save_screenshot(Rails.root.join('tmp','screenshots','test.png'))
       expect(page.all('.template-download').count).to eq 2
     end
@@ -159,33 +167,88 @@ feature "internal document management", :js => true do
     page.attach_file("replace_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
-    expect{upload_replace_files_link.click; sleep(0.5)}.not_to change{InternalDocument.primary.count}
-    expect(InternalDocument.archive.count).to eq 1
+    expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
     expect(page.all('.template-download').count).to eq 1
-    click_the_edit_icon
+    click_the_edit_icon(page)
     page.find('.template-download input.title').set("changed my mind title")
     page.find('.template-download input.revision').set("9.9")
-    expect{ click_edit_save_icon; sleep(0.5)}.not_to change{InternalDocument.primary.count}
-    expect(InternalDocument.archive.count).to eq 1
+    expect{ click_edit_save_icon(page); sleep(0.5)}.not_to change{InternalDocument.count}
     expect(page.all('.template-download').count).to eq 1
+  end
+
+  scenario "upload a revision then edit the title and revision of the archive file" do
+    expect(page_heading).to eq "Internal Documents"
+    # upload the revision
+    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find("#internal_document_title").set("some replacement file name")
+    # make sure it worked
+    page.find('#internal_document_revision').set("3.5")
+    expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+    expect(page.all('.template-download').count).to eq 1
+    click_the_archive_icon
+    within archive_panel do
+      # the page element is now contextualized within the archive panel
+      click_the_edit_icon(page)
+      page.find('.template-download input.title').set("changed my mind title")
+      page.find('.template-download input.revision').set("0.1")
+      expect{ click_edit_save_icon(page); sleep(0.5)}.not_to change{InternalDocument.count}
+    end
+    click_the_archive_icon
+    expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
+    expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
+    expect(page.find('.template-download .panel-body')).to have_selector('table.document')
+    expect(page.find('.template-download .panel-body')).to have_selector('table.document .title .no_edit', :text => "changed my mind title")
+    expect(page.find('.template-download .panel-body')).to have_selector('table.document .revision .no_edit', :text => "0.1")
+    expect(page.all('.template-download').count).to eq 1
+  end
+
+  scenario "edit an archive file to higher revision than primary" do
+    create_a_document_in_the_same_group({:revision => 0.3})
+    visit corporate_services_internal_documents_path('en')
+    click_the_archive_icon
+    within archive_panel do
+      # the page element is now contextualized within the archive panel
+      click_the_edit_icon(page)
+      page.find('.template-download input.title').set("changed my mind title")
+      page.find('.template-download input.revision').set("9.9")
+      expect{ click_edit_save_icon(page); sleep(0.5)}.not_to change{InternalDocument.count}
+    end
+    within primary_panel do
+      expect(page.find('.title .no_edit').text).to eq "changed my mind title"
+      expect(page.find('.revision .no_edit').text).to eq "9.9"
+    end
+    # make sure the previous primary is in the archive
+    click_the_archive_icon
+    within archive_panel do
+      expect(page.find('.revision .no_edit').text).to eq "3.0"
+    end
+  end
+
+  xscenario "add a new file without specifying the revision" do
+    # it should set the rev to 1.0
+    # use the buttonbar upload button 'cause it's not working!
+  end
+
+  xscenario "add a file revision without specifying the revision" do
+    # it should increment the minor rev
   end
 
   scenario "delete an archive file" do
     create_a_document_in_the_same_group
     visit corporate_services_internal_documents_path('en')
     click_the_archive_icon
-    expect{ click_the_archive_delete_icon; sleep(0.2) }.to change{ InternalDocument.archive.count }.by -1
+    expect{ click_the_archive_delete_icon; sleep(0.2) }.to change{ InternalDocument.count }.by -1
     expect( archive_panel ).to have_selector("p", :text => 'empty')
   end
 
   scenario "view archive file details" do
-    create_a_document_in_the_same_group
+    create_a_document_in_the_same_group(:revision => "0.1")
     visit corporate_services_internal_documents_path('en')
     click_the_archive_icon
     page.execute_script("$('div.icon i.details').last().trigger('mouseenter')")
     expect(page).to have_css('.fileDetails')
     expect(page.find('.popover-content .name' ).text).to         eq (@archive_doc.original_filename)
-    expect(page.find('.popover-content .size' ).text).to         match /\d\d\.\d KB/
+    expect(page.find('.popover-content .size' ).text).to         match /\d\d(\.\d)? KB/
     expect(page.find('.popover-content .rev' ).text).to          eq (@archive_doc.revision)
     expect(page.find('.popover-content .lastModified' ).text).to eq (@archive_doc.lastModifiedDate.to_s)
     expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@archive_doc.created_at.to_s)
@@ -193,7 +256,7 @@ feature "internal document management", :js => true do
     expect(page).not_to have_css('.fileDetails')
   end
 
-  describe "add multiple archive files" do
+  describe "add multiple primary files" do
     before do
       expect(page_heading).to eq "Internal Documents"
       # first doc
@@ -211,14 +274,14 @@ feature "internal document management", :js => true do
     end
 
     scenario "upload with buttonbar action" do
-      expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.primary.count}.from(1).to(4)
+      expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(4)
       expect(page).to have_css(".files .template-download", :count => 4)
     end
 
     scenario "upload with multiple individual actions" do
-      expect{ upload_single_file_link_click(:first) }.to change{ InternalDocument.primary.count }.from(1).to(2)
-      expect{ upload_single_file_link_click(:second) }.to change{ InternalDocument.primary.count }.from(2).to(3)
-      expect{ upload_single_file_link_click(:third) }.to change{ InternalDocument.primary.count }.from(3).to(4)
+      expect{ upload_single_file_link_click(:first) }.to change{ InternalDocument.count }.from(1).to(2)
+      expect{ upload_single_file_link_click(:second) }.to change{ InternalDocument.count }.from(2).to(3)
+      expect{ upload_single_file_link_click(:third) }.to change{ InternalDocument.count }.from(3).to(4)
     end
   end
 
@@ -231,7 +294,7 @@ feature "internal document management", :js => true do
     sleep(0.2) # ajax, javascript
     expect(page.find('.panel-heading td.revision .no_edit').text).to eq "2.0"
     expect(page.find('.panel-collapse td.revision .no_edit').text).to eq "1.0"
-    expect(InternalDocument.primary.first.revision).to eq "2.0"
+    expect(DocumentGroup.first.primary.revision).to eq "2.0"
     expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
     expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
     expect(page.find('.template-download .panel-body')).to have_selector('table.document')
@@ -262,8 +325,8 @@ feature "internal document management", :js => true do
 
 end
 
-def click_edit_save_icon
-  page.find('.fa-check').click
+def click_edit_save_icon(context)
+  context.find('.fa-check').click
   sleep(0.1)
 end
 
@@ -282,6 +345,11 @@ def archive_panel
   page.find('.collapse', :text => 'Archive')
 end
 
+
+def primary_panel
+  page.find('.template-download .panel-heading')
+end
+
 def click_the_archive_file_details_icon
   page.all('.details').last.click
 end
@@ -294,7 +362,7 @@ def add_a_second_file
   page.attach_file("primary_file", upload_document, :visible => false)
   page.find("#internal_document_title").set("a second file")
   page.find('#internal_document_revision').set("3.3")
-  expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.primary.count}.from(1).to(2)
+  expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
   expect(page).to have_css(".files .template-download", :count => 2)
 end
 
@@ -304,7 +372,7 @@ def click_the_archive_icon
 end
 
 def create_a_document_in_the_same_group(**options)
-  revision_major, revision_minor = options.delete(:revision).split('.') if options && options[:revision]
+  revision_major, revision_minor = options.delete(:revision).to_s.split('.') if options && options[:revision]
   group_id = @doc.document_group_id
   options = options.merge({ :revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9), :document_group_id => group_id})
   @archive_doc = FactoryGirl.create(:internal_document, :archive, options)
@@ -314,8 +382,8 @@ def click_the_download_icon
   page.find('.download').click
 end
 
-def click_the_edit_icon
-  page.find('.fa-pencil-square-o').click
+def click_the_edit_icon(context)
+  context.find('.fa-pencil-square-o').click
   sleep(0.1)
 end
 

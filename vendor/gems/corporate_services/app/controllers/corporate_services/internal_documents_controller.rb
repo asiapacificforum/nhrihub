@@ -1,7 +1,7 @@
 class CorporateServices::InternalDocumentsController < ApplicationController
   def index
     @internal_document = InternalDocument.new
-    @internal_documents = InternalDocument.primary
+    @internal_documents = DocumentGroup.all.map(&:primary)
   end
 
   def create
@@ -12,31 +12,27 @@ class CorporateServices::InternalDocumentsController < ApplicationController
 
   def destroy
     doc = InternalDocument.find(params[:id])
-    if doc.primary? && doc.has_archive_files?
-      # doc being deleted is primary with archive
-      # so promote an inheritor
-      @internal_document = doc.inheritor.promoted
-      doc.destroy
-      render :partial => 'internal_document', :layout => false, :locals => {:internal_document => @internal_document}
-    elsif doc.archive?
-      @internal_document = doc.associated_primary
-      doc.destroy
+    document_group = doc.document_group
+    doc.destroy
+    @internal_document = document_group.primary
+    if @internal_document
       render :partial => 'internal_document', :layout => false, :locals => {:internal_document => @internal_document}
     else
-      # it's a primary file with no archive
-      # delete it and move on
-      doc.destroy
+      # document group is now empty
       render :json => {:deleted_id => params[:id]}
     end
   end
 
   def update
-    @internal_document = InternalDocument.find(params[:id])
+    internal_document = InternalDocument.find(params[:id])
+    # copy the filename from the file object, if it's present
     if params[:internal_document][:archive_files]
       params["internal_document"][:archive_files][0]["original_filename"] =
         params[:internal_document][:archive_files][0][:file].original_filename
     end
-    if @internal_document.update(doc_params)
+    if internal_document.update(doc_params)
+      # return the primary, even if we're updating an archive doc
+      @internal_document = internal_document.document_group_primary
       # it's a jbuilder partial
       render :layout => false, :status => 200
     else

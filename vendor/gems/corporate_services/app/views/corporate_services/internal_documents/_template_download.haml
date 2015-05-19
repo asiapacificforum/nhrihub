@@ -10,7 +10,7 @@
         {% if ((typeof(file.archive_files)!='undefined' && (file.archive_files.length == 0)) || typeof(file.archive_files)=='undefined') { %}
         %p empty
         {% } else { %}
-        {% for (var j=0, archive_file; archive_file=file.archive_files[j]; j++) { %}
+        {% for (var j=file.archive_files.length-1, archive_file; archive_file=file.archive_files[j]; j--) { %}
         = render :partial => 'doc_table', :locals => {:file => 'archive_file'}
         {% }} %}
   {% } %}
