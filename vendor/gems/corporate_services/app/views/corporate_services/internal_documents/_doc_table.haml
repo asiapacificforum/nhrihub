@@ -12,7 +12,7 @@
           %input.revision{:'data-name' => :revision, :name => "internal_document[revision]", :'value' => "{%= #{file}.revision %}", :style => 'width:40px'}
         .fade.no_edit.editable
           -# height required to properly position the tag
-          %div{:style => "width:30px; height:26px;"} {%= #{file}.revision %}
+          %span {%= #{file}.revision %}
     -# make sure it's on top of the next td, even though it precedes in the html
     %td.include_popover{:style => "text-align:center; width:8%"}
       .icon{:'data-toggle' => 'edit'}
@@ -41,7 +41,12 @@
     %td.under_popover{:style => "text-align:center; width:8%"}
       -if file == "file"
         -# next tag is where the fileupload is attached
-        .file_replace.icon{:id => "upload{%= #{file}.id %}"}
+        .fileupload.icon{:id => "upload{%= file.id %}",
+                         :'data-file-input' => "#upload{%= file.id %} #archive_fileinput",
+                         :'data-url' => "internal_documents/{%= file.id %}",
+                         :'data-type' => 'put',
+                         :'data-param-name' => 'internal_document[archive_files][][file]',
+                         :'data-upload-template-id' => 'archive_upload' }
           %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
           -# wierd opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
           -# only required for testing, it actually works in firefox in real life!

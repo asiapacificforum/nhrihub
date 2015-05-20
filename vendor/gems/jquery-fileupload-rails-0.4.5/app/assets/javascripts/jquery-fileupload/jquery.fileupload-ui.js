@@ -559,7 +559,6 @@
         _deleteHandler: function (e) {
             e.preventDefault();
             var button = $(e.currentTarget);
-            console.log("_deleteHandler");
             this._trigger('destroy', e, $.extend({
                 context: button.closest('table.document'),
                 type: 'DELETE'
@@ -607,40 +606,19 @@
                     filesList.find('.cancel').click();
                 }
             });
-            this._on(fileUploadButtonBar.find('.delete'), {
-                click: function (e) {
-                    e.preventDefault();
-                    filesList.find('.toggle:checked')
-                        .closest('.template-download')
-                        .find('.delete').click();
-                    fileUploadButtonBar.find('.toggle')
-                        .prop('checked', false);
-                }
-            });
-            this._on(fileUploadButtonBar.find('.toggle'), {
-                change: function (e) {
-                    filesList.find('.toggle').prop(
-                        'checked',
-                        $(e.currentTarget).is(':checked')
-                    );
-                }
-            });
         },
 
         _destroyButtonBarEventHandlers: function () {
             this._off(
                 this.element.find('.fileupload-buttonbar')
-                    .find('.start, .cancel, .delete'),
+                    .find('.start, .cancel'),
                 'click'
-            );
-            this._off(
-                this.element.find('.fileupload-buttonbar .toggle'),
-                'change.'
             );
         },
 
         _initEventHandlers: function () {
             this._super();
+            //THIS is where multiple events handlers are initialized, creating multiple ajax req for delete button!!
             this._on(this.options.filesContainer, {
                 'click .start': this._startHandler,
                 'click .cancel': this._cancelHandler,

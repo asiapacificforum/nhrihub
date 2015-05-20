@@ -2,7 +2,10 @@
 %h1= t('.heading')
 .container
   / The file upload form used as target for the file upload widget
-  #fileupload
+  .fileupload{:'data-file-input' => '#primary_fileinput',
+              :'data-url' => 'internal_documents.json',
+              :'data-param-name' => 'internal_document[file]',
+              :'data-upload-template-id' => 'primary_upload' }
     / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
     .row.fileupload-buttonbar
       .col-lg-7
@@ -26,27 +29,28 @@
           .progress-bar.progress-bar-success{:style => "width:0%;"}
         / The extended global progress state
         .progress-extended  
-    / The table listing the files available for upload/download
-    .headings
-      %table
-        %tr
-          %td{:style => "width:36%; text-align:left"} Document title
-          %td{:style => "text-align:left"} Revision
-          %td Information
-          %td{:style => "width:16%"} Edit
-          %td Download
-          %td Archive
-          %td Add file
-          %td Delete
-    #accordion.panel-group.files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
+  / The table listing the files available for upload/download
+  .headings
+    %table
+      %tr
+        %td{:style => "width:36%; text-align:left"} Document title
+        %td{:style => "text-align:left"} Revision
+        %td Information
+        %td{:style => "width:16%"} Edit
+        %td Download
+        %td Archive
+        %td Add file
+        %td Delete
+  #accordion.panel-group.files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
 
 
-    #accordion.panel-group.replace_files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
+  #accordion.panel-group.replace_files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
 
 = render :partial => 'details_popover'
 = render :partial => 'details_popover_content'
 = render :partial => 'details_popover_title'
-= render :partial => 'template_upload'
+= render :partial => 'template_upload', :locals => {:id => 'primary_upload', :prefix => 'internal_document', :label_prefix => 'internal_document'}
+= render :partial => 'template_upload', :locals => {:id => 'archive_upload', :prefix => 'internal_document[archive_files][]', :label_prefix => 'internal_document_archive_files_'}
 = render :partial => 'template_download'
 
 = javascript_include_tag 'corporate_services/in_page_edit'
@@ -55,7 +59,7 @@
 :coffeescript
   $ ->
     $('.fileupload-buttonbar .start').on 'click', ->
-      filesList = $('.files .template-upload')
+      filesList = $('.files .template-upload, .replace_files .template-upload')
       # show flash msg if no files have been selected
       if filesList.length == 0
         $('#message_block').text("#{t('.flash.no_files_error')}")
@@ -96,15 +100,12 @@
     # Initialize the jQuery File Upload widget
     # from the InternalDocument class attributes
     # set in the model
-    $('#fileupload').fileupload
-        url: 'internal_documents.json',
-        paramName: 'internal_document[file]',
+    $('.fileupload').each ->
+      $(@).fileupload
         # TODO move these ruby interpolations out of coffeescript and into javascript, for better performance
         acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i'),
         maxFileSize: parseInt("#{InternalDocument::MaxFileSize}"),
-        # finished: function(){} // another callback that's available
-        # completed: function(){} // another callback that's available
-        completed: ->
+        #completed: ->
           #console.log "completed"
         finished: (e,data)->
           #console.log "finished"
@@ -116,45 +117,10 @@
           #console.log "done"
         failed: (e,data)->
           if data.errorThrown != 'abort'
-            alert("The update failed for some reason")
+            alert("The upload failed for some reason")
         prependFiles : false
         filesContainer: '.files'
-        fileInput: '#primary_fileinput'
         formData: ->
           inputs = @.context.find(':input')
           arr = inputs.serializeArray()
-          arr[arr.length] =  {name: "internal_document[primary]", value: true}
           return arr
-
-    attach_fileupload_to = ($element)->
-      id = $element.attr('id')
-      $("#"+id).fileupload
-          url: 'internal_documents/'+id.replace('upload','')
-          paramName: 'internal_document[archive_files][][file]'
-          # TODO move these ruby interpolations out of coffeescript and into javascript, for better performance
-          acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i')
-          maxFileSize: parseInt("#{InternalDocument::MaxFileSize}")
-          # completed: function(e,data){}
-          # finished: function(){} // another callback that's available
-          finished: (e,data)->
-            if data.errorThrown != 'abort'
-              attach_fileupload_to data.context.find('.file_replace')
-          prependFiles : false
-          filesContainer: '.files'
-          fileInput: "#"+id+" #archive_fileinput"
-          type: 'put' # updating the primary file by adding an archive file
-          failed: (e,data)->
-            if data.errorThrown != 'abort'
-              console.log("update fail")
-              console.dir(e)
-              console.dir(data)
-              #alert("The update failed for some reason")
-          formData: ->
-            inputs = @.context.find(':input')
-            arr = inputs.serializeArray()
-            o['name'] = o['name'].replace('internal_document','internal_document[archive_files][]') for o in arr
-            arr[arr.length] =  {name: "internal_document[archive_files][][primary]", value: false}
-            return arr
-
-    $('.file_replace').each ->
-      attach_fileupload_to($(@))

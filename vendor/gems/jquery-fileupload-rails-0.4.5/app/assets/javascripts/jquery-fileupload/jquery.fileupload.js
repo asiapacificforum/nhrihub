@@ -1269,26 +1269,26 @@
             }
         },
 
-        _onDragOver: getDragHandler('dragover'),
+        //_onDragOver: getDragHandler('dragover'),
 
-        _onDragEnter: getDragHandler('dragenter'),
+        //_onDragEnter: getDragHandler('dragenter'),
 
-        _onDragLeave: getDragHandler('dragleave'),
+        //_onDragLeave: getDragHandler('dragleave'),
 
         _initEventHandlers: function () {
-            if (this._isXHRUpload(this.options)) {
-                this._on(this.options.dropZone, {
-                    dragover: this._onDragOver,
-                    drop: this._onDrop,
-                    // event.preventDefault() on dragenter is required for IE10+:
-                    dragenter: this._onDragEnter,
-                    // dragleave is not required, but added for completeness:
-                    dragleave: this._onDragLeave
-                });
-                this._on(this.options.pasteZone, {
-                    paste: this._onPaste
-                });
-            }
+            //if (this._isXHRUpload(this.options)) {
+                //this._on(this.options.dropZone, {
+                    //dragover: this._onDragOver,
+                    //drop: this._onDrop,
+                    //// event.preventDefault() on dragenter is required for IE10+:
+                    //dragenter: this._onDragEnter,
+                    //// dragleave is not required, but added for completeness:
+                    //dragleave: this._onDragLeave
+                //});
+                //this._on(this.options.pasteZone, {
+                    //paste: this._onPaste
+                //});
+            //}
             if ($.support.fileInput) {
                 this._on(this.options.fileInput, {
                     change: this._onChange

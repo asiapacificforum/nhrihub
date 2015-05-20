@@ -55,8 +55,8 @@ class CorporateServices::InternalDocumentsController < ApplicationController
     params.
       require(:internal_document).
       permit(:title, :revision, :file, :original_filename, :original_type,
-             :lastModifiedDate, :filesize, :primary,
+             :lastModifiedDate, :filesize,
              :archive_files =>[:title, :revision, :file, :original_filename, :original_type,
-             :lastModifiedDate, :filesize, :primary, :document_group_id])
+             :lastModifiedDate, :filesize, :document_group_id])
   end
 end

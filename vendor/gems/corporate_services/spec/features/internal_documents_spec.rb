@@ -34,7 +34,7 @@ feature "internal document management", :js => true do
     expect( doc.revision_minor ).to eq 3
     expect( doc.lastModifiedDate ).to be_a ActiveSupport::TimeWithZone # it's a weak assertion!
     expect( doc.document_group_id ).to eq @doc.document_group_id.succ
-    expect( doc.primary ).to eq true
+    expect( doc.primary? ).to eq true
     expect( doc.original_type ).to eq "application/pdf"
   end
 
@@ -114,8 +114,8 @@ feature "internal document management", :js => true do
     before do
       expect(page_heading).to eq "Internal Documents"
       page.attach_file("replace_file", upload_document, :visible => false)
-      page.find("#internal_document_title").set("some replacement file name")
-      page.find('#internal_document_revision').set("3.5")
+      page.find("#internal_document_archive_files__title").set("some replacement file name")
+      page.find('#internal_document_archive_files__revision').set("3.5")
     end
 
     scenario "using the single-upload icon" do
@@ -151,8 +151,8 @@ feature "internal document management", :js => true do
 
   scenario "initiate adding a revision but cancel" do
     page.attach_file("replace_file", upload_document, :visible => false)
-    page.find("#internal_document_title").set("some replacement file name")
-    page.find('#internal_document_revision').set("3.5")
+    page.find("#internal_document_archive_files__title").set("some replacement file name")
+    page.find('#internal_document_archive_files__revision').set("3.5")
     expect(page).to have_selector('.template-upload', :visible => true)
     click_cancel_icon
     expect(page).not_to have_selector('.template-upload', :visible => true)
@@ -165,8 +165,8 @@ feature "internal document management", :js => true do
   scenario "upload a revision then edit the title and revision" do
     expect(page_heading).to eq "Internal Documents"
     page.attach_file("replace_file", upload_document, :visible => false)
-    page.find("#internal_document_title").set("some replacement file name")
-    page.find('#internal_document_revision').set("3.5")
+    page.find("#internal_document_archive_files__title").set("some replacement file name")
+    page.find('#internal_document_archive_files__revision').set("3.5")
     expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
     expect(page.all('.template-download').count).to eq 1
     click_the_edit_icon(page)
@@ -180,9 +180,9 @@ feature "internal document management", :js => true do
     expect(page_heading).to eq "Internal Documents"
     # upload the revision
     page.attach_file("replace_file", upload_document, :visible => false)
-    page.find("#internal_document_title").set("some replacement file name")
+    page.find("#internal_document_archive_files__title").set("some replacement file name")
     # make sure it worked
-    page.find('#internal_document_revision').set("3.5")
+    page.find('#internal_document_archive_files__revision').set("3.5")
     expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
     expect(page.all('.template-download').count).to eq 1
     click_the_archive_icon
@@ -375,7 +375,7 @@ def create_a_document_in_the_same_group(**options)
   revision_major, revision_minor = options.delete(:revision).to_s.split('.') if options && options[:revision]
   group_id = @doc.document_group_id
   options = options.merge({ :revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9), :document_group_id => group_id})
-  @archive_doc = FactoryGirl.create(:internal_document, :archive, options)
+  @archive_doc = FactoryGirl.create(:internal_document, options)
 end
 
 def click_the_download_icon
