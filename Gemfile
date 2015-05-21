@@ -69,7 +69,7 @@ gem 'simple-navigation', '~> 3.14.0'
 gem 'simplecov', :require => false, :group => :test
 gem 'poltergeist', group: :test
 gem 'factory_girl_rails', '~> 4.0'
-gem 'faker', group: :test
+gem 'faker'
 
 gem 'quiet_assets', group: :development
 gem 'jquery-fileupload-rails', :path => 'vendor/gems'
