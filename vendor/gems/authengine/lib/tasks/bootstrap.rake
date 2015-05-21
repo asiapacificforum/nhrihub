@@ -12,7 +12,7 @@ namespace :authengine do
                       :login     => args[:login],
                       :password  => args[:password],
                       :password_confirmation => args[:password]}
-        if id = User.create_by_sql(attributes)
+        if id = User.create(attributes)
           puts "Creating account for #{attributes[:firstName]} #{attributes[:lastName]} login: #{attributes[:login]}, password #{attributes[:password]}"
         end
       end
