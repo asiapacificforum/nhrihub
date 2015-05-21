@@ -76,12 +76,6 @@
       id = $target.closest('table.document').data('id')
       window.location = "#{corporate_services_internal_document_path('id')}".replace(/id/,id)
 
-    # cancel an upload
-    $('body').on 'click', '.template-upload i.cancel', ->
-      #TODO need to unbind too
-      # or even better... see what jquery fileupload does to cancel
-      $('.template-upload').remove()
-
     $('.fileupload-buttonbar .fileinput-button').on 'click', '.glyphicon-plus', (e)->
       $(@).parent().find('input:file').click()
     $('.fileupload-buttonbar .fileinput-button').on 'click', 'span', (e)->
@@ -172,17 +166,3 @@
                                                     context: context,
                                                     type: 'DELETE'
                                                 }, data))
-
-
-    $('.files').on 'click', '.cancel', (e)->
-          console.log('cancel')
-          e.preventDefault()
-          template = $(e.currentTarget)
-                  .closest('.template-upload,.template-download')
-          data = template.data('data') || {}
-          data.context = data.context || template
-          if data.abort 
-            data.abort()
-          else
-            data.errorThrown = 'abort'
-            @._trigger('fail', e, data)

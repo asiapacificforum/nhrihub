@@ -629,7 +629,7 @@
             //THIS is where multiple events handlers are initialized, creating multiple ajax req for delete button!!
             this._on(this.options.filesContainer, {
                 'click .start': this._startHandler,
-                //'click .cancel': this._cancelHandler,
+                'click .cancel': this._cancelHandler,
                 //'click .delete': this._deleteHandler
             });
             this._initButtonBarEventHandlers();
