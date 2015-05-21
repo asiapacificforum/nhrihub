@@ -139,11 +139,11 @@ feature "internal document management", :js => true do
       # uploading an archive file
        #page.driver.debug
       all(:file_field, "archive_fileinput")[0].set(upload_document)
-      page.find("#internal_document_title").set("some replacement file name")
-      page.find('#internal_document_revision').set("3.5")
+      page.find("#internal_document_archive_files__title").set("some replacement file name")
+      page.find('#internal_document_archive_files__revision').set("3.5")
       # problem is that the add callback is being called on the first, primary file, upload input,
       # so that the uploaded file is designated as a primary file
-      expect{ page.find('.template-upload .start .fa-cloud-upload').click; sleep(0.5)}.not_to change{InternalDocument.count}
+      expect{ page.find('.template-upload .start .fa-cloud-upload').click; sleep(0.5)}.to change{InternalDocument.count}
       #page.save_screenshot(Rails.root.join('tmp','screenshots','test.png'))
       expect(page.all('.template-download').count).to eq 2
     end
@@ -279,9 +279,9 @@ feature "internal document management", :js => true do
     end
 
     scenario "upload with multiple individual actions" do
-      expect{ upload_single_file_link_click(:first) }.to change{ InternalDocument.count }.from(1).to(2)
-      expect{ upload_single_file_link_click(:second) }.to change{ InternalDocument.count }.from(2).to(3)
-      expect{ upload_single_file_link_click(:third) }.to change{ InternalDocument.count }.from(3).to(4)
+      expect{ upload_single_file_link_click(:first) ; sleep(0.4) }.to change{ InternalDocument.count }.from(1).to(2)
+      expect{ upload_single_file_link_click(:second); sleep(0.4) }.to change{ InternalDocument.count }.from(2).to(3)
+      expect{ upload_single_file_link_click(:third) ; sleep(0.4) }.to change{ InternalDocument.count }.from(3).to(4)
     end
   end
 
@@ -292,12 +292,21 @@ feature "internal document management", :js => true do
     expect(page_heading).to eq "Internal Documents"
     page.find('.template-download .delete').click
     sleep(0.2) # ajax, javascript
+    # the previous highest rev archive file becomes primary:
     expect(page.find('.panel-heading td.revision .no_edit').text).to eq "2.0"
+    # the previous lowest rev archive file remains in the archive
     expect(page.find('.panel-collapse td.revision .no_edit').text).to eq "1.0"
     expect(DocumentGroup.first.primary.revision).to eq "2.0"
+    # confirm that the archive accordion is opened after the deletion
     expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
     expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
     expect(page.find('.template-download .panel-body')).to have_selector('table.document')
+    # now make sure the new primary replace_file works
+    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find("#internal_document_archive_files__title").set("some replacement file name")
+    page.find('#internal_document_archive_files__revision').set("3.5")
+    expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(2).to(3)
+    expect(page.all('.template-download').count).to eq 1
   end
 
   scenario "view archives" do

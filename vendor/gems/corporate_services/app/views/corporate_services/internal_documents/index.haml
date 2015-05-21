@@ -29,22 +29,22 @@
           .progress-bar.progress-bar-success{:style => "width:0%;"}
         / The extended global progress state
         .progress-extended  
-  / The table listing the files available for upload/download
-  .headings
-    %table
-      %tr
-        %td{:style => "width:36%; text-align:left"} Document title
-        %td{:style => "text-align:left"} Revision
-        %td Information
-        %td{:style => "width:16%"} Edit
-        %td Download
-        %td Archive
-        %td Add file
-        %td Delete
-  #accordion.panel-group.files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
+    / The table listing the files available for upload/download
+    .headings
+      %table
+        %tr
+          %td{:style => "width:36%; text-align:left"} Document title
+          %td{:style => "text-align:left"} Revision
+          %td Information
+          %td{:style => "width:16%"} Edit
+          %td Download
+          %td Archive
+          %td Add file
+          %td Delete
+    #accordion.panel-group.files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
 
 
-  #accordion.panel-group.replace_files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
+    #accordion.panel-group.replace_files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
 
 = render :partial => 'details_popover'
 = render :partial => 'details_popover_content'
@@ -97,18 +97,18 @@
     result = tmpl($('#template-download').html(),{files: files})
     $(result)[ 'appendTo' ]($('.files'))
 
-    # Initialize the jQuery File Upload widget
-    # from the InternalDocument class attributes
-    # set in the model
-    $('.fileupload').each ->
-      $(@).fileupload
+    attach_fileupload_to = (element)->
+      $(element).fileupload
         # TODO move these ruby interpolations out of coffeescript and into javascript, for better performance
         acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i'),
         maxFileSize: parseInt("#{InternalDocument::MaxFileSize}"),
+        replaced: (e,data)->
+          console.log "replaced"
+          data.new_context.find('.fileupload').each ->
+            attach_file_upload_to(@)
         #completed: ->
           #console.log "completed"
         finished: (e,data)->
-          #console.log "finished"
           if data.errorThrown != 'abort'
             attach_fileupload_to data.context.find('.file_replace')
             #$('input:file').each (i,e)->
@@ -124,3 +124,65 @@
           inputs = @.context.find(':input')
           arr = inputs.serializeArray()
           return arr
+
+
+    # Initialize the jQuery File Upload widget
+    # from the InternalDocument class attributes
+    # set in the model
+    $('.fileupload').each ->
+      $(@).fileupload
+        # TODO move these ruby interpolations out of coffeescript and into javascript, for better performance
+        acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i'),
+        maxFileSize: parseInt("#{InternalDocument::MaxFileSize}"),
+        replaced: (e,data)->
+          console.log "replaced"
+          data.new_context.find('.fileupload').each ->
+            attach_fileupload_to(@)
+        #completed: ->
+          #console.log "completed"
+        finished: (e,data)->
+          if data.errorThrown != 'abort'
+            attach_fileupload_to data.context.find('.fileupload')
+            #$('input:file').each (i,e)->
+              #console.log($._data(e,'events').change[0].namespace)
+        #done: (e,data)->
+          #console.log "done"
+        failed: (e,data)->
+          if data.errorThrown != 'abort'
+            alert("The upload failed for some reason")
+        prependFiles : false
+        filesContainer: '.files'
+        formData: ->
+          inputs = @.context.find(':input')
+          arr = inputs.serializeArray()
+          return arr
+
+
+
+    # this is a hack to workaround a jquery-fileupload-ui bug
+    # that causes multiple delete requests, due to multiple event
+    # handlers being attached
+    $('.files').on 'click', '.delete', (event)->
+      ev = $.Event(event)
+      context = $(event.target).closest('table.document')
+      data = $(event.target).closest('.fileupload').data()
+      $(this).
+        closest('.fileupload').
+        fileupload('option','destroy')( ev, $.extend({
+                                                    context: context,
+                                                    type: 'DELETE'
+                                                }, data))
+
+
+    $('.files').on 'click', '.cancel', (e)->
+          console.log('cancel')
+          e.preventDefault()
+          template = $(e.currentTarget)
+                  .closest('.template-upload,.template-download')
+          data = template.data('data') || {}
+          data.context = data.context || template
+          if data.abort 
+            data.abort()
+          else
+            data.errorThrown = 'abort'
+            @._trigger('fail', e, data)

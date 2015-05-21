@@ -366,12 +366,15 @@
                 $(this).removeClass('fileupload-processing');
             },
             // Callback for file deletion:
-            destroy: function (e, data) {
-                if (e.isDefaultPrevented()) {
+            destroy: function (event, data) {
+                if (event.isDefaultPrevented()) {
                     return false;
                 }
-                var that = $(this).data('blueimp-fileupload') ||
-                        $(this).data('fileupload'),
+                //var that = $(this).data('blueimp-fileupload') ||
+                        //$(this).data('fileupload'),
+                var that = $(event.originalEvent.target).closest('.fileupload').data('blueimpFileupload');
+                var item = $(event.originalEvent.target).closest('table.document').data();
+                var data = $.extend(data, that.options, item),
                     removeNode = function (resp, stat, jqx) {
                       if((typeof(resp) != 'undefined') && (typeof(resp.deleted_id) != 'undefined')){
                         // remove the deleted file from the page, response it just {deleted_id : xxx}
@@ -381,23 +384,28 @@
                                 // last file in the group so the template is removed
                                 // TODO shouldn't we unbind first?
                                 $("table.document[data-id="+that.deleted_id+"]").closest('.template-download').remove();
-                                that._trigger('destroyed', e, data);
+                                that._trigger('destroyed', event, data);
                             }
                         );
                       }else if(typeof(resp) != 'undefined'){
                         // files remain in the group
                         // replace the download template
                         var replacement = that.options.downloadTemplate({files : [resp]});
-                        var replacement_id = $(replacement).find('.collapse').attr('id')
+                        var replacement_id = $(replacement).find('.collapse').attr('id');
+                        //TODO I have a feeling that this leaves zombie stuff, need to unbind the
+                        // elements-being-replaced
                         $(this).closest('.template-download').replaceWith(replacement);
-                        $('#'+replacement_id).collapse('show')
+                        $('#'+replacement_id).collapse('show');
+                        data.new_context = $(replacement).closest('.template-download')
+                        that._trigger('replaced', event, data);
                       }else{ // there was no ajax request/response b/c there had been an upload fail
                         // so just remove the template-download
                         //TODO anything to unbind here?
                         data.context.remove();
                       }
                     };
-                if (data.url) {
+                if (data.delete_url) {
+                    data.url = data.delete_url;
                     data.dataType = data.dataType || that.options.dataType;
                     $.ajax(data).done(removeNode).fail(function () {
                         that._trigger('destroyfailed', e, data);
@@ -621,8 +629,8 @@
             //THIS is where multiple events handlers are initialized, creating multiple ajax req for delete button!!
             this._on(this.options.filesContainer, {
                 'click .start': this._startHandler,
-                'click .cancel': this._cancelHandler,
-                'click .delete': this._deleteHandler
+                //'click .cancel': this._cancelHandler,
+                //'click .delete': this._deleteHandler
             });
             this._initButtonBarEventHandlers();
         },
