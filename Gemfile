@@ -68,7 +68,7 @@ gem 'font-awesome-sass'
 gem 'simple-navigation', '~> 3.14.0'
 gem 'simplecov', :require => false, :group => :test
 gem 'poltergeist', group: :test
-gem 'factory_girl_rails', '~> 4.0', group: [:development, :test]
+gem 'factory_girl_rails', '~> 4.0'
 gem 'faker', group: :test
 
 gem 'quiet_assets', group: :development
