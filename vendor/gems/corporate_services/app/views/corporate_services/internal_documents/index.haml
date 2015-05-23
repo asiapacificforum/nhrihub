@@ -5,20 +5,20 @@
   .fileupload{:'data-file-input' => '#primary_fileinput',
               :'data-url' => 'internal_documents.json',
               :'data-param-name' => 'internal_document[file]',
-              :'data-upload-template-id' => 'primary_upload' }
+              :'data-upload-template-id' => '#primary_upload' }
     / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
     .row.fileupload-buttonbar
       .col-lg-7
         / The fileinput-button span is used to style the file input field as button
         %span.btn.btn-success.fileinput-button
-          %i.glyphicon.glyphicon-plus
+          %i.fa.fa-plus.fa-lg{:style => "color:white"}
           %span= t('.add')
           %input#primary_fileinput{:multiple => "multiple", :name => "primary_file", :type => "file"}
         %button.btn.btn-primary.start{:type => "submit"}
-          %i.glyphicon.glyphicon-upload
+          %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
           %span= t('.start')
         %button.btn.btn-warning.cancel{:type => "reset"}
-          %i.glyphicon.glyphicon-ban-circle
+          %i.fa.fa-ban.fa-lg{:style => "color:white"}
           %span= t('.cancel')
         / The global file processing state
         %span.fileupload-process
@@ -76,7 +76,7 @@
       id = $target.closest('table.document').data('id')
       window.location = "#{corporate_services_internal_document_path('id')}".replace(/id/,id)
 
-    $('.fileupload-buttonbar .fileinput-button').on 'click', '.glyphicon-plus', (e)->
+    $('.fileupload-buttonbar .fileinput-button').on 'click', '.fa-plus', (e)->
       $(@).parent().find('input:file').click()
     $('.fileupload-buttonbar .fileinput-button').on 'click', 'span', (e)->
       $(@).parent().find('input:file').click()
@@ -88,7 +88,13 @@
     'use strict'
 
     #   INITIALIZE THE FILE LIST FROM JSON DATA AT DOCUMENT LOAD
-    result = tmpl($('#template-download').html(),{files: files})
+    _.templateSettings = {
+      interpolate: /\{\%=(.+?)\%\}/g
+      evaluate: /\{\%(.+?)\%\}/g
+      escape: /\{\%-(.+?)\%\}/g
+    }
+    template = _.template($('#template-download').html())
+    result = template({files: files})
     $(result)[ 'appendTo' ]($('.files'))
 
     attach_fileupload_to = (element)->
@@ -118,6 +124,7 @@
           inputs = @.context.find(':input')
           arr = inputs.serializeArray()
           return arr
+        downloadTemplateId: '#template-download'
 
 
     # Initialize the jQuery File Upload widget
@@ -150,6 +157,7 @@
           inputs = @.context.find(':input')
           arr = inputs.serializeArray()
           return arr
+        downloadTemplateId: '#template-download'
 
 
 

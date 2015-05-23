@@ -54,7 +54,7 @@
                          :'data-url' => "internal_documents/{%= file.id %}",
                          :'data-type' => 'put',
                          :'data-param-name' => 'internal_document[archive_files][][file]',
-                         :'data-upload-template-id' => 'archive_upload' }
+                         :'data-upload-template-id' => '#archive_upload' }
           %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
           -# wierd opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
           -# only required for testing, it actually works in firefox in real life!

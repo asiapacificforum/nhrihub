@@ -398,7 +398,7 @@ end
 
 def create_a_document(**options)
   revision_major, revision_minor = options.delete(:revision).split('.') if options && options[:revision]
-  options = options.merge({:primary => true, :revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9)})
+  options = options.merge({:revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9)})
   FactoryGirl.create(:internal_document, options)
 end
 

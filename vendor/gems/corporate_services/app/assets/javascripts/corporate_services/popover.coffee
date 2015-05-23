@@ -8,6 +8,7 @@ $ ->
       $('#detailsTitle').html()
     content : ->
       data = $(@).closest('table.document').data()
-      tmpl('detailsContent', data)
+      template = _.template($('#detailsContent').html())
+      template(data)
     template : $('#popover_template').html()
     trigger: 'hover'

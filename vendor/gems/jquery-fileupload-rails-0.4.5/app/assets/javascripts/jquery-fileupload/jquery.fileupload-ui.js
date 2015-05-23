@@ -12,7 +12,7 @@
 /* jshint nomen:false */
 /* global define, require, window */
 
-(function ($, tmpl) {
+(function ($, _) {
     'use strict';
 
     $.blueimp.fileupload.prototype._specialOptions.push(
@@ -658,12 +658,12 @@
             options.templatesContainer = this.document[0].createElement(
                 options.filesContainer.prop('nodeName')
             );
-            if (tmpl) {
+            if (_) {
                 if (options.uploadTemplateId) {
-                    options.uploadTemplate = tmpl(options.uploadTemplateId);
+                    options.uploadTemplate = _.template($(options.uploadTemplateId).html());
                 }
                 if (options.downloadTemplateId) {
-                    options.downloadTemplate = tmpl(options.downloadTemplateId);
+                    options.downloadTemplate = _.template($(options.downloadTemplateId).html());
                 }
             }
         },
@@ -713,4 +713,4 @@
 
     });
 
-}( window.jQuery, window.tmpl));
+}( window.jQuery, window._));

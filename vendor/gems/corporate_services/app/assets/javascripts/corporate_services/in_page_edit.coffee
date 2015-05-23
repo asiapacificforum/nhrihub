@@ -67,21 +67,14 @@ $ ->
     $el = $(e.target)
     id = $el.closest('table.document').data('id')
     url = "internal_documents/"+id
-    #data['internal_document'] = {}
-    #data['internal_document']['title'] = $el.closest('.template-download').find('.edit .title').val()
-    #data['internal_document']['revision'] = $el.closest('.template-download').find('.edit .revision').val()
     data = $el.closest('table.document').find('input').serializeArray()
     data[data.length] = {name : '_method', value : 'put'}
     $.post(url, data, (response, text, jqXhr)->
       # TODO eventually need to return an object and not an array, the array is 'legacy'
-      # but tmpl needs to be modified to deal with single objects
-      #console.log text
-      #console.log JSON.stringify(response)
+      # but template needs to be modified to deal with single objects
       id = response.files[0].id
       source = $("table.document[data-id='"+id+"']").closest('.template-download')
-      new_template = tmpl($('#template-download').html(), response)
-      source.replaceWith(new_template)
+      new_template = _.template($('#template-download').html())
+      source.replaceWith(new_template(response))
       ).fail ->
         console.log "Changes were not saved, for some reason"
-        #alerts seem to cause test failures
-        #alert 'Changes were not saved, for some reason.'
