@@ -13,7 +13,19 @@ body {
 
 h1 {
   font-size: 26px;
+  color: #556F91;
 }
 
 //chrome has an annoying outline... be gone!
 :focus {outline:none}
+
+.admin.well {
+  background-image: -webkit-linear-gradient(top, #D8CFA8 0%, #DBD2AB 100%);
+  background-image: -o-linear-gradient(top, #D8CFA8 0%, #DBD2AB 100%);
+  background-image: linear-gradient(to bottom, #D8CFA8 0%, #DBD2AB 100%);
+  border-color: #E2DAB7;
+}
+
+.table.borderless td{
+  border-top: none;
+}

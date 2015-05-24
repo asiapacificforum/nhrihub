@@ -1,0 +1,52 @@
+%h1=t('.heading')
+
+%h4= t('.filetypes')
+.admin.well
+  %table.table.borderless.filetypes{:style => "width:200px;"}
+    %tbody
+
+  = form_for @filetype, :url => corporate_services_internal_documents_filetypes_path, :remote => true do |f|
+    %table.table.borderless{:style => "width:200px;"}
+      %tr
+        %td
+          %button.btn.btn-success.btn-xs{:style => 'line-height:1.8;', :type => 'submit'}= t('.add')
+        %td= f.text_field :ext, :size => 8, :placeholder => 'e.g. ppt'
+
+:coffeescript
+  $ ->
+    _.templateSettings = {
+      interpolate: /\{\{(.+?)\}\}/g
+    }
+
+    filetype_template = _.template($("#filetype_template").html())
+
+    filetypes = #{@internal_document_filetypes.to_json}
+    if filetypes.length == 0
+      $('.filetypes tbody').append "<tr><td id='empty'>#{ t('.empty')}</td></tr>"
+    else
+      _.each filetypes, (filetype)->
+        $('.filetypes tbody').append filetype_template({type : filetype})
+
+    $('#new_filetype').bind "ajax:complete", (e,data,status,xhr)->
+      $('.filetypes tbody').append filetype_template({type : data.responseText})
+      $('#filetype_ext').val('')
+      $('td#empty').closest('tr').remove()
+
+    $('table.filetypes').on 'click', 'a', (e)->
+      e.preventDefault()
+      context = $(@).closest('tr')
+      id = context.find('.type').html()
+      url = "#{corporate_services_internal_documents_filetype_path('id')}".replace("id",id)
+      $.ajax
+        url: url
+        method: 'delete'
+        context: context # becomes 'this' in the callback
+        success: (data, status, xhr)->
+          this.remove()
+          if $('.type').length == 0
+            $('.filetypes tbody').append "<tr><td id='empty'>#{ t('.empty')}</td></tr>"
+
+%script{:type => 'template/html', :id => :filetype_template}
+  %tr
+    %td.type {{ type }}
+    %td= link_to t('defaults.delete')

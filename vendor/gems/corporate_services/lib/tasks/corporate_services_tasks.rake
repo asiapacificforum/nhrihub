@@ -8,9 +8,11 @@ def rand_title
   l = rand(4)+4
   arr = []
   l.times do
-    arr << @words.sample
+    word = @words.sample
+    word = word.upcase == word ? word : word.capitalize
+    arr << word
   end
-  arr.join(' ').titleize
+  arr.join(' ')
 end
 
 def rand_filename

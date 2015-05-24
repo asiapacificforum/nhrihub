@@ -154,9 +154,11 @@ RSpec.configure do |config| # rspec-expectations config goes here. You can use a
     DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
     #DatabaseCleaner.strategy = example.metadata[:js] ? :deletion : :transaction
     DatabaseCleaner.start
+    Rails.root.join('tmp', 'cache').children.each{|dir| FileUtils.remove_dir(dir) unless dir.to_s.match(/assets/)}
   end
   config.after(:each) do
     DatabaseCleaner.clean
+    Rails.root.join('tmp', 'cache').children.each{|dir| FileUtils.remove_dir(dir) unless dir.to_s.match(/assets/)}
   end
 
 end

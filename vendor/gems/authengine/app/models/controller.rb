@@ -22,14 +22,8 @@ class Controller < ActiveRecord::Base
 
   def self.engine_files
     engine_controller_paths.inject([]) do |array, path|
-      # entries may be controller files, but if there are namespaced controllers
-      # then entries are directories
-      directories, files = Dir.new(path).entries.reject{|c|c.match(/^\./)}.partition{|c| File.directory?(File.new(File.join(path,c)))}
-      array += files
-      directories.each do |directory|
-        files = Dir.new(File.join(path,directory)).entries.reject{|c|c.match(/^\./)}.map{|file| File.join(directory,file)}
-        array += files
-      end
+      pathname = Pathname.new(path)
+      array += Dir.glob(path+"/**/*.rb").map { |p| Pathname.new(p).relative_path_from(pathname).to_s }
       array
     end
   end

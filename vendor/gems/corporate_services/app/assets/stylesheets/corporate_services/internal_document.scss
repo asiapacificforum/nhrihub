@@ -1,3 +1,8 @@
+$light_on_dark: #F2F2E7;
+$dark_blue: #337AB7;
+$green : #5CB85C;
+$red : #C12E2A;
+
 .under_popover {
   z-index:15;
   position:relative;
@@ -12,8 +17,21 @@
   max-width: 1000px !important;
 }
 
+// ICONS
+
+@mixin colorhover($baseColor) {
+  color: $baseColor;
+  &:hover{
+    color: darken($baseColor, 10%);
+  }
+}
+
+.fileupload-buttonbar .icon {
+  color: $light_on_dark;
+}
+
 .fa-info-circle {
-  color: #337AB7;
+  @include colorhover($dark_blue)
 }
 
 .close .fa-remove {
@@ -21,15 +39,15 @@
 }
 
 .fa-trash-o, .fa-remove, .fa-ban {
-  color: #C12E2A; /* red */
+  @include colorhover($red)
 }
 
 .fa-plus, .fa-check {
-  color: #5CB85C; /* green */
+  @include colorhover($green)
 }
 
 .fa-cloud-download {
-  color: #29ccbe; /* turquoise */
+  @include colorhover($dark_blue)
 }
 
 /* the next two change the icon from a closed folder to an open folder */
@@ -41,10 +59,6 @@ div[aria-expanded='false'] .fa-folder-o:before {
   content: "\f115";
 }
 
-div.icon {
-  /*width:20px;*/
-}
-
 .editable { /* so that switch to edit leaves text in precise same position */
   padding-left:3px;
   padding-top:3px;
@@ -54,7 +68,7 @@ div.icon {
 
   width: 830px;
   background-color: #b2896d;
-  color: #F2F2E7;
+  color: $light_on_dark;
   height: 40px;
   padding-top:10px;
   margin-bottom:4px;

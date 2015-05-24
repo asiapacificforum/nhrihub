@@ -103,7 +103,6 @@
         acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i'),
         maxFileSize: parseInt("#{InternalDocument::MaxFileSize}"),
         replaced: (e,data)->
-          console.log "replaced"
           data.new_context.find('.fileupload').each ->
             attach_file_upload_to(@)
         #completed: ->

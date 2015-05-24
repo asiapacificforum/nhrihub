@@ -25,3 +25,12 @@ en:
     strategic_plan_documents:
       index:
         heading: "Strategic Plan"
+    admin:
+      index:
+        heading: "Corporate Services module"
+        filetypes: "Filetypes permitted for internal documents"
+        empty: "None configured"
+        add: "Add filetype"
+  layout:
+    nav:
+      corp_svcs: "Manage Corporate services"

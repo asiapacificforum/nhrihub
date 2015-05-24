@@ -26,6 +26,7 @@ SimpleNavigation::Configuration.run do |navigation|
       ad.item :roles, t('layout.nav.role'), authengine_roles_path
       ad.item :organizations, t('layout.nav.organization'), admin_organizations_path
       ad.item :access, t('layout.nav.access'), authengine_action_roles_path
+      ad.item :corp_svcs, t('layout.nav.corp_svcs'), corporate_services_admin_path
     end
     primary.item :logout, t('layout.nav.logout'), logout_path
     primary.dom_class = 'nav navbar-nav'
