@@ -101,53 +101,17 @@
     result = template({files: files})
     $(result)[ 'appendTo' ]($('.files'))
 
-    attach_fileupload_to = (element)->
-      $(element).fileupload
+    fileupload_options =
         acceptFileTypes: new RegExp("\\.("+permitted_filetypes+")$",'i'),
         maxFileSize: parseInt(maximum_filesize),
-        replaced: (e,data)->
-          data.new_context.find('.fileupload').each ->
-            attach_file_upload_to(@)
-        #completed: ->
-          #console.log "completed"
-        finished: (e,data)->
-          if data.errorThrown != 'abort'
-            attach_fileupload_to data.context.find('.file_replace')
-            #$('input:file').each (i,e)->
-              #console.log($._data(e,'events').change[0].namespace)
-        #done: (e,data)->
-          #console.log "done"
-        failed: (e,data)->
-          if data.errorThrown != 'abort'
-            alert("The upload failed for some reason")
-        prependFiles : false
-        filesContainer: '.files'
-        formData: ->
-          inputs = @.context.find(':input')
-          arr = inputs.serializeArray()
-          return arr
-        downloadTemplateId: '#template-download'
-
-
-    # Initialize the jQuery File Upload widget
-    # from the InternalDocument class attributes
-    # set in the model
-    $('.fileupload').each ->
-      $(@).fileupload
-        acceptFileTypes: new RegExp("\\.("+permitted_filetypes+")$",'i'),
-        maxFileSize: parseInt(maximum_filesize),
+        # 'replaced means the primary file of a group was bumped into the archive
+        # and a new primary file uploaded in its place
         replaced: (e,data)->
           data.new_context.find('.fileupload').each ->
             attach_fileupload_to(@)
-        #completed: ->
-          #console.log "completed"
         finished: (e,data)->
           if data.errorThrown != 'abort'
             attach_fileupload_to data.context.find('.fileupload')
-            #$('input:file').each (i,e)->
-              #console.log($._data(e,'events').change[0].namespace)
-        #done: (e,data)->
-          #console.log "done"
         failed: (e,data)->
           if data.errorThrown != 'abort'
             alert("The upload failed for some reason")
@@ -159,6 +123,16 @@
           return arr
         downloadTemplateId: '#template-download'
 
+    $('.fileupload').each ->
+      $(@).fileupload fileupload_options
+
+    # /INIT
+
+
+    # after a file is uploaded, attach a fileupload object to the "+" icon
+    # of the newly added file
+    attach_fileupload_to = (element)->
+      $(element).fileupload fileupload_options
 
 
     # this is a hack to workaround a jquery-fileupload-ui bug
