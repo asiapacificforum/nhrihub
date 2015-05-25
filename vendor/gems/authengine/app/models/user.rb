@@ -48,13 +48,11 @@ class User < ActiveRecord::Base
   has_many :user_roles, :dependent=>:delete_all
   accepts_nested_attributes_for :user_roles
   has_many :roles, :through=>:user_roles
-
   has_many :useractions, :dependent=>:delete_all
   has_many :actions, :through=>:useractions
-
   belongs_to :organization
-
   has_many :sessions
+  has_many :internal_documents
 
   before_save :encrypt_password
   before_create :make_activation_code
@@ -94,6 +92,7 @@ class User < ActiveRecord::Base
   def first_last_name
     firstName+' '+lastName
   end
+  alias_method :to_s, :first_last_name
 
   def initials
     first_initial + last_initial
