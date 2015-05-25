@@ -1,8 +1,4 @@
-require 'active_support/number_helper'
-
 class InternalDocument < ActiveRecord::Base
-  AcceptFileTypes = [:pdf, :doc, :docx]
-  MaxFileSize = 3000000
 
   belongs_to :document_group
 
@@ -31,6 +27,15 @@ class InternalDocument < ActiveRecord::Base
 
   def <=>(other)
     [revision.major, revision.minor] <=> [other.revision_major, other.revision_minor]
+  end
+
+  def self.permitted_filetypes
+    SiteConfig['corporate_services.internal_documents.filetypes'].
+      join("|")
+  end
+
+  def self.maximum_filesize
+    SiteConfig['corporate_services.internal_documents.filesize']*1000000
   end
 
   # called from the initializer: config/intializers/internal_document.rb

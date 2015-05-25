@@ -12,8 +12,30 @@
           %button.btn.btn-success.btn-xs{:style => 'line-height:1.8;', :type => 'submit'}= t('.add')
         %td= f.text_field :ext, :size => 8, :placeholder => 'e.g. ppt'
 
+%h4= t('.filesize_max')
+.admin.well
+  =form_tag corporate_services_internal_documents_filesize_path, :method => :put, :remote => true, :id => :update_filesize do
+    %table.table.borderless.filesize{:style => "width:200px;"}
+      %tbody
+        %tr
+          %td= t('.current_val')
+          %td
+            %span#filesize #{@filesize}
+            %span MB
+        %tr
+          %td
+            %button.btn.btn-success.btn-xs{:style => 'line-height:1.8;', :type => 'submit'}= t('.change')
+          %td
+            = text_field_tag :filesize, nil, :size => 6, :placeholder => "e.g. #{@filesize.to_i+2}"
+            %span MB
+
 :coffeescript
   $ ->
+    $('#update_filesize').bind "ajax:success", (e,data,status,xhr)->
+      if !_.isEmpty(data.trim())
+        $('span#filesize').text(data)
+      $('input#filesize').val("")
+
     _.templateSettings = {
       interpolate: /\{\{(.+?)\}\}/g
     }
@@ -27,8 +49,8 @@
       _.each filetypes, (filetype)->
         $('.filetypes tbody').append filetype_template({type : filetype})
 
-    $('#new_filetype').bind "ajax:complete", (e,data,status,xhr)->
-      $('.filetypes tbody').append filetype_template({type : data.responseText})
+    $('#new_filetype').bind "ajax:success", (e,data,status,xhr)->
+      $('.filetypes tbody').append filetype_template({type : data})
       $('#filetype_ext').val('')
       $('td#empty').closest('tr').remove()
 
@@ -40,6 +62,7 @@
       $.ajax
         url: url
         method: 'delete'
+        dataType: 'text'
         context: context # becomes 'this' in the callback
         success: (data, status, xhr)->
           this.remove()

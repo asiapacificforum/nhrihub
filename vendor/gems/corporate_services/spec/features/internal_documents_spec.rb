@@ -10,6 +10,8 @@ feature "internal document management", :js => true do
   extend ActiveSupport::NumberHelper
 
   before do
+    SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
+    SiteConfig['corporate_services.internal_documents.filesize'] = 3
     create_a_document(:revision => "3.0", :title => "my important document")
     @doc = InternalDocument.first
     visit corporate_services_internal_documents_path('en')
@@ -62,6 +64,15 @@ feature "internal document management", :js => true do
   scenario "upload a file that exceeds size limit" do
     page.attach_file("primary_file", big_upload_document, :visible => false)
     expect(page).to have_css('.error', :text => "File is too large")
+    page.find(".template-upload i.cancel").click
+    expect(page).not_to have_css(".files .template_upload")
+  end
+
+  scenario "filesize threshold increased by user config" do
+    SiteConfig['corporate_services.internal_documents.filesize'] = 8
+    visit corporate_services_internal_documents_path('en')
+    page.attach_file("primary_file", big_upload_document, :visible => false)
+    expect(page).not_to have_css('.error', :text => "File is too large")
     page.find(".template-upload i.cancel").click
     expect(page).not_to have_css(".files .template_upload")
   end

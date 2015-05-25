@@ -81,6 +81,10 @@
     $('.fileupload-buttonbar .fileinput-button').on 'click', 'span', (e)->
       $(@).parent().find('input:file').click()
 
+:javascript
+  var maximum_filesize = #{InternalDocument.maximum_filesize}
+  var permitted_filetypes = "#{InternalDocument.permitted_filetypes}"
+
 :coffeescript
   files = #{ render :partial => 'files', :formats => [:json], :locals => {:internal_documents => @internal_documents} }
 
@@ -99,9 +103,8 @@
 
     attach_fileupload_to = (element)->
       $(element).fileupload
-        # TODO move these ruby interpolations out of coffeescript and into javascript, for better performance
-        acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i'),
-        maxFileSize: parseInt("#{InternalDocument::MaxFileSize}"),
+        acceptFileTypes: new RegExp("\\.("+permitted_filetypes+")$",'i'),
+        maxFileSize: parseInt(maximum_filesize),
         replaced: (e,data)->
           data.new_context.find('.fileupload').each ->
             attach_file_upload_to(@)
@@ -131,11 +134,9 @@
     # set in the model
     $('.fileupload').each ->
       $(@).fileupload
-        # TODO move these ruby interpolations out of coffeescript and into javascript, for better performance
-        acceptFileTypes: new RegExp("\\.(#{InternalDocument::AcceptFileTypes.join('|')})$",'i'),
-        maxFileSize: parseInt("#{InternalDocument::MaxFileSize}"),
+        acceptFileTypes: new RegExp("\\.("+permitted_filetypes+")$",'i'),
+        maxFileSize: parseInt(maximum_filesize),
         replaced: (e,data)->
-          console.log "replaced"
           data.new_context.find('.fileupload').each ->
             attach_fileupload_to(@)
         #completed: ->

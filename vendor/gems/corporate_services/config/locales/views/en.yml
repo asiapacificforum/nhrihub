@@ -31,6 +31,9 @@ en:
         filetypes: "Filetypes permitted for internal documents"
         empty: "None configured"
         add: "Add filetype"
+        filesize_max: "Maximum permitted file size"
+        current_val: "Current value"
+        change: "Change to"
   layout:
     nav:
       corp_svcs: "Manage Corporate services"

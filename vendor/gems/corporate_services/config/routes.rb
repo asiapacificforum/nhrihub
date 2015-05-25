@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
   scope ":locale", locale: /en|fr/ do
     namespace :corporate_services do
+      namespace :internal_documents do # note this must be before the internal documents resource
+        resources :filetypes, :param => :type, :only => [:create, :destroy]
+        resource :filesize, :only => :update
+      end
       resources :internal_documents
       resources :performance_reviews
       resources :strategic_plan_documents
-      namespace :internal_documents do
-        resources :filetypes, :param => :type
-      end
       get 'admin', :to => "admin#index"
     end
   end

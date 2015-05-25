@@ -5,7 +5,7 @@ class CorporateServices::InternalDocuments::FiletypesController < ApplicationCon
       filetypes = SiteConfig['corporate_services.internal_documents.filetypes'] << filetype
       filetypes = SiteConfig['corporate_services.internal_documents.filetypes'] = filetypes.uniq
     end
-    render :json => filetype, :status => 200
+    render :text => filetype, :status => 200, :content_type => 'text/plain'
   end
 
   def destroy
