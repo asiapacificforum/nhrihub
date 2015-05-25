@@ -8,6 +8,7 @@ FactoryGirl.define do
     revision_minor      { rand(9) }
     lastModifiedDate    { Faker::Date.between(1.year.ago, Date.today) }
     original_type       "application/pdf"
+    user
 
     after(:build) { |doc| FileUtils.touch Rails.root.join('tmp','uploads','store',doc.file_id)  }
 

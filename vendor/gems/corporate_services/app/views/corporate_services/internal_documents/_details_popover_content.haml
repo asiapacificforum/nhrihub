@@ -16,4 +16,6 @@
     %tr
       %td= t('uploadedOn', :scope => scope)
       %td.uploadedOn {%= formatted_creation_date %}
-
+    %tr
+      %td= t('uploadedBy', :scope => scope)
+      %td.uploadedBy {%= uploaded_by %}

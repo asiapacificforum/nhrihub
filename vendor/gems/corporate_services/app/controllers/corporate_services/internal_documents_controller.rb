@@ -6,6 +6,7 @@ class CorporateServices::InternalDocumentsController < ApplicationController
 
   def create
     params["internal_document"]["original_filename"] = params[:internal_document][:file].original_filename
+    params["internal_document"]["user_id"] = current_user.id
     @internal_documents = [InternalDocument.create(doc_params)]
     render :layout => false # see jbuilder template in views
   end
@@ -23,12 +24,15 @@ class CorporateServices::InternalDocumentsController < ApplicationController
     end
   end
 
+  # update invoked for updating the original_filename and/or revision
+  # also invoked for adding replacing a file... updating the document group
   def update
     internal_document = InternalDocument.find(params[:id])
     # copy the filename from the file object, if it's present
     if params[:internal_document][:archive_files]
       params["internal_document"][:archive_files][0]["original_filename"] =
         params[:internal_document][:archive_files][0][:file].original_filename
+      params["internal_document"][:archive_files][0]["user_id"] = current_user.id
     end
     if internal_document.update(doc_params)
       # return the primary, even if we're updating an archive doc
@@ -52,11 +56,10 @@ class CorporateServices::InternalDocumentsController < ApplicationController
 
   private
   def doc_params
+    attrs = [:title, :revision, :file, :original_filename,
+             :original_type, :lastModifiedDate, :filesize, :user_id]
     params.
       require(:internal_document).
-      permit(:title, :revision, :file, :original_filename, :original_type,
-             :lastModifiedDate, :filesize,
-             :archive_files =>[:title, :revision, :file, :original_filename, :original_type,
-             :lastModifiedDate, :filesize, :document_group_id])
+      permit(*attrs, :archive_files =>[*attrs, :document_group_id])
   end
 end

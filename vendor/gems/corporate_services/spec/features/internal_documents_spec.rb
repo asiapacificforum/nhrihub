@@ -97,7 +97,7 @@ feature "internal document management", :js => true do
     expect(page.find('.popover-content .rev' ).text).to          eq (@doc.revision)
     expect(page.find('.popover-content .lastModified' ).text).to eq (@doc.lastModifiedDate.to_s)
     expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.created_at.to_s)
-    expect(page.find('.popover-content .uploadedBy' ).text).to   eq (@doc.uploaded_by)
+    expect(page.find('.popover-content .uploadedBy' ).text).to   eq (@doc.uploaded_by.first_last_name)
     page.execute_script("$('div.icon i.details').first().trigger('mouseout')")
     expect(page).not_to have_css('.fileDetails')
   end
@@ -264,7 +264,7 @@ feature "internal document management", :js => true do
     expect(page.find('.popover-content .rev' ).text).to          eq (@archive_doc.revision)
     expect(page.find('.popover-content .lastModified' ).text).to eq (@archive_doc.lastModifiedDate.to_s)
     expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@archive_doc.created_at.to_s)
-    expect(page.find('.popover-content .uploadedBy' ).text).to   eq (@archive_doc.uploaded_by)
+    expect(page.find('.popover-content .uploadedBy' ).text).to   eq (@archive_doc.uploaded_by.first_last_name)
     page.execute_script("$('div.icon i.details').last().trigger('mouseout')")
     expect(page).not_to have_css('.fileDetails')
   end
