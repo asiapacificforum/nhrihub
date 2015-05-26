@@ -11,6 +11,8 @@ class User < ActiveRecord::Base
   validate :update_with_unique_email, :on => :update
   validate :update_with_unique_first_last_name, :on => :update
 
+  scope :active, ->{ where("status != 'deleted'") }
+
   # custom validator rather than built-in helper, in order to get custom message
   def create_with_unique_email
     if User.where("email like ?", email).exists?
@@ -203,9 +205,9 @@ class User < ActiveRecord::Base
     now = DateTime.now.to_formatted_s(:db)
     query = <<-SQL
     INSERT INTO users
-        (activated_at, activation_code, created_at, crypted_password, email, enabled, firstName, lastName, login, password_reset_code, remember_token, remember_token_expires_at, salt, status, type, updated_at)
+        (activated_at, activation_code, created_at, crypted_password, email, enabled, "firstName", "lastName", login, password_reset_code, remember_token, remember_token_expires_at, salt, status, type, updated_at)
         VALUES
-        ( '#{now}','#{user.activation_code}','#{now}', '#{user.crypted_password}', NULL, 1, '#{user.firstName}', '#{user.lastName}', '#{user.login}', NULL, NULL, NULL, '#{user.salt}', NULL, NULL,'#{now}')
+        ( '#{now}','#{user.activation_code}','#{now}', '#{user.crypted_password}', NULL, true, '#{user.firstName}', '#{user.lastName}', '#{user.login}', NULL, NULL, NULL, '#{user.salt}', NULL, NULL,'#{now}')
     SQL
     #can't use ActiveRecord#create here as it would trigger a notification email
     ActiveRecord::Base.connection.insert_sql(query)

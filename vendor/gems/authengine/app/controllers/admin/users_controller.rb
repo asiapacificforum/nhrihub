@@ -15,6 +15,7 @@ class Admin::UsersController < ApplicationController
 
   def index
     @users = User.
+      active.
       joins("left join sessions on users.id = sessions.user_id").
       select("users.id as id, users.*, max(sessions.login_date) as last_login").
       group("users.id").
@@ -112,7 +113,7 @@ class Admin::UsersController < ApplicationController
 
   def destroy
     @user = User.find(params[:id])
-    @user.destroy
+    @user.update_attribute(:status, "deleted")
     redirect_to admin_users_path
   end
 
