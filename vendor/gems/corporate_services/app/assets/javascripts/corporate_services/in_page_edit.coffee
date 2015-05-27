@@ -64,17 +64,17 @@ $ ->
 
   # after edit, send changes to the server via ajax
   $('body').on 'click', ".edit-save", (e)->
-    $el = $(e.target)
-    id = $el.closest('table.document').data('id')
-    url = "internal_documents/"+id
-    data = $el.closest('table.document').find('input').serializeArray()
-    data[data.length] = {name : '_method', value : 'put'}
-    $.post(url, data, (response, text, jqXhr)->
-      # TODO eventually need to return an object and not an array, the array is 'legacy'
-      # but template needs to be modified to deal with single objects
-      id = response.files[0].id
-      source = $("table.document[data-id='"+id+"']").closest('.template-download')
-      new_template = _.template($('#template-download').html())
-      source.replaceWith(new_template(response))
-      ).fail ->
-        console.log "Changes were not saved, for some reason"
+   $el = $(e.target)
+   id = $el.closest('table.document').data('id')
+   url = "internal_documents/"+id
+   data = $el.closest('table.document').find('input').serializeArray()
+   data[data.length] = {name : '_method', value : 'put'}
+   $.post(url, data, (response, text, jqXhr)->
+     # TODO eventually need to return an object and not an array, the array is 'legacy'
+     # but template needs to be modified to deal with single objects
+     id = response.files[0].id
+     source = $("table.document[data-id='"+id+"']").closest('.template-download')
+     new_template = _.template($('#template-download').html())
+     source.replaceWith(new_template(response))
+     ).fail ->
+       console.log "Changes were not saved, for some reason"

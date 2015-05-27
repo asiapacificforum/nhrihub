@@ -88,9 +88,7 @@
                 data.context = that._renderUpload(data.files) // data.context is the rendered upload template
                     .data('data', data)                       // it has all the data attached to it
                     .addClass('processing');
-                options.filesContainer[   // options.filesContainer is the table into which the download and upload templates will be rendered
-                    options.prependFiles ? 'prepend' : 'append'
-                ](data.context);
+                options.uploadTemplateContainer.append(data.context);
                 that._forceReflow(data.context);
                 that._transition(data.context); // puts the upload template on the page, in the filesContainer
                 data.process(function () { // if we're processing the data, e.g. image resize, doesn't apply to docs with no thumbnail
@@ -175,14 +173,13 @@
                                 if(target_el.length > 0){ // replace it
                                   template = that._renderDownload([file])
                                       .replaceAll(target_el.closest('.template-download'));
-                                }else{ //append it
-                                  template = that._renderDownload([file])
-                                      .replaceAll(node);
+                                }else{ //replace the upload template with the rendered new file
+                                  template = that.options.filesContainer.append(that._renderDownload([file]))
                                 }
                                 that._forceReflow(template);
-                                that._transition(template).done( // put the template in the page, and grigger events when the fade transition is complete
+                                // put the template in the page, and trigger events when the fade transition is complete
+                                that._transition(template).done(
                                     function () {
-                                        //$('input:file').each(function(i,e){console.log($._data(e,'events').change[0].namespace)})
                                         data.context.remove()
                                         data.context = $(this);
                                         that._trigger('completed', e, data);
@@ -601,7 +598,7 @@
 
         _initButtonBarEventHandlers: function () {
             var fileUploadButtonBar = this.element.find('.fileupload-buttonbar'),
-                filesList = this.options.filesContainer;
+                filesList = this.options.uploadTemplateContainer;
             this._on(fileUploadButtonBar.find('.start'), {
                 click: function (e) {
                     e.preventDefault();
@@ -628,9 +625,12 @@
             this._super();
             //THIS is where multiple events handlers are initialized, creating multiple ajax req for delete button!!
             this._on(this.options.filesContainer, {
-                'click .start': this._startHandler,
-                'click .cancel': this._cancelHandler,
+                //'click .start': this._startHandler,
+                //'click .cancel': this._cancelHandler,
                 //'click .delete': this._deleteHandler
+            });
+            this._on(this.options.uploadTemplateContainer , {
+                'click .start': this._startHandler,
             });
             this._initButtonBarEventHandlers();
         },
@@ -658,7 +658,14 @@
             options.templatesContainer = this.document[0].createElement(
                 options.filesContainer.prop('nodeName')
             );
-            if (_) {
+
+            if (options.uploadTemplateContainerId === undefined) {
+                options.uploadTemplateContainer = this.element.find('.files');
+            } else if (!(options.uploadTemplateContainer instanceof $)) {
+                options.uploadTemplateContainer = $(options.uploadTemplateContainerId);
+            }
+
+            if (_) { // using underscore.js templates
                 if (options.uploadTemplateId) {
                     options.uploadTemplate = _.template($(options.uploadTemplateId).html());
                 }

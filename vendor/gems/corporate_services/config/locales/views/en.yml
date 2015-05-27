@@ -9,6 +9,13 @@ en:
         delete: "Delete"
         error: "Error"
         details: "File details"
+        doc_title: "Document title"
+        revision: "Revision"
+        information: "Information"
+        edit: "Edit"
+        download: "Download"
+        archive: "Archive"
+        add1: "Add file"
         flash:
           no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
       details_popover_title:

@@ -8,7 +8,7 @@
               :'data-upload-template-id' => '#primary_upload' }
     / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
     .row.fileupload-buttonbar
-      .col-lg-7
+      .col-lg-9
         / The fileinput-button span is used to style the file input field as button
         %span.btn.btn-success.fileinput-button
           %i.fa.fa-plus.fa-lg{:style => "color:white"}
@@ -22,29 +22,34 @@
           %span= t('.cancel')
         / The global file processing state
         %span.fileupload-process
+    .row.fileupload_progress
       / The global progress state
-      .col-lg-5.fileupload-progress.fade
+      .col-lg-9.fileupload-progress.fade
         / The global progress bar
         .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
           .progress-bar.progress-bar-success{:style => "width:0%;"}
         / The extended global progress state
         .progress-extended  
-    / The table listing the files available for upload/download
-    .headings
-      %table
-        %tr
-          %td{:style => "width:36%; text-align:left"} Document title
-          %td{:style => "text-align:left"} Revision
-          %td Information
-          %td{:style => "width:16%"} Edit
-          %td Download
-          %td Archive
-          %td Add file
-          %td Delete
-    #accordion.panel-group.files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
+    .row
+      .col-lg-9#uploads
+    .row
+      .col-lg-9.the_files
+    .row
+      .col-lg-9
+        / The table listing the files available for upload/download
+        .headings
+          %table
+            %tr
+              %td{:style => "width:36%; text-align:left"}= t('.doc_title')
+              %td{:style => "text-align:left"}= t('.revision')
+              %td= t('.information')
+              %td{:style => "width:16%"}=t('.edit')
+              %td= t('.download')
+              %td= t('.archive')
+              %td= t('.add1')
+              %td= t('.delete')
+        #accordion.panel-group.files{:role => "tablist", :name => 'internal_document[file]'}
 
-
-    #accordion.panel-group.replace_files{:role => "tablist", :style => "width:830px", :name => 'internal_document[file]'}
 
 = render :partial => 'details_popover'
 = render :partial => 'details_popover_content'
@@ -59,7 +64,7 @@
 :coffeescript
   $ ->
     $('.fileupload-buttonbar .start').on 'click', ->
-      filesList = $('.files .template-upload, .replace_files .template-upload')
+      filesList = $('#uploads .template-upload')
       # show flash msg if no files have been selected
       if filesList.length == 0
         $('#message_block').text("#{t('.flash.no_files_error')}")
@@ -122,6 +127,7 @@
           arr = inputs.serializeArray()
           return arr
         downloadTemplateId: '#template-download'
+        uploadTemplateContainerId: '#uploads'
 
     $('.fileupload').each ->
       $(@).fileupload fileupload_options
@@ -148,3 +154,16 @@
                                                     context: context,
                                                     type: 'DELETE'
                                                 }, data))
+
+
+    # same hack as above, but for the cancel icon
+    $('#uploads').on 'click', 'i.cancel', (event)->
+      event.preventDefault()
+      template = $(event.currentTarget).closest('.template-upload,.template-download')
+      data = template.data('data') || {}
+      data.context = data.context || template
+      if data.abort
+        data.abort()
+      else
+        data.errorThrown = 'abort'
+        this._trigger('fail', event, data)

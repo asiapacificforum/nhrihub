@@ -2,12 +2,12 @@
                                          data-formatted_filesize = "{%= #{file}.formatted_filesize %}"
                                          data-id = "{%= #{file}.id %}"
                                          data-formatted_modification_date = "{%= #{file}.formatted_modification_date %}"
-                                         data-original_filename = "{%= #{file}.original_filename %}"
+                                         data-original_filename = "{%- #{file}.original_filename %}"
                                          data-original_type = "{%= #{file}. original_type %}"
                                          data-revision = "{%= #{file}.revision %}"
                                          data-document_group_id = "{%= #{file}.document_group_id %}"
                                          data-delete_url = "{%= #{file}.deleteUrl %}"
-                                         data-uploaded_by = "{%= #{file}.uploaded_by %}")
+                                         data-uploaded_by = "{%- #{file}.uploaded_by %}")
   %tr
     %td.title{:style => "width:36%"}
       %div{:'data-toggle' => 'edit'}
