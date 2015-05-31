@@ -1,7 +1,7 @@
 class Action < ActiveRecord::Base
   belongs_to :controller
 
-  has_many :action_roles, :dependent=>:delete_all
+  has_many :action_roles, :dependent=>:destroy
   has_many :roles, :through => :action_roles
 
   # useractions are created in order to log actions performed by users, for recording in the log files
@@ -36,23 +36,19 @@ class Action < ActiveRecord::Base
     add_new_actions(cont, action_names)
   end
 
+  def self.update_from_file(controller_file)
+    current_actions = controller_file.controller_model.actions.map(&:action_name)
+    new_actions = controller_file.actions
+    remove_deleted_actions((current_actions - new_actions), controller_file.controller_model)
+    add_new_actions((new_actions - current_actions), controller_file.controller_model)
+  end
+
 private
-  # passed-in a controller object and a list of action name strings parsed from the xx_controller.rb file
-  def self.remove_deleted_actions(cont, action_list)
-    # first see what actions are in the table but not in the action_list pulled from the passe-in controller file
-    controller_actions = cont.actions.map(&:action_name)
-    actions_to_delete = controller_actions.delete_if{|a_name| action_list.include?(a_name)}
-    # and delete them from the table
-    actions_to_delete.map! { |ad| find_by_controller_id_and_action_name(cont.id,ad).id }
-    destroy(actions_to_delete)
+  def self.remove_deleted_actions(actions, controller)
+    destroy_all(:action_name => actions, :controller_id => controller.id)
   end
 
-  def self.add_new_actions(cont, action_list)
-    # then see what actions are in the action list pulled from the controllers, but not in the table
-    actions = cont.actions.map(&:action_name)
-    action_list.delete_if{ |al| actions.include?(al) }
-    # and add them to the table
-    action_list.each { |a| Action.create(:controller_id=>cont.id,:action_name=>a) } unless action_list.empty?
+  def self.add_new_actions(actions, controller)
+    actions.each { |action| create(:action_name => action, :controller_id => controller.id) }
   end
-
 end
