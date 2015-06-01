@@ -4,7 +4,6 @@ class Authengine::ActionRolesController < ApplicationController
     @actions = Action.
                  select('actions.id, actions.action_name, controllers.controller_name, actions.human_name').
                  joins(:controller).
-                 reject{|a| a.action_name == "update" || a.action_name == "create"}.  # update & create have the same permissions as edit and new
                  sort_by{|a| [a[:controller_name],a.action_name]}
     @roles = Role.except_developer.order(:name)
     @allowed = []
