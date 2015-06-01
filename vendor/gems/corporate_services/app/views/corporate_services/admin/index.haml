@@ -1,3 +1,4 @@
+.message_block
 %h1=t('.heading')
 
 %h4= t('.filetypes')
@@ -24,7 +25,7 @@
             %span MB
         %tr
           %td
-            %button.btn.btn-success.btn-xs{:style => 'line-height:1.8;', :type => 'submit'}= t('.change')
+            %button.btn.btn-success.btn-xs#change_filesize{:style => 'line-height:1.8;', :type => 'submit'}= t('.change')
           %td
             = text_field_tag :filesize, nil, :size => 6, :placeholder => "e.g. #{@filesize.to_i+2}"
             %span MB
@@ -36,11 +37,15 @@
         $('span#filesize').text(data)
       $('input#filesize').val("")
 
+    $('#update_filesize').bind "ajax:error", (e,data,status,xhr)->
+      $('.message_block').html flash_error_template({message : data.responseText})
+
     _.templateSettings = {
       interpolate: /\{\{(.+?)\}\}/g
     }
 
     filetype_template = _.template($("#filetype_template").html())
+    flash_error_template = _.template($("#flash_error_template").html())
 
     filetypes = #{@internal_document_filetypes.to_json}
     if filetypes.length == 0
@@ -53,8 +58,12 @@
       $('.filetypes tbody').append filetype_template({type : data})
       $('#filetype_ext').val('')
       $('td#empty').closest('tr').remove()
+      $('.message_block').html ''
 
-    $('table.filetypes').on 'click', 'a', (e)->
+    $('#new_filetype').bind "ajax:error", (e,data,status,xhr)->
+      $('.message_block').html flash_error_template({message : data.responseText})
+
+    $('table.filetypes').on 'click', 'a.delete_filetype', (e)->
       e.preventDefault()
       context = $(@).closest('tr')
       id = context.find('.type').html()
@@ -62,14 +71,21 @@
       $.ajax
         url: url
         method: 'delete'
-        dataType: 'text'
+        dataType: 'json'
         context: context # becomes 'this' in the callback
         success: (data, status, xhr)->
           this.remove()
           if $('.type').length == 0
             $('.filetypes tbody').append "<tr><td id='empty'>#{ t('.empty')}</td></tr>"
+          $('.message_block').html('')
+        error: (data,status,xhr) ->
+          $('.message_block').html flash_error_template({message : data.responseText})
 
 %script{:type => 'template/html', :id => :filetype_template}
   %tr
     %td.type {{ type }}
-    %td= link_to t('defaults.delete')
+    %td= link_to t('defaults.delete'), nil, :class => 'delete_filetype'
+
+%script{:type => 'template/html', :id => :flash_error_template}
+  %ul.error
+    %li {{ message }}

@@ -1,6 +1,6 @@
 module ApplicationHelpers
   def flash_message
-    page.find("#message_block").text
+    page.find(".message_block").text
   end
 
   def navigation_menu

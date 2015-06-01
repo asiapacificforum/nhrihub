@@ -11,6 +11,6 @@ class CorporateServices::InternalDocuments::FiletypesController < ApplicationCon
   def destroy
     SiteConfig['corporate_services.internal_documents.filetypes'] =
       SiteConfig['corporate_services.internal_documents.filetypes'] - [params[:type]]
-    render :nothing => true, :status => 200
+    render :json => {}, :status => 200
   end
 end

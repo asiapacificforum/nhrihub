@@ -100,6 +100,7 @@ protected
     flash[:error] = "You don't have permission to complete that action."
     respond_to do |format|
       format.html do
+        logger.info "format.html"
         domain_name = SITE_URL
         http_referer = request.env["HTTP_REFERER"]
 
@@ -119,10 +120,15 @@ protected
           redirect_to_referer_or_default(root_path)
         end
       end
+      format.js do
+        logger.info "format.js"
+        render :text => "You don't have permission to complete that action.", :status => '401 Unauthorized'
+      end
       format.xml do
+        logger.info "format.xml"
         headers["Status"]           = "Unauthorized"
         headers["WWW-Authenticate"] = %(Basic realm="Web Password")
-        render :text => "You don't have permission to complete this action.", :status => '401 Unauthorized'
+        render :text => "You don't have permission to complete that action.", :status => '401 Unauthorized'
       end
     end
   end

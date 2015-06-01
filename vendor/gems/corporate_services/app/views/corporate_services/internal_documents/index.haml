@@ -1,4 +1,4 @@
-#message_block
+.message_block
 %h1= t('.heading')
 .container
   / The file upload form used as target for the file upload widget
@@ -67,13 +67,13 @@
       filesList = $('#uploads .template-upload')
       # show flash msg if no files have been selected
       if filesList.length == 0
-        $('#message_block').text("#{t('.flash.no_files_error')}")
+        $('.message_block').text("#{t('.flash.no_files_error')}")
       else
-        $('#message_block').text("")
+        $('.message_block').text("")
 
     $('.fileupload-buttonbar .fileinput-button, .fileupload-buttonbar .cancel, .fileupload-buttonbar .delete').on 'click', ->
       # remove any flash msg
-      $('#message_block').text("")
+      $('.message_block').text("")
 
     # download a file
     $('body').on 'click', '.download', (e)->
