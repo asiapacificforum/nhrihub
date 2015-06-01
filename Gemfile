@@ -76,6 +76,7 @@ gem 'jquery-fileupload-rails', :path => 'vendor/gems'
 gem "refile", require: "refile/rails"
 gem "rails-settings-cached", :git => "git@github.com:huacnlee/rails-settings-cached.git"
 gem "underscore-rails"
+gem "transpec"
 
 
 # NHRI Modules:

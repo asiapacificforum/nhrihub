@@ -15,25 +15,25 @@ class User < ActiveRecord::Base
 
   # custom validator rather than built-in helper, in order to get custom message
   def create_with_unique_email
-    if User.where("email like ?", email).exists?
+    if User.where("email ilike ?", email).exists?
       errors.add(:base, :duplicate_email)
     end
   end
 
   def update_with_unique_email
-    if User.where("email like ? AND id != ?", email, id).exists?
+    if User.where("email ilike ? AND id != ?", email, id).exists?
       errors.add(:base, :duplicate_email)
     end
   end
 
   def create_with_unique_first_last_name
-    if User.where("\"firstName\" like ? and \"lastName\" like ?", firstName, lastName).exists?
+    if User.where("\"firstName\" ilike ? and \"lastName\" ilike ?", firstName, lastName).exists?
       errors.add(:base, :duplicate_first_last_name)
     end
   end
 
   def update_with_unique_first_last_name
-    if User.where("\"firstName\" like ? AND \"lastName\" like ? AND id != ?", firstName, lastName, id).exists?
+    if User.where("\"firstName\" ilike ? AND \"lastName\" ilike ? AND id != ?", firstName, lastName, id).exists?
       errors.add(:base, :duplicate_first_last_name)
     end
   end

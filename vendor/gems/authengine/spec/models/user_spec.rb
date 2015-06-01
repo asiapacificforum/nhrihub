@@ -1,16 +1,14 @@
-require 'spec_helper'
+#require 'spec_helper'
+require 'rails_helper'
+require 'i18n'
 
 describe "when a new user is added" do
-  before(:each) do
-    user = FactoryGirl.create(:user)
-  end
-
   it "a registration email should be sent" do
-    ActionMailer::Base.deliveries.size.should == 1
+    expect{FactoryGirl.create(:user)}.to change{ActionMailer::Base.deliveries.size}.by 1
   end
 
   it "email should have 'Please activate' etc in subject" do
-    ActionMailer::Base.deliveries.last.subject.should == "Test database - Please activate your new account"
+    expect(ActionMailer::Base.deliveries.last.subject).to include I18n.t('authengine.user_mailer.signup_notification.subject', :org_name => ORGANIZATION_NAME, :app_name => APPLICATION_NAME)
   end
 end
 

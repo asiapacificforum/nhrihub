@@ -1,4 +1,5 @@
-require 'spec_helper'
+#require 'spec_helper'
+require 'rails_helper'
 
 describe "ancestors method" do
   before(:each) do
@@ -8,12 +9,12 @@ describe "ancestors method" do
   end
 
   it "minions ancestors should include boss and big boss" do
-    @minion.ancestors.should include(@boss)
-    @minion.ancestors.should include(@big_boss)
-    @minion.ancestors.size.should == 2
-    @boss.ancestors.should include(@big_boss)
-    @boss.ancestors.size.should == 1
-    @big_boss.ancestors.should be_empty
+    expect(@minion.ancestors).to include(@boss)
+    expect(@minion.ancestors).to include(@big_boss)
+    expect(@minion.ancestors.size).to eq(2)
+    expect(@boss.ancestors).to include(@big_boss)
+    expect(@boss.ancestors.size).to eq(1)
+    expect(@big_boss.ancestors).to be_empty
   end
 
 end
@@ -26,13 +27,13 @@ describe "equal_or_lower_than class method" do
   end
 
   it "should return minion and boss when parameter is 'boss'" do
-    Role.equal_or_lower_than(@boss).should include(@minion)
-    Role.equal_or_lower_than(@boss).should include(@boss)
+    expect(Role.equal_or_lower_than(@boss)).to include(@minion)
+    expect(Role.equal_or_lower_than(@boss)).to include(@boss)
   end
 
   it "should return minion and boss and big_boss when parameter is an array ['boss','big_boss']" do
-    Role.equal_or_lower_than([@boss, @big_boss]).should include(@minion)
-    Role.equal_or_lower_than([@boss, @big_boss]).should include(@boss)
-    Role.equal_or_lower_than([@boss, @big_boss]).should include(@big_boss)
+    expect(Role.equal_or_lower_than([@boss, @big_boss])).to include(@minion)
+    expect(Role.equal_or_lower_than([@boss, @big_boss])).to include(@boss)
+    expect(Role.equal_or_lower_than([@boss, @big_boss])).to include(@big_boss)
   end
 end

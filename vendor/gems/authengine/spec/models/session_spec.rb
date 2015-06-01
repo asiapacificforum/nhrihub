@@ -1,4 +1,5 @@
-require 'spec_helper'
+require 'rails_helper'
+#require 'spec_helper'
 describe ".create_or_update class method" do
   context "when a user has no prior sessions" do
     before do
@@ -7,7 +8,7 @@ describe ".create_or_update class method" do
     end
 
     it "should save the session" do
-      Session.count.should == 1
+      expect(Session.count).to eq(1)
     end
   end
 
@@ -19,9 +20,9 @@ describe ".create_or_update class method" do
     end
 
     it "should update the session_id and time of the previous session" do
-      Session.count.should == 1
-      Session.first.session_id.should == @login2.session_id
-      Session.first.login_date.should == @login1.login_date
+      expect(Session.count).to eq(1)
+      expect(Session.first.session_id).to eq(@login2.session_id)
+      expect(Session.first.login_date).to eq(@login1.login_date)
     end
   end
 
@@ -35,9 +36,9 @@ describe ".create_or_update class method" do
     end
 
     it "should update the session_id and time of the previous session" do
-      Session.count.should == 2
-      Session.last.session_id.should == @login3.session_id
-      Session.last.login_date.should == @login3.login_date
+      expect(Session.count).to eq(2)
+      expect(Session.last.session_id).to eq(@login3.session_id)
+      expect(Session.last.login_date).to eq(@login3.login_date)
     end
   end
 end
