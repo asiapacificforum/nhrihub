@@ -58,18 +58,26 @@
 = render :partial => 'template_upload', :locals => {:id => 'archive_upload', :prefix => 'internal_document[archive_files][]', :label_prefix => 'internal_document_archive_files_'}
 = render :partial => 'template_download'
 
+%script{:type => 'template/html', :id => :flash_error_template}
+  %ul.error
+    %li {{ message }}
+
 = javascript_include_tag 'corporate_services/in_page_edit'
 = javascript_include_tag 'corporate_services/popover'
 
 :coffeescript
   $ ->
+    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+
+    flash_error_template = _.template($("#flash_error_template").html())
+
     $('.fileupload-buttonbar .start').on 'click', ->
       filesList = $('#uploads .template-upload')
       # show flash msg if no files have been selected
       if filesList.length == 0
-        $('.message_block').text("#{t('.flash.no_files_error')}")
+        $('.message_block').html(flash_error_template({message : "#{t('.flash.no_files_error')}"}))
       else
-        $('.message_block').text("")
+        $('.message_block').html("")
 
     $('.fileupload-buttonbar .fileinput-button, .fileupload-buttonbar .cancel, .fileupload-buttonbar .delete').on 'click', ->
       # remove any flash msg
@@ -98,13 +106,14 @@
 
     #   INITIALIZE THE FILE LIST FROM JSON DATA AT DOCUMENT LOAD
     _.templateSettings = {
-      interpolate: /\{\%=(.+?)\%\}/g
-      evaluate: /\{\%(.+?)\%\}/g
-      escape: /\{\%-(.+?)\%\}/g
+      interpolate: /\{\{=(.+?)\}\}/g
+      evaluate: /\{\{(.+?)\}\}/g
+      escape: /\{\{-(.+?)\}\}/g
     }
     template = _.template($('#template-download').html())
     result = template({files: files})
     $(result)[ 'appendTo' ]($('.files'))
+
 
     fileupload_options =
         acceptFileTypes: new RegExp("\\.("+permitted_filetypes+")$",'i'),

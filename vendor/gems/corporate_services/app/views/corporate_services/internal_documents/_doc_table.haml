@@ -1,27 +1,27 @@
-%table.document{:style => "width:800px"}(data-formatted_creation_date = "{%= #{file}.formatted_creation_date %}"
-                                         data-formatted_filesize = "{%= #{file}.formatted_filesize %}"
-                                         data-id = "{%= #{file}.id %}"
-                                         data-formatted_modification_date = "{%= #{file}.formatted_modification_date %}"
-                                         data-original_filename = "{%- #{file}.original_filename %}"
-                                         data-original_type = "{%= #{file}. original_type %}"
-                                         data-revision = "{%= #{file}.revision %}"
-                                         data-document_group_id = "{%= #{file}.document_group_id %}"
-                                         data-delete_url = "{%= #{file}.deleteUrl %}"
-                                         data-uploaded_by = "{%- #{file}.uploaded_by %}")
+%table.document{:style => "width:800px"}(data-formatted_creation_date = "{{= #{file}.formatted_creation_date }}"
+                                         data-formatted_filesize = "{{= #{file}.formatted_filesize }}"
+                                         data-id = "{{= #{file}.id }}"
+                                         data-formatted_modification_date = "{{= #{file}.formatted_modification_date }}"
+                                         data-original_filename = "{{- #{file}.original_filename }}"
+                                         data-original_type = "{{= #{file}. original_type }}"
+                                         data-revision = "{{= #{file}.revision }}"
+                                         data-document_group_id = "{{= #{file}.document_group_id }}"
+                                         data-delete_url = "{{= #{file}.deleteUrl }}"
+                                         data-uploaded_by = "{{- #{file}.uploaded_by }}")
   %tr
     %td.title{:style => "width:36%"}
       %div{:'data-toggle' => 'edit'}
         .fade.edit
-          %input.title{:'data-name' => :title, :name => "internal_document[title]", :'value' => "{%= #{file}.title %}"}
+          %input.title{:'data-name' => :title, :name => "internal_document[title]", :'value' => "{{= #{file}.title }}"}
         .fade.no_edit.editable
-          %span {%= #{file}.title %}
+          %span {{= #{file}.title }}
     %td.revision{:'data-name' => 'revision', :style => "width:8%"}
       %div{:'data-toggle' => 'edit'}
         .fade.edit
-          %input.revision{:'data-name' => :revision, :name => "internal_document[revision]", :'value' => "{%= #{file}.revision %}", :style => 'width:40px'}
+          %input.revision{:'data-name' => :revision, :name => "internal_document[revision]", :'value' => "{{= #{file}.revision }}", :style => 'width:40px'}
         .fade.no_edit.editable
           -# height required to properly position the tag
-          %span {%= #{file}.revision %}
+          %span {{= #{file}.revision }}
     -# make sure it's on top of the next td, even though it precedes in the html
     %td.include_popover{:style => "text-align:center; width:8%"}
       .icon{:'data-toggle' => 'edit'}
@@ -41,7 +41,7 @@
         %i.fa.fa-cloud-download.fa-lg.download
     %td.under_popover{:style => "text-align:center; width:8%"}
       -if file == "file"
-        .icon{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{%= #{file}.id %}"}
+        .icon{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{{= #{file}.id }}"}
           %i.fa.fa-folder-o.fa-lg
       -else
         -# just to keep the spacing the same
@@ -50,9 +50,9 @@
     %td.under_popover{:style => "text-align:center; width:8%"}
       -if file == "file"
         -# next tag is where the fileupload is attached
-        .fileupload.icon{:id => "upload{%= file.id %}",
-                         :'data-file-input' => "#upload{%= file.id %} #archive_fileinput",
-                         :'data-url' => "internal_documents/{%= file.id %}",
+        .fileupload.icon{:id => "upload{{= file.id }}",
+                         :'data-file-input' => "#upload{{= file.id }} #archive_fileinput",
+                         :'data-url' => "internal_documents/{{= file.id }}",
                          :'data-type' => 'put',
                          :'data-param-name' => 'internal_document[archive_files][][file]',
                          :'data-upload-template-id' => '#archive_upload' }
@@ -65,5 +65,5 @@
         #file_replace{:style => 'visibility:hidden'}
           %i.fa.fa-plus.fa-lg
     %td{:style => "text-align:center; width:8%"}
-      %div.icon.delete{:data=> {:url => "{%= #{file}.deleteUrl %}"}}
+      %div.icon.delete{:data=> {:url => "{{= #{file}.deleteUrl }}"}}
         %i.fa.fa-trash-o.fa-lg
