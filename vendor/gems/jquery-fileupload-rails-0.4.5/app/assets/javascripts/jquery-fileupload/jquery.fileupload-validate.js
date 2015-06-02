@@ -40,6 +40,7 @@
             always: true,
             // Options taken from the global options map:
             acceptFileTypes: '@',
+            permittedFiletypes: '@',
             maxFileSize: '@',
             minFileSize: '@',
             maxNumberOfFiles: '@',
@@ -90,7 +91,7 @@
                 } else if (options.acceptFileTypes &&
                         !(options.acceptFileTypes.test(file.type) ||
                         options.acceptFileTypes.test(file.name))) {
-                    file.error = settings.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.acceptFileTypes');
+                    file.error = settings.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.acceptFileTypes', {types : options.permittedFiletypes.join(", ")});
                 } else if (fileSize > options.maxFileSize) {
                     file.error = settings.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.maxFileSize');
                 } else if ($.type(fileSize) === 'number' &&

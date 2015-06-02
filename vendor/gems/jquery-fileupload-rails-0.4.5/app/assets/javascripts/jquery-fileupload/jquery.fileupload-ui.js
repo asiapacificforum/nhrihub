@@ -46,10 +46,15 @@
 
             // Translation function, gets the message key to be translated
             // and an object with context specific data as arguments:
-            i18n: function (keys) {
-              var res = locale;
-              keys.split('.').forEach(function(c){ res = res[c]})
-              return res
+            i18n: function (keys, context) {
+              var message = locale;
+              keys.split('.').forEach(function(c){ message = message[c]})
+              if (context) {
+                  $.each(context, function (key, value) {
+                      message = message.replace('{' + key + '}', value);
+                  });
+              }
+              return message
             },
 
             // pull the locale string from the url
@@ -684,10 +689,16 @@
             }
         },
 
+        _initOptions: function(){
+          var options = this.options;
+          options.acceptFileTypes = new RegExp("\\.("+options.permittedFiletypes.join("|")+")$",'i');
+        },
+
         _initSpecialOptions: function () {
             this._super();
             this._initFilesContainer();
             this._initTemplates();
+            this._initOptions();
         },
 
         _create: function () {

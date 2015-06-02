@@ -31,11 +31,6 @@ class InternalDocument < ActiveRecord::Base
     [revision.major, revision.minor] <=> [other.revision_major, other.revision_minor]
   end
 
-  def self.permitted_filetypes
-    SiteConfig['corporate_services.internal_documents.filetypes'].
-      join("|")
-  end
-
   def self.maximum_filesize
     SiteConfig['corporate_services.internal_documents.filesize']*1000000
   end

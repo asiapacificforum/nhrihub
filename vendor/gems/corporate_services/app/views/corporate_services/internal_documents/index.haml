@@ -96,7 +96,7 @@
 
 :javascript
   var maximum_filesize = #{InternalDocument.maximum_filesize}
-  var permitted_filetypes = "#{InternalDocument.permitted_filetypes}"
+  var permitted_filetypes = #{ SiteConfig['corporate_services.internal_documents.filetypes'].to_json }
 
 :coffeescript
   files = #{ render :partial => 'files', :formats => [:json], :locals => {:internal_documents => @internal_documents} }
@@ -116,7 +116,8 @@
 
 
     fileupload_options =
-        acceptFileTypes: new RegExp("\\.("+permitted_filetypes+")$",'i'),
+        #acceptFileTypes: new RegExp("\\.("+permitted_filetypes.join("|")+")$",'i'),
+        permittedFiletypes: permitted_filetypes,
         maxFileSize: parseInt(maximum_filesize),
         # 'replaced means the primary file of a group was bumped into the archive
         # and a new primary file uploaded in its place
