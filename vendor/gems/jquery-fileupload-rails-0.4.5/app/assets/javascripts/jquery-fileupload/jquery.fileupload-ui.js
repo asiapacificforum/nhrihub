@@ -96,7 +96,7 @@
                 options.uploadTemplateContainer.append(data.context);
                 that._forceReflow(data.context);
                 that._transition(data.context); // puts the upload template on the page, in the filesContainer
-                data.process(function () { // if we're processing the data, e.g. image resize, doesn't apply to docs with no thumbnail
+                data.process(function () { // e.g. validation
                     return $this.fileupload('process', data);
                 }).always(function () {
                     data.context.each(function (index) {
@@ -112,12 +112,13 @@
                             data.autoUpload !== false) {
                         data.submit();
                     }
-                }).fail(function () {
+                }).fail(function () { // e.g. validation fail
                     if (data.files.error) {
                         data.context.each(function (index) {
                             var error = data.files[index].error;
                             if (error) {
                                 $(this).find('.error').text(error);
+                                $(this).find('.start').prop('disabled', true);
                             }
                         });
                     }
