@@ -28,6 +28,23 @@ feature "internal document admin", :js => true do
     expect{ page.find("#new_filetype table button").click; sleep(0.2) }.to change{ SiteConfig['corporate_services.internal_documents.filetypes'].length }.from(1).to(2)
   end
 
+  scenario "add duplicate filetype" do
+    SiteConfig['corporate_services.internal_documents.filetypes']=["pdf", "doc"]
+    visit corporate_services_admin_path('en')
+    sleep(0.1)
+    page.find('#filetype_ext').set('doc')
+    expect{ page.find("#new_filetype table button").click; sleep(0.2) }.not_to change{ SiteConfig['corporate_services.internal_documents.filetypes'] }
+    expect( flash_message ).to eq "Filetype already exists, must be unique."
+  end
+
+  scenario "add duplicate filetype" do
+    visit corporate_services_admin_path('en')
+    sleep(0.1)
+    page.find('#filetype_ext').set('a_very_long_filename')
+    expect{ page.find("#new_filetype table button").click; sleep(0.2) }.not_to change{ SiteConfig['corporate_services.internal_documents.filetypes'] }
+    expect( flash_message ).to eq "Filetype too long, 4 characters maximum."
+  end
+
   scenario "delete a filetype" do
     SiteConfig['corporate_services.internal_documents.filetypes']=["pdf", "doc"]
     visit corporate_services_admin_path('en')

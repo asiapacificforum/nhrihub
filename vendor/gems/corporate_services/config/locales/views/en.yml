@@ -3,7 +3,6 @@ en:
     internal_documents:
       index:
         heading: "Internal Documents"
-        add: "Add files..."
         start: "Start upload"
         cancel: "Cancel upload"
         delete: "Delete"
@@ -15,6 +14,7 @@ en:
         edit: "Edit"
         download: "Download"
         archive: "Archive"
+        add: "Add files..."
         add1: "Add file"
         flash:
           no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
@@ -36,9 +36,12 @@ en:
       index:
         heading: "Corporate Services module"
         filetypes: "Filetypes permitted for internal documents"
-        empty: "None configured"
         add: "Add filetype"
         filesize_max: "Maximum permitted file size"
+      internal_document_filetypes:
+        add: "Add file type"
+        empty: "None configured"
+      internal_document_filesize:
         current_val: "Current value"
         change: "Change to"
   layout:

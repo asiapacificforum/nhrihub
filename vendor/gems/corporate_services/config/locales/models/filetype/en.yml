@@ -1,0 +1,12 @@
+en:
+  activemodel:
+    attributes:
+      filetype:
+        ext: 'Filetype'
+    errors:
+      models:
+        filetype:
+          too_long: "too long, 4 characters maximum."
+          duplicate: "already exists, must be unique."
+          blank: "can't be blank"
+          too_short: "too short, must be at least 2 characters."

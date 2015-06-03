@@ -1,11 +1,11 @@
 class CorporateServices::InternalDocuments::FiletypesController < ApplicationController
   def create
-    if match = params[:filetype][:ext].match(/\w+/) # eliminate punctuation, spaces etc
-      filetype  = match[0].downcase
-      filetypes = SiteConfig['corporate_services.internal_documents.filetypes'] << filetype
-      filetypes = SiteConfig['corporate_services.internal_documents.filetypes'] = filetypes.uniq
+    filetype = Filetype.create(params[:filetype][:ext])
+    if filetype.errors.empty?
+      render :text => filetype.ext, :status => 200, :content_type => 'text/plain'
+    else
+      render :text => filetype.errors.full_messages.first, :status => 422
     end
-    render :text => filetype, :status => 200, :content_type => 'text/plain'
   end
 
   def destroy
