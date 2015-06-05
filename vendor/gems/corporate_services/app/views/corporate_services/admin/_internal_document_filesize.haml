@@ -22,4 +22,4 @@
       $('input#filesize').val("")
 
     $('#update_filesize').bind "ajax:error", (e,data,status,xhr)->
-      $('.message_block').html flash_error_template({message : data.responseText})
+      $('.message_block').html window.flash_error_template({message : data.responseText})

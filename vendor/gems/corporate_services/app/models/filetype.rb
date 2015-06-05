@@ -8,6 +8,7 @@ class Filetype
     @ext = attrs[:ext]
   end
 
+  #TODO client-side validations would be better
   def instance_validations
     if !ext
       errors.add :ext, I18n.t('activemodel.errors.models.filetype.blank')

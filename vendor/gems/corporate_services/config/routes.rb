@@ -7,7 +7,10 @@ Rails.application.routes.draw do
       end
       resources :internal_documents
       resources :performance_reviews
-      resources :strategic_plan_documents
+      namespace :strategic_plans do
+        resource :start_date, :only => :update
+      end
+      resources :strategic_plans
       get 'admin', :to => "admin#index"
     end
   end

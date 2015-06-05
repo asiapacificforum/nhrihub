@@ -7,6 +7,9 @@
 %h4= t('.filesize_max')
 = render :partial => 'internal_document_filesize'
 
+%h4= t('.start_date')
+= render :partial => 'start_date'
+
 :coffeescript
   $ ->
     _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }

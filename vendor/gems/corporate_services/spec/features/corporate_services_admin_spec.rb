@@ -101,6 +101,33 @@ feature "internal document admin when user not permitted", :js => true do
   end
 end
 
+describe "strategic plan admin", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+
+  scenario "start date not configured" do
+    visit corporate_services_admin_path('en')
+    expect(page.find('span#start_date').text).to eq "January 1"
+    expect(page).to have_select('strategic_plan_start_date_date_2i', :selected => 'January')
+    expect(page).to have_select('strategic_plan_start_date_date_3i', :selected => '1')
+  end
+
+  scenario "start date already configured" do
+    SiteConfig['corporate_services.strategic_plans.start_date'] = Date.new(2001,8,19)
+    visit corporate_services_admin_path('en')
+    expect(page.find('span#start_date').text).to eq "August 19"
+    expect(page).to have_select('strategic_plan_start_date_date_2i', :selected => 'August')
+    expect(page).to have_select('strategic_plan_start_date_date_3i', :selected => '19')
+  end
+
+  scenario "set the date" do
+    visit corporate_services_admin_path('en')
+    page.select 'April', :from => 'strategic_plan_start_date_date_2i'
+    page.select '1', :from => 'strategic_plan_start_date_date_3i'
+    page.find('#change_start_date').click; sleep(0.2)
+    expect( SiteConfig['corporate_services.strategic_plans.start_date'] ).to match(/-04-01$/)
+  end
+end
+
 def set_filesize(val)
   page.find('input#filesize').set(val)
 end

@@ -29,7 +29,7 @@ en:
     performance_reviews:
       index:
         heading: "Performance Reviews"
-    strategic_plan_documents:
+    strategic_plans:
       index:
         heading: "Strategic Plan"
     admin:
@@ -38,10 +38,14 @@ en:
         filetypes: "Filetypes permitted for internal documents"
         add: "Add filetype"
         filesize_max: "Maximum permitted file size"
+        start_date: "Strategic plan annual start date"
       internal_document_filetypes:
         add: "Add file type"
         empty: "None configured"
       internal_document_filesize:
+        current_val: "Current value"
+        change: "Change to"
+      start_date:
         current_val: "Current value"
         change: "Change to"
   layout:
