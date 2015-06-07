@@ -1,0 +1,50 @@
+#new_strategic_priority.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"data-dismiss" => "modal", :type => "button"}
+          %i.fa.fa-times
+        %h4#new_strategic_priority_label.modal-title= t('.new_strategic_priority')
+      .modal-body
+        = form_for [:corporate_services, @strategic_plan, @strategic_priority], :remote => true do |f|
+          .form-group
+            =f.label :priority_level, t('.priority'), :class => 'control-label'
+            =f.select :priority_level, (1..10), {}, {:class => 'form-control'}
+          .form-group.clearfix
+            =f.label :description, t('.description'), :class => 'control-label', :style => "float:left;"
+            .chars_remaining{:style => "float:right"}
+            =f.text_field :description, :class => 'form-control'
+          .modal-footer
+            %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"}= t('defaults.cancel')
+            %button.btn.btn-primary#add{:type => "button"}= t('.add')
+
+%script#strategic_priority_template{:type => 'template/html'}
+  %tr.strategic_priority
+    %td Strategic Priority {{ priority_level }}: {{ description }}
+  %tr
+    %td Planned results
+    %td Outcomes
+    %td Activities
+    %td Performance indicators
+    %td Reminders/notes/rules
+    %td Progress
+
+:coffeescript
+  $ ->
+    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+
+    $('form#new_strategic_priority button#add').bind "click", ->
+      $(@).closest('form').submit()
+
+    $('form#new_strategic_priority').bind "ajax:success", (e,data,status,xhr)->
+      $('div#new_strategic_priority').modal('hide')
+      template = _.template($('#strategic_priority_template').html())
+      $('table#strategic_plan').append(template(data))
+
+    $('form#new_strategic_priority').bind "ajax:error", ->
+      console.log "error"
+
+    $('form#new_strategic_priority #strategic_priority_description').bind 'keyup', ->
+      @.value = @.value.substring(0,100)
+      count = 100-@.value.length
+      $('.chars_remaining').text("You have "+count+" characters left")

@@ -1,0 +1,14 @@
+%h1= t('.heading')
+%table.table#strategic_plan
+  %tr
+    %th{:colspan => 7}
+      = form_for [:corporate_services, @strategic_plan], :remote => true do |f|
+        = f.select :start_date, start_date_options, {}, {:class => "form-control", :style => "background-color:inherit;"}
+  %tr
+    %td
+      %span.btn.btn-success.add_strategic_priority{'data-toggle' => 'modal', 'data-target'=>'#new_strategic_priority'}
+        %i.fa.fa-plus.fa-lg{:style => "color:white"}
+        %span= t('.add_priority')
+
+
+= render :partial => 'strategic_priority_form'

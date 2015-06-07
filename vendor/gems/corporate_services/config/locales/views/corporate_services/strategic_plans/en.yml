@@ -1,0 +1,13 @@
+en:
+  corporate_services:
+    strategic_plans:
+      show:
+        heading: "Strategic Plan"
+        current_year: "Current reporting year %{start} - %{end}"
+        other_years: "Starting %{start}, ending %{end}"
+        add_priority: "Add strategic priority"
+      strategic_priority_form:
+        new_strategic_priority: "New strategic priority"
+        priority: "Priority level"
+        description: "Description"
+        add: "Add"
