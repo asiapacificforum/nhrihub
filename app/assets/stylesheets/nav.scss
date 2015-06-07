@@ -1,58 +1,26 @@
 $banner_bg: #b52138;
 $banner_border: #FCCD0F;
 
-@mixin gradient($from, $to, $height) {
-  background-color: $to;
-
-  background-image: -webkit-gradient(linear, left top, left bottom, from($from), to($to));
-  background-image: -webkit-linear-gradient($from, $to);
-  background-image: -moz-linear-gradient($from, $to);
-  background-image: -o-linear-gradient($from, $to);
-  background-image: -ms-linear-gradient($from, $to);
-  background-image: linear-gradient($from, $to);
-
-  background-repeat: repeat-x;
-
-  // parameters are width and height
-  //-webkit-background-size: 100% $height;
-  //-moz-background-size: 100% $height;
-  //-o-background-size: 100% $height;
-  //background-size: 100% $height;
-}
-
-//background-color: #b52138; // Old browsers
-//@include filter-gradient(#b52138, #b52138, vertical); // IE6-9
-//@include background-image(linear-gradient(top,  #b52138 0%,#f2a9b6 6%,#b52138 44%,#b52138 100%));
-
-
 .navbar-brand {
   background-image: asset-url('banner_logo.png');
-  background-position-x: 15px;
   background-repeat: no-repeat;
   background-size: 56px;
-  padding-left: 69px;
+  width: 69px;
+  margin-left: 0px !important; // b/c bootstrap seems to be forcing -15px!
 }
 
 
 // define all the colors for the navbar menu, top-level items
-// Normal
-//$nav_gradient_top: #F59B9B;
-$nav_gradient_top: #F59B9B;
-//$nav_gradient_bottom: #7E0404;
-$nav_gradient_bottom: $banner_bg;
 $nav_text : #F2F2E7;
 // hover
-$nav_hover_gradient_top: lighten($nav_gradient_top, 8%);
-$nav_hover_gradient_bottom: lighten($nav_gradient_bottom, 8%);
+$nav_hover: lighten($banner_bg, 8%);
 $nav_hover_text : lighten($nav_text, 8%);
 // active
-$nav_active_gradient_top: #ffffff;
-$nav_active_gradient_bottom: lighten($nav_hover_gradient_bottom, 8%);
+$nav_active: lighten($nav_hover, 8%);
 $nav_active_text : #645252;
 
 .navbar {
   border: none;
-  //@include gradient($nav_gradient_top, $nav_gradient_bottom, 30px);
   background-color: $banner_bg;
 }
 
@@ -64,29 +32,24 @@ $nav_active_text : #645252;
 
 // active
 .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-  //@include gradient($nav_active_gradient_top, $nav_active_gradient_bottom, 30px);
-  background-color: $nav_active_gradient_bottom;
+  background-color: $nav_active;
   color : $nav_text;
 }
 
 .navbar-default .navbar-nav > .active > a {
-  //@include gradient($nav_active_gradient_top, $nav_active_gradient_top, 30px);
-  background-color: $nav_active_gradient_bottom;
+  background-color: $nav_active;
   background-image: none; // b/c bootstrap has a gradient image that the background-color here cannot override
   color : $nav_text;
 }
 
 // Normal
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a {
-  //@include gradient($nav_gradient_top, $nav_gradient_bottom, 30px);
-
   color : $nav_text;
 }
 
 // hover
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-  //@include gradient($nav_hover_gradient_top, $nav_hover_gradient_bottom, 30px);
-  background-color: $nav_hover_gradient_bottom;
+  background-color: $nav_hover;
   color : $nav_text;
 }
 
@@ -94,8 +57,7 @@ $nav_active_text : #645252;
 .navbar-default .navbar-nav > .open > a,
 .navbar-default .navbar-nav > .open > a:hover,
 .navbar-default .navbar-nav > .open > a:focus {
-  //@include gradient($nav_gradient_top, $nav_gradient_bottom, 30px);
-  background-color: $nav_hover_gradient_bottom;
+  background-color: $nav_hover;
   color : $nav_text;
 }
 
@@ -118,7 +80,6 @@ $nav_active_text : #645252;
   border-style: solid;
   border-radius: 7px;
   width: 100%;
-  //background-image: url('banner_bg_img.png');
 }
 
 #main {
