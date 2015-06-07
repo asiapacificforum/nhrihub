@@ -20,14 +20,16 @@
 
 %script#strategic_priority_template{:type => 'template/html'}
   %tr.strategic_priority
-    %td Strategic Priority {{ priority_level }}: {{ description }}
+    %td
+      = t('.strategic_priority')
+      {{ priority_level }}: {{ description }}
   %tr
-    %td Planned results
-    %td Outcomes
-    %td Activities
-    %td Performance indicators
-    %td Reminders/notes/rules
-    %td Progress
+    %td= t('.planned_results')
+    %td= t('.outcomes')
+    %td= t('.activities')
+    %td= t('.perf_indicators')
+    %td= t('.reminders')
+    %td= t('.progress')
 
 :coffeescript
   $ ->
@@ -44,7 +46,9 @@
     $('form#new_strategic_priority').bind "ajax:error", ->
       console.log "error"
 
+    chars_remaining_template = _.template("#{t('.chars_remaining')}")
+
     $('form#new_strategic_priority #strategic_priority_description').bind 'keyup', ->
       @.value = @.value.substring(0,100)
       count = 100-@.value.length
-      $('.chars_remaining').text("You have "+count+" characters left")
+      $('.chars_remaining').text(chars_remaining_template({count: count}))

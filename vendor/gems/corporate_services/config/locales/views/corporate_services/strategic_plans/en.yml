@@ -11,3 +11,11 @@ en:
         priority: "Priority level"
         description: "Description"
         add: "Add"
+        strategic_priority: "Strategic Priority"
+        planned_results: "Planned results"
+        outcomes: "Outcomes"
+        activities: "Activities"
+        perf_indicators: "Performance indicators"
+        reminders: "Reminders/notes/rules"
+        progress: "Progress"
+        chars_remaining: "You have {{count}} characters left" # the word "count" must remain UNtranslated in all locale files. And the double braces must remain.
