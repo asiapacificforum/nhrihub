@@ -19,17 +19,22 @@
             %button.btn.btn-primary#add{:type => "button"}= t('.add')
 
 %script#strategic_priority_template{:type => 'template/html'}
-  %tr.strategic_priority
-    %td
-      = t('.strategic_priority')
-      {{ priority_level }}: {{ description }}
-  %tr
-    %td= t('.planned_results')
-    %td= t('.outcomes')
-    %td= t('.activities')
-    %td= t('.perf_indicators')
-    %td= t('.reminders')
-    %td= t('.progress')
+  .panel.panel-default
+    #headingOne.panel-heading{:role => "tab"}
+      %h4.panel-title
+        %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseOne"}
+          = t('.strategic_priority')
+          {{ priority_level }}: {{ description }}
+    #collapseOne.panel-collapse.collapse.in{:role => "tabpanel"}
+      .panel-body
+        %table.table
+          %tr
+            %td= t('.planned_results')
+            %td= t('.outcomes')
+            %td= t('.activities')
+            %td= t('.perf_indicators')
+            %td= t('.reminders')
+            %td= t('.progress')
 
 :coffeescript
   $ ->
@@ -41,7 +46,7 @@
     $('form#new_strategic_priority').bind "ajax:success", (e,data,status,xhr)->
       $('div#new_strategic_priority').modal('hide')
       template = _.template($('#strategic_priority_template').html())
-      $('table#strategic_plan').append(template(data))
+      $('div#strategic_plan').append(template(data))
 
     $('form#new_strategic_priority').bind "ajax:error", ->
       console.log "error"

@@ -57,6 +57,10 @@ feature "strategic plan", :js => true do
   xscenario "add a second strategic priority that re-orders existing priorities" do
     
   end
+
+  xscenario "edit the description and priority level of an existing strategic priority" do
+    
+  end
 end
 
 def add_priority_button

@@ -1,14 +1,14 @@
-%h1= t('.heading')
-%table.table#strategic_plan
+= form_for [:corporate_services, @strategic_plan], :remote => true do |f|
+  = f.select :start_date, start_date_options, {}, {:class => "form-control h1_select", :style => "background-color:inherit;height:50px"}
+
+%table.table
   %tr
-    %th{:colspan => 7}
-      = form_for [:corporate_services, @strategic_plan], :remote => true do |f|
-        = f.select :start_date, start_date_options, {}, {:class => "form-control", :style => "background-color:inherit;"}
-  %tr
-    %td
+    %td{:colspan => 7}
       %span.btn.btn-success.add_strategic_priority{'data-toggle' => 'modal', 'data-target'=>'#new_strategic_priority'}
         %i.fa.fa-plus.fa-lg{:style => "color:white"}
         %span= t('.add_priority')
+
+#accordion.panel-group#strategic_plan{:role => "tablist"}
 
 
 = render :partial => 'strategic_priority_form'
