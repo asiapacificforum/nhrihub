@@ -11,6 +11,7 @@
 // about supported directives.
 //
 // see https://github.com/twbs/bootstrap-sass
+//= require bind_polyfill_shim
 //= require jquery
 //= require jquery_ujs
 //= require underscore

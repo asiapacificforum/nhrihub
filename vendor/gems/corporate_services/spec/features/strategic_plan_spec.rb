@@ -9,7 +9,7 @@ feature "strategic plan", :js => true do
     start_date = SiteConfig['corporate_services.strategic_plans.start_date']
     visit corporate_services_strategic_plan_path(:en, "current")
     expect(page).to have_select("strategic_plan_start_date",
-                                :selected => "Current reporting year #{StrategicPlanStartDate.most_recent} - #{StrategicPlanStartDate.most_recent.advance(:years => 1, :days => -1)}")
+                                :selected => "Strategic Plan: Current reporting year #{StrategicPlanStartDate.most_recent.to_s} - #{StrategicPlanStartDate.most_recent.advance(:years => 1, :days => -1).to_s}")
   end
 
   xscenario "select a prior year" do
@@ -26,7 +26,7 @@ feature "strategic plan", :js => true do
       click_button "Add"
       sleep(0.2)
     end
-    expect(page).to have_selector('.strategic_priority td', :text => "Strategic Priority 1: The application of good governance by public authorities")
+    expect(page).to have_selector('h4.panel-title a', :text => "Strategic Priority 1: The application of good governance by public authorities")
   end
 
   scenario "filling-in the strategic priority description field" do

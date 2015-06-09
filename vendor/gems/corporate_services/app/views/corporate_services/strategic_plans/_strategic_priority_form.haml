@@ -1,4 +1,6 @@
 #new_strategic_priority.modal.fade
+
+%script#strategic_priority_form{:type => 'text/ractive'}
   .modal-dialog
     .modal-content
       .modal-header
@@ -12,13 +14,14 @@
             =f.select :priority_level, (1..10), {}, {:class => 'form-control'}
           .form-group.clearfix
             =f.label :description, t('.description'), :class => 'control-label', :style => "float:left;"
-            .chars_remaining{:style => "float:right"}
-            =f.text_field :description, :class => 'form-control'
+            .chars_remaining{:style => "float:right"}= t('.chars_remaining')
+            =f.text_field :description, :class => 'form-control', :value => '{{value}}', 'on-keyup'=>'enforce_limit()'
           .modal-footer
-            %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"}= t('defaults.cancel')
+            %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", 'on-click'=>'reset_form()'}= t('defaults.cancel')
             %button.btn.btn-primary#add{:type => "button"}= t('.add')
 
-%script#strategic_priority_template{:type => 'template/html'}
+%script#strategic_priority_template{:type => 'text/ractive'}
+  {{#each strategic_priorities:sp }}
   .panel.panel-default
     #headingOne.panel-heading{:role => "tab"}
       %h4.panel-title
@@ -35,25 +38,45 @@
             %td= t('.perf_indicators')
             %td= t('.reminders')
             %td= t('.progress')
+  {{/each}}
 
 :coffeescript
   $ ->
-    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+    Ractive.DEBUG = false
 
-    $('form#new_strategic_priority button#add').bind "click", ->
-      $(@).closest('form').submit()
+    strategic_priorities = #{@strategic_priorities.to_json}
 
-    $('form#new_strategic_priority').bind "ajax:success", (e,data,status,xhr)->
+    strategic_priority_collection = new Ractive({
+      el : "#strategic_plan"
+      template: "#strategic_priority_template"
+      data: { strategic_priorities : strategic_priorities }
+    })
+
+    $('body').on "click", 'button#add', (event)->
+      $(event.target).closest('form').submit()
+
+    $('body').on "ajax:success", (e,data,status,xhr)->
       $('div#new_strategic_priority').modal('hide')
-      template = _.template($('#strategic_priority_template').html())
-      $('div#strategic_plan').append(template(data))
+      strategic_priority_form.reset()
+      strategic_priorities.push(data)
 
     $('form#new_strategic_priority').bind "ajax:error", ->
       console.log "error"
 
-    chars_remaining_template = _.template("#{t('.chars_remaining')}")
-
-    $('form#new_strategic_priority #strategic_priority_description').bind 'keyup', ->
-      @.value = @.value.substring(0,100)
-      count = 100-@.value.length
-      $('.chars_remaining').text(chars_remaining_template({count: count}))
+    strategic_priority_form = new Ractive({
+      el : "#new_strategic_priority"
+      template : "#strategic_priority_form"
+      data : {value : ""}
+      computed : {
+        length : ->
+          @.get('value').length
+        count : ->
+          Math.max(0,(100 - @.get('length')))
+        truncated_value : ->
+          @.get('value').substring(0,100)
+      }
+      enforce_limit : ->
+        @.set({'value': @.get('truncated_value') })
+      reset_form : ->
+        @.reset({value : ""})
+    })
