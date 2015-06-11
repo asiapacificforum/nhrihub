@@ -4,7 +4,7 @@ module CorporateServices
       StrategicPlan.all_with_current.collect do |sp|
         description = sp.current? ?
           t('.current_year', :start => sp.start_date, :end => sp.end_date) :
-          t('.other_years', :start =>sp.start_date, :end => sp.end)
+          t('.other_years', :start =>sp.start_date, :end => sp.end_date)
         [description, sp.id, {:class => "h1_select"}]
       end
     end

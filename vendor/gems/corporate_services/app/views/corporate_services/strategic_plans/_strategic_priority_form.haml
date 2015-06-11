@@ -1,4 +1,4 @@
-#new_strategic_priority.modal.fade
+#new_strategic_priority.modal.fade # the container for the modal form
 
 %script#strategic_priority_form{:type => 'text/ractive'}
   .modal-dialog
@@ -8,10 +8,10 @@
           %i.fa.fa-times
         %h4#new_strategic_priority_label.modal-title= t('.new_strategic_priority')
       .modal-body
-        = form_for [:corporate_services, @strategic_plan, @strategic_priority], :remote => true do |f|
+        = form_for :strategic_priority, :url => corporate_services_strategic_plan_strategic_priorities_path("spid").gsub(/spid/,"{{spid}}"), :remote => true, :html => {:id => :new_strategic_priority} do |f|
           .form-group
             =f.label :priority_level, t('.priority'), :class => 'control-label'
-            =f.select :priority_level, (1..10), {}, {:class => 'form-control'}
+            =f.select :priority_level, (1..10), {}, {:class => 'form-control', :value => "{{priority_level}}"}
           .form-group.clearfix
             =f.label :description, t('.description'), :class => 'control-label', :style => "float:left;"
             .chars_remaining{:style => "float:right"}= t('.chars_remaining')
@@ -46,10 +46,14 @@
 
     strategic_priorities = #{@strategic_priorities.to_json}
 
-    strategic_priority_collection = new Ractive({
+    strategic_plan_id = #{@strategic_plan.id}
+
+    window.strategic_plan = new Ractive({
       el : "#strategic_plan"
       template: "#strategic_priority_template"
-      data: { strategic_priorities : strategic_priorities }
+      data:
+        id : strategic_plan_id
+        strategic_priorities : strategic_priorities # the collection of strategic priorities
     })
 
     $('body').on "click", 'button#add', (event)->
@@ -57,16 +61,18 @@
 
     $('body').on "ajax:success", (e,data,status,xhr)->
       $('div#new_strategic_priority').modal('hide')
-      strategic_priority_form.reset()
-      strategic_priorities.push(data)
+      strategic_priority_form.reset_form() # priority select box is not getting reset
+      strategic_plan.set('strategic_priorities',data)
 
     $('form#new_strategic_priority').bind "ajax:error", ->
       console.log "error"
 
-    strategic_priority_form = new Ractive({
+    window.strategic_priority_form = new Ractive({
       el : "#new_strategic_priority"
       template : "#strategic_priority_form"
-      data : {value : ""}
+      data :
+        value : ""
+        priority_level : 1
       computed : {
         length : ->
           @.get('value').length
@@ -74,9 +80,11 @@
           Math.max(0,(100 - @.get('length')))
         truncated_value : ->
           @.get('value').substring(0,100)
+        spid : ->
+          window.strategic_plan.get('id')
       }
       enforce_limit : ->
         @.set({'value': @.get('truncated_value') })
       reset_form : ->
-        @.reset({value : ""})
+        @.reset({value : "", priority_level : 1})
     })

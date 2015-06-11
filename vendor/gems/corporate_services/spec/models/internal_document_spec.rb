@@ -16,10 +16,10 @@ end
 describe "create internal documents and supply document_group_id" do
   before do
     doc = FactoryGirl.create(:internal_document)
-    FactoryGirl.create(:internal_document, :document_group_id => doc.id)
+    FactoryGirl.create(:internal_document, :document_group_id => doc.document_group_id)
   end
 
-  it "should create documents in different groups" do
+  it "should create documents in the same group" do
     expect( InternalDocument.count ).to eq 2
     expect( InternalDocument.all.map(&:document_group_id).compact.uniq.count ).to eq(1)
   end

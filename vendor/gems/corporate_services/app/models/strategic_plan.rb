@@ -3,11 +3,11 @@ class StrategicPlan < ActiveRecord::Base
 
   def self.all_with_current
     ensure_current
-    all
+    all.sort.reverse
   end
 
   def self.ensure_current
-    unless last && last.current?
+    unless all.any?(&:current?)
       create(:start_date => StrategicPlanStartDate.most_recent )
     end
   end

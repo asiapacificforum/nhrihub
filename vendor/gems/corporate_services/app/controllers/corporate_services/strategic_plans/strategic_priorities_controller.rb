@@ -1,9 +1,11 @@
 class CorporateServices::StrategicPlans::StrategicPrioritiesController < ApplicationController
   def create
-    strategic_priority = StrategicPriority.create!(strategic_priority_params)
-    render :json => strategic_priority, :status => 200
-  rescue
-    render :nothing => true, :status => 500
+    strategic_priority = StrategicPriority.new(strategic_priority_params)
+    if strategic_priority.save
+      render :json => strategic_priority.all_in_plan, :status => 200
+    else
+      render :nothing => true, :status => 500
+    end
   end
 
   private
