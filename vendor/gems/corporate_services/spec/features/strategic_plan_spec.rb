@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
 
-feature "strategic plan", :js => true do
+feature "strategic plan basic", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
 
   scenario "index page should show the current year" do
@@ -11,6 +11,11 @@ feature "strategic plan", :js => true do
     expect(page).to have_select("strategic_plan_start_date",
                                 :selected => "Strategic Plan: Current reporting year #{StrategicPlanStartDate.most_recent.to_s} - #{StrategicPlanStartDate.most_recent.advance(:years => 1, :days => -1).to_s}")
   end
+end
+
+
+feature "strategic plan basic, adding strategic priorities", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
 
   scenario "add strategic priority" do
     visit corporate_services_strategic_plan_path(:en, "current")
@@ -40,36 +45,51 @@ feature "strategic plan", :js => true do
 
 end
 
-feature "strategic plan with existing strategic priority", :js => true do
+feature "strategic plan multiple strategic priorities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   before do
-    sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
-    StrategicPriority.create(:strategic_plan_id => sp1.id, :priority_level => 1, :description => "Gonna do things betta")
+    @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
     visit corporate_services_strategic_plan_path(:en, "current")
   end
 
-  scenario "add second/lower strategic priority" do
+  scenario "add second/lower strategic priority, it's inserted below" do
     add_strategic_priority({:priority_level => 2, :description => "We gotta improve"})
+    sleep(0.1)
     expect(page.all('h4.panel-title a').map(&:text).first).to eq "Strategic Priority 1: Gonna do things betta"
     expect(page.all('h4.panel-title a').map(&:text).last).to eq "Strategic Priority 2: We gotta improve"
   end
 
   scenario "add a second strategic priority that re-orders existing priorities" do
     add_strategic_priority({:priority_level => 1, :description => "We gotta improve"})
+    sleep(0.1)
     expect(page.all('h4.panel-title a').map(&:text).first).to eq "Strategic Priority 1: We gotta improve"
     expect(page.all('h4.panel-title a').map(&:text).last).to eq "Strategic Priority 2: Gonna do things betta"
   end
+end
+
+feature "modifying strategic priorities", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
 
   xscenario "edit the description and priority level of an existing strategic priority" do
     
   end
+
+  xscenario "delete a strategic priority" do
+    
+  end
+end
+
+
+feature "modifying strategic plan configuration", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
 
   xscenario "start date changed with existing strategic plans in the database" do
     
   end
 end
 
-feature "strategic plan with prior years", :js => true do
+feature "select strategic plan from prior years", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
 
   before do
@@ -86,12 +106,38 @@ feature "strategic plan with prior years", :js => true do
     add_strategic_priority({:priority_level => 1, :description => "blah blah blah"})
     expect(page).to have_selector('h4.panel-title a', :text => "blah blah blah")
   end
+
+  xscenario "add priorities disabled for prior years" do
+    
+  end
 end
 
 feature "events after the end date of a strategic plan" do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+
   xscenario "new strategic plan created with strategic priorities copied" do
     
   end
+end
+
+feature "populate strategic plan contents", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+
+  before do
+    sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    StrategicPriority.create(:strategic_plan_id => sp1.id, :priority_level => 1, :description => "Gonna do things betta")
+    visit corporate_services_strategic_plan_path(:en, "current")
+  end
+
+
+  xscenario "add planned results item" do
+    open_accordion_for_strategic_priority_one
+    expect(page).to have_selector()
+  end
+end
+
+def open_accordion_for_strategic_priority_one
+  page.find('h4.panel-title a', :text => 'Gonna do things betta').click
 end
 
 def add_priority_button
