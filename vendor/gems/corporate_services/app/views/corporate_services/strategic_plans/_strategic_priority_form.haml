@@ -22,22 +22,22 @@
 
 %script#strategic_priority_template{:type => 'text/ractive'}
   {{#each strategic_priorities:sp }}
-  .panel.panel-default
-    #headingOne.panel-heading{:role => "tab"}
+  .panel.panel-default.strategic_priority
+    .panel-heading.strategic_priority_title
       %h4.panel-title
-        %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseOne"}
+        %a{"data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
           = t('.strategic_priority')
           {{ priority_level }}: {{ description }}
-    #collapseOne.panel-collapse.collapse.in{:role => "tabpanel"}
+    .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
       .panel-body
         %table.table
-          %tr
-            %td= t('.planned_results')
-            %td= t('.outcomes')
-            %td= t('.activities')
-            %td= t('.perf_indicators')
-            %td= t('.reminders')
-            %td= t('.progress')
+          %tr.headings
+            %th= t('.planned_results')
+            %th= t('.outcomes')
+            %th= t('.activities')
+            %th= t('.perf_indicators')
+            %th= t('.reminders')
+            %th= t('.progress')
   {{/each}}
 
 :coffeescript
