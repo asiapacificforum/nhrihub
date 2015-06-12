@@ -43,6 +43,17 @@ feature "strategic plan basic, adding strategic priorities", :js => true do
     end
   end
 
+  xscenario "submit with errors: no priority selected" do
+    
+  end
+
+  xscenario "submit with errors: no description entered" do
+    
+  end
+
+  xscenario "click 'Add strategic priority' more than once without submitting" do
+    
+  end
 end
 
 feature "strategic plan multiple strategic priorities", :js => true do

@@ -6,7 +6,7 @@
 %table.table
   %tr
     %td{:colspan => 7}
-      %span.btn.btn-success.add_strategic_priority{'data-toggle' => 'modal', 'data-target'=>'#new_strategic_priority'}
+      %span.btn.btn-success.add_strategic_priority
         %i.fa.fa-plus.fa-lg{:style => "color:white"}
         %span= t('.add_priority')
 
@@ -24,3 +24,7 @@
     set_data = (data,status,jqxhr)->
       strategic_plan.set(data)
       strategic_priority_form.update('spid') # wish this was not necessary. computed attr should know that dependency changed
+
+    # add the new_strategic_priority form
+    $('.add_strategic_priority').on 'click', ->
+      strategic_plan.unshift('strategic_priorities', {id:null, value: '', priority_level:null} )

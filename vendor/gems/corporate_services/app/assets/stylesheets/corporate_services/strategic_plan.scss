@@ -1,3 +1,10 @@
+// the select box is styled to look like an h1 heading
 .h1_select {
   @extend h1;
+}
+
+.sp-select {
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 5px;
 }

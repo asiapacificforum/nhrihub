@@ -1,0 +1,25 @@
+//%script{:src=>'http://cdn.ractivejs.org/latest/ractive.js'}
+= javascript_include_tag 'corporate_services/ractive'
+
+#box_container
+
+:javascript
+  boxTemplate = Ractive.parse("<p>the box area is {{area}}</p>")
+
+  Box = Ractive.extend({
+    template: boxTemplate,
+    computed: { area: '${width} * ${height}' }
+  });
+
+  var boxes = new Ractive({
+    el: '#box_container',
+    template: '{{#boxes:b}}<foo/>{{/}}',
+    data: {
+      boxes: [
+        { width: 20, height: 40 },
+        { width: 30, height: 45 },
+        { width: 20, height: 20 }
+      ]
+    },
+    components :{foo : Box}
+  });
