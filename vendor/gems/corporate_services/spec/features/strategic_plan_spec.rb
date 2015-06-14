@@ -43,12 +43,16 @@ feature "strategic plan basic, adding strategic priorities", :js => true do
     end
   end
 
-  xscenario "submit with errors: no priority selected" do
-    
+  scenario "submit with errors: no priority selected" do
+    visit corporate_services_strategic_plan_path(:en, "current")
+    expect{ add_strategic_priority({:description => "blinka blonka bloo"}) }.not_to change{ StrategicPriority.count }
+    expect(page).to have_selector('.new_strategic_priority .error', :text => "You must select the priority level")
   end
 
-  xscenario "submit with errors: no description entered" do
-    
+  scenario "submit with errors: no description entered" do
+    visit corporate_services_strategic_plan_path(:en, "current")
+    expect{ add_strategic_priority({:priority_level => "Strategic Priority 1"}) }.not_to change{ StrategicPriority.count }
+    expect(page).to have_selector('.new_strategic_priority .error', :text => "You must enter a description")
   end
 
   xscenario "click 'Add strategic priority' more than once without submitting" do
@@ -159,8 +163,8 @@ def add_strategic_priority(attrs)
   add_priority_button.click
   sleep(0.1)
   within "form#new_strategic_priority" do
-    select attrs[:priority_level].to_s, :from => 'strategic_priority_priority_level'
-    fill_in "strategic_priority_description", :with => attrs[:description]
+    select attrs[:priority_level].to_s, :from => 'strategic_priority_priority_level' if attrs[:priority_level]
+    fill_in "strategic_priority_description", :with => attrs[:description] if attrs[:description]
     page.find('#edit-save').click
     sleep(0.2)
   end

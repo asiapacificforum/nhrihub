@@ -22,19 +22,20 @@
       .form-inline
         .form-group
           =f.label :priority_level, t('.priority'), :class => 'control-label sr-only'
-          .nothing{:style => 'visibility:hidden'} nothing
-          =f.select :priority_level, priority_level_options, {:include_blank => 'Select priority level'}, {:class => 'form-control sp-select', :value => "{{priority_level}}"}
+          #priority_level_error.error{:style => 'padding-left:6px;'} {{ priority_level_error }} &nbsp;
+          =f.select :priority_level, priority_level_options, {:include_blank => 'Select priority level'}, {'on-change' => 'remove_priority_level_errors()', :class => 'form-control sp-select', :value => "{{priority_level}}"}
         .form-group.clearfix
           =f.label :description, t('.description'), :class => 'control-label sr-only'
+          #description_error.error{:style => "float:left;"} {{ description_error }} &nbsp;
           .chars_remaining{:style => "float:right"}= t('.chars_remaining')
-          =f.text_field :description, :class => 'form-control', :placeholder => "Enter description", :size => 100, :maxlength => 100, :value => "{{value}}"
+          =f.text_field :description, :class => 'form-control', :placeholder => "Enter description", :size => 100, :maxlength => 100, :value => "{{value}}", 'on-keydown' => "remove_description_errors()"
         .form-group
           .nothing{:style => 'visibility:hidden'} nothing
           %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
           %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
 
 %script#show_or_new_strategic_priority{:type => 'text/ractive'}
-  {{#if isNaN(parseInt(id))}}
+  {{#if !persisted }}
   {{> new_strategic_priority_template }}
   {{else}}
   {{> show_strategic_priority }}
@@ -47,7 +48,7 @@
 
 :coffeescript
   $ ->
-    Ractive.DEBUG = false;
+    Ractive.DEBUG = false
 
     strategic_priorities = #{@strategic_priorities.to_json}
 
@@ -65,17 +66,35 @@
           Math.max(0,(100 - @.get('length')))
         spid : ->
           window.strategic_plan.get('id')
+        persisted : ->
+          !isNaN(parseInt(@.get('id')))
       }
       cancel : ->
         @.parent.get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
       form : ->
-        $(this.nodes.new_strategic_priority)
+        $(@.nodes.new_strategic_priority)
       save : ->
         data = @.form().serializeArray()
         url = @.form().attr('action')
-        $.post(url, data, @.create_sp, 'json')
+        if @.validate(data)
+          $.post(url, data, @.create_sp, 'json')
       create_sp : (data,textStatus,jqxhr)->
         strategic_plan.set('strategic_priorities', data)
+      validate : (data) ->
+        pl = @._validate(data,'priority_level','You must select the priority level')
+        desc = @._validate(data,'description','You must enter a description')
+        pl && desc
+      _validate : (data, field, message)->
+        reg = new RegExp(field)
+        field_obj = _(data).find (d)->
+                      reg.test(d.name)
+        if field_obj.value == ""
+          @.set(field+"_error",message)
+          false
+      remove_priority_level_errors : ->
+        @.set("priority_level_error","")
+      remove_description_errors : ->
+        @.set("description_error","")
     })
 
     window.strategic_plan = new Ractive({
