@@ -17,14 +17,16 @@ end
 feature "strategic plan basic, adding strategic priorities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
 
-  scenario "add strategic priority" do
+  before do
     visit corporate_services_strategic_plan_path(:en, "current")
+  end
+
+  scenario "add strategic priority" do
     add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "The application of good governance by public authorities"})
     expect(page).to have_selector('h4.panel-title a', :text => "Strategic Priority 1: The application of good governance by public authorities")
   end
 
   scenario "filling-in the strategic priority description field" do
-    visit corporate_services_strategic_plan_path(:en, "current")
     add_priority_button.click
     sleep(0.1)
     within "form#new_strategic_priority" do
@@ -44,19 +46,19 @@ feature "strategic plan basic, adding strategic priorities", :js => true do
   end
 
   scenario "submit with errors: no priority selected" do
-    visit corporate_services_strategic_plan_path(:en, "current")
     expect{ add_strategic_priority({:description => "blinka blonka bloo"}) }.not_to change{ StrategicPriority.count }
     expect(page).to have_selector('.new_strategic_priority .error', :text => "You must select the priority level")
   end
 
   scenario "submit with errors: no description entered" do
-    visit corporate_services_strategic_plan_path(:en, "current")
     expect{ add_strategic_priority({:priority_level => "Strategic Priority 1"}) }.not_to change{ StrategicPriority.count }
     expect(page).to have_selector('.new_strategic_priority .error', :text => "You must enter a description")
   end
 
-  xscenario "click 'Add strategic priority' more than once without submitting" do
-    
+  scenario "click 'Add strategic priority' more than once without submitting" do
+    add_priority_button.click
+    add_priority_button.click
+    expect(page).to have_selector('form#new_strategic_priority', :count => 1)
   end
 end
 

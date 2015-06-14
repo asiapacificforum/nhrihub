@@ -108,10 +108,15 @@
         strategic_priorities : strategic_priorities # the collection of strategic priorities
       components :
         sp : StrategicPriority
+      new_strategic_priority : ->
+        # add only if there are no strategic priorities
+        # of if the most recent is persisted
+        if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
+          @.unshift('strategic_priorities', {id:null, value: '', priority_level:null} )
     })
 
-    $('body').on "click", 'button#add', (event)->
-      $(event.target).closest('form').submit()
+    # $('body').on "click", 'button#add', (event)->
+    #   $(event.target).closest('form').submit()
 
     $('body').on "ajax:success", (e,data,status,xhr)->
       strategic_plan.set('strategic_priorities',data)
