@@ -19,3 +19,5 @@ en:
         reminders: "Reminders/notes/rules"
         progress: "Progress"
         chars_remaining: "You have {{count}} characters left" # the word "count" must remain UNtranslated in all locale files. And the double braces must remain.
+        priority_level_error_message:  "You must select the priority level"
+        description_error_message:  "You must enter a description"

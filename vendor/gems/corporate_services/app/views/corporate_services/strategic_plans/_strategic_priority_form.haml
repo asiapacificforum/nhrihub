@@ -22,11 +22,11 @@
       .form-inline
         .form-group
           =f.label :priority_level, t('.priority'), :class => 'control-label sr-only'
-          #priority_level_error.error{:style => 'padding-left:6px;'} {{ priority_level_error }} &nbsp;
+          #priority_level_error.error{:style => 'padding-left:6px;', 'data-message' => t('.priority_level_error_message')} {{ priority_level_error }} &nbsp;
           =f.select :priority_level, priority_level_options, {:include_blank => 'Select priority level'}, {'on-change' => 'remove_priority_level_errors()', :class => 'form-control sp-select', :value => "{{priority_level}}"}
         .form-group.clearfix
           =f.label :description, t('.description'), :class => 'control-label sr-only'
-          #description_error.error{:style => "float:left;"} {{ description_error }} &nbsp;
+          #description_error.error{:style => "float:left;", 'data-message' => t('.description_error_message')} {{ description_error }} &nbsp;
           .chars_remaining{:style => "float:right"}= t('.chars_remaining')
           =f.text_field :description, :class => 'form-control', :placeholder => "Enter description", :size => 100, :maxlength => 100, :value => "{{value}}", 'on-keydown' => "remove_description_errors()"
         .form-group
@@ -81,16 +81,19 @@
       create_sp : (data,textStatus,jqxhr)->
         strategic_plan.set('strategic_priorities', data)
       validate : (data) ->
-        pl = @._validate(data,'priority_level','You must select the priority level')
-        desc = @._validate(data,'description','You must enter a description')
+        pl = @._validate(data,'priority_level')
+        desc = @._validate(data,'description')
         pl && desc
-      _validate : (data, field, message)->
+      _validate : (data, field)->
+        message = $('#'+field+'_error').data('message')
         reg = new RegExp(field)
         field_obj = _(data).find (d)->
                       reg.test(d.name)
         if field_obj.value == ""
           @.set(field+"_error",message)
           false
+        else
+          true
       remove_priority_level_errors : ->
         @.set("priority_level_error","")
       remove_description_errors : ->
