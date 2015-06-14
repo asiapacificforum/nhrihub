@@ -19,7 +19,7 @@ feature "strategic plan basic, adding strategic priorities", :js => true do
 
   scenario "add strategic priority" do
     visit corporate_services_strategic_plan_path(:en, "current")
-    add_strategic_priority({:priority_level => 1, :description => "The application of good governance by public authorities"})
+    add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "The application of good governance by public authorities"})
     expect(page).to have_selector('h4.panel-title a', :text => "Strategic Priority 1: The application of good governance by public authorities")
   end
 
@@ -65,14 +65,14 @@ feature "strategic plan multiple strategic priorities", :js => true do
   end
 
   scenario "add second/lower strategic priority, it's inserted below" do
-    add_strategic_priority({:priority_level => 2, :description => "We gotta improve"})
+    add_strategic_priority({:priority_level => "Strategic Priority 2", :description => "We gotta improve"})
     sleep(0.1)
     expect(page.all('h4.panel-title a').map(&:text).first).to eq "Strategic Priority 1: Gonna do things betta"
     expect(page.all('h4.panel-title a').map(&:text).last).to eq "Strategic Priority 2: We gotta improve"
   end
 
   scenario "add a second strategic priority that re-orders existing priorities" do
-    add_strategic_priority({:priority_level => 1, :description => "We gotta improve"})
+    add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "We gotta improve"})
     sleep(0.1)
     expect(page.all('h4.panel-title a').map(&:text).first).to eq "Strategic Priority 1: We gotta improve"
     expect(page.all('h4.panel-title a').map(&:text).last).to eq "Strategic Priority 2: Gonna do things betta"
@@ -114,7 +114,7 @@ feature "select strategic plan from prior years", :js => true do
     visit corporate_services_strategic_plan_path(:en, "current")
     select("Strategic Plan: Starting #{18.months.ago.to_date.to_s}, ending #{6.months.ago.to_date.advance(:days => -1).to_s}", :from => "strategic_plan_start_date")
     expect(page).to have_selector('h4.panel-title a', :text => "Strategic Priority 1: We gotta fix this")
-    add_strategic_priority({:priority_level => 1, :description => "blah blah blah"})
+    add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "blah blah blah"})
     expect(page).to have_selector('h4.panel-title a', :text => "blah blah blah")
   end
 
@@ -161,7 +161,7 @@ def add_strategic_priority(attrs)
   within "form#new_strategic_priority" do
     select attrs[:priority_level].to_s, :from => 'strategic_priority_priority_level'
     fill_in "strategic_priority_description", :with => attrs[:description]
-    click_button "Add"
+    page.find('#edit-save').click
     sleep(0.2)
   end
 end

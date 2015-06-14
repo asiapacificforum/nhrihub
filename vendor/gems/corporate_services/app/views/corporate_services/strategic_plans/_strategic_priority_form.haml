@@ -1,25 +1,3 @@
-#new_strategic_priority.modal.fade # the container for the modal form
-
-%script#strategic_priority_form{:type => 'text/ractive'}
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button.close{"data-dismiss" => "modal", :type => "button"}
-          %i.fa.fa-times
-        %h4#new_strategic_priority_label.modal-title= t('.new_strategic_priority')
-      .modal-body
-        = form_for :strategic_priority, :url => corporate_services_strategic_plan_strategic_priorities_path("spid").gsub(/spid/,"{{spid}}"), :remote => true, :html => {:id => :new_strategic_priority} do |f|
-          .form-group
-            =f.label :priority_level, t('.priority'), :class => 'control-label'
-            =f.select :priority_level, (1..10), {}, {:class => 'form-control', :value => "{{priority_level}}"}
-          .form-group.clearfix
-            =f.label :description, t('.description'), :class => 'control-label', :style => "float:left;"
-            .chars_remaining{:style => "float:right"}= t('.chars_remaining')
-            =f.text_field :description, :class => 'form-control'
-          .modal-footer
-            %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", 'on-click'=>'reset_form()'}= t('defaults.cancel')
-            %button.btn.btn-primary#add{:type => "button"}= t('.add')
-
 %script#show_strategic_priority{:type => 'text/ractive'}
   .panel.panel-default.strategic_priority
     .panel-heading.strategic_priority_title
@@ -39,7 +17,7 @@
             %th= t('.progress')
 
 %script#new_strategic_priority_template{:type => 'text/ractive'}
-  .panel.panel-default.strategic_priority
+  .panel.panel-default.new_strategic_priority
     = form_for :strategic_priority, :url => corporate_services_strategic_plan_strategic_priorities_path("spid").gsub(/spid/,"{{spid}}"), :remote => true, :html => {:id => :new_strategic_priority, :style => "padding:6px 0px"} do |f|
       .form-inline
         .form-group
@@ -49,23 +27,27 @@
         .form-group.clearfix
           =f.label :description, t('.description'), :class => 'control-label sr-only'
           .chars_remaining{:style => "float:right"}= t('.chars_remaining')
-          =f.text_field :description, :class => 'form-control', :placeholder => "Enter description", :size => 100, :maxlength => 100
+          =f.text_field :description, :class => 'form-control', :placeholder => "Enter description", :size => 100, :maxlength => 100, :value => "{{value}}"
+        .form-group
+          .nothing{:style => 'visibility:hidden'} nothing
+          %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
+          %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
 
 %script#show_or_new_strategic_priority{:type => 'text/ractive'}
-  {{ id }}
-  //{{#if id}}
-  //{{> show_strategic_priority}}
-  //{{else}}
-  //{{> new_strategic_priority_template}}
-  //{{/if}}
+  {{#if isNaN(parseInt(id))}}
+  {{> new_strategic_priority_template }}
+  {{else}}
+  {{> show_strategic_priority }}
+  {{/if}}
 
-%script#strategic_priority_template{:type => 'text/ractive'}
+%script#strategic_plan_template{:type => 'text/ractive'}
   {{#strategic_priorities }}
-  <sp/>
+  <sp value="{{value}}" id="{{id}}" priority_level="{{priority_level}}" description="{{description}}"/>
   {{/strategic_priorities}}
 
 :coffeescript
   $ ->
+    Ractive.DEBUG = false;
 
     strategic_priorities = #{@strategic_priorities.to_json}
 
@@ -75,7 +57,7 @@
       template : '#show_or_new_strategic_priority'
       computed : {
         length : ->
-          if typeof @.get('value') != 'undefined'
+          if @.get('value')
             @.get('value').length
           else
             0
@@ -84,41 +66,33 @@
         spid : ->
           window.strategic_plan.get('id')
       }
+      cancel : ->
+        @.parent.get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
+      form : ->
+        $(this.nodes.new_strategic_priority)
+      save : ->
+        data = @.form().serializeArray()
+        url = @.form().attr('action')
+        $.post(url, data, @.create_sp, 'json')
+      create_sp : (data,textStatus,jqxhr)->
+        strategic_plan.set('strategic_priorities', data)
     })
 
     window.strategic_plan = new Ractive({
       el : "#strategic_plan"
-      template: "#strategic_priority_template"
+      template: "#strategic_plan_template"
       data:
+        id : strategic_plan_id
         strategic_priorities : strategic_priorities # the collection of strategic priorities
-      components : {sp : StrategicPriority}
+      components :
+        sp : StrategicPriority
     })
 
     $('body').on "click", 'button#add', (event)->
       $(event.target).closest('form').submit()
 
     $('body').on "ajax:success", (e,data,status,xhr)->
-      $('div#new_strategic_priority').modal('hide')
-      strategic_priority_form.reset_form() # priority select box is not getting reset
       strategic_plan.set('strategic_priorities',data)
 
     $('form#new_strategic_priority').bind "ajax:error", ->
       console.log "error"
-
-    window.strategic_priority_form = new Ractive({
-      el : "#new_strategic_priority"
-      template : "#strategic_priority_form"
-      data :
-        value : ""
-        priority_level : 1
-      computed : {
-        length : ->
-          @.get('value').length
-        count : ->
-          Math.max(0,(100 - @.get('length')))
-        spid : ->
-          window.strategic_plan.get('id')
-      }
-      reset_form : ->
-        @.reset({value : "", priority_level : 1})
-    })

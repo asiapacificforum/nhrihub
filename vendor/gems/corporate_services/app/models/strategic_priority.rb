@@ -1,6 +1,8 @@
 class StrategicPriority < ActiveRecord::Base
   belongs_to :strategic_plan
 
+  default_scope { order(:priority_level) }
+
   before_save do
     all_in_plan.
       select{|sp| sp.priority_level == priority_level}.

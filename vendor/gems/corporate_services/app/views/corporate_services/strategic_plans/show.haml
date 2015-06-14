@@ -23,7 +23,6 @@
 
     set_data = (data,status,jqxhr)->
       strategic_plan.set(data)
-      strategic_priority_form.update('spid') # wish this was not necessary. computed attr should know that dependency changed
 
     # add the new_strategic_priority form
     $('.add_strategic_priority').on 'click', ->

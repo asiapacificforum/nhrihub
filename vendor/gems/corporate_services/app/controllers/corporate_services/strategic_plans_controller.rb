@@ -7,7 +7,7 @@ class CorporateServices::StrategicPlansController < ApplicationController
     else
       @strategic_plan = StrategicPlan.find(params[:id])
     end
-    @strategic_priorities = @strategic_plan.strategic_priorities.sort
+    @strategic_priorities = @strategic_plan.strategic_priorities
     respond_to do |format|
       format.html
       format.json {render :json => @strategic_plan.to_json(:only => :id, :methods => :strategic_priorities)}
