@@ -1,10 +1,27 @@
 %script#show_strategic_priority{:type => 'text/ractive'}
-  .panel.panel-default.strategic_priority
+  .panel.panel-default.strategic_priority.editable_container
     .panel-heading.strategic_priority_title
-      %h4.panel-title
-        %a{"data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
-          = t('.strategic_priority')
-          {{ priority_level }}: {{ description }}
+      %h4.panel-title.clearfix
+        %table{:style=> "width:100%"}
+          %tr
+            %td{:style => "width:76%"}
+              %a{"data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
+                = t('.strategic_priority')
+                {{ priority_level }}: {{ description }}
+            %td{:style => "text-align:center; width:6%", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
+              %i.fa.fa-folder-o.fa-lg#toggle
+            %td{:style => "text-align:center; width:6%"}
+              .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
+                .fade.edit
+                  %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative; left:30px;"}
+            %td{:style => "text-align:center; width:6%"}
+              %div.icon{:'data-toggle' => 'edit'}
+                .fade.edit
+                  %i.fa.fa-check.fa-lg.edit-save{:style => "position:relative; left:21px;"}
+                .fade.no_edit
+                  %i.fa.fa-pencil-square-o.fa-lg#edit_start
+            %td{:style => "text-align:center; width:6%;"}
+              %i.fa.fa-trash-o.fa-lg#delete
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
       .panel-body
         %table.table

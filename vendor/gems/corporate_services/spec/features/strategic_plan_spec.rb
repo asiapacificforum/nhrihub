@@ -87,9 +87,24 @@ end
 
 feature "modifying strategic priorities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  before do
+    @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
+    visit corporate_services_strategic_plan_path(:en, "current")
+  end
 
-  xscenario "edit the description and priority level of an existing strategic priority" do
-    
+
+  scenario "edit the description and priority level of an existing strategic priority" do
+    edit_icon.click
+
+    within "form#edit_strategic_priority" do
+      select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
+      fill_in "strategic_priority_description", :with => "edited description"
+      page.find('#edit-save').click
+      sleep(0.2)
+    end
+
+    expect(page).to have_selector('h4.panel-title a', :text => "Strategic Priority 1: edited description")
   end
 
   xscenario "delete a strategic priority" do
@@ -151,6 +166,10 @@ feature "populate strategic plan contents", :js => true do
     open_accordion_for_strategic_priority_one
     expect(page).to have_selector()
   end
+end
+
+def edit_icon
+  page.find('i#edit')
 end
 
 def open_accordion_for_strategic_priority_one

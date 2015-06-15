@@ -26,20 +26,20 @@
     %td.include_popover{:style => "text-align:center; width:8%"}
       .icon{:'data-toggle' => 'edit'}
         %i.fa.fa-info-circle.fa-lg.details <!-- popover is attached as a sibling below this -->
-    %td.under_popover{:style => "text-align:center; width:8%"}
+    %td{:style => "text-align:center; width:8%"}
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
         .fade.edit
           %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative; left:30px;"}
-    %td.under_popover{:style => "text-align:center; width:8%"}
+    %td{:style => "text-align:center; width:8%"}
       %div.icon{:'data-toggle' => 'edit'}
         .fade.edit
           %i.fa.fa-check.fa-lg.edit-save{:style => "position:relative; left:21px;"}
         .fade.no_edit
           %i.fa.fa-pencil-square-o.fa-lg#edit_start
-    %td.under_popover{:style => "text-align:center; width:8%"}
+    %td{:style => "text-align:center; width:8%"}
       .icon
         %i.fa.fa-cloud-download.fa-lg.download
-    %td.under_popover{:style => "text-align:center; width:8%"}
+    %td{:style => "text-align:center; width:8%"}
       -if file == "file"
         .icon{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{{= #{file}.id }}"}
           %i.fa.fa-folder-o.fa-lg
@@ -47,7 +47,7 @@
         -# just to keep the spacing the same
         .icon{:style => 'visibility:hidden'}
           %i.fa.fa-archive.fa-lg
-    %td.under_popover{:style => "text-align:center; width:8%"}
+    %td{:style => "text-align:center; width:8%"}
       -if file == "file"
         -# next tag is where the fileupload is attached
         .fileupload.icon{:id => "upload{{= file.id }}",

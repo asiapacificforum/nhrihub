@@ -1,6 +1,6 @@
 %script#template-download{:type => 'html/template'}
   {{ for (var i=0, file; file=files[i]; i++) { }}
-  .panel.panel-default.template-download
+  .panel.panel-default.template-download.editable_container
     #headingOne.panel-heading{:role => "tab"}
       %strong.error.text-danger {{= file.error }}
       = render :partial => 'doc_table', :locals => {:file => 'file'}

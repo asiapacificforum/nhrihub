@@ -36,13 +36,13 @@ $ ->
     constructor : ->
       $('body').on 'click', '#edit_start', (e)=>
         $target = $(e.target)
-        @context = $target.closest('table.document')
+        @context = $target.closest('.editable_container')
         @edit()
         @title_element().focus()
 
       $('body').on 'click', '#edit_cancel', (e)=>
         $target = $(e.target)
-        @context = $target.closest('table.document')
+        @context = $target.closest('.editable_container')
         @show()
 
     edit : ->

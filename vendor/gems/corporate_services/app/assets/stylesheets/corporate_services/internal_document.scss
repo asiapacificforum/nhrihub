@@ -3,12 +3,12 @@ $dark_blue: #337AB7;
 $green : #5CB85C;
 $red : #C12E2A;
 
-.under_popover {
+table.document ::not(.include_popover) {
   z-index:15;
   position:relative;
 }
 
-.include_popover {
+table.document td.include_popover {
   z-index:16;
   position:relative;
 }
