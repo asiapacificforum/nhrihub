@@ -111,8 +111,9 @@
       escape: /\{\{-(.+?)\}\}/g
     }
     template = _.template($('#template-download').html())
-    result = template({files: files})
-    $(result)[ 'appendTo' ]($('.files'))
+    _(files).each (file)->
+      result = template({file: file})
+      $(result)[ 'appendTo' ]($('.files'))
 
 
     fileupload_options =

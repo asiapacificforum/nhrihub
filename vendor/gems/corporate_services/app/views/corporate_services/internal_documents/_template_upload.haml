@@ -1,6 +1,5 @@
 / The template to display files ready for upload and set the title/revision
 %script{:id => id, :type => 'html/template'}
-  {{ for (var i=0, file; file=files[i]; i++) { }}
   .panel.panel-default.fade.template-upload
     .panel-heading
       %table{:width => '100%'}
@@ -28,4 +27,3 @@
           %td
             %div.cancel
               %i.fa.fa-ban.cancel.fa-lg
-  {{ } }}

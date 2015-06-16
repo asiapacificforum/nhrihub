@@ -72,9 +72,9 @@ $ ->
    $.post(url, data, (response, text, jqXhr)->
      # TODO eventually need to return an object and not an array, the array is 'legacy'
      # but template needs to be modified to deal with single objects
-     id = response.files[0].id
+     id = response.id
      source = $("table.document[data-id='"+id+"']").closest('.template-download')
      new_template = _.template($('#template-download').html())
-     source.replaceWith(new_template(response))
+     source.replaceWith(new_template({file:response}))
      ).fail ->
        console.log "Changes were not saved, for some reason"

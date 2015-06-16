@@ -101,7 +101,7 @@
                 }).always(function () {
                     data.context.each(function (index) {
                         $(this).find('.size').text(
-                            that._formatFileSize(data.files[index].size)
+                            that._formatFileSize(data.size)
                         );
                     }).removeClass('processing');
                     that._renderPreviews(data);
@@ -160,13 +160,14 @@
                     current_locale = that.options.current_locale(),
                     getFilesFromResponse = data.getFilesFromResponse ||
                         that.options.getFilesFromResponse,
-                    files = getFilesFromResponse(data), // the json list returned in ajax response
+                    //files = getFilesFromResponse(data), // the json list returned in ajax response
+                    file = data.result, // the json list returned in ajax response
                     template,
                     deferred;
                 if (data.context) { // data.context is the upload template
                     data.context.each(function (index) {
-                        var file = files[index] ||
-                                {error: data.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.emptyResult')};
+                        //var file = files[index] ||
+                                //{error: data.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.emptyResult')};
                         deferred = that._addFinishedDeferreds();
                         that._transition($(this)).done(
                             function () {
@@ -177,10 +178,10 @@
                                 var received_group_id = file.document_group_id
                                 var target_el = $(".panel-heading table.document[data-document_group_id='"+received_group_id+"']")
                                 if(target_el.length > 0){ // replace it
-                                  template = that._renderDownload([file])
+                                  template = that._renderDownload(file)
                                       .replaceAll(target_el.closest('.template-download'));
                                 }else{ //replace the upload template with the rendered new file
-                                  template = that.options.filesContainer.append(that._renderDownload([file]))
+                                  template = that.options.filesContainer.append(that._renderDownload(file))
                                 }
                                 that._forceReflow(template);
                                 // put the template in the page, and trigger events when the fade transition is complete
@@ -233,7 +234,7 @@
                             that._transition($(this)).done(
                                 function () {
                                     var node = $(this);
-                                    template = that._renderDownload([file])
+                                    template = that._renderDownload(file)
                                         .replaceAll(node);
                                     that._forceReflow(template);
                                     that._transition(template).done(
@@ -373,8 +374,6 @@
                 if (event.isDefaultPrevented()) {
                     return false;
                 }
-                //var that = $(this).data('blueimp-fileupload') ||
-                        //$(this).data('fileupload'),
                 var that = $(event.originalEvent.target).closest('.fileupload').data('blueimpFileupload');
                 var item = $(event.originalEvent.target).closest('table.document').data();
                 var data = $.extend(data, that.options, item),
@@ -393,7 +392,7 @@
                       }else if(typeof(resp) != 'undefined'){
                         // files remain in the group
                         // replace the download template
-                        var replacement = that.options.downloadTemplate({files : [resp]});
+                        var replacement = that.options.downloadTemplate({file:resp});
                         var replacement_id = $(replacement).find('.collapse').attr('id');
                         //TODO I have a feeling that this leaves zombie stuff, need to unbind the
                         // elements-being-replaced
@@ -507,12 +506,12 @@
                 this._formatFileSize(data.total);
         },
 
-        _renderTemplate: function (func, files) {
+        _renderTemplate: function (func, file) {
             if (!func) {
                 return $();
             }
             var result = func({
-                files: files,
+                file: file,
                 formatFileSize: this._formatFileSize,
                 options: this.options
             });
@@ -531,14 +530,14 @@
         _renderUpload: function (files) {
             return this._renderTemplate(
                 this.options.uploadTemplate,
-                files
+                files[0]
             );
         },
 
-        _renderDownload: function (files) {
+        _renderDownload: function (file) {
             return this._renderTemplate(
                 this.options.downloadTemplate,
-                files
+                file
             ).find('a[download]').each(this._enableDragToDesktop).end();
         },
 
