@@ -152,6 +152,17 @@
       $(element).fileupload fileupload_options
 
 
+    new @InpageEdit
+      focus_element : 'input.title'
+      success : (response, textStatus, jqXhr)->
+        id = response.id
+        source = $("table.document[data-id='"+id+"']").closest('.template-download')
+        new_template = _.template($('#template-download').html())
+        source.replaceWith(new_template({file:response}))
+      error : ->
+        console.log "Changes were not saved, for some reason"
+
+
     # this is a hack to workaround a jquery-fileupload-ui bug
     # that causes multiple delete requests, due to multiple event
     # handlers being attached

@@ -1,5 +1,5 @@
 %script#template-download{:type => 'html/template'}
-  .panel.panel-default.template-download.editable_container
+  .panel.panel-default.template-download
     #headingOne.panel-heading{:role => "tab"}
       %strong.error.text-danger {{= file.error }}
       = render :partial => 'doc_table', :locals => {:file => 'file'}

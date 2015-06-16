@@ -1,4 +1,4 @@
-%table.document{:style => "width:800px"}(data-formatted_creation_date = "{{= #{file}.formatted_creation_date }}"
+%table.document.editable_container{:style => "width:800px"}(data-formatted_creation_date = "{{= #{file}.formatted_creation_date }}"
                                          data-formatted_filesize = "{{= #{file}.formatted_filesize }}"
                                          data-id = "{{= #{file}.id }}"
                                          data-formatted_modification_date = "{{= #{file}.formatted_modification_date }}"
@@ -7,7 +7,8 @@
                                          data-revision = "{{= #{file}.revision }}"
                                          data-document_group_id = "{{= #{file}.document_group_id }}"
                                          data-delete_url = "{{= #{file}.deleteUrl }}"
-                                         data-uploaded_by = "{{- #{file}.uploaded_by }}")
+                                         data-uploaded_by = "{{- #{file}.uploaded_by }}"
+                                         data-save_url = "{{= #{file}.url }}" )
   %tr
     %td.title{:style => "width:36%"}
       %div{:'data-toggle' => 'edit'}
