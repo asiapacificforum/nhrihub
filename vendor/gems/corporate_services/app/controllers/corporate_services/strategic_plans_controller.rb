@@ -10,7 +10,7 @@ class CorporateServices::StrategicPlansController < ApplicationController
     @strategic_priorities = @strategic_plan.strategic_priorities
     respond_to do |format|
       format.html
-      format.json {render :json => @strategic_plan.to_json(:only => :id, :methods => :strategic_priorities)}
+      format.json {render :json => @strategic_plan }
     end
   end
 end

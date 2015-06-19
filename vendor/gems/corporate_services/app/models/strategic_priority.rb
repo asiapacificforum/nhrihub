@@ -9,6 +9,14 @@ class StrategicPriority < ActiveRecord::Base
       each{|sp| sp.increment!(:priority_level)}
   end
 
+  def as_json(options={})
+    super(:except => [:created_at, :updated_at], :methods => :update_url)
+  end
+
+  def update_url
+    Rails.application.routes.url_helpers.corporate_services_strategic_plan_strategic_priority_path(:en,strategic_plan_id,id)
+  end
+
   def <=>(other)
     priority_level <=> other.priority_level
   end

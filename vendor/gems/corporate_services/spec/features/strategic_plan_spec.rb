@@ -23,7 +23,7 @@ feature "strategic plan basic, adding strategic priorities", :js => true do
 
   scenario "add strategic priority" do
     add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "The application of good governance by public authorities"})
-    expect(page).to have_selector('h4.panel-title a', :text => "Strategic Priority 1: The application of good governance by public authorities")
+    expect(page).to have_selector("[data-editable_attribute='description'] .no_edit", :text => "The application of good governance by public authorities")
   end
 
   scenario "filling-in the strategic priority description field" do
@@ -73,15 +73,17 @@ feature "strategic plan multiple strategic priorities", :js => true do
   scenario "add second/lower strategic priority, it's inserted below" do
     add_strategic_priority({:priority_level => "Strategic Priority 2", :description => "We gotta improve"})
     sleep(0.1)
-    expect(page.all('h4.panel-title a').map(&:text).first).to eq "Strategic Priority 1: Gonna do things betta"
-    expect(page.all('h4.panel-title a').map(&:text).last).to eq "Strategic Priority 2: We gotta improve"
+    expect(page.all("[data-editable_attribute='description'] .no_edit").map(&:text).first).to eq "Gonna do things betta"
+    expect(page.all("[data-editable_attribute='description'] .no_edit").map(&:text).last).to eq "We gotta improve"
   end
 
   scenario "add a second strategic priority that re-orders existing priorities" do
     add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "We gotta improve"})
     sleep(0.1)
-    expect(page.all('h4.panel-title a').map(&:text).first).to eq "Strategic Priority 1: We gotta improve"
-    expect(page.all('h4.panel-title a').map(&:text).last).to eq "Strategic Priority 2: Gonna do things betta"
+    expect(page.all("[data-editable_attribute='priority_level'] .no_edit").map(&:text).first).to eq "Strategic Priority 1:"
+    expect(page.all("[data-editable_attribute='description'] .no_edit").map(&:text).first).to eq "We gotta improve"
+    expect(page.all("[data-editable_attribute='priority_level'] .no_edit").map(&:text).last).to eq "Strategic Priority 2:"
+    expect(page.all("[data-editable_attribute='description'] .no_edit").map(&:text).last).to eq "Gonna do things betta"
   end
 end
 
@@ -97,18 +99,18 @@ feature "modifying strategic priorities", :js => true do
   scenario "edit the description and priority level of an existing strategic priority" do
     edit_icon.click
 
-    within "form#edit_strategic_priority" do
-      select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
-      fill_in "strategic_priority_description", :with => "edited description"
-      page.find('#edit-save').click
-      sleep(0.2)
-    end
+    select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
+    fill_in "strategic_priority_description", :with => "edited description"
+    page.find('.edit-save').click
+    sleep(0.2)
 
-    expect(page).to have_selector('h4.panel-title a', :text => "Strategic Priority 1: edited description")
+    expect(page).to have_selector("[data-editable_attribute='priority_level'] .no_edit", :text => "Strategic Priority 2:")
+    expect(page).to have_selector("[data-editable_attribute='description'] .no_edit", :text => "edited description")
   end
 
-  xscenario "delete a strategic priority" do
-    
+  scenario "delete a strategic priority" do
+    expect{ delete_icon.click; sleep(0.2) }.to change{StrategicPriority.count}.from(1).to(0)
+    expect(page).not_to have_selector('.strategic_priority')
   end
 end
 
@@ -134,9 +136,9 @@ feature "select strategic plan from prior years", :js => true do
   scenario "select a prior year and add a strategic priority" do
     visit corporate_services_strategic_plan_path(:en, "current")
     select("Strategic Plan: Starting #{18.months.ago.to_date.to_s}, ending #{6.months.ago.to_date.advance(:days => -1).to_s}", :from => "strategic_plan_start_date")
-    expect(page).to have_selector('h4.panel-title a', :text => "Strategic Priority 1: We gotta fix this")
+    expect(page).to have_selector("[data-editable_attribute='description'] .no_edit", :text => "We gotta fix this")
     add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "blah blah blah"})
-    expect(page).to have_selector('h4.panel-title a', :text => "blah blah blah")
+    expect(page).to have_selector("[data-editable_attribute='description'] .no_edit", :text => "blah blah blah")
   end
 
   xscenario "add priorities disabled for prior years" do
@@ -169,11 +171,15 @@ feature "populate strategic plan contents", :js => true do
 end
 
 def edit_icon
-  page.find('i#edit')
+  page.find('i#edit_start')
+end
+
+def delete_icon
+  page.find('i#delete')
 end
 
 def open_accordion_for_strategic_priority_one
-  page.find('h4.panel-title a', :text => 'Gonna do things betta').click
+  page.find("[data-editable_attribute='description'] .no_edit", :text => "Gonna do things betta").click
 end
 
 def add_priority_button

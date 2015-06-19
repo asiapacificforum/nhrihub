@@ -1,27 +1,37 @@
 %script#show_strategic_priority{:type => 'text/ractive'}
-  .panel.panel-default.strategic_priority.editable_container
+  .panel.panel-default.strategic_priority.editable_container{"data-update_url" => "{{ update_url }}" }
     .panel-heading.strategic_priority_title
       %h4.panel-title.clearfix
         %table{:style=> "width:100%"}
           %tr
-            %td{:style => "width:76%"}
-              %a{"data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
-                = t('.strategic_priority')
-                {{ priority_level }}: {{ description }}
-            %td{:style => "text-align:center; width:6%", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
+            %td{:style => "width:16%"}
+              %div{'data-toggle' => 'edit', 'data-editable_attribute' => 'priority_level'}
+                .fade.edit
+                  %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: -10px; margin-top: -3px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
+                    - priority_level_options.each do |opt|
+                      %option{:value => opt[1]}= opt[0]
+                .fade.no_edit
+                  %span= t('.strategic_priority')
+            %td{:style => "width:60%"}
+              %div{'data-toggle' => 'edit', 'data-editable_attribute' => 'description'}
+                .fade.edit
+                  %input.form-control#strategic_priority_description{:'data-name' => :description, :name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:40px; height: 25px; margin-top: -3px; font-size: 16px; padding:0px;'}
+                .fade.no_edit
+                  %span {{ description }}
+            %td{:style => "text-align:center; width:6%; font-size:14px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
               %i.fa.fa-folder-o.fa-lg#toggle
-            %td{:style => "text-align:center; width:6%"}
-              .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
+            %td{:style => "text-align:center; width:6%; font-size:14px;"}
+              .icon{'data-toggle' => 'edit', :style => 'height:20px'}
                 .fade.edit
                   %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative; left:30px;"}
-            %td{:style => "text-align:center; width:6%"}
-              %div.icon{:'data-toggle' => 'edit'}
+            %td{:style => "text-align:center; width:6%; font-size:14px;"}
+              %div.icon{'data-toggle' => 'edit'}
                 .fade.edit
                   %i.fa.fa-check.fa-lg.edit-save{:style => "position:relative; left:21px;"}
                 .fade.no_edit
                   %i.fa.fa-pencil-square-o.fa-lg#edit_start
-            %td{:style => "text-align:center; width:6%;"}
-              %i.fa.fa-trash-o.fa-lg#delete
+            %td{:style => "text-align:center; width:6%; font-size:14px;"}
+              %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()'}
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
       .panel-body
         %table.table
@@ -45,7 +55,7 @@
           =f.label :description, t('.description'), :class => 'control-label sr-only'
           #description_error.error{:style => "float:left;", 'data-message' => t('.description_error_message')} {{ description_error }} &nbsp;
           .chars_remaining{:style => "float:right"}= t('.chars_remaining')
-          =f.text_field :description, :class => 'form-control', :placeholder => "Enter description", :size => 100, :maxlength => 100, :value => "{{value}}", 'on-keydown' => "remove_description_errors()"
+          =f.text_field :description, :class => 'form-control', :placeholder => "Enter description", :size => 100, :maxlength => 100, :value => "{{description}}", 'on-keydown' => "remove_description_errors()"
         .form-group
           .nothing{:style => 'visibility:hidden'} nothing
           %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
@@ -60,23 +70,21 @@
 
 %script#strategic_plan_template{:type => 'text/ractive'}
   {{#strategic_priorities }}
-  <sp value="{{value}}" id="{{id}}" priority_level="{{priority_level}}" description="{{description}}"/>
+  <sp id="{{id}}" priority_level="{{priority_level}}" description="{{description}}" update_url="{{update_url}}"/>
   {{/strategic_priorities}}
 
 :coffeescript
   $ ->
     Ractive.DEBUG = false
 
-    strategic_priorities = #{@strategic_priorities.to_json}
+    strategic_plan_data = #{@strategic_plan.to_json}
 
-    strategic_plan_id = #{@strategic_plan.id}
-
-    StrategicPriority = Ractive.extend({
+    StrategicPriority = Ractive.extend
       template : '#show_or_new_strategic_priority'
       computed : {
         length : ->
-          if @.get('value')
-            @.get('value').length
+          if @.get('description')
+            @.get('description').length
           else
             0
         count : ->
@@ -97,6 +105,15 @@
           $.post(url, data, @.create_sp, 'json')
       create_sp : (data,textStatus,jqxhr)->
         strategic_plan.set('strategic_priorities', data)
+      delete : ->
+        data = {'_method' : 'delete'}
+        # if confirm
+        $.post(@.get('update_url'), data, @.remove_sp, 'json')
+      remove_sp : (data, textStatus, jqxhr)->
+        to_be_removed = _(strategic_plan.get('strategic_priorities')).find (sp)->
+                                                                    sp.id = 95
+        index = _(strategic_plan.get('strategic_priorities')).indexOf(to_be_removed)
+        strategic_plan.splice('strategic_priorities',index,1)
       validate : (data) ->
         pl = @._validate(data,'priority_level')
         desc = @._validate(data,'description')
@@ -115,28 +132,29 @@
         @.set("priority_level_error","")
       remove_description_errors : ->
         @.set("description_error","")
-    })
 
-    window.strategic_plan = new Ractive({
+    window.strategic_plan = new Ractive
       el : "#strategic_plan"
       template: "#strategic_plan_template"
-      data:
-        id : strategic_plan_id
-        strategic_priorities : strategic_priorities # the collection of strategic priorities
+      data: strategic_plan_data
       components :
         sp : StrategicPriority
       new_strategic_priority : ->
         # add only if there are no strategic priorities
         # of if the most recent is persisted
         if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
-          @.unshift('strategic_priorities', {id:null, value: '', priority_level:null} )
-    })
+          strategic_plan.unshift('strategic_priorities', {id:null, description: '', priority_level:null} )
 
-    # $('body').on "click", 'button#add', (event)->
-    #   $(event.target).closest('form').submit()
-
-    $('body').on "ajax:success", (e,data,status,xhr)->
-      strategic_plan.set('strategic_priorities',data)
+    # $('body').on "ajax:success", (e,data,status,xhr)->
+    #   strategic_plan.set('strategic_priorities',data)
 
     $('form#new_strategic_priority').bind "ajax:error", ->
       console.log "error"
+
+    inpage_edit = new @InpageEdit
+      focus_element : 'input.title'
+      success : (response, textStatus, jqXhr)->
+        strategic_plan.set('strategic_priorities',response)
+        inpage_edit.show()
+      error : ->
+        console.log "Changes were not saved, for some reason"

@@ -12,3 +12,7 @@
 .error {
   color : red;
 }
+
+select.priority_level {
+  @extend .sp-select;
+}

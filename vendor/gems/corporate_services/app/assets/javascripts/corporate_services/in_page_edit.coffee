@@ -67,7 +67,7 @@ $ ->
 
       $('body').on 'click', ".edit-save", (e)=>
        $target = $(e.target)
-       url = @data().save_url
+       url = @data().update_url
        data = @context.find(':input').serializeArray()
        data[data.length] = {name : '_method', value : 'put'}
        $.ajax

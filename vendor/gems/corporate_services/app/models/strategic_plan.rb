@@ -12,6 +12,10 @@ class StrategicPlan < ActiveRecord::Base
     end
   end
 
+  def as_json(options={})
+    super(:except => [:updated_at, :created_at], :methods => :strategic_priorities) 
+  end
+
   def current?
     date_range.include?(Date.today)
   end

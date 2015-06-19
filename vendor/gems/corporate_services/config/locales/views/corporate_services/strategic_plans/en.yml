@@ -11,7 +11,7 @@ en:
         priority: "Priority level"
         description: "Description"
         add: "Add"
-        strategic_priority: "Strategic Priority"
+        strategic_priority: "Strategic Priority {{priority_level}}:" #the word priority_level and its params must remain
         planned_results: "Planned results"
         outcomes: "Outcomes"
         activities: "Activities"
