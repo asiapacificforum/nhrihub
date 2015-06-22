@@ -1,5 +1,6 @@
 class StrategicPriority < ActiveRecord::Base
   belongs_to :strategic_plan
+  has_many :planned_results
 
   default_scope { order(:priority_level) }
 
@@ -10,7 +11,8 @@ class StrategicPriority < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super(:except => [:created_at, :updated_at], :methods => :update_url)
+    super(:except => [:created_at, :updated_at],
+          :methods => [:update_url, :planned_results] )
   end
 
   def update_url

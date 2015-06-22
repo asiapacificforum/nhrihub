@@ -20,7 +20,7 @@ class CorporateServices::StrategicPlans::StrategicPrioritiesController < Applica
   def destroy
     strategic_priority = StrategicPriority.find(params[:id])
     if strategic_priority.destroy
-      render :json => strategic_priority, :status => 200
+      render :json => strategic_priority.all_in_plan, :status => 200
     else
       render :nothing => true, :status => 500
     end

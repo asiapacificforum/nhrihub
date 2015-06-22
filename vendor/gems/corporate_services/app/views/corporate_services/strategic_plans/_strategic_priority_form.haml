@@ -34,14 +34,26 @@
               %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()'}
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
       .panel-body
-        %table.table
-          %tr.headings
-            %th= t('.planned_results')
-            %th= t('.outcomes')
-            %th= t('.activities')
-            %th= t('.perf_indicators')
-            %th= t('.reminders')
-            %th= t('.progress')
+        %table.table#planned_results
+          %tr.heading
+            %td{:style => "width:16.6666667%"}= t('.planned_results')
+            %td{:style => "width:16.6666667%"}= t('.outcomes')
+            %td{:style => "width:16.6666667%"}= t('.activities')
+            %td{:style => "width:16.6666667%"}= t('.perf_indicators')
+            %td{:style => "width:16.6666667%"}= t('.reminders')
+            %td{:style => "width:16.6666667%"}= t('.progress')
+          {{#planned_results}}
+          <pr description='{{description}}' id='{{id}}' spid='{{strategic_priority_id}}'>
+          {{/planned_results}}
+          %tr
+            %td
+              %i.fa.fa-plus.fa-lg.new_planned_result{'on-click' => 'new_planned_result()'}
+            %td
+            %td
+            %td
+            %td
+            %td
+
 
 %script#new_strategic_priority_template{:type => 'text/ractive'}
   .panel.panel-default.new_strategic_priority
@@ -70,8 +82,46 @@
 
 %script#strategic_plan_template{:type => 'text/ractive'}
   {{#strategic_priorities }}
-  <sp id="{{id}}" priority_level="{{priority_level}}" description="{{description}}" update_url="{{update_url}}"/>
+  <sp id="{{id}}" priority_level="{{priority_level}}" indexed_description="{{indexed_description}}" update_url="{{update_url}}" planned_results="{{planned_results}}"/>
   {{/strategic_priorities}}
+
+%script#show_or_new_planned_result_template{:type => 'text/ractive'}
+  {{#if !persisted }}
+  {{> new_planned_result_template }}
+  {{else}}
+  {{> show_planned_result_template }}
+  {{/if}}
+
+%script#show_planned_result_template{:type => 'text/ractive'}
+  %tr.planned_result
+    %td {{ indexed_description }}
+    %td
+    %td
+    %td
+    %td
+    %td
+
+%script#new_planned_result_template{:type => 'text/ractive'}
+  %tr.new_planned_result{'data-create_url' => corporate_services_strategic_priority_planned_results_path('spid').gsub(/spid/,"{{spid}}")}
+    %td=text_area :planned_result, :description,
+          :cols => 24, :rows => 4,
+          :id=>'planned_result_description', :placeholder => "Enter description",
+          'data-name' => :description, :name => "planned_result[description]",
+          :'value' => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px;'
+    %td
+    %td
+    %td
+    %td
+    %td
+  %tr
+    %td
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:40px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:56px"}
+    %td
+    %td
+    %td
+    %td
+    %td
 
 :coffeescript
   $ ->
@@ -79,9 +129,42 @@
 
     strategic_plan_data = #{@strategic_plan.to_json}
 
+    PlannedResult = Ractive.extend
+      template : '#show_or_new_planned_result_template'
+      computed :
+        persisted : ->
+          !isNaN(parseInt(@.get('id')))
+      oninit : ->
+        if !@.get('persisted')
+          @.parent.hide_add_planned_result()
+      create_save : ->
+        context = $(@.viewmodel.ractive.el)
+        url = context.find('.new_planned_result').data('create_url')
+        data = context.find(':input').serializeArray()
+        strategic_priority_id = @.parent.get('id')
+        data[data.length] = {name : 'planned_result[strategic_priority_id]', value : strategic_priority_id}
+        if @.validate(data)
+          $.ajax
+            type : 'post'
+            url : url
+            data : data
+            dataType : 'json'
+            success : @.create_pr
+            context : @
+      create_stop : ->
+        @.parent.remove_planned_result_form()
+      validate : (data)->
+        console.log "validate data"
+        true
+      create_pr : (response, statusText, jqxhr)->
+        @.parent.set('planned_results',response)
+
     StrategicPriority = Ractive.extend
+      # el : $(".strategic_priority.content[id^='collapse']")
       template : '#show_or_new_strategic_priority'
-      computed : {
+      components :
+        pr : PlannedResult
+      computed :
         length : ->
           if @.get('description')
             @.get('description').length
@@ -93,7 +176,8 @@
           window.strategic_plan.get('id')
         persisted : ->
           !isNaN(parseInt(@.get('id')))
-      }
+      new_planned_result: ->
+        @.unshift('planned_results', {id : null, description : "", strategic_priority_id : @.get('id')})
       cancel : ->
         @.parent.get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
       form : ->
@@ -102,18 +186,13 @@
         data = @.form().serializeArray()
         url = @.form().attr('action')
         if @.validate(data)
-          $.post(url, data, @.create_sp, 'json')
-      create_sp : (data,textStatus,jqxhr)->
+          $.post(url, data, @.update_sp, 'json')
+      update_sp : (data,textStatus,jqxhr)->
         strategic_plan.set('strategic_priorities', data)
       delete : ->
         data = {'_method' : 'delete'}
-        # if confirm
-        $.post(@.get('update_url'), data, @.remove_sp, 'json')
-      remove_sp : (data, textStatus, jqxhr)->
-        to_be_removed = _(strategic_plan.get('strategic_priorities')).find (sp)->
-                                                                    sp.id = 95
-        index = _(strategic_plan.get('strategic_priorities')).indexOf(to_be_removed)
-        strategic_plan.splice('strategic_priorities',index,1)
+        # TODO if confirm
+        $.post(@.get('update_url'), data, @.update_sp, 'json')
       validate : (data) ->
         pl = @._validate(data,'priority_level')
         desc = @._validate(data,'description')
@@ -132,6 +211,16 @@
         @.set("priority_level_error","")
       remove_description_errors : ->
         @.set("description_error","")
+      _add_planned_result : ->
+        $(this.parent.el).
+          find('.new_planned_result').
+          closest('tr')
+      hide_add_planned_result : ->
+        @._add_planned_result().
+          hide()
+      remove_planned_result_form : ->
+        @.shift('planned_results')
+        @._add_planned_result().show()
 
     window.strategic_plan = new Ractive
       el : "#strategic_plan"

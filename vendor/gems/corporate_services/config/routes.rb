@@ -10,6 +10,9 @@ Rails.application.routes.draw do
       resources :strategic_plans do
         resources :strategic_priorities, :to => 'strategic_plans/strategic_priorities'
       end
+      resources :strategic_priorities do
+        resources :planned_results, :to => 'strategic_priorities/planned_results'
+      end
       namespace :strategic_plans do
         resource :start_date, :only => :update
       end
