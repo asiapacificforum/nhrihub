@@ -8,6 +8,15 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
     end
   end
 
+  def destroy
+    planned_result = PlannedResult.find(params[:id])
+    if planned_result.destroy
+      render :json => planned_result.all_in_strategic_priority, :status => 200
+    else
+      render :nothing => true, :status => 500
+    end
+  end
+
   private
   def planned_result_params
     params.require(:planned_result).permit(:description, :strategic_priority_id)

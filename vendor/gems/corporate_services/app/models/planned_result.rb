@@ -7,10 +7,13 @@ class PlannedResult < ActiveRecord::Base
   end
 
   def indexed_description
+    [index, description].join(' ')
+  end
+
+  def index
     first_digit = strategic_priority.priority_level.to_s
     second_digit = all_in_strategic_priority.sort_by(&:id).index(self).succ.to_s
-    index = [first_digit, second_digit].join('.')
-    [index, description].join(' ')
+    [first_digit, second_digit].join('.')
   end
 
   def update_url
@@ -21,7 +24,4 @@ class PlannedResult < ActiveRecord::Base
     PlannedResult.where(:strategic_priority_id => strategic_priority_id)
   end
 
-  #def create_url
-    #Rails.application.routes.url_helpers.corporate_services_strategic_priority_planned_results_path(:en, 'strategic_priority_id')
-  #end
 end

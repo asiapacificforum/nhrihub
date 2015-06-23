@@ -43,7 +43,7 @@
             %td{:style => "width:16.6666667%"}= t('.reminders')
             %td{:style => "width:16.6666667%"}= t('.progress')
           {{#planned_results}}
-          <pr description='{{description}}' id='{{id}}' spid='{{strategic_priority_id}}'>
+          <pr/>
           {{/planned_results}}
           %tr
             %td
@@ -82,7 +82,7 @@
 
 %script#strategic_plan_template{:type => 'text/ractive'}
   {{#strategic_priorities }}
-  <sp id="{{id}}" priority_level="{{priority_level}}" indexed_description="{{indexed_description}}" update_url="{{update_url}}" planned_results="{{planned_results}}"/>
+  <sp id="{{id}}" priority_level="{{priority_level}}" update_url="{{update_url}}" planned_results="{{planned_results}}"/>
   {{/strategic_priorities}}
 
 %script#show_or_new_planned_result_template{:type => 'text/ractive'}
@@ -92,9 +92,13 @@
   {{> show_planned_result_template }}
   {{/if}}
 
+
 %script#show_planned_result_template{:type => 'text/ractive'}
   %tr.planned_result
-    %td {{ indexed_description }}
+    %td.description{'data-id' => '{{id}}', 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
+      {{ indexed_description }}
+      %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this()'}
+        %i.fa.fa-lg.fa-trash-o
     %td
     %td
     %td
@@ -103,11 +107,13 @@
 
 %script#new_planned_result_template{:type => 'text/ractive'}
   %tr.new_planned_result{'data-create_url' => corporate_services_strategic_priority_planned_results_path('spid').gsub(/spid/,"{{spid}}")}
-    %td=text_area :planned_result, :description,
-          :cols => 24, :rows => 4,
-          :id=>'planned_result_description', :placeholder => "Enter description",
-          'data-name' => :description, :name => "planned_result[description]",
-          :'value' => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px;'
+    %td
+      #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
+      %div=text_area :planned_result, :description, 'on-keydown' => "remove_description_errors()",
+            :cols => 24, :rows => 4,
+            :id=>'planned_result_description', :placeholder => "Enter description",
+            'data-name' => :description, :name => "planned_result[description]",
+            :'value' => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px;'
     %td
     %td
     %td
@@ -153,10 +159,32 @@
             context : @
       create_stop : ->
         @.parent.remove_planned_result_form()
-      validate : (data)->
-        console.log "validate data"
-        true
+      validate : (data) ->
+        message = $('#description_error').data('message')
+        reg = new RegExp('description')
+        field_obj = _(data).find (d)->
+                      reg.test(d.name)
+        if field_obj.value == ""
+          @.set("description_error",message)
+          false
+        else
+          true
+      remove_description_errors : ->
+        @.set("description_error","")
       create_pr : (response, statusText, jqxhr)->
+        @.parent.set('planned_results',response)
+        @.parent.show_add_planned_result()
+      delete_this : ->
+        id = $(event.target).closest('.description').data('id')
+        data = [{name:'id', value:id}, {name:'_method', value: 'delete'}]
+        $.ajax
+          url : @.get('update_url')
+          data : data
+          method : 'post'
+          dataType : 'json'
+          context : @
+          success : @.update_pr
+      update_pr : (response, statusText, jqxhr)->
         @.parent.set('planned_results',response)
 
     StrategicPriority = Ractive.extend
@@ -177,7 +205,7 @@
         persisted : ->
           !isNaN(parseInt(@.get('id')))
       new_planned_result: ->
-        @.unshift('planned_results', {id : null, description : "", strategic_priority_id : @.get('id')})
+        @.push('planned_results', {id : null, description : "", strategic_priority_id : @.get('id')})
       cancel : ->
         @.parent.get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
       form : ->
@@ -218,9 +246,12 @@
       hide_add_planned_result : ->
         @._add_planned_result().
           hide()
+      show_add_planned_result : ->
+        @._add_planned_result().
+          show()
       remove_planned_result_form : ->
-        @.shift('planned_results')
-        @._add_planned_result().show()
+        @.pop('planned_results')
+        @.show_add_planned_result()
 
     window.strategic_plan = new Ractive
       el : "#strategic_plan"
