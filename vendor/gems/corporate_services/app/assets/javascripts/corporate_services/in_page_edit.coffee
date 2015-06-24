@@ -3,6 +3,7 @@
 ##############
 #  example usage
 #    new @InpageEdit
+#      on : 'div#some_id'
 #      focus_element : 'input.title'
 #      success : (response, textStatus, jqXhr)->
 #        id = response.id
@@ -13,6 +14,7 @@
 #        console.log "Changes were not saved, for some reason"
 #
 #  options:
+#    on: the root element of the editable content
 #    focus_element : selector of element on which to apply focus when switching to edit mode
 #    success : callback when save was successful
 #    error : callback when save failed
@@ -54,18 +56,18 @@ $ ->
     constructor : (options)->
       @options = options
 
-      $('body').on 'click', '#edit_start', (e)=>
+      $('body').on 'click', "#{@options.on} #edit_start", (e)=>
         $target = $(e.target)
         @context = $target.closest('.editable_container')
         @edit()
         @context.find(@options.focus_element).first().focus()
 
-      $('body').on 'click', '#edit_cancel', (e)=>
+      $('body').on 'click', "#{@options.on} #edit_cancel", (e)=>
         $target = $(e.target)
         @context = $target.closest('.editable_container')
         @show()
 
-      $('body').on 'click', ".edit-save", (e)=>
+      $('body').on 'click', "#{@options.on} .edit-save", (e)=>
        $target = $(e.target)
        url = @data().update_url
        data = @context.find(':input').serializeArray()
@@ -76,17 +78,27 @@ $ ->
          data : data
          success : @options.success
          error : @options.error
+         context : @
 
     edit : ->
-      @elements().each (i,el) ->
+      _(@elements()).each (el,i) ->
         el.switch_to_edit()
 
     show : ->
-      @elements().each (i,el) ->
+      _(@elements()).each (el,i) ->
         el.switch_to_show()
 
+    # must select only elements pertaining to this instance
+    # nested in-page edits must be excluded from elements
     elements : ->
-      @context.find("[data-toggle='edit']").map (i,el)->
+      all_elements = @context.find("[data-toggle='edit']")
+      if $(@options.on).hasClass('editable_container')
+        root = $(@options.on)
+      else
+        root = $(@options.on).find('.editable_container')
+      elements = _(all_elements).filter (el)->
+                        $(el).closest('.editable_container').get(0) == root.get(0)
+      elements.map (el,i)->
         new document.InpageEditElement(el)
 
     data : ->
