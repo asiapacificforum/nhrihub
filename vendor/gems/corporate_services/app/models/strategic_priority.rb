@@ -6,7 +6,7 @@ class StrategicPriority < ActiveRecord::Base
 
   before_save do
     all_in_plan.
-      select{|sp| sp.priority_level == priority_level}.
+      select{|sp| (sp.id != id) && (sp.priority_level == priority_level)}.
       each{|sp| sp.increment!(:priority_level)}
   end
 

@@ -95,15 +95,24 @@ describe ".create!" do
       @sp1 = StrategicPlan.create()
     end
 
-    it "should increment the priority level of the existing strategic priority" do
+    it "should not increment the priority level of the existing strategic priority" do
       StrategicPriority.create!(:priority_level => 1, :description => "bish bash bosh", :strategic_plan_id => @sp1.id)
 
       expect(StrategicPriority.count).to eq 2
       expect(StrategicPriority.all.last.priority_level).to eq 1
-      expect(StrategicPriority.all.last.description).to eq "bish bash bosh"
       expect(StrategicPriority.all.first.priority_level).to eq 1
-      expect(StrategicPriority.all.first.description).to eq "blah blah blah"
     end
   end # /context
 
+  context "when updating a strategic priority description" do
+    before do
+      @sp = StrategicPlan.create()
+      StrategicPriority.create!(:priority_level => 1, :description => "blah blah blah", :strategic_plan_id => @sp.id)
+    end
+
+    it "should leave the priority level unchanged" do
+      StrategicPriority.first.update_attribute(:description, "bish bash bosh")
+      expect(StrategicPriority.first.reload.priority_level).to eq 1
+    end
+  end
 end
