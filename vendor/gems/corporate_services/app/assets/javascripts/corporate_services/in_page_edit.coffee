@@ -55,19 +55,27 @@ $ ->
   class @InpageEdit
     constructor : (options)->
       @options = options
+      console.log("init inpage edit with #{options.on}")
 
-      $('body').on 'click', "#{@options.on} #edit_start", (e)=>
+      #$('body').on 'click', "#{@options.on} #edit_start", (e)=>
+      $("#{@options.on}_edit_start").on 'click', (e)=>
+        e.stopPropagation()
+        console.log "starting"
         $target = $(e.target)
         @context = $target.closest('.editable_container')
         @edit()
         @context.find(@options.focus_element).first().focus()
 
-      $('body').on 'click', "#{@options.on} #edit_cancel", (e)=>
+      #$('body').on 'click', "#{@options.on} #edit_cancel", (e)=>
+      $("#{@options.on}_edit_cancel").on 'click', (e)=>
+        e.stopPropagation()
+        console.log "cancel #{JSON.stringify(e.target)}"
         $target = $(e.target)
         @context = $target.closest('.editable_container')
         @show()
 
-      $('body').on 'click', "#{@options.on} .edit-save", (e)=>
+      $("#{@options.on}_edit_save").on 'click', (e)=>
+       e.stopPropagation()
        $target = $(e.target)
        url = @data().update_url
        data = @context.find(':input').serializeArray()
