@@ -27,12 +27,22 @@ $ ->
 
     switch_to_edit : ->
       @set_field_width()
-      @show(@input())
       @hide(@text())
+      @show(@input())
+      @set_parent_height()
 
     switch_to_show : ->
       @show(@text())
       @hide(@input())
+      @restore_parent_height()
+
+    set_parent_height : ->
+      height = $(@input()).height()
+      $(@input()).closest('tr').css('height',height)
+
+    restore_parent_height : ->
+      height = $(@text()).height()
+      $(@input()).closest('tr').css('height',height)
 
     set_field_width : ->
       @input().find('input').css('width',@text_width()+10)
@@ -55,21 +65,16 @@ $ ->
   class @InpageEdit
     constructor : (options)->
       @options = options
-      console.log("init inpage edit with #{options.on}")
 
-      #$('body').on 'click', "#{@options.on} #edit_start", (e)=>
       $("#{@options.on}_edit_start").on 'click', (e)=>
         e.stopPropagation()
-        console.log "starting"
         $target = $(e.target)
         @context = $target.closest('.editable_container')
         @edit()
         @context.find(@options.focus_element).first().focus()
 
-      #$('body').on 'click', "#{@options.on} #edit_cancel", (e)=>
       $("#{@options.on}_edit_cancel").on 'click', (e)=>
         e.stopPropagation()
-        console.log "cancel #{JSON.stringify(e.target)}"
         $target = $(e.target)
         @context = $target.closest('.editable_container')
         @show()
