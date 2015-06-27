@@ -1,9 +1,11 @@
 class PlannedResult < ActiveRecord::Base
   belongs_to :strategic_priority
 
+  default_scope ->{ order(:id) }
+
   def as_json(options = {})
     super(:except => [:updated_at, :created_at],
-          :methods => [:update_url, :indexed_description])
+          :methods => [:update_url, :indexed_description, :description])
   end
 
   def indexed_description

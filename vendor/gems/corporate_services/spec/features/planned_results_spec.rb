@@ -16,22 +16,22 @@ feature "populate strategic plan contents", :js => true do
 
 
   scenario "add planned results item" do
-    expect(page).not_to have_selector(add_planned_result_icon)
+    expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => "Achieve nirvana"
     expect{save_planned_result.click; sleep(0.2)}.to change{PlannedResult.count}.from(0).to(1)
     expect(page).to have_selector("table#planned_results tr.planned_result td:first-of-type", :text => "1.1 Achieve nirvana")
   end
 
   scenario "add multiple planned results" do
-    expect(page).not_to have_selector(add_planned_result_icon)
+    expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => "Achieve nirvana"
     expect{save_planned_result.click; sleep(0.2)}.to change{PlannedResult.count}.from(0).to(1)
     expect(page).to have_selector("table#planned_results tr.planned_result td:first-of-type", :text => "1.1 Achieve nirvana")
-    expect(page).to have_selector(add_planned_result_icon)
+    expect(page).to have_selector(".new_planned_result")
   end
 
   scenario "try to save planned result with blank description field" do
-    expect(page).not_to have_selector(add_planned_result_icon)
+    expect(page).not_to have_selector("i.new_planned_result")
     expect{save_planned_result.click; sleep(0.2)}.not_to change{PlannedResult.count}
     expect(page).to have_selector("#description_error", :text => "You must enter a description")
   end
@@ -55,11 +55,17 @@ feature "actions on existing planned results", :js => true do
     expect{ page.find("tr.planned_result td.description span.delete_icon").click; sleep(0.2)}.to change{PlannedResult.count}.from(1).to(0)
   end
 
-  xscenario "edit a planned result item" do
-    
+  scenario "edit a planned result item" do
+    page.find("tr.planned_result td.description span").click
+    fill_in('planned_result_description', :with => "new description")
+    expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ PlannedResult.first.description }.to "new description"
+    expect(page.find(".planned_result.editable_container .no_edit span:first-of-type").text ).to eq "1.1 new description"
   end
 end
 
+def planned_result_save_icon
+  page.find('.editable_container i#planned_result_editable1_edit_save')
+end
 
 def open_accordion_for_strategic_priority_one
   page.find("i#toggle").click
@@ -70,9 +76,5 @@ def save_planned_result
 end
 
 def add_planned_result
-  page.find(add_planned_result_icon)
-end
-
-def add_planned_result_icon
-  ".strategic_priority_content table tr:not(.heading) td:first-of-type .new_planned_result"
+  page.find(".new_planned_result")
 end

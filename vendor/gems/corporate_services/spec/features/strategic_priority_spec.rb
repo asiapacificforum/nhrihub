@@ -89,7 +89,7 @@ feature "modifying strategic priorities", :js => true do
 
     select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
     fill_in "strategic_priority_description", :with => "edited description"
-    page.find('.edit-save').click
+    edit_save_icon.click
     sleep(0.2)
 
     expect(page).to have_selector("[data-editable_attribute='priority_level'] .no_edit", :text => "Strategic Priority 2:")
@@ -102,8 +102,12 @@ feature "modifying strategic priorities", :js => true do
   end
 end
 
+def edit_save_icon
+  page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_save']")
+end
+
 def edit_icon
-  page.find('i#edit_start')
+  page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_start']")
 end
 
 def delete_icon

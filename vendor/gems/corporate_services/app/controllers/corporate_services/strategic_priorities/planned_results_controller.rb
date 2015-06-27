@@ -17,6 +17,15 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
     end
   end
 
+  def update
+    planned_result = PlannedResult.find(params[:id])
+    if planned_result.update_attributes(planned_result_params)
+      render :json => planned_result, :status => 200
+    else
+      render :nothing => true, :status => 500
+    end
+  end
+
   private
   def planned_result_params
     params.require(:planned_result).permit(:description, :strategic_priority_id)

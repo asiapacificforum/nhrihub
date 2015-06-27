@@ -1,5 +1,5 @@
 %script#show_strategic_priority{:type => 'text/ractive'}
-  .panel.panel-default.strategic_priority.editable_container{"data-update_url" => "{{ update_url }}" }
+  .panel.panel-default.strategic_priority.editable_container{"data-update_url" => "{{ update_url }}", :id => "strategic_priority_editable{{id}}"}
     .panel-heading.strategic_priority_title
       %h4.panel-title.clearfix
         %table{:style=> "width:100%"}
@@ -23,13 +23,13 @@
             %td{:style => "text-align:center; width:6%; font-size:14px;"}
               .icon{'data-toggle' => 'edit', :style => 'height:20px'}
                 .fade.edit
-                  %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative; left:30px;"}
+                  %i.fa.fa-remove.fa-lg{:style => "position:relative; left:30px;", :id => "strategic_priority_editable{{id}}_edit_cancel"}
             %td{:style => "text-align:center; width:6%; font-size:14px;"}
               %div.icon{'data-toggle' => 'edit'}
                 .fade.edit
-                  %i.fa.fa-check.fa-lg.edit-save{:style => "position:relative; left:21px;"}
+                  %i.fa.fa-check.fa-lg{:id => "strategic_priority_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
                 .fade.no_edit
-                  %i.fa.fa-pencil-square-o.fa-lg#edit_start
+                  %i.fa.fa-pencil-square-o.fa-lg{:id => "strategic_priority_editable{{id}}_edit_start"}
             %td{:style => "text-align:center; width:6%; font-size:14px;"}
               %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()'}
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
@@ -43,17 +43,17 @@
             %td{:style => "width:16.6666667%"}= t('.reminders')
             %td{:style => "width:16.6666667%"}= t('.progress')
           {{#planned_results}}
-          <pr/>
+          <pr description="{{description}}" indexed_description="{{indexed_description}}" id="{{id}}"/>
           {{/planned_results}}
           %tr
             %td
-              %i.fa.fa-plus.fa-lg.new_planned_result{'on-click' => 'new_planned_result()'}
+              %i.fa.fa-plus.fa-lg.new_planned_result{'on-click' => 'new_planned_result()', :style => 'position:relative; z-index:9'}
+              -# must be positioned over the textarea of the planned_result
             %td
             %td
             %td
             %td
             %td
-
 
 %script#new_strategic_priority_template{:type => 'text/ractive'}
   .panel.panel-default.new_strategic_priority
@@ -82,7 +82,7 @@
 
 %script#strategic_plan_template{:type => 'text/ractive'}
   {{#strategic_priorities }}
-  <sp id="{{id}}" priority_level="{{priority_level}}" update_url="{{update_url}}" planned_results="{{planned_results}}"/>
+  <sp id="{{id}}" description="{{description}}" priority_level="{{priority_level}}" update_url="{{update_url}}" planned_results="{{planned_results}}"/>
   {{/strategic_priorities}}
 
 %script#show_or_new_planned_result_template{:type => 'text/ractive'}
@@ -92,13 +92,21 @@
   {{> show_planned_result_template }}
   {{/if}}
 
-
 %script#show_planned_result_template{:type => 'text/ractive'}
-  %tr.planned_result
-    %td.description{'data-id' => '{{id}}', 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
-      {{ indexed_description }}
-      %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this()'}
-        %i.fa.fa-lg.fa-trash-o
+  %tr.planned_result.editable_container{:id => "planned_result_editable{{id}}"}
+    %td.description{ 'data-toggle' => 'edit', 'data-id' => '{{id}}'}
+      .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
+        %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
+          {{ indexed_description }}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this()'}
+          %i.fa.fa-lg.fa-trash-o
+      .fade.edit
+        // using the rails form helper foils the ractivjs 2-way binding!
+        %textarea{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]'}
+        //=text_area :planned_result, :description, :value => '{{description}}'
+        .icon{'data-toggle' => 'edit', :style => 'height:20px'}
+          %i.fa.fa-remove.fa-lg{:id => "planned_result_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
+          %i.fa.fa-check.fa-lg{:id => "planned_result_editable{{id}}_edit_save", :style => "margin-left:56px"}
     %td
     %td
     %td
@@ -113,7 +121,7 @@
             :cols => 24, :rows => 4,
             :id=>'planned_result_description', :placeholder => "Enter description",
             'data-name' => :description, :name => "planned_result[description]",
-            :'value' => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px;'
+            :'value' => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10;'
     %td
     %td
     %td
@@ -135,6 +143,8 @@
 
     strategic_plan_data = #{@strategic_plan.to_json}
 
+    InpageEdit = this.InpageEdit
+
     PlannedResult = Ractive.extend
       template : '#show_or_new_planned_result_template'
       computed :
@@ -143,6 +153,17 @@
       oninit : ->
         if !@.get('persisted')
           @.parent.hide_add_planned_result()
+      onrender : ->
+        if @.get('persisted')
+          @inpage_edit = new InpageEdit
+            object : @
+            on : '#planned_result_editable'+@.get('id')
+            focus_element : 'input.planned_result_description'
+            success : (response, statusText, jqxhr)->
+                @.options.object.set(response)
+                @.show()
+            error : ->
+              console.log "Changes were not saved, for some reason"
       create_save : ->
         context = $(@.viewmodel.ractive.el)
         url = context.find('.new_planned_result').data('create_url')
@@ -155,7 +176,7 @@
             url : url
             data : data
             dataType : 'json'
-            success : @.create_pr
+            success : @create_pr
             context : @
       create_stop : ->
         @.parent.remove_planned_result_form()
@@ -174,7 +195,9 @@
       create_pr : (response, statusText, jqxhr)->
         @.parent.set('planned_results',response)
         @.parent.show_add_planned_result()
+        @.onrender() # so edit-in-place is immediately available
       delete_this : ->
+        event.stopPropagation()
         id = $(event.target).closest('.description').data('id')
         data = [{name:'id', value:id}, {name:'_method', value: 'delete'}]
         $.ajax
@@ -188,7 +211,6 @@
         @.parent.set('planned_results',response)
 
     StrategicPriority = Ractive.extend
-      # el : $(".strategic_priority.content[id^='collapse']")
       template : '#show_or_new_strategic_priority'
       components :
         pr : PlannedResult
@@ -204,6 +226,16 @@
           window.strategic_plan.get('id')
         persisted : ->
           !isNaN(parseInt(@.get('id')))
+      onrender : ->
+        new InpageEdit
+          on : "#strategic_priority_editable"+@.get('id')
+          object : @
+          focus_element : 'input.title'
+          success : (response, textStatus, jqXhr)->
+            strategic_plan.set('strategic_priorities',response)
+            @.show()
+          error : ->
+            console.log "Changes were not saved, for some reason"
       new_planned_result: ->
         @.push('planned_results', {id : null, description : "", strategic_priority_id : @.get('id')})
       cancel : ->
@@ -265,16 +297,3 @@
         if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
           strategic_plan.unshift('strategic_priorities', {id:null, description: '', priority_level:null} )
 
-    # $('body').on "ajax:success", (e,data,status,xhr)->
-    #   strategic_plan.set('strategic_priorities',data)
-
-    $('form#new_strategic_priority').bind "ajax:error", ->
-      console.log "error"
-
-    inpage_edit = new @InpageEdit
-      focus_element : 'input.title'
-      success : (response, textStatus, jqXhr)->
-        strategic_plan.set('strategic_priorities',response)
-        inpage_edit.show()
-      error : ->
-        console.log "Changes were not saved, for some reason"
