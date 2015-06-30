@@ -24,15 +24,59 @@ class InternalDocument < ActiveRecord::Base
 
   after_destroy do |doc|
     # if it's the last document in the group, delete the group too
-    doc.document_group.destroy if doc.document_group.empty?
+    if doc.document_group.empty?
+      doc.document_group.destroy
+    end
+  end
+
+  def as_json(options = {})
+    super(:except => [:created_at, :updated_at],
+          :methods => [:revision,
+                       :uploaded_by,
+                       :update_url,
+                       :delete_url,
+                       :url,
+                       :formatted_modification_date,
+                       :formatted_creation_date,
+                       :formatted_filesize,
+                       :archive_files] )
+  end
+
+  def update_url
+    Rails.application.routes.url_helpers.corporate_services_internal_document_path(I18n.locale, self)
+  end
+
+  def delete_url
+    Rails.application.routes.url_helpers.corporate_services_internal_document_path(I18n.locale, self)
+  end
+
+  def url
+    Rails.application.routes.url_helpers.corporate_services_internal_document_path(I18n.locale, self)
+  end
+
+  def formatted_modification_date
+    lastModifiedDate.to_s
+  end
+
+  def formatted_creation_date
+    created_at.to_s
+  end
+
+  def formatted_filesize
+    ActiveSupport::NumberHelper.number_to_human_size(filesize)
   end
 
   def <=>(other)
-    [revision.major, revision.minor] <=> [other.revision_major, other.revision_minor]
+    [revision_major, revision_minor] <=> [other.revision_major, other.revision_minor]
   end
 
   def self.maximum_filesize
     SiteConfig['corporate_services.internal_documents.filesize']*1000000
+  end
+
+
+  def self.permitted_filetypes
+    SiteConfig['corporate_services.internal_documents.filetypes'].to_json
   end
 
   # called from the initializer: config/intializers/internal_document.rb

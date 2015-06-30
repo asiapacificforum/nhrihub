@@ -1,11 +1,12 @@
 .message_block
 %h1= t('.heading')
 .container
-  / The file upload form used as target for the file upload widget
-  .fileupload{:'data-file-input' => '#primary_fileinput',
-              :'data-url' => 'internal_documents.json',
-              :'data-param-name' => 'internal_document[file]',
-              :'data-upload-template-id' => '#primary_upload' }
+  / The file upload form used as target for the jQuery fileupload widget
+  / this is the fileupload configuration when uploading files via the buttonbar
+  .fileupload.buttonbar{:'data-file-input' => '#primary_fileinput',
+                        :'data-url' => 'internal_documents.json',
+                        :'data-param-name' => 'internal_document[file]',
+                        :'data-upload-template-id' => '#primary_upload' }
     / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
     .row.fileupload-buttonbar
       .col-lg-9
@@ -58,12 +59,20 @@
 = render :partial => 'template_upload', :locals => {:id => 'archive_upload', :prefix => 'internal_document[archive_files][]', :label_prefix => 'internal_document_archive_files_'}
 = render :partial => 'template_download'
 
+%script{:type => 'template/html', :id => 'doc_table'}
+  = render :partial => 'doc_table', :locals => {:file => 'archive_file'}
+
 %script{:type => 'template/html', :id => :flash_error_template}
   %ul.error
     %li {{ message }}
 
 = javascript_include_tag 'corporate_services/in_page_edit'
 = javascript_include_tag 'corporate_services/popover'
+
+%script{:type => 'ractive/template', :id => :files}
+  {{#files}}
+  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' update_url='{{update_url}}' delete_url='{{delete_url}}' url='{{url}}' save_url='{{save_url}}'/>
+  {{/files}}
 
 :coffeescript
   $ ->
@@ -84,10 +93,10 @@
       $('.message_block').text("")
 
     # download a file
-    $('body').on 'click', '.download', (e)->
-      $target = $(e.target)
-      id = $target.closest('table.document').data('id')
-      window.location = "#{corporate_services_internal_document_path('id')}".replace(/id/,id)
+    #$('body').on 'click', '.download', (e)->
+    #  $target = $(e.target)
+    #  id = $target.closest('table.document').data('id')
+    #  window.location = "#{corporate_services_internal_document_path('id')}".replace(/id/,id)
 
     $('.fileupload-buttonbar .fileinput-button').on 'click', '.fa-plus', (e)->
       $(@).parent().find('input:file').click()
@@ -96,10 +105,12 @@
 
 :javascript
   var maximum_filesize = #{InternalDocument.maximum_filesize}
-  var permitted_filetypes = #{ SiteConfig['corporate_services.internal_documents.filetypes'].to_json }
+  var permitted_filetypes = #{ InternalDocument.permitted_filetypes }
 
 :coffeescript
-  files = #{ render :partial => 'files', :formats => [:json], :locals => {:internal_documents => @internal_documents} }
+  Ractive.DEBUG = false
+
+  files = #{ @internal_documents.to_json }
 
   $ ->
     'use strict'
@@ -110,24 +121,20 @@
       evaluate: /\{\{(.+?)\}\}/g
       escape: /\{\{-(.+?)\}\}/g
     }
-    template = _.template($('#template-download').html())
-    _(files).each (file)->
-      result = template({file: file})
-      $(result)[ 'appendTo' ]($('.files'))
 
+    InpageEdit = this.InpageEdit
 
     fileupload_options =
-        #acceptFileTypes: new RegExp("\\.("+permitted_filetypes.join("|")+")$",'i'),
         permittedFiletypes: permitted_filetypes,
         maxFileSize: parseInt(maximum_filesize),
         # 'replaced means the primary file of a group was bumped into the archive
         # and a new primary file uploaded in its place
-        replaced: (e,data)->
-          data.new_context.find('.fileupload').each ->
-            attach_fileupload_to(@)
-        finished: (e,data)->
-          if data.errorThrown != 'abort'
-            attach_fileupload_to data.context.find('.fileupload')
+        # replaced: (e,data)->
+        #   data.new_context.find('.fileupload').each ->
+        #     attach_fileupload_to(@)
+        # finished: (e,data)->
+        #   if data.errorThrown != 'abort'
+        #     attach_fileupload_to data.context.find('.fileupload')
         failed: (e,data)->
           if data.errorThrown != 'abort'
             alert("The upload failed for some reason")
@@ -140,28 +147,55 @@
         downloadTemplateId: '#template-download'
         uploadTemplateContainerId: '#uploads'
 
-    $('.fileupload').each ->
-      $(@).fileupload fileupload_options
+    FileUpload = (node, url)->
+      $(node).fileupload _.extend(fileupload_options, {url : url})
+      teardown : ->
+        #noop for now
+
+    EditInPlace = (node)->
+      console.log "init EditInPlace decorator for "+$(node).attr('id')
+      new InpageEdit
+        object : @
+        on : '#'+$(node).attr('id')
+        focus_element : 'input.title'
+        success : (response, statusText, jqxhr)->
+           ractive = @.options.object
+           @.show() # before updating b/c we'll lose the handle
+           if ractive.findParent('doc') # an archive file was updated
+             ractive.parent.set(response)
+           else
+             ractive.set(response)
+        error : ->
+          console.log "Changes were not saved, for some reason"
+      teardown : ->
+        #noop for now
+
+    # not sure why I didn't work simply to register this with the Doc component
+    # the decorator was not found after uploading when I did that
+    Ractive.decorators.fileupload = FileUpload
+    Ractive.decorators.inpage_edit = EditInPlace
+
+    ArchiveDoc = Ractive.extend
+      template: '#doc_table' # no compoents here!
+
+    Doc = Ractive.extend
+      template: '#template-download'
+      components :
+        archivedoc : ArchiveDoc
+      download_file : ->
+        window.location = @get('url')
+
+    window.internal_documents = new Ractive
+                            el: '.files'
+                            template: '#files'
+                            data:
+                              files : files
+                              _ : _ # use underscore for sorting
+                            components:
+                              doc : Doc
 
     # /INIT
-
-
-    # after a file is uploaded, attach a fileupload object to the "+" icon
-    # of the newly added file
-    attach_fileupload_to = (element)->
-      $(element).fileupload fileupload_options
-
-
-    new @InpageEdit
-      focus_element : 'input.title'
-      success : (response, textStatus, jqXhr)->
-        id = response.id
-        source = $("table.document[data-id='"+id+"']").closest('.template-download')
-        new_template = _.template($('#template-download').html())
-        source.replaceWith(new_template({file:response}))
-      error : ->
-        console.log "Changes were not saved, for some reason"
-
+    $('.fileupload.buttonbar').fileupload(fileupload_options)
 
     # this is a hack to workaround a jquery-fileupload-ui bug
     # that causes multiple delete requests, due to multiple event

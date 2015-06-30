@@ -7,8 +7,10 @@ attrs = [:id,
 
 json.(internal_document, *attrs)
 json.uploaded_by internal_document.uploaded_by && internal_document.uploaded_by.first_last_name # b/c when this was added, not all docs had user_id
+json.update_url corporate_services_internal_document_path(I18n.locale, internal_document)
+json.save_url corporate_services_internal_document_path(I18n.locale, internal_document)
+json.delete_url corporate_services_internal_document_path(I18n.locale, internal_document)
 json.url corporate_services_internal_document_path(I18n.locale, internal_document)
-json.deleteUrl corporate_services_internal_document_path(I18n.locale, internal_document)
 json.formatted_modification_date internal_document.lastModifiedDate.to_s
 json.formatted_creation_date internal_document.created_at.to_s
 json.formatted_filesize number_to_human_size(internal_document.filesize)

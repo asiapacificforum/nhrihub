@@ -96,6 +96,10 @@ class User < ActiveRecord::Base
   end
   alias_method :to_s, :first_last_name
 
+  def as_json(options={})
+    first_last_name
+  end
+
   def initials
     first_initial + last_initial
   end

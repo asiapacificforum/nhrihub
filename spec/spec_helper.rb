@@ -29,7 +29,7 @@ require 'capybara/poltergeist'
   #Capybara::Poltergeist::Driver.new(app, :inspector => true, :timeout => 300)
 #end
 #comment this line out to use the default javascript server firefox
-Capybara.javascript_driver = :poltergeist
+# Capybara.javascript_driver = :poltergeist
 
 #require 'simplecov'
 #SimpleCov.start

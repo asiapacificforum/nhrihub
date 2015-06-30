@@ -13,14 +13,13 @@ class CorporateServices::InternalDocumentsController < ApplicationController
 
   def destroy
     doc = InternalDocument.find(params[:id])
-    document_group = doc.document_group
+    document_group_id = doc.document_group_id
     doc.destroy
-    @internal_document = document_group.primary
-    if @internal_document
-      render :partial => 'internal_document', :layout => false, :locals => {:internal_document => @internal_document}
+    unless DocumentGroup.exists?(document_group_id)
+      render :nothing => true, :status => 205
     else
-      # document group is now empty
-      render :json => {:deleted_id => params[:id]}
+      internal_document = DocumentGroup.find(document_group_id).primary
+      render :json => internal_document, :status => 200
     end
   end
 
@@ -42,8 +41,6 @@ class CorporateServices::InternalDocumentsController < ApplicationController
     else
       render :nothing => true, :status => 500
     end
-  rescue
-    render :nothing => true, :status => 500
   end
 
   def show

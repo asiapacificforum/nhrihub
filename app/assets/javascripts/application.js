@@ -19,3 +19,5 @@
 //= require bootstrap-sprockets
 //= require jquery-fileupload
 //= require corporate_services
+//= require ractive
+//= require jquery_json_parse_hack

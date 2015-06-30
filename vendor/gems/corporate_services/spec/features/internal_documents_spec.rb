@@ -303,7 +303,8 @@ feature "internal document management", :js => true do
     create_a_document_in_the_same_group(:revision => "1.0") # now there are revs 3,2,1 in the db
     visit corporate_services_internal_documents_path('en')
     expect(page_heading).to eq "Internal Documents"
-    page.find('.template-download .delete').click
+    click_the_archive_icon
+    page.find('.panel-heading .delete').click # that's the primary file
     sleep(0.2) # ajax, javascript
     # the previous highest rev archive file becomes primary:
     expect(page.find('.panel-heading td.revision .no_edit').text).to eq "2.0"

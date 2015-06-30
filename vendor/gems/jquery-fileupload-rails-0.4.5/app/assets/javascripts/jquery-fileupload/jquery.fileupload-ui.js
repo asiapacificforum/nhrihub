@@ -160,58 +160,67 @@
                     current_locale = that.options.current_locale(),
                     getFilesFromResponse = data.getFilesFromResponse ||
                         that.options.getFilesFromResponse,
-                    //files = getFilesFromResponse(data), // the json list returned in ajax response
                     file = data.result, // the json list returned in ajax response
                     template,
                     deferred;
-                if (data.context) { // data.context is the upload template
-                    data.context.each(function (index) {
-                        //var file = files[index] ||
-                                //{error: data.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.emptyResult')};
-                        deferred = that._addFinishedDeferreds();
-                        that._transition($(this)).done(
-                            function () {
-                                var node = $(this);
-                                // if the received id is the same as one of the template-download table.document ids
-                                // an archive file is being uploaded, so replace the original template-download
-                                // otherwise append the new file
-                                var received_group_id = file.document_group_id
-                                var target_el = $(".panel-heading table.document[data-document_group_id='"+received_group_id+"']")
-                                if(target_el.length > 0){ // replace it
-                                  template = that._renderDownload(file)
-                                      .replaceAll(target_el.closest('.template-download'));
-                                }else{ //replace the upload template with the rendered new file
-                                  template = that.options.filesContainer.append(that._renderDownload(file))
-                                }
-                                that._forceReflow(template);
-                                // put the template in the page, and trigger events when the fade transition is complete
-                                that._transition(template).done(
-                                    function () {
-                                        data.context.remove()
-                                        data.context = $(this);
-                                        that._trigger('completed', e, data);
-                                        that._trigger('finished', e, data);
-                                        deferred.resolve();
-                                    }
-                                );
-                            }
-                        );
-                    });
-                } else {
-                    template = that._renderDownload(files)[
-                        that.options.prependFiles ? 'prependTo' : 'appendTo'
-                    ](that.options.filesContainer);
-                    that._forceReflow(template);
-                    deferred = that._addFinishedDeferreds();
-                    that._transition(template).done(
-                        function () {
-                            data.context = $(this);
-                            that._trigger('completed', e, data);
-                            that._trigger('finished', e, data);
-                            deferred.resolve();
-                        }
-                    );
+                var ractive = Ractive.getNodeInfo(this).ractive;
+                if(typeof ractive != "undefined"){ // a file is being added to a document group
+                  ractive.set(file)
+                } else { // a new document group has been created
+                  window.internal_documents.unshift("files", file)
                 }
+                data.context.remove()
+                that._trigger('completed', e, data);
+                that._trigger('finished', e, data);
+
+                // if (data.context) { // data.context is the upload template
+                //     data.context.each(function (index) {
+                //         //var file = files[index] ||
+                //                 //{error: data.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.emptyResult')};
+                //         deferred = that._addFinishedDeferreds();
+                //         that._transition($(this)).done(
+                //             function () {
+                //                 var node = $(this);
+                //                 // if the received id is the same as one of the template-download table.document ids
+                //                 // an archive file is being uploaded, so replace the original template-download
+                //                 // otherwise append the new file
+                //                 var received_group_id = file.document_group_id
+                //                 var target_el = $(".panel-heading table.document[data-document_group_id='"+received_group_id+"']")
+                //                 if(target_el.length > 0){ // replace it
+                //                   template = that._renderDownload(file)
+                //                       .replaceAll(target_el.closest('.template-download'));
+                //                 }else{ //replace the upload template with the rendered new file
+                //                   template = that.options.filesContainer.append(that._renderDownload(file))
+                //                 }
+                //                 that._forceReflow(template);
+                //                 // put the template in the page, and trigger events when the fade transition is complete
+                //                 that._transition(template).done(
+                //                     function () {
+                //                         data.context.remove()
+                //                         data.context = $(this);
+                //                         that._trigger('completed', e, data);
+                //                         that._trigger('finished', e, data);
+                //                         deferred.resolve();
+                //                     }
+                //                 );
+                //             }
+                //         );
+                //     });
+                // } else {
+                //     template = that._renderDownload(files)[
+                //         that.options.prependFiles ? 'prependTo' : 'appendTo'
+                //     ](that.options.filesContainer);
+                //     that._forceReflow(template);
+                //     deferred = that._addFinishedDeferreds();
+                //     that._transition(template).done(
+                //         function () {
+                //             data.context = $(this);
+                //             that._trigger('completed', e, data);
+                //             that._trigger('finished', e, data);
+                //             deferred.resolve();
+                //         }
+                //     );
+                // }
             },
             // Callback for failed (abort or error) uploads:
             fail: function (e, data) {
@@ -374,47 +383,37 @@
                 if (event.isDefaultPrevented()) {
                     return false;
                 }
+                // TODO later this is much cleaner if the primary objects are document groups and
+                // not internal documents with archive arrays
+                var ractive = Ractive.getNodeInfo(event.originalEvent.target).ractive;
+                var delete_url = Ractive.getNodeInfo(event.originalEvent.target).ractive.get('delete_url');
                 var that = $(event.originalEvent.target).closest('.fileupload').data('blueimpFileupload');
-                var item = $(event.originalEvent.target).closest('table.document').data();
-                var data = $.extend(data, that.options, item),
-                    removeNode = function (resp, stat, jqx) {
-                      if((typeof(resp) != 'undefined') && (typeof(resp.deleted_id) != 'undefined')){
-                        // remove the deleted file from the page, response it just {deleted_id : xxx}
-                        that.deleted_id = resp.deleted_id
-                        that._transition(data.context).done(
-                            function () {
-                                // last file in the group so the template is removed
-                                // TODO shouldn't we unbind first?
-                                $("table.document[data-id="+that.deleted_id+"]").closest('.template-download').remove();
-                                that._trigger('destroyed', event, data);
-                            }
-                        );
-                      }else if(typeof(resp) != 'undefined'){
-                        // files remain in the group
-                        // replace the download template
-                        var replacement = that.options.downloadTemplate({file:resp});
-                        var replacement_id = $(replacement).find('.collapse').attr('id');
-                        //TODO I have a feeling that this leaves zombie stuff, need to unbind the
-                        // elements-being-replaced
-                        $(this).closest('.template-download').replaceWith(replacement);
-                        $('#'+replacement_id).collapse('show');
-                        data.new_context = $(replacement).closest('.template-download')
-                        that._trigger('replaced', event, data);
-                      }else{ // there was no ajax request/response b/c there had been an upload fail
-                        // so just remove the template-download
-                        //TODO anything to unbind here?
-                        data.context.remove();
-                      }
-                    };
-                if (data.delete_url) {
-                    data.url = data.delete_url;
-                    data.dataType = data.dataType || that.options.dataType;
-                    $.ajax(data).done(removeNode).fail(function () {
-                        that._trigger('destroyfailed', e, data);
-                    });
-                } else {
-                    removeNode();
-                }
+                var data = $.extend(data, that.options, ractive.get());
+                var removeNode = function (resp, stat, jqx) {
+                      if(jqx.status == 205){ // http 'reset content', delete the document group
+                        var index = this.parent.findAllComponents('doc').indexOf(this);
+                        this.parent.splice('files',index,1);
+                        // TODO need to delegate this to ractive, with a this.remove() method
+                      } else if (jqx.status == 200){
+                        // the whole document group is replaced
+                        // it is returned by the server in resp
+                        if(this.findParent('doc')){ //it's an archive file being deleted
+                          this.parent.set(resp)
+                        } else { // it's a primary file being deleted
+                          this.set(resp)
+                        }
+                      } else {
+                        // fail
+                        console.log("fail")
+                      }};
+
+                  data.url = delete_url;
+                  data.dataType = "json";
+                  data.context = ractive;
+                  // data.statusCode = {205:function(){alert('got 205')}};
+                  $.ajax(data).done(removeNode).fail(function () {
+                      that._trigger('destroyfailed', event, data);
+                  });
             }
         },
 
@@ -510,11 +509,17 @@
             if (!func) {
                 return $();
             }
-            var result = func({
-                file: file,
-                formatFileSize: this._formatFileSize,
-                options: this.options
-            });
+            if ( func instanceof Function ){
+              var result = func({
+                  file: file,
+                  formatFileSize: this._formatFileSize,
+                  options: this.options
+              });
+            } else if (func instanceof Object){ // Ractive preparsed template
+              var ractive = new Ractive({template : func, data : {file : file}}),
+                  result = ractive.toHTML()
+            }
+
             if (result instanceof $) {
                 return result;
             }
@@ -670,12 +675,12 @@
                 options.uploadTemplateContainer = $(options.uploadTemplateContainerId);
             }
 
-            if (_) { // using underscore.js templates
+            if (Ractive) { // using Ractive templates
                 if (options.uploadTemplateId) {
-                    options.uploadTemplate = _.template($(options.uploadTemplateId).html());
+                    options.uploadTemplate = Ractive.parse($(options.uploadTemplateId).html());
                 }
                 if (options.downloadTemplateId) {
-                    options.downloadTemplate = _.template($(options.downloadTemplateId).html());
+                    options.downloadTemplate = Ractive.parse($(options.downloadTemplateId).html());
                 }
             }
         },

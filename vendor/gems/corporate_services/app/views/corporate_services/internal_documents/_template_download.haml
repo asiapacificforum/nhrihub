@@ -3,13 +3,12 @@
     #headingOne.panel-heading{:role => "tab"}
       %strong.error.text-danger {{= file.error }}
       = render :partial => 'doc_table', :locals => {:file => 'file'}
-    .panel-collapse.collapse{:role => "tabpanel", :id => "collapse{{= file.id }}"}
+    .panel-collapse.collapse{:role => "tabpanel", :id => "collapse{{ id }}"}
       .panel-body
         %h4 Archive
-        {{ if ((typeof(file.archive_files)!='undefined' && (file.archive_files.length == 0)) || typeof(file.archive_files)=='undefined') { }}
+        {{^archive_files}}
         %p empty
-        {{ } else { }}
-        {{ for (var j=file.archive_files.length-1, archive_file; archive_file=file.archive_files[j]; j--) { }}
-        = render :partial => 'doc_table', :locals => {:file => 'archive_file'}
-        {{ } }}
-      {{ } }}
+        {{/}}
+        {{#_(archive_files).sortBy(revision).reverse()}}
+        <archivedoc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' update_url='{{update_url}}' delete_url='{{delete_url}}' url='{{url}}' save_url='{{save_url}}'/>
+        {{/}}
