@@ -112,7 +112,7 @@ describe "strategic plan admin", :js => true do
   end
 
   scenario "start date already configured" do
-    SiteConfig['corporate_services.strategic_plans.start_date'] = Date.new(2001,8,19)
+    StrategicPlanStartDate.new(:date => Date.new(2001,8,19)).save
     visit corporate_services_admin_path('en')
     expect(page.find('span#start_date').text).to eq "August 19"
     expect(page).to have_select('strategic_plan_start_date_date_2i', :selected => 'August')
@@ -124,7 +124,7 @@ describe "strategic plan admin", :js => true do
     page.select 'April', :from => 'strategic_plan_start_date_date_2i'
     page.select '1', :from => 'strategic_plan_start_date_date_3i'
     page.find('#change_start_date').click; sleep(0.2)
-    expect( SiteConfig['corporate_services.strategic_plans.start_date'] ).to match(/-04-01$/)
+    expect( SiteConfig['corporate_services.strategic_plans.start_date'] ).to match(/^April 1/)
   end
 end
 

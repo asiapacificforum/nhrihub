@@ -13,7 +13,10 @@ class StrategicPlanStartDate
   end
 
   def initialize(attrs = {})
-    @date = attrs[:date] || SiteConfig['corporate_services.strategic_plans.start_date']
+    raw_date = attrs[:date] || SiteConfig['corporate_services.strategic_plans.start_date']
+    @date = raw_date.is_a?(String) ?
+       Date.parse(raw_date) :
+       raw_date
   end
 
   def self.update_attribute(attr,val)

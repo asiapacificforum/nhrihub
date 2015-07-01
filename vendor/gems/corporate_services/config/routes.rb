@@ -5,6 +5,9 @@ Rails.application.routes.draw do
         resources :filetypes, :param => :type, :only => [:create, :destroy]
         resource :filesize, :only => :update
       end
+      namespace :strategic_plans do
+        resource :start_date, :only => :update
+      end
       resources :internal_documents
       resources :performance_reviews
       resources :strategic_plans do
@@ -12,9 +15,6 @@ Rails.application.routes.draw do
       end
       resources :strategic_priorities do
         resources :planned_results, :to => 'strategic_priorities/planned_results'
-      end
-      namespace :strategic_plans do
-        resource :start_date, :only => :update
       end
       get 'admin', :to => "admin#index"
     end

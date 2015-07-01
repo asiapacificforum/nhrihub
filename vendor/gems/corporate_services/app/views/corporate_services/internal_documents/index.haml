@@ -127,14 +127,6 @@
     fileupload_options =
         permittedFiletypes: permitted_filetypes,
         maxFileSize: parseInt(maximum_filesize),
-        # 'replaced means the primary file of a group was bumped into the archive
-        # and a new primary file uploaded in its place
-        # replaced: (e,data)->
-        #   data.new_context.find('.fileupload').each ->
-        #     attach_fileupload_to(@)
-        # finished: (e,data)->
-        #   if data.errorThrown != 'abort'
-        #     attach_fileupload_to data.context.find('.fileupload')
         failed: (e,data)->
           if data.errorThrown != 'abort'
             alert("The upload failed for some reason")

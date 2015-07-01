@@ -30,7 +30,7 @@ email
 app-specific constants (orgname etc)
 timezone
 All dates and times are entered and displayed in the timezone configured for the application.
-Acceptable file types and maximum file size for uploading internal documents are set in the vendor/gems/corporate_services/config/initializers/internal_documents.rb
+Acceptable file types and maximum file size for uploading internal documents are configurable via the user interface.
 
 ## Database creation and initialization
   Configuring the first user
