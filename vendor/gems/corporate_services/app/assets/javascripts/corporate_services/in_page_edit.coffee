@@ -33,8 +33,12 @@ $ ->
 
     switch_to_show : ->
       @show(@text())
+      @restore_input()
       @hide(@input())
       @restore_parent_height()
+
+    restore_input : ->
+      @input_field().val(@input_field().attr('value'))
 
     set_parent_height : ->
       height = $(@input()).height()
@@ -45,7 +49,10 @@ $ ->
       $(@input()).closest('tr').css('height',height)
 
     set_field_width : ->
-      @input().find('input').css('width',@text_width()+10)
+      @input_field().css('width',@text_width()+10)
+
+    input_field : ->
+      @input().find('input')
 
     input : ->
       $(@el).find('.edit')
@@ -66,20 +73,20 @@ $ ->
     constructor : (options)->
       @options = options
 
-      $("#{@options.on}_edit_start").on 'click', (e)=>
+      $('body').on 'click',"#{@options.on}_edit_start", (e)=>
         e.stopPropagation()
         $target = $(e.target)
         @context = $target.closest('.editable_container')
         @edit()
         @context.find(@options.focus_element).first().focus()
 
-      $("#{@options.on}_edit_cancel").on 'click', (e)=>
+      $('body').on 'click',"#{@options.on}_edit_cancel", (e)=>
         e.stopPropagation()
         $target = $(e.target)
         @context = $target.closest('.editable_container')
         @show()
 
-      $("#{@options.on}_edit_save").on 'click', (e)=>
+      $('body').on 'click',"#{@options.on}_edit_save", (e)=>
        e.stopPropagation()
        url = @options.object.get('update_url')
        data = @context.find(':input').serializeArray()
@@ -91,6 +98,11 @@ $ ->
          success : @options.success
          error : @options.error
          context : @
+
+    off : ->
+      $('body').off 'click',"#{@options.on}_edit_start"
+      $('body').off 'click',"#{@options.on}_edit_cancel"
+      $('body').off 'click',"#{@options.on}_edit_save"
 
     edit : ->
       _(@elements()).each (el,i) ->
