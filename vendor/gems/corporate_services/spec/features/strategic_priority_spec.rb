@@ -114,10 +114,6 @@ def delete_icon
   page.find('i#delete')
 end
 
-def open_accordion_for_strategic_priority_one
-  page.find("[data-editable_attribute='description'] .no_edit", :text => "Gonna do things betta").click
-end
-
 def add_priority_button
   page.find('.add_strategic_priority')
 end
