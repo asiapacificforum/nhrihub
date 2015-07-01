@@ -152,11 +152,10 @@
       teardown : ->
         #noop for now
 
-    EditInPlace = (node)->
-      console.log "init EditInPlace decorator for "+$(node).attr('id')
-      new InpageEdit
+    EditInPlace = (node,id)->
+      edit = new InpageEdit
         object : @
-        on : '#'+$(node).attr('id')
+        on : '#internal_document_editable'+id
         focus_element : 'input.title'
         success : (response, statusText, jqxhr)->
            ractive = @.options.object
@@ -168,7 +167,7 @@
         error : ->
           console.log "Changes were not saved, for some reason"
       teardown : ->
-        #noop for now
+        edit.off()
 
     # not sure why I didn't work simply to register this with the Doc component
     # the decorator was not found after uploading when I did that

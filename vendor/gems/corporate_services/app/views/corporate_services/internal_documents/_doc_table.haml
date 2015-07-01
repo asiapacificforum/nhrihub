@@ -1,4 +1,4 @@
-%table.document.editable_container{:style => "width:800px", :decorator=>'inpage_edit', :id=>"internal_document_editable{{id}}"}( data-formatted_creation_date = "{{ formatted_creation_date }}"
+%table.document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}( data-formatted_creation_date = "{{ formatted_creation_date }}"
                                          data-formatted_filesize = "{{ formatted_filesize }}"
                                          data-id = "{{ id }}"
                                          data-formatted_modification_date = "{{ formatted_modification_date }}"
@@ -15,13 +15,13 @@
     %td.title{:style => "width:36%"}
       %div{:'data-toggle' => 'edit'}
         .fade.edit
-          %input.title{:'data-name' => :title, :name => "internal_document[title]", :'value' => "{{ title }}"}
+          %input.title{:'data-name' => :title, :name => "internal_document[title]", :'value' => "{{ title }}", :twoway=>'false'}
         .fade.no_edit.editable
           %span {{ title }}
     %td.revision{:'data-name' => 'revision', :style => "width:8%"}
       %div{:'data-toggle' => 'edit'}
         .fade.edit
-          %input.revision{:'data-name' => :revision, :name => "internal_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px'}
+          %input.revision{:'data-name' => :revision, :name => "internal_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px', :twoway=>'false'}
         .fade.no_edit.editable
           -# height required to properly position the tag
           %span {{ revision }}

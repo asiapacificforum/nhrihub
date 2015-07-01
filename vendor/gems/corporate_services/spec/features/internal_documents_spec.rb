@@ -111,6 +111,18 @@ feature "internal document management", :js => true do
                and change{ @doc.reload.revision }.to("4.4")
   end
 
+  scenario "start editing, cancel editing, start editing" do
+    click_the_edit_icon(page)
+    page.find('.template-download input.title').set("new document title")
+    page.find('.template-download input.revision').set("4.4")
+    click_edit_cancel_icon(page)
+    expect(page.find('td.title .no_edit').text).to eq "my important document"
+    expect(page.find('td.revision .no_edit').text).to eq "3.0"
+    click_the_edit_icon(page)
+    expect(page.find('td.title .edit input').value).to eq "my important document"
+    expect(page.find('td.revision .edit input').value).to eq "3.0"
+  end
+
   scenario "download a file" do
     unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
       click_the_download_icon
@@ -205,7 +217,6 @@ feature "internal document management", :js => true do
       page.find('.template-download input.revision').set("0.1")
       expect{ click_edit_save_icon(page); sleep(0.5)}.not_to change{InternalDocument.count}
     end
-    click_the_archive_icon
     expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
     expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
     expect(page.find('.template-download .panel-body')).to have_selector('table.document')
@@ -230,7 +241,6 @@ feature "internal document management", :js => true do
       expect(page.find('.revision .no_edit').text).to eq "9.9"
     end
     # make sure the previous primary is in the archive
-    click_the_archive_icon
     within archive_panel do
       expect(page.find('.revision .no_edit').text).to eq "3.0"
     end
@@ -350,6 +360,11 @@ end
 
 def click_edit_save_icon(context)
   context.find('.fa-check').click
+  sleep(0.1)
+end
+
+def click_edit_cancel_icon(context)
+  context.find('.fa-remove').click
   sleep(0.1)
 end
 
