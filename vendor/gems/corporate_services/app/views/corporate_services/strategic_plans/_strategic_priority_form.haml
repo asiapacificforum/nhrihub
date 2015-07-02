@@ -1,5 +1,5 @@
 %script#show_strategic_priority{:type => 'text/ractive'}
-  .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}"}
+  .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}", :decorator => :inpage_edit}
     .panel-heading.strategic_priority_title
       %h4.panel-title.clearfix
         %table{:style=> "width:100%"}
@@ -73,7 +73,7 @@
           %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
           %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
 
-%script#show_or_new_strategic_priority{:type => 'text/ractive'}
+%script#strategic_priority_template{:type => 'text/ractive'}
   {{#if !persisted }}
   {{> new_strategic_priority_template }}
   {{else}}
@@ -85,7 +85,7 @@
   <sp id="{{id}}" description="{{description}}" priority_level="{{priority_level}}" url="{{url}}" planned_results="{{planned_results}}"/>
   {{/strategic_priorities}}
 
-%script#show_or_new_planned_result_template{:type => 'text/ractive'}
+%script#planned_result_template{:type => 'text/ractive'}
   {{#if !persisted }}
   {{> new_planned_result_template }}
   {{else}}
@@ -146,7 +146,7 @@
     InpageEdit = this.InpageEdit
 
     PlannedResult = Ractive.extend
-      template : '#show_or_new_planned_result_template'
+      template : '#planned_result_template'
       computed :
         persisted : ->
           !isNaN(parseInt(@.get('id')))
@@ -210,8 +210,24 @@
       update_pr : (response, statusText, jqxhr)->
         @.parent.set('planned_results',response)
 
+    EditInPlace = (node,id)->
+      edit = new InpageEdit
+        on : '#'+$(node).attr('id')
+        object : @
+        focus_element : 'input.title'
+        success : (response, textStatus, jqXhr)->
+          ractive = @.options.object
+          strategic_plan.set('strategic_priorities',response)
+          @.show()
+        error : ->
+          console.log "Changes were not saved, for some reason"
+      teardown : ->
+        edit.off()
+
+    Ractive.decorators.inpage_edit = EditInPlace
+
     StrategicPriority = Ractive.extend
-      template : '#show_or_new_strategic_priority'
+      template : '#strategic_priority_template'
       components :
         pr : PlannedResult
       computed :
@@ -226,16 +242,6 @@
           window.strategic_plan.get('id')
         persisted : ->
           !isNaN(parseInt(@.get('id')))
-      onrender : ->
-        new InpageEdit
-          on : "#strategic_priority_editable"+@.get('id')
-          object : @
-          focus_element : 'input.title'
-          success : (response, textStatus, jqXhr)->
-            strategic_plan.set('strategic_priorities',response)
-            @.show()
-          error : ->
-            console.log "Changes were not saved, for some reason"
       new_planned_result: ->
         @.push('planned_results', {id : null, description : "", strategic_priority_id : @.get('id')})
       cancel : ->
