@@ -9,7 +9,7 @@ $ ->
     # note using underscore template herr
     # TODO migrate to ractive!
     content : ->
-      data = $(@).data('details')
+      data = Ractive.getNodeInfo(@).ractive.get()
       template = _.template($('#detailsContent').html())
       template(data)
     template : $('#popover_template').html()
