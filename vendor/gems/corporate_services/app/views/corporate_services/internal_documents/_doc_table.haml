@@ -1,13 +1,4 @@
-%table.document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}( data-formatted_creation_date = "{{ formatted_creation_date }}"
-                                         data-formatted_filesize = "{{ formatted_filesize }}"
-                                         data-id = "{{ id }}"
-                                         data-formatted_modification_date = "{{ formatted_modification_date }}"
-                                         data-original_filename = "{{ original_filename }}"
-                                         data-original_type = "{{  original_type }}"
-                                         data-revision = "{{ revision }}"
-                                         data-document_group_id = "{{ document_group_id }}"
-                                         data-uploaded_by = "{{ uploaded_by }}"
-                                         data-url = "{{ url }}" )
+%table.document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
   %tr
     %td.title{:style => "width:36%"}
       %div{:'data-toggle' => 'edit'}
@@ -65,5 +56,5 @@
         #file_replace{:style => 'visibility:hidden'}
           %i.fa.fa-plus.fa-lg
     %td{:style => "text-align:center; width:8%"}
-      %div.icon.delete{:data=> {:url => "{{= #{file}.url }}"}}
+      %div.icon.delete
         %i.fa.fa-trash-o.fa-lg
