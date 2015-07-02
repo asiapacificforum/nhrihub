@@ -6,8 +6,6 @@ $ ->
     html : true,
     title : ->
       $('#detailsTitle').html()
-    # note using underscore template herr
-    # TODO migrate to ractive!
     content : ->
       data = Ractive.getNodeInfo(@).ractive.get()
       template = _.template($('#detailsContent').html())

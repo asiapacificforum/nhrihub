@@ -37,7 +37,8 @@ class CorporateServices::InternalDocumentsController < ApplicationController
       # return the primary, even if we're updating an archive doc
       @internal_document = internal_document.document_group_primary
       # it's a jbuilder partial
-      render :layout => false, :status => 200
+      #render :layout => false, :status => 200
+      render :json => @internal_document, :status => 200
     else
       render :nothing => true, :status => 500
     end

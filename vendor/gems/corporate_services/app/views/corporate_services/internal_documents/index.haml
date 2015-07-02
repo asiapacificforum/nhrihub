@@ -161,10 +161,24 @@
       teardown : ->
         edit.off()
 
-    # not sure why I didn't work simply to register this with the Doc component
-    # the decorator was not found after uploading when I did that
+    DocDeleter = (node)->
+      $(node).on 'click', ->
+        ev = $.Event(event)
+        context = $(event.target).closest('table.document')
+        data = $(event.target).closest('.fileupload').data()
+        $(event.target).
+          closest('.fileupload').
+          fileupload('option','destroy')( ev, $.extend({
+                                                      context: context,
+                                                      type: 'DELETE'
+                                                  }, data))
+      teardown : ->
+        $(node).off 'click'
+
+
     Ractive.decorators.fileupload = FileUpload
     Ractive.decorators.inpage_edit = EditInPlace
+    Ractive.decorators.doc_deleter = DocDeleter
 
     ArchiveDoc = Ractive.extend
       template: '#doc_table' # no compoents here!
@@ -187,20 +201,6 @@
 
     # /INIT
     $('.fileupload.buttonbar').fileupload(fileupload_options)
-
-    # this is a hack to workaround a jquery-fileupload-ui bug
-    # that causes multiple delete requests, due to multiple event
-    # handlers being attached
-    $('.files').on 'click', '.delete', (event)->
-      ev = $.Event(event)
-      context = $(event.target).closest('table.document')
-      data = $(event.target).closest('.fileupload').data()
-      $(this).
-        closest('.fileupload').
-        fileupload('option','destroy')( ev, $.extend({
-                                                    context: context,
-                                                    type: 'DELETE'
-                                                }, data))
 
 
     # same hack as above, but for the cancel icon
