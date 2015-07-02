@@ -203,7 +203,9 @@
     $('.fileupload.buttonbar').fileupload(fileupload_options)
 
 
-    # same hack as above, but for the cancel icon
+    # this is a hack to workaround a jquery-fileupload-ui bug
+    # that causes multiple cancel events, due to multiple event
+    # handlers being attached
     $('#uploads').on 'click', 'i.cancel', (event)->
       event.preventDefault()
       template = $(event.currentTarget).closest('.template-upload,.template-download')
