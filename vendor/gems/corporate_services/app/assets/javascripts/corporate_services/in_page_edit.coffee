@@ -88,7 +88,7 @@ $ ->
 
       $('body').on 'click',"#{@options.on}_edit_save", (e)=>
        e.stopPropagation()
-       url = @options.object.get('update_url')
+       url = @options.object.get('url')
        data = @context.find(':input').serializeArray()
        data[data.length] = {name : '_method', value : 'put'}
        $.ajax

@@ -12,10 +12,10 @@ class StrategicPriority < ActiveRecord::Base
 
   def as_json(options={})
     super(:except => [:created_at, :updated_at],
-          :methods => [:update_url, :planned_results] )
+          :methods => [:url, :planned_results] )
   end
 
-  def update_url
+  def url
     Rails.application.routes.url_helpers.corporate_services_strategic_plan_strategic_priority_path(:en,strategic_plan_id,id)
   end
 

@@ -33,21 +33,11 @@ class InternalDocument < ActiveRecord::Base
     super(:except => [:created_at, :updated_at],
           :methods => [:revision,
                        :uploaded_by,
-                       :update_url,
-                       :delete_url,
                        :url,
                        :formatted_modification_date,
                        :formatted_creation_date,
                        :formatted_filesize,
                        :archive_files] )
-  end
-
-  def update_url
-    Rails.application.routes.url_helpers.corporate_services_internal_document_path(I18n.locale, self)
-  end
-
-  def delete_url
-    Rails.application.routes.url_helpers.corporate_services_internal_document_path(I18n.locale, self)
   end
 
   def url

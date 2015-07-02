@@ -5,7 +5,7 @@ class PlannedResult < ActiveRecord::Base
 
   def as_json(options = {})
     super(:except => [:updated_at, :created_at],
-          :methods => [:update_url, :indexed_description, :description])
+          :methods => [:url, :indexed_description, :description])
   end
 
   def indexed_description
@@ -18,7 +18,7 @@ class PlannedResult < ActiveRecord::Base
     [first_digit, second_digit].join('.')
   end
 
-  def update_url
+  def url
     Rails.application.routes.url_helpers.corporate_services_strategic_priority_planned_result_path(:en, strategic_priority_id, id)
   end
 

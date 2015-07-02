@@ -386,7 +386,7 @@
                 // TODO later this is much cleaner if the primary objects are document groups and
                 // not internal documents with archive arrays
                 var ractive = Ractive.getNodeInfo(event.originalEvent.target).ractive;
-                var delete_url = Ractive.getNodeInfo(event.originalEvent.target).ractive.get('delete_url');
+                var delete_url = ractive.get('url');
                 var that = $(event.originalEvent.target).closest('.fileupload').data('blueimpFileupload');
                 var data = $.extend(data, that.options, ractive.get());
                 var removeNode = function (resp, stat, jqx) {

@@ -1,5 +1,5 @@
 %script#show_strategic_priority{:type => 'text/ractive'}
-  .panel.panel-default.strategic_priority.editable_container{"data-update_url" => "{{ update_url }}", :id => "strategic_priority_editable{{id}}"}
+  .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}"}
     .panel-heading.strategic_priority_title
       %h4.panel-title.clearfix
         %table{:style=> "width:100%"}
@@ -82,7 +82,7 @@
 
 %script#strategic_plan_template{:type => 'text/ractive'}
   {{#strategic_priorities }}
-  <sp id="{{id}}" description="{{description}}" priority_level="{{priority_level}}" update_url="{{update_url}}" planned_results="{{planned_results}}"/>
+  <sp id="{{id}}" description="{{description}}" priority_level="{{priority_level}}" url="{{url}}" planned_results="{{planned_results}}"/>
   {{/strategic_priorities}}
 
 %script#show_or_new_planned_result_template{:type => 'text/ractive'}
@@ -201,7 +201,7 @@
         id = $(event.target).closest('.description').data('id')
         data = [{name:'id', value:id}, {name:'_method', value: 'delete'}]
         $.ajax
-          url : @.get('update_url')
+          url : @.get('url')
           data : data
           method : 'post'
           dataType : 'json'
@@ -252,7 +252,7 @@
       delete : ->
         data = {'_method' : 'delete'}
         # TODO if confirm
-        $.post(@.get('update_url'), data, @.update_sp, 'json')
+        $.post(@.get('url'), data, @.update_sp, 'json')
       validate : (data) ->
         pl = @._validate(data,'priority_level')
         desc = @._validate(data,'description')
