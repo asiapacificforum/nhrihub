@@ -8,7 +8,7 @@ class CorporateServices::InternalDocumentsController < ApplicationController
     params["internal_document"]["original_filename"] = params[:internal_document][:file].original_filename
     params["internal_document"]["user_id"] = current_user.id
     @internal_document = InternalDocument.create(doc_params)
-    render :layout => false # see jbuilder template in views
+    render :json => @internal_document
   end
 
   def destroy
