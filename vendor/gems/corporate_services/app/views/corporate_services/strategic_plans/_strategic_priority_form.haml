@@ -114,7 +114,7 @@
     %td
 
 %script#new_planned_result_template{:type => 'text/ractive'}
-  %tr.new_planned_result{'data-create_url' => corporate_services_strategic_priority_planned_results_path('spid').gsub(/spid/,"{{spid}}")}
+  %tr.new_planned_result
     %td
       #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
       %div=text_area :planned_result, :description, 'on-keydown' => "remove_description_errors()",
@@ -165,11 +165,12 @@
             error : ->
               console.log "Changes were not saved, for some reason"
       create_save : ->
-        context = $(@.viewmodel.ractive.el)
-        url = context.find('.new_planned_result').data('create_url')
-        data = context.find(':input').serializeArray()
-        strategic_priority_id = @.parent.get('id')
-        data[data.length] = {name : 'planned_result[strategic_priority_id]', value : strategic_priority_id}
+        context = $(@el)
+        # url = context.find('.new_planned_result').data('create_url')
+        # url = @get('create_url')
+        url = @parent.get('create_planned_result_url')
+        data = context.find('.new_planned_result :input').serializeArray()
+        data.push({name: 'planned_result[strategic_priority_id]', value : this.get('strategic_priority_id')})
         if @.validate(data)
           $.ajax
             type : 'post'

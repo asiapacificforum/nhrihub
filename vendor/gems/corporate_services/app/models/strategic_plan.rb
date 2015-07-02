@@ -13,7 +13,7 @@ class StrategicPlan < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super(:except => [:updated_at, :created_at], :methods => :strategic_priorities) 
+    super(:except => [:updated_at, :created_at], :methods => :strategic_priorities)
   end
 
   def current?
