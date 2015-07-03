@@ -166,8 +166,6 @@
               console.log "Changes were not saved, for some reason"
       create_save : ->
         context = $(@el)
-        # url = context.find('.new_planned_result').data('create_url')
-        # url = @get('create_url')
         url = @parent.get('create_planned_result_url')
         data = context.find('.new_planned_result :input').serializeArray()
         data.push({name: 'planned_result[strategic_priority_id]', value : this.get('strategic_priority_id')})
@@ -218,6 +216,8 @@
         focus_element : 'input.title'
         success : (response, textStatus, jqXhr)->
           ractive = @.options.object
+          # the whole dataset is replaced... Ractive figures out
+          # what has changed and what to re-render
           strategic_plan.set('strategic_priorities',response)
           @.show()
         error : ->
