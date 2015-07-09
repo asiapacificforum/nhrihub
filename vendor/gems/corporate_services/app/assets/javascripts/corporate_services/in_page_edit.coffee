@@ -99,6 +99,10 @@ $ ->
          error : @options.error
          context : @
 
+    @register = (ip)->
+      @active.show() unless _.isUndefined @active
+      @active = ip
+
     off : ->
       $('body').off 'click',"#{@options.on}_edit_start"
       $('body').off 'click',"#{@options.on}_edit_cancel"
@@ -107,6 +111,7 @@ $ ->
     edit : ->
       _(@elements()).each (el,i) ->
         el.switch_to_edit()
+      InpageEdit.register(@)
 
     show : ->
       _(@elements()).each (el,i) ->
