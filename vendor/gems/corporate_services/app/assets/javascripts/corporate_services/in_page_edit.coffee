@@ -3,7 +3,7 @@
 ##############
 #  example usage
 #    new @InpageEdit
-#      on : 'div#some_id'
+#      on : node
 #      focus_element : 'input.title'
 #      success : (response, textStatus, jqXhr)->
 #        id = response.id
@@ -14,7 +14,7 @@
 #        console.log "Changes were not saved, for some reason"
 #
 #  options:
-#    on: the root element of the editable content
+#    on: the root element of the editable content, a jquery node reference NOT the id, but the actual jquery object
 #    focus_element : selector of element on which to apply focus when switching to edit mode
 #    success : callback when save was successful
 #    error : callback when save failed
@@ -64,44 +64,68 @@ $ ->
       @text().find(':first-child').width()
 
     show : (element)->
-      element.css("opacity",1).css("z-index",10)
+      element.css("opacity",1).css("z-index",10).addClass('in')
 
     hide : (element)->
-      element.css("opacity",0).css("z-index",9)
+      element.css("opacity",0).css("z-index",9).removeClass('in')
 
   class @InpageEdit
     constructor : (options)->
       @options = options
 
-      $('body').on 'click',"#{@options.on}_edit_start", (e)=>
+      @root =
+        if $(@options.on).hasClass('editable_container')
+          $(@options.on)
+        else
+          $(@options.on).find('.editable_container')
+
+      # $('body').on 'click',"#{@options.on}_edit_start", (e)=>
+      #   e.stopPropagation()
+      #   $target = $(e.target)
+      #   @context = $target.closest('.editable_container')
+      #   @edit()
+      #   @context.find(@options.focus_element).first().focus()
+      # @options = options
+
+      $(@options.on).find("[id$='_edit_start']").on 'click', (e)=>
+      # $('body').on 'click',"#{@options.on}_edit_start", (e)=>
         e.stopPropagation()
         $target = $(e.target)
-        @context = $target.closest('.editable_container')
-        @edit()
-        @context.find(@options.focus_element).first().focus()
+        if $target.closest('.editable_container').get(0) == @root.get(0)
+          @context = $target.closest('.editable_container')
+          @edit()
+          @context.find(@options.focus_element).first().focus()
 
-      $('body').on 'click',"#{@options.on}_edit_cancel", (e)=>
+      $(@options.on).find("[id$='_edit_cancel']").on 'click', (e)=>
+      # $('body').on 'click',"#{@options.on}_edit_cancel", (e)=>
         e.stopPropagation()
         $target = $(e.target)
-        @context = $target.closest('.editable_container')
-        @show()
+        if $target.closest('.editable_container').get(0) == @root.get(0)
+          @context = $target.closest('.editable_container')
+          @show()
 
-      $('body').on 'click',"#{@options.on}_edit_save", (e)=>
-       e.stopPropagation()
-       url = @options.object.get('url')
-       data = @context.find(':input').serializeArray()
-       data[data.length] = {name : '_method', value : 'put'}
-       $.ajax
-         url: url
-         method : 'post'
-         data : data
-         success : @options.success
-         error : @options.error
-         context : @
+      $(@options.on).find("[id$='_edit_save']").on 'click', (e)=>
+      # $('body').on 'click',"#{@options.on}_edit_save", (e)=>
+        e.stopPropagation()
+        $target = $(e.target)
+        if $target.closest('.editable_container').get(0) == @root.get(0)
+          url = @options.object.get('url')
+          data = @context.find(':input').serializeArray()
+          data[data.length] = {name : '_method', value : 'put'}
+          $.ajax
+            url: url
+            method : 'post'
+            data : data
+            success : @options.success
+            error : @options.error
+            context : @
 
     @register = (ip)->
-      @active.show() unless _.isUndefined @active
-      @active = ip
+      if _.isUndefined @active
+        @active = ip
+      else if @active.options.on != ip.options.on
+        @active.show()
+        @active = ip
 
     off : ->
       $('body').off 'click',"#{@options.on}_edit_start"
@@ -121,12 +145,8 @@ $ ->
     # nested in-page edits must be excluded from elements
     elements : ->
       all_elements = @context.find("[data-toggle='edit']")
-      if $(@options.on).hasClass('editable_container')
-        root = $(@options.on)
-      else
-        root = $(@options.on).find('.editable_container')
-      elements = _(all_elements).filter (el)->
-                        $(el).closest('.editable_container').get(0) == root.get(0)
+      elements = _(all_elements).filter (el)=>
+                        $(el).closest('.editable_container').get(0) == @root.get(0)
       elements.map (el,i)->
         new document.InpageEditElement(el)
 
