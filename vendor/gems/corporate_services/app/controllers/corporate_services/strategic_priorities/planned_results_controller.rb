@@ -20,7 +20,7 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
   def update
     planned_result = PlannedResult.find(params[:id])
     if planned_result.update_attributes(planned_result_params)
-      render :json => planned_result, :status => 200
+      render :json => planned_result.strategic_priority.strategic_plan.strategic_priorities, :status => 200
     else
       render :nothing => true, :status => 500
     end

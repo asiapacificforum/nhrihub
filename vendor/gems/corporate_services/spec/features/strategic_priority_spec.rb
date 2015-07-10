@@ -75,7 +75,7 @@ feature "strategic plan multiple strategic priorities", :js => true do
   end
 end
 
-feature "modifying strategic priorities", :js => true do
+feature "editing strategic priorities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   before do
     @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
@@ -96,9 +96,39 @@ feature "modifying strategic priorities", :js => true do
     expect(page).to have_selector("[data-editable_attribute='description'] .no_edit", :text => "edited description")
   end
 
-  scenario "delete a strategic priority" do
-    expect{ delete_icon.click; sleep(0.2) }.to change{StrategicPriority.count}.from(1).to(0)
-    expect(page).not_to have_selector('.strategic_priority')
+end
+
+feature "deleting strategic priorities", :js => true do
+  feature "decrements count in database and view" do
+    include LoggedInEnAdminUserHelper # sets up logged in admin user
+    before do
+      @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+      StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
+      visit corporate_services_strategic_plan_path(:en, "current")
+    end
+
+    scenario "delete a strategic priority" do
+      expect{ delete_icon.click; sleep(0.2) }.to change{StrategicPriority.count}.from(1).to(0)
+      expect(page).not_to have_selector('.strategic_priority')
+    end
+  end
+
+  feature "remaining strategic priorities retain edit feature" do
+    include LoggedInEnAdminUserHelper # sets up logged in admin user
+    before do
+      @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+      StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
+      StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 2, :description => "Gonna do things betta")
+      StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 3, :description => "Gonna do things betta")
+      visit corporate_services_strategic_plan_path(:en, "current")
+    end
+
+    scenario "delete a strategic priority" do
+      expect{ second_delete_icon.click; sleep(0.2) }.to change{StrategicPriority.count}.from(3).to(2)
+      expect(page).to have_selector('.strategic_priority', :count => 2)
+      second_edit_icon.click
+      expect(page).to have_selector('div.edit.in input#strategic_priority_description')
+    end
   end
 end
 
@@ -106,8 +136,16 @@ def edit_save_icon
   page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_save']")
 end
 
+def second_edit_icon
+  page.all(:xpath, ".//i").select{|el| el['id']=~/strategic_priority_editable\d+_edit_start/}[1]
+end
+
 def edit_icon
   page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_start']")
+end
+
+def second_delete_icon
+  page.all('i#delete')[1]
 end
 
 def delete_icon

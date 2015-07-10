@@ -147,7 +147,7 @@
     EditInPlace = (node,id)->
       edit = new InpageEdit
         object : @
-        on : '#internal_document_editable'+id
+        on : node
         focus_element : 'input.title'
         success : (response, statusText, jqxhr)->
            ractive = @.options.object

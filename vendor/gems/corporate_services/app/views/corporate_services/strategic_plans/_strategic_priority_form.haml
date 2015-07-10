@@ -1,5 +1,5 @@
 %script#show_strategic_priority{:type => 'text/ractive'}
-  .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}", :decorator => :inpage_edit}
+  .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
     .panel-heading.strategic_priority_title
       %h4.panel-title.clearfix
         %table{:style=> "width:100%"}
@@ -93,7 +93,7 @@
   {{/if}}
 
 %script#show_planned_result_template{:type => 'text/ractive'}
-  %tr.planned_result.editable_container{:id => "planned_result_editable{{id}}"}
+  %tr.planned_result.editable_container{:id => "planned_result_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
     %td.description{ 'data-toggle' => 'edit', 'data-id' => '{{id}}'}
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
@@ -153,17 +153,6 @@
       oninit : ->
         if !@.get('persisted')
           @.parent.hide_add_planned_result()
-      onrender : ->
-        if @.get('persisted')
-          @inpage_edit = new InpageEdit
-            object : @
-            on : '#planned_result_editable'+@.get('id')
-            focus_element : 'input.planned_result_description'
-            success : (response, statusText, jqxhr)->
-                @.options.object.set(response)
-                @.show()
-            error : ->
-              console.log "Changes were not saved, for some reason"
       create_save : ->
         context = $(@el)
         url = @parent.get('create_planned_result_url')
@@ -194,7 +183,6 @@
       create_pr : (response, statusText, jqxhr)->
         @.parent.set('planned_results',response)
         @.parent.show_add_planned_result()
-        @.onrender() # so edit-in-place is immediately available
       delete_this : ->
         event.stopPropagation()
         id = $(event.target).closest('.description').data('id')
@@ -210,8 +198,9 @@
         @.parent.set('planned_results',response)
 
     EditInPlace = (node,id)->
-      edit = new InpageEdit
-        on : '#'+$(node).attr('id')
+      ractive = @
+      @edit = new InpageEdit
+        on : node
         object : @
         focus_element : 'input.title'
         success : (response, textStatus, jqXhr)->
@@ -222,8 +211,28 @@
           @.show()
         error : ->
           console.log "Changes were not saved, for some reason"
-      teardown : ->
-        edit.off()
+      return {
+        teardown : (id)->
+          # ractive.edit.off()
+        update : (id)->
+          if _.isUndefined(id)
+            # ractive.edit.off()
+          else
+            # item was added
+            # enable EditInPlace for the node
+            @edit = new InpageEdit
+              on : node
+              object : @
+              focus_element : 'input.title'
+              success : (response, textStatus, jqXhr)->
+                ractive = @.options.object
+                # the whole dataset is replaced... Ractive figures out
+                # what has changed and what to re-render
+                strategic_plan.set('strategic_priorities',response)
+                @.show()
+              error : ->
+                console.log "Changes were not saved, for some reason"
+            }
 
     Ractive.decorators.inpage_edit = EditInPlace
 
