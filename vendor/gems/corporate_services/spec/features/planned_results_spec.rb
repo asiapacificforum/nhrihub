@@ -2,6 +2,24 @@ require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
 
+feature "show existing planned result", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+
+  before do
+    sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    StrategicPriority.create(:strategic_plan_id => sp1.id, :priority_level => 1, :description => "Gonna do things betta")
+    pr = PlannedResult.create(:strategic_priority_id => sp1.id, :description => "Something profound")
+    Outcome.create(:description => "smarter thinking", :planned_result_id => pr.id)
+    Outcome.create(:description => "pervasive niftiness", :planned_result_id => pr.id)
+    visit corporate_services_strategic_plan_path(:en, "current")
+    open_accordion_for_strategic_priority_one
+  end
+
+  it "should render the first outcome inline and the second outcome after the planned result" do
+    expect(page).to have_selector("table#planned_results tr.planned_result td:nth-of-type(2)", :text => "1.1.1 smarter thinking")
+    expect(page).to have_selector("table#planned_results tr.outcome td.description", :text => "1.1.2 pervasive niftiness")
+  end
+end
 
 feature "populate strategic plan contents", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
@@ -14,12 +32,14 @@ feature "populate strategic plan contents", :js => true do
     add_planned_result.click
   end
 
-
   scenario "add planned results item" do
     expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => "Achieve nirvana"
-    expect{save_planned_result.click; sleep(0.2)}.to change{PlannedResult.count}.from(0).to(1)
-    expect(page).to have_selector("table#planned_results tr.planned_result td:first-of-type", :text => "1.1 Achieve nirvana")
+    fill_in "planned_result_outcomes__description", :with => "Total enlightenment"
+    expect{save_planned_result.click; sleep(0.2)}.to change{PlannedResult.count}.from(0).to(1).
+                                                       and change{Outcome.count}.from(0).to(1)
+    expect(page).to have_selector("table#planned_results tr.planned_result td.description", :text => "1.1 Achieve nirvana")
+    expect(page).to have_selector("table#planned_results tr.planned_result td.outcome", :text => "1.1.1 Total enlightenment")
   end
 
   scenario "add multiple planned results" do
@@ -32,6 +52,13 @@ feature "populate strategic plan contents", :js => true do
 
   scenario "try to save planned result with blank description field" do
     expect(page).not_to have_selector("i.new_planned_result")
+    expect{save_planned_result.click; sleep(0.2)}.not_to change{PlannedResult.count}
+    expect(page).to have_selector("#description_error", :text => "You must enter a description")
+  end
+
+  scenario "try to save planned result with whitespace-only description field" do
+    expect(page).not_to have_selector("i.new_planned_result")
+    fill_in 'planned_result_description', :with => " "
     expect{save_planned_result.click; sleep(0.2)}.not_to change{PlannedResult.count}
     expect(page).to have_selector("#description_error", :text => "You must enter a description")
   end
@@ -58,8 +85,11 @@ feature "actions on existing planned results", :js => true do
   scenario "edit a planned result item" do
     page.find("tr.planned_result td.description span").click
     fill_in('planned_result_description', :with => "new description")
-    expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ PlannedResult.first.description }.to "new description"
-    expect(page.find(".planned_result.editable_container .no_edit span:first-of-type").text ).to eq "1.1 new description"
+    fill_in "planned_result_outcomes__description", :with => "Total enlightenment"
+    expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ PlannedResult.first.description }.to("new description")
+    expect( Outcome.first.description ).to eq "Total enlightenment"
+    expect(page.find(".planned_result.editable_container td.description .no_edit span:first-of-type").text ).to eq "1.1 new description"
+    expect(page.find(".planned_result.editable_container td.outcome .no_edit span:first-of-type").text ).to eq "1.1.1 Total enlightenment"
   end
 end
 

@@ -28,7 +28,7 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
 
   private
   def planned_result_params
-    params.require(:planned_result).permit(:description, :strategic_priority_id)
+    params.require(:planned_result).permit(:description, :strategic_priority_id, :outcomes_attributes => [:description, :id])
   end
 
 end

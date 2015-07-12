@@ -88,7 +88,6 @@ $ ->
       # @options = options
 
       $(@options.on).find("[id$='_edit_start']").on 'click', (e)=>
-      # $('body').on 'click',"#{@options.on}_edit_start", (e)=>
         e.stopPropagation()
         $target = $(e.target)
         if $target.closest('.editable_container').get(0) == @root.get(0)
@@ -97,7 +96,6 @@ $ ->
           @context.find(@options.focus_element).first().focus()
 
       $(@options.on).find("[id$='_edit_cancel']").on 'click', (e)=>
-      # $('body').on 'click',"#{@options.on}_edit_cancel", (e)=>
         e.stopPropagation()
         $target = $(e.target)
         if $target.closest('.editable_container').get(0) == @root.get(0)
@@ -105,7 +103,6 @@ $ ->
           @show()
 
       $(@options.on).find("[id$='_edit_save']").on 'click', (e)=>
-      # $('body').on 'click',"#{@options.on}_edit_save", (e)=>
         e.stopPropagation()
         $target = $(e.target)
         if $target.closest('.editable_container').get(0) == @root.get(0)

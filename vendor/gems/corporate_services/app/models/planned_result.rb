@@ -1,11 +1,22 @@
 class PlannedResult < ActiveRecord::Base
   belongs_to :strategic_priority
+  has_many :outcomes, :dependent => :destroy, :autosave => true
+  accepts_nested_attributes_for :outcomes
 
   default_scope ->{ order(:id) }
 
+  # strip index if user has entered it
+  before_save do
+    self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
+  end
+
   def as_json(options = {})
     super(:except => [:updated_at, :created_at],
-          :methods => [:url, :indexed_description, :description])
+          :methods => [:url, :indexed_description, :description, :outcomes, :create_outcome_url])
+  end
+
+  def create_outcome_url
+    Rails.application.routes.url_helpers.corporate_services_planned_result_outcomes_path(:en,id)
   end
 
   def indexed_description

@@ -16,6 +16,9 @@ Rails.application.routes.draw do
       resources :strategic_priorities do
         resources :planned_results, :to => 'strategic_priorities/planned_results'
       end
+      resources :planned_results do
+        resources :outcomes, :to => 'planned_results/outcomes'
+      end
       get 'admin', :to => "admin#index"
     end
   end

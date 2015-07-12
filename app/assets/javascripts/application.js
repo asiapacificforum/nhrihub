@@ -20,4 +20,5 @@
 //= require jquery-fileupload
 //= require corporate_services
 //= require ractive
+// TODO this hack (below) is not required, it's b/c I made a mistake, see my jquery pullrequest
 //= require jquery_json_parse_hack

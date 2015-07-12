@@ -38,4 +38,16 @@ describe "#indexed_description" do
       expect( @planned_result.indexed_description ).to eq "2.2 second planned result"
     end
   end
+
+  context "when an index is mistakenly included in the description by the user" do
+    before do
+      stp = StrategicPlan.create(:start_date => 6.months.ago.to_date )
+      sp = StrategicPriority.create(:description => 'second strategic priority', :priority_level => 2, :strategic_plan_id => stp.id)
+      PlannedResult.create(:strategic_priority_id => sp.id, :description => "1.2  first planned result")
+    end
+
+    it "should strip the user-entered index" do
+      expect(PlannedResult.first.description).to eq "first planned result"
+    end
+  end
 end

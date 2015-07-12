@@ -1,6 +1,6 @@
 class StrategicPriority < ActiveRecord::Base
   belongs_to :strategic_plan
-  has_many :planned_results
+  has_many :planned_results, :dependent => :destroy, :autosave => true
 
   default_scope { order(:priority_level) }
 
