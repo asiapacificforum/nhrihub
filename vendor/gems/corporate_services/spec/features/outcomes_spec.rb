@@ -87,13 +87,13 @@ feature "actions on existing outcomes", :js => true do
   end
 
   scenario "delete the first of multiple outcomes" do
-    page.find("tr.planned_result td.outcome").hover
+    page.find("tr.planned_result td.outcome div").hover
     expect{ page.find("tr.planned_result td.outcome span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
     expect(page.find("tr.planned_result td.outcome").text).to eq "1.1.1 cosmic harmony"
   end
 
   scenario "delete one of multiple outcomes, not the first" do
-    page.find("tr.outcome td.description").hover
+    page.find("tr.outcome td.description div").hover
     expect{ page.find("tr.outcome td.description span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
     expect(page.find("tr.planned_result td.outcome").text).to eq "1.1.1 whirled peas"
     expect(page).not_to have_selector "tr.outcome"
