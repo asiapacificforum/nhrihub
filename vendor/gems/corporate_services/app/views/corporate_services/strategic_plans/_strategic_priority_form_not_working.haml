@@ -349,7 +349,10 @@
       update_all_pr : (response, statusText, jqxhr)->
         @parent.set('planned_results',response)
       new_outcome : ->
+        console.log "# outcomes: "+@get("outcomes").length
         @push('outcomes',{description : '', indexed_description: '', id : null, planned_result_id : @get('id')})
+        console.log "# outcomes: "+@get("outcomes").length
+        console.log "persisted? "+@get("outcomes")[0].persisted
         @hide_add_outcome()
       new_activity : ->
         console.log "new activity"
@@ -490,5 +493,4 @@
         # of if the most recent is persisted
         if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
           strategic_plan.unshift('strategic_priorities', {id:null, description: '', priority_level:null} )
-
 
