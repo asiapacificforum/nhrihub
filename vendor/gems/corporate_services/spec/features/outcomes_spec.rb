@@ -13,10 +13,11 @@ feature "populate plannned result outcomes", :js => true do
       pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
       visit corporate_services_strategic_plan_path(:en, "current")
       open_accordion_for_strategic_priority_one
-      add_outcome.click
     end
 
     scenario "add single outcome item" do
+      expect(page).not_to have_selector("i.new_activity")
+      add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(0).to(1)
@@ -24,12 +25,14 @@ feature "populate plannned result outcomes", :js => true do
     end
 
     scenario "try to save outcome with blank description field" do
+      add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       expect{save_outcome.click; sleep(0.2)}.not_to change{Outcome.count}
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
     scenario "try to save outcome with whitespace description field" do
+      add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => " "
       expect{save_outcome.click; sleep(0.2)}.not_to change{Outcome.count}
@@ -37,6 +40,7 @@ feature "populate plannned result outcomes", :js => true do
     end
 
     scenario "add multiple outcome items" do
+      add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(0).to(1)
