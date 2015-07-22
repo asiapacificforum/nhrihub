@@ -70,6 +70,17 @@ feature "populate plannned result outcomes", :js => true do
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
       expect(page).to have_selector("table#planned_results tr.outcome td:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
+      # now can we delete it?
+      page.find("tr.outcome td.description div.no_edit").hover
+      expect{ page.find("tr.outcome td.description span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
+      expect(page.find("tr.planned_result td.outcome").text).to eq "1.1.1 Smarter thinking"
+      expect(page).not_to have_selector "tr.outcome"
+      # now check that we can still add an outcome
+      add_outcome.click
+      expect(page).not_to have_selector("i.new_outcome")
+      fill_in 'new_outcome_description', :with => "Achieve nirvana"
+      expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
+      expect(page).to have_selector("table#planned_results tr.outcome td:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
     end
   end
 
@@ -97,10 +108,16 @@ feature "actions on existing outcomes", :js => true do
   end
 
   scenario "delete one of multiple outcomes, not the first" do
-    page.find("tr.outcome td.description div").hover
+    page.find("tr.outcome td.description div.no_edit").hover
     expect{ page.find("tr.outcome td.description span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
     expect(page.find("tr.planned_result td.outcome").text).to eq "1.1.1 whirled peas"
     expect(page).not_to have_selector "tr.outcome"
+    # now check that we can still add an outcome
+    add_outcome.click
+    expect(page).not_to have_selector("i.new_outcome")
+    fill_in 'new_outcome_description', :with => "Achieve nirvana"
+    expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
+    expect(page).to have_selector("table#planned_results tr.outcome td:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
   end
 
   scenario "edit the first of multiple outcomes" do

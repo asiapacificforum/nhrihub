@@ -43,7 +43,7 @@
             %td{:style => "width:16.6666667%"}= t('.reminders')
             %td{:style => "width:16.6666667%"}= t('.progress')
           {{#planned_results}}
-          <pr description="{{description}}" strategic_priority_id="{{strategic_priority_id}}" indexed_description="{{indexed_description}}" id="{{id}}" outcomes="{{outcomes}}" url="{{url}}"/>
+          <pr description="{{description}}" indexed_description="{{indexed_description}}" id="{{id}}" outcomes="{{outcomes}}"/>
           {{/planned_results}}
           %tr
             %td
@@ -98,7 +98,7 @@
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this()'}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event)'}
           %i.fa.fa-lg.fa-trash-o
       .fade.edit
         // using the rails form helper foils the ractivjs 2-way binding, which needs a 'value' attribute!
@@ -110,21 +110,21 @@
     %td.outcome{'data-toggle' => 'edit'}
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
-          {{ indexed_description }}
+          {{ outcomes[0].indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_first_outcome()'}
           %i.fa.fa-lg.fa-trash-o
       .fade.edit
-        %textarea{ :id=>'planned_result_outcomes_{{id}}_description', :placeholder => "Enter description",
+        %textarea{ :id=>'planned_result_outcomes_{{outcomes[0].id}}_description', :placeholder => "Enter description",
             'data-name' => :description, :name => "planned_result[outcomes_attributes][][description]",
-            :value => "{{ description }}"}
-        %input{:type => :hidden, :name => "planned_result[outcomes_attributes][][id]", :value => "{{id}}"}
+            :value => "{{ outcomes[0].description }}"}
+        %input{:type => :hidden, :name => "planned_result[outcomes_attributes][][id]", :value => "{{outcomes[0].id}}"}
     %td
     %td
     %td
     %td
   {{#outcomes:i}}
   {{#if i>0}}
-  <o id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
+  <outcome id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
   {{/if}}
   %tr
     %td
@@ -204,7 +204,7 @@
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "outcome_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this()'}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
           %i.fa.fa-lg.fa-trash-o
       .fade.edit
         %textarea{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
@@ -265,8 +265,9 @@
         @parent.show_add_outcome()
       remove_description_errors : ->
         @set("description_error","")
-      delete_this : ->
-        event.stopPropagation()
+      delete_this : (event,object)->
+        ev = $.Event(event)
+        ev.stopPropagation()
         data = [{name:'_method', value: 'delete'}]
         $.ajax
           url : @get('url')
@@ -284,7 +285,7 @@
         persisted : ->
           !isNaN(parseInt(@get('id')))
       components :
-        o : Outcome
+        outcome : Outcome
       oninit : ->
         if !@get('persisted')
           @parent.hide_add_planned_result()
@@ -325,8 +326,9 @@
       create_pr : (response, statusText, jqxhr)->
         @parent.set('planned_results',response)
         @parent.show_add_planned_result()
-      delete_this : ->
-        event.stopPropagation()
+      delete_this : (event)->
+        ev = $.Event(event)
+        ev.stopPropagation()
         data = [{name:'id', value:@get('id')}, {name:'_method', value: 'delete'}]
         $.ajax
           url : @get('url')
@@ -349,7 +351,7 @@
       update_all_pr : (response, statusText, jqxhr)->
         @parent.set('planned_results',response)
       new_outcome : ->
-        @push('outcomes',{description : '', indexed_description: '', id : null, planned_result_id : @get('id')})
+        @push('outcomes',{description : '', indexed_description: '', id : null, planned_result_id : @get('id'), url:null})
         @hide_add_outcome()
       new_activity : ->
         console.log "new activity"
