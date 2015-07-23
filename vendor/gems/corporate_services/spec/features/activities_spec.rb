@@ -17,27 +17,27 @@ feature "populate plannned result activities", :js => true do
       add_activity.click
     end
 
-    scenario "add single activity item" do
+    xscenario "add single activity item" do
       expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "think really hard"
       expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(0).to(1)
       expect(page).to have_selector("table#planned_results tr.planned_result td:nth-of-type(3)", :text => "1.1.1.1 think really hard")
     end
 
-    scenario "try to save activity with blank description field" do
+    xscenario "try to save activity with blank description field" do
       expect(page).not_to have_selector("i.new_activity")
       expect{save_activity.click; sleep(0.2)}.not_to change{activity.count}
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
-    scenario "try to save activity with whitespace description field" do
+    xscenario "try to save activity with whitespace description field" do
       expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => " "
       expect{save_activity.click; sleep(0.2)}.not_to change{activity.count}
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
-    scenario "add multiple activity items" do
+    xscenario "add multiple activity items" do
       expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "Achieve nirvana"
       expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(0).to(1)
@@ -62,7 +62,7 @@ feature "populate plannned result activities", :js => true do
     end
 
 
-    scenario "add activities item" do
+    xscenario "add activities item" do
       expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "Achieve nirvana"
       expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(1).to(2)
@@ -87,27 +87,27 @@ feature "actions on existing activities", :js => true do
     open_accordion_for_strategic_priority_one
   end
 
-  scenario "delete the first of multiple activities" do
+  xscenario "delete the first of multiple activities" do
     page.find("tr.planned_result td.activity div").hover
     expect{ page.find("tr.planned_result td.activity span.delete_icon").click; sleep(0.2)}.to change{activity.count}.from(2).to(1)
     expect(page.find("tr.planned_result td.activity").text).to eq "1.1.1 cosmic harmony"
   end
 
-  scenario "delete one of multiple activities, not the first" do
+  xscenario "delete one of multiple activities, not the first" do
     page.find("tr.activity td.description div").hover
     expect{ page.find("tr.activity td.description span.delete_icon").click; sleep(0.2)}.to change{activity.count}.from(2).to(1)
     expect(page.find("tr.planned_result td.activity").text).to eq "1.1.1 whirled peas"
     expect(page).not_to have_selector "tr.activity"
   end
 
-  scenario "edit the first of multiple activities" do
+  xscenario "edit the first of multiple activities" do
     page.find("tr.planned_result td.activity span").click
     planned_result_activity_description_field.set("new description")
     expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ activity.first.description }.to "new description"
     expect(page.find(".planned_result.editable_container .activity .no_edit span:first-of-type").text ).to eq "1.1.1 new description"
   end
 
-  scenario "edit one of multiple activities, not the first" do
+  xscenario "edit one of multiple activities, not the first" do
     page.find("tr.activity td.description span").click
     activity_description_field.set("new description")
     expect{ activity_save_icon.click; sleep(0.2) }.to change{ activity.last.description }.to "new description"

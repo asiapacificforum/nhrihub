@@ -3,32 +3,28 @@
     .panel-heading.strategic_priority_title
       %h4.panel-title.clearfix
         .row
-          .col-md-2
-            %div{'data-toggle' => 'edit', 'data-editable_attribute' => 'priority_level'}
-              .fade.edit
-                %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: -10px; margin-top: -3px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
-                  - priority_level_options.each do |opt|
-                    %option{:value => opt[1]}= opt[0]
-              .fade.no_edit
-                %span= t('.strategic_priority')
-          .col-lg-6
-            %div{'data-toggle' => 'edit', 'data-editable_attribute' => 'description'}
-              .fade.edit
-                %input.form-control#strategic_priority_description{:'data-name' => :description, :name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:40px; height: 25px; margin-top: -3px; font-size: 16px; padding:0px;'}
-              .fade.no_edit
-                %span {{ description }}
+          .col-md-2{'data-toggle' => 'edit', 'data-editable_attribute' => 'priority_level'}
+            .fade.edit
+              %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: -10px; margin-top: -3px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
+                - priority_level_options.each do |opt|
+                  %option{:value => opt[1]}= opt[0]
+            .fade.no_edit
+              %span= t('.strategic_priority')
+          .col-lg-6{'data-toggle' => 'edit', 'data-editable_attribute' => 'description'}
+            .fade.edit
+              %input.form-control#strategic_priority_description{:'data-name' => :description, :name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:40px; height: 25px; margin-top: -3px; font-size: 16px; padding:0px;'}
+            .fade.no_edit
+              %span {{ description }}
           .col-lg-1{:style => "text-align:center; font-size:14px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
             %i.fa.fa-folder-o.fa-lg#toggle
-          .col-lg-1{:style => "text-align:center; font-size:14px;"}
-            .icon{'data-toggle' => 'edit', :style => 'height:20px'}
-              .fade.edit
-                %i.fa.fa-remove.fa-lg{:style => "position:relative; left:30px;", :id => "strategic_priority_editable{{id}}_edit_cancel"}
-          .col-lg-1{:style => "text-align:center; font-size:14px;"}
-            %div.icon{'data-toggle' => 'edit'}
-              .fade.edit
-                %i.fa.fa-check.fa-lg{:id => "strategic_priority_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
-              .fade.no_edit
-                %i.fa.fa-pencil-square-o.fa-lg{:id => "strategic_priority_editable{{id}}_edit_start"}
+          .col-lg-1.icon{:style => "text-align:center; font-size:14px; height:20px", 'data-toggle' => 'edit'}
+            .fade.edit
+              %i.fa.fa-remove.fa-lg{:style => "position:relative; left:30px;", :id => "strategic_priority_editable{{id}}_edit_cancel"}
+          .col-lg-1.icon{:style => "text-align:center; font-size:14px;", 'data-toggle' => 'edit'}
+            .fade.edit
+              %i.fa.fa-check.fa-lg{:id => "strategic_priority_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+            .fade.no_edit
+              %i.fa.fa-pencil-square-o.fa-lg{:id => "strategic_priority_editable{{id}}_edit_start"}
           .col-lg-1{:style => "text-align:center; font-size:14px;"}
             %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()'}
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
