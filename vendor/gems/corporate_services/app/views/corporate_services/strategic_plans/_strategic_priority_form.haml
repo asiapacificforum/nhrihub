@@ -2,58 +2,55 @@
   .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
     .panel-heading.strategic_priority_title
       %h4.panel-title.clearfix
-        %table{:style=> "width:100%"}
-          %tr
-            %td{:style => "width:16%"}
-              %div{'data-toggle' => 'edit', 'data-editable_attribute' => 'priority_level'}
-                .fade.edit
-                  %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: -10px; margin-top: -3px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
-                    - priority_level_options.each do |opt|
-                      %option{:value => opt[1]}= opt[0]
-                .fade.no_edit
-                  %span= t('.strategic_priority')
-            %td{:style => "width:60%"}
-              %div{'data-toggle' => 'edit', 'data-editable_attribute' => 'description'}
-                .fade.edit
-                  %input.form-control#strategic_priority_description{:'data-name' => :description, :name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:40px; height: 25px; margin-top: -3px; font-size: 16px; padding:0px;'}
-                .fade.no_edit
-                  %span {{ description }}
-            %td{:style => "text-align:center; width:6%; font-size:14px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
-              %i.fa.fa-folder-o.fa-lg#toggle
-            %td{:style => "text-align:center; width:6%; font-size:14px;"}
-              .icon{'data-toggle' => 'edit', :style => 'height:20px'}
-                .fade.edit
-                  %i.fa.fa-remove.fa-lg{:style => "position:relative; left:30px;", :id => "strategic_priority_editable{{id}}_edit_cancel"}
-            %td{:style => "text-align:center; width:6%; font-size:14px;"}
-              %div.icon{'data-toggle' => 'edit'}
-                .fade.edit
-                  %i.fa.fa-check.fa-lg{:id => "strategic_priority_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
-                .fade.no_edit
-                  %i.fa.fa-pencil-square-o.fa-lg{:id => "strategic_priority_editable{{id}}_edit_start"}
-            %td{:style => "text-align:center; width:6%; font-size:14px;"}
-              %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()'}
+        .row
+          .col-md-2
+            %div{'data-toggle' => 'edit', 'data-editable_attribute' => 'priority_level'}
+              .fade.edit
+                %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: -10px; margin-top: -3px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
+                  - priority_level_options.each do |opt|
+                    %option{:value => opt[1]}= opt[0]
+              .fade.no_edit
+                %span= t('.strategic_priority')
+          .col-lg-6
+            %div{'data-toggle' => 'edit', 'data-editable_attribute' => 'description'}
+              .fade.edit
+                %input.form-control#strategic_priority_description{:'data-name' => :description, :name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:40px; height: 25px; margin-top: -3px; font-size: 16px; padding:0px;'}
+              .fade.no_edit
+                %span {{ description }}
+          .col-lg-1{:style => "text-align:center; font-size:14px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
+            %i.fa.fa-folder-o.fa-lg#toggle
+          .col-lg-1{:style => "text-align:center; font-size:14px;"}
+            .icon{'data-toggle' => 'edit', :style => 'height:20px'}
+              .fade.edit
+                %i.fa.fa-remove.fa-lg{:style => "position:relative; left:30px;", :id => "strategic_priority_editable{{id}}_edit_cancel"}
+          .col-lg-1{:style => "text-align:center; font-size:14px;"}
+            %div.icon{'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-check.fa-lg{:id => "strategic_priority_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+              .fade.no_edit
+                %i.fa.fa-pencil-square-o.fa-lg{:id => "strategic_priority_editable{{id}}_edit_start"}
+          .col-lg-1{:style => "text-align:center; font-size:14px;"}
+            %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()'}
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
-      .panel-body
-        %table.table#planned_results
-          %tr.heading
-            %td{:style => "width:16.6666667%"}= t('.planned_results')
-            %td{:style => "width:16.6666667%"}= t('.outcomes')
-            %td{:style => "width:16.6666667%"}= t('.activities')
-            %td{:style => "width:16.6666667%"}= t('.perf_indicators')
-            %td{:style => "width:16.6666667%"}= t('.reminders')
-            %td{:style => "width:16.6666667%"}= t('.progress')
-          {{#planned_results}}
-          <pr description="{{description}}" indexed_description="{{indexed_description}}" id="{{id}}" outcomes="{{outcomes}}"/>
-          {{/planned_results}}
-          %tr
-            %td
-              %i.fa.fa-plus.fa-lg.new_planned_result{'on-click' => 'new_planned_result()', :style => 'position:relative; z-index:9'}
-              -# must be positioned over the textarea of the planned_result
-            %td
-            %td
-            %td
-            %td
-            %td
+      .panel-body.table#planned_results
+        .row.heading
+          .col-md-2= t('.planned_results')
+          .col-md-2= t('.outcomes')
+          .col-md-2= t('.activities')
+          .col-md-2= t('.perf_indicators')
+          .col-md-2= t('.reminders')
+          .col-md-2= t('.progress')
+        {{#planned_results}}
+        <pr description="{{description}}" indexed_description="{{indexed_description}}" id="{{id}}" outcomes="{{outcomes}}"/>
+        {{/planned_results}}
+        .row
+          .col-md-2
+            %i.fa.fa-plus.fa-lg.new_planned_result{'on-click' => 'new_planned_result()', :style => 'position:relative; z-index:9'}
+          .col-md-2
+          .col-md-2
+          .col-md-2
+          .col-md-2
+          .col-md-2
 
 %script#new_strategic_priority_template{:type => 'text/ractive'}
   .panel.panel-default.new_strategic_priority
@@ -93,8 +90,8 @@
   {{/if}}
 
 %script#show_planned_result_template{:type => 'text/ractive'}
-  %tr.planned_result.editable_container{:id => "planned_result_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "vertical-align:top"}
-    %td.description{ 'data-toggle' => 'edit', 'data-id' => '{{id}}'}
+  .row.planned_result.editable_container{:id => "planned_result_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "vertical-align:top"}
+    .col-md-2.description{ 'data-toggle' => 'edit', 'data-id' => '{{id}}'}
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
@@ -107,7 +104,7 @@
         .icon{'data-toggle' => 'edit', :style => 'height:20px'}
           %i.fa.fa-remove.fa-lg{:id => "planned_result_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "planned_result_editable{{id}}_edit_save", :style => "margin-left:56px"}
-    %td.outcome{'data-toggle' => 'edit'}
+    .col-md-2.outcome{'data-toggle' => 'edit'}
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ outcomes[0].indexed_description }}
@@ -118,58 +115,60 @@
             'data-name' => :description, :name => "planned_result[outcomes_attributes][][description]",
             :value => "{{ outcomes[0].description }}"}
         %input{:type => :hidden, :name => "planned_result[outcomes_attributes][][id]", :value => "{{outcomes[0].id}}"}
-    %td
-    %td
-    %td
-    %td
+    .col-md-2
+    .col-md-2
+    .col-md-2
+    .col-md-2
   {{#outcomes:i}}
   {{#if i>0}}
   <outcome id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
   {{/if}}
-  %tr
-    %td
-    %td
-    %td
+  .row
+    .col-md-2
+    .col-md-2
+    .col-md-2
       %i.fa.fa-plus.fa-lg.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9'}
-    %td
-    %td
+    .col-md-2
+    .col-md-2
+    .col-md-2
   {{/outcomes}}
-  %tr
-    %td
-    %td
+  .row
+    .col-md-2
+    .col-md-2
       %i.fa.fa-plus.fa-lg.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9'}
-    %td
-    %td
-    %td
+    .col-md-2
+    .col-md-2
+    .col-md-2
+    .col-md-2
 
 %script#new_planned_result_template{:type => 'text/ractive'}
-  %tr.new_planned_result
-    %td
+  .row.new_planned_result
+    .col-md-2
       #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
       %div=text_area :planned_result, :description, 'on-keydown' => "remove_description_errors()",
             :cols => 24, :rows => 4,
             :id=>'planned_result_description', :placeholder => "Enter description",
             'data-name' => :description, :name => "planned_result[description]",
             :'value' => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10;'
-    %td
+    .col-md-2
       %div=text_area "planned_result.outcomes", :description,
             :cols => 24, :rows => 4,
             :id=>'planned_result_outcomes__description', :placeholder => "Enter description",
             'data-name' => :description, :name => "planned_result[outcomes_attributes][][description]",
             :'value' => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10;'
-    %td
-    %td
-    %td
-    %td
-  %tr
-    %td
+    .col-md-2
+    .col-md-2
+    .col-md-2
+    .col-md-2
+  .row
+    .col-md-2
       %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:40px"}
       %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:56px"}
-    %td
-    %td
-    %td
-    %td
-    %td
+    .col-md-2
+    .col-md-2
+    .col-md-2
+    .col-md-2
+    .col-md-2
 
 %script#outcome_template{:type => 'text/ractive'}
   {{#if !persisted }}
@@ -179,28 +178,28 @@
   {{/if}}
 
 %script#new_outcome_template{:type => 'text/ractive'}
-  %tr#new_outcome
-    %td
-    %td.description
+  .row#new_outcome
+    .col-md-2
+    .col-md-2.description
       #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
       %div
         %textarea{:id=>'new_outcome_description', :placeholder => "Enter description",
           :name => "outcome[description]", 'on-keydown' => "remove_description_errors()",
           :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10;'}
-  %tr
-    %td
-    %td
+  .row
+    .col-md-2
+    .col-md-2
       %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:40px"}
       %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:56px"}
-    %td
-    %td
-    %td
-    %td
+    .col-md-2
+    .col-md-2
+    .col-md-2
+    .col-md-2
 
 %script#show_outcome_template{:type => 'text/ractive'}
-  %tr.outcome.editable_container{:id => "outcome_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
-    %td
-    %td.description{'data-toggle' => 'edit'}
+  .row.outcome.editable_container{:id => "outcome_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
+    .col-md-2
+    .col-md-2.description{'data-toggle' => 'edit'}
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "outcome_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
@@ -233,7 +232,7 @@
       create_save : ->
         context = $(@el)
         url = @parent.get('create_outcome_url')
-        data = context.find('tr#new_outcome :input').serializeArray()
+        data = context.find('.row#new_outcome :input').serializeArray()
         data.push({name: 'outcome[planned_result_id]', value : @get('planned_result_id')})
         data = @strip_whitespace(data)
         if @validate(data)
@@ -361,7 +360,7 @@
       _add_outcome : ->
         $(@parent.el).
           find('.new_outcome').
-          closest('tr')
+          closest('.row')
       hide_add_outcome : ->
         @_add_outcome().hide()
       show_add_outcome : ->
@@ -470,7 +469,7 @@
       _add_planned_result : ->
         $(@parent.el).
           find('.new_planned_result').
-          closest('tr')
+          closest('.row')
       hide_add_planned_result : ->
         @._add_planned_result().
           hide()
