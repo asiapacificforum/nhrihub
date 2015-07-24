@@ -83,12 +83,41 @@ feature "populate plannned result outcomes", :js => true do
       expect(page).to have_selector(".table#planned_results .row.outcome .col-md-2:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
     end
   end
-
-
 end
 
+feature "actions on existing single outcome", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
 
-feature "actions on existing outcomes", :js => true do
+  before do
+    sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
+    pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
+    o1 = Outcome.create(:planned_result_id => pr.id, :description => "whirled peas")
+    visit corporate_services_strategic_plan_path(:en, "current")
+    open_accordion_for_strategic_priority_one
+  end
+
+  scenario "delete the first and only outcome" do
+    page.find(".row.planned_result .col-md-2.outcome div.no_edit").hover
+    expect{ page.find(".row.planned_result .col-md-2.outcome span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(1).to(0)
+    expect(page.find(".row.planned_result .col-md-2.outcome").text).to eq ""
+    # now check that we can still add an outcome
+    add_outcome.click
+    expect(page).not_to have_selector("i.new_outcome")
+    fill_in 'new_outcome_description', :with => "Achieve nirvana"
+    expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(0).to(1)
+    expect(page).to have_selector(".table#planned_results .row.outcome .col-md-2:nth-of-type(2)", :text => "1.1.1 Achieve nirvana")
+  end
+
+  scenario "edit the first and only outcome" do
+    page.find(".row.planned_result .col-md-2.outcome span").click
+    planned_result_outcome_description_field.set("new description")
+    expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ Outcome.first.description }.to "new description"
+    expect(page.find(".planned_result.editable_container .outcome .no_edit span:first-of-type").text ).to eq "1.1.1 new description"
+  end
+end
+
+feature "actions on existing multiple outcomes", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
 
   before do
@@ -105,6 +134,12 @@ feature "actions on existing outcomes", :js => true do
     page.find(".row.planned_result .col-md-2.outcome div.no_edit").hover
     expect{ page.find(".row.planned_result .col-md-2.outcome span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
     expect(page.find(".row.planned_result .col-md-2.outcome").text).to eq "1.1.1 cosmic harmony"
+    # now check that we can still add an outcome
+    add_outcome.click
+    expect(page).not_to have_selector("i.new_outcome")
+    fill_in 'new_outcome_description', :with => "Achieve nirvana"
+    expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
+    expect(page).to have_selector(".table#planned_results .row.outcome .col-md-2:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
   end
 
   scenario "delete one of multiple outcomes, not the first" do

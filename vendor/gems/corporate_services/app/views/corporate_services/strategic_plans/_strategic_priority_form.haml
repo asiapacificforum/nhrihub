@@ -86,56 +86,26 @@
   {{/if}}
 
 %script#show_planned_result_template{:type => 'text/ractive'}
-  .row.planned_result.editable_container{:id => "planned_result_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "vertical-align:top"}
-    .col-md-2.description{ 'data-toggle' => 'edit', 'data-id' => '{{id}}'}
-      .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
-        %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
-          {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event)'}
-          %i.fa.fa-lg.fa-trash-o
-      .fade.edit
-        // using the rails form helper foils the ractivjs 2-way binding, which needs a 'value' attribute!
-        %textarea{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]'}
-        //=text_area :planned_result, :description, :value => '{{description}}'
-        .icon{'data-toggle' => 'edit', :style => 'height:20px'}
-          %i.fa.fa-remove.fa-lg{:id => "planned_result_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
-          %i.fa.fa-check.fa-lg{:id => "planned_result_editable{{id}}_edit_save", :style => "margin-left:56px"}
-    .col-md-2.outcome{'data-toggle' => 'edit'}
-      .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
-        %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
-          {{ outcomes[0].indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_first_outcome()'}
-          %i.fa.fa-lg.fa-trash-o
-      .fade.edit
-        %textarea{ :id=>'planned_result_outcomes_{{outcomes[0].id}}_description', :placeholder => "Enter description",
-            'data-name' => :description, :name => "planned_result[outcomes_attributes][][description]",
-            :value => "{{ outcomes[0].description }}"}
-        %input{:type => :hidden, :name => "planned_result[outcomes_attributes][][id]", :value => "{{outcomes[0].id}}"}
-    .col-md-2
-    .col-md-2
-    .col-md-2
-    .col-md-2
-  {{#outcomes:i}}
-  {{#if i>0}}
-  <outcome id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
-  {{/if}}
-  .row
-    .col-md-2
-    .col-md-2
-    .col-md-2
-      %i.fa.fa-plus.fa-lg.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9'}
-    .col-md-2
-    .col-md-2
-    .col-md-2
-  {{/outcomes}}
-  .row
-    .col-md-2
-    .col-md-2
-      %i.fa.fa-plus.fa-lg.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9'}
-    .col-md-2
-    .col-md-2
-    .col-md-2
-    .col-md-2
+  :plain
+    <div class="row planned_result editable_container" id="planned_result_editable{{id}}" decorator = "inpage_edit:{{id}}" style="vertical-align:top">
+      <div class="col-md-2 description" data-toggle="edit" data-id="{{id}}">
+        <div class="fade no_edit" onMouseOver="$(this).find('.delete_icon').show()" onMouseOut="$(this).find('.delete_icon').hide()">
+          <span id="planned_result_editable{{id}}_edit_start" style="cursor:pointer"> {{ indexed_description }} </span>
+          <span class="delete_icon" style="float:right; display:none" on-click="delete_this(event)">
+            <i class="fa fa-lg fa-trash-o"/>
+          </span>
+        </div>
+        <div class="fade edit">
+          <textarea id="planned_result_description" value="{{description}}" name="planned_result[description]"/>
+          <div class="icon" data-toggle="edit" style="height:20px">
+            <i class="fa fa-remove fa-lg" id="planned_result_editable{{id}}_edit_cancel" style="margin-left:40px"/>
+            <i class="fa fa-check fa-lg" id="planned_result_editable{{id}}_edit_save" style="margin-left:56px"/>
+          </div>
+        </div>
+      </div>
+    {{#outcomes:i}}
+    <outcome id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
+    {{/outcomes}}
 
 %script#new_planned_result_template{:type => 'text/ractive'}
   .row.new_planned_result
@@ -193,21 +163,32 @@
     .col-md-2
 
 %script#show_outcome_template{:type => 'text/ractive'}
-  .row.outcome.editable_container{:id => "outcome_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
-    .col-md-2
-    .col-md-2.description{'data-toggle' => 'edit'}
-      .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
-        %span{:id => "outcome_editable{{id}}_edit_start", :style => 'cursor:pointer'}
-          {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
-          %i.fa.fa-lg.fa-trash-o
-      .fade.edit
-        %textarea{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
-            'data-name' => :description, :name => "outcome[description]",
-            :value => "{{ description }}"}
-        .icon{'data-toggle' => 'edit', :style => 'height:20px'}
-          %i.fa.fa-remove.fa-lg{:id => "outcome_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
-          %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
+  :plain
+      {{#if i>0}}
+      <div class="row outcome editable_container" id="outcome_editable{{id}}" decorator="inpage_edit:{{id}}">
+        <div class="col-md-2">{{id}}</div>
+        <div class="col-md-2"/>
+      {{/if}}
+        <div class="col-md-2 description" data-toggle='edit'>
+          <div class="fade no_edit" onMouseOver="$(this).find('.delete_icon').show()"  onMouseOut="$(this).find('.delete_icon').hide()">
+            <span id="outcome_editable{{id}}_edit_start" style='cursor:pointer'> {{id}}:{{ indexed_description }} </span>
+            <span class="delete_icon" style="float:right; display:none" on-click="delete_this(event,this)">
+              <i class="fa fa-lg fa-trash-o" />
+            </span>
+          </div>
+          <div class="fade edit">
+            <textarea id="outcome_{{id}}_description" placeholder="Enter description" data-name="description" name="outcome[description]" value="{{description}}">
+            <div class="icon" data-toggle="edit" style="height:20px">
+              <i class="fa fa-remove fa-lg" id="outcome_editable{{id}}_edit_cancel" style="margin-left:40px" />
+              <i class="fa fa-check fa-lg" id="outcome_editable{{id}}_edit_save" style="margin-left:56px" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2"/>
+        <div class="col-md-2"/>
+        <div class="col-md-2"/>
+        <div class="col-md-2"/>
+      </div>
 
 
 :coffeescript

@@ -17,11 +17,11 @@ feature "populate plannned result activities", :js => true do
       add_activity.click
     end
 
-    xscenario "add single activity item" do
+    scenario "add single activity item" do
       expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "think really hard"
       expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(0).to(1)
-      expect(page).to have_selector("table#planned_results tr.planned_result td:nth-of-type(3)", :text => "1.1.1.1 think really hard")
+      expect(page).to have_selector(".table#planned_results .row.planned_result td:nth-of-type(3)", :text => "1.1.1.1 think really hard")
     end
 
     xscenario "try to save activity with blank description field" do
@@ -41,12 +41,12 @@ feature "populate plannned result activities", :js => true do
       expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "Achieve nirvana"
       expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(0).to(1)
-      expect(page).to have_selector("table#planned_results tr.planned_result td:nth-of-type(2)", :text => "1.1.1 Achieve nirvana")
+      expect(page).to have_selector(".table#planned_results .row.planned_result td:nth-of-type(2)", :text => "1.1.1 Achieve nirvana")
       add_activity.click
       expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "Total enlightenment"
       expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(1).to(2)
-      expect(page).to have_selector("table#planned_results tr.activity td:nth-of-type(2)", :text => "1.1.2 Total enlightenment")
+      expect(page).to have_selector(".table#planned_results .row.activity td:nth-of-type(2)", :text => "1.1.2 Total enlightenment")
     end
   end
 
@@ -66,7 +66,7 @@ feature "populate plannned result activities", :js => true do
       expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "Achieve nirvana"
       expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(1).to(2)
-      expect(page).to have_selector("table#planned_results tr.activity td:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
+      expect(page).to have_selector(".table#planned_results .row.activity td:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
     end
   end
 
@@ -88,27 +88,27 @@ feature "actions on existing activities", :js => true do
   end
 
   xscenario "delete the first of multiple activities" do
-    page.find("tr.planned_result td.activity div").hover
-    expect{ page.find("tr.planned_result td.activity span.delete_icon").click; sleep(0.2)}.to change{activity.count}.from(2).to(1)
-    expect(page.find("tr.planned_result td.activity").text).to eq "1.1.1 cosmic harmony"
+    page.find(".row.planned_result .col-md-2.activity div").hover
+    expect{ page.find(".row.planned_result .col-md-2.activity span.delete_icon").click; sleep(0.2)}.to change{activity.count}.from(2).to(1)
+    expect(page.find(".row.planned_result .col-md-2.activity").text).to eq "1.1.1 cosmic harmony"
   end
 
   xscenario "delete one of multiple activities, not the first" do
-    page.find("tr.activity td.description div").hover
-    expect{ page.find("tr.activity td.description span.delete_icon").click; sleep(0.2)}.to change{activity.count}.from(2).to(1)
-    expect(page.find("tr.planned_result td.activity").text).to eq "1.1.1 whirled peas"
-    expect(page).not_to have_selector "tr.activity"
+    page.find(".row.activity .col-md-2.description div").hover
+    expect{ page.find(".row.activity .col-md-2.description span.delete_icon").click; sleep(0.2)}.to change{activity.count}.from(2).to(1)
+    expect(page.find(".row.planned_result .col-md-2.activity").text).to eq "1.1.1 whirled peas"
+    expect(page).not_to have_selector ".row.activity"
   end
 
   xscenario "edit the first of multiple activities" do
-    page.find("tr.planned_result td.activity span").click
+    page.find(".row.planned_result .col-md-2.activity span").click
     planned_result_activity_description_field.set("new description")
     expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ activity.first.description }.to "new description"
     expect(page.find(".planned_result.editable_container .activity .no_edit span:first-of-type").text ).to eq "1.1.1 new description"
   end
 
   xscenario "edit one of multiple activities, not the first" do
-    page.find("tr.activity td.description span").click
+    page.find(".row.activity .col-md-2.description span").click
     activity_description_field.set("new description")
     expect{ activity_save_icon.click; sleep(0.2) }.to change{ activity.last.description }.to "new description"
     expect(page.find(".activity.editable_container .description .no_edit span:first-of-type").text ).to eq "1.1.2 new description"
@@ -116,11 +116,11 @@ feature "actions on existing activities", :js => true do
 end
 
 def activity_description_field
-  page.all("tr.activity textarea").detect{|el| el['id'].match(/activity_\d*_description/)}
+  page.all(".row.activity textarea").detect{|el| el['id'].match(/activity_\d*_description/)}
 end
 
 def planned_result_activity_description_field
-  page.all("tr.planned_result textarea").detect{|el| el['id'].match(/planned_result_activities_\d*_description/)}
+  page.all(".row.planned_result textarea").detect{|el| el['id'].match(/planned_result_activities_\d*_description/)}
 end
 
 def activity_save_icon
