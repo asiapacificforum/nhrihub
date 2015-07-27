@@ -21,7 +21,7 @@ feature "populate plannned result outcomes", :js => true do
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(0).to(1)
-      expect(page).to have_selector(".table#planned_results .row.planned_result .col-md-2:nth-of-type(2)", :text => "1.1.1 Achieve nirvana")
+      expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.1 Achieve nirvana")
     end
 
     scenario "try to save outcome with blank description field" do
@@ -44,12 +44,12 @@ feature "populate plannned result outcomes", :js => true do
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(0).to(1)
-      expect(page).to have_selector(".table#planned_results .row.planned_result .col-md-2:nth-of-type(2)", :text => "1.1.1 Achieve nirvana")
+      expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.1 Achieve nirvana")
       add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Total enlightenment"
       expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
-      expect(page).to have_selector(".table#planned_results .row.outcome .col-md-2:nth-of-type(2)", :text => "1.1.2 Total enlightenment")
+      expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Total enlightenment")
     end
   end
 
@@ -69,18 +69,18 @@ feature "populate plannned result outcomes", :js => true do
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
-      expect(page).to have_selector(".table#planned_results .row.outcome .col-md-2:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
+      expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Achieve nirvana")
       # now can we delete it?
-      page.find(".row.outcome .col-md-2.description div.no_edit").hover
-      expect{ page.find(".row.outcome .col-md-2.description span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
-      expect(page.find(".row.planned_result .col-md-2.outcome").text).to eq "1.1.1 Smarter thinking"
-      expect(page).not_to have_selector ".row.outcome"
+      page.all(".row.outcome .col-md-2.description div.no_edit")[1].hover
+      expect{ page.find(".row.outcome .col-md-2.description span.delete_icon").click; sleep(0.3)}.to change{Outcome.count}.from(2).to(1)
+      expect(page.find(".row.planned_result .row.outcome .col-md-2.description").text).to eq "1.1.1 Smarter thinking"
+      expect(page.all(".row.planned_result .row.outcome").count).to eq 1
       # now check that we can still add an outcome
       add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
-      expect(page).to have_selector(".table#planned_results .row.outcome .col-md-2:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
+      expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Achieve nirvana")
     end
   end
 end
@@ -98,21 +98,21 @@ feature "actions on existing single outcome", :js => true do
   end
 
   scenario "delete the first and only outcome" do
-    page.find(".row.planned_result .col-md-2.outcome div.no_edit").hover
-    expect{ page.find(".row.planned_result .col-md-2.outcome span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(1).to(0)
-    expect(page.find(".row.planned_result .col-md-2.outcome").text).to eq ""
+    page.find(".row.planned_result .row.outcome .col-md-2.description div.no_edit").hover
+    expect{ page.find(".row.planned_result .row.outcome .col-md-2.description span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(1).to(0)
+    expect(page).not_to have_selector(".row.planned_result .row.outcome")
     # now check that we can still add an outcome
     add_outcome.click
     expect(page).not_to have_selector("i.new_outcome")
     fill_in 'new_outcome_description', :with => "Achieve nirvana"
     expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(0).to(1)
-    expect(page).to have_selector(".table#planned_results .row.outcome .col-md-2:nth-of-type(2)", :text => "1.1.1 Achieve nirvana")
+    expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.1 Achieve nirvana")
   end
 
   scenario "edit the first and only outcome" do
-    page.find(".row.planned_result .col-md-2.outcome span").click
-    planned_result_outcome_description_field.set("new description")
-    expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ Outcome.first.description }.to "new description"
+    page.find(".row.planned_result .row.outcome .col-md-2.description span").click
+    outcome_description_field.set("new description")
+    expect{ outcome_save_icon.click; sleep(0.3) }.to change{ Outcome.first.reload.description }.to "new description"
     expect(page.find(".planned_result.editable_container .outcome .no_edit span:first-of-type").text ).to eq "1.1.1 new description"
   end
 end
@@ -131,59 +131,50 @@ feature "actions on existing multiple outcomes", :js => true do
   end
 
   scenario "delete the first of multiple outcomes" do
-    page.find(".row.planned_result .col-md-2.outcome div.no_edit").hover
-    expect{ page.find(".row.planned_result .col-md-2.outcome span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
-    expect(page.find(".row.planned_result .col-md-2.outcome").text).to eq "1.1.1 cosmic harmony"
+    page.all(".row.planned_result .row.outcome .col-md-2.description div.no_edit")[0].hover
+    expect{ page.find(".row.planned_result .row.outcome .col-md-2.description span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
+    expect(page.find(".row.planned_result  .row.outcome .col-md-2.description").text).to eq "1.1.1 cosmic harmony"
     # now check that we can still add an outcome
     add_outcome.click
     expect(page).not_to have_selector("i.new_outcome")
     fill_in 'new_outcome_description', :with => "Achieve nirvana"
     expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
-    expect(page).to have_selector(".table#planned_results .row.outcome .col-md-2:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
+    expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Achieve nirvana")
   end
 
   scenario "delete one of multiple outcomes, not the first" do
-    page.find(".row.outcome .col-md-2.description div.no_edit").hover
+    page.all(".row.outcome .col-md-2.description div.no_edit")[1].hover
     expect{ page.find(".row.outcome .col-md-2.description span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
-    expect(page.find(".row.planned_result .col-md-2.outcome").text).to eq "1.1.1 whirled peas"
-    expect(page).not_to have_selector ".row.outcome"
+    expect(page.find(".row.planned_result .row.outcome .col-md-2.description").text).to eq "1.1.1 whirled peas"
     # now check that we can still add an outcome
     add_outcome.click
     expect(page).not_to have_selector("i.new_outcome")
     fill_in 'new_outcome_description', :with => "Achieve nirvana"
     expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
-    expect(page).to have_selector(".table#planned_results .row.outcome .col-md-2:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
+    expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Achieve nirvana")
   end
 
   scenario "edit the first of multiple outcomes" do
-    page.find(".row.planned_result .col-md-2.outcome span").click
-    planned_result_outcome_description_field.set("new description")
-    expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ Outcome.first.description }.to "new description"
-    expect(page.find(".planned_result.editable_container .outcome .no_edit span:first-of-type").text ).to eq "1.1.1 new description"
+    page.all(".row.planned_result .row.outcome .col-md-2.description span")[0].click
+    outcome_description_field.set("new description")
+    expect{ outcome_save_icon.click; sleep(0.3) }.to change{ Outcome.first.reload.description }.to "new description"
+    expect(page.all(".row.outcome .col-md-2.description")[0].text ).to eq "1.1.1 new description"
   end
 
   scenario "edit one of multiple outcomes, not the first" do
-    page.find(".row.outcome .col-md-2.description span").click
+    page.all(".row.planned_result .row.outcome .col-md-2.description span")[1].click
     outcome_description_field.set("new description")
     expect{ outcome_save_icon.click; sleep(0.2) }.to change{ Outcome.last.description }.to "new description"
-    expect(page.find(".outcome.editable_container .description .no_edit span:first-of-type").text ).to eq "1.1.2 new description"
+    expect(page.all(".row.outcome .col-md-2.description")[1].text ).to eq "1.1.2 new description"
   end
 end
 
 def outcome_description_field
-  page.all(".row.outcome textarea").detect{|el| el['id'].match(/outcome_\d*_description/)}
-end
-
-def planned_result_outcome_description_field
-  page.all(".row.planned_result textarea").detect{|el| el['id'].match(/planned_result_outcomes_\d*_description/)}
+  page.all(".row.outcome .edit.in textarea").detect{|el| el['id'].match(/outcome_\d*_description/)}
 end
 
 def outcome_save_icon
-  page.all('.outcome.editable_container i').detect{|i| i['id'] && i['id'].match(/outcome_editable\d+_edit_save/)}
-end
-
-def planned_result_save_icon
-  page.all('.planned_result.editable_container i').detect{|i| i['id'].match(/planned_result_editable\d*_edit_save/)}
+  page.all('.outcome.editable_container .edit.in div.icon>i').select{|i| i['id'] && i['id'].match(/outcome_editable\d+_edit_save/)}.last
 end
 
 def open_accordion_for_strategic_priority_one

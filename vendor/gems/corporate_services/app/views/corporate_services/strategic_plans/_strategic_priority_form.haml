@@ -93,32 +93,16 @@
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event)'}
           %i.fa.fa-lg.fa-trash-o
-      .fade.edit
+      .fade.edit{:style=>"margin-left:16px"}
         // using the rails form helper foils the ractivjs 2-way binding, which needs a 'value' attribute!
         %textarea{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]'}
-        //=text_area :planned_result, :description, :value => '{{description}}'
         .icon{'data-toggle' => 'edit', :style => 'height:20px'}
           %i.fa.fa-remove.fa-lg{:id => "planned_result_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "planned_result_editable{{id}}_edit_save", :style => "margin-left:56px"}
-    .col-md-2.outcome{'data-toggle' => 'edit'}
-      .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
-        %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
-          {{ outcomes[0].indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_first_outcome()'}
-          %i.fa.fa-lg.fa-trash-o
-      .fade.edit
-        %textarea{ :id=>'planned_result_outcomes_{{outcomes[0].id}}_description', :placeholder => "Enter description",
-            'data-name' => :description, :name => "planned_result[outcomes_attributes][][description]",
-            :value => "{{ outcomes[0].description }}"}
-        %input{:type => :hidden, :name => "planned_result[outcomes_attributes][][id]", :value => "{{outcomes[0].id}}"}
-    .col-md-2
-    .col-md-2
-    .col-md-2
-    .col-md-2
-  {{#outcomes:i}}
-  {{#if i>0}}
-  <outcome id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
-  {{/if}}
+    .col-md-10
+      {{#outcomes:i}}
+      <outcome id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
+      {{/outcomes}}
   .row
     .col-md-2
     .col-md-2
@@ -127,7 +111,6 @@
     .col-md-2
     .col-md-2
     .col-md-2
-  {{/outcomes}}
   .row
     .col-md-2
     .col-md-2
@@ -175,39 +158,39 @@
 
 %script#new_outcome_template{:type => 'text/ractive'}
   .row#new_outcome
-    .col-md-2
-    .col-md-2.description
+    .col-md-2.description{:style=>"width:20%"}
       #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
       %div
         %textarea{:id=>'new_outcome_description', :placeholder => "Enter description",
           :name => "outcome[description]", 'on-keydown' => "remove_description_errors()",
           :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10;'}
   .row
-    .col-md-2
-    .col-md-2
+    .col-md-2{:style=>"width:20%"}
       %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:40px"}
       %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:56px"}
-    .col-md-2
-    .col-md-2
-    .col-md-2
-    .col-md-2
+    .col-md-2{:style=>"width:20%"}
+    .col-md-2{:style=>"width:20%"}
+    .col-md-2{:style=>"width:20%"}
+    .col-md-2{:style=>"width:20%"}
 
 %script#show_outcome_template{:type => 'text/ractive'}
   .row.outcome.editable_container{:id => "outcome_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
-    .col-md-2
-    .col-md-2.description{'data-toggle' => 'edit'}
+    .col-md-2.description{'data-toggle' => 'edit', :style=>"width:20%"}
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "outcome_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
           %i.fa.fa-lg.fa-trash-o
-      .fade.edit
+      .fade.edit{:style => "margin-left:16px"}
         %textarea{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
-            'data-name' => :description, :name => "outcome[description]",
-            :value => "{{ description }}"}
-        .icon{'data-toggle' => 'edit', :style => 'height:20px'}
+            'data-name' => :description, :name => "outcome[description]", :value => "{{ description }}"}
+        .icon{'data-toggle' => 'edit', :style => 'height:20px; background-color:white; top:-2px'}
           %i.fa.fa-remove.fa-lg{:id => "outcome_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
+    .col-md-2{:style=>"width:20%"}
+    .col-md-2{:style=>"width:20%"}
+    .col-md-2{:style=>"width:20%"}
+    .col-md-2{:style=>"width:20%"}
 
 
 :coffeescript

@@ -64,10 +64,10 @@ $ ->
       @text().find(':first-child').width()
 
     show : (element)->
-      element.css("opacity",1).css("z-index",10).addClass('in')
+      element.addClass('in')
 
     hide : (element)->
-      element.css("opacity",0).css("z-index",9).removeClass('in')
+      element.removeClass('in')
 
   class @InpageEdit
     constructor : (options)->
@@ -78,14 +78,6 @@ $ ->
           $(@options.on)
         else
           $(@options.on).find('.editable_container')
-
-      # $('body').on 'click',"#{@options.on}_edit_start", (e)=>
-      #   e.stopPropagation()
-      #   $target = $(e.target)
-      #   @context = $target.closest('.editable_container')
-      #   @edit()
-      #   @context.find(@options.focus_element).first().focus()
-      # @options = options
 
       $(@options.on).find("[id$='_edit_start']").on 'click', (e)=>
         e.stopPropagation()
@@ -106,6 +98,7 @@ $ ->
         e.stopPropagation()
         $target = $(e.target)
         if $target.closest('.editable_container').get(0) == @root.get(0)
+          @context = $target.closest('.editable_container')
           url = @options.object.get('url')
           data = @context.find(':input').serializeArray()
           data[data.length] = {name : '_method', value : 'put'}
