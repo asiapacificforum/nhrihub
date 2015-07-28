@@ -19,6 +19,9 @@ Rails.application.routes.draw do
       resources :planned_results do
         resources :outcomes, :to => 'planned_results/outcomes'
       end
+      resources :outcomes do
+        resources :activities, :to => "outcomes/activities"
+      end
       get 'admin', :to => "admin#index"
     end
   end

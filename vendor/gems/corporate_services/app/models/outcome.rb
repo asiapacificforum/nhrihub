@@ -1,5 +1,6 @@
 class Outcome < ActiveRecord::Base
   belongs_to :planned_result
+  has_many :activities, :autosave => true, :dependent => :destroy
 
   default_scope ->{ order(:id) } # this naturally orders by index
 
@@ -10,11 +11,15 @@ class Outcome < ActiveRecord::Base
 
   def as_json(options={})
     super(:except => [:updated_at, :created_at],
-          :methods => [:indexed_description, :description, :id, :url])
+          :methods => [:indexed_description, :description, :id, :url, :create_activity_url, :activities])
   end
 
   def url
     Rails.application.routes.url_helpers.corporate_services_planned_result_outcome_path(:en,planned_result_id,id)
+  end
+
+  def create_activity_url
+    Rails.application.routes.url_helpers.corporate_services_outcome_activities_path(:en,id)
   end
 
   def indexed_description

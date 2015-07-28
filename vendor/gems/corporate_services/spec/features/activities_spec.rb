@@ -18,35 +18,35 @@ feature "populate plannned result activities", :js => true do
     end
 
     scenario "add single activity item" do
-      expect(page).not_to have_selector("i.new_activity")
+      #expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "think really hard"
-      expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(0).to(1)
-      expect(page).to have_selector(".table#planned_results .row.planned_result td:nth-of-type(3)", :text => "1.1.1.1 think really hard")
+      expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(0).to(1)
+      expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.1 think really hard")
     end
 
-    xscenario "try to save activity with blank description field" do
-      expect(page).not_to have_selector("i.new_activity")
-      expect{save_activity.click; sleep(0.2)}.not_to change{activity.count}
+    scenario "try to save activity with blank description field" do
+      #expect(page).not_to have_selector("i.new_activity")
+      expect{save_activity.click; sleep(0.2)}.not_to change{Activity.count}
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
-    xscenario "try to save activity with whitespace description field" do
-      expect(page).not_to have_selector("i.new_activity")
+    scenario "try to save activity with whitespace description field" do
+      #expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => " "
-      expect{save_activity.click; sleep(0.2)}.not_to change{activity.count}
+      expect{save_activity.click; sleep(0.2)}.not_to change{Activity.count}
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
-    xscenario "add multiple activity items" do
-      expect(page).not_to have_selector("i.new_activity")
-      fill_in 'new_activity_description', :with => "Achieve nirvana"
-      expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(0).to(1)
-      expect(page).to have_selector(".table#planned_results .row.planned_result td:nth-of-type(2)", :text => "1.1.1 Achieve nirvana")
+    scenario "add multiple activity items" do
+      #expect(page).not_to have_selector("i.new_activity")
+      fill_in 'new_activity_description', :with => "think really hard"
+      expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(0).to(1)
+      expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.1 think really hard")
       add_activity.click
-      expect(page).not_to have_selector("i.new_activity")
-      fill_in 'new_activity_description', :with => "Total enlightenment"
-      expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(1).to(2)
-      expect(page).to have_selector(".table#planned_results .row.activity td:nth-of-type(2)", :text => "1.1.2 Total enlightenment")
+      #expect(page).not_to have_selector("i.new_activity")
+      fill_in 'new_activity_description', :with => "ruminate mightily"
+      expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(1).to(2)
+      expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.2 ruminate mightily")
     end
   end
 
@@ -55,18 +55,19 @@ feature "populate plannned result activities", :js => true do
       sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
       spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
       pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
-      pr.activities << activity.new(:description => "Smarter thinking")
+      o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
+      o.activities << Activity.new(:description => "Smarter thinking")
       visit corporate_services_strategic_plan_path(:en, "current")
       open_accordion_for_strategic_priority_one
       add_activity.click
     end
 
 
-    xscenario "add activities item" do
-      expect(page).not_to have_selector("i.new_activity")
-      fill_in 'new_activity_description', :with => "Achieve nirvana"
-      expect{save_activity.click; sleep(0.2)}.to change{activity.count}.from(1).to(2)
-      expect(page).to have_selector(".table#planned_results .row.activity td:nth-of-type(2)", :text => "1.1.2 Achieve nirvana")
+    scenario "add activities item" do
+      #expect(page).not_to have_selector("i.new_activity")
+      fill_in 'new_activity_description', :with => "work really hard"
+      expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(1).to(2)
+      expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.2 work really hard")
     end
   end
 
@@ -81,54 +82,51 @@ feature "actions on existing activities", :js => true do
     sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
     spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
     pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
-    o1 = activity.create(:planned_result_id => pr.id, :description => "whirled peas")
-    o2 = activity.create(:planned_result_id => pr.id, :description => "cosmic harmony")
+    o = Outcome.create(:planned_result_id => pr.id, :description => "whirled peas")
+    Activity.create(:outcome_id => o.id, :description => "work hard")
+    Activity.create(:outcome_id => o.id, :description => "do the right thing")
     visit corporate_services_strategic_plan_path(:en, "current")
     open_accordion_for_strategic_priority_one
   end
 
-  xscenario "delete the first of multiple activities" do
-    page.find(".row.planned_result .col-md-2.activity div").hover
-    expect{ page.find(".row.planned_result .col-md-2.activity span.delete_icon").click; sleep(0.2)}.to change{activity.count}.from(2).to(1)
-    expect(page.find(".row.planned_result .col-md-2.activity").text).to eq "1.1.1 cosmic harmony"
+  scenario "delete the first of multiple activities" do
+    page.all(activity_selector + ".description")[0].hover
+    expect{ page.find(activity_selector + "span.delete_icon").click; sleep(0.2)}.to change{Activity.count}.from(2).to(1)
+    expect(page.all(activity_selector + ".description")[0].text).to eq "1.1.1.1 do the right thing"
   end
 
-  xscenario "delete one of multiple activities, not the first" do
-    page.find(".row.activity .col-md-2.description div").hover
-    expect{ page.find(".row.activity .col-md-2.description span.delete_icon").click; sleep(0.2)}.to change{activity.count}.from(2).to(1)
-    expect(page.find(".row.planned_result .col-md-2.activity").text).to eq "1.1.1 whirled peas"
-    expect(page).not_to have_selector ".row.activity"
+  scenario "delete one of multiple activities, not the first" do
+    page.all(activity_selector + ".description")[1].hover
+    expect{ page.find(activity_selector + "span.delete_icon").click; sleep(0.2)}.to change{Activity.count}.from(2).to(1)
+    expect(page.find(activity_selector + ".description").text).to eq "1.1.1.1 work hard"
   end
 
-  xscenario "edit the first of multiple activities" do
-    page.find(".row.planned_result .col-md-2.activity span").click
-    planned_result_activity_description_field.set("new description")
-    expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ activity.first.description }.to "new description"
-    expect(page.find(".planned_result.editable_container .activity .no_edit span:first-of-type").text ).to eq "1.1.1 new description"
+  scenario "edit the first of multiple activities" do
+    page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[0].click
+    activity_description_field.first.set("new description")
+    expect{ activity_save_icon.click; sleep(0.2) }.to change{ Activity.first.description }.to "new description"
+    expect(page.all(activity_selector+".no_edit span:first-of-type")[0].text ).to eq "1.1.1.1 new description"
   end
 
-  xscenario "edit one of multiple activities, not the first" do
-    page.find(".row.activity .col-md-2.description span").click
-    activity_description_field.set("new description")
-    expect{ activity_save_icon.click; sleep(0.2) }.to change{ activity.last.description }.to "new description"
-    expect(page.find(".activity.editable_container .description .no_edit span:first-of-type").text ).to eq "1.1.2 new description"
+  scenario "edit one of multiple activities, not the first" do
+    page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[1].click
+    activity_description_field.last.set("new description")
+    expect{ activity_save_icon.click; sleep(0.2) }.to change{ Activity.last.description }.to "new description"
+    #expect(page.find(".activity.editable_container .description .no_edit span:first-of-type").text ).to eq "1.1.2 new description"
+    expect(page.all(activity_selector+".no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 new description"
   end
+end
+
+def activity_selector
+  ".table#planned_results .row.planned_result .row.outcome .row.activity "
 end
 
 def activity_description_field
-  page.all(".row.activity textarea").detect{|el| el['id'].match(/activity_\d*_description/)}
-end
-
-def planned_result_activity_description_field
-  page.all(".row.planned_result textarea").detect{|el| el['id'].match(/planned_result_activities_\d*_description/)}
+  page.all(activity_selector + ".description textarea").select{|i| i['id'] && i['id'].match(/activity_\d_description/)}
 end
 
 def activity_save_icon
-  page.all('.activity.editable_container i').detect{|i| i['id'] && i['id'].match(/activity_editable\d+_edit_save/)}
-end
-
-def planned_result_save_icon
-  page.all('.planned_result.editable_container i').detect{|i| i['id'].match(/planned_result_editable\d*_edit_save/)}
+  page.all(activity_selector + ".description .edit.in i.fa-check").detect{|i| i['id'] && i['id'].match(/activity_editable\d+_edit_save/)}
 end
 
 def open_accordion_for_strategic_priority_one
