@@ -217,17 +217,17 @@
     .col-md-2.description{:style=>"width:20%"}
       #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
       %textarea{ :id=>'new_activity_description', :placeholder => "Enter description",
-                 :name => "activity[description]", :style => "width:100%"}
+                 :name => "activity[description]"}
     .col-md-2{:style=>"width:20%"}
       %textarea{ :id=>'new_activity_performance_indicator', :placeholder => "Enter performance indicator",
-                 :name => "activity[performance_indicator]", :style => "width:100%"}
+                 :name => "activity[performance_indicator]"}
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:20%"}
   .row
     .col-md-2.description{:style=>"width:20%"}
-      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:12px"}
-      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:40px"}
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:36px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:56px"}
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:20%"}
@@ -245,7 +245,7 @@
         %textarea{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
             'data-name' => :description, :name => "activity[description]", :value => "{{ description }}"}
         .icon{'data-toggle' => 'edit', :style => 'height:20px; background-color:white; top:-2px'}
-          %i.fa.fa-remove.fa-lg{:id => "activity_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
+          %i.fa.fa-remove.fa-lg{:id => "activity_editable{{id}}_edit_cancel", :style => "margin-left:36px"}
           %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2.performance_indicator{'data-toggle'=>'edit', :style=>"width:20%"}
       .fade.no_edit
