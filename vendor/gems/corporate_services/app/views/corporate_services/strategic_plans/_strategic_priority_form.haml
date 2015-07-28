@@ -101,7 +101,7 @@
         .icon{'data-toggle' => 'edit', :style => 'height:20px'}
           %i.fa.fa-remove.fa-lg{:id => "planned_result_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "planned_result_editable{{id}}_edit_save", :style => "margin-left:56px"}
-    .col-md-10{:style=>"width:71.4286%"}
+    .col-md-10{:style=>"width:85.7143%"}
       {{#outcomes:i}}
       <outcome id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
       {{/outcomes}}
@@ -187,23 +187,23 @@
           %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2{:style=>"width:83.3333%"}
       {{#activities}}
-      <activity outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicator="{{performance_indicator}}" target="{{target}}" \>
+      <activity outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicator="{{performance_indicator}}" indexed_performance_indicator="{{indexed_performance_indicator}}" target="{{target}}" \>
       {{/activities}}
       {{^activities}}
-      .col-md-2{:style=>"width:16.6667%"}
-      .col-md-2{:style=>"width:16.6667%"}
-      .col-md-2{:style=>"width:16.6667%"}
-      .col-md-2{:style=>"width:16.6667%"}
-      .col-md-2{:style=>"width:16.6667%"}
+      .col-md-2{:style=>"width:20%"}
+      .col-md-2{:style=>"width:20%"}
+      .col-md-2{:style=>"width:20%"}
+      .col-md-2{:style=>"width:20%"}
+      .col-md-2{:style=>"width:20%"}
       {{/activities}}
   .row
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
+    .col-md-2{:style=>"width:16.6667%"}
+    .col-md-2{:style=>"width:16.6667%"}
       %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9'}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
+    .col-md-2{:style=>"width:16.6667%"}
+    .col-md-2{:style=>"width:16.6667%"}
+    .col-md-2{:style=>"width:16.6667%"}
+    .col-md-2{:style=>"width:16.6667%"}
 
 %script#activity_template{:type => 'text/ractive'}
   {{#if !persisted }}
@@ -219,6 +219,8 @@
       %textarea{ :id=>'new_activity_description', :placeholder => "Enter description",
                  :name => "activity[description]", :style => "width:100%"}
     .col-md-2{:style=>"width:20%"}
+      %textarea{ :id=>'new_activity_performance_indicator', :placeholder => "Enter performance indicator",
+                 :name => "activity[performance_indicator]", :style => "width:100%"}
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:20%"}
@@ -233,7 +235,7 @@
 
 %script#show_activity_template{:type => 'text/ractive'}
   .row.activity.editable_container{:id => "activity_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
-    .col-md-2.description{'data-toggle' => 'edit', :style=>"width:16.6667%"}
+    .col-md-2.description{'data-toggle' => 'edit', :style=>"width:20%"}
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
@@ -242,13 +244,19 @@
       .fade.edit{:style => "margin-left:16px"}
         %textarea{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
             'data-name' => :description, :name => "activity[description]", :value => "{{ description }}"}
-        .icon{'data-toggle' => 'edit', :style => 'height:16.6667px; background-color:white; top:-2px'}
+        .icon{'data-toggle' => 'edit', :style => 'height:20px; background-color:white; top:-2px'}
           %i.fa.fa-remove.fa-lg{:id => "activity_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
-    .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
+    .col-md-2.performance_indicator{'data-toggle'=>'edit', :style=>"width:20%"}
+      .fade.no_edit
+        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'}
+          {{ indexed_performance_indicator }}
+      .fade.edit{:style => "margin-left:16px"}
+        %textarea{ :id=>'activity_{{id}}_performance_indicator', :placeholder => "Enter performance indicator",
+            'data-name' => :performance_indicator, :name => "activity[performance_indicator]", :value => "{{ performance_indicator }}"}
+    .col-md-2{:style=>"width:20%"}
+    .col-md-2{:style=>"width:20%"}
+    .col-md-2{:style=>"width:20%"}
 
 :coffeescript
   $ ->

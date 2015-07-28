@@ -9,7 +9,7 @@ class Activity < ActiveRecord::Base
 
   def as_json(options={})
     super(:except => [:updated_at, :created_at],
-          :methods => [:indexed_description, :description, :performance_indicator, :target, :id, :url])
+          :methods => [:indexed_description, :description, :indexed_performance_indicator, :performance_indicator, :target, :id, :url])
   end
 
   def url
@@ -21,6 +21,14 @@ class Activity < ActiveRecord::Base
       ""
     else
       [index, description].join(' ')
+    end
+  end
+
+  def indexed_performance_indicator
+    if performance_indicator.blank?
+      ""
+    else
+      [index, performance_indicator].join(' ')
     end
   end
 

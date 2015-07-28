@@ -3,7 +3,7 @@ class AddActivitiesTable < ActiveRecord::Migration
     create_table :activities do |t|
       t.integer :outcome_id
       t.text :description
-      t.text :performanc_indicator
+      t.text :performance_indicator
       t.text :target
       t.timestamps
     end

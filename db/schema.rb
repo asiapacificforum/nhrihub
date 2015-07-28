@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20150727195735) do
   create_table "activities", force: true do |t|
     t.integer  "outcome_id"
     t.text     "description"
-    t.text     "performanc_indicator"
+    t.text     "performance_indicator"
     t.text     "target"
     t.datetime "created_at"
     t.datetime "updated_at"
