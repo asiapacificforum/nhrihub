@@ -187,7 +187,7 @@
           %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2{:style=>"width:83.3333%"}
       {{#activities}}
-      <activity outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicator="{{performance_indicator}}" indexed_performance_indicator="{{indexed_performance_indicator}}" target="{{target}}" \>
+      <activity outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicator="{{performance_indicator}}" indexed_performance_indicator="{{indexed_performance_indicator}}" target="{{target}}" indexed_target="{{indexed_target}}" \>
       {{/activities}}
       {{^activities}}
       .col-md-2{:style=>"width:20%"}
@@ -216,12 +216,11 @@
   .row.new_activity
     .col-md-2.description{:style=>"width:20%"}
       #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
-      %textarea{ :id=>'new_activity_description', :placeholder => "Enter description",
-                 :name => "activity[description]"}
+      %textarea{ :id=>'new_activity_description', :placeholder => "Enter description", :name => "activity[description]"}
     .col-md-2{:style=>"width:20%"}
-      %textarea{ :id=>'new_activity_performance_indicator', :placeholder => "Enter performance indicator",
-                 :name => "activity[performance_indicator]"}
+      %textarea{ :id=>'new_activity_performance_indicator', :placeholder => "Enter performance indicator", :name => "activity[performance_indicator]"}
     .col-md-2{:style=>"width:20%"}
+      %textarea{ :id=>'new_activity_target', :placeholder => "Enter target", :name => "activity[target]"}
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:20%"}
   .row
@@ -237,24 +236,27 @@
   .row.activity.editable_container{:id => "activity_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-2.description{'data-toggle' => 'edit', :style=>"width:20%"}
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
-        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'}
-          {{ indexed_description }}
+        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
           %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:16px"}
         %textarea{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
-            'data-name' => :description, :name => "activity[description]", :value => "{{ description }}"}
+            :name => "activity[description]", :value => "{{ description }}"}
         .icon{'data-toggle' => 'edit', :style => 'height:20px; background-color:white; top:-2px'}
           %i.fa.fa-remove.fa-lg{:id => "activity_editable{{id}}_edit_cancel", :style => "margin-left:36px"}
           %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2.performance_indicator{'data-toggle'=>'edit', :style=>"width:20%"}
       .fade.no_edit
-        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'}
-          {{ indexed_performance_indicator }}
+        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_performance_indicator }}
       .fade.edit{:style => "margin-left:16px"}
         %textarea{ :id=>'activity_{{id}}_performance_indicator', :placeholder => "Enter performance indicator",
-            'data-name' => :performance_indicator, :name => "activity[performance_indicator]", :value => "{{ performance_indicator }}"}
-    .col-md-2{:style=>"width:20%"}
+            :name => "activity[performance_indicator]", :value => "{{ performance_indicator }}"}
+    .col-md-2.target{'data-toggle'=>'edit', :style=>"width:20%"}
+      .fade.no_edit
+        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_target }}
+      .fade.edit{:style => "margin-left:16px"}
+        %textarea{ :id=>'activity_{{id}}_target', :placeholder => "Enter target",
+            :name => "activity[target]", :value => "{{ target }}"}
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:20%"}
 
@@ -380,6 +382,8 @@
         @parent.set(resp)
       new_activity : ->
         @push('activities',{description : '', indexed_description: '', performance_indicator: '', target: '', id : null, outcome_id : @get('id'), url:null})
+      remove_activity_form : ->
+        @pop('activities')
 
     PlannedResult = Ractive.extend
       template : '#planned_result_template'

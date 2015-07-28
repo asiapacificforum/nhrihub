@@ -21,9 +21,11 @@ feature "populate plannned result activities", :js => true do
       #expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "think really hard"
       fill_in 'new_activity_performance_indicator', :with => "steam rising"
+      fill_in 'new_activity_target', :with => "88% achievement"
       expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(0).to(1)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.1 think really hard")
       expect(page).to have_selector(activity_selector + ".performance_indicator", :text => "1.1.1.1 steam rising")
+      expect(page).to have_selector(activity_selector + ".target", :text => "1.1.1.1 88% achievement")
     end
 
     scenario "try to save activity with blank description field" do
@@ -43,16 +45,20 @@ feature "populate plannned result activities", :js => true do
       #expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "think really hard"
       fill_in 'new_activity_performance_indicator', :with => "steam rising"
+      fill_in 'new_activity_target', :with => "88% achievement"
       expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(0).to(1)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.1 think really hard")
       expect(page).to have_selector(activity_selector + ".performance_indicator", :text => "1.1.1.1 steam rising")
+      expect(page).to have_selector(activity_selector + ".target", :text => "1.1.1.1 88% achievement")
       add_activity.click
       #expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "ruminate mightily"
       fill_in 'new_activity_performance_indicator', :with => "great insight"
+      fill_in 'new_activity_target', :with => "full employment"
       expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(1).to(2)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.2 ruminate mightily")
       expect(page).to have_selector(activity_selector + ".performance_indicator", :text => "1.1.1.2 great insight")
+      expect(page).to have_selector(activity_selector + ".target", :text => "1.1.1.2 full employment")
     end
   end
 
@@ -68,17 +74,17 @@ feature "populate plannned result activities", :js => true do
       add_activity.click
     end
 
-
     scenario "add activities item" do
       #expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "work really hard"
       fill_in 'new_activity_performance_indicator', :with => "great insight"
+      fill_in 'new_activity_target', :with => "full employment"
       expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(1).to(2)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.2 work really hard")
       expect(page).to have_selector(activity_selector + ".performance_indicator", :text => "1.1.1.2 great insight")
+      expect(page).to have_selector(activity_selector + ".target", :text => "1.1.1.2 full employment")
     end
   end
-
 
 end
 
@@ -91,8 +97,8 @@ feature "actions on existing activities", :js => true do
     spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
     pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
     o = Outcome.create(:planned_result_id => pr.id, :description => "whirled peas")
-    Activity.create(:outcome_id => o.id, :description => "work hard", :performance_indicator => "great effort")
-    Activity.create(:outcome_id => o.id, :description => "do the right thing", :performance_indicator => "things get better")
+    Activity.create(:outcome_id => o.id, :description => "work hard", :performance_indicator => "great effort", :target => "15% improvement")
+    Activity.create(:outcome_id => o.id, :description => "do the right thing", :performance_indicator => "things get better", :target => "85% improvement")
     visit corporate_services_strategic_plan_path(:en, "current")
     open_accordion_for_strategic_priority_one
   end
@@ -102,6 +108,7 @@ feature "actions on existing activities", :js => true do
     expect{ page.find(activity_selector + "span.delete_icon").click; sleep(0.2)}.to change{Activity.count}.from(2).to(1)
     expect(page.find(activity_selector + ".description").text).to eq "1.1.1.1 do the right thing"
     expect(page.find(activity_selector + ".performance_indicator").text).to eq "1.1.1.1 things get better"
+    expect(page.find(activity_selector + ".target").text).to eq "1.1.1.1 85% improvement"
   end
 
   scenario "delete one of multiple activities, not the first" do
@@ -109,24 +116,29 @@ feature "actions on existing activities", :js => true do
     expect{ page.find(activity_selector + "span.delete_icon").click; sleep(0.2)}.to change{Activity.count}.from(2).to(1)
     expect(page.find(activity_selector + ".description").text).to eq "1.1.1.1 work hard"
     expect(page.find(activity_selector + ".performance_indicator").text).to eq "1.1.1.1 great effort"
+    expect(page.find(activity_selector + ".target").text).to eq "1.1.1.1 15% improvement"
   end
 
   scenario "edit the first of multiple activities" do
     page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[0].click
     activity_description_field.first.set("new description")
     activity_performance_indicator_field.first.set("new performance indicator")
+    activity_target_field.first.set("total satisfaction")
     expect{ activity_save_icon.click; sleep(0.2) }.to change{ Activity.first.description }.to "new description"
     expect(page.all(activity_selector+".description .no_edit span:first-of-type")[0].text ).to eq "1.1.1.1 new description"
     expect(page.all(activity_selector+".performance_indicator .no_edit span:first-of-type")[0].text ).to eq "1.1.1.1 new performance indicator"
+    expect(page.all(activity_selector+".target .no_edit span:first-of-type")[0].text ).to eq "1.1.1.1 total satisfaction"
   end
 
   scenario "edit one of multiple activities, not the first" do
     page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[1].click
     activity_description_field.last.set("new description")
-    activity_performance_indicator_field.first.set("new performance indicator")
+    activity_performance_indicator_field.last.set("new performance indicator")
+    activity_target_field.last.set("total satisfaction")
     expect{ activity_save_icon.click; sleep(0.2) }.to change{ Activity.last.description }.to "new description"
     expect(page.all(activity_selector+".description .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 new description"
     expect(page.all(activity_selector+".performance_indicator .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 new performance indicator"
+    expect(page.all(activity_selector+".target .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 total satisfaction"
   end
 end
 
@@ -140,6 +152,10 @@ end
 
 def activity_performance_indicator_field
   page.all(activity_selector + ".performance_indicator textarea").select{|i| i['id'] && i['id'].match(/activity_\d_performance_indicator/)}
+end
+
+def activity_target_field
+  page.all(activity_selector + ".target textarea").select{|i| i['id'] && i['id'].match(/activity_\d_target/)}
 end
 
 def activity_save_icon
