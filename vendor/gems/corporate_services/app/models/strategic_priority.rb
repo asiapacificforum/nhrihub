@@ -12,7 +12,11 @@ class StrategicPriority < ActiveRecord::Base
 
   def as_json(options={})
     super(:except => [:created_at, :updated_at],
-          :methods => [:url, :create_planned_result_url, :planned_results] )
+          :methods => [:url, :create_planned_result_url, :planned_results, :description_error] )
+  end
+
+  def description_error
+    nil
   end
 
   def url

@@ -11,7 +11,11 @@ class Outcome < ActiveRecord::Base
 
   def as_json(options={})
     super(:except => [:updated_at, :created_at],
-          :methods => [:indexed_description, :description, :id, :url, :create_activity_url, :activities])
+          :methods => [:indexed_description, :description, :id, :url, :create_activity_url, :activities, :description_error])
+  end
+
+  def description_error
+    nil
   end
 
   def url

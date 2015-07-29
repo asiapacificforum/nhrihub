@@ -12,7 +12,11 @@ class PlannedResult < ActiveRecord::Base
 
   def as_json(options = {})
     super(:except => [:updated_at, :created_at],
-          :methods => [:url, :indexed_description, :description, :outcomes, :create_outcome_url])
+          :methods => [:url, :indexed_description, :description, :outcomes, :create_outcome_url, :description_error])
+  end
+
+  def description_error
+    nil
   end
 
   def create_outcome_url

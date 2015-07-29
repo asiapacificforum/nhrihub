@@ -9,11 +9,15 @@ class Activity < ActiveRecord::Base
 
   def as_json(options={})
     super(:except => [:updated_at, :created_at],
-          :methods => [:indexed_description, :description, :indexed_performance_indicator, :performance_indicator, :target, :indexed_target, :id, :url])
+          :methods => [:indexed_description, :description, :indexed_performance_indicator, :performance_indicator, :target, :indexed_target, :id, :url, :description_error])
   end
 
   def url
     Rails.application.routes.url_helpers.corporate_services_outcome_activity_path(:en,outcome_id,id)
+  end
+
+  def description_error
+    nil
   end
 
   def indexed_target
