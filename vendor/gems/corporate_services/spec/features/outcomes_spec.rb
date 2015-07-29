@@ -161,6 +161,13 @@ feature "actions on existing multiple outcomes", :js => true do
     expect(page.all(".row.outcome .col-md-2.description")[0].text ).to eq "1.1.1 new description"
   end
 
+  scenario "edit to blank description" do
+    page.all(".row.planned_result .row.outcome .col-md-2.description span")[0].click
+    outcome_description_field.set("")
+    expect{ outcome_save_icon.click; sleep(0.3) }.not_to change{ Outcome.first.reload.description }
+    expect(page).to have_selector("#description_error", :text => "You must enter a description")
+  end
+
   scenario "edit one of multiple outcomes, not the first" do
     page.all(".row.planned_result .row.outcome .col-md-2.description span")[1].click
     outcome_description_field.set("new description")

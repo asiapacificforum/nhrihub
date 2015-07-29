@@ -72,6 +72,11 @@ $ ->
   class @InpageEdit
     constructor : (options)->
       @options = options
+      node = options.on
+      if _.isFunction(options.object.validate)
+        validate = true
+      else
+        validate = false
 
       @root =
         if $(@options.on).hasClass('editable_container')
@@ -98,6 +103,9 @@ $ ->
         e.stopPropagation()
         $target = $(e.target)
         if $target.closest('.editable_container').get(0) == @root.get(0)
+          if validate && !@options.object.validate()
+            @show()
+            return
           @context = $target.closest('.editable_container')
           url = @options.object.get('url')
           data = @context.find(':input').serializeArray()

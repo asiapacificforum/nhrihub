@@ -101,6 +101,15 @@ feature "editing strategic priorities", :js => true do
     expect(page).to have_selector("[data-editable_attribute='description'] .no_edit", :text => "edited description")
   end
 
+  scenario "edit to blank description" do
+    edit_icon.click
+    select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
+    fill_in "strategic_priority_description", :with => ""
+    edit_save_icon.click
+    sleep(0.2)
+    expect(page).to have_selector('.new_strategic_priority .error', :text => "Description cannot be blank")
+  end
+
 end
 
 feature "deleting strategic priorities", :js => true do

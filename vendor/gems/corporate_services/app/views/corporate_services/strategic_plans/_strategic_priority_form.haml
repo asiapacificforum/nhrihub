@@ -5,6 +5,7 @@
         .row
           .col-md-2{'data-toggle' => 'edit', 'data-editable_attribute' => 'priority_level'}
             .fade.edit
+              #priority_level_error.error{:style => 'padding-left:6px;', 'data-message' => t('.priority_level_error_message')} {{ priority_level_error }} &nbsp;
               %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: -10px; margin-top: -3px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
                 - priority_level_options.each do |opt|
                   %option{:value => opt[1]}= opt[0]
@@ -12,6 +13,7 @@
               %span= t('.strategic_priority')
           .col-lg-6{'data-toggle' => 'edit', 'data-editable_attribute' => 'description'}
             .fade.edit
+              #description_error.error{:style => "float:left;", 'data-message' => t('.description_error_message')} {{ description_error }} &nbsp;
               %input.form-control#strategic_priority_description{:'data-name' => :description, :name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:40px; height: 25px; margin-top: -3px; font-size: 16px; padding:0px;'}
             .fade.no_edit
               %span {{ description }}
@@ -90,14 +92,14 @@
 %script#show_planned_result_template{:type => 'text/ractive'}
   .row.planned_result.editable_container{:id => "planned_result_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "vertical-align:top"}
     .col-md-2.description{ 'data-toggle' => 'edit', 'data-id' => '{{id}}', :style=>"width:14.2857%"}
+      #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event)'}
           %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style=>"margin-left:16px"}
-        // using the rails form helper foils the ractivjs 2-way binding, which needs a 'value' attribute!
-        %textarea{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]'}
+        %textarea{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]', 'on-keydown' => "remove_description_errors()"}
         .icon{'data-toggle' => 'edit', :style => 'height:20px'}
           %i.fa.fa-remove.fa-lg{:id => "planned_result_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "planned_result_editable{{id}}_edit_save", :style => "margin-left:56px"}
@@ -119,17 +121,13 @@
   .row.new_planned_result
     .col-md-2{:style=>"width:14.2857%"}
       #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
-      %div=text_area :planned_result, :description, 'on-keydown' => "remove_description_errors()",
+      %div
+        %textarea{'on-keydown' => "remove_description_errors()",
             :cols => 24, :rows => 4,
             :id=>'planned_result_description', :placeholder => "Enter description",
-            'data-name' => :description, :name => "planned_result[description]",
-            :'value' => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10; width:100%'
+            :name => "planned_result[description]",
+            :value => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10; width:100%'}
     .col-md-2{:style=>"width:14.2857%"}
-      %div=text_area "planned_result.outcomes", :description,
-            :cols => 24, :rows => 4,
-            :id=>'planned_result_outcomes__description', :placeholder => "Enter description",
-            'data-name' => :description, :name => "planned_result[outcomes_attributes][][description]",
-            :'value' => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10; width:100%'
     .col-md-2{:style=>"width:14.2857%"}
     .col-md-2{:style=>"width:14.2857%"}
     .col-md-2{:style=>"width:14.2857%"}
@@ -160,6 +158,7 @@
       %div
         %textarea{:id=>'new_outcome_description', :placeholder => "Enter description",
           :name => "outcome[description]", 'on-keydown' => "remove_description_errors()",
+          :value => "{{description}}",
           :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10; width:100%'}
   .row
     .col-md-2{:style=>"width:16.6667%"}
@@ -174,6 +173,7 @@
 %script#show_outcome_template{:type => 'text/ractive'}
   .row.outcome.editable_container{:id => "outcome_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-2.description{'data-toggle' => 'edit', :style=>"width:16.6667%"}
+      #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
       .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "outcome_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
@@ -181,7 +181,7 @@
           %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:16px"}
         %textarea{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
-            'data-name' => :description, :name => "outcome[description]", :value => "{{ description }}"}
+            :name => "outcome[description]", :value => "{{ description }}", "on-keydown"=>"remove_description_errors()"}
         .icon{'data-toggle' => 'edit', :style => 'height:16.6667px; background-color:white; top:-2px'}
           %i.fa.fa-remove.fa-lg{:id => "outcome_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
@@ -214,13 +214,19 @@
 
 %script#new_activity_template{:type => 'text/ractive'}
   .row.new_activity
-    .col-md-2.description{:style=>"width:20%"}
+    .col-md-2.description{:style=>"width:20%; z-index:10"}
       #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
-      %textarea{ :id=>'new_activity_description', :placeholder => "Enter description", :name => "activity[description]"}
-    .col-md-2{:style=>"width:20%"}
-      %textarea{ :id=>'new_activity_performance_indicator', :placeholder => "Enter performance indicator", :name => "activity[performance_indicator]"}
-    .col-md-2{:style=>"width:20%"}
-      %textarea{ :id=>'new_activity_target', :placeholder => "Enter target", :name => "activity[target]"}
+      %textarea{ :id=>'new_activity_description', :placeholder => "Enter description",
+        :name => "activity[description]", :style => "z-index:10", "on-keydown"=>"remove_description_errors()",
+        :value => "{{description}}"}
+    .col-md-2{:style=>"width:20%; z-index:10"}
+      %textarea{ :id=>'new_activity_performance_indicator', :placeholder => "Enter performance indicator",
+        :name => "activity[performance_indicator]", :style => "z-index:10",
+        :value => "{{performance_indicator}}"}
+    .col-md-2{:style=>"width:20%; z-index:10"}
+      %textarea{ :id=>'new_activity_target', :placeholder => "Enter target",
+        :name => "activity[target]", :style => "z-index:10",
+        :value => "{{target}}"}
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:20%"}
   .row
@@ -240,6 +246,7 @@
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
           %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:16px"}
+        #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
         %textarea{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
             :name => "activity[description]", :value => "{{ description }}"}
         .icon{'data-toggle' => 'edit', :style => 'height:20px; background-color:white; top:-2px'}
@@ -280,7 +287,6 @@
         url = @parent.get('create_activity_url')
         data = context.find('.row.new_activity :input').serializeArray()
         data.push({name: 'activity[outcome_id]', value : @get('outcome_id')})
-        data = @strip_whitespace(data)
         if @validate(data)
           $.ajax
             type : 'post'
@@ -289,18 +295,10 @@
             dataType : 'json'
             success : @create_activity
             context : @
-      strip_whitespace : (data)->
-        _(data).map (obj)->
-          _(obj).mapObject (val)->
-            if typeof val == 'string'
-              val.trim()
-            else
-              val
       validate : (data) ->
-        message = $('.new_activity #description_error').data('message')
-        field_obj = _(data).find (d)->
-          d.name=="activity[description]"
-        if field_obj.value == ""
+        message = $(@nodes.description_error).data('message')
+        @set('description', @get('description').trim())
+        if @get('description') == ""
           @set("description_error",message)
           false
         else
@@ -321,6 +319,8 @@
           success : @update_activity
       update_activity : (resp, statusText, jqxhr)->
         @parent.set(resp)
+      remove_description_errors : ->
+        @set("description_error","")
 
 
     Outcome = Ractive.extend
@@ -337,8 +337,7 @@
         url = @parent.get('create_outcome_url')
         data = context.find('.row#new_outcome :input').serializeArray()
         data.push({name: 'outcome[planned_result_id]', value : @get('planned_result_id')})
-        data = @strip_whitespace(data)
-        if @validate(data)
+        if @validate()
           $.ajax
             type : 'post'
             url : url
@@ -346,18 +345,10 @@
             dataType : 'json'
             success : @create_outcome
             context : @
-      strip_whitespace : (data)->
-        _(data).map (obj)->
-          _(obj).mapObject (val)->
-            if typeof val == 'string'
-              val.trim()
-            else
-              val
-      validate : (data) ->
-        message = $('#new_outcome #description_error').data('message')
-        field_obj = _(data).find (d)->
-          d.name=="outcome[description]"
-        if field_obj.value == ""
+      validate : ->
+        message = $(@nodes.description_error).data('message')
+        @set('description', @get('description').trim())
+        if @get('description') == ""
           @set("description_error",message)
           false
         else
@@ -402,7 +393,6 @@
         url = @parent.get('create_planned_result_url')
         data = context.find('.new_planned_result :input').serializeArray()
         data.push({name: 'planned_result[strategic_priority_id]', value : @get('strategic_priority_id')})
-        data = @strip_whitespace(data)
         if @.validate(data)
           $.ajax
             type : 'post'
@@ -411,18 +401,10 @@
             dataType : 'json'
             success : @create_pr
             context : @
-      strip_whitespace : (data)->
-        _(data).map (obj)->
-          _(obj).mapObject (val)->
-            if typeof val == 'string'
-              val.trim()
-            else
-              val
-      validate : (data) ->
-        message = $('.new_planned_result #description_error').data('message')
-        field_obj = _(data).find (d)->
-          d.name=="planned_result[description]"
-        if field_obj.value == ""
+      validate : ->
+        message = $(@nodes.description_error).data('message')
+        @set('description', @get('description').trim())
+        if @get('description') == ""
           @set("description_error",message)
           false
         else
@@ -528,7 +510,6 @@
       save : ->
         data = @.form().serializeArray()
         url = @.form().attr('action')
-        data = @strip_whitespace(data)
         if @.validate(data)
           $.post(url, data, @.update_sp, 'json')
       update_sp : (data,textStatus,jqxhr)->
@@ -537,24 +518,17 @@
         data = {'_method' : 'delete'}
         # TODO if confirm
         $.post(@.get('url'), data, @.update_sp, 'json')
-      strip_whitespace : (data)->
-        _(data).map (obj)->
-          _(obj).mapObject (val)->
-            if typeof val == 'string'
-              val.trim()
-            else
-              val
-      validate : (data) ->
-        pl = @._validate(data,'priority_level')
-        desc = @._validate(data,'description')
+      validate : ->
+        pl = @._validate('priority_level')
+        desc = @._validate('description')
         pl && desc
-      _validate : (data, field)->
-        message = $('#'+field+'_error').data('message')
-        reg = new RegExp(field)
-        field_obj = _(data).find (d)->
-                      reg.test(d.name)
-        if field_obj.value == ""
-          @.set(field+"_error",message)
+      _validate : (field)->
+        if _.isString(@get(field))
+          @set(field, @get(field).trim())
+        value = @get(field)
+        message = $(@nodes[field+'_error']).data('message')
+        if value == "" || _.isNull(value)
+          @set(field+"_error",message)
           false
         else
           true

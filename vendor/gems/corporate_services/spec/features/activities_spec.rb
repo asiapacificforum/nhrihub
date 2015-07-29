@@ -130,6 +130,14 @@ feature "actions on existing activities", :js => true do
     expect(page.all(activity_selector+".target .no_edit span:first-of-type")[0].text ).to eq "1.1.1.1 total satisfaction"
   end
 
+  scenario "edit to blank description" do
+    page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[0].click
+    activity_description_field.first.set("")
+    expect{ activity_save_icon.click; sleep(0.2) }.not_to change{ Activity.first.description }
+    expect(page.all(activity_selector+".description .no_edit span:first-of-type")[0].text ).to eq "1.1.1.1 work hard"
+    expect(page).to have_selector("#description_error", :text => "You must enter a description")
+  end
+
   scenario "edit one of multiple activities, not the first" do
     page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[1].click
     activity_description_field.last.set("new description")

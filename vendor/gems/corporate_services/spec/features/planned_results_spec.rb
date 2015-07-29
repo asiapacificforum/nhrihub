@@ -35,11 +35,8 @@ feature "populate strategic plan contents", :js => true do
   scenario "add planned results item" do
     expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => "Achieve nirvana"
-    fill_in "planned_result_outcomes__description", :with => "Total enlightenment"
-    expect{save_planned_result.click; sleep(0.2)}.to change{PlannedResult.count}.from(0).to(1).
-                                                       and change{Outcome.count}.from(0).to(1)
+    expect{save_planned_result.click; sleep(0.2)}.to change{PlannedResult.count}.from(0).to(1)
     expect(page).to have_selector(".table#planned_results .row.planned_result .col-md-2.description", :text => "1.1 Achieve nirvana")
-    expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2.description", :text => "1.1.1 Total enlightenment")
   end
 
   scenario "add multiple planned results" do
@@ -87,6 +84,13 @@ feature "actions on existing planned results", :js => true do
     fill_in('planned_result_description', :with => "new description")
     expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ PlannedResult.first.description }.to("new description")
     expect(page.find(".planned_result.editable_container .col-md-2.description .no_edit span:first-of-type").text ).to eq "1.1 new description"
+  end
+
+  scenario "edit to blank description" do
+    page.find(".row.planned_result .col-md-2.description span").click
+    fill_in('planned_result_description', :with => "")
+    expect{ planned_result_save_icon.click; sleep(0.2) }.not_to change{ PlannedResult.first.description }
+    expect(page).to have_selector("#description_error", :text => "You must enter a description")
   end
 end
 
