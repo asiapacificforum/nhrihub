@@ -49,7 +49,7 @@ $ ->
       $(@input()).closest('tr').css('height',height)
 
     set_field_width : ->
-      @input_field().css('width',@text_width()+10)
+      @input_field().css('width','100%')
 
     input_field : ->
       @input().find('input')

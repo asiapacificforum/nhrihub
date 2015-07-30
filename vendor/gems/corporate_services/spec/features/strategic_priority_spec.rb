@@ -105,9 +105,8 @@ feature "editing strategic priorities", :js => true do
     edit_icon.click
     select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
     fill_in "strategic_priority_description", :with => ""
-    edit_save_icon.click
-    sleep(0.2)
-    expect(page).to have_selector('.new_strategic_priority .error', :text => "Description cannot be blank")
+    expect{ edit_save_icon.click; sleep(0.2) }.not_to change{StrategicPriority.first.description}
+    expect(page).to have_selector('#description_error', :text => "You must enter a description")
   end
 
 end

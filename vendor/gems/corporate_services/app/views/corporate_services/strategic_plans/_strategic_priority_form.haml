@@ -4,31 +4,31 @@
       %h4.panel-title.clearfix
         .row
           .col-md-2{'data-toggle' => 'edit', 'data-editable_attribute' => 'priority_level'}
-            .fade.edit
-              #priority_level_error.error{:style => 'padding-left:6px;', 'data-message' => t('.priority_level_error_message')} {{ priority_level_error }} &nbsp;
-              %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: -10px; margin-top: -3px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
+            #priority_level_error.error{:style => 'padding-left:6px;', 'data-message' => t('.priority_level_error_message')} {{ priority_level_error }} &nbsp;
+            .fade.no_edit.in
+              %span= t('.strategic_priority')
+            .fade.edit{:style=>"top:17px"}
+              %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: 6px; margin-top: -2px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
                 - priority_level_options.each do |opt|
                   %option{:value => opt[1]}= opt[0]
-            .fade.no_edit
-              %span= t('.strategic_priority')
-          .col-lg-6{'data-toggle' => 'edit', 'data-editable_attribute' => 'description'}
-            .fade.edit
-              #description_error.error{:style => "float:left;", 'data-message' => t('.description_error_message')} {{ description_error }} &nbsp;
-              %input.form-control#strategic_priority_description{:'data-name' => :description, :name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:40px; height: 25px; margin-top: -3px; font-size: 16px; padding:0px;'}
-            .fade.no_edit
+          .col-md-6{'data-toggle' => 'edit', 'data-editable_attribute' => 'description'}
+            #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }} &nbsp;
+            .fade.no_edit.in
               %span {{ description }}
-          .col-lg-1{:style => "text-align:center; font-size:14px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
+            .fade.edit{:style=>"width:100%; top:17px"}
+              %input.form-control#strategic_priority_description{:'data-name' => :description, :name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:100%; font-size: 16px; margin-top:-8px; margin-left:2px'}
+          .col-md-1{:style => "text-align:center; font-size:14px; top:17px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
             %i.fa.fa-folder-o.fa-lg#toggle
-          .col-lg-1.icon{:style => "text-align:center; font-size:14px; height:20px", 'data-toggle' => 'edit'}
+          .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px; top:17px;", 'data-toggle' => 'edit'}
             .fade.edit
               %i.fa.fa-remove.fa-lg{:style => "position:relative; left:30px;", :id => "strategic_priority_editable{{id}}_edit_cancel"}
-          .col-lg-1.icon{:style => "text-align:center; font-size:14px;", 'data-toggle' => 'edit'}
+          .col-md-1.icon{:style => "text-align:center; font-size:14px; top:17px", 'data-toggle' => 'edit'}
             .fade.edit
-              %i.fa.fa-check.fa-lg{:id => "strategic_priority_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
-            .fade.no_edit
+              %i.fa.fa-check.fa-lg{:id => "strategic_priority_editable{{id}}_edit_save", :style => "position:relative; left:34px;"}
+            .fade.no_edit.in
               %i.fa.fa-pencil-square-o.fa-lg{:id => "strategic_priority_editable{{id}}_edit_start"}
-          .col-lg-1{:style => "text-align:center; font-size:14px;"}
-            %i.fa.fa-trash-o.fa-sm#delete{'on-click' => 'delete()'}
+          .col-md-1{:style => "text-align:center; font-size:14px; top:17px;"}
+            %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()'}
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
       .panel-body.table#planned_results
         .row.heading
