@@ -22,10 +22,12 @@ feature "populate plannned result activities", :js => true do
       fill_in 'new_activity_description', :with => "think really hard"
       fill_in 'new_activity_performance_indicator', :with => "steam rising"
       fill_in 'new_activity_target', :with => "88% achievement"
+      fill_in 'new_activity_progress', :with => "nearly finished"
       expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(0).to(1)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.1 think really hard")
       expect(page).to have_selector(activity_selector + ".performance_indicator", :text => "1.1.1.1 steam rising")
       expect(page).to have_selector(activity_selector + ".target", :text => "1.1.1.1 88% achievement")
+      expect(page).to have_selector(activity_selector + ".activity_progress", :text => "nearly finished")
     end
 
     scenario "try to save activity with blank description field" do
@@ -46,19 +48,23 @@ feature "populate plannned result activities", :js => true do
       fill_in 'new_activity_description', :with => "think really hard"
       fill_in 'new_activity_performance_indicator', :with => "steam rising"
       fill_in 'new_activity_target', :with => "88% achievement"
+      fill_in 'new_activity_progress', :with => "nearly finished"
       expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(0).to(1)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.1 think really hard")
       expect(page).to have_selector(activity_selector + ".performance_indicator", :text => "1.1.1.1 steam rising")
       expect(page).to have_selector(activity_selector + ".target", :text => "1.1.1.1 88% achievement")
+      expect(page).to have_selector(activity_selector + ".activity_progress", :text => "nearly finished")
       add_activity.click
       #expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "ruminate mightily"
       fill_in 'new_activity_performance_indicator', :with => "great insight"
       fill_in 'new_activity_target', :with => "full employment"
+      fill_in 'new_activity_progress', :with => "completed"
       expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(1).to(2)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.2 ruminate mightily")
       expect(page).to have_selector(activity_selector + ".performance_indicator", :text => "1.1.1.2 great insight")
       expect(page).to have_selector(activity_selector + ".target", :text => "1.1.1.2 full employment")
+      expect(page).to have_selector(activity_selector + ".activity_progress", :text => "completed")
     end
   end
 
@@ -79,10 +85,12 @@ feature "populate plannned result activities", :js => true do
       fill_in 'new_activity_description', :with => "work really hard"
       fill_in 'new_activity_performance_indicator', :with => "great insight"
       fill_in 'new_activity_target', :with => "full employment"
+      fill_in 'new_activity_progress', :with => "completed"
       expect{save_activity.click; sleep(0.2)}.to change{Activity.count}.from(1).to(2)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.2 work really hard")
       expect(page).to have_selector(activity_selector + ".performance_indicator", :text => "1.1.1.2 great insight")
       expect(page).to have_selector(activity_selector + ".target", :text => "1.1.1.2 full employment")
+      expect(page).to have_selector(activity_selector + ".activity_progress", :text => "completed")
     end
   end
 
@@ -124,10 +132,12 @@ feature "actions on existing activities", :js => true do
     activity_description_field.first.set("new description")
     activity_performance_indicator_field.first.set("new performance indicator")
     activity_target_field.first.set("total satisfaction")
+    activity_progress_field.first.set("half completed")
     expect{ activity_save_icon.click; sleep(0.2) }.to change{ Activity.first.description }.to "new description"
     expect(page.all(activity_selector+".description .no_edit span:first-of-type")[0].text ).to eq "1.1.1.1 new description"
     expect(page.all(activity_selector+".performance_indicator .no_edit span:first-of-type")[0].text ).to eq "1.1.1.1 new performance indicator"
     expect(page.all(activity_selector+".target .no_edit span:first-of-type")[0].text ).to eq "1.1.1.1 total satisfaction"
+    expect(page.all(activity_selector + ".activity_progress", :text => "completed")[0].text).to eq "half completed"
   end
 
   scenario "edit to blank description" do
@@ -143,10 +153,12 @@ feature "actions on existing activities", :js => true do
     activity_description_field.last.set("new description")
     activity_performance_indicator_field.last.set("new performance indicator")
     activity_target_field.last.set("total satisfaction")
+    activity_progress_field.last.set("half completed")
     expect{ activity_save_icon.click; sleep(0.2) }.to change{ Activity.last.description }.to "new description"
     expect(page.all(activity_selector+".description .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 new description"
     expect(page.all(activity_selector+".performance_indicator .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 new performance indicator"
     expect(page.all(activity_selector+".target .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 total satisfaction"
+    expect(page.all(activity_selector + ".activity_progress .no_edit span:first-of-type")[1].text).to eq "half completed"
   end
 end
 
@@ -160,6 +172,10 @@ end
 
 def activity_performance_indicator_field
   page.all(activity_selector + ".performance_indicator textarea").select{|i| i['id'] && i['id'].match(/activity_\d_performance_indicator/)}
+end
+
+def activity_progress_field
+  page.all(activity_selector + ".activity_progress textarea").select{|i| i['id'] && i['id'].match(/activity_\d_progress/)}
 end
 
 def activity_target_field

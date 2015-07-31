@@ -31,7 +31,7 @@ class CorporateServices::Outcomes::ActivitiesController < ApplicationController
 
   private
   def activity_params
-    params.require(:activity).permit(:description, :outcome_id, :performance_indicator, :target)
+    params.require(:activity).permit(:description, :outcome_id, :performance_indicator, :target, :progress)
   end
 
 end

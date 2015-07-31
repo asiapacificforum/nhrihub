@@ -3,7 +3,7 @@
     .panel-heading.strategic_priority_title
       %h4.panel-title.clearfix
         .row
-          .col-md-2{'data-toggle' => 'edit', 'data-editable_attribute' => 'priority_level'}
+          .col-md-2{'data-toggle' => 'edit'}
             #priority_level_error.error{:style => 'padding-left:6px;', 'data-message' => t('.priority_level_error_message')} {{ priority_level_error }} &nbsp;
             .fade.no_edit.in
               %span= t('.strategic_priority')
@@ -11,12 +11,12 @@
               %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: 6px; margin-top: -2px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
                 - priority_level_options.each do |opt|
                   %option{:value => opt[1]}= opt[0]
-          .col-md-6{'data-toggle' => 'edit', 'data-editable_attribute' => 'description'}
+          .col-md-6{'data-toggle' => 'edit'}
             #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }} &nbsp;
             .fade.no_edit.in
               %span {{ description }}
             .fade.edit{:style=>"width:100%; top:17px"}
-              %input.form-control#strategic_priority_description{:'data-name' => :description, :name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:100%; font-size: 16px; margin-top:-8px; margin-left:2px'}
+              %input.form-control#strategic_priority_description{:name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:100%; font-size: 16px; margin-top:-8px; margin-left:2px', 'on-keydown' => "remove_description_errors()"}
           .col-md-1{:style => "text-align:center; font-size:14px; top:17px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
             %i.fa.fa-folder-o.fa-lg#toggle
           .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px; top:17px;", 'data-toggle' => 'edit'}
@@ -37,8 +37,8 @@
           .col-md-2{:style=>"width:14.2857%"}= t('.activities')
           .col-md-2{:style=>"width:14.2857%"}= t('.perf_indicators')
           .col-md-2{:style=>"width:14.2857%"}= t('.target')
-          .col-md-2{:style=>"width:14.2857%"}= t('.reminders')
           .col-md-2{:style=>"width:14.2857%"}= t('.progress')
+          .col-md-2{:style=>"width:14.2857%"}= t('.reminders')
         {{#planned_results}}
         <pr description="{{description}}" indexed_description="{{indexed_description}}" id="{{id}}" outcomes="{{outcomes}}"/>
         {{/planned_results}}
@@ -93,7 +93,7 @@
   .row.planned_result.editable_container{:id => "planned_result_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "vertical-align:top"}
     .col-md-2.description{ 'data-toggle' => 'edit', 'data-id' => '{{id}}', :style=>"width:14.2857%"}
       #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
-      .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
+      .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event)'}
@@ -174,7 +174,7 @@
   .row.outcome.editable_container{:id => "outcome_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-2.description{'data-toggle' => 'edit', :style=>"width:16.6667%"}
       #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
-      .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
+      .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "outcome_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
@@ -187,7 +187,7 @@
           %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2{:style=>"width:83.3333%"}
       {{#activities}}
-      <activity outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicator="{{performance_indicator}}" indexed_performance_indicator="{{indexed_performance_indicator}}" target="{{target}}" indexed_target="{{indexed_target}}" \>
+      <activity outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicator="{{performance_indicator}}" indexed_performance_indicator="{{indexed_performance_indicator}}" target="{{target}}" indexed_target="{{indexed_target}}" progress="{{progress}}"\>
       {{/activities}}
       {{^activities}}
       .col-md-2{:style=>"width:20%"}
@@ -227,7 +227,10 @@
       %textarea{ :id=>'new_activity_target', :placeholder => "Enter target",
         :name => "activity[target]", :style => "z-index:10",
         :value => "{{target}}"}
-    .col-md-2{:style=>"width:20%"}
+    .col-md-2{:style=>"width:20%; z-index:10"}
+      %textarea{ :id=>'new_activity_progress', :placeholder => "Enter progress",
+        :name => "activity[progress]", :style => "z-index:10",
+        :value => "{{progress}}"}
     .col-md-2{:style=>"width:20%"}
   .row
     .col-md-2.description{:style=>"width:20%"}
@@ -241,7 +244,7 @@
 %script#show_activity_template{:type => 'text/ractive'}
   .row.activity.editable_container{:id => "activity_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-2.description{'data-toggle' => 'edit', :style=>"width:20%"}
-      .fade.no_edit{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
+      .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
           %i.fa.fa-sm.fa-trash-o
@@ -253,18 +256,23 @@
           %i.fa.fa-remove.fa-lg{:id => "activity_editable{{id}}_edit_cancel", :style => "margin-left:36px"}
           %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2.performance_indicator{'data-toggle'=>'edit', :style=>"width:20%"}
-      .fade.no_edit
+      .fade.no_edit.in
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_performance_indicator }}
       .fade.edit{:style => "margin-left:16px"}
         %textarea{ :id=>'activity_{{id}}_performance_indicator', :placeholder => "Enter performance indicator",
             :name => "activity[performance_indicator]", :value => "{{ performance_indicator }}"}
     .col-md-2.target{'data-toggle'=>'edit', :style=>"width:20%"}
-      .fade.no_edit
+      .fade.no_edit.in
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_target }}
       .fade.edit{:style => "margin-left:16px"}
         %textarea{ :id=>'activity_{{id}}_target', :placeholder => "Enter target",
             :name => "activity[target]", :value => "{{ target }}"}
-    .col-md-2{:style=>"width:20%"}
+    .col-md-2.activity_progress{'data-toggle'=>'edit', :style=>"width:20%"}
+      .fade.no_edit.in
+        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ progress }}
+      .fade.edit{:style => "margin-left:16px"}
+        %textarea{ :id=>'activity_{{id}}_progress', :placeholder => "Enter progress",
+            :name => "activity[progress]", :value => "{{ progress }}"}
     .col-md-2{:style=>"width:20%"}
 
 :coffeescript

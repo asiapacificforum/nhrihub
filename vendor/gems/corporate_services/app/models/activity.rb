@@ -9,7 +9,7 @@ class Activity < ActiveRecord::Base
 
   def as_json(options={})
     super(:except => [:updated_at, :created_at],
-          :methods => [:indexed_description, :description, :indexed_performance_indicator, :performance_indicator, :target, :indexed_target, :id, :url, :description_error])
+          :methods => [:indexed_description, :description, :indexed_performance_indicator, :performance_indicator, :target, :indexed_target, :id, :url, :description_error, :progress])
   end
 
   def url
