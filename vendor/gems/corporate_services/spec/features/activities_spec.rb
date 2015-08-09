@@ -33,6 +33,7 @@ feature "populate plannned result activities", :js => true do
     scenario "try to save activity with blank description field" do
       #expect(page).not_to have_selector("i.new_activity")
       expect{save_activity.click; sleep(0.2)}.not_to change{Activity.count}
+      debugger
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
@@ -65,6 +66,10 @@ feature "populate plannned result activities", :js => true do
       expect(page).to have_selector(activity_selector + ".performance_indicator", :text => "1.1.1.2 great insight")
       expect(page).to have_selector(activity_selector + ".target", :text => "1.1.1.2 full employment")
       expect(page).to have_selector(activity_selector + ".activity_progress", :text => "completed")
+      expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.1 think really hard")
+      expect(page).to have_selector(activity_selector + ".performance_indicator", :text => "1.1.1.1 steam rising")
+      expect(page).to have_selector(activity_selector + ".target", :text => "1.1.1.1 88% achievement")
+      expect(page).to have_selector(activity_selector + ".activity_progress", :text => "nearly finished")
     end
   end
 

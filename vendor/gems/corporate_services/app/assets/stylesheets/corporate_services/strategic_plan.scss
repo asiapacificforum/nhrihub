@@ -16,3 +16,14 @@
 select.priority_level {
   @extend .sp-select;
 }
+
+.alarm_icon {
+  background-image: url("corporate_services/alarm.png");
+  background-repeat: no-repeat;
+  height: 16px;
+  cursor: pointer;
+}
+
+.topaligned {
+  vertical-align: top;
+}

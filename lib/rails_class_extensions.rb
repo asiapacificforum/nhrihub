@@ -104,3 +104,24 @@ private
   end
 
 end
+
+module ActionView
+  module Helpers
+    module Tags # :nodoc:
+      class TextArea < Base # :nodoc:
+        def render
+          options = @options.stringify_keys
+          add_default_name_and_id(options)
+
+          if size = options.delete("size")
+            options["cols"], options["rows"] = size.split("x") if size.respond_to?(:split)
+          end
+
+          # leave the value attribute in the tag instead of removing it
+          content_tag("textarea", options.fetch("value") { value_before_type_cast(object) }, options)
+        end
+      end
+    end
+  end
+end
+

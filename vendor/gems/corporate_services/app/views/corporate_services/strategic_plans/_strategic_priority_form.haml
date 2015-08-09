@@ -3,7 +3,7 @@
     .panel-heading.strategic_priority_title
       %h4.panel-title.clearfix
         .row
-          .col-md-2{'data-toggle' => 'edit'}
+          .col-md-2.priority_level{'data-toggle' => 'edit'}
             #priority_level_error.error{:style => 'padding-left:6px;', 'data-message' => t('.priority_level_error_message')} {{ priority_level_error }} &nbsp;
             .fade.no_edit.in
               %span= t('.strategic_priority')
@@ -11,7 +11,7 @@
               %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: 6px; margin-top: -2px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
                 - priority_level_options.each do |opt|
                   %option{:value => opt[1]}= opt[0]
-          .col-md-6{'data-toggle' => 'edit'}
+          .col-md-6.description{'data-toggle' => 'edit'}
             #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }} &nbsp;
             .fade.no_edit.in
               %span {{ description }}
@@ -273,7 +273,70 @@
       .fade.edit{:style => "margin-left:16px"}
         %textarea{ :id=>'activity_{{id}}_progress', :placeholder => "Enter progress",
             :name => "activity[progress]", :value => "{{ progress }}"}
-    .col-md-2{:style=>"width:20%"}
+    .col-md-2.actions{:style=>"width:20%"}
+      %div.alarm_icon{'on-click' => "show_reminders_panel()"}
+    <modal-custom id="reminders_modal" type="lg">
+    <modal-header>
+    <h4>Reminders<modal-close/></h4>
+    </modal-header>
+    <modal-body>
+    <i class="fa fa-plus fa-sm" id="add_reminder" on-click='new_reminder()'/>
+    #reminders
+      .row
+        %h5.col-md-1= t('.type')
+        %h5.col-md-2= t('.next')
+        %h5.col-md-2= t('.previous')
+        %h5.col-md-5= t('.text')
+        %h5.col-md-2= t('.recipients')
+      {{#reminders}}
+      <reminder reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next="{{next}}" previous="{{previous}}" recipients="{{recipients}}"/>
+      {{/reminders}}
+    </modal-body>
+    </modal-custom>
+
+%script#reminder_template{:type => 'text/ractive'}
+  {{#if !persisted }}
+  {{> new_reminder_template }}
+  {{else}}
+  {{> show_reminder_template }}
+  {{/if}}
+
+%script#show_reminder_template{:type => 'text/ractive'}
+  .reminder.row
+    .col-md-1.reminder_type {{reminder_type}}
+    .col-md-2.next {{ next }}
+    .col-md-2.previous {{ previous }}
+    .col-md-5.text {{text}}
+    .col-md-2.recipients
+      {{#recipients}}
+      <p class='recipient'>before {{first_last_name}} after</p>
+      {{/recipients}}
+
+%script#new_reminder_template{:type => 'text/ractive'}
+  .form-horizontal#new_reminder
+    .form-group#reminder_type{:class => '{{#reminder_type_error}}has-error{{/}}'}
+      <b-label class="col-sm-2">Type</b-label>
+      .col-sm-10
+        =select :reminder, :reminder_type, options_for_select(reminder_type_options), {:prompt => "select type"}, {:class => 'form-control', :style => "width:31%", :value => '{{reminder_type}}', 'on-change'=>"remove_errors('reminder_type')"}
+        %span.help-block= t('.reminder_type_error_message')
+    .form-group
+      <b-label class="col-sm-2">Start date</b-label>
+      .col-sm-10
+        =date_select :reminder, :start_date, {:start_year => Date.today.year}, {:class=>'form-control'}
+    .form-group#text{:class => '{{#text_error}}has-error{{/}}'}
+      <b-label class="topaligned col-sm-2">Text</b-label>
+      .col-sm-10
+        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
+        %span.help-block= t('.reminder_text_error_message')
+    .form-group#recipients{:class => '{{#recipients_error}}has-error{{/}}'}
+      <b-label class="topaligned col-sm-2">Recipient(s)</b-label>
+      .col-sm-10
+        =select :reminder, :user_ids, options_for_select(recipients_options), {}, {:multiple => true, :class=>'form-control', :style => "width:24%", :value => '{{recipients}}', 'on-change'=>"remove_errors('recipients')"}
+        %span.help-block= t('.reminder_recipients_error_message')
+    .form-group
+      .col-sm-10.col-sm-offset-2
+        <i class="fa fa-remove fa-lg" style='padding-left:30px' data-toggle="tooltip" data-placement="bottom" title="cancel"/>
+        <i class="fa fa-check fa-lg" id="save_reminder" style='padding-left:60px' on-click='save_reminder()' data-toggle="tooltip" data-placement="bottom" title="save"/>
 
 :coffeescript
   $ ->
@@ -283,8 +346,51 @@
 
     InpageEdit = @InpageEdit
 
+    Reminder = Ractive.extend
+      template : '#reminder_template'
+      computed :
+        persisted : ->
+          !isNaN(parseInt(@get('id')))
+      save_reminder : ->
+        context = $(@el)
+        url = @parent.get('create_reminder_url')
+        data = context.find('#new_reminder :input').serializeArray()
+        data.push({name: 'reminder[activity_id]', value : @get('activity_id')})
+        if @validate(data)
+          $.ajax
+            type : 'post'
+            url : url
+            data : data
+            dataType : 'json'
+            success : @create_reminder
+            context : @
+      validate : ->
+        type = @_validate('reminder_type')
+        text = @_validate('text')
+        recipients = @_validate('recipients')
+        type && text && recipients
+      _validate : (field)->
+        if _.isString(@get(field))
+          @set(field, @get(field).trim())
+        value = @get(field)
+        if _.isArray(value) && value.length == 0
+          @set(field+'_error',true)
+          false
+        else if value == "" || _.isNull(value)
+          @set(field+'_error',true)
+          false
+        else
+          true
+      create_reminder : (response, statusText, jqxhr)->
+        console.log response[0].recipients[0].first_last_name
+        @parent.set('reminders',response)
+      remove_errors : (field)->
+        @set(field+"_error",false)
+
     Activity = Ractive.extend
       template : '#activity_template'
+      components :
+        reminder : Reminder
       computed :
         persisted : ->
           !isNaN(parseInt(@get('id')))
@@ -329,7 +435,11 @@
         @parent.set(resp)
       remove_description_errors : ->
         @set("description_error","")
-
+      show_reminders_panel : ->
+        $('#reminders_modal').modal('show')
+      new_reminder : ->
+        @off('click',@new_reminder)
+        @unshift('reminders',{id:null, type:null, frequency:null, text:'', activity_id:@get('id')})
 
     Outcome = Ractive.extend
       template : '#outcome_template'
@@ -380,7 +490,7 @@
       update_pr : (resp, statusText, jqxhr)->
         @parent.set(resp)
       new_activity : ->
-        @push('activities',{description : '', indexed_description: '', performance_indicator: '', target: '', id : null, outcome_id : @get('id'), url:null})
+        @push('activities',{description : '', indexed_description: '', performance_indicator: '', target: '', id : null, outcome_id : @get('id'), url:null, description_error:"", progress:""})
       remove_activity_form : ->
         @pop('activities')
 
@@ -438,7 +548,7 @@
       update_all_pr : (response, statusText, jqxhr)->
         @parent.set('planned_results',response)
       new_outcome : ->
-        @push('outcomes',{description : '', indexed_description: '', id : null, planned_result_id : @get('id'), url:null})
+        @push('outcomes',{description : '', indexed_description: '', id : null, planned_result_id : @get('id'), url:null, description_error:""})
         @hide_add_outcome()
       remove_outcome_form : ->
         @pop('outcomes')
@@ -510,7 +620,7 @@
         persisted : ->
           !isNaN(parseInt(@.get('id')))
       new_planned_result: ->
-        @.push('planned_results', {id : null, description : "", strategic_priority_id : @.get('id')})
+        @.push('planned_results', {id : null, description : "", strategic_priority_id : @.get('id'), description_error:""})
       cancel : ->
         @.parent.get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
       form : ->
@@ -527,8 +637,8 @@
         # TODO if confirm
         $.post(@.get('url'), data, @.update_sp, 'json')
       validate : ->
-        pl = @._validate('priority_level')
-        desc = @._validate('description')
+        pl = @_validate('priority_level')
+        desc = @_validate('description')
         pl && desc
       _validate : (field)->
         if _.isString(@get(field))
@@ -569,5 +679,3 @@
         # of if the most recent is persisted
         if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
           strategic_plan.unshift('strategic_priorities', {id:null, description: '', priority_level:null} )
-
-

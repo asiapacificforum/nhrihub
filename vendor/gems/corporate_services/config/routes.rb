@@ -22,6 +22,9 @@ Rails.application.routes.draw do
       resources :outcomes do
         resources :activities, :to => "outcomes/activities"
       end
+      resources :activities do
+        resources :reminders, :to => "activities/reminders"
+      end
       get 'admin', :to => "admin#index"
     end
   end

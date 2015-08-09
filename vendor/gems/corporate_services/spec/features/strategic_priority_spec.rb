@@ -11,7 +11,7 @@ feature "adding strategic priorities", :js => true do
 
   scenario "add strategic priority" do
     add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "The application of good governance by public authorities"})
-    expect(page).to have_selector("[data-editable_attribute='description'] .no_edit", :text => "The application of good governance by public authorities")
+    expect(page).to have_selector(".strategic_priority_title .description .no_edit span", :text => "The application of good governance by public authorities")
   end
 
   scenario "filling-in the strategic priority description field" do
@@ -66,17 +66,17 @@ feature "strategic plan multiple strategic priorities", :js => true do
   scenario "add second/lower strategic priority, it's inserted below" do
     add_strategic_priority({:priority_level => "Strategic Priority 2", :description => "We gotta improve"})
     sleep(0.1)
-    expect(page.all("[data-editable_attribute='description'] .no_edit").map(&:text).first).to eq "Gonna do things betta"
-    expect(page.all("[data-editable_attribute='description'] .no_edit").map(&:text).last).to eq "We gotta improve"
+    expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).first).to eq "Gonna do things betta"
+    expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).last).to eq "We gotta improve"
   end
 
   scenario "add a second strategic priority that re-orders existing priorities" do
     add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "We gotta improve"})
     sleep(0.1)
-    expect(page.all("[data-editable_attribute='priority_level'] .no_edit").map(&:text).first).to eq "Strategic Priority 1:"
-    expect(page.all("[data-editable_attribute='description'] .no_edit").map(&:text).first).to eq "We gotta improve"
-    expect(page.all("[data-editable_attribute='priority_level'] .no_edit").map(&:text).last).to eq "Strategic Priority 2:"
-    expect(page.all("[data-editable_attribute='description'] .no_edit").map(&:text).last).to eq "Gonna do things betta"
+    expect(page.all(".strategic_priority_title .priority_level .no_edit span").map(&:text).first).to eq "Strategic Priority 1:"
+    expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).first).to eq "We gotta improve"
+    expect(page.all(".strategic_priority_title .priority_level .no_edit span").map(&:text).last).to eq "Strategic Priority 2:"
+    expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).last).to eq "Gonna do things betta"
   end
 end
 
@@ -97,8 +97,8 @@ feature "editing strategic priorities", :js => true do
     edit_save_icon.click
     sleep(0.2)
 
-    expect(page).to have_selector("[data-editable_attribute='priority_level'] .no_edit", :text => "Strategic Priority 2:")
-    expect(page).to have_selector("[data-editable_attribute='description'] .no_edit", :text => "edited description")
+    expect(page).to have_selector(".strategic_priority_title .priority_level .no_edit span", :text => "Strategic Priority 2:")
+    expect(page).to have_selector(".strategic_priority_title .description .no_edit span", :text => "edited description")
   end
 
   scenario "edit to blank description" do

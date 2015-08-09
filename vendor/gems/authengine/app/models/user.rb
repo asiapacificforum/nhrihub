@@ -55,6 +55,7 @@ class User < ActiveRecord::Base
   belongs_to :organization
   has_many :sessions
   has_many :internal_documents
+  has_and_belongs_to_many :reminders
 
   before_save :encrypt_password
   before_create :make_activation_code
@@ -97,7 +98,7 @@ class User < ActiveRecord::Base
   alias_method :to_s, :first_last_name
 
   def as_json(options={})
-    first_last_name
+    super(:except => [:created_at, :updated_at], :only =>[], :methods => [:first_last_name])
   end
 
   def initials

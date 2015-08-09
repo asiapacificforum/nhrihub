@@ -14,5 +14,18 @@ module CorporateServices
         ["Strategic Priority #{i}",i]
       end
     end
+
+    def reminder_type_options
+      [t(".one-time"),
+       t(".weekly"),
+       t(".monthly"),
+       t(".quarterly"),
+       t(".semi-annually"),
+       t(".annually")]
+    end
+
+    def recipients_options
+      User.all.collect{|u| [u.first_last_name,u.id]}
+    end
   end
 end

@@ -29,3 +29,32 @@ h1 {
 .table.borderless td{
   border-top: none;
 }
+
+// display date-select inputs in single line
+select.form-control[id$=_1i] {
+  display: inline-block;
+  width: 11%;
+}
+
+select.form-control[id$=_2i] {
+  display: inline-block;
+  width: 12%;
+}
+
+select.form-control[id$=_3i] {
+  display: inline-block;
+  width: 7%;
+}
+
+// show the error messages inline with the input
+.form-group:not(.has-error){
+  span.help-block {
+    display : none;
+  }
+}
+
+.form-group.has-error{
+  textarea, select, span.help-block {
+    display : inline-block;
+  }
+}

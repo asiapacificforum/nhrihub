@@ -1,5 +1,6 @@
 class Activity < ActiveRecord::Base
   belongs_to  :outcome
+  has_many :reminders, :autosave => true, :dependent => :destroy
   default_scope ->{ order(:id) } # this naturally orders by index
 
   # strip index if user has entered it
@@ -8,8 +9,24 @@ class Activity < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super(:except => [:updated_at, :created_at],
-          :methods => [:indexed_description, :description, :indexed_performance_indicator, :performance_indicator, :target, :indexed_target, :id, :url, :description_error, :progress])
+    super(:except =>  [:updated_at, :created_at],
+          :methods => [:indexed_description,
+                       :description,
+                       :indexed_performance_indicator,
+                       :performance_indicator,
+                       :target,
+                       :indexed_target,
+                       :id,
+                       :url,
+                       :description_error,
+                       :progress,
+                       :reminders,
+                       :create_reminder_url]
+         )
+  end
+
+  def create_reminder_url
+    Rails.application.routes.url_helpers.corporate_services_activity_reminders_path(:en,id)
   end
 
   def url
