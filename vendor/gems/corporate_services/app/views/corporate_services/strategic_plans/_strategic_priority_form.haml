@@ -280,13 +280,13 @@
     <h4>Reminders<modal-close/></h4>
     </modal-header>
     <modal-body>
-    <i class="fa fa-plus fa-sm" id="add_reminder" on-click='new_reminder()'/>
+    <i class="fa fa-plus fa-sm" id="add_reminder" on-click='new_reminder()' data-toggle="tooltip" data-placement="bottom" title="add reminder"/>
     #reminders
       .row
-        %h5.col-md-1= t('.type')
+        %h5.col-md-2= t('.type')
         %h5.col-md-2= t('.next')
         %h5.col-md-2= t('.previous')
-        %h5.col-md-5= t('.text')
+        %h5.col-md-4= t('.text')
         %h5.col-md-2= t('.recipients')
       {{#reminders}}
       <reminder reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next="{{next}}" previous="{{previous}}" recipients="{{recipients}}"/>
@@ -303,10 +303,10 @@
 
 %script#show_reminder_template{:type => 'text/ractive'}
   .reminder.row
-    .col-md-1.reminder_type {{reminder_type}}
+    .col-md-2.reminder_type {{reminder_type}}
     .col-md-2.next {{ next }}
     .col-md-2.previous {{ previous }}
-    .col-md-5.text {{text}}
+    .col-md-4.text {{text}}
     .col-md-2.recipients
       {{#recipients}}
       <recipient first_last_name="{{ first_last_name  }}" />
@@ -335,8 +335,8 @@
         %span.help-block= t('.reminder_recipients_error_message')
     .form-group
       .col-sm-10.col-sm-offset-2
-        <i class="fa fa-remove fa-lg" style='padding-left:30px' data-toggle="tooltip" data-placement="bottom" title="cancel"/>
-        <i class="fa fa-check fa-lg" id="save_reminder" style='padding-left:60px' on-click='save_reminder()' data-toggle="tooltip" data-placement="bottom" title="save"/>
+        <i class="fa fa-remove fa-lg" id="cancel_reminder" style="padding-left:30px" on-click="cancel_reminder()" data-toggle="tooltip" data-placement="bottom" title="cancel"/>
+        <i class="fa fa-check fa-lg" id="save_reminder" style="padding-left:60px" on-click="save_reminder()" data-toggle="tooltip" data-placement="bottom" title="save"/>
 
 %script#recipient_template{:type => 'text/ractive'}
   %p.recipient {{ first_last_name }}
@@ -372,6 +372,9 @@
             dataType : 'json'
             success : @create_reminder
             context : @
+      cancel_reminder : ->
+        @parent.pop('reminders')
+
       validate : ->
         type = @_validate('reminder_type')
         text = @_validate('text')
