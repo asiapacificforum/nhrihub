@@ -314,11 +314,11 @@
 
 %script#new_reminder_template{:type => 'text/ractive'}
   .form-horizontal#new_reminder
-    .form-group#reminder_type
+    .form-group#reminder_type{:class => '{{#reminder_type_error}}has-error{{/}}'}
       <b-label class="col-sm-2">Type</b-label>
       .col-sm-10
-        =select :reminder, :reminder_type, options_for_select(reminder_type_options), {:prompt => "select type"}, {:class => 'form-control', :style => "width:31%"}
-        %span.help-block my error message
+        =select :reminder, :reminder_type, options_for_select(reminder_type_options), {:prompt => "select type"}, {:class => 'form-control', :style => "width:31%", :value => '{{reminder_type}}', 'on-change'=>"remove_errors('reminder_type')"}
+        %span.help-block= t('.reminder_type_error_message')
     .form-group
       <b-label class="col-sm-2">Start date</b-label>
       .col-sm-10
@@ -373,19 +373,25 @@
             success : @create_reminder
             context : @
       validate : ->
-        true
+        type = @_validate('reminder_type')
+        # text = @_validate('text')
+        text = true
+        # recipients = @_validate('recipients')
+        recipients = true
+        type && text && recipients
       _validate : (field)->
         if _.isString(@get(field))
           @set(field, @get(field).trim())
         value = @get(field)
-        message = $(@nodes[field+'_error']).data('message')
         if value == "" || _.isNull(value)
-          @set(field+"_error",message)
+          @set(field+'_error',true)
           false
         else
           true
       create_reminder : (response, statusText, jqxhr)->
         @parent.set('reminders',response)
+      remove_errors : (field)->
+        @set(field+"_error",false)
 
     Activity = Ractive.extend
       template : '#activity_template'
