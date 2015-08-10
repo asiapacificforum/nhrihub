@@ -301,38 +301,33 @@
     %p.next {{ next }}
     %p.previous {{ previous }}
     %p.text {{text}}
-    {{#recipients}}
-    <recipient first_last_name="{{ first_last_name  }}" />
-    {{/recipients}}
+    %p.recipients
+      {{#recipients}}
+      <p class='recipient'>before {{first_last_name}} after</p>
+      {{/recipients}}
 
 %script#new_reminder_template{:type => 'text/ractive'}
   .form-horizontal#new_reminder
     .form-group#reminder_type
       <b-label class="col-sm-2">Type</b-label>
       .col-sm-10
-        =select :reminder, :reminder_type, options_for_select(reminder_type_options), {:prompt => "select type"}, {:class => 'form-control', :style => "width:31%"}
-        %span.help-block my error message
+        =select :reminder, :reminder_type, options_for_select(reminder_type_options), {:prompt => "select type"}, {:class => 'form-control', :style => "width:31%", :value => '{{reminder_type}}'}
     .form-group
       <b-label class="col-sm-2">Start date</b-label>
       .col-sm-10
-        =date_select :reminder, :start_date, {:start_year => Date.today.year}, {:class=>'form-control'}
+        =date_select :reminder, :start_date, {}, {:class=>'form-control'}
     .form-group#text
       <b-label class="topaligned col-sm-2">Text</b-label>
       .col-sm-10
-        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%"
-        %span.help-block my error message
+        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}'
     .form-group#recipients
       <b-label class="topaligned col-sm-2">Recipient(s)</b-label>
       .col-sm-10
-        =select :reminder, :user_ids, options_for_select(recipients_options), {}, {:multiple => true, :class=>'form-control', :style => "width:24%"}
-        %span.help-block my error message
+        =select :reminder, :user_ids, options_for_select(recipients_options), {}, {:multiple => true, :class=>'form-control', :style => "width:24%", :value => '{{recipients}}'}
     .form-group
       .col-sm-10.col-sm-offset-2
         <i class="fa fa-remove fa-lg" style='padding-left:30px' data-toggle="tooltip" data-placement="bottom" title="cancel"/>
         <i class="fa fa-check fa-lg" id="save_reminder" style='padding-left:60px' on-click='save_reminder()' data-toggle="tooltip" data-placement="bottom" title="save"/>
-
-%script#recipient_template{:type => 'text/ractive'}
-  %p.recipient {{ first_last_name }}
 
 :coffeescript
   $ ->
@@ -342,13 +337,8 @@
 
     InpageEdit = @InpageEdit
 
-    Recipient = Ractive.extend
-      template : '#recipient_template'
-
     Reminder = Ractive.extend
       template : '#reminder_template'
-      components :
-        recipient : Recipient
       computed :
         persisted : ->
           !isNaN(parseInt(@get('id')))
@@ -367,16 +357,6 @@
             context : @
       validate : ->
         true
-      _validate : (field)->
-        if _.isString(@get(field))
-          @set(field, @get(field).trim())
-        value = @get(field)
-        message = $(@nodes[field+'_error']).data('message')
-        if value == "" || _.isNull(value)
-          @set(field+"_error",message)
-          false
-        else
-          true
       create_reminder : (response, statusText, jqxhr)->
         @parent.set('reminders',response)
 
@@ -432,8 +412,7 @@
         $('#reminders_modal').modal('show')
       new_reminder : ->
         @off('click',@new_reminder)
-        @push('reminders',{id:null, type:null, frequency:null, text:'', activity_id:@get('id')})
-
+        @unshift('reminders',{id:null, type:null, frequency:null, text:'', activity_id:@get('id')})
 
     Outcome = Ractive.extend
       template : '#outcome_template'
@@ -631,8 +610,8 @@
         # TODO if confirm
         $.post(@.get('url'), data, @.update_sp, 'json')
       validate : ->
-        pl = @._validate('priority_level')
-        desc = @._validate('description')
+        pl = @_validate('priority_level')
+        desc = @_validate('description')
         pl && desc
       _validate : (field)->
         if _.isString(@get(field))

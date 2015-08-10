@@ -1,0 +1,97 @@
+diff --git a/vendor/gems/corporate_services/app/views/corporate_services/strategic_plans/_strategic_priority_form.haml b/vendor/gems/corporate_services/app/views/corporate_services/strategic_plans/_strategic_priority_form.haml
+index 3307cd0..81aa0e4 100644
+--- a/vendor/gems/corporate_services/app/views/corporate_services/strategic_plans/_strategic_priority_form.haml
++++ b/vendor/gems/corporate_services/app/views/corporate_services/strategic_plans/_strategic_priority_form.haml
+@@ -282,12 +282,6 @@
+     <modal-body>
+     <i class="fa fa-plus fa-sm" id="add_reminder" on-click='new_reminder()'/>
+     #reminders
+-      .row
+-        %h5.col-md-1= t('.type')
+-        %h5.col-md-2= t('.next')
+-        %h5.col-md-2= t('.previous')
+-        %h5.col-md-5= t('.text')
+-        %h5.col-md-2= t('.recipients')
+       {{#reminders}}
+       <reminder reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next="{{next}}" previous="{{previous}}" recipients="{{recipients}}"/>
+       {{/reminders}}
+@@ -302,37 +296,34 @@
+   {{/if}}
+ 
+ %script#show_reminder_template{:type => 'text/ractive'}
+-  .reminder.row
+-    .col-md-1.reminder_type {{reminder_type}}
+-    .col-md-2.next {{ next }}
+-    .col-md-2.previous {{ previous }}
+-    .col-md-5.text {{text}}
+-    .col-md-2.recipients
++  .reminder
++    %p.reminder_type {{reminder_type}}
++    %p.next {{ next }}
++    %p.previous {{ previous }}
++    %p.text {{text}}
++    %p.recipients
+       {{#recipients}}
+       <p class='recipient'>before {{first_last_name}} after</p>
+       {{/recipients}}
+ 
+ %script#new_reminder_template{:type => 'text/ractive'}
+   .form-horizontal#new_reminder
+-    .form-group#reminder_type{:class => '{{#reminder_type_error}}has-error{{/}}'}
++    .form-group#reminder_type
+       <b-label class="col-sm-2">Type</b-label>
+       .col-sm-10
+-        =select :reminder, :reminder_type, options_for_select(reminder_type_options), {:prompt => "select type"}, {:class => 'form-control', :style => "width:31%", :value => '{{reminder_type}}', 'on-change'=>"remove_errors('reminder_type')"}
+-        %span.help-block= t('.reminder_type_error_message')
++        =select :reminder, :reminder_type, options_for_select(reminder_type_options), {:prompt => "select type"}, {:class => 'form-control', :style => "width:31%", :value => '{{reminder_type}}'}
+     .form-group
+       <b-label class="col-sm-2">Start date</b-label>
+       .col-sm-10
+-        =date_select :reminder, :start_date, {:start_year => Date.today.year}, {:class=>'form-control'}
+-    .form-group#text{:class => '{{#text_error}}has-error{{/}}'}
++        =date_select :reminder, :start_date, {}, {:class=>'form-control'}
++    .form-group#text
+       <b-label class="topaligned col-sm-2">Text</b-label>
+       .col-sm-10
+-        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
+-        %span.help-block= t('.reminder_text_error_message')
+-    .form-group#recipients{:class => '{{#recipients_error}}has-error{{/}}'}
++        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}'
++    .form-group#recipients
+       <b-label class="topaligned col-sm-2">Recipient(s)</b-label>
+       .col-sm-10
+-        =select :reminder, :user_ids, options_for_select(recipients_options), {}, {:multiple => true, :class=>'form-control', :style => "width:24%", :value => '{{recipients}}', 'on-change'=>"remove_errors('recipients')"}
+-        %span.help-block= t('.reminder_recipients_error_message')
++        =select :reminder, :user_ids, options_for_select(recipients_options), {}, {:multiple => true, :class=>'form-control', :style => "width:24%", :value => '{{recipients}}'}
+     .form-group
+       .col-sm-10.col-sm-offset-2
+         <i class="fa fa-remove fa-lg" style='padding-left:30px' data-toggle="tooltip" data-placement="bottom" title="cancel"/>
+@@ -365,27 +356,9 @@
+             success : @create_reminder
+             context : @
+       validate : ->
+-        type = @_validate('reminder_type')
+-        text = @_validate('text')
+-        recipients = @_validate('recipients')
+-        type && text && recipients
+-      _validate : (field)->
+-        if _.isString(@get(field))
+-          @set(field, @get(field).trim())
+-        value = @get(field)
+-        if _.isArray(value) && value.length == 0
+-          @set(field+'_error',true)
+-          false
+-        else if value == "" || _.isNull(value)
+-          @set(field+'_error',true)
+-          false
+-        else
+-          true
++        true
+       create_reminder : (response, statusText, jqxhr)->
+-        console.log response[0].recipients[0].first_last_name
+         @parent.set('reminders',response)
+-      remove_errors : (field)->
+-        @set(field+"_error",false)
+ 
+     Activity = Ractive.extend
+       template : '#activity_template'
