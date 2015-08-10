@@ -445,8 +445,11 @@
       show_reminders_panel : ->
         $('#reminders_modal').modal('show')
       new_reminder : ->
-        @off('click',@new_reminder)
-        @push('reminders',{id:null, type:null, frequency:null, text:'', activity_id:@get('id')})
+        unless @_new_reminder_is_active()
+          @push('reminders',{id:null, type:null, frequency:null, text:'', activity_id:@get('id')})
+      _new_reminder_is_active : ->
+        reminders = @findAllComponents('reminder')
+        (reminders.length > 0) && _.isNull( reminders[reminders.length - 1].get('id'))
 
 
     Outcome = Ractive.extend

@@ -52,6 +52,12 @@ feature "add a reminder", :js => true do
     expect(page.find("#reminders .reminder .previous").text).to eq "none"
   end
 
+  scenario "and multiple adds disallowed" do
+    new_reminder_button.click
+    new_reminder_button.click
+    expect(page.all('#new_reminder').count).to eq 1
+  end
+
   xscenario "and reminder type is rule" do
 
   end
