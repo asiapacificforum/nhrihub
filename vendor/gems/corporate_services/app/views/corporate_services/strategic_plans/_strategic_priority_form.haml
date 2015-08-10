@@ -282,6 +282,12 @@
     <modal-body>
     <i class="fa fa-plus fa-sm" id="add_reminder" on-click='new_reminder()'/>
     #reminders
+      .row
+        %h5.col-md-1= t('.type')
+        %h5.col-md-2= t('.next')
+        %h5.col-md-2= t('.previous')
+        %h5.col-md-5= t('.text')
+        %h5.col-md-2= t('.recipients')
       {{#reminders}}
       <reminder reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next="{{next}}" previous="{{previous}}" recipients="{{recipients}}"/>
       {{/reminders}}
@@ -296,14 +302,15 @@
   {{/if}}
 
 %script#show_reminder_template{:type => 'text/ractive'}
-  .reminder
-    %p.reminder_type {{reminder_type}}
-    %p.next {{ next }}
-    %p.previous {{ previous }}
-    %p.text {{text}}
-    {{#recipients}}
-    <recipient first_last_name="{{ first_last_name  }}" />
-    {{/recipients}}
+  .reminder.row
+    .col-md-1.reminder_type {{reminder_type}}
+    .col-md-2.next {{ next }}
+    .col-md-2.previous {{ previous }}
+    .col-md-5.text {{text}}
+    .col-md-2.recipients
+      {{#recipients}}
+      <recipient first_last_name="{{ first_last_name  }}" />
+      {{/recipients}}
 
 %script#new_reminder_template{:type => 'text/ractive'}
   .form-horizontal#new_reminder

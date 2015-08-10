@@ -103,7 +103,7 @@ feature "add a reminder", :js => true do
     expect(page).to have_selector("#new_reminder #text.has-error .help-block", :text => "Text cannot be blank")
   end
 
-  scenario "add but cancel without saving" do
+  xscenario "add but cancel without saving" do
     new_reminder_button.click
     select("one-time", :from => :reminder_reminder_type)
     select_date("August 19 2015", :from => :reminder_start_date)

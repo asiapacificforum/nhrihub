@@ -2,7 +2,6 @@ class CorporateServices::Activities::RemindersController < ApplicationController
   def create
     reminder = Reminder.new(reminder_params)
     if reminder.save
-      puts Reminder.where(:activity_id => reminder.activity_id).to_json
       render :json => Reminder.where(:activity_id => reminder.activity_id), :status => 200
     else
       render :nothing => true, :status => 500
