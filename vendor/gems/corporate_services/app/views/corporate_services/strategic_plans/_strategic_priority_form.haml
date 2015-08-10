@@ -323,16 +323,16 @@
       <b-label class="col-sm-2">Start date</b-label>
       .col-sm-10
         =date_select :reminder, :start_date, {:start_year => Date.today.year}, {:class=>'form-control'}
-    .form-group#text
+    .form-group#text{:class => '{{#text_error}}has-error{{/}}'}
       <b-label class="topaligned col-sm-2">Text</b-label>
       .col-sm-10
-        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%"
-        %span.help-block my error message
-    .form-group#recipients
+        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
+        %span.help-block= t('.reminder_text_error_message')
+    .form-group#recipients{:class => '{{#user_ids_error}}has-error{{/}}'}
       <b-label class="topaligned col-sm-2">Recipient(s)</b-label>
       .col-sm-10
-        =select :reminder, :user_ids, options_for_select(recipients_options), {}, {:multiple => true, :class=>'form-control', :style => "width:24%"}
-        %span.help-block my error message
+        =select :reminder, :user_ids, options_for_select(recipients_options), {}, {:multiple => true, :class=>'form-control', :style => "width:24%", :value => '{{user_ids}}', 'on-change'=>"remove_errors('recipients')"}
+        %span.help-block= t('.reminder_recipients_error_message')
     .form-group
       .col-sm-10.col-sm-offset-2
         <i class="fa fa-remove fa-lg" style='padding-left:30px' data-toggle="tooltip" data-placement="bottom" title="cancel"/>
@@ -374,16 +374,17 @@
             context : @
       validate : ->
         type = @_validate('reminder_type')
-        # text = @_validate('text')
-        text = true
-        # recipients = @_validate('recipients')
-        recipients = true
-        type && text && recipients
+        text = @_validate('text')
+        user_ids = @_validate('user_ids')
+        type && text && user_ids
       _validate : (field)->
         if _.isString(@get(field))
           @set(field, @get(field).trim())
         value = @get(field)
-        if value == "" || _.isNull(value)
+        if _.isArray(value) && value.length == 0
+          @set(field+'_error',true)
+          false
+        else if value == "" || _.isNull(value)
           @set(field+'_error',true)
           false
         else
