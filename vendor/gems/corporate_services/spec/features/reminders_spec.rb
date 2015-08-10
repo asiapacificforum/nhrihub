@@ -76,8 +76,8 @@ feature "add a reminder", :js => true do
     expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
     expect(page).to have_selector("#new_reminder #recipients.has-error .help-block", :text => "Please select recipient(s)")
     select(User.first.first_last_name, :from => :reminder_user_ids)
-    expect(page).not_to have_selector("#new_reminder #reminder_type.has-error .help-block", :text => "Please select a type")
-    expect(page).to have_selector("#new_reminder #reminder_type .help-block", :text => "Please select a type", :visible => false)
+    expect(page).not_to have_selector("#new_reminder #recipients.has-error .help-block", :text => "Please select recipient(s)")
+    expect(page).to have_selector("#new_reminder #recipients .help-block", :text =>  "Please select recipient(s)", :visible => false)
   end
 
   scenario "with blank text error" do

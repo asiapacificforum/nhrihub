@@ -331,7 +331,7 @@
     .form-group#recipients{:class => '{{#user_ids_error}}has-error{{/}}'}
       <b-label class="topaligned col-sm-2">Recipient(s)</b-label>
       .col-sm-10
-        =select :reminder, :user_ids, options_for_select(recipients_options), {}, {:multiple => true, :class=>'form-control', :style => "width:24%", :value => '{{user_ids}}', 'on-change'=>"remove_errors('recipients')"}
+        =select :reminder, :user_ids, options_for_select(recipients_options), {}, {:multiple => true, :class=>'form-control', :style => "width:24%", :value => '{{user_ids}}', 'on-change'=>"remove_errors('user_ids')"}
         %span.help-block= t('.reminder_recipients_error_message')
     .form-group
       .col-sm-10.col-sm-offset-2
