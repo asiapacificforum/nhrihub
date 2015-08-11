@@ -1,9 +1,39 @@
 class Reminder < ActiveRecord::Base
   belongs_to :activity
   has_and_belongs_to_many :users, :validate => false # we will only be adding/removing users by id, not changing their attributes. So performance is improved by not validating.
+  default_scope ->{ order(:id) }
 
   def as_json(options = {})
-    super(:except => [:updated_at, :created_at], :methods => [ :recipients, :next, :previous ])
+    super(:except => [:updated_at, :created_at], :methods => [ :recipients, :next, :previous, :user_ids, :url, :start_year, :start_month, :start_day ])
+  end
+
+  def start_year
+    if send(:next) == "none"
+      Date.today.strftime("%Y")
+    else
+      send(:next).split(', ')[1]
+    end
+  end
+
+  def start_month
+    if send(:next) == "none"
+      month = Date.today.strftime("%b")
+    else
+      month = send(:next).split(' ')[0]
+    end
+    Date::ABBR_MONTHNAMES.index(month)
+  end
+
+  def start_day
+    if send(:next) == "none"
+      Date.today.strftime("%e")
+    else
+      send(:next).split(",")[0].split(" ")[1]
+    end
+  end
+
+  def url
+    Rails.application.routes.url_helpers.corporate_services_activity_reminder_path(:en,activity_id,id)
   end
 
   def next
@@ -14,7 +44,7 @@ class Reminder < ActiveRecord::Base
     end
 
     if date
-      date.to_formatted_s(:default)
+      date.to_formatted_s(:short)
     else
       "none"
     end
@@ -28,7 +58,7 @@ class Reminder < ActiveRecord::Base
     if start_date.future?
       "none"
     else
-      previous_reminder_date.to_formatted_s(:default)
+      previous_reminder_date.to_formatted_s(:short)
     end
   end
 

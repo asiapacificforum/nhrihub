@@ -41,12 +41,12 @@ feature "add a reminder", :js => true do
   scenario "and reminder has no errors" do
     new_reminder_button.click
     select("one-time", :from => :reminder_reminder_type)
-    select_date("August 19 2015", :from => :reminder_start_date)
+    select_date("Aug 19 2015", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
     fill_in(:reminder_text, :with => "time to check the database")
     expect{save_reminder.click; sleep(0.2)}.to change{Reminder.count}.from(0).to(1)
     expect(page.find("#reminders .reminder .reminder_type").text).to eq "one-time"
-    expect(page.find("#reminders .reminder .next").text).to eq "August 19, 2015"
+    expect(page.find("#reminders .reminder .next").text).to eq "Aug 19, 2015"
     expect(page.find("#reminders .reminder .text").text).to eq "time to check the database"
     expect(page.find("#reminders .reminder .recipient").text).to eq User.first.first_last_name
     expect(page.find("#reminders .reminder .previous").text).to eq "none"
@@ -64,7 +64,7 @@ feature "add a reminder", :js => true do
 
   scenario "with blank reminder_type error" do
     new_reminder_button.click
-    select_date("August 19 2015", :from => :reminder_start_date)
+    select_date("Aug 19 2015", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
     fill_in(:reminder_text, :with => "time to check the database")
     expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
@@ -77,7 +77,7 @@ feature "add a reminder", :js => true do
   scenario "with no recipients error" do
     new_reminder_button.click
     select("one-time", :from => :reminder_reminder_type)
-    select_date("August 19 2015", :from => :reminder_start_date)
+    select_date("Aug 19 2015", :from => :reminder_start_date)
     fill_in(:reminder_text, :with => "time to check the database")
     expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
     expect(page).to have_selector("#new_reminder #recipients.has-error .help-block", :text => "Please select recipient(s)")
@@ -89,7 +89,7 @@ feature "add a reminder", :js => true do
   scenario "with blank text error" do
     new_reminder_button.click
     select("one-time", :from => :reminder_reminder_type)
-    select_date("August 19 2015", :from => :reminder_start_date)
+    select_date("Aug 19 2015", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
     expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
     expect(page).to have_selector("#new_reminder #text.has-error .help-block", :text => "Text cannot be blank")
@@ -102,7 +102,7 @@ feature "add a reminder", :js => true do
   scenario "with whitespace only text error" do
     new_reminder_button.click
     select("one-time", :from => :reminder_reminder_type)
-    select_date("August 19 2015", :from => :reminder_start_date)
+    select_date("Aug 19 2015", :from => :reminder_start_date)
     fill_in(:reminder_text, :with => "  ")
     select(User.first.first_last_name, :from => :reminder_user_ids)
     expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
@@ -112,7 +112,7 @@ feature "add a reminder", :js => true do
   scenario "add but cancel without saving" do
     new_reminder_button.click
     select("one-time", :from => :reminder_reminder_type)
-    select_date("August 19 2015", :from => :reminder_start_date)
+    select_date("Aug 19 2015", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
     fill_in(:reminder_text, :with => "time to check the database")
     cancel_reminder.click
@@ -121,6 +121,37 @@ feature "add a reminder", :js => true do
 end
 
 feature "edit a reminder", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  before do
+    FactoryGirl.create(:user, :firstName => 'Norman', :lastName => 'Normal')
+    sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
+    pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
+    o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
+    activity = Activity.create(:description => "Smarter thinking", :outcome_id => o.id)
+    activity.reminders << Reminder.create(:reminder_type => 'quarterly', :start_date => Date.new(2014,8,1), :text => "don't forget to do something")
+    visit corporate_services_strategic_plan_path(:en, "current")
+    open_accordion_for_strategic_priority_one
+    reminders_icon.click
+  end
+
+  scenario "and save without errors" do
+    expect(page).to have_selector("#reminders .reminder .text", :text => "don't forget to do something")
+    edit_icon.click
+    select("one-time", :from => :reminder_reminder_type)
+    select_date("Dec 25 2015", :from => :reminder_start_date)
+    select(User.first.first_last_name, :from => :reminder_user_ids)
+    select(User.last.first_last_name, :from => :reminder_user_ids)
+    fill_in(:reminder_text, :with => "have a nice day")
+    expect{ edit_save_icon.click; sleep(0.2)}.to change{Reminder.first.text}
+    expect(page.find("#reminders .reminder .reminder_type").text).to eq "one-time"
+    expect(page.find("#reminders .reminder .next").text).to eq "Dec 25, 2015"
+    expect(page.find("#reminders .reminder .text").text).to eq "have a nice day"
+    expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.first.first_last_name
+    expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.last.first_last_name
+    expect(page.find("#reminders .reminder .previous").text).to eq "none"
+  end
+
 end
 
 feature "delete a reminder", :js => true do
@@ -142,6 +173,14 @@ end
 
 def reminders_icon
   page.find(".row.activity div.actions div.alarm_icon")
+end
+
+def edit_icon
+  page.find(:xpath, ".//i[@id='reminder_editable1_edit_start']")
+end
+
+def edit_save_icon
+  page.find(:xpath, ".//i[@id='reminder_editable1_edit_save']")
 end
 
 def save_reminder
