@@ -72,7 +72,9 @@ feature "populate plannned result outcomes", :js => true do
       expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Achieve nirvana")
       # now can we delete it?
       page.all(".row.outcome .col-md-2.description div.no_edit")[1].hover
-      expect{ page.find(".row.outcome .col-md-2.description span.delete_icon").click; sleep(0.3)}.to change{Outcome.count}.from(2).to(1)
+      page.find(".row.outcome .col-md-2.description span.delete_icon").click
+      sleep(0.4)
+      expect(Outcome.count).to eq 1
       expect(page.find(".row.planned_result .row.outcome .col-md-2.description").text).to eq "1.1.1 Smarter thinking"
       expect(page.all(".row.planned_result .row.outcome").count).to eq 1
       # now check that we can still add an outcome
@@ -113,7 +115,7 @@ feature "actions on existing single outcome", :js => true do
     page.find(".row.planned_result .row.outcome .col-md-2.description span").click
     outcome_description_field.set("new description")
     outcome_save_icon.click
-    sleep(0.3)
+    sleep(0.4)
     expect( Outcome.first.reload.description ).to eq "new description"
     expect(page.find(".planned_result.editable_container .outcome .no_edit span:first-of-type").text ).to eq "1.1.1 new description"
   end
