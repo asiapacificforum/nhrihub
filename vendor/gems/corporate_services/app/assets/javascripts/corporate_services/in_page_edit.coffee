@@ -104,7 +104,7 @@ $ ->
         $target = $(e.target)
         if $target.closest('.editable_container').get(0) == @root.get(0)
           if validate && !@options.object.validate()
-            @show()
+            #@show()
             return
           @context = $target.closest('.editable_container')
           url = @options.object.get('url')

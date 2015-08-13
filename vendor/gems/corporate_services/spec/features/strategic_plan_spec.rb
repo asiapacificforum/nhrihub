@@ -34,9 +34,9 @@ feature "select strategic plan from prior years", :js => true do
   scenario "select a prior year and add a strategic priority" do
     visit corporate_services_strategic_plan_path(:en, "current")
     select("Strategic Plan: Starting #{18.months.ago.to_date.to_s}, ending #{6.months.ago.to_date.advance(:days => -1).to_s}", :from => "strategic_plan_start_date")
-    expect(page).to have_selector("[data-editable_attribute='description'] .no_edit", :text => "We gotta fix this")
+    expect(page).to have_selector(".strategic_priority_title .description .no_edit", :text => "We gotta fix this")
     add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "blah blah blah"})
-    expect(page).to have_selector("[data-editable_attribute='description'] .no_edit", :text => "blah blah blah")
+    expect(page).to have_selector(".strategic_priority_title .description .no_edit", :text => "blah blah blah")
   end
 
   xscenario "add priorities disabled for prior years" do

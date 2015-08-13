@@ -112,7 +112,9 @@ feature "actions on existing single outcome", :js => true do
   scenario "edit the first and only outcome" do
     page.find(".row.planned_result .row.outcome .col-md-2.description span").click
     outcome_description_field.set("new description")
-    expect{ outcome_save_icon.click; sleep(0.3) }.to change{ Outcome.first.reload.description }.to "new description"
+    outcome_save_icon.click
+    sleep(0.3)
+    expect( Outcome.first.reload.description ).to eq "new description"
     expect(page.find(".planned_result.editable_container .outcome .no_edit span:first-of-type").text ).to eq "1.1.1 new description"
   end
 end

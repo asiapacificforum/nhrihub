@@ -4,19 +4,19 @@
       %h4.panel-title.clearfix
         .row
           .col-md-2.priority_level{'data-toggle' => 'edit'}
-            #priority_level_error.error{:style => 'padding-left:6px;', 'data-message' => t('.priority_level_error_message')} {{ priority_level_error }} &nbsp;
+            #priority_level_error.error{:style => 'padding-left:6px; font-weight:200; font-size:0.8em;', 'data-message' => t('.priority_level_error_message')} {{ priority_level_error }} &nbsp;
             .fade.no_edit.in
               %span= t('.strategic_priority')
             .fade.edit{:style=>"top:17px"}
-              %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: 6px; margin-top: -2px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
+              %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: 6px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
                 - priority_level_options.each do |opt|
                   %option{:value => opt[1]}= opt[0]
           .col-md-6.description{'data-toggle' => 'edit'}
-            #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }} &nbsp;
+            #description_error.error{'data-message' => t('.description_error_message'), :style => "font-weight:200; font-size:0.8em;"} {{ description_error }} &nbsp;
             .fade.no_edit.in
               %span {{ description }}
             .fade.edit{:style=>"width:100%; top:17px"}
-              %input.form-control#strategic_priority_description{:name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:100%; font-size: 16px; margin-top:-8px; margin-left:2px', 'on-keydown' => "remove_description_errors()"}
+              %input.form-control#strategic_priority_description{:name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:100%; font-size: 16px; margin-left:2px; height:22px;', 'on-keydown' => "remove_description_errors()"}
           .col-md-1{:style => "text-align:center; font-size:14px; top:17px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
             %i.fa.fa-folder-o.fa-lg#toggle
           .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px; top:17px;", 'data-toggle' => 'edit'}
@@ -305,37 +305,40 @@
   {{/if}}
 
 %script#show_reminder_template{:type => 'text/ractive'}
-  .reminder.row.editable_container{:decorator => 'inpage_edit:{{id}}'}
-    .col-md-1.tight.reminder_type{:style => "width:10%", 'data-toggle' => 'edit', 'data-id' => '{{id}}'}
+  .reminder.row.editable_container{:id => "reminder_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
+    .col-md-1.tight.reminder_type.form-group{:class => '{{#reminder_type_error}}has-error{{/}}', :style => "width:10%", 'data-toggle' => 'edit', 'data-id' => '{{id}}'}
       #reminder_type_error.error{:style=> "display:none"} Please select a reminder type
       .fade.no_edit.in
         %span {{ reminder_type }}
-      .fade.edit
+      .fade.edit.scree{:style => "height:140px;"}
         =select :reminder, :reminder_type, options_for_select(reminder_type_options),
           {:prompt => "select type"},
           {:style => "height:22px", :class => 'form-control', :value => '{{reminder_type}}', 'on-change'=>"remove_errors('reminder_type')"}
-    .col-md-1.tight.next{:style => "width:18%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}'}
+        %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.reminder_type_error_message')
+    .col-md-1.tight.next.form-group{:style => "width:18%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}'}
       .fade.no_edit.in
         %span {{ next }}
-      .fade.edit
+      .fade.edit.scree{:style => "height:140px;"}
         =select :reminder, "start_date_2i", start_month_options,{},{:name => "reminder[start_date(2i)]", :style=>"height:22px; width:4.5em; display:inline-block;", :class=>'form-control', :value => "{{start_month}}"}
         =select :reminder, "start_date_3i", (1..31),{},{:name => "reminder[start_date(3i)]", :style=>"height:22px; width:3.5em; display:inline-block;", :class=>'form-control', :value => "{{start_day}}"}
         =select :reminder, "start_date_1i", (Date.today.year..Date.today.year+5),{},{:name => "reminder[start_date(1i)]", :style=>"height:22px; width:5em; display:inline-block;", :class=>'form-control', :value => "{{start_year}}"}
-    .col-md-1.tight.previous{:style => "width:9%"} {{ previous }}
-    .col-md-6.tight.text{:style => "width:40%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}'}
+    .col-md-1.tight.previous{:style => "width:9%"}{{ previous }}
+    .col-md-6.tight.text.form-group{:class => '{{#text_error}}has-error{{/}}', :style => "width:40%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}'}
       .fade.no_edit.in
         %span {{text}}
-      .fade.edit
-        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "position:relative; top:-8px", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
-    .col-md-1.tight.recipients{:style => "width:13%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}'}
+      .fade.edit.scree{:style => "height:140px;"}
+        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
+        %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.reminder_text_error_message')
+    .col-md-1.tight.recipients.form-group{:class => '{{#user_ids_error}}has-error{{/}}', :style => "width:13%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}'}
       .fade.no_edit.in
         {{#recipients}}
         <recipient first_last_name="{{ first_last_name  }}" />
         {{/recipients}}
-      .fade.edit
+      .fade.edit.scree{:style => "height:140px;"}
         =select :reminder, :user_ids, options_for_select(recipients_options), {},
           {:multiple => true, :class=>'form-control', :value => '{{user_ids}}',
-           'on-change'=>"remove_errors('user_ids')", :style => "position:relative; height:95px; top:-8px;"}
+           'on-change'=>"remove_errors('user_ids')", :style => "height:82px;"}
+        %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-6px; width:100%; background-color:#fff"}= t('.reminder_recipients_error_message')
     .col-md-1.icon.tight{:style => "text-align:center; font-size:14px; height:20px; width:3%", 'data-toggle' => 'edit'}
       .fade.edit
         %i.fa.fa-remove.fa-lg{:style => "position:relative;", :id => "reminder_editable{{id}}_edit_cancel"}
@@ -727,3 +730,4 @@
         # of if the most recent is persisted
         if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
           strategic_plan.unshift('strategic_priorities', {id:null, description: '', priority_level:null} )
+

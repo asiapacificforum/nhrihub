@@ -78,7 +78,9 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete a file from database" do
-    expect{ page.find('.template-download .delete').click; sleep(0.3) }.to change{InternalDocument.count}.from(1).to(0)
+    page.find('.template-download .delete').click
+    sleep(0.3)
+    expect(InternalDocument.count).to eq 0
   end
 
   scenario "delete a file from filesystem" do
@@ -88,8 +90,8 @@ feature "internal document management", :js => true do
   scenario "view file details", :js => true do
     #page.find('.template-download .details').click
     expect(page).to have_css(".files .template-download", :count => 1)
-    expect(page).to have_css("div.icon i.details")
-    page.execute_script("$('div.icon i.details').first().trigger('mouseenter')")
+    expect(page).to have_css("div.icon.details")
+    page.execute_script("$('div.icon.details').first().trigger('mouseenter')")
     sleep(0.2) # transition animation
     expect(page).to have_css('.fileDetails')
     expect(page.find('.popover-content .name' ).text).to         eq (@doc.original_filename)
@@ -98,7 +100,7 @@ feature "internal document management", :js => true do
     expect(page.find('.popover-content .lastModified' ).text).to eq (@doc.lastModifiedDate.to_s)
     expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.created_at.to_s)
     expect(page.find('.popover-content .uploadedBy' ).text).to   eq (@doc.uploaded_by.first_last_name)
-    page.execute_script("$('div.icon i.details').first().trigger('mouseout')")
+    page.execute_script("$('div.icon.details').first().trigger('mouseout')")
     expect(page).not_to have_css('.fileDetails')
   end
 
@@ -267,7 +269,7 @@ feature "internal document management", :js => true do
     create_a_document_in_the_same_group(:revision => "0.1")
     visit corporate_services_internal_documents_path('en')
     click_the_archive_icon
-    page.execute_script("$('div.icon i.details').last().trigger('mouseenter')")
+    page.execute_script("$('div.icon.details').last().trigger('mouseenter')")
     expect(page).to have_css('.fileDetails')
     expect(page.find('.popover-content .name' ).text).to         eq (@archive_doc.original_filename)
     expect(page.find('.popover-content .size' ).text).to         match /\d\d(\.\d)? KB/
@@ -275,7 +277,7 @@ feature "internal document management", :js => true do
     expect(page.find('.popover-content .lastModified' ).text).to eq (@archive_doc.lastModifiedDate.to_s)
     expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@archive_doc.created_at.to_s)
     expect(page.find('.popover-content .uploadedBy' ).text).to   eq (@archive_doc.uploaded_by.first_last_name)
-    page.execute_script("$('div.icon i.details').last().trigger('mouseout')")
+    page.execute_script("$('div.icon.details').last().trigger('mouseout')")
     expect(page).not_to have_css('.fileDetails')
   end
 

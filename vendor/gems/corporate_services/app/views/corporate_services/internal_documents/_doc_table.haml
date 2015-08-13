@@ -4,19 +4,19 @@
       %div{:'data-toggle' => 'edit'}
         .fade.edit
           %input.title{:'data-name' => :title, :name => "internal_document[title]", :'value' => "{{ title }}", :twoway=>'false'}
-        .fade.no_edit.editable
+        .fade.no_edit.editable.in
           %span {{ title }}
     %td.revision{:'data-name' => 'revision', :style => "width:8%"}
       %div{:'data-toggle' => 'edit'}
         .fade.edit
           %input.revision{:'data-name' => :revision, :name => "internal_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px', :twoway=>'false'}
-        .fade.no_edit.editable
+        .fade.no_edit.editable.in
           -# height required to properly position the tag
           %span {{ revision }}
     -# make sure it's on top of the next td, even though it precedes in the html
     %td.include_popover{:style => "text-align:center; width:8%"}
-      .icon{:'data-toggle' => 'edit'}
-        %i.fa.fa-info-circle.fa-lg.details <!-- popover is attached as a sibling below this -->
+      .icon.details{:'data-toggle' => 'edit'}
+        %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
     %td{:style => "text-align:center; width:8%"}
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
         .fade.edit
@@ -25,7 +25,7 @@
       %div.icon{:'data-toggle' => 'edit'}
         .fade.edit
           %i.fa.fa-check.fa-lg{:id => "internal_document_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
-        .fade.no_edit
+        .fade.no_edit.in
           %i.fa.fa-pencil-square-o.fa-lg{:id => "internal_document_editable{{id}}_edit_start"}
     %td{:style => "text-align:center; width:8%"}
       .icon

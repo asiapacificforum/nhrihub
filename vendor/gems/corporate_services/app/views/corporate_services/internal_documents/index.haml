@@ -162,7 +162,7 @@
         edit.off()
 
     DocDeleter = (node)->
-      $(node).on 'click', ->
+      $(node).on 'click', (event)->
         ev = $.Event(event)
         context = $(event.target).closest('table.document')
         data = $(event.target).closest('.fileupload').data()

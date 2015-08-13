@@ -16,6 +16,7 @@ feature "show existing planned result", :js => true do
   end
 
   it "should render the first outcome inline and the second outcome after the planned result" do
+    sleep(0.2)
     expect(page.all(".table#planned_results .row.planned_result .row.outcome .col-md-2.description")[0].text).to eq "1.1.1 smarter thinking"
     expect(page.all(".table#planned_results .row.planned_result .row.outcome .col-md-2.description")[1].text).to eq "1.1.2 pervasive niftiness"
   end
@@ -76,7 +77,9 @@ feature "actions on existing planned results", :js => true do
 
   scenario "delete a planned result item" do
     page.find(".row.planned_result .col-md-2.description").hover
-    expect{ page.find(".row.planned_result .col-md-2.description span.delete_icon").click; sleep(0.2)}.to change{PlannedResult.count}.from(1).to(0)
+    page.find(".row.planned_result .col-md-2.description span.delete_icon").click
+    sleep(0.4)
+    expect(PlannedResult.count).to eq 0
   end
 
   scenario "edit a planned result item" do

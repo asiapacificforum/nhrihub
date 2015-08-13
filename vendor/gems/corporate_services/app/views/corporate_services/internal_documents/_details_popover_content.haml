@@ -18,4 +18,4 @@
       %td.uploadedOn {{= formatted_creation_date }}
     %tr
       %td= t('uploadedBy', :scope => scope)
-      %td.uploadedBy {{= uploaded_by }}
+      %td.uploadedBy {{= uploaded_by.first_last_name }}
