@@ -90,11 +90,11 @@ feature "editing strategic priorities", :js => true do
 
 
   scenario "edit the description and priority level of an existing strategic priority" do
-    edit_icon.click
+    strategic_priority_edit_icon.click
 
     select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
     fill_in "strategic_priority_description", :with => "edited description"
-    edit_save_icon.click
+    strategic_priority_edit_save_icon.click
     sleep(0.2)
 
     expect(page).to have_selector(".strategic_priority_title .priority_level .no_edit span", :text => "Strategic Priority 2:")
@@ -102,13 +102,32 @@ feature "editing strategic priorities", :js => true do
   end
 
   scenario "edit to blank description" do
-    edit_icon.click
+    strategic_priority_edit_icon.click
     select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
     fill_in "strategic_priority_description", :with => ""
-    expect{ edit_save_icon.click; sleep(0.2) }.not_to change{StrategicPriority.first.description}
+    expect{ strategic_priority_edit_save_icon.click; sleep(0.2) }.not_to change{StrategicPriority.first.description}
     expect(page).to have_selector('#description_error', :text => "You must enter a description")
   end
 
+  scenario "edit description and cancel" do
+    strategic_priority_edit_icon.click
+    select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
+    fill_in "strategic_priority_description", :with => "mistake"
+    strategic_priority_cancel_edit_icon.click
+    expect(page).to have_selector(".strategic_priority_title .description .no_edit span", :text => "Gonna do things betta")
+  end
+
+  scenario "edit to blank description, save and cancel" do
+    strategic_priority_edit_icon.click
+    select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
+    fill_in "strategic_priority_description", :with => ""
+    strategic_priority_edit_save_icon.click
+    sleep(0.2)
+    expect(page).to have_selector('#description_error', :text => "You must enter a description")
+    strategic_priority_cancel_edit_icon.click
+    expect(page).to have_selector(".strategic_priority_title .description .no_edit span", :text => "Gonna do things betta")
+    expect(page).not_to have_selector('#description_error', :text => "You must enter a description")
+  end
 end
 
 feature "deleting strategic priorities", :js => true do
@@ -121,7 +140,7 @@ feature "deleting strategic priorities", :js => true do
     end
 
     scenario "delete a strategic priority" do
-      expect{ delete_icon.click; sleep(0.2) }.to change{StrategicPriority.count}.from(1).to(0)
+      expect{ strategic_priority_delete_icon.click; sleep(0.2) }.to change{StrategicPriority.count}.from(1).to(0)
       expect(page).not_to have_selector('.strategic_priority')
     end
   end
@@ -137,31 +156,35 @@ feature "deleting strategic priorities", :js => true do
     end
 
     scenario "delete a strategic priority" do
-      expect{ second_delete_icon.click; sleep(0.2) }.to change{StrategicPriority.count}.from(3).to(2)
+      expect{ second_strategic_priority_delete_icon.click; sleep(0.2) }.to change{StrategicPriority.count}.from(3).to(2)
       expect(page).to have_selector('.strategic_priority', :count => 2)
-      second_edit_icon.click
+      second_strategic_priority_edit_icon.click
       expect(page).to have_selector('div.edit.in input#strategic_priority_description')
     end
   end
 end
 
-def edit_save_icon
+def strategic_priority_cancel_edit_icon
+  page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_cancel']")
+end
+
+def strategic_priority_edit_save_icon
   page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_save']")
 end
 
-def second_edit_icon
+def second_strategic_priority_edit_icon
   page.all(:xpath, ".//i").select{|el| el['id']=~/strategic_priority_editable\d+_edit_start/}[1]
 end
 
-def edit_icon
+def strategic_priority_edit_icon
   page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_start']")
 end
 
-def second_delete_icon
+def second_strategic_priority_delete_icon
   page.all('i#delete')[1]
 end
 
-def delete_icon
+def strategic_priority_delete_icon
   page.find('i#delete')
 end
 

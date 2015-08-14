@@ -96,6 +96,8 @@ $ ->
         e.stopPropagation()
         $target = $(e.target)
         if $target.closest('.editable_container').get(0) == @root.get(0)
+          if @options.object.restore_previous
+            @options.object.restore_previous()
           @context = $target.closest('.editable_container')
           @show()
 

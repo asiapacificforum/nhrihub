@@ -655,6 +655,9 @@
     Ractive.decorators.inpage_edit = EditInPlace
 
     StrategicPriority = Ractive.extend
+      onconfig : ->
+        @set('original_description', @get('description'))
+        @set('original_priority_level', @get('priority_level'))
       template : '#strategic_priority_template'
       components :
         pr : PlannedResult
@@ -701,6 +704,11 @@
           false
         else
           true
+      restore_previous : ->
+        @remove_description_errors()
+        @set('description', @get('original_description'))
+        @remove_priority_level_errors()
+        @set('priority_level', @get('original_priority_level'))
       remove_priority_level_errors : ->
         @.set("priority_level_error","")
       remove_description_errors : ->
@@ -731,3 +739,6 @@
         if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
           strategic_plan.unshift('strategic_priorities', {id:null, description: '', priority_level:null} )
 
+    strategic_plan.observeOnce 'strategic_priorities.*.description strategic_priorities.*.priority_level', (new_value, old_value, keypath)->
+      shadow_keypath = keypath.replace(/\.(\w*)$/,".original_$1")
+      strategic_plan.set(shadow_keypath, old_value)
