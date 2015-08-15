@@ -28,7 +28,7 @@ feature "populate plannned result outcomes", :js => true do
       add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       expect{save_outcome.click; sleep(0.2)}.not_to change{Outcome.count}
-      expect(page).to have_selector("#description_error", :text => "You must enter a description")
+      expect(page).to have_selector(".description #description_error", :text => "You must enter a description")
     end
 
     scenario "try to save outcome with whitespace description field" do
@@ -41,7 +41,7 @@ feature "populate plannned result outcomes", :js => true do
 
     scenario "add multiple outcome items" do
       add_outcome.click
-      expect(page).not_to have_selector("i.new_outcome")
+      #expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(0).to(1)
       expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.1 Achieve nirvana")
@@ -170,6 +170,10 @@ feature "actions on existing multiple outcomes", :js => true do
     outcome_description_field.set("")
     expect{ outcome_save_icon.click; sleep(0.3) }.not_to change{ Outcome.first.reload.description }
     expect(page).to have_selector("#description_error", :text => "You must enter a description")
+    outcome_edit_cancel.click
+    expect(page).not_to have_selector("#description_error", :text => "You must enter a description")
+    page.all(".row.planned_result .row.outcome .col-md-2.description span")[0].click
+    expect(page).not_to have_selector("#description_error", :text => "You must enter a description")
   end
 
   scenario "edit one of multiple outcomes, not the first" do
@@ -178,6 +182,10 @@ feature "actions on existing multiple outcomes", :js => true do
     expect{ outcome_save_icon.click; sleep(0.2) }.to change{ Outcome.last.description }.to "new description"
     expect(page.all(".row.outcome .col-md-2.description")[1].text ).to eq "1.1.2 new description"
   end
+end
+
+def outcome_edit_cancel
+  page.all('.row.outcome .description i').detect{|el| el['id'].match(/outcome_editable\d*_edit_cancel/)}
 end
 
 def outcome_description_field
