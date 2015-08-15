@@ -145,10 +145,19 @@ feature "actions on existing activities", :js => true do
   end
 
   scenario "edit to blank description" do
-    page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[0].click
+    first_activity_description_field.click
     activity_description_field.first.set("")
     expect{ activity_save_icon.click; sleep(0.2) }.not_to change{ Activity.first.description }
-    expect(page).to have_selector("#description_error", :text => "You must enter a description")
+    expect(page).to have_selector(".activity .description #description_error", :text => "You must enter a description")
+    activity_edit_cancel.click
+    sleep(0.2)
+    # error msg disappears on cancel
+    expect(page).not_to have_selector(".activity .description #description_error", :text => "You must enter a description")
+    first_activity_description_field.click
+    # error message doesn't reappear on re-edit
+    expect(page).not_to have_selector(".activity .description #description_error", :text => "You must enter a description")
+    # original value should be in the text area input field
+    expect(activity_description_field.first.value).to eq "work hard"
   end
 
   scenario "edit one of multiple activities, not the first" do
@@ -166,6 +175,14 @@ feature "actions on existing activities", :js => true do
     expect(page.all(activity_selector+".target .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 total satisfaction"
     expect(page.all(activity_selector + ".activity_progress .no_edit span:first-of-type")[1].text).to eq "half completed"
   end
+end
+
+def first_activity_description_field
+  page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[0]
+end
+
+def activity_edit_cancel
+  page.all(activity_selector+" i").detect{|el| el['id'].match(/activity_editable\d*_edit_cancel/)}
 end
 
 def activity_selector
