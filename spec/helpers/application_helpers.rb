@@ -1,4 +1,15 @@
 module ApplicationHelpers
+  def select_date(date,options)
+    base = options[:from].to_s
+    year_selector = base+"_1i"
+    month_selector = base+"_2i"
+    day_selector = base+"_3i"
+    month,day,year = date.split(' ')
+    select(year, :from => year_selector)
+    select(month, :from => month_selector)
+    select(day, :from => day_selector)
+  end
+
   def flash_message
     page.find(".message_block").text
   end
