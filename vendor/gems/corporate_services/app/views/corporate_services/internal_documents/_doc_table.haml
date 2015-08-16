@@ -1,18 +1,17 @@
 %table.document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
   %tr
-    %td.title{:style => "width:36%"}
-      %div{:'data-toggle' => 'edit'}
-        .fade.edit
-          %input.title{:'data-name' => :title, :name => "internal_document[title]", :'value' => "{{ title }}", :twoway=>'false'}
-        .fade.no_edit.editable.in
-          %span {{ title }}
-    %td.revision{:'data-name' => 'revision', :style => "width:8%"}
-      %div{:'data-toggle' => 'edit'}
-        .fade.edit
-          %input.revision{:'data-name' => :revision, :name => "internal_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px', :twoway=>'false'}
-        .fade.no_edit.editable.in
-          -# height required to properly position the tag
-          %span {{ revision }}
+    %td.title.form-group{'data-toggle' => :edit, :style => "width:36%", 'data-attribute' => :title, :class =>"{{#title_error}}has-error{{/}}"}
+      .fade.edit
+        %input.title{:name => "internal_document[title]", :'value' => "{{ title }}"}
+        %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.title_error_message')
+      .fade.no_edit.editable.in
+        %span {{ title }}
+    %td.revision.form-group{'data-attribute' => :revision, 'data-toggle' => :edit, :'data-name' => 'revision', :style => "width:8%", :class =>"{{#revision_error}}has-error{{/}}"}
+      .fade.edit
+        %input.revision{ :name => "internal_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px'}
+        %span.help-block#revision_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.revision_error_message')
+      .fade.no_edit.editable.in
+        %span {{ revision }}
     -# make sure it's on top of the next td, even though it precedes in the html
     %td.include_popover{:style => "text-align:center; width:8%"}
       .icon.details{:'data-toggle' => 'edit'}

@@ -181,7 +181,26 @@
     Ractive.decorators.doc_deleter = DocDeleter
 
     ArchiveDoc = Ractive.extend
-      template: '#doc_table' # no compoents here!
+      template: '#doc_table'
+      remove_errors : ->
+        @set("title_error", false)
+        @set("revision_error", false)
+      validate : ->
+        @_validate_title() && @_validate_revision()
+      _validate_title : ->
+        @set('title', @get('title').trim())
+        if @get('title') == ""
+          @set("title_error",true)
+          false
+        else
+          true
+      _validate_revision : ->
+        @set('revision', @get('revision').trim())
+        if @get('revision') == ""
+          @set("revision_error",true)
+          false
+        else
+          true
 
     Doc = Ractive.extend
       template: '#template-download'
@@ -189,6 +208,25 @@
         archivedoc : ArchiveDoc
       download_file : ->
         window.location = @get('url')
+      remove_errors : ->
+        @set("title_error", false)
+        @set("revision_error", false)
+      validate : ->
+        @_validate_title() && @_validate_revision()
+      _validate_title : ->
+        @set('title', @get('title').trim())
+        if @get('title') == ""
+          @set("title_error",true)
+          false
+        else
+          true
+      _validate_revision : ->
+        @set('revision', @get('revision').trim())
+        if @get('revision') == ""
+          @set("revision_error",true)
+          false
+        else
+          true
 
     window.internal_documents = new Ractive
                             el: '.files'

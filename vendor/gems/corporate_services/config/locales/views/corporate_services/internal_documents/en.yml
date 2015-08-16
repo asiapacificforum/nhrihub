@@ -18,6 +18,9 @@ en:
         add1: "Add file"
         flash:
           no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
+      doc_table:
+        title_error_message: "Title cannot be blank"
+        revision_error_message: "Invalid"
       details_popover_title:
         details: "File details"
       template_upload:

@@ -113,6 +113,30 @@ feature "internal document management", :js => true do
                and change{ @doc.reload.revision }.to("4.4")
   end
 
+  scenario "edit filename to blank" do
+    click_the_edit_icon(page)
+    page.find('.template-download input.title').set("")
+    page.find('.template-download input.revision').set("4.4")
+    expect{ click_edit_save_icon(page) }.
+               not_to change{ @doc.reload.title }
+    expect(page).to have_selector(".document .title .edit.in #title_error", :text => "Title cannot be blank")
+    click_edit_cancel_icon(page)
+    expect(page.find('td.title .no_edit').text).to eq "my important document"
+    expect(page.find('td.revision .no_edit').text).to eq "3.0"
+  end
+
+  scenario "edit revision to invalid value" do
+    click_the_edit_icon(page)
+    page.find('.template-download input.title').set("new document title")
+    page.find('.template-download input.revision').set("")
+    expect{ click_edit_save_icon(page) }.
+               not_to change{ @doc.reload.title }
+    expect(page).to have_selector(".document .revision .edit.in #revision_error", :text => "Invalid")
+    click_edit_cancel_icon(page)
+    expect(page.find('td.title .no_edit').text).to eq "my important document"
+    expect(page.find('td.revision .no_edit').text).to eq "3.0"
+  end
+
   scenario "start editing, cancel editing, start editing" do
     click_the_edit_icon(page)
     page.find('.template-download input.title').set("new document title")
