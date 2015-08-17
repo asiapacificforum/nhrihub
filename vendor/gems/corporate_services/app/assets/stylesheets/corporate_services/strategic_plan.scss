@@ -27,3 +27,15 @@ select.priority_level {
 .topaligned {
   vertical-align: top;
 }
+
+.row.planned_result>div:nth-child(2), .row.planned_result_control div:nth-child(2){
+  background-color : #E8E8E8;
+}
+
+.row.planned_result_control{
+  border-bottom : 1px solid #E4E4E4
+}
+
+.row.activity, .row.activity_control>div:nth-child(2){
+  background-color : #DCDCDC;
+}

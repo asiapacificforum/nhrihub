@@ -107,15 +107,14 @@
       {{#outcomes:i}}
       <outcome id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
       {{/outcomes}}
-  .row
+      {{^outcomes}}
+      .row.outcome
+        .col-md-2{:style=>"width:100%; height:35px;"} &nbsp;
+      {{/outcomes}}
+  .row.planned_result_control
     .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
+    .col-md-2{:style=>"width:85.7143%"}
       %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9'}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
 
 %script#new_planned_result_template{:type => 'text/ractive'}
   .row.new_planned_result
@@ -196,14 +195,10 @@
       .col-md-2{:style=>"width:20%"}
       .col-md-2{:style=>"width:20%"}
       {{/activities}}
-  .row
+  .row.activity_control
     .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
+    .col-md-2{:style=>"width:83.3335%"}
       %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9'}
-    .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
 
 %script#activity_template{:type => 'text/ractive'}
   {{#if !persisted }}
