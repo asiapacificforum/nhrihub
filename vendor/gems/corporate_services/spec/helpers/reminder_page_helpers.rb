@@ -68,6 +68,10 @@ module ReminderPageHelpers
     page.find("i#save_reminder")
   end
 
+  def edit_reminder_cancel
+    page.all("#reminders .reminder i").detect{|el| el['id'].match(/reminder_editable\d*_edit_cancel/)}
+  end
+
   def cancel_reminder
     page.find("i#cancel_reminder")
   end
@@ -76,4 +80,7 @@ module ReminderPageHelpers
     page.find("i#add_reminder")
   end
 
+  def reminder_delete_icon
+    page.find("i#delete_reminder")
+  end
 end

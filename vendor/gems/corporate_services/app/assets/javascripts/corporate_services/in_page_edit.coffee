@@ -23,33 +23,50 @@
 #    Needs an element with selector '.editable_container' with data attribute for save_url
 $ ->
   class @InpageEditElement
-    constructor : (@el) ->
+    constructor : (@el,@object,@attribute) ->
 
     switch_to_edit : ->
-      @set_field_width()
+      unless _.isUndefined(@attribute) # in which case it's a control element not an input
+        @_stash()
       @hide(@text())
       @show(@input())
-      @set_parent_height()
+
+    _stash : ->
+      unless _.isArray(@attribute)
+        @attribute = [@attribute]
+      _(@attribute).each (attr)=>
+        @object.set('original_'+attr,@object.get(attr))
 
     switch_to_show : ->
+      @load()
+      unless _.isUndefined(@attribute) # in which case it's a control element not an input
+        @_restore()
+      #@height = $(@el).find('.edit').height()
+
+    load : ->
       @show(@text())
-      @restore_input()
       @hide(@input())
-      @restore_parent_height()
 
-    restore_input : ->
-      @input_field().val(@input_field().attr('value'))
+    _restore : ->
+      unless _.isArray(@attribute)
+        @attribute = [@attribute]
+      _(@attribute).each (attr)=>
+        unless _.isUndefined(@object.get("original_"+attr))
+          @object.set(attr,@object.get("original_"+attr))
 
-    set_parent_height : ->
-      height = $(@input()).height()
-      $(@input()).closest('tr').css('height',height)
+    #set_parent_height : ->
+      #new_height = $(this.elements()[0].el).find('.edit').height()
+      #parent = $(this.elements()[0].el).parent()
+      #parent.height(new_height)
+      #height = $(@input()).height()
+      #$(@input()).closest('tr').css('height',height)
 
-    restore_parent_height : ->
-      height = $(@text()).height()
-      $(@input()).closest('tr').css('height',height)
+    #restore_parent_height : ->
+      #height = $(@text()).height()
+      #$(@input()).closest('tr').css('height',height)
 
-    set_field_width : ->
-      @input_field().css('width','100%')
+    #set_field_width : ->
+      #@input_field().css('width','100%')
 
     input_field : ->
       @input().find('input')
@@ -89,15 +106,15 @@ $ ->
         $target = $(e.target)
         if $target.closest('.editable_container').get(0) == @root.get(0)
           @context = $target.closest('.editable_container')
-          @edit()
+          @edit(@options.object)
           @context.find(@options.focus_element).first().focus()
 
       $(@options.on).find("[id$='_edit_cancel']").on 'click', (e)=>
         e.stopPropagation()
         $target = $(e.target)
         if $target.closest('.editable_container').get(0) == @root.get(0)
-          if @options.object.restore_previous
-            @options.object.restore_previous()
+          #if @options.object.restore_previous
+            #@options.object.restore_previous()
           @context = $target.closest('.editable_container')
           @show()
 
@@ -106,7 +123,6 @@ $ ->
         $target = $(e.target)
         if $target.closest('.editable_container').get(0) == @root.get(0)
           if validate && !@options.object.validate()
-            #@show()
             return
           @context = $target.closest('.editable_container')
           url = @options.object.get('url')
@@ -138,8 +154,13 @@ $ ->
       InpageEdit.register(@)
 
     show : ->
+      @options.object.remove_errors()
       _(@elements()).each (el,i) ->
         el.switch_to_show()
+
+    load : ->
+      _(@elements()).each (el,i) ->
+        el.load()
 
     # must select only elements pertaining to this instance
     # nested in-page edits must be excluded from elements
@@ -147,8 +168,10 @@ $ ->
       all_elements = @context.find("[data-toggle='edit']")
       elements = _(all_elements).filter (el)=>
                         $(el).closest('.editable_container').get(0) == @root.get(0)
-      elements.map (el,i)->
-        new document.InpageEditElement(el)
+      elements.map (el,i)=>
+        object = @options.object
+        attribute = $(el).data('attribute')
+        new document.InpageEditElement(el,object,attribute)
 
     data : ->
       @context.data()

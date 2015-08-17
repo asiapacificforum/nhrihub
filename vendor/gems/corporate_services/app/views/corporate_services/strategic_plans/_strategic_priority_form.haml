@@ -1,33 +1,33 @@
 %script#show_strategic_priority{:type => 'text/ractive'}
   .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
-    .panel-heading.strategic_priority_title
+    .panel-heading.strategic_priority_title{:style => "padding-top:20px; padding-bottom:6px;"}
       %h4.panel-title.clearfix
         .row
-          .col-md-2.priority_level{'data-toggle' => 'edit'}
-            #priority_level_error.error{:style => 'padding-left:6px; font-weight:200; font-size:0.8em;', 'data-message' => t('.priority_level_error_message')} {{ priority_level_error }} &nbsp;
+          .col-md-2.form-group.priority_level{'data-toggle' => 'edit', :class => "{{#priority_level_error}}has-error{{/}}", 'data-attribute'=>:strategic_priority}
             .fade.no_edit.in
               %span= t('.strategic_priority')
-            .fade.edit{:style=>"top:17px"}
+            .fade.edit
               %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: 6px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
                 - priority_level_options.each do |opt|
                   %option{:value => opt[1]}= opt[0]
-          .col-md-6.description{'data-toggle' => 'edit'}
-            #description_error.error{'data-message' => t('.description_error_message'), :style => "font-weight:200; font-size:0.8em;"} {{ description_error }} &nbsp;
+              %span.help-block#priority_level_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.priority_level_error_message')
+          .col-md-6.form-group.description{'data-toggle' => 'edit', :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>:description}
             .fade.no_edit.in
               %span {{ description }}
-            .fade.edit{:style=>"width:100%; top:17px"}
+            .fade.edit{:style=>"width:100%"}
               %input.form-control#strategic_priority_description{:name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:100%; font-size: 16px; margin-left:2px; height:22px;', 'on-keydown' => "remove_description_errors()"}
-          .col-md-1{:style => "text-align:center; font-size:14px; top:17px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
+              %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.description_error_message')
+          .col-md-1{:style => "text-align:center; font-size:14px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
             %i.fa.fa-folder-o.fa-lg#toggle
-          .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px; top:17px;", 'data-toggle' => 'edit'}
+          .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px;", 'data-toggle' => 'edit'}
             .fade.edit
               %i.fa.fa-remove.fa-lg{:style => "position:relative; left:30px;", :id => "strategic_priority_editable{{id}}_edit_cancel"}
-          .col-md-1.icon{:style => "text-align:center; font-size:14px; top:17px", 'data-toggle' => 'edit'}
+          .col-md-1.icon{:style => "text-align:center; font-size:14px;", 'data-toggle' => 'edit'}
             .fade.edit
               %i.fa.fa-check.fa-lg{:id => "strategic_priority_editable{{id}}_edit_save", :style => "position:relative; left:34px;"}
             .fade.no_edit.in
               %i.fa.fa-pencil-square-o.fa-lg{:id => "strategic_priority_editable{{id}}_edit_start"}
-          .col-md-1{:style => "text-align:center; font-size:14px; top:17px;"}
+          .col-md-1{:style => "text-align:center; font-size:14px;"}
             %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()'}
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
       .panel-body.table#planned_results
@@ -56,15 +56,15 @@
   .panel.panel-default.new_strategic_priority
     = form_for :strategic_priority, :url => corporate_services_strategic_plan_strategic_priorities_path("spid").gsub(/spid/,"{{spid}}"), :remote => true, :html => {:id => :new_strategic_priority, :style => "padding:6px 0px"} do |f|
       .form-inline
-        .form-group
+        .form-group{:class => "{{#priority_level_error}}has-error{{/}}"}
           =f.label :priority_level, t('.priority'), :class => 'control-label sr-only'
-          #priority_level_error.error{:style => 'padding-left:6px;', 'data-message' => t('.priority_level_error_message')} {{ priority_level_error }} &nbsp;
           =f.select :priority_level, priority_level_options, {:include_blank => 'Select priority level'}, {'on-change' => 'remove_priority_level_errors()', :class => 'form-control sp-select', :value => "{{priority_level}}"}
-        .form-group.clearfix
+          %span.help-block#priority_level_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.priority_level_error_message')
+        .form-group.clearfix{:class => "{{#description_error}}has-error{{/}}"}
           =f.label :description, t('.description'), :class => 'control-label sr-only'
-          #description_error.error{:style => "float:left;", 'data-message' => t('.description_error_message')} {{ description_error }} &nbsp;
           .chars_remaining{:style => "float:right"}= t('.chars_remaining')
           =f.text_field :description, :class => 'form-control', :placeholder => "Enter description", :size => 100, :maxlength => 100, :value => "{{description}}", 'on-keydown' => "remove_description_errors()"
+          %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
         .form-group
           .nothing{:style => 'visibility:hidden'} nothing
           %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
@@ -91,8 +91,7 @@
 
 %script#show_planned_result_template{:type => 'text/ractive'}
   .row.planned_result.editable_container{:id => "planned_result_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "vertical-align:top"}
-    .col-md-2.description{ 'data-toggle' => 'edit', 'data-id' => '{{id}}', :style=>"width:14.2857%"}
-      #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
+    .col-md-2.form-group.description{ 'data-toggle' => 'edit', 'data-id' => '{{id}}', :style=>"width:14.2857%", :class=>"{{#description_error}}has-error{{/}}", 'data-attribute'=>:description}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
@@ -100,6 +99,7 @@
           %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style=>"margin-left:16px"}
         %textarea{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]', 'on-keydown' => "remove_description_errors()"}
+        %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
         .icon{'data-toggle' => 'edit', :style => 'height:20px'}
           %i.fa.fa-remove.fa-lg{:id => "planned_result_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "planned_result_editable{{id}}_edit_save", :style => "margin-left:56px"}
@@ -119,14 +119,14 @@
 
 %script#new_planned_result_template{:type => 'text/ractive'}
   .row.new_planned_result
-    .col-md-2{:style=>"width:14.2857%"}
-      #description_error.error{'data-message' => t('.description_error_message')} {{ description_error }}
+    .col-md-2.form-group{:style=>"width:14.2857%", :class=>"{{#description_error}}has-error{{/}}"}
       %div
         %textarea{'on-keydown' => "remove_description_errors()",
             :cols => 24, :rows => 4,
             :id=>'planned_result_description', :placeholder => "Enter description",
             :name => "planned_result[description]",
             :value => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10; width:100%'}
+        %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
     .col-md-2{:style=>"width:14.2857%"}
     .col-md-2{:style=>"width:14.2857%"}
     .col-md-2{:style=>"width:14.2857%"}
@@ -172,7 +172,7 @@
 
 %script#show_outcome_template{:type => 'text/ractive'}
   .row.outcome.editable_container{:id => "outcome_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
-    .col-md-2.description.form-group{'data-toggle' => 'edit', :style=>"width:16.6667%", :class => "{{#description_error}}has-error{{/}}"}
+    .col-md-2.description.form-group{'data-toggle' => 'edit', :style=>"width:16.6667%", :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>:description}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "outcome_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
@@ -182,7 +182,7 @@
         %textarea.form-control{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
             :name => "outcome[description]", :value => "{{ description }}", "on-keydown"=>"remove_description_errors()"}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
-        .icon{'data-toggle' => 'edit', :style => 'height:16.6667px; background-color:white; top:-2px'}
+        .icon{'data-toggle' => 'edit', :style => 'height:16.6667px; background-color:white; top:0px'}
           %i.fa.fa-remove.fa-lg{:id => "outcome_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2{:style=>"width:83.3333%"}
@@ -243,7 +243,7 @@
 
 %script#show_activity_template{:type => 'text/ractive'}
   .row.activity.editable_container{:id => "activity_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
-    .col-md-2.description.form-group{'data-toggle' => 'edit', :style=>"width:20%", :class => "{{#description_error}}has-error{{/}}"}
+    .col-md-2.description.form-group{'data-toggle' => 'edit', :style=>"width:20%", :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>'description'}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
@@ -252,7 +252,7 @@
         %textarea.form-control{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
             :name => "activity[description]", :value => "{{ description }}"}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
-        .icon{'data-toggle' => 'edit', :style => 'height:20px; background-color:white; top:-2px'}
+        .icon{'data-toggle' => 'edit', :style => 'height:20px; background-color:white; top:0px'}
           %i.fa.fa-remove.fa-lg{:id => "activity_editable{{id}}_edit_cancel", :style => "margin-left:36px"}
           %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2.performance_indicator{'data-toggle'=>'edit', :style=>"width:20%"}
@@ -306,7 +306,7 @@
 
 %script#show_reminder_template{:type => 'text/ractive'}
   .reminder.row.editable_container{:id => "reminder_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
-    .col-md-1.tight.reminder_type.form-group{:class => '{{#reminder_type_error}}has-error{{/}}', :style => "width:10%", 'data-toggle' => 'edit', 'data-id' => '{{id}}'}
+    .col-md-1.tight.reminder_type.form-group{:class => '{{#reminder_type_error}}has-error{{/}}', :style => "width:10%", 'data-toggle' => 'edit', 'data-id' => '{{id}}', 'data-attribute'=>'reminder_type'}
       .fade.no_edit.in
         %span {{ reminder_type }}
       .fade.edit.scree{:style => "height:140px;"}
@@ -314,7 +314,7 @@
           {:prompt => "select type"},
           {:style => "height:22px", :class => 'form-control', :value => '{{reminder_type}}', 'on-change'=>"remove_errors('reminder_type')"}
         %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.reminder_type_error_message')
-    .col-md-1.tight.next.form-group{:style => "width:18%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}'}
+    .col-md-1.tight.next.form-group{:style => "width:18%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'["start_month","start_day","start_year"]'}
       .fade.no_edit.in
         %span {{ next }}
       .fade.edit.scree{:style => "height:140px;"}
@@ -322,13 +322,14 @@
         =select :reminder, "start_date_3i", (1..31),{},{:name => "reminder[start_date(3i)]", :style=>"height:22px; width:3.5em; display:inline-block;", :class=>'form-control', :value => "{{start_day}}"}
         =select :reminder, "start_date_1i", (Date.today.year..Date.today.year+5),{},{:name => "reminder[start_date(1i)]", :style=>"height:22px; width:5em; display:inline-block;", :class=>'form-control', :value => "{{start_year}}"}
     .col-md-1.tight.previous{:style => "width:9%"}{{ previous }}
-    .col-md-6.tight.text.form-group{:class => '{{#text_error}}has-error{{/}}', :style => "width:40%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}'}
-      .fade.no_edit.in
-        %span {{text}}
-      .fade.edit.scree{:style => "height:140px;"}
-        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
-        %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.reminder_text_error_message')
-    .col-md-1.tight.recipients.form-group{:class => '{{#user_ids_error}}has-error{{/}}', :style => "width:13%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}'}
+    .col-md-6.tight.text.form-group{:class => '{{#text_error}}has-error{{/}}', :style => "width:40%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'text'}
+      %div
+        .fade.no_edit.in
+          %span {{text}}
+        .fade.edit.scree{:style => "height:140px;"}
+          %textarea#reminder_text.form-control{:name => 'reminder[text]', :cols=>78, :rows=>4, :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"}
+          %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.reminder_text_error_message')
+    .col-md-1.tight.recipients.form-group{:class => '{{#user_ids_error}}has-error{{/}}', :style => "width:13%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'user_ids'}
       .fade.no_edit.in
         {{#recipients}}
         <recipient first_last_name="{{ first_last_name  }}" />
@@ -347,7 +348,7 @@
       .fade.no_edit.in{:style => "left:-14px;"}
         %i.fa.fa-pencil-square-o.fa-lg{:id => "reminder_editable{{id}}_edit_start"}
     .col-md-1{:style => "text-align:center; font-size:14px; width:3%;"}
-      %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()', :style => "position:relative; left:-12px; top:-2px;"}
+      %i.fa.fa-trash-o.fa-lg#delete_reminder{'on-click' => 'delete_reminder(event,this)', :style => "position:relative; left:-12px; top:-2px;"}
 
 %script#new_reminder_template{:type => 'text/ractive'}
   .form-horizontal#new_reminder
@@ -411,6 +412,19 @@
             context : @
       cancel_reminder : ->
         @parent.pop('reminders')
+      delete_reminder : ->
+        ev = $.Event(event)
+        ev.stopPropagation()
+        data = [{name:'_method', value: 'delete'}]
+        $.ajax
+          url : @get('url')
+          data : data
+          method : 'post'
+          dataType : 'json'
+          context : @
+          success : @update_reminder
+      update_reminder : (resp, statusText, jqxhr)->
+        @parent.set(resp)
       validate : ->
         type = @_validate('reminder_type')
         text = @_validate('text')
@@ -462,9 +476,6 @@
           false
         else
           true
-      restore_previous : ->
-        @remove_description_errors()
-        @set('description', @get('original_description'))
       create_activity : (response, statusText, jqxhr)->
         @parent.set('activities',response)
         #@parent.show_add_activity()
@@ -481,6 +492,8 @@
           success : @update_activity
       update_activity : (resp, statusText, jqxhr)->
         @parent.set(resp)
+      remove_errors : ->
+        @remove_description_errors()
       remove_description_errors : ->
         @set("description_error","")
       show_reminders_panel : ->
@@ -522,14 +535,13 @@
           false
         else
           true
-      restore_previous : ->
-        @remove_description_errors()
-        @set('description', @get('original_description'))
       create_outcome : (response, statusText, jqxhr)->
         @parent.set('outcomes',response)
         @parent.show_add_outcome()
       remove_description_errors : ->
         @set("description_error","")
+      remove_errors : ->
+        @remove_description_errors()
       delete_this : (event,object)->
         ev = $.Event(event)
         ev.stopPropagation()
@@ -574,15 +586,16 @@
             success : @create_pr
             context : @
       validate : ->
-        message = $(@nodes.description_error).data('message')
         @set('description', @get('description').trim())
         if @get('description') == ""
-          @set("description_error",message)
+          @set("description_error",true)
           false
         else
           true
       remove_description_errors : ->
-        @set("description_error","")
+        @set("description_error",false)
+      remove_errors : ->
+        @remove_description_errors()
       create_pr : (response, statusText, jqxhr)->
         @parent.set('planned_results',response)
         @parent.show_add_planned_result()
@@ -629,7 +642,7 @@
           # the whole dataset is replaced... Ractive figures out
           # what has changed and what to re-render
           strategic_plan.set('strategic_priorities',response)
-          @.show()
+          @load()
         error : ->
           console.log "Changes were not saved, for some reason"
       return {
@@ -701,34 +714,30 @@
         if _.isString(@get(field))
           @set(field, @get(field).trim())
         value = @get(field)
-        message = $(@nodes[field+'_error']).data('message')
         if value == "" || _.isNull(value)
-          @set(field+"_error",message)
+          @set(field+"_error",true)
           false
         else
           true
-      restore_previous : ->
-        @remove_description_errors()
-        @set('description', @get('original_description'))
-        @remove_priority_level_errors()
-        @set('priority_level', @get('original_priority_level'))
       remove_priority_level_errors : ->
-        @.set("priority_level_error","")
+        @set("priority_level_error",false)
       remove_description_errors : ->
-        @.set("description_error","")
+        @set("description_error",false)
+      remove_errors : ->
+        @remove_priority_level_errors() && @remove_description_errors()
       _add_planned_result : ->
         $(@parent.el).
           find('.new_planned_result').
           closest('.row')
       hide_add_planned_result : ->
-        @._add_planned_result().
+        @_add_planned_result().
           hide()
       show_add_planned_result : ->
-        @._add_planned_result().
+        @_add_planned_result().
           show()
       remove_planned_result_form : ->
-        @.pop('planned_results')
-        @.show_add_planned_result()
+        @pop('planned_results')
+        @show_add_planned_result()
 
     window.strategic_plan = new Ractive
       el : "#strategic_plan"
@@ -741,12 +750,3 @@
         # of if the most recent is persisted
         if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
           strategic_plan.unshift('strategic_priorities', {id:null, description: '', priority_level:null} )
-
-    validation_fields = ['strategic_priorities.*.description',
-                         'strategic_priorities.*.priority_level',
-                         'strategic_priorities.*.planned_results.*.outcomes.*.description',
-                         'strategic_priorities.*.planned_results.*.outcomes.*.activities.*.description' ].join(' ')
-
-    strategic_plan.observeOnce validation_fields, (new_value, old_value, keypath)->
-      shadow_keypath = keypath.replace(/\.(\w*)$/,".original_$1")
-      strategic_plan.set(shadow_keypath, old_value)

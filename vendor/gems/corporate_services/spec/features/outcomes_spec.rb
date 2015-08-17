@@ -1,10 +1,12 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require_relative '../helpers/strategic_plan_helpers'
 
 
 feature "populate plannned result outcomes", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPlanHelpers
 
   feature "add outcome when there were none before" do
     before do
@@ -20,8 +22,10 @@ feature "populate plannned result outcomes", :js => true do
       add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
-      expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(0).to(1)
+      save_outcome.click
+      sleep(0.3)
       expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.1 Achieve nirvana")
+      expect(Outcome.count).to eq 1
     end
 
     scenario "try to save outcome with blank description field" do
@@ -43,13 +47,17 @@ feature "populate plannned result outcomes", :js => true do
       add_outcome.click
       #expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
-      expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(0).to(1)
+      save_outcome.click
+      sleep(0.3)
       expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.1 Achieve nirvana")
+      expect(Outcome.count).to eq 1
       add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Total enlightenment"
-      expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
+      save_outcome.click
+      sleep(0.2)
       expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Total enlightenment")
+      expect(Outcome.count).to eq 2
     end
   end
 
@@ -89,6 +97,7 @@ end
 
 feature "actions on existing single outcome", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPlanHelpers
 
   before do
     sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
@@ -123,6 +132,7 @@ end
 
 feature "actions on existing multiple outcomes", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPlanHelpers
 
   before do
     sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
@@ -159,25 +169,34 @@ feature "actions on existing multiple outcomes", :js => true do
   end
 
   scenario "edit the first of multiple outcomes" do
-    page.all(".row.planned_result .row.outcome .col-md-2.description span")[0].click
+    outcome_descriptions[0].click
     outcome_description_field.set("new description")
     expect{ outcome_save_icon.click; sleep(0.3) }.to change{ Outcome.first.reload.description }.to "new description"
     expect(page.all(".row.outcome .col-md-2.description")[0].text ).to eq "1.1.1 new description"
   end
 
-  scenario "edit to blank description" do
-    page.all(".row.planned_result .row.outcome .col-md-2.description span")[0].click
+  scenario "edit and cancel without making any changes" do
+    outcome_descriptions[0].click
+    sleep(0.3)
+    outcome_edit_cancel.click
+    expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .description .in", :text => "1.1.1 whirled peas")
+  end
+
+  scenario "edit to blank description and cancel" do
+    outcome_descriptions[0].click
     outcome_description_field.set("")
     expect{ outcome_save_icon.click; sleep(0.3) }.not_to change{ Outcome.first.reload.description }
-    expect(page).to have_selector("#description_error", :text => "You must enter a description")
+    expect(page).to have_selector(".outcome #description_error", :text => "You must enter a description")
     outcome_edit_cancel.click
-    expect(page).not_to have_selector("#description_error", :text => "You must enter a description")
-    page.all(".row.planned_result .row.outcome .col-md-2.description span")[0].click
-    expect(page).not_to have_selector("#description_error", :text => "You must enter a description")
+    expect(page).not_to have_selector(".outcome #description_error", :text => "You must enter a description")
+    expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .description .in", :text => "1.1.1 whirled peas")
+    outcome_descriptions[0].click
+    expect(page).not_to have_selector(".outcome #description_error", :text => "You must enter a description")
+    expect(outcome_description_field.value).to eq "whirled peas"
   end
 
   scenario "edit one of multiple outcomes, not the first" do
-    page.all(".row.planned_result .row.outcome .col-md-2.description span")[1].click
+    outcome_descriptions[1].click
     outcome_description_field.set("new description")
     expect{ outcome_save_icon.click; sleep(0.2) }.to change{ Outcome.last.description }.to "new description"
     expect(page.all(".row.outcome .col-md-2.description")[1].text ).to eq "1.1.2 new description"
@@ -188,16 +207,16 @@ def outcome_edit_cancel
   page.all('.row.outcome .description i').detect{|el| el['id'].match(/outcome_editable\d*_edit_cancel/)}
 end
 
+def outcome_descriptions
+  page.all(".row.planned_result .row.outcome .col-md-2.description span")
+end
+
 def outcome_description_field
   page.all(".row.outcome .edit.in textarea").detect{|el| el['id'].match(/outcome_\d*_description/)}
 end
 
 def outcome_save_icon
   page.all('.outcome.editable_container .edit.in div.icon>i').select{|i| i['id'] && i['id'].match(/outcome_editable\d+_edit_save/)}.last
-end
-
-def open_accordion_for_strategic_priority_one
-  page.find("i#toggle").click
 end
 
 def save_outcome

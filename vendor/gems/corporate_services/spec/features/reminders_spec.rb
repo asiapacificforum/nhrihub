@@ -118,7 +118,7 @@ feature "edit a reminder", :js => true do
   before do
     FactoryGirl.create(:user, :firstName => 'Norman', :lastName => 'Normal')
     activity = setup_activity
-    activity.reminders << Reminder.create(:reminder_type => 'quarterly', :start_date => Date.new(2014,8,1), :text => "don't forget to do something")
+    activity.reminders << Reminder.create(:reminder_type => 'quarterly', :start_date => Date.new(2014,8,1), :text => "don't forget to do something", :users => [User.first])
     open_reminders_panel
   end
 
@@ -142,18 +142,48 @@ feature "edit a reminder", :js => true do
 
   scenario "and attempt to save with errors" do
     expect(page).to have_selector("#reminders .reminder .text", :text => "don't forget to do something")
+    next_date = page.find("#reminders .reminder .next .in").text
     edit_reminder_icon.click
     all("select#reminder_reminder_type option").first.select_option
     fill_in(:reminder_text, :with => " ")
-    unselect("Norman Normal", :from => :reminder_user_ids)
+    unselect(User.first.first_last_name, :from => :reminder_user_ids)
     expect{ edit_reminder_save_icon.trigger('click'); sleep(0.2)}.not_to change{Reminder.first.text}
     expect(page).to have_selector(".reminder .reminder_type.has-error")
     expect(page).to have_selector(".reminder .recipients.has-error")
     expect(page).to have_selector(".reminder .text.has-error")
+    edit_reminder_cancel.click
+    sleep(0.4) #js transition
+    expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "quarterly"
+    expect(page.find("#reminders .reminder .next .in").text).to eq next_date
+    expect(page.find("#reminders .reminder .text .in").text).to eq "don't forget to do something"
+    expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.first.first_last_name
+  end
+
+  scenario "cancel without making changes" do
+    next_date = page.find("#reminders .reminder .next .in").text
+    expect(page).to have_selector("#reminders .reminder .text", :text => "don't forget to do something")
+    edit_reminder_icon.click
+    sleep(0.2) #js transition
+    edit_reminder_cancel.click
+    sleep(0.2) #js transition
+    expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "quarterly"
+    expect(page.find("#reminders .reminder .next .in").text).to eq next_date # i.e. no change
+    expect(page.find("#reminders .reminder .text .in").text).to eq "don't forget to do something"
+    expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.first.first_last_name
   end
 end
 
 feature "delete a reminder", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ReminderPageHelpers
   include StrategicPlanHelpers
+  before do
+    activity = setup_activity
+    activity.reminders << Reminder.create(:reminder_type => 'quarterly', :start_date => Date.new(2014,8,1), :text => "don't forget to do something")
+    open_reminders_panel
+  end
+
+  scenario "delete" do
+    expect{reminder_delete_icon.click; sleep(0.2)}.to change{Reminder.count}.from(1).to(0)
+  end
 end

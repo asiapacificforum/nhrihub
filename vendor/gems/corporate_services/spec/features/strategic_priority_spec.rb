@@ -35,17 +35,17 @@ feature "adding strategic priorities", :js => true do
 
   scenario "submit with errors: no priority selected" do
     expect{ add_strategic_priority({:description => "blinka blonka bloo"}) }.not_to change{ StrategicPriority.count }
-    expect(page).to have_selector('.new_strategic_priority .error', :text => "You must select the priority level")
+    expect(page).to have_selector('.new_strategic_priority #priority_level_error', :text => "You must select the priority level")
   end
 
   scenario "submit with errors: no description entered" do
     expect{ add_strategic_priority({:priority_level => "Strategic Priority 1"}) }.not_to change{ StrategicPriority.count }
-    expect(page).to have_selector('.new_strategic_priority .error', :text => "You must enter a description")
+    expect(page).to have_selector('.new_strategic_priority #description_error', :text => "You must enter a description")
   end
 
   scenario "submit with errors: whitespace only description" do
     expect{ add_strategic_priority({:priority_level => "Strategic Priority 1", :description => " "}) }.not_to change{ StrategicPriority.count }
-    expect(page).to have_selector('.new_strategic_priority .error', :text => "You must enter a description")
+    expect(page).to have_selector('.new_strategic_priority #description_error', :text => "You must enter a description")
   end
 
   scenario "click 'Add strategic priority' more than once without submitting" do

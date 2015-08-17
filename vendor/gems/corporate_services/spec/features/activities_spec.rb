@@ -1,10 +1,14 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require_relative '../helpers/activities_spec_helpers'
+require_relative '../helpers/strategic_plan_helpers'
 
 
 feature "populate plannned result activities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include ActivitiesSpecHelpers
+  include StrategicPlanHelpers
 
   feature "add activity when there were none before" do
     before do
@@ -103,6 +107,8 @@ end
 
 feature "actions on existing activities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include ActivitiesSpecHelpers
+  include StrategicPlanHelpers
 
   before do
     sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
@@ -144,7 +150,14 @@ feature "actions on existing activities", :js => true do
     expect(page.all(activity_selector + ".activity_progress", :text => "completed")[0].text).to eq "half completed"
   end
 
-  scenario "edit to blank description" do
+  scenario "edit to blank description and cancel" do
+    first_activity_description_field.click
+    sleep(0.3)
+    activity_edit_cancel.click
+    expect(activity_description_field.first.value).to eq "work hard"
+  end
+
+  scenario "edit to blank description and cancel" do
     first_activity_description_field.click
     activity_description_field.first.set("")
     expect{ activity_save_icon.click; sleep(0.2) }.not_to change{ Activity.first.description }
@@ -167,56 +180,12 @@ feature "actions on existing activities", :js => true do
     activity_target_field.last.set("total satisfaction")
     activity_progress_field.last.set("half completed")
     activity_save_icon.click
-    sleep(0.3)
+    sleep(0.4)
     # expect{}.to change{} fails for unknown reasons, so use this longer syntax
-    expect( Activity.last.description ).to eq "new description"
     expect(page.all(activity_selector+".description .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 new description"
     expect(page.all(activity_selector+".performance_indicator .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 new performance indicator"
     expect(page.all(activity_selector+".target .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 total satisfaction"
     expect(page.all(activity_selector + ".activity_progress .no_edit span:first-of-type")[1].text).to eq "half completed"
+    expect( Activity.last.description ).to eq "new description"
   end
-end
-
-def first_activity_description_field
-  page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[0]
-end
-
-def activity_edit_cancel
-  page.all(activity_selector+" i").detect{|el| el['id'].match(/activity_editable\d*_edit_cancel/)}
-end
-
-def activity_selector
-  ".table#planned_results .row.planned_result .row.outcome .row.activity "
-end
-
-def activity_description_field
-  page.all(activity_selector + ".description textarea").select{|i| i['id'] && i['id'].match(/activity_\d_description/)}
-end
-
-def activity_performance_indicator_field
-  page.all(activity_selector + ".performance_indicator textarea").select{|i| i['id'] && i['id'].match(/activity_\d_performance_indicator/)}
-end
-
-def activity_progress_field
-  page.all(activity_selector + ".activity_progress textarea").select{|i| i['id'] && i['id'].match(/activity_\d_progress/)}
-end
-
-def activity_target_field
-  page.all(activity_selector + ".target textarea").select{|i| i['id'] && i['id'].match(/activity_\d_target/)}
-end
-
-def activity_save_icon
-  page.all(activity_selector + ".description .edit.in i.fa-check").detect{|i| i['id'] && i['id'].match(/activity_editable\d+_edit_save/)}
-end
-
-def open_accordion_for_strategic_priority_one
-  page.find("i#toggle").click
-end
-
-def save_activity
-  page.find("i#create_save")
-end
-
-def add_activity
-  page.find(".new_activity")
 end

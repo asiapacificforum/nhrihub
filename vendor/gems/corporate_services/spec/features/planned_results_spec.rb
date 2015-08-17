@@ -1,9 +1,13 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require_relative '../helpers/strategic_plan_helpers'
+require_relative '../helpers/planned_result_helpers'
 
 feature "show existing planned result", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPlanHelpers
+  include PlannedResultHelpers
 
   before do
     sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
@@ -24,6 +28,8 @@ end
 
 feature "populate strategic plan contents", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPlanHelpers
+  include PlannedResultHelpers
 
   before do
     sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
@@ -66,6 +72,8 @@ end
 
 feature "actions on existing planned results", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPlanHelpers
+  include PlannedResultHelpers
 
   before do
     sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
@@ -85,31 +93,25 @@ feature "actions on existing planned results", :js => true do
   scenario "edit a planned result item" do
     page.find(".row.planned_result .col-md-2.description span").click
     fill_in('planned_result_description', :with => "new description")
-    expect{ planned_result_save_icon.click; sleep(0.2) }.to change{ PlannedResult.first.description }.to("new description")
+    expect{ planned_result_save_icon.click; sleep(0.3) }.to change{ PlannedResult.first.description }.to("new description")
     expect(page.find(".planned_result.editable_container .col-md-2.description .no_edit span:first-of-type").text ).to eq "1.1 new description"
   end
 
+  scenario "edit without making changes and cancel" do
+    planned_results_descriptions[0].click
+    cancel_edit_planned_result.click
+    expect(page.find(".planned_result.editable_container .col-md-2.description .no_edit span:first-of-type").text ).to eq "1.1 Something profound"
+    planned_results_descriptions[0].click
+    expect(page.find('#planned_result_description').value).to eq "Something profound"
+  end
+
   scenario "edit to blank description" do
-    page.find(".row.planned_result .col-md-2.description span").click
+    planned_results_descriptions[0].click
     fill_in('planned_result_description', :with => "")
     expect{ planned_result_save_icon.click; sleep(0.2) }.not_to change{ PlannedResult.first.description }
-    expect(page).to have_selector("#description_error", :text => "You must enter a description")
+    expect(page).to have_selector(".planned_result #description_error", :text => "You must enter a description")
+    cancel_edit_planned_result.click
+    expect(page).not_to have_selector(".planned_result #description_error", :text => "You must enter a description")
+    expect(page).to have_selector(".table#planned_results .row.planned_result .col-md-2.description", :text => "1.1 Something profound")
   end
-end
-
-def planned_result_save_icon
-  page.find('.editable_container i#planned_result_editable1_edit_save')
-end
-
-def open_accordion_for_strategic_priority_one
-  page.find("i#toggle").click
-  sleep(0.2)
-end
-
-def save_planned_result
-  page.find("i#create_save")
-end
-
-def add_planned_result
-  page.find(".new_planned_result")
 end

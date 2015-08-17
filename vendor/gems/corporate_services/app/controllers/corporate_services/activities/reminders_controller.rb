@@ -21,6 +21,16 @@ class CorporateServices::Activities::RemindersController < ApplicationController
     end
   end
 
+  def destroy
+    reminder = Reminder.find(params[:id])
+    activity = reminder.activity
+    if reminder.destroy
+      render :json => activity.reload, :status => 200
+    else
+      render :nothing => true, :status => 500
+    end
+  end
+
   private
   def reminder_params
     params.require(:reminder).permit(:reminder_type, :start_date, :text, :activity_id, { :user_ids => [] })
