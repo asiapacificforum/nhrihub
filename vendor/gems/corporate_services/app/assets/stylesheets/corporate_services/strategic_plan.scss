@@ -24,6 +24,19 @@ select.priority_level {
   cursor: pointer;
 }
 
+.rule {
+  background-image: url("corporate_services/ruler.png");
+  background-repeat: no-repeat;
+  background-size: 16px;
+  cursor: pointer;
+  position: relative;
+  float: left;
+  height: 16px;
+  width: 16px;
+  margin-left: 28px;
+  top: 3px;
+}
+
 .topaligned {
   vertical-align: top;
 }

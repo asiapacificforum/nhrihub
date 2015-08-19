@@ -275,7 +275,8 @@
             :name => "activity[progress]", :value => "{{ progress }}"}
     .col-md-2.actions{:style=>"width:20%"}
       %div.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; float:left; width:20px; top:3px; margin-left:20px;"}
-      %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "margin-left:20px;"}
+      %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "margin-left:28px; position:relative; float:left; top:3px;"}
+      %div.rule
     <modal-custom id="reminders_modal" type="xl">
     <modal-header>
     <h4>Reminders<modal-close/></h4>
