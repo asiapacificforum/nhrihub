@@ -67,7 +67,7 @@
     %li {{ message }}
 
 = javascript_include_tag 'corporate_services/in_page_edit'
-= javascript_include_tag 'corporate_services/popover'
+=# javascript_include_tag 'corporate_services/popover'
 
 %script{:type => 'ractive/template', :id => :files}
   {{#files}}
@@ -115,13 +115,6 @@
   $ ->
     'use strict'
 
-    #   INITIALIZE THE FILE LIST FROM JSON DATA AT DOCUMENT LOAD
-    _.templateSettings = {
-      interpolate: /\{\{=(.+?)\}\}/g
-      evaluate: /\{\{(.+?)\}\}/g
-      escape: /\{\{-(.+?)\}\}/g
-    }
-
     InpageEdit = this.InpageEdit
 
     fileupload_options =
@@ -161,6 +154,23 @@
       teardown : ->
         edit.off()
 
+    Popover = (node)->
+      $(node).popover
+        html : true,
+        title : ->
+          $('#detailsTitle').html()
+        content : ->
+          data = Ractive.getNodeInfo(@).ractive.get()
+          ractive = new Ractive
+            template : '#detailsContent'
+            data : data
+          ractive.toHTML()
+        template : $('#popover_template').html()
+        trigger: 'hover'
+
+      teardown: ->
+        $(node).off('mouseenter')
+
     DocDeleter = (node)->
       $(node).on 'click', (event)->
         ev = $.Event(event)
@@ -179,6 +189,7 @@
     Ractive.decorators.fileupload = FileUpload
     Ractive.decorators.inpage_edit = EditInPlace
     Ractive.decorators.doc_deleter = DocDeleter
+    Ractive.decorators.popover = Popover
 
     ArchiveDoc = Ractive.extend
       template: '#doc_table'
