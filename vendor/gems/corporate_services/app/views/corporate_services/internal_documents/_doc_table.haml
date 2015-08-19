@@ -14,7 +14,7 @@
         %span {{ revision }}
     -# make sure it's on top of the next td, even though it precedes in the html
     %td.include_popover{:style => "text-align:center; width:8%"}
-      .icon.details{:'data-toggle' => 'edit'}
+      .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
         %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
     %td{:style => "text-align:center; width:8%"}
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
