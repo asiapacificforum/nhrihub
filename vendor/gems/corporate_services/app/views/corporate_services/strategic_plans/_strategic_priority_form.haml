@@ -38,7 +38,7 @@
           .col-md-2{:style=>"width:14.2857%"}= t('.perf_indicators')
           .col-md-2{:style=>"width:14.2857%"}= t('.target')
           .col-md-2{:style=>"width:14.2857%"}= t('.progress')
-          .col-md-2{:style=>"width:14.2857%"}= t('.reminders')
+          .col-md-2{:style=>"width:14.2857%"}= t('.reminders_etc')
         {{#planned_results}}
         <pr description="{{description}}" indexed_description="{{indexed_description}}" id="{{id}}" outcomes="{{outcomes}}"/>
         {{/planned_results}}
@@ -276,10 +276,10 @@
     .col-md-2.actions{:style=>"width:20%"}
       %div.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; float:left; width:20px; top:3px; margin-left:20px;"}
       %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "margin-left:28px; position:relative; float:left; top:3px;"}
-      %div.rule
+      %div.rule{'on-click' => "show_rules_panel()"}
     <modal-custom id="reminders_modal" type="xl">
     <modal-header>
-    <h4>Reminders<modal-close/></h4>
+    <h4>#{t('.reminders')}<modal-close/></h4>
     </modal-header>
     <modal-body>
     <i class="fa fa-plus fa-sm" id="add_reminder" on-click='new_reminder()' data-toggle="tooltip" data-placement="bottom" title="add reminder"/>
@@ -300,7 +300,7 @@
     </modal-custom>
     <modal-custom id="notes_modal" type="xl">
     <modal-header>
-    <h4>Notes<modal-close/></h4>
+    <h4>#{t('.notes')}<modal-close/></h4>
     </modal-header>
     <modal-body>
     <i class="fa fa-plus fa-sm" id="add_note" on-click='new_note()' data-toggle="tooltip" data-placement="bottom" title="add note"/>
@@ -311,6 +311,16 @@
       {{#notes}}
       <note date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' text='{{text}}'/>
       {{/notes}}
+    </modal-body>
+    </modal-custom>
+    <modal-custom id="rules_modal" type="xl">
+    <modal-header>
+    <h4>#{t('.rules')}<modal-close/></h4>
+    </modal-header>
+    <modal-body>
+    #rules{:style => "margin-bottom:80px;"}
+      .row
+        %h5.col-md-1.col-md-offset-4{:style => "width:25%;"} Not yet implemented
     </modal-body>
     </modal-custom>
 
@@ -617,6 +627,8 @@
         $('#reminders_modal').modal('show')
       show_notes_panel : ->
         $('#notes_modal').modal('show')
+      show_rules_panel : ->
+        $('#rules_modal').modal('show')
       new_reminder : ->
         unless @_new_reminder_is_active()
           @push('reminders',{id:null, type:null, frequency:null, text:'', activity_id:@get('id')})
