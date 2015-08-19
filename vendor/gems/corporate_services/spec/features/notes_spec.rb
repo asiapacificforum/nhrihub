@@ -30,30 +30,49 @@ feature "populate activity notes", :js => true do
       expect(note_text.first.text).to eq "nota bene"
       expect(note_date.first.text).to eq Date.today.to_s(:short)
       hover_over_info_icon
-      expect(author).to eq "Norman Normal"
-      expect(editor).to eq "Norman Normal"
-      expect(last_edited).to eq "?"
-      # add another note & confirm most-recent is first in list
+      expect(author).to eq User.first.first_last_name
+      expect(editor).to eq User.first.first_last_name
+      expect(last_edited).to eq Date.today.to_s(:short)
     end
 
-    xscenario "try to save note with blank text field" do
+    scenario "try to save note with blank text field" do
+      show_notes.click
+      expect(page).to have_selector("h4", :text => 'Notes')
+      add_note.click
+      # skip setting the text
+      save_note.click
+      sleep(0.2)
+      expect(Note.count).to eq 0
+      expect(note_text_error.first.text).to eq "Text cannot be blank"
     end
 
-    xscenario "try to save note with whitespace text field" do
+    scenario "try to save note with whitespace text field" do
+      show_notes.click
+      expect(page).to have_selector("h4", :text => 'Notes')
+      add_note.click
+      fill_in(:note_text, :with => " ")
+      save_note.click
+      sleep(0.2)
+      expect(Note.count).to eq 0
+      expect(note_text_error.first.text).to eq "Text cannot be blank"
     end
   end
 
-  feature "when there are pre-existing notes" do
+  feature "show notes" do
     before do
       setup_activity
+      @note1 = FactoryGirl.create(:note, :created_at => 3.days.ago, :activity_id => Activity.first.id)
+      @note2 = FactoryGirl.create(:note, :created_at => 4.days.ago, :activity_id => Activity.first.id)
       visit corporate_services_strategic_plan_path(:en, "current")
       open_accordion_for_strategic_priority_one
     end
 
-    xscenario "add note" do
+    scenario "rendered in reverse chronological order" do
+      show_notes.click
+      expect(page).to have_selector("h4", :text => 'Notes')
+      expect(note_date.map(&:text)).to eq [3.days.ago.to_date.to_s(:short), 4.days.ago.to_date.to_s(:short)]
     end
   end
-
 end
 
 
@@ -61,27 +80,39 @@ feature "actions on existing notes", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include StrategicPlanHelpers
   include SetupHelpers
+  include NotesSpecHelpers
 
   before do
     setup_activity
     setup_note
     visit corporate_services_strategic_plan_path(:en, "current")
     open_accordion_for_strategic_priority_one
+    show_notes.click
+    expect(page).to have_selector("h4", :text => 'Notes')
   end
 
-  xscenario "delete a note" do
+  scenario "delete a note" do
+    expect{ delete_note.first.click; sleep(0.2) }.to change{Note.count}.from(1).to(0)
   end
 
-  xscenario "edit a note" do
-    # do editing stuff
-    note_info.click
-    expect(last_edited).to eq "?"
-    expect(editor).to eq "?"
+  scenario "edit a note" do
+    edit_note.first.click
+    fill_in('note_text', :with => "carpe diem")
+    expect{ save_edit.click; sleep(0.2) }.to change{Note.first.text}.to("carpe diem")
   end
 
-  xscenario "edit to blank text and cancel" do
+  scenario "edit to blank text and cancel" do
+    original_text = note_text.first.text
+    edit_note.first.click
+    fill_in('note_text', :with => " ")
+    cancel_edit.click
+    expect(note_text.first.text).to eq original_text
   end
 
-  xscenario "edit and cancel without making changes" do
+  scenario "edit and cancel without making changes" do
+    original_text = note_text.first.text
+    edit_note.first.click
+    cancel_edit.click
+    expect(note_text.first.text).to eq original_text
   end
 end

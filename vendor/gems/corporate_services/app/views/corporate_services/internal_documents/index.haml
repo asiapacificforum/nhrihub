@@ -155,6 +155,7 @@
         edit.off()
 
     Popover = (node)->
+      console.log($(node).attr('id'))
       $(node).popover
         html : true,
         title : ->

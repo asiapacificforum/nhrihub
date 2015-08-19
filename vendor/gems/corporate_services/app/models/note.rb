@@ -6,11 +6,19 @@ class Note < ActiveRecord::Base
   default_scope ->{ order(:created_at => :desc) }
 
   def as_json(options = {})
-    super(:methods => [:date, :author_name, :editor_name])
+    super(:methods => [:date, :author_name, :editor_name, :updated_on, :url])
+  end
+
+  def url
+    Rails.application.routes.url_helpers.corporate_services_activity_note_path(:en,activity_id,id)
+  end
+
+  def updated_on
+    created_at.localtime.to_date.to_s(:short)
   end
 
   def date
-    created_at.to_date.to_s(:short)
+    created_at.localtime.to_date.to_s(:short)
   end
 
   def author_name

@@ -308,7 +308,7 @@
         %h5.col-md-1{:style => "width:15%;"}= t('.date')
         %h5.col-md-1{:style => "width:70%;"}= t('.text')
       {{#notes}}
-      <note date='{{date}}' author='{{author}}' last_edited='{{last_edit}}' last_editor='{{last_editor}}' text='{{text}}'/>
+      <note date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' text='{{text}}'/>
       {{/notes}}
     </modal-body>
     </modal-custom>
@@ -344,7 +344,7 @@
           %textarea#note_text.form-control{:name => 'note[text]', :cols=>78, :rows=>4, :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"}
           %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.note_text_error_message')
     .col-md-1.icon.note_info{:style => "width:5%"}
-      %i.fa.fa-info-circle.fa-lg
+      %i.fa.fa-info-circle.fa-lg{:decorator => 'popover'}
     .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px; width:5%", 'data-toggle' => 'edit'}
       .fade.edit
         %i.fa.fa-remove.fa-lg{:style => "position:relative;", :id => "note_editable{{id}}_edit_cancel"}
@@ -437,6 +437,10 @@
 
 %script#recipient_template{:type => 'text/ractive'}
   %p.recipient{:style => "margin-bottom: 0px;"} {{ first_last_name }}
+
+= render :partial => 'details_popover'
+= render :partial => 'details_popover_content'
+= render :partial => 'details_popover_title'
 
 :coffeescript
   $ ->
@@ -788,7 +792,25 @@
                 console.log "Changes were not saved, for some reason"
             }
 
+    Popover = (node)->
+      $(node).popover
+        html : true,
+        title : ->
+          $('#detailsTitle').html()
+        content : ->
+          data = Ractive.getNodeInfo(@).ractive.get()
+          ractive = new Ractive
+            template : '#detailsContent'
+            data : data
+          ractive.toHTML()
+        template : $('#popover_template').html()
+        trigger: 'hover'
+
+      teardown: ->
+        $(node).off('mouseenter')
+
     Ractive.decorators.inpage_edit = EditInPlace
+    Ractive.decorators.popover = Popover
 
     StrategicPriority = Ractive.extend
       onconfig : ->
