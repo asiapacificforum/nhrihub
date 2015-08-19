@@ -1,6 +1,7 @@
 class Activity < ActiveRecord::Base
   belongs_to  :outcome
   has_many :reminders, :autosave => true, :dependent => :destroy
+  has_many :notes, :autosave => true, :dependent => :destroy
   default_scope ->{ order(:id) } # this naturally orders by index
 
   # strip index if user has entered it
@@ -21,8 +22,14 @@ class Activity < ActiveRecord::Base
                        :description_error,
                        :progress,
                        :reminders,
-                       :create_reminder_url]
+                       :create_reminder_url,
+                       :notes,
+                       :create_note_url]
          )
+  end
+
+  def create_note_url
+    Rails.application.routes.url_helpers.corporate_services_activity_notes_path(:en,id)
   end
 
   def create_reminder_url

@@ -2,14 +2,6 @@ require 'rspec/core/shared_context'
 
 module ReminderPageHelpers
   extend RSpec::Core::SharedContext
-  def setup_activity
-    sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
-    spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
-    pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
-    o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
-    Activity.create(:description => "Smarter thinking", :outcome_id => o.id)
-  end
-
   def open_reminders_panel
     visit corporate_services_strategic_plan_path(:en, "current")
     open_accordion_for_strategic_priority_one

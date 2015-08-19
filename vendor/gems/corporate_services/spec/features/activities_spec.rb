@@ -3,12 +3,14 @@ require 'login_helpers'
 require 'navigation_helpers'
 require_relative '../helpers/activities_spec_helpers'
 require_relative '../helpers/strategic_plan_helpers'
+require_relative '../helpers/setup_helpers'
 
 
 feature "populate plannned result activities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ActivitiesSpecHelpers
   include StrategicPlanHelpers
+  include SetupHelpers
 
   feature "add activity when there were none before" do
     before do
@@ -78,11 +80,7 @@ feature "populate plannned result activities", :js => true do
 
   feature "add activity to pre-existing" do
     before do
-      sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
-      spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
-      pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
-      o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
-      o.activities << Activity.new(:description => "Smarter thinking")
+      setup_activity
       visit corporate_services_strategic_plan_path(:en, "current")
       open_accordion_for_strategic_priority_one
       add_activity.click

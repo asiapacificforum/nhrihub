@@ -6,9 +6,6 @@ class CorporateServices::Activities::RemindersController < ApplicationController
     else
       render :nothing => true, :status => 500
     end
-  rescue => e # rescues strong parameter errors during development
-    puts e
-    render :nothing => true, :status => 500
   end
 
   def update

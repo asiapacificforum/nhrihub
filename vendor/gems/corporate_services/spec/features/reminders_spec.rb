@@ -3,11 +3,13 @@ require 'login_helpers'
 require 'navigation_helpers'
 require_relative '../helpers/reminder_page_helpers'
 require_relative '../helpers/strategic_plan_helpers'
+require_relative '../helpers/setup_helpers'
 
 feature "show reminders", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ReminderPageHelpers
   include StrategicPlanHelpers
+  include SetupHelpers
 
   before do
     activity = setup_activity
@@ -26,6 +28,7 @@ feature "add a reminder", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ReminderPageHelpers
   include StrategicPlanHelpers
+  include SetupHelpers
 
   before do
     setup_activity
@@ -115,6 +118,8 @@ feature "edit a reminder", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ReminderPageHelpers
   include StrategicPlanHelpers
+  include SetupHelpers
+
   before do
     FactoryGirl.create(:user, :firstName => 'Norman', :lastName => 'Normal')
     activity = setup_activity
@@ -177,6 +182,8 @@ feature "delete a reminder", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ReminderPageHelpers
   include StrategicPlanHelpers
+  include SetupHelpers
+
   before do
     activity = setup_activity
     activity.reminders << Reminder.create(:reminder_type => 'quarterly', :start_date => Date.new(2014,8,1), :text => "don't forget to do something")
