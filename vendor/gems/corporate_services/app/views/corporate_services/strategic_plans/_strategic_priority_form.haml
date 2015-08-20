@@ -57,6 +57,7 @@
     = form_for :strategic_priority, :url => corporate_services_strategic_plan_strategic_priorities_path("spid").gsub(/spid/,"{{spid}}"), :remote => true, :html => {:id => :new_strategic_priority, :style => "padding:6px 0px"} do |f|
       .form-inline
         .form-group{:class => "{{#priority_level_error}}has-error{{/}}"}
+          .nothing{:style => 'visibility:hidden'} nothing
           =f.label :priority_level, t('.priority'), :class => 'control-label sr-only'
           =f.select :priority_level, priority_level_options, {:include_blank => 'Select priority level'}, {'on-change' => 'remove_priority_level_errors()', :class => 'form-control sp-select', :value => "{{priority_level}}"}
           %span.help-block#priority_level_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.priority_level_error_message')
