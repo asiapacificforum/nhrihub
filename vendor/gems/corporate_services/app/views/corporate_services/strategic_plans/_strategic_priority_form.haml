@@ -44,7 +44,7 @@
         {{/planned_results}}
         .row
           .col-md-2{:style=>"width:14.2857%"}
-            %i.fa.fa-plus.fa-sm.new_planned_result{'on-click' => 'new_planned_result()', :style => 'position:relative; z-index:9'}
+            %i.fa.fa-plus.fa-sm.new_planned_result{'on-click' => 'new_planned_result()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add planned result"}
           .col-md-2{:style=>"width:14.2857%"}
           .col-md-2{:style=>"width:14.2857%"}
           .col-md-2{:style=>"width:14.2857%"}
@@ -111,43 +111,33 @@
       {{^outcomes}}
       .row.planned_result_control{:style => "display:flex; width:110%"}
         .col-md-2{:style=>"width:16.6667%"}
-          %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9'}
+          %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add outcome"}
         .col-md-2{:style=>"width:83.3333%"}
       {{/outcomes}}
   {{#if outcomes.length != 0}}
   .row.planned_result_control{:style => "display:flex"}
     .col-md-2{:style=>"width:14.2857%"}
     .col-md-2{:style=>"width:14.2857%"}
-      %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9'}
+      %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add outcome"}
     .col-md-2{:style=>"width:71.4285%"}
   {{/if}}
 
 %script#new_planned_result_template{:type => 'text/ractive'}
   .row.new_planned_result
-    .col-md-2.form-group{:style=>"width:14.2857%", :class=>"{{#description_error}}has-error{{/}}"}
+    .col-md-2.form-group{:style=>"width:14.2857%; margin-bottom:0px;", :class=>"{{#description_error}}has-error{{/}}"}
       %div
         %textarea{'on-keydown' => "remove_description_errors()",
             :cols => 24, :rows => 4,
             :id=>'planned_result_description', :placeholder => "Enter description",
             :name => "planned_result[description]",
-            :value => "{{ description }}", :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10; width:100%'}
+            :value => "{{ description }}", :style => 'font-size: 14px; z-index:10; width:100%'}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
+    .col-md-2{:style=>"width:85.7142%"}
   .row
     .col-md-2{:style=>"width:14.2857%"}
       %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:12px"}
       %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:40px"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
-    .col-md-2{:style=>"width:14.2857%"}
+    .col-md-2{:style=>"width:85.7142%"}
 
 %script#outcome_template{:type => 'text/ractive'}
   {{#if !persisted }}
@@ -158,22 +148,18 @@
 
 %script#new_outcome_template{:type => 'text/ractive'}
   .row#new_outcome
-    .col-md-2.description.form-group{:style=>"width:16.6667%", :class => "{{#description_error}}has-error{{/}}"}
+    .col-md-2.description.form-group{:style=>"width:16.6667%; margin-bottom:0px", :class => "{{#description_error}}has-error{{/}}"}
       %div
         %textarea.form-control{:id=>'new_outcome_description', :placeholder => "Enter description",
           :name => "outcome[description]", 'on-keydown' => "remove_description_errors()",
           :value => "{{description}}",
-          :style => 'margin-top: -3px; font-size: 14px; padding:0px; position:relative; z-index:10; width:100%'}
-        %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
+          :style => 'font-size: 14px; padding:0px; z-index:10; width:100%'}
+        %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:inherit"}= t('.description_error_message')
   .row
     .col-md-2{:style=>"width:16.6667%"}
       %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:12px"}
       %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:40px"}
-    .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
-    .col-md-2{:style=>"width:16.6667%"}
+    .col-md-2{:style=>"width:83.3335%"}
 
 %script#show_outcome_template{:type => 'text/ractive'}
   .row.outcome.editable_container{:id => "outcome_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
@@ -197,13 +183,13 @@
       {{^activities}}
       .row.activity
         .col-md-2{:style=>"width:100%"}
-          %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9'}
+          %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9; top:6px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add activity"}
       {{/activities}}
   {{#if activities.length != 0}}
   .row.activity_control
     .col-md-2{:style=>"width:16.6667%"}
     .col-md-2{:style=>"width:83.3335%"}
-      %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9'}
+      %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add activity"}
   {{/if}}
 
 %script#activity_template{:type => 'text/ractive'}
@@ -217,23 +203,23 @@
   .row.new_activity
     .col-md-2.description.form-group{:style=>"width:20%; z-index:10", :class => "{{#description_error}}has-error{{/}}"}
       %textarea.form-control{ :id=>'new_activity_description', :placeholder => "Enter description",
-        :name => "activity[description]", :style => "z-index:10", "on-keydown"=>"remove_description_errors()",
+        :name => "activity[description]", :style => "z-index:10; width: initial;", "on-keydown"=>"remove_description_errors()",
         :value => "{{description}}"}
-      %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
+      %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.description_error_message')
     .col-md-2{:style=>"width:20%; z-index:10"}
-      %textarea{ :id=>'new_activity_performance_indicator', :placeholder => "Enter performance indicator",
-        :name => "activity[performance_indicator]", :style => "z-index:10",
+      %textarea.form-control{ :id=>'new_activity_performance_indicator', :placeholder => "Enter performance indicator",
+        :name => "activity[performance_indicator]", :style => "z-index:10; width:initial;",
         :value => "{{performance_indicator}}"}
     .col-md-2{:style=>"width:20%; z-index:10"}
-      %textarea{ :id=>'new_activity_target', :placeholder => "Enter target",
-        :name => "activity[target]", :style => "z-index:10",
+      %textarea.form-control{ :id=>'new_activity_target', :placeholder => "Enter target",
+        :name => "activity[target]", :style => "z-index:10; width:initial;",
         :value => "{{target}}"}
     .col-md-2{:style=>"width:20%; z-index:10"}
-      %textarea{ :id=>'new_activity_progress', :placeholder => "Enter progress",
-        :name => "activity[progress]", :style => "z-index:10",
+      %textarea.form-control{ :id=>'new_activity_progress', :placeholder => "Enter progress",
+        :name => "activity[progress]", :style => "z-index:10; width:initial;",
         :value => "{{progress}}"}
     .col-md-2{:style=>"width:20%"}
-  .row
+  .row.new_activity_control
     .col-md-2.description{:style=>"width:20%"}
       %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:36px"}
       %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:56px"}
@@ -643,7 +629,6 @@
         notes = @findAllComponents('note')
         (notes.length > 0) && _.isNull( notes[notes.length - 1].get('id'))
 
-
     Outcome = Ractive.extend
       template : '#outcome_template'
       computed :
@@ -846,7 +831,7 @@
         persisted : ->
           !isNaN(parseInt(@.get('id')))
       new_planned_result: ->
-        @.push('planned_results', {id : null, description : "", strategic_priority_id : @.get('id'), description_error:""})
+        @.push('planned_results', {id : null, description : "", strategic_priority_id : @.get('id'), description_error:"", outcomes:[]})
       cancel : ->
         @.parent.get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
       form : ->
