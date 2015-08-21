@@ -1,13 +1,13 @@
 %script#show_strategic_priority{:type => 'text/ractive'}
   .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
-    .panel-heading.strategic_priority_title{:style => "padding-top:20px; padding-bottom:6px;"}
+    .panel-heading.strategic_priority_title{:style => "color:#404040; background-color:rgba(140, 123, 85, 0.56); background-image:none; padding-bottom:4px; padding-top:15px;"}
       %h4.panel-title.clearfix
         .row
           .col-md-2.form-group.priority_level{'data-toggle' => 'edit', :class => "{{#priority_level_error}}has-error{{/}}", 'data-attribute'=>:strategic_priority}
             .fade.no_edit.in
               %span= t('.strategic_priority')
             .fade.edit
-              %select.form-control#strategic_priority_priority_level{:style => "height: initial; width: initial; margin-left: 6px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
+              %select.form-control#strategic_priority_priority_level{:style => "background-color:#D6CDB8; height: initial; width: initial; margin-left: 6px;", :name => 'strategic_priority[priority_level]', :value => "{{priority_level}}"}
                 - priority_level_options.each do |opt|
                   %option{:value => opt[1]}= opt[0]
               %span.help-block#priority_level_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.priority_level_error_message')
@@ -15,7 +15,7 @@
             .fade.no_edit.in
               %span {{ description }}
             .fade.edit{:style=>"width:100%"}
-              %input.form-control#strategic_priority_description{:name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'width:100%; font-size: 16px; margin-left:2px; height:22px;', 'on-keydown' => "remove_description_errors()"}
+              %input.form-control#strategic_priority_description{:name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'background-color:#D6CDB8; width:100%; font-size: 16px; margin-left:2px; height:22px;', 'on-keydown' => "remove_description_errors()"}
               %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.description_error_message')
           .col-md-1{:style => "text-align:center; font-size:14px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
             %i.fa.fa-folder-o.fa-lg#toggle
@@ -31,14 +31,14 @@
             %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()'}
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
       .panel-body.table#planned_results
-        .row.heading
-          .col-md-2{:style=>"width:14.2857%"}= t('.planned_results')
-          .col-md-2{:style=>"width:14.2857%"}= t('.outcomes')
-          .col-md-2{:style=>"width:14.2857%"}= t('.activities')
-          .col-md-2{:style=>"width:14.2857%"}= t('.perf_indicators')
-          .col-md-2{:style=>"width:14.2857%"}= t('.target')
-          .col-md-2{:style=>"width:14.2857%"}= t('.progress')
-          .col-md-2{:style=>"width:14.2857%"}= t('.reminders_etc')
+        .row.heading{:style => "padding-top:0px; padding-bottom:0px; background-color: #ABA494;"}
+          .col-md-2{:style=>"width:14.2857%; padding-top:4px; padding-bottom: 4px; height: 48px;"}= t('.planned_results')
+          .col-md-2{:style=>"width:14.2857%; padding-top:4px; padding-bottom: 4px; height: 48px; background-color: #a59d8d"}= t('.outcomes')
+          .col-md-2{:style=>"width:14.2857%; padding-top:4px; padding-bottom: 4px; height: 48px; background-color: #9c9689"}= t('.activities')
+          .col-md-2{:style=>"width:14.2857%; padding-top:4px; padding-bottom: 4px; height: 48px; background-color: #9c9689"}= t('.perf_indicators')
+          .col-md-2{:style=>"width:14.2857%; padding-top:4px; padding-bottom: 4px; height: 48px; background-color: #9c9689"}= t('.target')
+          .col-md-2{:style=>"width:14.2857%; padding-top:4px; padding-bottom: 4px; height: 48px; background-color: #9c9689"}= t('.progress')
+          .col-md-2{:style=>"width:14.2857%; padding-top:4px; padding-bottom: 4px; height: 48px; background-color: #9c9689"}= t('.reminders_etc')
         {{#planned_results}}
         <pr description="{{description}}" indexed_description="{{indexed_description}}" id="{{id}}" outcomes="{{outcomes}}"/>
         {{/planned_results}}
@@ -98,7 +98,7 @@
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event)'}
           %i.fa.fa-sm.fa-trash-o
-      .fade.edit{:style=>"margin-left:16px"}
+      .fade.edit
         %textarea{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]', 'on-keydown' => "remove_description_errors()"}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
         .icon{'data-toggle' => 'edit', :style => 'height:20px'}
@@ -148,13 +148,12 @@
 
 %script#new_outcome_template{:type => 'text/ractive'}
   .row#new_outcome
-    .col-md-2.description.form-group{:style=>"width:16.6667%; margin-bottom:0px", :class => "{{#description_error}}has-error{{/}}"}
-      %div
-        %textarea.form-control{:id=>'new_outcome_description', :placeholder => "Enter description",
-          :name => "outcome[description]", 'on-keydown' => "remove_description_errors()",
-          :value => "{{description}}",
-          :style => 'font-size: 14px; padding:0px; z-index:10; width:100%'}
-        %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:inherit"}= t('.description_error_message')
+    .col-md-2.description.form-group{:style=>"width:16.6667%; margin-bottom:0px; padding-left:0px;", :class => "{{#description_error}}has-error{{/}}"}
+      %textarea.form-control{:id=>'new_outcome_description', :placeholder => "Enter description",
+        :name => "outcome[description]", 'on-keydown' => "remove_description_errors()",
+        :value => "{{description}}",
+        :style => 'font-size: 14px; padding:0px; z-index:10; width:initial; height:45px;'}
+      %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:inherit"}= t('.description_error_message')
   .row
     .col-md-2{:style=>"width:16.6667%"}
       %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:12px"}
@@ -169,11 +168,11 @@
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
           %i.fa.fa-sm.fa-trash-o
-      .fade.edit{:style => "margin-left:16px; background-color:#FFF"}
+      .fade.edit
         %textarea.form-control{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
             :name => "outcome[description]", :value => "{{ description }}", "on-keydown"=>"remove_description_errors()"}
-        %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
-        .icon{'data-toggle' => 'edit', :style => 'height:16.6667px; background-color:white; top:0px'}
+        %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.description_error_message')
+        .icon{'data-toggle' => 'edit', :style => 'height:16.6667px; top:0px'}
           %i.fa.fa-remove.fa-lg{:id => "outcome_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2{:style=>"width:83.3333%", :class => "{{^activities}}empty{{/activities}}"}
@@ -235,31 +234,31 @@
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
           %i.fa.fa-sm.fa-trash-o
-      .fade.edit{:style => "margin-left:16px; background-color:#fff"}
+      .fade.edit
         %textarea.form-control{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
-            :name => "activity[description]", :value => "{{ description }}"}
-        %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
-        .icon{'data-toggle' => 'edit', :style => 'height:20px; background-color:white; top:0px'}
+            :name => "activity[description]", :value => "{{ description }}", :style => "width:initial; height:45px"}
+        %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.description_error_message')
+        .icon{'data-toggle' => 'edit', :style => 'height:20px; top:0px'}
           %i.fa.fa-remove.fa-lg{:id => "activity_editable{{id}}_edit_cancel", :style => "margin-left:36px"}
           %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2.performance_indicator{'data-toggle'=>'edit', :style=>"width:20%"}
       .fade.no_edit.in
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_performance_indicator }}
-      .fade.edit{:style => "margin-left:16px"}
-        %textarea{ :id=>'activity_{{id}}_performance_indicator', :placeholder => "Enter performance indicator",
-            :name => "activity[performance_indicator]", :value => "{{ performance_indicator }}"}
+      .fade.edit
+        %textarea.form-control{ :id=>'activity_{{id}}_performance_indicator', :placeholder => "Enter performance indicator",
+            :name => "activity[performance_indicator]", :value => "{{ performance_indicator }}", :style => "width:initial; height:45px;"}
     .col-md-2.target{'data-toggle'=>'edit', :style=>"width:20%"}
       .fade.no_edit.in
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_target }}
-      .fade.edit{:style => "margin-left:16px"}
-        %textarea{ :id=>'activity_{{id}}_target', :placeholder => "Enter target",
-            :name => "activity[target]", :value => "{{ target }}"}
+      .fade.edit
+        %textarea.form-control{ :id=>'activity_{{id}}_target', :placeholder => "Enter target",
+            :name => "activity[target]", :value => "{{ target }}", :style => "width:initial; height:45px;"}
     .col-md-2.activity_progress{'data-toggle'=>'edit', :style=>"width:20%"}
       .fade.no_edit.in
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ progress }}
-      .fade.edit{:style => "margin-left:16px"}
-        %textarea{ :id=>'activity_{{id}}_progress', :placeholder => "Enter progress",
-            :name => "activity[progress]", :value => "{{ progress }}"}
+      .fade.edit
+        %textarea.form-control{ :id=>'activity_{{id}}_progress', :placeholder => "Enter progress",
+            :name => "activity[progress]", :value => "{{ progress }}", :style => "width:initial; height:45px;"}
     .col-md-2.actions{:style=>"width:20%"}
       %div.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; float:left; width:20px; top:3px; margin-left:20px;"}
       %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "margin-left:28px; position:relative; float:left; top:3px;"}

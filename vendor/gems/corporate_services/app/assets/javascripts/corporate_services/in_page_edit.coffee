@@ -41,7 +41,6 @@ $ ->
       @load()
       unless _.isUndefined(@attribute) # in which case it's a control element not an input
         @_restore()
-      #@height = $(@el).find('.edit').height()
 
     load : ->
       @show(@text())
@@ -53,20 +52,6 @@ $ ->
       _(@attribute).each (attr)=>
         unless _.isUndefined(@object.get("original_"+attr))
           @object.set(attr,@object.get("original_"+attr))
-
-    #set_parent_height : ->
-      #new_height = $(this.elements()[0].el).find('.edit').height()
-      #parent = $(this.elements()[0].el).parent()
-      #parent.height(new_height)
-      #height = $(@input()).height()
-      #$(@input()).closest('tr').css('height',height)
-
-    #restore_parent_height : ->
-      #height = $(@text()).height()
-      #$(@input()).closest('tr').css('height',height)
-
-    #set_field_width : ->
-      #@input_field().css('width','100%')
 
     input_field : ->
       @input().find('input')
