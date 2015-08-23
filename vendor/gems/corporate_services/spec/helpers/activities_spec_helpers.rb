@@ -3,7 +3,7 @@ require 'rspec/core/shared_context'
 module ActivitiesSpecHelpers
   extend RSpec::Core::SharedContext
 
-  def first_activity_description_field
+  def first_activity_description
     page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[0]
   end
 

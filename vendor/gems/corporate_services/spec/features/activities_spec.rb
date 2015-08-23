@@ -149,14 +149,14 @@ feature "actions on existing activities", :js => true do
   end
 
   scenario "edit to blank description and cancel" do
-    first_activity_description_field.click
-    sleep(0.3)
+    first_activity_description.click
+    sleep(0.2)
     activity_edit_cancel.click
-    expect(activity_description_field.first.value).to eq "work hard"
+    expect(first_activity_description.text).to eq "1.1.1.1 work hard"
   end
 
   scenario "edit to blank description and cancel" do
-    first_activity_description_field.click
+    first_activity_description.click
     activity_description_field.first.set("")
     expect{ activity_save_icon.click; sleep(0.2) }.not_to change{ Activity.first.description }
     expect(page).to have_selector(".activity .description #description_error", :text => "You must enter a description")
@@ -164,7 +164,7 @@ feature "actions on existing activities", :js => true do
     sleep(0.2)
     # error msg disappears on cancel
     expect(page).not_to have_selector(".activity .description #description_error", :text => "You must enter a description")
-    first_activity_description_field.click
+    first_activity_description.click
     # error message doesn't reappear on re-edit
     expect(page).not_to have_selector(".activity .description #description_error", :text => "You must enter a description")
     # original value should be in the text area input field

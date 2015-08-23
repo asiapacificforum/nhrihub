@@ -115,8 +115,6 @@
   $ ->
     'use strict'
 
-    InpageEdit = this.InpageEdit
-
     fileupload_options =
         permittedFiletypes: permitted_filetypes,
         maxFileSize: parseInt(maximum_filesize),
@@ -155,7 +153,6 @@
         edit.off()
 
     Popover = (node)->
-      console.log($(node).attr('id'))
       $(node).popover
         html : true,
         title : ->

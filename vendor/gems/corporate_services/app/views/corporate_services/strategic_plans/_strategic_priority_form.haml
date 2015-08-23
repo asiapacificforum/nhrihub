@@ -445,8 +445,6 @@
 
     strategic_plan_data = #{@strategic_plan.to_json}
 
-    InpageEdit = @InpageEdit
-
     Recipient = Ractive.extend
       template : '#recipient_template'
 
@@ -472,7 +470,7 @@
             context : @
       cancel_reminder : ->
         @parent.pop('reminders')
-      delete_reminder : ->
+      delete_reminder : (event,obj)->
         ev = $.Event(event)
         ev.stopPropagation()
         data = [{name:'_method', value: 'delete'}]
@@ -527,7 +525,7 @@
             context : @
       cancel_note : ->
         @parent.pop('notes')
-      delete_note : ->
+      delete_note : (event)->
         ev = $.Event(event)
         ev.stopPropagation()
         data = [{name:'_method', value: 'delete'}]
@@ -590,6 +588,7 @@
         else
           true
       create_activity : (response, statusText, jqxhr)->
+        UserInput.reset()
         @parent.set('activities',response)
         #@parent.show_add_activity()
       delete_this : (event,object)->
@@ -604,6 +603,7 @@
           context : @
           success : @update_activity
       update_activity : (resp, statusText, jqxhr)->
+        UserInput.reset()
         @parent.set(resp)
       remove_errors : ->
         @remove_description_errors()
@@ -658,6 +658,7 @@
         else
           true
       create_outcome : (response, statusText, jqxhr)->
+        UserInput.reset()
         @parent.set('outcomes',response)
         @parent.show_add_outcome()
       remove_description_errors : ->
@@ -676,11 +677,14 @@
           context : @
           success : @update_pr
       update_pr : (resp, statusText, jqxhr)->
+        UserInput.reset()
         @parent.set(resp)
       new_activity : ->
         @push('activities',{description : '', indexed_description: '', performance_indicator: '', target: '', id : null, outcome_id : @get('id'), url:null, description_error:"", progress:""})
+        UserInput.claim_user_input_request(@,'remove_activity_form')
       remove_activity_form : ->
-        @pop('activities')
+        if _.isNull(@findAllComponents('activity')[@get('activities').length-1].get('id'))
+          @pop('activities')
 
     PlannedResult = Ractive.extend
       template : '#planned_result_template'
@@ -719,6 +723,7 @@
       remove_errors : ->
         @remove_description_errors()
       create_pr : (response, statusText, jqxhr)->
+        UserInput.reset()
         @parent.set('planned_results',response)
         @parent.show_add_planned_result()
       delete_this : (event)->
@@ -735,12 +740,15 @@
       update_pr : (response, statusText, jqxhr)->
         @set(response)
       update_all_pr : (response, statusText, jqxhr)->
+        UserInput.reset()
         @parent.set('planned_results',response)
       new_outcome : ->
+        UserInput.claim_user_input_request(@,'remove_outcome_form')
         @push('outcomes',{description : '', indexed_description: '', id : null, planned_result_id : @get('id'), url:null, description_error:""})
         @hide_add_outcome()
       remove_outcome_form : ->
-        @pop('outcomes')
+        if _.isNull(@findAllComponents('outcome')[@get('outcomes').length-1].get('id'))
+          @pop('outcomes')
         @show_add_outcome()
       _add_outcome : ->
         $(@parent.el).
@@ -776,18 +784,18 @@
           else
             # item was added
             # enable EditInPlace for the node
-            @edit = new InpageEdit
-              on : node
-              object : @
-              focus_element : 'input.title'
-              success : (response, textStatus, jqXhr)->
-                ractive = @.options.object
-                # the whole dataset is replaced... Ractive figures out
-                # what has changed and what to re-render
-                strategic_plan.set('strategic_priorities',response)
-                @.show()
-              error : ->
-                console.log "Changes were not saved, for some reason"
+            # @edit = new InpageEdit
+            #   on : node
+            #   object : @
+            #   focus_element : 'input.title'
+            #   success : (response, textStatus, jqXhr)->
+            #     ractive = @.options.object
+            #     # the whole dataset is replaced... Ractive figures out
+            #     # what has changed and what to re-render
+            #     strategic_plan.set('strategic_priorities',response)
+            #     @.show()
+            #   error : ->
+            #     console.log "Changes were not saved, for some reason"
             }
 
     Popover = (node)->
@@ -803,7 +811,6 @@
           ractive.toHTML()
         template : $('#popover_template').html()
         trigger: 'hover'
-
       teardown: ->
         $(node).off('mouseenter')
 
@@ -819,33 +826,36 @@
         pr : PlannedResult
       computed :
         length : ->
-          if @.get('description')
-            @.get('description').length
+          if @get('description')
+            @get('description').length
           else
             0
         count : ->
-          Math.max(0,(100 - @.get('length')))
+          Math.max(0,(100 - @get('length')))
         spid : ->
           window.strategic_plan.get('id')
         persisted : ->
-          !isNaN(parseInt(@.get('id')))
+          !isNaN(parseInt(@get('id')))
       new_planned_result: ->
-        @.push('planned_results', {id : null, description : "", strategic_priority_id : @.get('id'), description_error:"", outcomes:[]})
+        UserInput.claim_user_input_request(@,'remove_planned_result_form')
+        @push('planned_results', {id : null, description : "", strategic_priority_id : @get('id'), description_error:"", outcomes:[]})
       cancel : ->
-        @.parent.get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
+        UserInput.reset()
+        @parent.get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
       form : ->
-        $(@.nodes.new_strategic_priority)
+        $(@nodes.new_strategic_priority)
       save : ->
-        data = @.form().serializeArray()
-        url = @.form().attr('action')
-        if @.validate(data)
-          $.post(url, data, @.update_sp, 'json')
+        data = @form().serializeArray()
+        url = @form().attr('action')
+        if @validate(data)
+          $.post(url, data, @update_sp, 'json')
       update_sp : (data,textStatus,jqxhr)->
+        UserInput.reset()
         strategic_plan.set('strategic_priorities', data)
       delete : ->
         data = {'_method' : 'delete'}
         # TODO if confirm
-        $.post(@.get('url'), data, @.update_sp, 'json')
+        $.post(@get('url'), data, @update_sp, 'json')
       validate : ->
         pl = @._validate('priority_level')
         desc = @._validate('description')
@@ -875,8 +885,11 @@
       show_add_planned_result : ->
         @_add_planned_result().
           show()
+      cancel_child_add : ->
+        @remove_planned_result_form()
       remove_planned_result_form : ->
-        @pop('planned_results')
+        if _.isNull(@findAllComponents('pr')[@get('planned_results').length-1].get('id'))
+          @pop('planned_results')
         @show_add_planned_result()
 
     window.strategic_plan = new Ractive
@@ -886,7 +899,11 @@
       components :
         sp : StrategicPriority
       new_strategic_priority : ->
+        UserInput.claim_user_input_request(@,'remove_strategic_priorities_form')
         # add only if there are no strategic priorities
         # of if the most recent is persisted
         if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
           strategic_plan.unshift('strategic_priorities', {id:null, description: '', priority_level:null} )
+      remove_strategic_priorities_form : ->
+        @get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
+
