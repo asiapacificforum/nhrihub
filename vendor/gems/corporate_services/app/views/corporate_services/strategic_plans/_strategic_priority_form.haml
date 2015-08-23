@@ -56,7 +56,7 @@
   .panel.panel-default.new_strategic_priority
     = form_for :strategic_priority, :url => corporate_services_strategic_plan_strategic_priorities_path("spid").gsub(/spid/,"{{spid}}"), :remote => true, :html => {:id => :new_strategic_priority, :style => "padding:6px 0px"} do |f|
       .form-inline
-        .form-group{:class => "{{#priority_level_error}}has-error{{/}}"}
+        .form-group{:class => "{{#priority_level_error}}has-error{{/}}", :style => "vertical-align: top"}
           .nothing{:style => 'visibility:hidden'} nothing
           =f.label :priority_level, t('.priority'), :class => 'control-label sr-only'
           =f.select :priority_level, priority_level_options, {:include_blank => 'Select priority level'}, {'on-change' => 'remove_priority_level_errors()', :class => 'form-control sp-select', :value => "{{priority_level}}"}

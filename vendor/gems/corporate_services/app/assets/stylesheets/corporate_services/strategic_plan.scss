@@ -75,7 +75,6 @@ select.priority_level {
   }
 }
 
-
 .row.planned_result_control{
   border-bottom : 1px solid #E4E4E4
 }
@@ -98,4 +97,8 @@ select.priority_level {
 
 .form-group.has-error {
   margin-bottom: 0px;
+
+  .help-block#priority_level_error, .help-block#description_error {
+    display : block;
+  }
 }
