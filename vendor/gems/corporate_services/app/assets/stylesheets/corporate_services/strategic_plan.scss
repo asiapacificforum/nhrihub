@@ -18,7 +18,7 @@ select.priority_level {
 }
 
 .alarm_icon {
-  background-image: url("corporate_services/alarm.png");
+  background-image: asset-url("corporate_services/alarm.png");
   background-repeat: no-repeat;
   height: 16px;
   cursor: pointer;
@@ -26,7 +26,7 @@ select.priority_level {
 
 // the "rules" icon
 .rule {
-  background-image: url("corporate_services/ruler.png");
+  background-image: asset-url("corporate_services/ruler.png");
   background-repeat: no-repeat;
   background-size: 16px;
   cursor: pointer;
