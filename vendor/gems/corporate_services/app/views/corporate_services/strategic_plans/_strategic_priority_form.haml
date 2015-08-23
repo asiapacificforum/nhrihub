@@ -175,7 +175,7 @@
         .icon{'data-toggle' => 'edit', :style => 'height:16.6667px; top:0px'}
           %i.fa.fa-remove.fa-lg{:id => "outcome_editable{{id}}_edit_cancel", :style => "margin-left:40px"}
           %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
-    .col-md-2{:style=>"width:83.3333%", :class => "{{^activities}}empty{{/activities}}"}
+    .col-md-2{:style=>"width:83.3333%;", :class => "{{^activities}}empty{{/activities}}"}
       {{#activities}}
       <activity outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicator="{{performance_indicator}}" indexed_performance_indicator="{{indexed_performance_indicator}}" target="{{target}}" indexed_target="{{indexed_target}}" progress="{{progress}}"\>
       {{/activities}}

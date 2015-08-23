@@ -79,7 +79,11 @@ select.priority_level {
   border-bottom : 1px solid #E4E4E4
 }
 
-.row.activity, .row.activity_control>div:nth-child(2), .row.new_activity, .row.new_activity_control{
+.row.activity,
+.row.activity_control>div:nth-child(2),
+.row.new_activity,
+.row.new_activity_control,
+.row.outcome>div:nth-child(2) {
   background-color : #E0E0E0;
 }
 
