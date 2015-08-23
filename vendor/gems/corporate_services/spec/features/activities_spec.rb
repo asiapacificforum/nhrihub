@@ -150,7 +150,7 @@ feature "actions on existing activities", :js => true do
 
   scenario "edit to blank description and cancel" do
     first_activity_description.click
-    sleep(0.2)
+    sleep(0.3)
     activity_edit_cancel.click
     expect(first_activity_description.text).to eq "1.1.1.1 work hard"
   end

@@ -86,7 +86,7 @@ feature "add a reminder", :js => true do
 
   scenario "with blank text error" do
     new_reminder_button.click
-    sleep(0.3)
+    sleep(0.4)
     select("one-time", :from => :reminder_reminder_type)
     select_date("Aug 19 2015", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
