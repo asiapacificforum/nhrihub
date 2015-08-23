@@ -21,142 +21,135 @@
 #
 #  requirements:
 #    Needs an element with selector '.editable_container' with data attribute for save_url
-$ ->
-  class @InpageEditElement
-    constructor : (@el,@object,@attribute) ->
+class @InpageEditElement
+  constructor : (@el,@object,@attribute) ->
 
-    switch_to_edit : ->
-      unless _.isUndefined(@attribute) # in which case it's a control element not an input
-        @_stash()
-      @hide(@text())
-      @show(@input())
+  switch_to_edit : ->
+    unless _.isUndefined(@attribute) # in which case it's a control element not an input
+      @_stash()
+    @hide(@text())
+    @show(@input())
 
-    _stash : ->
-      unless _.isArray(@attribute)
-        @attribute = [@attribute]
-      _(@attribute).each (attr)=>
-        @object.set('original_'+attr,@object.get(attr))
+  _stash : ->
+    unless _.isArray(@attribute)
+      @attribute = [@attribute]
+    _(@attribute).each (attr)=>
+      @object.set('original_'+attr,@object.get(attr))
 
-    switch_to_show : ->
-      @load()
-      unless _.isUndefined(@attribute) # in which case it's a control element not an input
-        @_restore()
+  switch_to_show : ->
+    @load()
+    unless _.isUndefined(@attribute) # in which case it's a control element not an input
+      @_restore()
 
-    load : ->
-      @show(@text())
-      @hide(@input())
+  load : ->
+    @show(@text())
+    @hide(@input())
 
-    _restore : ->
-      unless _.isArray(@attribute)
-        @attribute = [@attribute]
-      _(@attribute).each (attr)=>
-        unless _.isUndefined(@object.get("original_"+attr))
-          @object.set(attr,@object.get("original_"+attr))
+  _restore : ->
+    unless _.isArray(@attribute)
+      @attribute = [@attribute]
+    _(@attribute).each (attr)=>
+      unless _.isUndefined(@object.get("original_"+attr))
+        @object.set(attr,@object.get("original_"+attr))
 
-    input_field : ->
-      @input().find('input')
+  input_field : ->
+    @input().find('input')
 
-    input : ->
-      $(@el).find('.edit')
+  input : ->
+    $(@el).find('.edit')
 
-    text : ->
-      $(@el).find('.no_edit')
+  text : ->
+    $(@el).find('.no_edit')
 
-    text_width : ->
-      @text().find(':first-child').width()
+  text_width : ->
+    @text().find(':first-child').width()
 
-    show : (element)->
-      element.addClass('in')
+  show : (element)->
+    element.addClass('in')
 
-    hide : (element)->
-      element.removeClass('in')
+  hide : (element)->
+    element.removeClass('in')
 
-  class @InpageEdit
-    constructor : (options)->
-      @options = options
-      node = options.on
-      if _.isFunction(options.object.validate)
-        validate = true
+class @InpageEdit
+  constructor : (options)->
+    @options = options
+    node = options.on
+    if _.isFunction(options.object.validate)
+      validate = true
+    else
+      validate = false
+
+    @root =
+      if $(@options.on).hasClass('editable_container')
+        $(@options.on)
       else
-        validate = false
+        $(@options.on).find('.editable_container')
 
-      @root =
-        if $(@options.on).hasClass('editable_container')
-          $(@options.on)
-        else
-          $(@options.on).find('.editable_container')
+    $(@options.on).find("[id$='_edit_start']").on 'click', (e)=>
+      e.stopPropagation()
+      $target = $(e.target)
+      if $target.closest('.editable_container').get(0) == @root.get(0)
+        @context = $target.closest('.editable_container')
+        @edit(@options.object)
+        @context.find(@options.focus_element).first().focus()
 
-      $(@options.on).find("[id$='_edit_start']").on 'click', (e)=>
-        e.stopPropagation()
-        $target = $(e.target)
-        if $target.closest('.editable_container').get(0) == @root.get(0)
-          @context = $target.closest('.editable_container')
-          @edit(@options.object)
-          @context.find(@options.focus_element).first().focus()
+    $(@options.on).find("[id$='_edit_cancel']").on 'click', (e)=>
+      e.stopPropagation()
+      $target = $(e.target)
+      if $target.closest('.editable_container').get(0) == @root.get(0)
+        UserInput.reset()
+        @context = $target.closest('.editable_container')
+        @show()
 
-      $(@options.on).find("[id$='_edit_cancel']").on 'click', (e)=>
-        e.stopPropagation()
-        $target = $(e.target)
-        if $target.closest('.editable_container').get(0) == @root.get(0)
-          #if @options.object.restore_previous
-            #@options.object.restore_previous()
-          @context = $target.closest('.editable_container')
-          @show()
+    $(@options.on).find("[id$='_edit_save']").on 'click', (e)=>
+      e.stopPropagation()
+      $target = $(e.target)
+      if $target.closest('.editable_container').get(0) == @root.get(0)
+        if validate && !@options.object.validate()
+          return
+        @context = $target.closest('.editable_container')
+        url = @options.object.get('url')
+        data = @context.find(':input').serializeArray()
+        data[data.length] = {name : '_method', value : 'put'}
+        $.ajax
+          url: url
+          method : 'post'
+          data : data
+          success : @_success
+          error : @options.error
+          context : @
 
-      $(@options.on).find("[id$='_edit_save']").on 'click', (e)=>
-        e.stopPropagation()
-        $target = $(e.target)
-        if $target.closest('.editable_container').get(0) == @root.get(0)
-          if validate && !@options.object.validate()
-            return
-          @context = $target.closest('.editable_container')
-          url = @options.object.get('url')
-          data = @context.find(':input').serializeArray()
-          data[data.length] = {name : '_method', value : 'put'}
-          $.ajax
-            url: url
-            method : 'post'
-            data : data
-            success : @options.success
-            error : @options.error
-            context : @
+  _success : (response, textStatus, jqXhr)->
+    UserInput.reset()
+    @options.success.apply(@, [response, textStatus, jqXhr])
 
-    @register = (ip)->
-      if _.isUndefined @active
-        @active = ip
-      else if @active.options.on != ip.options.on
-        @active.show()
-        @active = ip
+  off : ->
+    $('body').off 'click',"#{@options.on}_edit_start"
+    $('body').off 'click',"#{@options.on}_edit_cancel"
+    $('body').off 'click',"#{@options.on}_edit_save"
 
-    off : ->
-      $('body').off 'click',"#{@options.on}_edit_start"
-      $('body').off 'click',"#{@options.on}_edit_cancel"
-      $('body').off 'click',"#{@options.on}_edit_save"
+  edit : ->
+    _(@elements()).each (el,i) ->
+      el.switch_to_edit()
+    UserInput.claim_user_input_request(@options.object.edit, 'show')
 
-    edit : ->
-      _(@elements()).each (el,i) ->
-        el.switch_to_edit()
-      InpageEdit.register(@)
+  show : ->
+    @options.object.remove_errors()
+    _(@elements()).each (el,i) ->
+      el.switch_to_show()
 
-    show : ->
-      @options.object.remove_errors()
-      _(@elements()).each (el,i) ->
-        el.switch_to_show()
+  load : ->
+    _(@elements()).each (el,i) ->
+      el.load()
 
-    load : ->
-      _(@elements()).each (el,i) ->
-        el.load()
-
-    # must select only elements pertaining to this instance
-    # nested in-page edits must be excluded from elements
-    elements : ->
-      all_elements = @context.find("[data-toggle='edit']")
-      elements = _(all_elements).filter (el)=>
-                        $(el).closest('.editable_container').get(0) == @root.get(0)
-      elements.map (el,i)=>
-        object = @options.object
-        attribute = $(el).data('attribute')
-        new document.InpageEditElement(el,object,attribute)
-
-    data : ->
-      @context.data()
+  # must select only elements pertaining to this instance
+  # nested in-page edits must be excluded from elements
+  elements : ->
+    @context = $(@options.on)
+    all_elements = @context.find("[data-toggle='edit']")
+    elements = _(all_elements).filter (el)=>
+                      $(el).closest('.editable_container').get(0) == @root.get(0)
+    elements.map (el,i)=>
+      object = @options.object
+      attribute = $(el).data('attribute')
+      new InpageEditElement(el,object,attribute)
