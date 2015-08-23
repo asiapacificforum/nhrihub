@@ -566,6 +566,7 @@
         persisted : ->
           !isNaN(parseInt(@get('id')))
       create_stop : ->
+        UserInput.reset()
         @parent.remove_activity_form()
       create_save : ->
         context = $(@el)
@@ -636,6 +637,7 @@
       components :
         activity : Activity
       create_stop : ->
+        UserInput.reset()
         @parent.remove_outcome_form()
       create_save : ->
         context = $(@el)
@@ -697,6 +699,7 @@
         if !@get('persisted')
           @parent.hide_add_planned_result()
       create_stop : ->
+        UserInput.reset()
         @parent.remove_planned_result_form()
       create_save : ->
         context = $(@el)
@@ -885,8 +888,6 @@
       show_add_planned_result : ->
         @_add_planned_result().
           show()
-      cancel_child_add : ->
-        @remove_planned_result_form()
       remove_planned_result_form : ->
         if _.isNull(@findAllComponents('pr')[@get('planned_results').length-1].get('id'))
           @pop('planned_results')
