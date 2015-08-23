@@ -1,9 +1,11 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require_relative '../helpers/strategic_priority_spec_helpers'
 
 feature "adding strategic priorities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPrioritySpecHelpers
 
   before do
     visit corporate_services_strategic_plan_path(:en, "current")
@@ -57,6 +59,7 @@ end
 
 feature "strategic plan multiple strategic priorities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPrioritySpecHelpers
   before do
     @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
     StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
@@ -82,6 +85,7 @@ end
 
 feature "editing strategic priorities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPrioritySpecHelpers
   before do
     @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
     StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
@@ -133,6 +137,7 @@ end
 feature "deleting strategic priorities", :js => true do
   feature "decrements count in database and view" do
     include LoggedInEnAdminUserHelper # sets up logged in admin user
+    include StrategicPrioritySpecHelpers
     before do
       @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
       StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
@@ -147,6 +152,7 @@ feature "deleting strategic priorities", :js => true do
 
   feature "remaining strategic priorities retain edit feature" do
     include LoggedInEnAdminUserHelper # sets up logged in admin user
+    include StrategicPrioritySpecHelpers
     before do
       @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
       StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
@@ -161,44 +167,5 @@ feature "deleting strategic priorities", :js => true do
       second_strategic_priority_edit_icon.click
       expect(page).to have_selector('div.edit.in input#strategic_priority_description')
     end
-  end
-end
-
-def strategic_priority_cancel_edit_icon
-  page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_cancel']")
-end
-
-def strategic_priority_edit_save_icon
-  page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_save']")
-end
-
-def second_strategic_priority_edit_icon
-  page.all(:xpath, ".//i").select{|el| el['id']=~/strategic_priority_editable\d+_edit_start/}[1]
-end
-
-def strategic_priority_edit_icon
-  page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_start']")
-end
-
-def second_strategic_priority_delete_icon
-  page.all('i#delete')[1]
-end
-
-def strategic_priority_delete_icon
-  page.find('i#delete')
-end
-
-def add_priority_button
-  page.find('.add_strategic_priority')
-end
-
-def add_strategic_priority(attrs)
-  add_priority_button.click
-  sleep(0.1)
-  within "form#new_strategic_priority" do
-    select attrs[:priority_level].to_s, :from => 'strategic_priority_priority_level' if attrs[:priority_level]
-    fill_in "strategic_priority_description", :with => attrs[:description] if attrs[:description]
-    page.find('#edit-save').click
-    sleep(0.2)
   end
 end

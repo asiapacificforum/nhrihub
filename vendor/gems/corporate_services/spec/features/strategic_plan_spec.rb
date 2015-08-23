@@ -1,6 +1,12 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require_relative '../helpers/setup_helpers'
+require_relative '../helpers/planned_result_helpers'
+require_relative '../helpers/strategic_plan_helpers'
+require_relative '../helpers/outcomes_spec_helpers'
+require_relative '../helpers/activities_spec_helpers'
+require_relative '../helpers/strategic_priority_spec_helpers'
 
 feature "strategic plan basic", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
@@ -44,12 +50,89 @@ feature "select strategic plan from prior years", :js => true do
   end
 end
 
+feature "restrict user input to a single add or edit", :js => true do
+  include LoggedInEnAdminUserHelper
+  include SetupHelpers
+  include PlannedResultHelpers
+  include StrategicPlanHelpers
+  include OutcomesSpecHelpers
+  include ActivitiesSpecHelpers
+  include StrategicPrioritySpecHelpers
+
+  before do
+    setup_activity
+    visit corporate_services_strategic_plan_path(:en, "current")
+    open_accordion_for_strategic_priority_one
+  end
+
+  scenario "add planned result terminated by add outcome" do
+    add_planned_result.click
+    sleep(0.2)
+    expect(page).to have_selector(".row.new_planned_result")
+    add_outcome.click
+    sleep(0.2)
+    expect(page).not_to have_selector(".row.new_planned_result")
+  end
+
+  scenario "add planned result terminated by edit outcome" do
+    add_planned_result.click
+    sleep(0.2)
+    expect(page).to have_selector(".row.new_planned_result")
+    edit_outcome.click
+    expect(page).not_to have_selector(".row.new_planned_result")
+  end
+
+  scenario "edit planned result terminated by add outcome" do
+    edit_planned_result.click
+    sleep(0.2)
+    expect(page).to have_selector(".planned_result .description .edit.in #planned_result_description")
+    add_outcome.click
+    expect(page).not_to have_selector(".planned_result .description .edit.in #planned_result_description")
+  end
+
+  scenario "edit planned result terminated by edit outcome" do
+    edit_planned_result.click
+    sleep(0.2)
+    edit_outcome.click
+    expect(page).not_to have_selector(".planned_result .description .edit.in #planned_result_description")
+  end
+
+  xscenario "any add or edit sets the appropriate claim for user_input_request" do
+    add_priority_button.click
+    expect(user_input_request).to be_claimed_by StrategicPriority
+    add_planned_result.click
+    expect(user_input_request).to be_claimed_by PlannedResult
+    add_outcome.click
+    expect(user_input_request).to be_claimed_by Outcome
+    add_activity.click
+    expect(user_input_request).to be_claimed_by Activity
+    edit_strategic_priority.click
+    expect(user_input_request).to be_claimed_by StrategicPriority
+    edit_planned_result.click
+    expect(user_input_request).to be_claimed_by PlannedResult
+    edit_outcome.click
+    expect(user_input_request).to be_claimed_by Outcome
+    edit_activity.click
+    expect(user_input_request).to be_claimed_by Activity
+  end
+end
+
 feature "events after the end date of a strategic plan" do
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include LoggedInEnAdminUserHelper
 
   xscenario "new strategic plan created with strategic priorities copied" do
     
   end
+end
+
+RSpec::Matchers.define :be_claimed_by do |expected|
+  match do |actual|
+    actual = expected.send(:first).send(:description)
+  end
+end
+
+def user_input_request
+  page.evaluate_script("strategic_plan.get('user_input_requested').get('description')")
 end
 
 def add_priority_button

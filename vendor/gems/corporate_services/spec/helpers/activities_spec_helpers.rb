@@ -15,6 +15,10 @@ module ActivitiesSpecHelpers
     ".table#planned_results .row.planned_result .row.outcome .row.activity "
   end
 
+  def edit_activity
+    activity_description_field.first
+  end
+
   def activity_description_field
     page.all(activity_selector + ".description textarea").select{|i| i['id'] && i['id'].match(/activity_\d_description/)}
   end

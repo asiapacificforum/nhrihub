@@ -37,13 +37,14 @@ feature "add a reminder", :js => true do
 
   scenario "and reminder has no errors" do
     new_reminder_button.click
+    sleep(0.2)
     select("one-time", :from => :reminder_reminder_type)
-    select_date("Aug 19 2015", :from => :reminder_start_date)
+    select_date("Aug 19 2017", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
     fill_in(:reminder_text, :with => "time to check the database")
     expect{save_reminder.click; sleep(0.2)}.to change{Reminder.count}.from(0).to(1)
     expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "one-time"
-    expect(page.find("#reminders .reminder .next .in").text).to eq "Aug 19, 2015"
+    expect(page.find("#reminders .reminder .next .in").text).to eq "Aug 19, 2017"
     expect(page.find("#reminders .reminder .text .in").text).to eq "time to check the database"
     expect(page.find("#reminders .reminder .recipient").text).to eq User.first.first_last_name
     expect(page.find("#reminders .reminder .previous").text).to eq "none"
@@ -51,12 +52,15 @@ feature "add a reminder", :js => true do
 
   scenario "and multiple adds disallowed" do
     new_reminder_button.click
+    sleep(0.2)
     new_reminder_button.click
+    sleep(0.2)
     expect(page.all('#new_reminder').count).to eq 1
   end
 
   scenario "with blank reminder_type error" do
     new_reminder_button.click
+    sleep(0.2)
     select_date("Aug 19 2015", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
     fill_in(:reminder_text, :with => "time to check the database")
@@ -69,6 +73,7 @@ feature "add a reminder", :js => true do
 
   scenario "with no recipients error" do
     new_reminder_button.click
+    sleep(0.3)
     select("one-time", :from => :reminder_reminder_type)
     select_date("Aug 19 2015", :from => :reminder_start_date)
     fill_in(:reminder_text, :with => "time to check the database")
@@ -81,6 +86,7 @@ feature "add a reminder", :js => true do
 
   scenario "with blank text error" do
     new_reminder_button.click
+    sleep(0.3)
     select("one-time", :from => :reminder_reminder_type)
     select_date("Aug 19 2015", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
@@ -95,6 +101,7 @@ feature "add a reminder", :js => true do
 
   scenario "with whitespace only text error" do
     new_reminder_button.click
+    sleep(0.2)
     select("one-time", :from => :reminder_reminder_type)
     select_date("Aug 19 2015", :from => :reminder_start_date)
     fill_in(:reminder_text, :with => "  ")
@@ -105,6 +112,7 @@ feature "add a reminder", :js => true do
 
   scenario "add but cancel without saving" do
     new_reminder_button.click
+    sleep(0.2)
     select("one-time", :from => :reminder_reminder_type)
     select_date("Aug 19 2015", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
@@ -135,8 +143,9 @@ feature "edit a reminder", :js => true do
     select(User.first.first_last_name, :from => :reminder_user_ids)
     select(User.last.first_last_name, :from => :reminder_user_ids)
     fill_in(:reminder_text, :with => "have a nice day")
-    edit_reminder_save_icon.click
-    expect{ edit_reminder_save_icon.trigger('click'); sleep(0.2)}.to change{Reminder.first.text}.to('have a nice day')
+    #edit_reminder_save_icon.click
+    #expect{ edit_reminder_save_icon.trigger('click'); sleep(0.2)}.to change{Reminder.first.text}.to('have a nice day')
+    expect{ edit_reminder_save_icon.click; sleep(0.2)}.to change{Reminder.first.text}.from("don't forget to do something").to('have a nice day')
     expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "one-time"
     expect(page.find("#reminders .reminder .next .in").text).to eq "Dec 25, 2015"
     expect(page.find("#reminders .reminder .text .in").text).to eq "have a nice day"
@@ -152,7 +161,8 @@ feature "edit a reminder", :js => true do
     all("select#reminder_reminder_type option").first.select_option
     fill_in(:reminder_text, :with => " ")
     unselect(User.first.first_last_name, :from => :reminder_user_ids)
-    expect{ edit_reminder_save_icon.trigger('click'); sleep(0.2)}.not_to change{Reminder.first.text}
+    #expect{ edit_reminder_save_icon.trigger('click'); sleep(0.2)}.not_to change{Reminder.first.text}
+    expect{ edit_reminder_save_icon.click; sleep(0.2)}.not_to change{Reminder.first.text}
     expect(page).to have_selector(".reminder .reminder_type.has-error")
     expect(page).to have_selector(".reminder .recipients.has-error")
     expect(page).to have_selector(".reminder .text.has-error")

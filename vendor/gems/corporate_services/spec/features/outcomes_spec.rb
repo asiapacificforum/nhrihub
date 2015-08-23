@@ -2,11 +2,13 @@ require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
 require_relative '../helpers/strategic_plan_helpers'
+require_relative '../helpers/outcomes_spec_helpers'
 
 
 feature "populate plannned result outcomes", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include StrategicPlanHelpers
+  include OutcomesSpecHelpers
 
   feature "add outcome when there were none before" do
     before do
@@ -98,6 +100,7 @@ end
 feature "actions on existing single outcome", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include StrategicPlanHelpers
+  include OutcomesSpecHelpers
 
   before do
     sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
@@ -133,6 +136,7 @@ end
 feature "actions on existing multiple outcomes", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include StrategicPlanHelpers
+  include OutcomesSpecHelpers
 
   before do
     sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
@@ -203,26 +207,3 @@ feature "actions on existing multiple outcomes", :js => true do
   end
 end
 
-def outcome_edit_cancel
-  page.all('.row.outcome .description i').detect{|el| el['id'].match(/outcome_editable\d*_edit_cancel/)}
-end
-
-def outcome_descriptions
-  page.all(".row.planned_result .row.outcome .col-md-2.description span")
-end
-
-def outcome_description_field
-  page.all(".row.outcome .edit.in textarea").detect{|el| el['id'].match(/outcome_\d*_description/)}
-end
-
-def outcome_save_icon
-  page.all('.outcome.editable_container .edit.in div.icon>i').select{|i| i['id'] && i['id'].match(/outcome_editable\d+_edit_save/)}.last
-end
-
-def save_outcome
-  page.find("i#create_save")
-end
-
-def add_outcome
-  page.find(".new_outcome")
-end

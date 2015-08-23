@@ -70,7 +70,7 @@ feature "populate activity notes", :js => true do
     scenario "rendered in reverse chronological order" do
       show_notes.click
       expect(page).to have_selector("h4", :text => 'Notes')
-      expect(note_date.map(&:text)).to eq [3.days.ago.to_date.to_s(:short), 4.days.ago.to_date.to_s(:short)]
+      expect(note_date.map(&:text)).to eq [3.days.ago.localtime.to_date.to_s(:short), 4.days.ago.localtime.to_date.to_s(:short)]
     end
   end
 end

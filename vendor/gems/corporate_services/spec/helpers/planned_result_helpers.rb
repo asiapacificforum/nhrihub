@@ -2,6 +2,9 @@ require 'rspec/core/shared_context'
 
 module PlannedResultHelpers
   extend RSpec::Core::SharedContext
+  def edit_planned_result
+    planned_results_descriptions.first
+  end
 
   def planned_results_descriptions
     page.all(".row.planned_result .col-md-2.description span")
