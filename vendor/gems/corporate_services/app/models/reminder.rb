@@ -1,5 +1,6 @@
 class Reminder < ActiveRecord::Base
-  belongs_to :activity
+  #belongs_to :activity
+  belongs_to :remindable, :polymorphic => true
   has_and_belongs_to_many :users, :validate => false # we will only be adding/removing users by id, not changing their attributes. So performance is improved by not validating.
   default_scope ->{ order(:id) }
 

@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818135907) do
+ActiveRecord::Schema.define(version: 20150824043913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "action_roles", force: true do |t|
     t.integer  "role_id",    limit: 8
@@ -72,6 +73,15 @@ ActiveRecord::Schema.define(version: 20150818135907) do
     t.integer  "user_id"
   end
 
+  create_table "media_appearances", force: true do |t|
+    t.hstore   "description_attributes"
+    t.string   "note"
+    t.integer  "positivity_rating_id"
+    t.integer  "reminder_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "notes", force: true do |t|
     t.text     "text"
     t.integer  "activity_id"
@@ -108,13 +118,21 @@ ActiveRecord::Schema.define(version: 20150818135907) do
     t.datetime "updated_at"
   end
 
+  create_table "positivity_ratings", force: true do |t|
+    t.integer  "rank"
+    t.string   "text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "reminders", force: true do |t|
     t.string   "text"
     t.string   "reminder_type"
     t.date     "start_date"
-    t.integer  "activity_id"
+    t.integer  "remindable_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type"
   end
 
   create_table "reminders_users", id: false, force: true do |t|

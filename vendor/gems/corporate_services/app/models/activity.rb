@@ -1,6 +1,6 @@
 class Activity < ActiveRecord::Base
   belongs_to  :outcome
-  has_many :reminders, :autosave => true, :dependent => :destroy
+  has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
   has_many :notes, :autosave => true, :dependent => :destroy
   default_scope ->{ order(:id) } # this naturally orders by index
 
