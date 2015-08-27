@@ -20,7 +20,7 @@ Rails.application.configure do
   # config.action_dispatch.rack_cache = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this).
-  config.serve_static_assets = false
+  config.serve_static_files = false
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier
@@ -79,4 +79,12 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # rails 4.2 deprecation warning:
+  # DEPRECATION WARNING: Currently, Active Record suppresses errors raised within 
+  # `after_rollback`/`after_commit` callbacks and only print them to the logs.
+  # In the next version, these errors will no longer be suppressed.
+  # Instead, the errors will propagate normally just like in other Active Record callbacks.
+  # You can opt into the new behavior and remove this warning by setting:
+  config.active_record.raise_in_transactional_callbacks = true
 end

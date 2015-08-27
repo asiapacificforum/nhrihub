@@ -4,6 +4,7 @@ module OutreachMedia
 
     # include the locales translations from the module
     config.i18n.load_path += Dir.glob(config.root.join('config','locales','views','*.{rb,yml}'))
+    config.i18n.load_path += Dir.glob(config.root.join('config','locales','models','*','*.{rb,yml}'))
 
     # append module migrations to the main app
     initializer :append_migrations do |app|

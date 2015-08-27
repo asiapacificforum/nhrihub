@@ -13,7 +13,7 @@ Rails.application.configure do
   config.eager_load = false
 
   # Configure static asset server for tests with Cache-Control for performance.
-  config.serve_static_assets  = true
+  config.files  = true
   config.static_cache_control = 'public, max-age=3600'
 
   # Show full error reports and disable caching.
@@ -43,4 +43,12 @@ Rails.application.configure do
   # in a controller, so that the exception will catch if it's not
   # permitted
   config.action_controller.action_on_unpermitted_parameters = :raise
+
+  # rails 4.2 deprecation warning:
+  # DEPRECATION WARNING: Currently, Active Record suppresses errors raised within 
+  # `after_rollback`/`after_commit` callbacks and only print them to the logs.
+  # In the next version, these errors will no longer be suppressed.
+  # Instead, the errors will propagate normally just like in other Active Record callbacks.
+  # You can opt into the new behavior and remove this warning by setting:
+  config.active_record.raise_in_transactional_callbacks = true
 end

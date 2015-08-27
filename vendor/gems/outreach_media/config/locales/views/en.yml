@@ -1,8 +1,17 @@
 en:
   outreach_media:
+    admin:
+      index:
+        heading: "Outreach and Media"
     outreach:
       index:
         heading: "Outreach"
     media:
       index:
-        heading: "Media"
+        heading: "Media Archive"
+        date: "Date"
+        title_description: "Title/Description"
+        areas: "Areas"
+        subareas: "subareas"
+        metrics: "Metrics"
+

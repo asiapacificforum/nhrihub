@@ -56,6 +56,7 @@ class User < ActiveRecord::Base
   has_many :sessions
   has_many :internal_documents
   has_and_belongs_to_many :reminders
+  has_many :media_appearances
 
   before_save :encrypt_password
   before_create :make_activation_code

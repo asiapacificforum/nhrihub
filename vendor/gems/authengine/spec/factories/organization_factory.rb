@@ -6,7 +6,7 @@ FactoryGirl.define  do
     zip  { Faker::Address.zip_code }
     phone  {Faker::PhoneNumber.phone_number}
     email  {Faker::Internet.email}
-    contacts []
+    contacts {ContactList.new([])}
 
     trait :with_users do
       after(:build) do |o|

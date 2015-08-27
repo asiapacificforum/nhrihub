@@ -15,37 +15,36 @@ ActiveRecord::Schema.define(version: 20150824043913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "hstore"
 
-  create_table "action_roles", force: true do |t|
+  create_table "action_roles", force: :cascade do |t|
     t.integer  "role_id",    limit: 8
     t.integer  "action_id",  limit: 8
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "actions", force: true do |t|
-    t.string   "action_name"
+  create_table "actions", force: :cascade do |t|
+    t.string   "action_name",   limit: 255
     t.integer  "controller_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "human_name"
+    t.string   "human_name",    limit: 255
   end
 
   add_index "actions", ["action_name"], name: "index_actions_on_action_name", using: :btree
 
-  create_table "activities", force: true do |t|
+  create_table "activities", force: :cascade do |t|
     t.integer  "outcome_id"
     t.text     "description"
     t.text     "performance_indicator"
     t.text     "target"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "progress"
+    t.string   "progress",              limit: 255
   end
 
-  create_table "controllers", force: true do |t|
-    t.string   "controller_name"
+  create_table "controllers", force: :cascade do |t|
+    t.string   "controller_name", limit: 255
     t.datetime "last_modified"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -53,36 +52,46 @@ ActiveRecord::Schema.define(version: 20150824043913) do
 
   add_index "controllers", ["controller_name"], name: "index_controllers_on_controller_name", using: :btree
 
-  create_table "document_groups", force: true do |t|
+  create_table "document_groups", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "internal_documents", force: true do |t|
-    t.string   "file_id"
-    t.string   "title"
+  create_table "internal_documents", force: :cascade do |t|
+    t.string   "file_id",           limit: 255
+    t.string   "title",             limit: 255
     t.integer  "filesize"
-    t.string   "original_filename"
+    t.string   "original_filename", limit: 255
     t.integer  "revision_major"
     t.integer  "revision_minor"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "lastModifiedDate"
-    t.string   "original_type"
+    t.string   "original_type",     limit: 255
     t.integer  "document_group_id"
     t.integer  "user_id"
   end
 
-  create_table "media_appearances", force: true do |t|
-    t.hstore   "description_attributes"
+  create_table "media_appearances", force: :cascade do |t|
+    t.string   "file_id",               limit: 255
+    t.integer  "filesize"
+    t.string   "original_filename",     limit: 255
+    t.string   "original_type",         limit: 255
+    t.integer  "user_id"
+    t.string   "url"
+    t.string   "title"
+    t.jsonb    "description"
     t.string   "note"
+    t.integer  "affected_people_count"
+    t.integer  "violation_severity"
+    t.float    "violation_coefficient"
     t.integer  "positivity_rating_id"
     t.integer  "reminder_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "notes", force: true do |t|
+  create_table "notes", force: :cascade do |t|
     t.text     "text"
     t.integer  "activity_id"
     t.integer  "author_id"
@@ -91,76 +100,76 @@ ActiveRecord::Schema.define(version: 20150824043913) do
     t.datetime "updated_at",  null: false
   end
 
-  create_table "organizations", force: true do |t|
-    t.string   "name"
-    t.string   "street"
-    t.string   "city"
-    t.string   "zip"
-    t.string   "phone"
-    t.string   "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string   "contacts"
-    t.string   "state"
+  create_table "organizations", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "street",     limit: 255
+    t.string   "city",       limit: 255
+    t.string   "zip",        limit: 255
+    t.string   "phone",      limit: 255
+    t.string   "email",      limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.string   "contacts",   limit: 255
+    t.string   "state",      limit: 255
   end
 
-  create_table "outcomes", force: true do |t|
+  create_table "outcomes", force: :cascade do |t|
     t.integer  "planned_result_id"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "planned_results", force: true do |t|
-    t.string   "description"
+  create_table "planned_results", force: :cascade do |t|
+    t.string   "description",           limit: 255
     t.integer  "strategic_priority_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "positivity_ratings", force: true do |t|
+  create_table "positivity_ratings", force: :cascade do |t|
     t.integer  "rank"
     t.string   "text"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "reminders", force: true do |t|
-    t.string   "text"
-    t.string   "reminder_type"
+  create_table "reminders", force: :cascade do |t|
+    t.string   "text",            limit: 255
+    t.string   "reminder_type",   limit: 255
     t.date     "start_date"
     t.integer  "remindable_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type"
+    t.string   "remindable_type"
   end
 
-  create_table "reminders_users", id: false, force: true do |t|
+  create_table "reminders_users", id: false, force: :cascade do |t|
     t.integer "reminder_id"
     t.integer "user_id"
   end
 
-  create_table "roles", force: true do |t|
-    t.string   "name"
-    t.string   "short_name"
+  create_table "roles", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "short_name", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "parent_id"
   end
 
-  create_table "sessions", force: true do |t|
+  create_table "sessions", force: :cascade do |t|
     t.integer  "user_id"
-    t.string   "session_id"
+    t.string   "session_id",  limit: 255
     t.datetime "login_date"
     t.datetime "logout_date"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
 
-  create_table "settings", force: true do |t|
-    t.string   "var",                   null: false
+  create_table "settings", force: :cascade do |t|
+    t.string   "var",        limit: 255, null: false
     t.text     "value"
     t.integer  "thing_id"
     t.string   "thing_type", limit: 30
@@ -170,13 +179,13 @@ ActiveRecord::Schema.define(version: 20150824043913) do
 
   add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
 
-  create_table "strategic_plans", force: true do |t|
+  create_table "strategic_plans", force: :cascade do |t|
     t.date     "start_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "strategic_priorities", force: true do |t|
+  create_table "strategic_priorities", force: :cascade do |t|
     t.integer  "priority_level"
     t.text     "description"
     t.integer  "strategic_plan_id"
@@ -184,37 +193,37 @@ ActiveRecord::Schema.define(version: 20150824043913) do
     t.datetime "updated_at"
   end
 
-  create_table "user_roles", force: true do |t|
+  create_table "user_roles", force: :cascade do |t|
     t.integer  "role_id",    limit: 8, null: false
     t.integer  "user_id",    limit: 8, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "useractions", force: true do |t|
+  create_table "useractions", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "action_id"
-    t.string   "type"
+    t.string   "type",       limit: 255
     t.text     "params"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "users", force: true do |t|
-    t.string   "login"
-    t.string   "email"
+  create_table "users", force: :cascade do |t|
+    t.string   "login",                     limit: 255
+    t.string   "email",                     limit: 255
     t.string   "crypted_password",          limit: 40
     t.string   "salt",                      limit: 40
-    t.string   "remember_token"
+    t.string   "remember_token",            limit: 255
     t.datetime "remember_token_expires_at"
     t.string   "activation_code",           limit: 40
     t.datetime "activated_at"
     t.string   "password_reset_code",       limit: 40
-    t.boolean  "enabled",                              default: true
-    t.string   "firstName"
-    t.string   "lastName"
-    t.string   "type"
-    t.string   "status",                               default: "created"
+    t.boolean  "enabled",                               default: true
+    t.string   "firstName",                 limit: 255
+    t.string   "lastName",                  limit: 255
+    t.string   "type",                      limit: 255
+    t.string   "status",                    limit: 255, default: "created"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "organization_id"

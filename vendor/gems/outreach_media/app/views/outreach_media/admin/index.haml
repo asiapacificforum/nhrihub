@@ -1,0 +1,56 @@
+.message_block
+%h1=t('.heading')
+
+%h4 filetypes
+= render :partial => 'internal_document_filetypes'
+
+%h4 something else
+= render :partial => 'internal_document_filesize'
+
+%h4  something else again
+= render :partial => 'start_date'
+
+:coffeescript
+  $ ->
+    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+
+    window.flash_error_template = _.template($("#flash_error_template").html())
+
+
+%script{:type => 'template/html', :id => :flash_error_template}
+  %ul.error
+    %li {{ message }}
+
+%script{:type => 'page/notes'}
+  :plain
+  config params:
+    area_defaults:
+      "Human Rights"
+        "Human rights violation"
+        "Human rights education activities"
+        "Human rights office reports"
+        "Universal periodic review"
+        "CEDAW"
+        "CRC"
+        "CRPD"
+      "Good Governance"
+        "Good governance violation"
+        "Good governance office report"
+        "Office consultations"
+      "Special Investigations Unit"
+      "Corporate Services"
+    positivity_defaults:
+      "Reflects very negatively on the office"
+      "Reflects slightly negatively on the office"
+      "Has no bearing on the office"
+      "Reflects slightly positively on the office"
+      "Reflects very positively on the office"
+    violation_severity_defaults:
+      "Negligible"
+      "Minor"
+      "Moderate"
+      "Significant"
+      "Substantial"
+      "Severe"
+      "Critical"
+      "Catastrophic"

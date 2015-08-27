@@ -1,1 +1,10 @@
 %h1= t('.heading')
+.row.heading#media_appearances
+  .col-md-2= t('.date')
+  .col-md-2= t('.title_description')
+  .col-md-2
+    .areas= t('.areas')
+    .subareas= t('.subareas')
+  .col-md-2= t('.metrics')
+  .col-md-2
+= render partial: "media_appearance", collection: @media_appearances
