@@ -1,13 +1,7 @@
 %h1= t('.heading')
-.row.heading#media_appearances
-  .col-md-2= t('.date')
-  .col-md-2= t('.title_description')
-  .col-md-2
-    .areas= t('.areas')
-    .subareas= t('.subareas')
-  .col-md-2= t('.metrics')
-  .col-md-2
-#ma
+.row.heading#media_appearances_controls
+
+#media_appearances
 
 = render partial: "media_appearance"
 
@@ -32,9 +26,22 @@
         description : Description
         metric : Metric
 
-    window.medapp = new Ractive
-      el : '#ma'
+    window.media = new Ractive
+      el : '#media_appearances'
       template : '#media_appearances_template'
       data : {media_appearances: media_appearances }
       components :
         ma : MediaAppearance
+
+    window.media_control = new Ractive
+      el : '#media_appearances_controls'
+      template : '#controls_template'
+      data : { expanded : false }
+      expand : ->
+        @set('expanded', true)
+        @collapse_elements.collapse('show')
+      compact : ->
+        @set('expanded', false)
+        @collapse_elements.collapse('hide')
+      collapse_elements :
+        $('#media_appearances .media_appearance .collapse')

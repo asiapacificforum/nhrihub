@@ -1,3 +1,15 @@
+%script#controls_template{:type => 'template/ractive'}
+  .col-md-2
+  .col-md-2
+  .col-md-2
+  .col-md-2
+  .col-md-2
+    {{#if expanded}}
+    %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>'Compact all'}
+    {{else}}
+    %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>'Expand all'}
+    {{/if}}
+
 %script#media_appearances_template{:type => 'template/ractive'}
   {{#media_appearances}}
   <ma description='{{description}}'/>
@@ -5,24 +17,34 @@
 
 %script#media_appearance_template{:type => 'template/ractive'}
   .row.media_appearance.well.well-sm
-    .col-md-2 {{ date }}
-    .col-md-2 {{ title }}
-    .col-md-2
-      <description areas='{{description.areas}}'/>
-    .col-md-2{:style=>"display:flex; flex-direction:column;"}
-      {{#metrics}}
-      <metric/>
-      {{/metrics}}
-    .col-md-2.actions
-      %div.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; float:left; width:20px; top:3px; margin-left:20px;"}
-      %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "margin-left:28px; position:relative; float:left; top:3px;"}
-      {{#if has_link }}
-      %i.fa.fa-globe{ :style => "margin-left:28px; position:relative; float:left; top:3px;"}
-      {{elseif has_scanned_doc }}
-      %i.fa.fa-cloud-download{ :style => "margin-left:28px; position:relative; float:left; top:3px;"}
-      {{/if}}
-      %i.fa.fa-pencil-square-o{ :style => "margin-left:28px; position:relative; float:left; top:3px;"}
-      %i.fa.fa-info-circle{ :style => "margin-left:28px; position:relative; float:left; top:3px;"}
+    .col-md-12
+      .row.basic_info
+        .col-md-2.date{:style => "width:15%"} {{ date }}
+        .col-md-2.title{:style => "width:60%"} {{ title }}
+        .col-md-2.actions{:style => "width:25%"}
+          %div.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; float:left; width:20px; top:3px; margin-left:20px;"}
+          %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "margin-left:28px; position:relative; float:left; top:3px;"}
+          {{#if has_link }}
+          %i.fa.fa-globe{ :style => "margin-left:28px; position:relative; float:left; top:3px;"}
+          {{elseif has_scanned_doc }}
+          %i.fa.fa-cloud-download{ :style => "margin-left:28px; position:relative; float:left; top:3px;"}
+          {{/if}}
+          %i.fa.fa-pencil-square-o{ :style => "margin-left:28px; position:relative; float:left; top:3px;"}
+          %a{'data-toggle'=>:collapse, :href => ".collapse{{id}}"}
+            %i.fa.fa-info-circle{ :style => "margin-left:28px; position:relative; float:left; top:3px;"}
+      .panel.panel-default.collapse.expanded_info{:class => "collapse{{id}}"}
+        .panel-heading
+          .row
+            .col-md-2.description{:style => "width:50%"} Areas/subareas
+            .col-md-2.metrics{:style=>"width:25%;"} Metrics
+        .panel-content
+          .row
+            .col-md-2.description{:style => "width:50%"}
+              <description areas='{{description.areas}}'/>
+            .col-md-2.metrics{:style=>"width:25%; display:flex; flex-direction:column;"}
+              {{#metrics}}
+              <metric/>
+              {{/metrics}}
 
 %script#description_template{:type=> 'template/ractive'}
   {{#areas}}
