@@ -31,7 +31,6 @@
     .subarea:not(:first-child){
       &:before {
         content : ", ";
-        margin-left : -3px;
       }
     }
   }

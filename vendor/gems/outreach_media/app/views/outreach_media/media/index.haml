@@ -7,4 +7,34 @@
     .subareas= t('.subareas')
   .col-md-2= t('.metrics')
   .col-md-2
-= render partial: "media_appearance", collection: @media_appearances
+#ma
+
+= render partial: "media_appearance"
+
+:coffeescript
+  $ ->
+    media_appearances = #{@media_appearances.to_json}
+
+    Area = Ractive.extend
+      template : '#area_template'
+
+    Metric = Ractive.extend
+      template : '#metric_template'
+
+    Description = Ractive.extend
+      template : '#description_template'
+      components :
+        area : Area
+
+    MediaAppearance = Ractive.extend
+      template : '#media_appearance_template'
+      components :
+        description : Description
+        metric : Metric
+
+    window.medapp = new Ractive
+      el : '#ma'
+      template : '#media_appearances_template'
+      data : {media_appearances: media_appearances }
+      components :
+        ma : MediaAppearance

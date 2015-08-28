@@ -7,15 +7,24 @@ class MediaAppearance < ActiveRecord::Base
 
   serialize :description, MediaAppearanceDescription
 
+  def as_json(options={})
+    super({:except => [:updated_at, :created_at],
+           :methods=> [:date, :metrics, :has_link, :has_scanned_doc]})
+  end
+
+  def date
+    created_at.to_date.to_s(:default)
+  end
+
   def metrics
     MediaAppearanceMetrics.new(self)
   end
 
-  def has_link?
+  def has_link
     !url.blank?
   end
 
-  def has_scanned_doc?
+  def has_scanned_doc
     !file_id.blank?
   end
 end
