@@ -1,16 +1,15 @@
 %script#controls_template{:type => 'template/ractive'}
-  .col-md-2= text_field_tag :title
-  .col-md-2
-  .col-md-2
-  .col-md-2
-  .col-md-2
-    {{#if expanded}}
-    %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>'Compact all'}
-    {{else}}
-    %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>'Expand all'}
-    {{/if}}
-
-%script#media_appearances_template{:type => 'template/ractive'}
+  .row#media_appearances_controls
+    .col-md-2= text_field_tag :title
+    .col-md-2
+    .col-md-2
+    .col-md-2
+    .col-md-2
+      {{#if expanded}}
+      %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>'Compact all'}
+      {{else}}
+      %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>'Expand all'}
+      {{/if}}
   {{#media_appearances}}
   <ma description='{{description}}'/>
   {{/media_appearances}}
