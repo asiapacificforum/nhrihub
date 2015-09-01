@@ -51,4 +51,12 @@ Rails.application.configure do
   # Instead, the errors will propagate normally just like in other Active Record callbacks.
   # You can opt into the new behavior and remove this warning by setting:
   config.active_record.raise_in_transactional_callbacks = true
+
+  # teaspoon assets config
+  config.assets.precompile += [
+    "teaspoon.css",
+    "teaspoon-mocha.js",
+    "mocha/1.17.1.js"
+  ]
+
 end

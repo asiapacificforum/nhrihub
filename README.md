@@ -70,6 +70,21 @@ A couple of windows configurations must be set in order to support this test sce
 2. If the tests, in particular the character entry in text fields, is running very slowsly, you may need to use the 32-bit version of IEDriverServer. See https://www.microsoft.com/en-us/download/details.aspx?id=44069
 3. Zone permissions under the windows "Internet options" configuration menu may need to be configured to be the same for all zones.
 
+### Javascript testing
+In some cases test coverage of the javascript is achieved with integration testing by means of rspec features.
+In other cases, dedicated javscript tests have been used. These use a suite of javascript test libraries, including:
+* Teaspoon (https://github.com/modeset/teaspoon)
+* MagicLamp (https://github.com/crismali/magic_lamp)
+* Mocha (https://mochajs.org/)
+* Chai (http://chaijs.com/)
+To run the javascript test suite, first start a rails server up in the special environment configured for javascript testing:
+  rails s -e jstest -p 5000 -P `pwd`/tmp/pids/jstestserver.pid
+This environment is configured for no asset caching, as in development environment. It has its own database, so that objects can be created and destroyed without affecting the development database, and also its own log (log/jstest.log).
+Then point the browser to the teaspoon rack endpoint on that server:
+  localhost:5000/en/teaspoon/testname
+where testname is the name of the test suite you wish to run. The following js test suites are included:
+* media
+
 ## Deployment
 Development updates are pushed manually to a git repository, using the normal git push procedure.
 Deployment is automated using the Capistrano gem using:

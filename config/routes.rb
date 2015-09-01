@@ -54,9 +54,13 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
+  # see https://github.com/crismali/magic_lamp
+  mount MagicLamp::Genie, at: "/magic_lamp" if defined?(MagicLamp)
+
+
+  scope "/:locale" do
   # this route is specified as it's used in authengine as the place
   # where logged-in users first land
-  scope "/:locale" do
     get 'home', :to => 'home#index'
     get 'admin', :to => 'admin#index'
     get 'placeholder', :to => 'placeholder#index'

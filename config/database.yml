@@ -83,3 +83,7 @@ production:
   database: apf_production
   username: apf
   password: <%= ENV['APF_DATABASE_PASSWORD'] %>
+
+jstest:
+  <<: *default
+  database: apf_test

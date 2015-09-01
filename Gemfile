@@ -36,7 +36,7 @@ gem 'spring',        group: :development
 
 group :development do
   # Use Capistrano for deployment
-  gem 'capistrano-rails', group: :development
+  gem 'capistrano-rails'
   # capistrano add-ons
   gem 'capistrano-bundler'
   gem 'capistrano-rvm'
@@ -49,25 +49,29 @@ group :development do
 end
 
 # Use debugger
-gem 'debugger', group: [:development, :test]
 
 gem 'authengine', :path => 'vendor/gems/authengine'
 gem 'haml'
 gem 'haml-rails'
 
-group :development, :test do
+group :development, :test, :jstest do
   gem 'rspec-rails'
   gem 'capybara', :git => "git@github.com:lazylester/capybara.git", :branch => "attach_file_remote"
   gem 'selenium-webdriver'
   gem 'database_cleaner'
+  gem 'debugger'
+
+  gem 'teaspoon'
+  gem 'teaspoon-mocha'
+  gem 'magic_lamp'
 end
 gem 'bootstrap-sass'
 gem 'simple-navigation-bootstrap'
 gem 'font-awesome-sass'
 #gem 'simple-navigation', '~> 4.0.3' seems to have some problems with simple-navigation-bootstrap
 gem 'simple-navigation', '~> 3.14.0'
-gem 'simplecov', :require => false, :group => :test
-gem 'poltergeist', group: :test
+gem 'simplecov', :require => false, :group => [:test, :jstest]
+gem 'poltergeist', group: [:test, :jstest]
 gem 'factory_girl_rails', '~> 4.0'
 gem 'faker'
 
