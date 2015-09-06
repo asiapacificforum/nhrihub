@@ -7,11 +7,11 @@ require "nhri/version"
 Gem::Specification.new do |s|
   s.name        = "nhri"
   s.version     = Nhri::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Nhri."
-  s.description = "TODO: Description of Nhri."
+  s.authors     = ["Les Nightingill"]
+  s.email       = ["codehacker@comcast.net"]
+  #s.homepage    = "TODO"
+  s.summary     = "private gem, engine module for nhridocs app"
+  s.description = "private gem, engine module for nhridocs app"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]

@@ -78,7 +78,7 @@ gem 'faker'
 gem 'quiet_assets', group: :development
 gem 'jquery-fileupload-rails', :path => 'vendor/gems'
 gem "refile", require: "refile/rails"
-gem "rails-settings-cached", :git => "git@github.com:huacnlee/rails-settings-cached.git"
+gem "rails-settings-cached", '~> 0.4.2'
 gem "underscore-rails"
 gem "transpec"
 

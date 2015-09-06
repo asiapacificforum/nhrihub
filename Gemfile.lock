@@ -1,11 +1,4 @@
 GIT
-  remote: git@github.com:huacnlee/rails-settings-cached.git
-  revision: 6daf59e961713043578a18f95989ef43a7d568cf
-  specs:
-    rails-settings-cached (0.4.1)
-      rails (>= 4.0.0)
-
-GIT
   remote: git@github.com:lazylester/capistrano-faster-assets.git
   revision: 02baf68fda796ef3526b58ad2c6d64bca568aa71
   specs:
@@ -248,6 +241,8 @@ GEM
       loofah (~> 2.0)
     rails-observers (0.1.2)
       activemodel (~> 4.0)
+    rails-settings-cached (0.4.2)
+      rails (>= 4.2.0)
     railties (4.2.0)
       actionpack (= 4.2.0)
       activesupport (= 4.2.0)
@@ -396,7 +391,7 @@ DEPENDENCIES
   poltergeist
   quiet_assets
   rails (= 4.2.0)
-  rails-settings-cached!
+  rails-settings-cached (~> 0.4.2)
   refile
   rspec-rails
   sass-rails (~> 4.0.3)

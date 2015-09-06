@@ -7,11 +7,11 @@ require "outreach_media/version"
 Gem::Specification.new do |s|
   s.name        = "outreach_media"
   s.version     = OutreachMedia::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of OutreachMedia."
-  s.description = "TODO: Description of OutreachMedia."
+  s.authors     = ["Les Nightingill"]
+  s.email       = ["codehacker@comcast.net"]
+  #s.homepage    = "TODO"
+  s.summary     = "private gem, engine module for nhridocs app"
+  s.description = "private gem, engine module for nhridocs app"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]

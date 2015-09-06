@@ -5,8 +5,8 @@ require "corporate_services/version"
 Gem::Specification.new do |s|
   s.name        = "corporate_services"
   s.version     = CorporateServices::VERSION
-  #s.authors     = ["TODO: Your name"]
-  #s.email       = ["TODO: Your email"]
-  #s.summary     = "TODO: Summary of CorporateServices."
+  s.authors     = ["Les Nightingill"]
+  s.email       = ["codehacker@comcast.net"]
+  s.summary     = "private gem engine for nhridocs app"
   #s.files = Dir["{app,config,db,lib}/**/*"]
 end
