@@ -3,10 +3,16 @@ en:
     admin:
       index:
         heading: "Outreach and Media"
+      outreach_media_filesize:
+        change: "Change"
+        value: "Current value"
+      outreach_media_filetypes:
+        add: "Add"
+        empty: "none configured"
     outreach:
       index:
         heading: "Outreach"
-    media:
+    media_appearances:
       index:
         heading: "Media Archive"
         date: "Date"
