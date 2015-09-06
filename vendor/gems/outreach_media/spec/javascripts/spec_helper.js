@@ -34,6 +34,7 @@
 //
 // For more information: http://github.com/modeset/teaspoon
 // require outreach_media
+//= require simulant
 //
 // Chai
 // If you're using Chai, you'll probably want to initialize your preferred assertion style. You can read more about Chai

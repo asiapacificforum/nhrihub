@@ -1,1 +1,3 @@
-//= require_tree .
+//= require 'jquery_datepicker'
+//= require './outreach_media/media/media_appearances'
+//= require './outreach_media/media/datepicker'

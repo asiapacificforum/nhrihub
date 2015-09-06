@@ -1,14 +1,11 @@
 .message_block
 %h1=t('.heading')
 
-%h4 filetypes
-= render :partial => 'internal_document_filetypes'
+%h4 Filetypes permitted for outreach media uploading
+= render :partial => 'outreach_media_filetypes'
 
-%h4 something else
-= render :partial => 'internal_document_filesize'
-
-%h4  something else again
-= render :partial => 'start_date'
+%h4 Maximum permitted file size
+= render :partial => 'outreach_media_filesize'
 
 :coffeescript
   $ ->

@@ -1,9 +1,11 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require_relative '../helpers/media_admin_spec_helpers'
 
 feature "media admin", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaAdminSpecHelpers
 
   scenario "no filetypes configured" do
     visit outreach_media_admin_path('en')
@@ -68,6 +70,7 @@ end
 
 feature "media admin when user not permitted", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaAdminSpecHelpers
 
   before do
     remove_add_delete_fileconfig_permissions
@@ -99,24 +102,4 @@ feature "media admin when user not permitted", :js => true do
     expect( flash_message ).to eq "You don't have permission to complete that action."
     expect( page.find('span#filesize').text ).to eq default_value
   end
-end
-
-def new_filetype_button
-  page.find("#new_outreach_media_filetype table button")
-end
-
-def set_filesize(val)
-  page.find('input#filesize').set(val)
-end
-
-def delete_filetype(type)
-  page.find(:xpath, ".//tr[contains(td,'#{type}')]").find('a').click
-end
-
-def remove_add_delete_fileconfig_permissions
-  ActionRole.
-    joins(:action => :controller).
-    where('actions.action_name' => ['create', 'destroy', 'update'],
-          'controllers.controller_name' => ['outreach_media/media_appearances/filetypes','outreach_media/media_appearances/filesizes']).
-    destroy_all
 end

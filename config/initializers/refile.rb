@@ -1,5 +1,5 @@
 require "refile/backend/file_system"
-if Rails.env.development? || Rails.env.test?
+if Rails.env.development? || Rails.env.test? || Rails.env.jstest?
   Refile.store = Refile::Backend::FileSystem.new("tmp/uploads/store")
   Refile.cache = Refile::Backend::FileSystem.new("tmp/uploads/cache")
 else

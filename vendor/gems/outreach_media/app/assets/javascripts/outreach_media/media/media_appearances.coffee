@@ -15,6 +15,22 @@ $ ->
     components :
       description : Description
       metric : Metric
+    computed :
+      include : ->
+        @_matches_title() && @_matches_from() && @_matches_to()
+    _matches_from : ->
+      new Date(@get('date')) >= new Date(@get('sort_criteria.from'))
+    _matches_to : ->
+      new Date(@get('date')) <= new Date(@get('sort_criteria.to'))
+    _matches_area : ->
+    _matches_subarea : ->
+    _matches_people_affected : ->
+    _matches_violation_severity : ->
+    _matches_violation_coefficient : ->
+    _matches_positivity_rating : ->
+    _matches_title : ->
+      re = new RegExp(@get('sort_criteria.title'),'i')
+      re.test(@get('title'))
     expand : ->
       $(@find('.collapse')).collapse('show')
     compact : ->
@@ -22,10 +38,14 @@ $ ->
 
   window.media = new Ractive
     el : '#media_appearances'
-    template : '#controls_template'
+    template : '#media_appearances_template'
     data :
       expanded : false
       media_appearances: media_appearances
+      sort_criteria :
+        title : ""
+        from : new Date(1995,0,1)
+        to : new Date()
     components :
       ma : MediaAppearance
     expand : ->

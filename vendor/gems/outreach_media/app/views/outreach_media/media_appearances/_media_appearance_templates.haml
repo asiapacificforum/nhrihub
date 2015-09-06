@@ -1,8 +1,13 @@
-%script#controls_template{:type => 'template/ractive'}
+%script#media_appearances_template{:type => 'template/ractive'}
   .row#media_appearances_controls
-    .col-md-2= text_field_tag :title
+    .col-md-2= text_field_tag :title, "{{sort_criteria.title}}"
     .col-md-2
+      %label{:for=>"from"} From
+      %input{:type=>"text", :id=>"from", :name=>"from"}
     .col-md-2
+      %label{:for=>"to"} To
+      %input{:type=>"text", :id=>"to", :name=>"to"}
+    .col-md-2= select_tag :area, options_from_collection_for_select(@areas, :value, :text), :multiple => true
     .col-md-2
     .col-md-2
       {{#if expanded}}
@@ -10,12 +15,14 @@
       {{else}}
       %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>'Expand all'}
       {{/if}}
+    .row#sort_criteria
+      .col-md-2#title {{sort_criteria.title}}
   {{#media_appearances}}
   <ma description='{{description}}'/>
   {{/media_appearances}}
 
 %script#media_appearance_template{:type => 'template/ractive'}
-  .row.media_appearance.well.well-sm
+  .row.media_appearance.well.well-sm{:style => "{{#if !include}}display:none{{/if}}"}
     .col-md-12
       .row.basic_info
         .col-md-2.date{:style => "width:15%"} {{ date }}
