@@ -1,6 +1,6 @@
 class CorporateServices::InternalDocuments::FiletypesController < ApplicationController
   def create
-    filetype = Filetype.create(params[:filetype][:ext])
+    filetype = CorporateServices::Filetype.create(params[:corporate_services_filetype][:ext])
     if filetype.errors.empty?
       render :text => filetype.ext, :status => 200, :content_type => 'text/plain'
     else
