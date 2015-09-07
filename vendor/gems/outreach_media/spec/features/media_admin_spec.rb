@@ -103,3 +103,67 @@ feature "media admin when user not permitted", :js => true do
     expect( page.find('span#filesize').text ).to eq default_value
   end
 end
+
+
+feature "configure description areas and subareas", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaAdminSpecHelpers
+
+  before do
+    create_default_areas
+    visit outreach_media_admin_path('en')
+    sleep(0.1)
+  end
+
+  scenario 'default areas and subareas' do
+    expect(page.all('.area .text').map(&:text)).to include "Human Rights"
+    expect(page.all('.area .text').map(&:text)).to include "Good Governance"
+    expect(page.all('.area .text').map(&:text)).to include "Special Investigations Unit"
+    expect(page.all('.area .text').map(&:text)).to include "Corporate Services"
+  end
+
+  scenario 'add an area' do
+    page.find('#area_text').set('What else')
+    expect{ page.find('button#add_area').click; sleep(0.2)}.to change{ Area.count }.by 1
+    expect(page.all('.area .text').map(&:text)).to include "What else"
+  end
+
+  scenario 'add an area with blank text' do
+    expect{ page.find('button#add_area').click; sleep(0.2)}.not_to change{ Area.count }
+    expect{ page.find() }.to have_text "Text can't be blank"
+  end
+
+  scenario 'add an area with whitespace text' do
+  end
+
+  scenario 'add an area with leading/trailing whitespace' do
+  end
+
+  scenario 'view subareas of an area' do
+    open_accordion_for_area("Human Rights")
+    expect(subareas).to include "Violation"
+    expect(subareas).to include "Education activities"
+    expect(subareas).to include "Office reports"
+    expect(subareas).to include "Universal periodic review"
+    expect(subareas).to include "CEDAW"
+    expect(subareas).to include "CRC"
+    expect(subareas).to include "CRPD"
+  end
+
+  scenario 'add a subarea' do
+    open_accordion_for_area("Human Rights")
+    page.find('#subarea_name').set('Another subarea')
+    expect{ page.find('#add_subarea').click; sleep(0.2)}.to change{ Subarea.count }.by 1
+    expect(subareas).to include "Another subarea"
+  end
+
+  scenario 'add an subarea with blank text' do
+  end
+
+  scenario 'add an subarea with whitespace text' do
+  end
+
+  scenario 'add an subarea with leading/trailing whitespace' do
+  end
+
+end

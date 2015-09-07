@@ -3,12 +3,22 @@ en:
     admin:
       index:
         heading: "Outreach and Media"
+        subheading:
+          filetypes: "Filetypes permitted for outreach media uploading"
+          filesize: "Maximum permitted file size"
+          areas: "Media description areas and subareas"
       outreach_media_filesize:
         change: "Change"
         value: "Current value"
       outreach_media_filetypes:
         add: "Add"
         empty: "none configured"
+      outreach_media_areas:
+        add_area: "Add area"
+        add_subarea: "Add subarea"
+        areas: "Areas/subareas"
+        enter_area_text: "Enter area name"
+        enter_subarea_text: "Enter subarea name"
     outreach:
       index:
         heading: "Outreach"

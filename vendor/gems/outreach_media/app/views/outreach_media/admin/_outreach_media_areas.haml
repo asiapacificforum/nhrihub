@@ -1,0 +1,60 @@
+.admin.well
+  .row
+    .col-md-8= t('.areas')
+  .row
+    .col-md-12.areas.panel-group#accordion
+
+  = form_for @area, :url => outreach_media_areas_path, :remote => true do |f|
+    .row
+      .col-md-1
+        %button.btn.btn-success.btn-xs#add_area{:style => 'line-height:1.8;', :type => 'submit'}= t('.add_area')
+      .col-md-4= f.text_field :name, :placeholder => t('.enter_area_text')
+
+%script#area_template{:type => 'ractive/template'}
+  {{#areas}}
+  .panel.panel-default{:style => "border-color: #B5AD8B;"}
+    .row.area.panel-heading{:style => 'margin-left:0px; width:100%; border-bottom-right-radius:3px; background-image: -webkit-linear-gradient(top, #F5F5F5 0%, #E8E8E8 100%); background-image: -o-linear-gradient(top, whitesmoke 0%, #e8e8e8 100%); background-image: linear-gradient(to bottom, #DBD2AB 0%, #D4CCA8 100%);'}
+      .col-md-3.text {{ name }}
+      .col-md-2
+        %a#subareas_link{'data-toggle'=>:collapse, 'data-parent'=>'#accordion', :href => '#collapse_{{ id }}'}
+          %i.fa.fa-caret-right{'data-toggle'=>:tooltip, :title=>'show subareas'}
+      .col-md-4= link_to t('defaults.delete'), nil, :class => 'delete_area'
+    .row.panel-collapse.collapse{:id => 'collapse_{{ id }}', :style => 'margin-left:0px; margin-right:0px; background-color: #DED5B0'}
+      .col-md-12{:style => "margin-left:15px"}
+        {{#subareas}}
+        <subarea>
+        {{/subareas}}
+        = form_for @subarea, :url => outreach_media_area_subareas_path('id').gsub(/id/,'{{id}}'), :remote => true do |f|
+          .row{:style => "padding-top:6px; padding-bottom:6px;"}
+            .col-md-1
+              %button.btn.btn-success.btn-xs#add_subarea{:style => 'line-height:1.8;', :type => 'submit'}= t('.add_subarea')
+            .col-md-4= f.text_field :name, :placeholder => t('.enter_subarea_text')
+  {{/areas}}
+
+%script#subarea_template{:type => 'ractive/template'}
+  .row.subarea
+    .col-md-3
+    .col-md-3.name {{ name }}
+
+:coffeescript
+  $ ->
+    Ractive.DEBUG = false
+
+    areas_data =  #{@areas.to_json} 
+
+    Subarea = Ractive.extend
+      template : '#subarea_template'
+
+    areas = new Ractive
+      el : '.areas'
+      template : '#area_template'
+      data : {areas : areas_data }
+      components :
+        subarea : Subarea
+
+
+    $('form#new_area').bind 'ajax:success', (e,data,status,xhr)->
+      areas.push('areas',data)
+
+    $('form#new_subarea').bind 'ajax:success', (e,data,status,xhr)->
+      areas.set('areas',data)

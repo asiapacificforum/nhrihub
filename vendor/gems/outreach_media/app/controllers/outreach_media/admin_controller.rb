@@ -3,5 +3,8 @@ class OutreachMedia::AdminController < ApplicationController
     @outreach_media_filetypes = SiteConfig['outreach_media.media_appearances.filetypes']
     @filetype = OutreachMedia::Filetype.new
     @filesize = SiteConfig['outreach_media.media_appearances.filesize']
+    @area = Area.new
+    @areas = Area.all
+    @subarea = Subarea.new
   end
 end

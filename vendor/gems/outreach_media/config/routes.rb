@@ -9,6 +9,9 @@ Rails.application.routes.draw do
         resource :filesize, :only => :update
       end
       resources :media_appearances
+      resources :areas do
+        resources :subareas
+      end
     end
   end
 end

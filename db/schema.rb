@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150824043913) do
+ActiveRecord::Schema.define(version: 20150907125812) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,12 @@ ActiveRecord::Schema.define(version: 20150824043913) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "progress",              limit: 255
+  end
+
+  create_table "areas", force: :cascade do |t|
+    t.text     "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "controllers", force: :cascade do |t|
@@ -189,6 +195,14 @@ ActiveRecord::Schema.define(version: 20150824043913) do
     t.integer  "priority_level"
     t.text     "description"
     t.integer  "strategic_plan_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "subareas", force: :cascade do |t|
+    t.text     "name"
+    t.text     "full_name"
+    t.integer  "area_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

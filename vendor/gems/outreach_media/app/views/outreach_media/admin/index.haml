@@ -1,11 +1,14 @@
 .message_block
 %h1=t('.heading')
 
-%h4 Filetypes permitted for outreach media uploading
+%h4=t('.subheading.filetypes')
 = render :partial => 'outreach_media_filetypes'
 
-%h4 Maximum permitted file size
+%h4=t('.subheading.filesize')
 = render :partial => 'outreach_media_filesize'
+
+%h4=t('.subheading.areas')
+= render :partial => 'outreach_media_areas'
 
 :coffeescript
   $ ->
@@ -21,21 +24,6 @@
 %script{:type => 'page/notes'}
   :plain
   config params:
-    area_defaults:
-      "Human Rights"
-        "Human rights violation"
-        "Human rights education activities"
-        "Human rights office reports"
-        "Universal periodic review"
-        "CEDAW"
-        "CRC"
-        "CRPD"
-      "Good Governance"
-        "Good governance violation"
-        "Good governance office report"
-        "Office consultations"
-      "Special Investigations Unit"
-      "Corporate Services"
     positivity_defaults:
       "Reflects very negatively on the office"
       "Reflects slightly negatively on the office"

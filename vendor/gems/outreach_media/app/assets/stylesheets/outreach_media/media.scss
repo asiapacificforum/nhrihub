@@ -84,3 +84,11 @@
   }
 }
 
+/* the next two change the icon from a right caret to a down caret */
+[aria-expanded='false'] .fa-caret-right:before {
+  content: "\f0da";
+}
+
+[aria-expanded='true'] .fa-caret-right:before {
+  content: "\f0d7";
+}
