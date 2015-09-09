@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150907125812) do
+ActiveRecord::Schema.define(version: 20150909064600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,13 +86,33 @@ ActiveRecord::Schema.define(version: 20150907125812) do
     t.integer  "user_id"
     t.string   "url"
     t.string   "title"
-    t.jsonb    "description"
     t.string   "note"
     t.integer  "affected_people_count"
     t.integer  "violation_severity"
     t.float    "violation_coefficient"
     t.integer  "positivity_rating_id"
     t.integer  "reminder_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "media_area_subareas", force: :cascade do |t|
+    t.integer  "media_area_id"
+    t.integer  "subarea_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "media_areas", force: :cascade do |t|
+    t.integer  "media_appearance_id"
+    t.integer  "area_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "media_subareas", force: :cascade do |t|
+    t.integer  "media_appearance_id"
+    t.integer  "subarea_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

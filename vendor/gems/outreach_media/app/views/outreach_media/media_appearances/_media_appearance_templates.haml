@@ -46,24 +46,24 @@
         .panel-content
           .row
             .col-md-2.description{:style => "width:50%"}
-              <description areas='{{description.areas}}'/>
+              {{#media_areas}}
+              <mediaarea>
+              {{/media_areas}}
             .col-md-2.metrics{:style=>"width:25%; display:flex; flex-direction:column;"}
               {{#metrics}}
               <metric/>
               {{/metrics}}
 
-%script#description_template{:type=> 'template/ractive'}
-  {{#areas}}
-  <area name='{{name}}' subareas='{{subareas}}'/>
-  {{/areas}}
-
 %script#area_template{:type=> 'template/ractive'}
   .area
     .name {{ name }}
     .subareas
-      {{#subareas}}
-      %span.subarea {{ . }}
-      {{/subareas}}
+      {{#subarea_ids:i}}
+      <subarea id={{subarea_ids[i]}}>
+      {{/subarea_ids}}
+
+%script#subarea_template{:type=> 'template/ractive'}
+  %span.subarea {{ name }}
 
 %script#metric_template{:type => 'template/ractive'}
   .metric

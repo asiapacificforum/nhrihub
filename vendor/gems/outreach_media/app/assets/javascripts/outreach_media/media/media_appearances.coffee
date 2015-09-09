@@ -1,23 +1,27 @@
 $ ->
-  Area = Ractive.extend
+  Subarea = Ractive.extend
+    template : '#subarea_template'
+    computed :
+      name : ->
+        _(subareas).findWhere({id : @get('id')}).name
+
+  MediaArea = Ractive.extend
     template : '#area_template'
+    computed :
+      name : ->
+        _(areas).findWhere({id : @get('area_id')}).name
+    components :
+      subarea : Subarea
 
   Metric = Ractive.extend
     template : '#metric_template'
 
-  Description = Ractive.extend
-    template : '#description_template'
-    components :
-      area : Area
-
   MediaAppearance = Ractive.extend
     template : '#media_appearance_template'
     components :
-      description : Description
+      mediaarea : MediaArea
       metric : Metric
     computed :
-      areas : ->
-        _(@get('description').areas).map (a)-> a.name
       include : ->
         @_matches_title() && @_matches_from() && @_matches_to() && @_matches_area()
     _matches_from : ->

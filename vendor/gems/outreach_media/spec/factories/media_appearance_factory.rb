@@ -3,22 +3,6 @@ FactoryGirl.define do
     user
     positivity_rating
     title {Faker::Lorem.sentence(5)}
-    description {{"areas" => [{:name => "Human rights",
-                                :subareas => [ "Violation",
-                                               "Education activities",
-                                               "Office reports",
-                                               "Universal periodic review",
-                                               "CEDAW",
-                                               "CRC",
-                                               "CRPD" ]
-                                },
-                                {:name =>"Good Governance",
-                                 :subareas => ["Violation",
-                                               "Office report",
-                                               "Office consultations"]
-                                }
-                               ]
-                    }}
     note {Faker::Lorem.sentences(1)}
     affected_people_count { rand(20000) }
     violation_severity { rand(5) }
