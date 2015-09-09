@@ -7,7 +7,7 @@
     .col-md-2
       %label{:for=>"to"} To
       %input{:type=>"text", :id=>"to", :name=>"to"}
-    .col-md-2= select_tag :area, options_from_collection_for_select(@areas, :value, :text), :multiple => true
+    .col-md-2= select_tag :area, options_from_collection_for_select(@areas, :id, :name), :multiple => true, :value => '{{sort_criteria.areas}}'
     .col-md-2
     .col-md-2
       {{#if expanded}}

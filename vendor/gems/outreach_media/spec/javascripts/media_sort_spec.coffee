@@ -62,6 +62,11 @@ describe 'Media page', ->
     text_fields_length = -> text_fields().length
     $media_appearance_controls = $('#media_appearances_controls')
     $area = $media_appearance_controls.find('select#area')
-    $area.val("Human Rights")
+    human_rights = $area.find('option:nth-child(1)').attr('value')
+    good_governance = $area.find('option:nth-child(2)').attr('value')
+    $area.val([human_rights,good_governance])
     simulant.fire($area[0],'change')
-    expect(media.get('sort_criteria.areas')).to.equal ["Human Rights"]
+    expect(media.get('sort_criteria.areas')).to.eql [human_rights,good_governance]
+    expect(text_fields_length()).to.equal 2
+    expect(text_fields()).to.include "Fantasy land"
+    expect(text_fields()).to.include "May the force be with you"

@@ -16,13 +16,20 @@ $ ->
       description : Description
       metric : Metric
     computed :
+      areas : ->
+        _(@get('description').areas).map (a)-> a.name
       include : ->
-        @_matches_title() && @_matches_from() && @_matches_to()
+        @_matches_title() && @_matches_from() && @_matches_to() && @_matches_area()
     _matches_from : ->
       new Date(@get('date')) >= new Date(@get('sort_criteria.from'))
     _matches_to : ->
       new Date(@get('date')) <= new Date(@get('sort_criteria.to'))
     _matches_area : ->
+      if @get('sort_criteria.areas').length > 0
+        matches = _.intersection(@get('areas'), @get('sort_criteria.areas'))
+        matches.length > 0
+      else
+        true
     _matches_subarea : ->
     _matches_people_affected : ->
     _matches_violation_severity : ->
@@ -46,6 +53,7 @@ $ ->
         title : ""
         from : new Date(1995,0,1)
         to : new Date()
+        areas : []
     components :
       ma : MediaAppearance
     expand : ->

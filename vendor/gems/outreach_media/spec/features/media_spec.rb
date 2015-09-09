@@ -20,4 +20,8 @@ feature "show media archive", :js => true do
     expect(page_heading).to eq "Media Archive"
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 3)
   end
+
+  scenario "subarea acronyms have tooltip showing long name" do
+    expect(1).to eq 0
+  end
 end
