@@ -173,20 +173,20 @@ feature "configure description areas and subareas", :js => true do
     expect(subareas).to include "Another subarea"
   end
 
-  scenario 'add an subarea with blank text' do
+  scenario 'add a subarea with blank text' do
     open_accordion_for_area("Human Rights")
     expect{ page.find('#add_subarea').click; sleep(0.2)}.not_to change{ Subarea.count }
     expect( page.find('#subarea_error') ).to have_text "Subarea can't be blank"
   end
 
-  scenario 'add an subarea with whitespace text' do
+  scenario 'add a subarea with whitespace text' do
     open_accordion_for_area("Human Rights")
     page.find('#subarea_name').set('   ')
     expect{ page.find('#add_subarea').click; sleep(0.2)}.not_to change{ Subarea.count }
     expect( page.find('#subarea_error') ).to have_text "Subarea can't be blank"
   end
 
-  scenario 'add an subarea with leading/trailing whitespace' do
+  scenario 'add a subarea with leading/trailing whitespace' do
     open_accordion_for_area("Human Rights")
     page.find('#subarea_name').set('    Another subarea   ')
     expect{ page.find('#add_subarea').click; sleep(0.2)}.to change{ Subarea.count }.by 1

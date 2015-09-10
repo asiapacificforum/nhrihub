@@ -22,6 +22,8 @@ $ ->
       mediaarea : MediaArea
       metric : Metric
     computed :
+      area_ids : ->
+        _(@get('media_areas')).map (ma)-> ma.area_id.toString()
       include : ->
         @_matches_title() && @_matches_from() && @_matches_to() && @_matches_area()
     _matches_from : ->
@@ -30,7 +32,7 @@ $ ->
       new Date(@get('date')) <= new Date(@get('sort_criteria.to'))
     _matches_area : ->
       if @get('sort_criteria.areas').length > 0
-        matches = _.intersection(@get('areas'), @get('sort_criteria.areas'))
+        matches = _.intersection(@get('area_ids'), @get('sort_criteria.areas'))
         matches.length > 0
       else
         true

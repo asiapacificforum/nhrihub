@@ -70,3 +70,6 @@ describe 'Media page', ->
     expect(text_fields_length()).to.equal 2
     expect(text_fields()).to.include "Fantasy land"
     expect(text_fields()).to.include "May the force be with you"
+
+  it 'clears all filter parameters when clear button is clicked', ->
+    # pending

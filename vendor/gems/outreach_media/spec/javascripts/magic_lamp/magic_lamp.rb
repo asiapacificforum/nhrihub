@@ -24,18 +24,31 @@ end
 
 populate_areas
 
+def hr_area
+  Area.where(:name => "Human Rights").first
+end
+
+def gg_area
+  Area.where(:name => "Good Governance").first
+end
+
+def si_area
+  Area.where(:name => "Special Investigations Unit").first
+end
+
 MagicLamp.define do
   fixture(:name => 'media_appearance_data') do
-    FactoryGirl.create(:media_appearance, :title => "Fantasy land",
-                                          :created_at => Date.new(2015,1,1),
-                                          :description => {:areas => [{:name => "Human Rights", :subareas => [] }]})
-    FactoryGirl.create(:media_appearance, :title => "May the force be with you",
-                                          :created_at => Date.new(2014,1,1),
-                                          :description => {:areas => [{:name => "Human Rights", :subareas => [] },{:name => "Human Wrongs", :subareas => [] }]})
+    ma = FactoryGirl.create(:media_appearance, :title => "Fantasy land",
+                                               :created_at => Date.new(2015,1,1))
+    ma.areas << hr_area
+    ma.areas << gg_area
+    ma = FactoryGirl.create(:media_appearance, :title => "May the force be with you",
+                                               :created_at => Date.new(2014,1,1))
+    ma.areas << hr_area
     6.times do
-      FactoryGirl.create(:media_appearance, :title => Faker::Lorem.sentence(5).gsub(/f/i,"b"),
-                                            :created_at => Date.new(2014,1,1),
-                                            :description => {:areas => [{:name => "Special Investigations Unit", :subareas => []}]})
+      ma = FactoryGirl.create(:media_appearance, :title => Faker::Lorem.sentence(5).gsub(/f/i,"b"),
+                                                 :created_at => Date.new(2014,1,1))
+      ma.areas << si_area
     end
     MediaAppearance.all
   end
