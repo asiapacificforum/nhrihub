@@ -7,6 +7,7 @@ class MediaAppearance < ActiveRecord::Base
   has_many :media_areas, :dependent => :destroy
   has_many :areas, :through => :media_areas
 
+
   def as_json(options={})
     super({:except => [:updated_at, :created_at],
            :methods=> [:date, :metrics, :has_link, :has_scanned_doc, :media_areas]})

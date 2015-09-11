@@ -7,7 +7,15 @@
     .col-md-2
       %label{:for=>"to"} To
       %input{:type=>"text", :id=>"to", :name=>"to"}
-    .col-md-2= select_tag :area, option_groups_from_collection_for_select(@areas, :subareas, :name, :id, :name), :multiple => true, :value => '{{sort_criteria.areas}}'
+    .col-md-2
+      .btn-group.area-select
+        %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+          %span.filter-option.pull-left Select by area and subarea
+          %span.caret
+        %ul.dropdown-menu
+          {{#areas}}
+          <area id='{{id}}' name='{{name}}'/>
+          {{/areas}}
     .col-md-2
     .col-md-2
       {{#if expanded}}
@@ -55,14 +63,29 @@
               {{/metrics}}
 
 %script#area_template{:type=> 'template/ractive'}
+  %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
+    %a{'on-click'=>'toggle()'}
+      %span {{name}}
+      %span.glyphicon.glyphicon-ok.check-mark
+  {{#subareas}}
+  <subarea>
+  {{/subareas}}
+
+%script#subarea_template{:type=> 'template/ractive'}
+  %li{:class => 'subarea {{#if subarea_selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle()'}
+      %span.text {{name}}
+      %span.glyphicon.glyphicon-ok.check-mark
+
+%script#media_area_template{:type=> 'template/ractive'}
   .area
     .name {{ name }}
     .subareas
       {{#subarea_ids:i}}
-      <subarea id={{subarea_ids[i]}}>
+      <mediasubarea id={{subarea_ids[i]}}>
       {{/subarea_ids}}
 
-%script#subarea_template{:type=> 'template/ractive'}
+%script#media_subarea_template{:type=> 'template/ractive'}
   %span.subarea {{ name }}
 
 %script#metric_template{:type => 'template/ractive'}

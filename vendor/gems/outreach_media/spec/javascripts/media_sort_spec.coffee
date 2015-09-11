@@ -1,7 +1,9 @@
 describe 'Media page', ->
   beforeEach (done)->
     window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
-    MagicLamp.load("media_appearance_page")
+    window.areas = MagicLamp.loadJSON('areas_data')
+    window.subareas = MagicLamp.loadJSON('subareas_data')
+    MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     $.getScript "/assets/outreach_media.js", -> done()
 
   it 'loads test fixtures and data', ->
@@ -61,15 +63,71 @@ describe 'Media page', ->
         map (el)-> $(el).text()
     text_fields_length = -> text_fields().length
     $media_appearance_controls = $('#media_appearances_controls')
-    $area = $media_appearance_controls.find('select#area')
-    human_rights = $area.find('option:nth-child(1)').attr('value')
-    good_governance = $area.find('option:nth-child(2)').attr('value')
-    $area.val([human_rights,good_governance])
-    simulant.fire($area[0],'change')
-    expect(media.get('sort_criteria.areas')).to.eql [human_rights,good_governance]
+    $area = $media_appearance_controls.find('.area-select')
+    $area.find('.dropdown-toggle').click()
+    human_rights_select = $area.find('.area a')[0]
+    human_rights_id = (_(areas).detect (a)->a.name == "Human Rights").id
+    simulant.fire(human_rights_select,'click')
+    expect(media.get('sort_criteria.areas')).to.eql [human_rights_id]
     expect(text_fields_length()).to.equal 2
     expect(text_fields()).to.include "Fantasy land"
     expect(text_fields()).to.include "May the force be with you"
+    simulant.fire(human_rights_select,'click')
+    expect(media.get('sort_criteria.areas')).to.eql []
+    expect(text_fields_length()).to.equal 8
+
+  it 'filters media appearances by subarea returns matching subareas', ->
+    text_fields = ->
+      _($('.media_appearance .basic_info .title:visible','.magic-lamp')).
+        map (el)-> $(el).text()
+    text_fields_length = -> text_fields().length
+    $media_appearance_controls = $('#media_appearances_controls')
+    $area = $media_appearance_controls.find('.area-select')
+    $area.find('.dropdown-toggle').click()
+    human_rights_crc_li = _($('.area-select .subarea')).select (el)->
+      re = new RegExp(/CRC/)
+      re.test($(el).text())
+    human_rights_crc = $(human_rights_crc_li).find('a')[0]
+    crc_id = (_(subareas).detect (sa)-> sa.name == "CRC").id
+    simulant.fire(human_rights_crc,'click')
+    expect(media.get('sort_criteria.subareas')).to.eql [crc_id]
+    expect(text_fields_length()).to.equal 2
+    expect(text_fields()).to.include "Fantasy land"
+    expect(text_fields()).to.include "May the force be with you"
+    simulant.fire(human_rights_crc,'click')
+    expect(media.get('sort_criteria.areas')).to.eql []
+    expect(text_fields_length()).to.equal 8
+
+    it 'filters media appearances by subarea returns matching areas when no subareas are explicitly specified', ->
+    text_fields = ->
+      _($('.media_appearance .basic_info .title:visible','.magic-lamp')).
+        map (el)-> $(el).text()
+    text_fields_length = -> text_fields().length
+    $media_appearance_controls = $('#media_appearances_controls')
+    $area = $media_appearance_controls.find('.area-select')
+    $area.find('.dropdown-toggle').click()
+    human_rights_crc_li = _($('.area-select .subarea')).select (el)->
+      re = new RegExp(/CRC/)
+      re.test($(el).text())
+    human_rights_crc = $(human_rights_crc_li).find('a')[0]
+    crc_id = (_(subareas).detect (sa)-> sa.name == "CRC").id
+    simulant.fire(human_rights_crc,'click')
+    expect(media.get('sort_criteria.subareas')).to.eql [crc_id]
+    expect(text_fields_length()).to.equal 2
+    expect(text_fields()).to.include "Fantasy land"
+    expect(text_fields()).to.include "May the force be with you"
+    simulant.fire(human_rights_crc,'click')
+    expect(media.get('sort_criteria.areas')).to.eql []
+    expect(text_fields_length()).to.equal 8
 
   it 'clears all filter parameters when clear button is clicked', ->
+    # pending
+
+  it 'shows warning when invalid date is manually entered', ->
+    # pending
+
+  it 'shows no matches message when there are no matches', ->
+    # pending
+
+  it 'shows a summary of the filter criteria', ->
     # pending

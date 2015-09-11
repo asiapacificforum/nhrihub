@@ -1,0 +1,60 @@
+.area-select {
+  width: 220px \0;
+  /*IE9 and below*/
+  width: 220px;
+}
+.area-select > .dropdown-toggle {
+  width: 100%;
+  padding-right: 25px;
+}
+.area-select.btn-group .dropdown-toggle .filter-option {
+  display: inline-block;
+  overflow: hidden;
+  width: 100%;
+  text-align: left;
+}
+.area-select.btn-group .dropdown-toggle .caret {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  margin-top: -2px;
+  vertical-align: middle;
+}
+.area-select.btn-group .dropdown-menu {
+  min-width: 100%;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.area-select.btn-group .dropdown-menu li {
+  position: relative;
+  font-size : 14px;
+}
+.area-select.btn-group .dropdown-menu li a {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.area-select.btn-group .dropdown-menu li a {
+  padding : 0px;
+  /*color : #777;*/
+}
+.area-select.btn-group .dropdown-menu li a.opt {
+  position: relative;
+  padding-left: 2.25em;
+}
+.area-select.btn-group .dropdown-menu li a span.text {
+  display: inline-block;
+  margin-right: 34px;
+}
+.area-select.btn-group .dropdown-menu li a span.check-mark {
+  display: none;
+}
+.area-select.btn-group .dropdown-menu li.selected a span.check-mark {
+  position: absolute;
+  display: inline-block;
+  right: 15px;
+  margin-top: 5px;
+}
