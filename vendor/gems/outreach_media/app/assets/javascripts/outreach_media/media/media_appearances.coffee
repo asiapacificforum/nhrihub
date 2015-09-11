@@ -125,7 +125,6 @@ $ ->
       i = _(@get('sort_criteria.areas')).indexOf(id)
       @splice('sort_criteria.areas',i,1)
     add_subarea_filter : (id) ->
-      console.log "adding subarea "+id.toString()
       @push('sort_criteria.subareas',id)
     remove_subarea_filter : (id) ->
       i = _(@get('sort_criteria.subareas')).indexOf(id)
