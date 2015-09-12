@@ -1,30 +1,79 @@
 %script#media_appearances_template{:type => 'template/ractive'}
   .row#media_appearances_controls
-    .col-md-2= text_field_tag :title, "{{sort_criteria.title}}"
-    .col-md-2
-      %label{:for=>"from"} From
-      %input{:type=>"text", :id=>"from", :name=>"from"}
-    .col-md-2
-      %label{:for=>"to"} To
-      %input{:type=>"text", :id=>"to", :name=>"to"}
-    .col-md-2
-      .btn-group.area-select
-        %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
-          %span.filter-option.pull-left Select by area and subarea
-          %span.caret
-        %ul.dropdown-menu
-          {{#areas}}
-          <area id='{{id}}' name='{{name}}'/>
-          {{/areas}}
-    .col-md-2
-    .col-md-2
-      {{#if expanded}}
-      %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>'Compact all'}
-      {{else}}
-      %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>'Expand all'}
-      {{/if}}
-    .row#sort_criteria
-      .col-md-2#title {{sort_criteria.title}}
+    .row
+      .col-md-4
+        %h4= t('.search_heading')
+    .row
+      .col-md-2
+        %label{:for=>"title"}= t('.title')
+      .col-md-2
+        %label{:for=>"from"}= t('.from')
+      .col-md-2
+        %label{:for=>"to"}= t('.to')
+      .col-md-2
+        %label{:for=>"area"}
+          =t('.area')
+          \/
+          =t('.subarea')
+    .row
+      .col-md-2= text_field_tag :title, "{{sort_criteria.title}}", :placeholder => t('.enter_text')
+      .col-md-2
+        %input{:type=>"text", :id=>"from", :name=>"from", :placeholder => t('.from_date')}
+      .col-md-2
+        %input{:type=>"text", :id=>"to", :name=>"to", :placeholder => t('.to_date')}
+      .col-md-2
+        .btn-group.area-select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select')
+            %span.caret
+          %ul.dropdown-menu
+            {{#areas}}
+            <area id='{{id}}' name='{{name}}'/>
+            {{/areas}}
+      .col-md-2
+      .col-md-2
+        {{#if expanded}}
+        %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>'Compact all'}
+        {{else}}
+        %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>'Expand all'}
+        {{/if}}
+    .row
+      .col-md-2
+        %label{:for=>"people_affected"}= t('.people_affected')
+      .col-md-2
+        %label{:for=>"severity"}= t('.severity')
+      .col-md-2
+        %label{:for=>"coefficient"}= t('.coefficient')
+      .col-md-2
+        %label{:for=>"positivity"}=t('.positivity')
+      .row#sort_criteria
+        .col-md-2#title {{sort_criteria.title}}
+    .row
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+    .row
+      .col-md-1
+        %input{:style=>"width:80px"}
+      .col-md-1
+        %input{:style=>"width:80px"}
+      .col-md-1
+        %input{:style=>"width:50px"}
+      .col-md-1
+        %input{:style=>"width:50px"}
+      .col-md-1
+        %input{:style=>"width:50px"}
+      .col-md-1
+        %input{:style=>"width:50px"}
+      .col-md-1
+        %input{:style=>"width:50px"}
+      .col-md-1
+        %input{:style=>"width:50px"}
   {{#media_appearances}}
   <ma description='{{description}}'/>
   {{/media_appearances}}
@@ -49,8 +98,11 @@
       .panel.panel-default.collapse.expanded_info{:class => "collapse{{id}}"}
         .panel-heading
           .row
-            .col-md-2.description{:style => "width:50%"} Areas/subareas
-            .col-md-2.metrics{:style=>"width:25%;"} Metrics
+            .col-md-2.description{:style => "width:50%"}
+              =t('.areas')
+              \/
+              =t('.subareas')
+            .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
         .panel-content
           .row
             .col-md-2.description{:style => "width:50%"}

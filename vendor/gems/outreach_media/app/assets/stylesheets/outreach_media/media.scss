@@ -2,6 +2,7 @@
   background-color : #9A9375;
   margin-bottom : 6px;
   border-radius : 10px;
+  padding-bottom : 12px;
 
     #expand {
       background-repeat: no-repeat;
@@ -17,6 +18,15 @@
       cursor: pointer;
       background-image: asset-url("outreach_media/compress.png"); //http://www.flaticon.com/free-icon/compress-arrows-couple-symbol_36692
       display: block;
+    }
+
+    .row {
+      margin-left : 0px;
+
+      label, h4 {
+        color : #fff;
+        font-weight: 300;
+      }
     }
 }
 

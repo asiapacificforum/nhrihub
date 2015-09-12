@@ -21,7 +21,7 @@ def populate_areas
     Subarea.create(attrs)
   end
 
-  Subarea.create({:area_id => cs_area.id, :name => "XYZ"})
+  #Subarea.create({:area_id => cs_area.id, :name => "XYZ"})
 end
 
 

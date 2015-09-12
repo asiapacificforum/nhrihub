@@ -3,9 +3,14 @@
   /*IE9 and below*/
   width: 220px;
 }
-.area-select > .dropdown-toggle {
+.area-select > .dropdown-toggle { /* button should match size of text input boxes */
   width: 100%;
+  padding-top: 0px;
+  padding-bottom: 0px;
   padding-right: 25px;
+  padding-left: 12px;
+  height: 27px;
+  top: -2px;
 }
 .area-select.btn-group .dropdown-toggle .filter-option {
   display: inline-block;
