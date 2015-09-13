@@ -25,6 +25,10 @@ MediaPage = ->
     @$area().find('.dropdown-toggle').click()
   click_crc_subarea : ->
     simulant.fire(@hr_crc_link(),'click')
+  violation_coefficient : (minmax)->
+    $(".violation_coefficient.#{minmax}")
+  positivity_rating : (minmax)->
+    $(".positivity_rating.#{minmax}")
 
 sort_criteria =
   title : -> media.get('sort_criteria.title')
@@ -32,15 +36,22 @@ sort_criteria =
   subareas : -> media.get('sort_criteria.subareas')
   from : -> media.get('sort_criteria.from').getTime()
   to : -> media.get('sort_criteria.to').getTime()
+  vc_min : -> media.get('sort_criteria.vc_min')
+  vc_max : -> media.get('sort_criteria.vc_max')
+  pr_min : -> media.get('sort_criteria.pr_min')
+  pr_max : -> media.get('sort_criteria.pr_max')
 
 describe 'Media page', ->
-  beforeEach (done)->
+  before (done)->
     window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     @page = new MediaPage()
     $.getScript "/assets/outreach_media.js", -> done()
+
+  beforeEach ->
+    media.reset(media_page_data())
 
   it 'loads test fixtures and data', ->
     expect($("h1",'.magic-lamp').text()).to.equal "Media Archive"
@@ -95,14 +106,29 @@ describe 'Media page', ->
     expect(@page.text_fields_length()).to.equal 8
 
   it 'filters media appearances by violation coefficient', ->
-    # pending
+    @page.violation_coefficient('min').val(0.2)
+    simulant.fire(@page.violation_coefficient('min')[0],'change')
+    @page.violation_coefficient('max').val(0.8)
+    simulant.fire(@page.violation_coefficient('max')[0],'change')
+    expect(sort_criteria.vc_min()).to.equal "0.2"
+    expect(sort_criteria.vc_max()).to.equal "0.8"
+    expect(@page.text_fields_length()).to.equal 1
+    @page.violation_coefficient('max').val(20)
+    simulant.fire(@page.violation_coefficient('max')[0],'change')
+    expect(@page.text_fields_length()).to.equal 8
 
   it 'shows error message when invalid validation coefficient values are entered',->
     # pending
     # error message is cleared when new input is started
 
   it 'filters media appearances by positivity rating', ->
-    # pending
+    @page.positivity_rating('min').val(4)
+    simulant.fire(@page.positivity_rating('min')[0],'change')
+    @page.positivity_rating('max').val(6)
+    simulant.fire(@page.positivity_rating('max')[0],'change')
+    expect(sort_criteria.pr_min()).to.equal "4"
+    expect(sort_criteria.pr_max()).to.equal "6"
+    expect(@page.text_fields_length()).to.equal 1
 
   it 'shows error message when invalid positivity rating values are entered',->
     # pending

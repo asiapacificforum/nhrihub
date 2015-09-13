@@ -30,15 +30,17 @@ def populate_media_appearances
                                              :crc_subarea,
                                              :gg_area,
                                              :title => "Fantasy land",
-                                             :created_at => Date.new(2015,1,1))
+                                             :created_at => Date.new(2015,1,1),
+                                             :violation_coefficient => 10)
 
   ma = FactoryGirl.create(:media_appearance, :hr_area,
                                              :crc_subarea,
                                              :title => "May the force be with you",
-                                             :created_at => Date.new(2014,1,1))
+                                             :created_at => Date.new(2014,1,1),
+                                             :violation_coefficient => 0.7)
 
   6.times do
-    ma = FactoryGirl.create(:media_appearance, :no_f_in_title, :si_area, :created_at => Date.new(2014,1,1))
+    ma = FactoryGirl.create(:media_appearance, :no_f_in_title, :si_area, :created_at => Date.new(2014,1,1), :violation_coefficient => 10)
   end
 end
 
