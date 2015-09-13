@@ -116,7 +116,6 @@ $ ->
     compact : ->
       $(@find('.collapse')).collapse('hide')
 
-
   window.options =
     el : '#media_appearances'
     template : '#media_appearances_template'
