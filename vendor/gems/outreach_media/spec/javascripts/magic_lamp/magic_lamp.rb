@@ -24,6 +24,9 @@ def populate_areas
   #Subarea.create({:area_id => cs_area.id, :name => "XYZ"})
 end
 
+def populate_positivity_ratings
+end
+
 
 def populate_media_appearances
   ma = FactoryGirl.create(:media_appearance, :hr_area,
@@ -31,16 +34,26 @@ def populate_media_appearances
                                              :gg_area,
                                              :title => "Fantasy land",
                                              :created_at => Date.new(2015,1,1),
-                                             :violation_coefficient => 10)
+                                             :violation_coefficient => 10,
+                                             :violation_severity => 5,
+                                             :affected_people_count => 555)
+  ma.positivity_rating = FactoryGirl.create(:positivity_rating, :rank => 5)
+  ma.save
 
   ma = FactoryGirl.create(:media_appearance, :hr_area,
                                              :crc_subarea,
                                              :title => "May the force be with you",
                                              :created_at => Date.new(2014,1,1),
-                                             :violation_coefficient => 0.7)
+                                             :violation_coefficient => 0.7,
+                                             :violation_severity => 2,
+                                             :affected_people_count => 55500000)
+  ma.positivity_rating = FactoryGirl.create(:positivity_rating, :rank => 2)
+  ma.save
 
   6.times do
-    ma = FactoryGirl.create(:media_appearance, :no_f_in_title, :si_area, :created_at => Date.new(2014,1,1), :violation_coefficient => 10)
+    ma = FactoryGirl.create(:media_appearance, :no_f_in_title, :si_area, :created_at => Date.new(2014,1,1), :violation_coefficient => 10, :violation_severity => 9, :affected_people_count => 55500000)
+    ma.positivity_rating = FactoryGirl.create(:positivity_rating, :rank => 9)
+    ma.save
   end
 end
 

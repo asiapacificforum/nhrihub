@@ -29,6 +29,10 @@ MediaPage = ->
     $(".violation_coefficient.#{minmax}")
   positivity_rating : (minmax)->
     $(".positivity_rating.#{minmax}")
+  violation_severity : (minmax)->
+    $(".violation_severity.#{minmax}")
+  people_affected : (minmax)->
+    $(".people_affected.#{minmax}")
 
 sort_criteria =
   title : -> media.get('sort_criteria.title')
@@ -40,6 +44,10 @@ sort_criteria =
   vc_max : -> media.get('sort_criteria.vc_max')
   pr_min : -> media.get('sort_criteria.pr_min')
   pr_max : -> media.get('sort_criteria.pr_max')
+  vs_min : -> media.get('sort_criteria.vs_min')
+  vs_max : -> media.get('sort_criteria.vs_max')
+  pa_min : -> media.get('sort_criteria.pa_min')
+  pa_max : -> media.get('sort_criteria.pa_max')
 
 describe 'Media page', ->
   before (done)->
@@ -69,13 +77,13 @@ describe 'Media page', ->
     expect($('#sort_criteria #title').text()).to.equal 'F'
 
   it 'filters media appearances by earliest date', ->
-    @page.set_from_date('08/19/2014')
+    @page.set_from_date('19/08/2014')
     expect(sort_criteria.from()).to.equal (new Date('08/19/2014')).getTime()
     expect(@page.text_fields_length()).to.equal 1
     expect(@page.text_fields()).to.include "Fantasy land"
 
   it 'filters media appearances by latest date', ->
-    @page.set_to_date('08/19/2014')
+    @page.set_to_date('19/08/2014')
     expect(sort_criteria.to()).to.equal (new Date('08/19/2014')).getTime()
     expect(@page.text_fields_length()).to.equal 7
     expect(@page.text_fields()).to.not.include "Fantasy land"
@@ -135,27 +143,33 @@ describe 'Media page', ->
     # error message is cleared when new input is started
 
   it 'filters media appearances by violation severity', ->
-    # pending
+    @page.violation_severity('min').val(4)
+    simulant.fire(@page.violation_severity('min')[0],'change')
+    @page.violation_severity('max').val(6)
+    simulant.fire(@page.violation_severity('max')[0],'change')
+    expect(sort_criteria.vs_min()).to.equal "4"
+    expect(sort_criteria.vs_max()).to.equal "6"
+    expect(@page.text_fields_length()).to.equal 1
 
   it 'shows error message when invalid violation severity values are entered',->
     # pending
     # error message is cleared when new input is started
 
   it 'filters media appearances by # people affected', ->
-    # pending
+    @page.people_affected('min').val(444)
+    simulant.fire(@page.people_affected('min')[0],'change')
+    @page.people_affected('max').val(6000000)
+    simulant.fire(@page.people_affected('max')[0],'change')
+    expect(sort_criteria.pa_min()).to.equal "444"
+    expect(sort_criteria.pa_max()).to.equal "6000000"
+    expect(@page.text_fields_length()).to.equal 1
 
   it 'shows error message when invalid # people values are entered',->
     # pending
     # error message is cleared when new input is started
 
-  it 'clears all filter parameters when clear button is clicked', ->
-    # pending
-
-  it 'shows warning when invalid date is manually entered', ->
+  #it 'clears all filter parameters when clear button is clicked', ->
     # pending
 
   it 'shows no matches message when there are no matches', ->
-    # pending
-
-  it 'shows a summary of the filter criteria', ->
     # pending

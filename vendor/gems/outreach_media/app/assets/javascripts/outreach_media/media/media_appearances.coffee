@@ -74,7 +74,9 @@ $ ->
         @_matches_area() &&
         @_matches_subarea() &&
         @_matches_violation_coefficient() &&
-        @_matches_positivity_rating()
+        @_matches_positivity_rating() &&
+        @_matches_violation_severity() &&
+        @_matches_people_affected()
     _matches_from : ->
       new Date(@get('date')) >= new Date(@get('sort_criteria.from'))
     _matches_to : ->
@@ -92,12 +94,14 @@ $ ->
       else
         true
     _matches_people_affected : ->
+      @_between(parseInt(@get('sort_criteria.pa_min')),parseInt(@get('sort_criteria.pa_max')),@get('affected_people_count'))
     _matches_violation_severity : ->
+      @_between(parseInt(@get('sort_criteria.vs_min')),parseInt(@get('sort_criteria.vs_max')),@get('violation_severity'))
     _matches_violation_coefficient : ->
       @_between(parseFloat(@get('sort_criteria.vc_min')),parseFloat(@get('sort_criteria.vc_max')),@get('violation_coefficient'))
     _between : (min,max,val)->
       return true unless _.isNumber(val) # declare match if there's no value
-      min = if _.isEmpty(min) || _.isNaN(min) # from the input element a zero-length string can be presented
+      min = if _.isNaN(min) # from the input element a zero-length string can be presented
               0
             else
               min
@@ -107,7 +111,7 @@ $ ->
       #console.log "#{val} less than #{max} "+less_than_max.toString()
       exceeds_min && less_than_max
     _matches_positivity_rating : ->
-      @_between(parseInt(@get('sort_criteria.pr_min')),parseInt(@get('sort_criteria.pr_max')),@get('positivity_rating'))
+      @_between(parseInt(@get('sort_criteria.pr_min')),parseInt(@get('sort_criteria.pr_max')),parseInt(@get('metrics')["Positivity rating"]))
     _matches_title : ->
       re = new RegExp(@get('sort_criteria.title'),'i')
       re.test(@get('title'))
@@ -129,10 +133,30 @@ $ ->
         to : new Date()
         areas : []
         subareas : []
-        vc_min : 0
+        vc_min : "0.0"
         vc_max : null
         pr_min : 0
         pr_max : null
+        vs_min : 0
+        vs_max : null
+        pa_min : 0
+        pa_max : null
+    oninit : ->
+      @set('sort_criteria.from',@get('earliest'))
+    computed :
+      earliest : ->
+        dates = _(@findAllComponents('ma')).map (ma)->new Date(ma.get('date'))
+        dates.reduce (min,date)->
+          if date<min
+            date
+          else
+            min
+      formatted_from_date:
+        get: -> $.datepicker.formatDate("dd/mm/yy", @get('sort_criteria.from'))
+        set: (val)-> @set('sort_criteria.from', $.datepicker.parseDate( "dd/mm/yy", val))
+      formatted_to_date:
+        get: -> $.datepicker.formatDate("dd/mm/yy", @get('sort_criteria.to'))
+        set: (val)-> @set('sort_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
     components :
       ma : MediaAppearance
       area : Area
@@ -152,6 +176,9 @@ $ ->
     remove_subarea_filter : (id) ->
       i = _(@get('sort_criteria.subareas')).indexOf(id)
       @splice('sort_criteria.subareas',i,1)
+    clear_filter : ->
+      _(@findAllComponents('area')).each (a)-> a.unselect()
+      @set('sort_criteria',media_page_data().sort_criteria)
 
   window.media_page_data = -> # an initialization data set so that tests can reset between
     expanded : false
@@ -163,10 +190,14 @@ $ ->
       to : new Date()
       areas : []
       subareas : []
-      vc_min : 0
+      vc_min : 0.0
       vc_max : null
       pr_min : 0
       pr_max : null
+      vs_min : 0
+      vs_max : null
+      pa_min : 0
+      pa_max : null
 
   window.media = new Ractive options
   window.start_page = ->
