@@ -3,19 +3,15 @@
     .row
       .col-md-4
         %h4= t('.search_heading')
-    .row
+    .row.labels
+      .col-md-2= t('.title')
+      .col-md-2= t('.from')
+      .col-md-2= t('.to')
       .col-md-2
-        %label{:for=>"title"}= t('.title')
-      .col-md-2
-        %label{:for=>"from"}= t('.from')
-      .col-md-2
-        %label{:for=>"to"}= t('.to')
-      .col-md-2
-        %label{:for=>"area"}
-          =t('.area')
-          \/
-          =t('.subarea')
-    .row
+        =t('.area')
+        \/
+        =t('.subarea')
+    .row{:style => "margin-bottom:12px;"}
       .col-md-2= text_field_tag :title, "{{sort_criteria.title}}", :placeholder => t('.enter_text')
       .col-md-2
         %input{:type=>"text", :id=>"from", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
@@ -27,6 +23,13 @@
             %span.filter-option.pull-left= t('.select')
             %span.caret
           %ul.dropdown-menu
+            %li.filter_rule
+              %a{'on-click'=>"filter_rule('all')", :class => "{{#if sort_criteria.rule == 'all'}}selected{{/if}}"}
+                %span=t('.all')
+                %span.fa.fa-check
+              %a{'on-click'=>"filter_rule('any')", :class => "{{#if sort_criteria.rule == 'any'}}selected{{/if}}"}
+                %span=t('.any')
+                %span.fa.fa-check
             {{#areas}}
             <area id='{{id}}' name='{{name}}'/>
             {{/areas}}
@@ -38,18 +41,12 @@
         {{else}}
         %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>'Expand all'}
         {{/if}}
-    .row
-      .col-md-2
-        %label{:for=>"people_affected"}= t('.people_affected')
-      .col-md-2
-        %label{:for=>"severity"}= t('.severity')
-      .col-md-2
-        %label{:for=>"coefficient"}= t('.coefficient')
-      .col-md-2
-        %label{:for=>"positivity"}=t('.positivity')
-      .row#sort_criteria
-        .col-md-2#title {{sort_criteria.title}}
-    .row
+    .row.labels
+      .col-md-2= t('.people_affected')
+      .col-md-2= t('.severity')
+      .col-md-2= t('.coefficient')
+      .col-md-2= t('.positivity')
+    .row.labels
       .col-md-1= t('.min')
       .col-md-1= t('.max')
       .col-md-1= t('.min')
@@ -59,25 +56,36 @@
       .col-md-1= t('.min')
       .col-md-1= t('.max')
     .row
-      .col-md-1
-        %input.people_affected.min{:style=>"width:80px", :value => '{{sort_criteria.pa_min}}'}
-      .col-md-1
-        %input.people_affected.max{:style=>"width:80px", :value => '{{sort_criteria.pa_max}}'}
-      .col-md-1
-        %input.violation_severity.min{:style=>"width:50px", :value => '{{sort_criteria.vs_min}}'}
-      .col-md-1
-        %input.violation_severity.max{:style=>"width:50px", :value => '{{sort_criteria.vs_max}}'}
-      .col-md-1
-        %input.violation_coefficient.min{:style=>"width:50px", :value => '{{sort_criteria.vc_min}}'}
-      .col-md-1
-        %input.violation_coefficient.max{:style=>"width:50px", :value => '{{sort_criteria.vc_max}}'}
-      .col-md-1
-        %input.positivity_rating.min{:style=>"width:50px", :value => '{{sort_criteria.pr_min}}'}
-      .col-md-1
-        %input.positivity_rating.max{:style=>"width:50px", :value => '{{sort_criteria.pr_max}}'}
+      .col-md-1.filter_field.pa_min
+        %input{:style=>"width:80px", :value => '{{sort_criteria.pa_min}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.pa_max
+        %input{:style=>"width:80px", :value => '{{sort_criteria.pa_max}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.vs_min
+        %input{:style=>"width:50px", :value => '{{sort_criteria.vs_min}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.vs_max
+        %input{:style=>"width:50px", :value => '{{sort_criteria.vs_max}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.vc_min
+        %input{:style=>"width:50px", :value => '{{sort_criteria.vc_min}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.vc_max
+        %input{:style=>"width:50px", :value => '{{sort_criteria.vc_max}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.pr_min
+        %input{:style=>"width:50px", :value => '{{sort_criteria.pr_min}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.pr_max
+        %input{:style=>"width:50px", :value => '{{sort_criteria.pr_max}}'}
+        %span.error_message Invalid
   {{#media_appearances}}
   <ma description='{{description}}'/>
   {{/media_appearances}}
+  {{#if empty_results}}
+  No articles match the filter criteria
+  {{/if}}
 
 %script#media_appearance_template{:type => 'template/ractive'}
   .row.media_appearance.well.well-sm{:style => "{{#if !include}}display:none{{/if}}"}
@@ -121,7 +129,7 @@
   %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
     %a{'on-click'=>'toggle()'}
       %span {{name}}
-      %span.glyphicon.glyphicon-ok.check-mark
+      %span.fa.fa-check
   {{#subareas}}
   <subarea>
   {{/subareas}}
@@ -130,7 +138,7 @@
   %li{:class => 'subarea {{#if subarea_selected}}selected{{/if}}'}
     %a.opt{'on-click'=>'toggle()'}
       %span.text {{name}}
-      %span.glyphicon.glyphicon-ok.check-mark
+      %span.fa.fa-check
 
 %script#media_area_template{:type=> 'template/ractive'}
   .area

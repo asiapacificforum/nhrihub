@@ -23,9 +23,15 @@
     .row {
       margin-left : 0px;
 
-      label, h4 {
+      h4 {
         color : #fff;
         font-weight: 300;
+      }
+
+      &.labels {
+        color: #F0F8FF;
+        font-weight: 300;
+        font-size: 14px;
       }
     }
 }
@@ -101,4 +107,13 @@
 
 [aria-expanded='true'] .fa-caret-right:before {
   content: "\f0d7";
+}
+
+/* error messages */
+.filter_field:not(.error) .error_message{
+  display : none;
+}
+
+.filter_field.error input{
+  border-color : #f00;
 }

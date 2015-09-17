@@ -23,16 +23,35 @@ MediaPage = ->
   hr_crc_link : -> $(@human_rights_crc_li()).find('a')[0]
   open_area_dropdown : ->
     @$area().find('.dropdown-toggle').click()
+  unselect_area_subarea : ->
+    _(media.findAllComponents('area')).each (a)-> a.unselect()
+    _(media.findAllComponents('subarea')).each (a)-> a.unselect()
   click_crc_subarea : ->
     simulant.fire(@hr_crc_link(),'click')
   violation_coefficient : (minmax)->
-    $(".violation_coefficient.#{minmax}")
+    $(".vc_#{minmax} input")
   positivity_rating : (minmax)->
-    $(".positivity_rating.#{minmax}")
+    $(".pr_#{minmax} input")
   violation_severity : (minmax)->
-    $(".violation_severity.#{minmax}")
+    $(".vs_#{minmax} input")
   people_affected : (minmax)->
-    $(".people_affected.#{minmax}")
+    $(".pa_#{minmax} input")
+  vc_min : ->
+    $(".filter_field.vc_min")
+  vc_max : ->
+    $(".filter_field.vc_max")
+  pr_min : ->
+    $(".filter_field.pr_min")
+  pr_max : ->
+    $(".filter_field.pr_max")
+  vs_min : ->
+    $(".filter_field.vs_min")
+  vs_max : ->
+    $(".filter_field.vs_max")
+  pa_min : ->
+    $(".filter_field.pa_min")
+  pa_max : ->
+    $(".filter_field.pa_max")
 
 sort_criteria =
   title : -> media.get('sort_criteria.title')
@@ -48,6 +67,9 @@ sort_criteria =
   vs_max : -> media.get('sort_criteria.vs_max')
   pa_min : -> media.get('sort_criteria.pa_min')
   pa_max : -> media.get('sort_criteria.pa_max')
+  reset_areas_subareas : ->
+    media.set('sort_criteria.areas',[])
+    media.set('sort_criteria.subareas',[])
 
 describe 'Media page', ->
   before (done)->
@@ -59,7 +81,7 @@ describe 'Media page', ->
     $.getScript "/assets/outreach_media.js", -> done()
 
   beforeEach ->
-    media.reset(media_page_data())
+    media.set_defaults()
 
   it 'loads test fixtures and data', ->
     expect($("h1",'.magic-lamp').text()).to.equal "Media Archive"
@@ -74,7 +96,6 @@ describe 'Media page', ->
     expect(@page.text_fields()).to.include "Fantasy land"
     expect(@page.text_fields()).to.include "May the force be with you"
     expect(sort_criteria.title()).to.equal 'F'
-    expect($('#sort_criteria #title').text()).to.equal 'F'
 
   it 'filters media appearances by earliest date', ->
     @page.set_from_date('19/08/2014')
@@ -89,6 +110,7 @@ describe 'Media page', ->
     expect(@page.text_fields()).to.not.include "Fantasy land"
 
   it 'filters media appearances by area', ->
+    @page.unselect_area_subarea()
     @page.open_area_dropdown()
     human_rights_select = @page.$area().find('.area a')[0]
     human_rights_id = (_(areas).detect (a)->a.name == "Human Rights").id
@@ -99,9 +121,10 @@ describe 'Media page', ->
     expect(@page.text_fields()).to.include "May the force be with you"
     simulant.fire(human_rights_select,'click')
     expect(sort_criteria.areas()).to.eql []
-    expect(@page.text_fields_length()).to.equal 8
+    expect(@page.text_fields_length()).to.equal 0
 
   it 'filters media appearances by subarea returns matching subareas', ->
+    @page.unselect_area_subarea()
     @page.open_area_dropdown()
     crc_id = (_(subareas).detect (sa)-> sa.name == "CRC").id
     @page.click_crc_subarea()
@@ -111,7 +134,7 @@ describe 'Media page', ->
     expect(@page.text_fields()).to.include "May the force be with you"
     @page.click_crc_subarea()
     expect(sort_criteria.areas()).to.eql []
-    expect(@page.text_fields_length()).to.equal 8
+    expect(@page.text_fields_length()).to.equal 0
 
   it 'filters media appearances by violation coefficient', ->
     @page.violation_coefficient('min').val(0.2)
@@ -125,9 +148,27 @@ describe 'Media page', ->
     simulant.fire(@page.violation_coefficient('max')[0],'change')
     expect(@page.text_fields_length()).to.equal 8
 
-  it 'shows error message when invalid validation coefficient values are entered',->
-    # pending
-    # error message is cleared when new input is started
+  it 'shows error message when invalid minimum validation coefficient values are entered',->
+    @page.violation_coefficient('min').val('A')
+    simulant.fire(@page.violation_coefficient('min')[0],'change')
+    expect(@page.vc_min()).to.have.$class('error')
+    @page.violation_coefficient('min').val('')
+    simulant.fire(@page.violation_coefficient('min')[0],'change')
+    expect(@page.vc_min()).to.not.have.$class('error')
+    @page.violation_coefficient('min').val('2')
+    simulant.fire(@page.violation_coefficient('min')[0],'change')
+    expect(@page.vc_min()).to.not.have.$class('error')
+
+  it 'shows error message when invalid max validation coefficient values are entered',->
+    @page.violation_coefficient('max').val('A')
+    simulant.fire(@page.violation_coefficient('max')[0],'change')
+    expect(@page.vc_max()).to.have.$class('error')
+    @page.violation_coefficient('max').val('')
+    simulant.fire(@page.violation_coefficient('max')[0],'change')
+    expect(@page.vc_max()).to.not.have.$class('error')
+    @page.violation_coefficient('max').val('2')
+    simulant.fire(@page.violation_coefficient('max')[0],'change')
+    expect(@page.vc_max()).to.not.have.$class('error')
 
   it 'filters media appearances by positivity rating', ->
     @page.positivity_rating('min').val(4)
@@ -138,9 +179,27 @@ describe 'Media page', ->
     expect(sort_criteria.pr_max()).to.equal "6"
     expect(@page.text_fields_length()).to.equal 1
 
-  it 'shows error message when invalid positivity rating values are entered',->
-    # pending
-    # error message is cleared when new input is started
+  it 'shows error message when invalid min positivity rating values are entered',->
+    @page.positivity_rating('min').val('A')
+    simulant.fire(@page.positivity_rating('min')[0],'change')
+    expect(@page.pr_min()).to.have.$class('error')
+    @page.positivity_rating('min').val('')
+    simulant.fire(@page.positivity_rating('min')[0],'change')
+    expect(@page.pr_min()).to.not.have.$class('error')
+    @page.positivity_rating('min').val('2')
+    simulant.fire(@page.positivity_rating('min')[0],'change')
+    expect(@page.pr_min()).to.not.have.$class('error')
+
+  it 'shows error message when invalid max positivity rating values are entered',->
+    @page.positivity_rating('max').val('A')
+    simulant.fire(@page.positivity_rating('max')[0],'change')
+    expect(@page.pr_max()).to.have.$class('error')
+    @page.positivity_rating('max').val('')
+    simulant.fire(@page.positivity_rating('max')[0],'change')
+    expect(@page.pr_max()).to.not.have.$class('error')
+    @page.positivity_rating('max').val('2')
+    simulant.fire(@page.positivity_rating('max')[0],'change')
+    expect(@page.pr_max()).to.not.have.$class('error')
 
   it 'filters media appearances by violation severity', ->
     @page.violation_severity('min').val(4)
@@ -151,9 +210,27 @@ describe 'Media page', ->
     expect(sort_criteria.vs_max()).to.equal "6"
     expect(@page.text_fields_length()).to.equal 1
 
-  it 'shows error message when invalid violation severity values are entered',->
-    # pending
-    # error message is cleared when new input is started
+  it 'shows error message when invalid minimum violation severity values are entered',->
+    @page.violation_severity('min').val('A')
+    simulant.fire(@page.violation_severity('min')[0],'change')
+    expect(@page.vs_min()).to.have.$class('error')
+    @page.violation_severity('min').val('')
+    simulant.fire(@page.violation_severity('min')[0],'change')
+    expect(@page.vs_min()).to.not.have.$class('error')
+    @page.violation_severity('min').val('2')
+    simulant.fire(@page.violation_severity('min')[0],'change')
+    expect(@page.vs_min()).to.not.have.$class('error')
+
+  it 'shows error message when invalid maximum violation severity values are entered',->
+    @page.violation_severity('max').val('A')
+    simulant.fire(@page.violation_severity('max')[0],'change')
+    expect(@page.vs_max()).to.have.$class('error')
+    @page.violation_severity('max').val('')
+    simulant.fire(@page.violation_severity('max')[0],'change')
+    expect(@page.vs_max()).to.not.have.$class('error')
+    @page.violation_severity('max').val('2')
+    simulant.fire(@page.violation_severity('max')[0],'change')
+    expect(@page.vs_max()).to.not.have.$class('error')
 
   it 'filters media appearances by # people affected', ->
     @page.people_affected('min').val(444)
@@ -164,12 +241,43 @@ describe 'Media page', ->
     expect(sort_criteria.pa_max()).to.equal "6000000"
     expect(@page.text_fields_length()).to.equal 1
 
-  it 'shows error message when invalid # people values are entered',->
-    # pending
-    # error message is cleared when new input is started
+  it 'shows error message when invalid minimum # people values are entered',->
+    @page.people_affected('min').val('A')
+    simulant.fire(@page.people_affected('min')[0],'change')
+    expect(@page.pa_min()).to.have.$class('error')
+    @page.people_affected('min').val('')
+    simulant.fire(@page.people_affected('min')[0],'change')
+    expect(@page.pa_min()).to.not.have.$class('error')
+    @page.people_affected('min').val('2')
+    simulant.fire(@page.people_affected('min')[0],'change')
+    expect(@page.pa_min()).to.not.have.$class('error')
+
+  it 'shows error message when invalid maximum # people values are entered',->
+    @page.people_affected('max').val('A')
+    simulant.fire(@page.people_affected('max')[0],'change')
+    expect(@page.pa_max()).to.have.$class('error')
+    @page.people_affected('max').val('')
+    simulant.fire(@page.people_affected('max')[0],'change')
+    expect(@page.pa_max()).to.not.have.$class('error')
+    @page.people_affected('max').val('2')
+    simulant.fire(@page.people_affected('max')[0],'change')
+    expect(@page.pa_max()).to.not.have.$class('error')
+
 
   #it 'clears all filter parameters when clear button is clicked', ->
     # pending
 
   it 'shows no matches message when there are no matches', ->
     # pending
+
+  it 'initializes the filter parameters with the lowest and highest actual values', ->
+    expect(@page.$date_from().val()).to.equal '01/01/2014'
+    expect(@page.$date_to().val()).to.equal '01/01/2015'
+    expect(@page.violation_coefficient('min').val()).to.equal '0.7'
+    expect(@page.violation_coefficient('max').val()).to.equal '10'
+    expect(@page.positivity_rating('min').val()).to.equal '2'
+    expect(@page.positivity_rating('max').val()).to.equal '9'
+    expect(@page.violation_severity('min').val()).to.equal '2'
+    expect(@page.violation_severity('max').val()).to.equal '9'
+    expect(@page.people_affected('min').val()).to.equal '555'
+    expect(@page.people_affected('max').val()).to.equal '55500000'

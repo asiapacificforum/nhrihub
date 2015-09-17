@@ -52,3 +52,5 @@ en:
         positivity: "Positivity rating"
         min: "Min"
         max: "Max"
+        all: "All"
+        any: "Any"
