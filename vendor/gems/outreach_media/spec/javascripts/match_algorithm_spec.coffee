@@ -90,90 +90,102 @@ describe "area and subarea matching algorithm", ->
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     $.getScript "/assets/outreach_media.js", -> done()
 
-
 #example:    media.set('media_appearances',[{"media_areas":[{"area_id":1,"subarea_ids":[1]},{"area_id":2,"subarea_ids":[8,9,10]}]}])
+  describe "when sort criteria rule is 'all'", ->
+    describe "match criteria for areas", ->
+      it "should match when all area criteria are met", ->
+        media.reset({'media_appearances':[{"media_areas":[{"area_id":1},{"area_id":2}]}]})
+        media.set({'sort_criteria.areas':[1,2], 'sort_criteria.rule':'all'})
+        expect(media_appearance_area_matches()).to.eql [true]
 
-  it "should include media appearances matching any sort criteria areas", ->
-    media.reset({'media_appearances':[{"media_areas":[{"area_id":1},{"area_id":2}]},
-                                      {"media_areas":[              {"area_id":2}]},
-                                      {"media_areas":[{"area_id":1}              ]}
-                                     ]})
-    media.set({'sort_criteria.areas':[1,2], 'sort_criteria.rule':'any'})
-    expect(media_appearance_area_matches()).to.eql [true,true,true]
+      it "should fail when not all area criteria are met", ->
+        media.reset({'media_appearances':[{"media_areas":[{"area_id":1}              ]}]})
+        media.set({'sort_criteria.areas':[1,2], 'sort_criteria.rule':'all'})
+        expect(media_appearance_area_matches()).to.eql [false]
 
-  it "should include media appearances matching all sort criteria areas", ->
-    media.reset({'media_appearances':[{"media_areas":[{"area_id":1},{"area_id":2}]},
-                                      {"media_areas":[              {"area_id":2}]},
-                                      {"media_areas":[{"area_id":1}              ]}
-                                     ]})
-    media.set({'sort_criteria.areas':[1,2], 'sort_criteria.rule':'all'})
-    expect(media_appearance_area_matches()).to.eql [true,false,false]
+    describe "match criteria for subareas", ->
+      it "should succeed when all subarea criteria are met", ->
+        media.reset({'media_appearances':[{"media_areas":[{"subarea_ids":[1]},{"subarea_ids":[10]}]}]})
+        media.set({'sort_criteria.subareas':[1,10], 'sort_criteria.rule':'all'})
+        expect(media_appearance_subarea_matches()).to.eql [true]
 
-  it "should include media appearances matching any sort criteria subareas", ->
-    media.reset({'media_appearances':[{"media_areas":[{"subarea_ids":[1]},{"subarea_ids":[10]}]},
-                                      {"media_areas":[                    {"subarea_ids":[10]}]},
-                                      {"media_areas":[{"subarea_ids":[1]}                      ]}
-                                     ]})
-    media.set({'sort_criteria.subareas':[1,10], 'sort_criteria.rule':'any'})
-    expect(media_appearance_subarea_matches()).to.eql [true,true,true]
+      it "should fail when not all subarea criteria are met", ->
+        media.reset({'media_appearances':[{"media_areas":[{"subarea_ids":[1]}]}]})
+        media.set({'sort_criteria.subareas':[1,10], 'sort_criteria.rule':'all'})
+        expect(media_appearance_subarea_matches()).to.eql [false] # here
 
-  it "should include media appearances matching all sort criteria subareas", ->
-    media.reset({'media_appearances':[{"media_areas":[{"subarea_ids":[1]},{"subarea_ids":[10]}]},
-                                      {"media_areas":[                    {"subarea_ids":[10]}]},
-                                      {"media_areas":[{"subarea_ids":[1]}                     ]}
-                                     ]})
-    media.set({'sort_criteria.subareas':[1,10], 'sort_criteria.rule':'all'})
-    expect(media_appearance_subarea_matches()).to.eql [true,false,false]
+    describe "match criteria for both areas and subareas", ->
+      it "should succeed when area criteria are met, and subarea criteria is empty", ->
+        media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]}]})
+        media.set({'sort_criteria.areas':[1,2], 'sort_criteria.subareas':[], 'sort_criteria.rule':'all'})
+        expect(media_appearance_area_subarea_matches()).to.eql [true]
 
-  it "should include media appearances matching any sort criteria areas and subareas", ->
-    media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}]},
-                                      {"media_areas":[{             "subarea_ids":[1]}]} # implicit area 1, will preclude this scenario. There must always be an explicit area defined.
-                                     ]})
-    media.set({'sort_criteria.areas':[1], 'sort_criteria.rule':'any'})
-    expect(media_appearance_area_matches()).to.eql [true,false] # decided to simplify and not test for implicit inclusion
-    media.set({'sort_criteria.areas':[1], 'sort_criteria.rule':'all'})
-    expect(media_appearance_area_matches()).to.eql [true,false] # decided to simplify and not test for implicit inclusion
+      it "should fail when area criteria are not met, and subarea criteria are met", ->
+        media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
+        media.set({'sort_criteria.areas':[1,2], 'sort_criteria.subareas':[1], 'sort_criteria.rule':'all'})
+        expect(media_appearance_area_subarea_matches()).to.eql [false]
 
-  it "should include media appearances matching all sort criteria areas and subareas", ->
-    media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
-                                      {"media_areas":[{"area_id":1, "subarea_ids":[1]}]}
-                                      {"media_areas":[{"area_id":2, "subarea_ids":[8]}]}
-                                      {"media_areas":[{"area_id":1                   }]}
-                                      {"media_areas":[{"area_id":2                   }]}
-                                     ]})
-    media.set({'sort_criteria.areas':[1,2], 'sort_criteria.subareas':[1], 'sort_criteria.rule':'any'})
-    expect(media_appearance_area_matches()).to.eql [true,true,true,true,true]
+      it "should fail when area criteria are met, and subarea criteria are not met", ->
+        media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
+        media.set({'sort_criteria.areas':[1], 'sort_criteria.subareas':[2], 'sort_criteria.rule':'all'})
+        expect(media_appearance_area_subarea_matches()).to.eql [false]
 
-  it "should include media appearances matching any sort criteria areas and subareas2", ->
-    media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
-                                      {"media_areas":[{"area_id":1, "subarea_ids":[1]}]}
-                                      {"media_areas":[{"area_id":2, "subarea_ids":[8]}]}
-                                      {"media_areas":[{"area_id":1                   }]}
-                                      {"media_areas":[{"area_id":2                   }]}
-                                     ]})
-    media.set({'sort_criteria.areas':[1,2], 'sort_criteria.subareas':[1], 'sort_criteria.rule':'any'})
-    expect(media_appearance_area_subarea_matches()).to.eql [true,true,true,true,true]
-    media.set({'sort_criteria.areas':[], 'sort_criteria.subareas':[], 'sort_criteria.rule':'any'})
-    expect(media_appearance_area_subarea_matches()).to.eql [false,false,false,false,false]
+  describe "when sort criteria rule is 'any'", ->
+    describe "match criteria for areas", ->
+      it "should succeed when any of the sort criteria areas is matched", ->
+        media.reset({'media_appearances':[ {"media_areas":[{"area_id":2}]}]})
+        media.set({'sort_criteria.areas':[1,2], 'sort_criteria.rule':'any'})
+        expect(media_appearance_area_matches()).to.eql [true]
 
-  it "should include media appearances matching any sort criteria areas and subareas", ->
-    media.reset({'media_appearances':[{"media_areas":[{"area_id":1}]}]})
-    media.set({'sort_criteria.areas':[2], 'sort_criteria.subareas':[], 'sort_criteria.rule':'any'})
-    expect(media_appearance_area_subarea_matches()).to.eql [false]
+      it "should succeed when any of the sort criteria areas is matched, when subarea criteria are not specified", ->
+        media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
+        media.set({'sort_criteria.areas':[1], 'sort_criteria.rule':'any'})
+        expect(media_appearance_area_matches()).to.eql [true]
 
-  it "1should include media appearances matching  all sort criteria areas", ->
-    media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]}]})
-    media.set({'sort_criteria.areas':[1,2], 'sort_criteria.subareas':[], 'sort_criteria.rule':'all'})
-    expect(media_appearance_area_subarea_matches()).to.eql [true]
+      it "should fail when none of the sort criteria areas is matched, when subarea criteria are not specified", ->
+        media.reset({'media_appearances':[ {"media_areas":[{"subarea_ids":[1]}]}]})
+        media.set({'sort_criteria.areas':[1], 'sort_criteria.rule':'any'})
+        expect(media_appearance_area_matches()).to.eql [false]
 
-  it "should include media appearances matching   all sort criteria areas", ->
-    media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
-    media.set({'sort_criteria.areas':[1,2], 'sort_criteria.subareas':[1], 'sort_criteria.rule':'all'})
-    expect(media_appearance_area_subarea_matches()).to.eql [false]
+      it "should succeed when any of the sort criteria areas or any of the sort criteria subareas is matched", ->
+        media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
+                                          {"media_areas":[{"area_id":1, "subarea_ids":[1]}]}
+                                          {"media_areas":[{"area_id":2, "subarea_ids":[8]}]}
+                                          {"media_areas":[{"area_id":1                   }]}
+                                          {"media_areas":[{"area_id":2                   }]}
+                                         ]})
+        media.set({'sort_criteria.areas':[1,2], 'sort_criteria.subareas':[1], 'sort_criteria.rule':'any'})
+        expect(media_appearance_area_matches()).to.eql [true,true,true,true,true]
 
-  it "2should include media appearances matching   all sort criteria areas", ->
-    media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
-    media.set({'sort_criteria.areas':[1], 'sort_criteria.subareas':[], 'sort_criteria.rule':'all'})
-    expect(media_appearance_area_subarea_matches()).to.eql [true]
-    media.set({'sort_criteria.areas':[1], 'sort_criteria.subareas':[2], 'sort_criteria.rule':'all'})
-    expect(media_appearance_area_subarea_matches()).to.eql [false]
+    describe "match criteria for subareas", ->
+      it "should include media appearances matching any sort criteria subareas", ->
+        media.reset({'media_appearances':[ {"media_areas":[{"subarea_ids":[1]}]}]})
+        media.set({'sort_criteria.subareas':[1,10], 'sort_criteria.rule':'any'})
+        expect(media_appearance_subarea_matches()).to.eql [true]
+
+    describe "match criteria for areas and subareas", ->
+      it "should succeed when any of the sort criteria areas or subareas is matched", ->
+        media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
+                                          {"media_areas":[{"area_id":1, "subarea_ids":[1]}]}
+                                          {"media_areas":[{"area_id":2, "subarea_ids":[8]}]}
+                                          {"media_areas":[{"area_id":1                   }]}
+                                          {"media_areas":[{"area_id":2                   }]}
+                                         ]})
+        media.set({'sort_criteria.areas':[1,2], 'sort_criteria.subareas':[1], 'sort_criteria.rule':'any'})
+        expect(media_appearance_area_subarea_matches()).to.eql [true,true,true,true,true]
+
+      it "should fail when sort_criteria areas and subareas are both empty", ->
+        media.reset({'media_appearances':[{"media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
+                                          {"media_areas":[{"area_id":1, "subarea_ids":[1]}]}
+                                          {"media_areas":[{"area_id":2, "subarea_ids":[8]}]}
+                                          {"media_areas":[{"area_id":1                   }]}
+                                          {"media_areas":[{"area_id":2                   }]}
+                                         ]})
+        media.set({'sort_criteria.areas':[], 'sort_criteria.subareas':[], 'sort_criteria.rule':'any'})
+        expect(media_appearance_area_subarea_matches()).to.eql [false,false,false,false,false]
+
+      it "should fail when sort criteria areas is not matched", ->
+        media.reset({'media_appearances':[{"media_areas":[{"area_id":1}]}]})
+        media.set({'sort_criteria.areas':[2], 'sort_criteria.subareas':[], 'sort_criteria.rule':'any'})
+        expect(media_appearance_area_subarea_matches()).to.eql [false]
+
