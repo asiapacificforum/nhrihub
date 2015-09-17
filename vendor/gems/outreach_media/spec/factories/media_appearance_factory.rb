@@ -26,24 +26,28 @@ FactoryGirl.define do
     trait :hr_area do
       after(:create) do |ma|
         ma.areas << Area.where(:name => "Human Rights").first
+        ma.save
       end
     end
 
     trait :si_area do
       after(:create) do |ma|
         ma.areas << Area.where(:name => "Special Investigations Unit").first
+        ma.save
       end
     end
 
     trait :gg_area do
       after(:create) do |ma|
         ma.areas << Area.where(:name => "Good Governance").first
+        ma.save
       end
     end
 
     trait :crc_subarea do
       after(:create) do |ma|
         ma.media_areas.first.subareas << Subarea.where(:name => "CRC").first
+        ma.save
       end
     end
   end

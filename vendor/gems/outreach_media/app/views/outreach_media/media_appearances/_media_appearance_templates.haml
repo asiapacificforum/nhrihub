@@ -34,7 +34,7 @@
             <area id='{{id}}' name='{{name}}'/>
             {{/areas}}
       .col-md-1
-        %i.erase.fa.fa-ban{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => 'Clear filter'}
+        %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => 'Clear filter'}
       .col-md-1
         {{#if expanded}}
         %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>'Compact all'}
