@@ -29,7 +29,6 @@ en:
         reminder_text_error_message: "Text cannot be blank"
         note_text_error_message: "Text cannot be blank"
         reminder_recipients_error_message: "Please select recipient(s)"
-        one-time: "one-time"
         weekly: "weekly"
         monthly: "monthly"
         quarterly: "quarterly"

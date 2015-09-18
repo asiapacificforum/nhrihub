@@ -110,8 +110,6 @@ $ ->
               min
       exceeds_min = (val >= min)
       less_than_max = _.isNaN(max) || (val <= max) # if max is not a number, then assume val is in-range
-      #console.log "#{val} exceeds #{min} "+exceeds_min.toString()
-      #console.log "#{val} less than #{max} "+less_than_max.toString()
       exceeds_min && less_than_max
     _matches_positivity_rating : ->
       @_between(parseInt(@get('sort_criteria.pr_min')),parseInt(@get('sort_criteria.pr_max')),parseInt(@get('metrics')["Positivity rating"]))
@@ -122,6 +120,8 @@ $ ->
       $(@find('.collapse')).collapse('show')
     compact : ->
       $(@find('.collapse')).collapse('hide')
+    show_reminders_panel : ->
+      console.log "sh rem pan"
 
   window.media_page_data = -> # an initialization data set so that tests can reset between
     expanded : false

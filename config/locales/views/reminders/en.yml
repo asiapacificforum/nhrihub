@@ -1,0 +1,21 @@
+en:
+  reminders:
+    reminder:
+      one-time: "one-time"
+      weekly: "weekly"
+      monthly: "monthly"
+      quarterly: "quarterly"
+      semi-annually: "semi-annually"
+      annually: "annually"
+      type: "Type"
+      next: "Next"
+      previous: "Previous"
+      text: "Text"
+      recipients: "Recipients"
+      recipient_s: "Recipient(s)"
+      date: "Date"
+      start_date: "Start date"
+      reminder_type_error_message: "Please select a type"
+      reminder_text_error_message: "Text cannot be blank"
+      #note_text_error_message: "Text cannot be blank"
+      reminder_recipients_error_message: "Please select recipient(s)"

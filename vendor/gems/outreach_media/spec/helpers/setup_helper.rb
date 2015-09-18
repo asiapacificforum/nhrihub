@@ -1,7 +1,17 @@
 require 'rspec/core/shared_context'
 
-module MediaSpecHelpers
+module SetupHelper
   extend RSpec::Core::SharedContext
+  def setup_database
+    setup_positivity_ratings
+    setup_areas
+    FactoryGirl.create(:media_appearance, :hr_area, :positivity_rating => PositivityRating.first, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
+    rem = Reminder.create(:reminder_type => 'weekly',
+                          :start_date => Date.new(2015,8,19),
+                          :text => "don't forget the fruit gums mum",
+                          :users => [User.first],
+                          :remindable => MediaAppearance.first)
+  end
 
   def setup_positivity_ratings
     PositivityRating.create({:rank => 1, :text => "Reflects very negatively on the office"})
@@ -29,13 +39,5 @@ module MediaSpecHelpers
     good_governance_subareas.each do |ggsa|
       Subarea.create(:name => ggsa, :area_id => good_governance_id) unless Subarea.where(:name => ggsa, :area_id => good_governance_id).exists?
     end
-  end
-
-  def open_reminders_panel
-    reminders_icon.click
-  end
-
-  def reminders_icon
-    page.find(".row.media_appearance div.actions div.alarm_icon")
   end
 end
