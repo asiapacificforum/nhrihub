@@ -2,7 +2,7 @@ class CorporateServices::Activities::RemindersController < ApplicationController
   def create
     reminder = Reminder.new(reminder_params)
     if reminder.save
-      render :json => Reminder.where(:activity_id => reminder.activity_id), :status => 200
+      render :json => Reminder.where(:remindable_id => reminder.remindable_id), :status => 200
     else
       render :nothing => true, :status => 500
     end
@@ -11,7 +11,7 @@ class CorporateServices::Activities::RemindersController < ApplicationController
   def update
     reminder = Reminder.find(params[:id])
     if reminder.update_attributes(reminder_params)
-      strategic_priorities = reminder.activity.outcome.planned_result.strategic_priority.strategic_plan.strategic_priorities
+      strategic_priorities = reminder.remindable.outcome.planned_result.strategic_priority.strategic_plan.strategic_priorities
       render :json => strategic_priorities, :status => 200
     else
       render :nothing => true, :status => 500
@@ -20,7 +20,7 @@ class CorporateServices::Activities::RemindersController < ApplicationController
 
   def destroy
     reminder = Reminder.find(params[:id])
-    activity = reminder.activity
+    activity = reminder.remindable
     if reminder.destroy
       render :json => activity.reload, :status => 200
     else
@@ -30,6 +30,9 @@ class CorporateServices::Activities::RemindersController < ApplicationController
 
   private
   def reminder_params
-    params.require(:reminder).permit(:reminder_type, :start_date, :text, :activity_id, { :user_ids => [] })
+    params[:reminder][:remindable_id] = params[:activity_id]
+    params[:reminder].delete(:activity_id)
+    params[:reminder][:remindable_type] = 'Activity'
+    params.require(:reminder).permit(:reminder_type, :start_date, :text, :remindable_id, :remindable_type, { :user_ids => [] })
   end
 end

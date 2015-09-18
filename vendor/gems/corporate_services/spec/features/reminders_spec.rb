@@ -13,7 +13,10 @@ feature "show reminders", :js => true do
 
   before do
     activity = setup_activity
-    rem = Reminder.create(:reminder_type => 'weekly', :start_date => Date.new(2015,8,19), :text => "don't forget the fruit gums mum", :users => [User.first], :activity => activity)
+    rem = Reminder.create(:reminder_type => 'weekly',
+                          :start_date => Date.new(2015,8,19),
+                          :text => "don't forget the fruit gums mum",
+                          :users => [User.first], :remindable => activity)
     open_reminders_panel
   end
 
