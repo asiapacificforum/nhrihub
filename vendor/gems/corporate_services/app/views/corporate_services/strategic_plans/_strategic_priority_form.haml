@@ -263,52 +263,8 @@
       %div.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; float:left; width:20px; top:3px; margin-left:20px;"}
       %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "margin-left:28px; position:relative; float:left; top:3px;"}
       %div.rule{'on-click' => "show_rules_panel()"}
-    <modal-custom id="reminders_modal" type="xl">
-    <modal-header>
-    <h4>#{t('.reminders')}<modal-close/></h4>
-    </modal-header>
-    <modal-body>
-    <i class="fa fa-plus fa-sm" id="add_reminder" on-click='new_reminder()' data-toggle="tooltip" data-placement="bottom" title="add reminder"/>
-    #reminders{:style => "margin-bottom:80px;"}
-      .row
-        %h5.col-md-1.tight{:style => "width:10%;"}= t('.type')
-        %h5.col-md-1.tight{:style => "width:18%;"}= t('.next')
-        %h5.col-md-1.tight{:style => "width:8%;"}= t('.previous')
-        %h5.col-md-6.tight{:style => "width:41%;"}= t('.text')
-        %h5.col-md-1.tight{:style => "width:13%;"}= t('.recipients')
-        %h5.col-md-1.tight{:style => "width:3%;"}
-        %h5.col-md-1.tight{:style => "width:3%;"}
-        %h5.col-md-1.tight{:style => "width:3%;"}
-      {{#reminders}}
-      <reminder reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next="{{next}}" previous="{{previous}}" recipients="{{recipients}}"/>
-      {{/reminders}}
-    </modal-body>
-    </modal-custom>
-    <modal-custom id="notes_modal" type="xl">
-    <modal-header>
-    <h4>#{t('.notes')}<modal-close/></h4>
-    </modal-header>
-    <modal-body>
-    <i class="fa fa-plus fa-sm" id="add_note" on-click='new_note()' data-toggle="tooltip" data-placement="bottom" title="add note"/>
-    #notes{:style => "margin-bottom:80px;"}
-      .row
-        %h5.col-md-1{:style => "width:15%;"}= t('.date')
-        %h5.col-md-1{:style => "width:70%;"}= t('.text')
-      {{#notes}}
-      <note date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' text='{{text}}'/>
-      {{/notes}}
-    </modal-body>
-    </modal-custom>
-    <modal-custom id="rules_modal" type="xl">
-    <modal-header>
-    <h4>#{t('.rules')}<modal-close/></h4>
-    </modal-header>
-    <modal-body>
-    #rules{:style => "margin-bottom:80px;"}
-      .row
-        %h5.col-md-1.col-md-offset-4{:style => "width:25%;"} Not yet implemented
-    </modal-body>
-    </modal-custom>
+    <reminders>
+
 
 %script#note_template{:type => 'text/ractive'}
   {{#if !persisted }}
@@ -420,7 +376,6 @@
     Activity = Ractive.extend
       template : '#activity_template'
       components :
-        # reminder : Reminder
         note : Note
       computed :
         persisted : ->
@@ -476,12 +431,6 @@
         $('#notes_modal').modal('show')
       show_rules_panel : ->
         $('#rules_modal').modal('show')
-      new_reminder : ->
-        unless @_new_reminder_is_active()
-          @push('reminders',{id:null, type:null, frequency:null, text:'', activity_id:@get('id')})
-      _new_reminder_is_active : ->
-        reminders = @findAllComponents('reminder')
-        (reminders.length > 0) && _.isNull( reminders[reminders.length - 1].get('id'))
       new_note : ->
         unless @_new_note_is_active()
           @push('notes',{id:null, type:null, frequency:null, text:'', activity_id:@get('id')})

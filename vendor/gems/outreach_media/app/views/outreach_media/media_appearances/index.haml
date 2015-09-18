@@ -2,6 +2,7 @@
 #media_appearances
 
 = render partial: "media_appearance_templates"
+= render :partial => 'reminders/reminder' # it's in the main app
 
 :javascript
   media_appearances = #{@media_appearances.to_json}
