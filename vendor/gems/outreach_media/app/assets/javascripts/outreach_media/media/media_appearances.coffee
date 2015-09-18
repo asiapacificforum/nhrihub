@@ -121,7 +121,9 @@ $ ->
     compact : ->
       $(@find('.collapse')).collapse('hide')
     show_reminders_panel : ->
-      console.log "sh rem pan"
+      $('#reminders_modal').modal('show')
+    show_notes_panel : ->
+      $('#notes_modal').modal('show')
 
   window.media_page_data = -> # an initialization data set so that tests can reset between
     expanded : false

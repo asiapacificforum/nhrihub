@@ -265,7 +265,6 @@
       %div.rule{'on-click' => "show_rules_panel()"}
     <reminders>
 
-
 %script#note_template{:type => 'text/ractive'}
   {{#if !persisted }}
   {{> new_note_template }}
@@ -319,7 +318,6 @@
     Ractive.DEBUG = false
 
     strategic_plan_data = #{@strategic_plan.to_json}
-
 
     Note = Ractive.extend
       template : '#note_template'

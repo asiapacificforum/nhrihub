@@ -10,7 +10,7 @@ class MediaAppearance < ActiveRecord::Base
 
   def as_json(options={})
     super({:except => [:updated_at, :created_at, :positivity_rating_id],
-           :methods=> [:date, :metrics, :has_link, :has_scanned_doc, :media_areas]})
+           :methods=> [:date, :metrics, :has_link, :has_scanned_doc, :media_areas, :reminders]})
   end
 
   def date
