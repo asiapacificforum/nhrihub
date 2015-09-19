@@ -6,6 +6,8 @@ module ReminderPageHelpers
     visit corporate_services_strategic_plan_path(:en, "current")
     open_accordion_for_strategic_priority_one
     reminders_icon.click
+    page.find('i#add_reminder', :visible => true, :wait => 20)
+    sleep(0.2) # b/c capy finds it on the page before css transitions are complete, I think
   end
 
   def recipients

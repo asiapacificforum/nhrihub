@@ -42,6 +42,7 @@ feature "add a reminder", :js => true do
     new_reminder_button.click
     sleep(0.2)
     select("one-time", :from => :reminder_reminder_type)
+    page.find('#reminder_start_date_1i') # forces wait until the element is available
     select_date("Aug 19 2017", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
     fill_in(:reminder_text, :with => "time to check the database")
@@ -63,7 +64,7 @@ feature "add a reminder", :js => true do
 
   scenario "with blank reminder_type error" do
     new_reminder_button.click
-    sleep(0.2)
+    page.find('#reminder_start_date_1i', :wait => 10) # forces wait until the element is available
     select_date("Aug 19 2015", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_ids)
     fill_in(:reminder_text, :with => "time to check the database")

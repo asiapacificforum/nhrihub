@@ -27,6 +27,10 @@ class Activity < ActiveRecord::Base
     Rails.application.routes.url_helpers.corporate_services_activity_notes_path(:en,id)
   end
 
+  def page_data
+    outcome.planned_result.strategic_priority.strategic_plan.strategic_priorities
+  end
+
   def namespace
     :corporate_services
   end
