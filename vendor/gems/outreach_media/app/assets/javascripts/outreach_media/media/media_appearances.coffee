@@ -1,4 +1,27 @@
 $ ->
+  EditInPlace = (node,id)->
+    ractive = @
+    @edit = new InpageEdit
+      on : node
+      object : @
+      focus_element : 'input.title'
+      success : (response, textStatus, jqXhr)->
+        ractive = @.options.object
+        # the whole dataset is replaced... Ractive figures out
+        # what has changed and what to re-render
+        media.set('media_appearances',response)
+        @load()
+      error : ->
+        console.log "Changes were not saved, for some reason"
+    return {
+      teardown : (id)->
+      update : (id)->
+      }
+
+  Ractive.DEBUG = false
+
+  Ractive.decorators.inpage_edit = EditInPlace
+
   MediaSubarea = Ractive.extend
     template : '#media_subarea_template'
     computed :
@@ -188,10 +211,6 @@ $ ->
       formatted_to_date:
         get: -> $.datepicker.formatDate("dd/mm/yy", @get('sort_criteria.to'))
         set: (val)-> @set('sort_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
-      empty_results : ->
-        @get('sort_criteria') # included ONLY in order to create a dependency, otherwise the computed property is not recalculated!
-        included_results = _(@findAllComponents('ma')).filter (mr)-> mr.get('include')
-        included_results.length == 0
     min : (param)->
       @get(param).reduce (min,date)->
         if date<min
@@ -263,3 +282,5 @@ $ ->
       $(".#{key}").addClass('error')
     else
       $(".#{key}").removeClass('error')
+
+

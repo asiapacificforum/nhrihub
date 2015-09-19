@@ -1,4 +1,4 @@
-class CorporateServices::Activities::RemindersController < ApplicationController
+class OutreachMedia::MediaAppearances::RemindersController < ApplicationController
   def create
     reminder = Reminder.new(reminder_params)
     if reminder.save
@@ -11,8 +11,7 @@ class CorporateServices::Activities::RemindersController < ApplicationController
   def update
     reminder = Reminder.find(params[:id])
     if reminder.update_attributes(reminder_params)
-      strategic_priorities = reminder.remindable.outcome.planned_result.strategic_priority.strategic_plan.strategic_priorities
-      render :json => strategic_priorities, :status => 200
+      render :json => reminder.page_data, :status => 200
     else
       render :nothing => true, :status => 500
     end
@@ -30,8 +29,9 @@ class CorporateServices::Activities::RemindersController < ApplicationController
 
   private
   def reminder_params
-    params[:reminder][:remindable_id] = params[:activity_id]
-    params[:reminder][:remindable_type] = 'Activity'
+    params[:reminder][:remindable_id] = params[:media_appearance_id]
+    params[:reminder][:remindable_type] = 'MediaAppearance'
     params.require(:reminder).permit(:reminder_type, :start_date, :text, :remindable_id, :remindable_type, { :user_ids => [] })
   end
 end
+

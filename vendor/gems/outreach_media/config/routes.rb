@@ -8,7 +8,9 @@ Rails.application.routes.draw do
         resources :filetypes, :param => :type, :only => [:create, :destroy]
         resource :filesize, :only => :update
       end
-      resources :media_appearances
+      resources :media_appearances do
+        resources :reminders, :controller => "media_appearances/reminders"
+      end
       resources :areas do
         resources :subareas
       end

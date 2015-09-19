@@ -83,9 +83,6 @@
   {{#media_appearances}}
   <ma description='{{description}}'/>
   {{/media_appearances}}
-  {{#if empty_results}}
-  No articles match the filter criteria
-  {{/if}}
 
 %script#media_appearance_template{:type => 'template/ractive'}
   .row.media_appearance.well.well-sm{:style => "{{#if !include}}display:none{{/if}}"}

@@ -1,4 +1,7 @@
+
 class Reminder < ActiveRecord::Base
+  include ActionDispatch::Routing::PolymorphicRoutes
+  include Rails.application.routes.url_helpers
   belongs_to :remindable, :polymorphic => true
   has_and_belongs_to_many :users, :validate => false # we will only be adding/removing users by id, not changing their attributes. So performance is improved by not validating.
   default_scope ->{ order(:id) }
@@ -33,7 +36,11 @@ class Reminder < ActiveRecord::Base
   end
 
   def url
-    Rails.application.routes.url_helpers.corporate_services_activity_reminder_path(:en,remindable_id,id)
+    polymorphic_path([remindable.namespace,remindable,self], :locale => :en)
+  end
+
+  def page_data
+    remindable.page_data
   end
 
   def next

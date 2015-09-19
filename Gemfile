@@ -64,6 +64,7 @@ group :development, :test, :jstest do
   gem 'teaspoon'
   gem 'teaspoon-mocha'
   gem 'magic_lamp'
+  gem 'launchy'
 end
 gem 'bootstrap-sass'
 gem 'simple-navigation-bootstrap'

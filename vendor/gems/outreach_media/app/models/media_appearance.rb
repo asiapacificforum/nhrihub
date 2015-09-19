@@ -10,7 +10,23 @@ class MediaAppearance < ActiveRecord::Base
 
   def as_json(options={})
     super({:except => [:updated_at, :created_at, :positivity_rating_id],
-           :methods=> [:date, :metrics, :has_link, :has_scanned_doc, :media_areas, :reminders]})
+           :methods=> [:date, :metrics, :has_link, :has_scanned_doc, :media_areas, :reminders, :create_reminder_url, :create_note_url]})
+  end
+
+  def page_data
+    MediaAppearance.all
+  end
+
+  def create_note_url
+    #Rails.application.routes.url_helpers.outreach_media_media_appearance_notes_path(:en,id)
+  end
+
+  def create_reminder_url
+    Rails.application.routes.url_helpers.outreach_media_media_appearance_reminders_path(:en,id)
+  end
+
+  def namespace
+    :outreach_media
   end
 
   def date

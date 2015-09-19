@@ -5,12 +5,16 @@ module SetupHelper
   def setup_database
     setup_positivity_ratings
     setup_areas
-    FactoryGirl.create(:media_appearance, :hr_area, :positivity_rating => PositivityRating.first, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
-    rem = Reminder.create(:reminder_type => 'weekly',
-                          :start_date => Date.new(2015,8,19),
-                          :text => "don't forget the fruit gums mum",
-                          :users => [User.first],
-                          :remindable => MediaAppearance.first)
+    FactoryGirl.create(:media_appearance,
+                       :hr_area,
+                       :positivity_rating => PositivityRating.first,
+                       :reminders=>[] )
+  end
+
+  def add_reminder
+    ma = MediaAppearance.first
+    ma.reminders << FactoryGirl.create(:reminder, :reminder_type => 'weekly', :text => "don't forget the fruit gums mum")
+    ma.save
   end
 
   def setup_positivity_ratings
