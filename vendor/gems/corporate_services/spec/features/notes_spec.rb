@@ -61,8 +61,8 @@ feature "populate activity notes", :js => true do
   feature "show notes" do
     before do
       setup_activity
-      @note1 = FactoryGirl.create(:note, :created_at => 3.days.ago, :activity_id => Activity.first.id)
-      @note2 = FactoryGirl.create(:note, :created_at => 4.days.ago, :activity_id => Activity.first.id)
+      @note1 = FactoryGirl.create(:note, :notable_type => "Activity", :created_at => 3.days.ago, :notable_id => Activity.first.id)
+      @note2 = FactoryGirl.create(:note, :notable_type => "Activity", :created_at => 4.days.ago, :notable_id => Activity.first.id)
       visit corporate_services_strategic_plan_path(:en, "current")
       open_accordion_for_strategic_priority_one
     end

@@ -5,6 +5,6 @@ module NotesSpecHelpers
   extend RSpec::Core::SharedContext
   include NotesSpecCommonHelpers
   def setup_note
-    FactoryGirl.create(:note, :activity_id => Activity.first.id)
+    FactoryGirl.create(:note, :notable_type => "Activity", :notable_id => Activity.first.id)
   end
 end

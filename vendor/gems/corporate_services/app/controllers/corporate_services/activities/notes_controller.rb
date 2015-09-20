@@ -15,6 +15,8 @@ class CorporateServices::Activities::NotesController < NotesController
 
   private
   def note_params
-    params.require(:note).permit(:text, :activity_id)
+    params[:note][:notable_id] = params[:activity_id]
+    params[:note][:notable_type] = "Activity"
+    super
   end
 end

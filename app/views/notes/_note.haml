@@ -70,7 +70,6 @@
         context = $(@el)
         url = @parent.get('create_note_url')
         data = context.find('#new_note :input').serializeArray()
-        data.push({name: 'note[activity_id]', value : @get('activity_id')})
         if @validate(data)
           $.ajax
             type : 'post'
@@ -117,7 +116,7 @@
       template : "#notes_template"
       new_note : ->
         unless @_new_note_is_active()
-          @push('notes',{id:null, type:null, frequency:null, text:'', activity_id:@get('id')})
+          @push('notes',{id:null, type:null, frequency:null, text:'', notable_id:@get('id')})
       _new_note_is_active : ->
         notes = @findAllComponents('note')
         (notes.length > 0) && _.isNull( notes[notes.length - 1].get('id'))

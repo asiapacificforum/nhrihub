@@ -1,7 +1,10 @@
 class Note < ActiveRecord::Base
-  belongs_to :activity
+  include ActionDispatch::Routing::PolymorphicRoutes
+  include Rails.application.routes.url_helpers
+
   belongs_to :author, :class_name => "User", :foreign_key => :author_id
   belongs_to :editor, :class_name => "User", :foreign_key => :editor_id
+  belongs_to :notable, :polymorphic => true
 
   default_scope ->{ order(:created_at => :desc) }
 
@@ -10,7 +13,8 @@ class Note < ActiveRecord::Base
   end
 
   def url
-    Rails.application.routes.url_helpers.corporate_services_activity_note_path(:en,activity_id,id)
+    #Rails.application.routes.url_helpers.corporate_services_activity_note_path(:en,notable_id,id)
+    polymorphic_path([notable.namespace,notable,self], :locale => :en)
   end
 
   def updated_on
