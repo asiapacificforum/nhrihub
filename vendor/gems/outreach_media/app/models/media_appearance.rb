@@ -2,6 +2,7 @@ class MediaAppearance < ActiveRecord::Base
   belongs_to :positivity_rating
   belongs_to :user
   has_many :reminders, :as => :remindable, :dependent => :delete_all
+  has_many :notes, :as => :notable, :dependent => :delete_all
   delegate :text, :rank, :to => :positivity_rating, :prefix => true, :allow_nil => true
 
   has_many :media_areas, :dependent => :destroy
@@ -10,7 +11,7 @@ class MediaAppearance < ActiveRecord::Base
 
   def as_json(options={})
     super({:except => [:updated_at, :created_at, :positivity_rating_id],
-           :methods=> [:date, :metrics, :has_link, :has_scanned_doc, :media_areas, :reminders, :create_reminder_url, :create_note_url]})
+           :methods=> [:date, :metrics, :has_link, :has_scanned_doc, :media_areas, :reminders, :notes, :create_reminder_url, :create_note_url]})
   end
 
   def page_data
@@ -18,7 +19,7 @@ class MediaAppearance < ActiveRecord::Base
   end
 
   def create_note_url
-    #Rails.application.routes.url_helpers.outreach_media_media_appearance_notes_path(:en,id)
+    Rails.application.routes.url_helpers.outreach_media_media_appearance_notes_path(:en,id)
   end
 
   def create_reminder_url

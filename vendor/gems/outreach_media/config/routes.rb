@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       end
       resources :media_appearances do
         resources :reminders, :controller => "media_appearances/reminders"
+        resources :notes, :controller => "media_appearances/notes"
       end
       resources :areas do
         resources :subareas

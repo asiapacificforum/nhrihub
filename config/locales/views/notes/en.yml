@@ -5,3 +5,8 @@ en:
       notes: "Notes"
       date: "Date"
       text: "Text"
+      details: "Details"
+      created_on: "Created on"
+      author: "Created by"
+      updated_on: "Updated on"
+      updated_by: "Updated by"

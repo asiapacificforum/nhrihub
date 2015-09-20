@@ -57,6 +57,30 @@
     .col-md-1{:style => "text-align:center; font-size:14px; width:5%;"}
       %i.fa.fa-trash-o.fa-lg#delete_note{'on-click' => 'delete_note(event,this)', :style => "position:relative; left:-12px; top:-2px;"}
 
+%script#detailsContent{:type => 'text/ractive'}
+  %table#details{:style => 'width:200px'}
+    %tr
+      %td= t('.created_on')
+      %td#created_on {{ date }}
+    %tr
+      %td= t('.author')
+      %td#author {{ author_name }}
+    %tr
+      %td= t('.updated_on')
+      %td#updated_on {{ updated_on }}
+    %tr
+      %td= t('.updated_by')
+      %td#editor {{ editor_name }}
+
+%div#popover_template{:style=>"display: none"}
+  .popover.fileDetails{:role=>"tooltip"}
+    .arrow
+    %h3.popover-title
+    .popover-content
+
+%div#detailsTitle{:style=>"display: none"}
+  %span{:style => 'z-index:20'}= t('.details')
+
 :coffeescript
   $ ->
     Ractive.DEBUG = false
@@ -121,5 +145,22 @@
         notes = @findAllComponents('note')
         (notes.length > 0) && _.isNull( notes[notes.length - 1].get('id'))
 
+    Popover = (node)->
+      $(node).popover
+        html : true,
+        title : ->
+          $('#detailsTitle').html()
+        content : ->
+          data = Ractive.getNodeInfo(@).ractive.get()
+          ractive = new Ractive
+            template : '#detailsContent'
+            data : data
+          ractive.toHTML()
+        template : $('#popover_template').html()
+        trigger: 'hover'
+      teardown: ->
+        $(node).off('mouseenter')
+
+    Ractive.decorators.popover = Popover
     Ractive.components.note = Note
     Ractive.components.notes = Notes

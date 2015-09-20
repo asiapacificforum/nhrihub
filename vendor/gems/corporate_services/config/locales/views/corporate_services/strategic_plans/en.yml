@@ -39,10 +39,3 @@ en:
         recipient_s: "Recipient(s)"
         date: "Date"
         start_date: "Start date"
-      details_popover_title:
-        details: "Details"
-      details_popover_content:
-        created_on: "Created on"
-        author: "Created by"
-        updated_on: "Updated on"
-        updated_by: "Updated by"

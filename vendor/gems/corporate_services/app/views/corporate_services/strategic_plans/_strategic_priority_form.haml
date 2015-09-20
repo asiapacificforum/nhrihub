@@ -268,10 +268,6 @@
     %div
       <notes>
 
-
-= render :partial => 'details_popover'
-= render :partial => 'details_popover_content'
-= render :partial => 'details_popover_title'
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note' # it's in the main app
 
@@ -510,24 +506,7 @@
             #     console.log "Changes were not saved, for some reason"
             }
 
-    Popover = (node)->
-      $(node).popover
-        html : true,
-        title : ->
-          $('#detailsTitle').html()
-        content : ->
-          data = Ractive.getNodeInfo(@).ractive.get()
-          ractive = new Ractive
-            template : '#detailsContent'
-            data : data
-          ractive.toHTML()
-        template : $('#popover_template').html()
-        trigger: 'hover'
-      teardown: ->
-        $(node).off('mouseenter')
-
     Ractive.decorators.inpage_edit = EditInPlace
-    Ractive.decorators.popover = Popover
 
     StrategicPriority = Ractive.extend
       onconfig : ->

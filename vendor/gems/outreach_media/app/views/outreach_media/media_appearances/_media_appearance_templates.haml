@@ -121,7 +121,10 @@
                 .name {{ name }}
                 .value {{ metrics[name] }}
               {{/metrics}}
-    <reminders>
+    %div
+      <reminders>
+    %div
+      <notes>
 
 %script#area_template{:type=> 'template/ractive'}
   %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
