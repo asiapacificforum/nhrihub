@@ -1,0 +1,126 @@
+%script#notes_template{:type => 'ractive/template'}
+  <modal-custom id="notes_modal" type="xl">
+  <modal-header>
+  <h4>#{t('.notes')}<modal-close/></h4>
+  </modal-header>
+  <modal-body>
+  <i class="fa fa-plus fa-sm" id="add_note" on-click='new_note()' data-toggle="tooltip" data-placement="bottom" title="add note"/>
+  #notes{:style => "margin-bottom:80px;"}
+    .row
+      %h5.col-md-1{:style => "width:15%;"}= t('.date')
+      %h5.col-md-1{:style => "width:70%;"}= t('.text')
+    {{#notes}}
+    <note date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' text='{{text}}'/>
+    {{/notes}}
+  </modal-body>
+
+%script#note_template{:type => 'text/ractive'}
+  {{#if !persisted }}
+  {{> new_note_template }}
+  {{else}}
+  {{> show_note_template }}
+  {{/if}}
+
+%script#new_note_template{:type => 'text/ractive'}
+  .form-horizontal#new_note
+    .form-group#text{:class => '{{#text_error}}has-error{{/}}'}
+      %label.control-label.topaligned.col-sm-2= t('.text')
+      .col-sm-10
+        =text_area :note, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
+        %span.help-block= t('.note_text_error_message')
+    .form-group
+      .col-sm-10.col-sm-offset-2
+        <i class="fa fa-remove fa-lg" id="cancel_note" style="padding-left:30px" on-click="cancel_note()" data-toggle="tooltip" data-placement="bottom" title="cancel"/>
+        <i class="fa fa-check fa-lg" id="save_note" style="padding-left:60px" on-click="save_note()" data-toggle="tooltip" data-placement="bottom" title="save"/>
+
+%script#show_note_template{:type => 'text/ractive'}
+  .note.row.editable_container{:id => "note_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
+    .col-md-1.date.form-group{:style => "width:15%"}
+      %span {{ date }}
+    .col-md-6.text.form-group{:class => '{{#text_error}}has-error{{/}}', :style => "width:65%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'text'}
+      %div
+        .fade.no_edit.in
+          %span {{text}}
+        .fade.edit{:style => "height:140px;"}
+          %textarea#note_text.form-control{:name => 'note[text]', :cols=>78, :rows=>4, :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"}
+          %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.note_text_error_message')
+    .col-md-1.icon.note_info{:style => "width:5%"}
+      %i.fa.fa-info-circle.fa-lg{:decorator => 'popover'}
+    .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px; width:5%", 'data-toggle' => 'edit'}
+      .fade.edit
+        %i.fa.fa-remove.fa-lg{:style => "position:relative;", :id => "note_editable{{id}}_edit_cancel"}
+    .col-md-1.icon{:style => "text-align:center; font-size:14px; width:5%", 'data-toggle' => 'edit'}
+      .fade.edit
+        %i.fa.fa-check.fa-lg{:id => "note_editable{{id}}_edit_save"}
+      .fade.no_edit.in{:style => "left:-14px;"}
+        %i.fa.fa-pencil-square-o.fa-lg{:id => "note_editable{{id}}_edit_start"}
+    .col-md-1{:style => "text-align:center; font-size:14px; width:5%;"}
+      %i.fa.fa-trash-o.fa-lg#delete_note{'on-click' => 'delete_note(event,this)', :style => "position:relative; left:-12px; top:-2px;"}
+
+:coffeescript
+  $ ->
+    Ractive.DEBUG = false
+
+    Note = Ractive.extend
+      template : '#note_template'
+      computed :
+        persisted : ->
+          !isNaN(parseInt(@get('id')))
+      save_note : ->
+        context = $(@el)
+        url = @parent.get('create_note_url')
+        data = context.find('#new_note :input').serializeArray()
+        data.push({name: 'note[activity_id]', value : @get('activity_id')})
+        if @validate(data)
+          $.ajax
+            type : 'post'
+            url : url
+            data : data
+            dataType : 'json'
+            success : @create_note
+            context : @
+      cancel_note : ->
+        @parent.pop('notes')
+      delete_note : (event)->
+        ev = $.Event(event)
+        ev.stopPropagation()
+        data = [{name:'_method', value: 'delete'}]
+        $.ajax
+          url : @get('url')
+          data : data
+          method : 'post'
+          dataType : 'json'
+          context : @
+          success : @update_note
+      update_note : (resp, statusText, jqxhr)->
+        @parent.set(resp)
+      validate : ->
+        @_validate('text')
+      _validate : (field)->
+        if _.isString(@get(field))
+          @set(field, @get(field).trim())
+        value = @get(field)
+        if _.isArray(value) && value.length == 0
+          @set(field+'_error',true)
+          false
+        else if value == "" || _.isNull(value)
+          @set(field+'_error',true)
+          false
+        else
+          true
+      create_note : (response, statusText, jqxhr)->
+        @parent.set('notes',response)
+      remove_errors : (field)->
+        @set(field+"_error",false)
+
+    Notes = Ractive.extend
+      template : "#notes_template"
+      new_note : ->
+        unless @_new_note_is_active()
+          @push('notes',{id:null, type:null, frequency:null, text:'', activity_id:@get('id')})
+      _new_note_is_active : ->
+        notes = @findAllComponents('note')
+        (notes.length > 0) && _.isNull( notes[notes.length - 1].get('id'))
+
+    Ractive.components.note = Note
+    Ractive.components.notes = Notes
