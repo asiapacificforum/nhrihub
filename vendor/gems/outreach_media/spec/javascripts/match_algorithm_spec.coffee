@@ -12,8 +12,10 @@ describe "within range evaluation", ->
     window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
+    window.new_media_appearance = MagicLamp.loadJSON('new_media_appearance')
+    window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
-    $.getScript "/assets/outreach_media.js", -> done()
+    $.getScript "/assets/outreach_media.js", -> done() # the media_appearances.js app , start_page(), define_media
 
   it "should evaluate integers", ->
     min = 0
@@ -42,7 +44,7 @@ describe "within range evaluation", ->
   it "should evaluate indeterminate input as true", ->
     min = NaN
     max = NaN
-    val = null
+    val = parseInt(null)
     expect(test(min,max,val)).to.be.true
 
   it "should evaluate floats", ->
@@ -78,7 +80,7 @@ describe "within range evaluation", ->
   it "should evaluate as true when val is empty", ->
     min = 2.3
     max = 8.7
-    val = null
+    val = parseInt(null)
     expect(test(min,max,val)).to.be.true
 
 
@@ -87,6 +89,8 @@ describe "area and subarea matching algorithm", ->
     window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
+    window.new_media_appearance = MagicLamp.loadJSON('new_media_appearance')
+    window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     $.getScript "/assets/outreach_media.js", -> done()
 
@@ -156,6 +160,11 @@ describe "area and subarea matching algorithm", ->
                                          ]})
         media.set({'sort_criteria.areas':[1,2], 'sort_criteria.subareas':[1], 'sort_criteria.rule':'any'})
         expect(media_appearance_area_matches()).to.eql [true,true,true,true,true]
+
+      it "should succeed when areas attributes are empty", ->
+        media.reset({'media_appearances':[ {"media_areas":[]}]})
+        media.set({'sort_criteria.areas':[1], 'sort_criteria.rule':'any'})
+        expect(media_appearance_area_matches()).to.eql [true]
 
     describe "match criteria for subareas", ->
       it "should include media appearances matching any sort criteria subareas", ->

@@ -1,3 +1,21 @@
+#expand {
+  background-repeat: no-repeat;
+  height: 16px;
+  cursor: pointer;
+  background-image: asset-url("outreach_media/expand19.png"); //http://www.flaticon.com/free-icon/expand-arrows-couple_37089
+  display: block;
+  background-size: 12px;
+}
+
+#compact {
+  background-repeat: no-repeat;
+  height: 16px;
+  cursor: pointer;
+  background-image: asset-url("outreach_media/compress.png"); //http://www.flaticon.com/free-icon/compress-arrows-couple-symbol_36692
+  display: block;
+  background-size: 12px;
+}
+
 #media_appearances_controls {
   background-color : #9A9375;
   margin-bottom : 6px;
@@ -5,19 +23,11 @@
   padding-bottom : 12px;
 
     #expand {
-      background-repeat: no-repeat;
-      height: 16px;
-      cursor: pointer;
-      background-image: asset-url("outreach_media/expand19.png"); //http://www.flaticon.com/free-icon/expand-arrows-couple_37089
-      display: block;
+      background-size: 18px;
     }
 
     #compact {
-      background-repeat: no-repeat;
-      height: 16px;
-      cursor: pointer;
-      background-image: asset-url("outreach_media/compress.png"); //http://www.flaticon.com/free-icon/compress-arrows-couple-symbol_36692
-      display: block;
+      background-size: 18px;
     }
 
     .row {
@@ -116,4 +126,11 @@
 
 .filter_field.error input{
   border-color : #f00;
+}
+
+.checkbox label {
+  padding-left : 70px;
+}
+.checkbox.subarea {
+  padding-left: 60px;
 }

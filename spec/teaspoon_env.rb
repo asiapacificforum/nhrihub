@@ -53,7 +53,7 @@ Teaspoon.configure do |config|
 
     # This suites spec helper, which can require additional support files. This file is loaded before any of your test
     # files are loaded.
-    suite.helper = "spec_helper"
+    #suite.helper = "spec_helper"
 
     # Partial to be rendered in the head tag of the runner. You can use the provided ones or define your own by creating
     # a `_boot.html.erb` in your fixtures path, and adjust the config to `"/boot"` for instance.

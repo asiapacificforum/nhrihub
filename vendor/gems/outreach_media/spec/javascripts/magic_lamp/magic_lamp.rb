@@ -1,3 +1,6 @@
+DatabaseCleaner.strategy = :truncation
+DatabaseCleaner.clean
+
 def populate_areas
 
   hr_area = Area.create(:name => 'Human Rights')
@@ -24,6 +27,8 @@ def populate_areas
   #Subarea.create({:area_id => cs_area.id, :name => "XYZ"})
 end
 
+populate_areas
+
 def populate_positivity_ratings
 end
 
@@ -31,9 +36,10 @@ end
 def populate_media_appearances
   ma = FactoryGirl.create(:media_appearance, :hr_area,
                                              :crc_subarea,
-                                             :gg_area,
                                              :title => "Fantasy land",
-                                             :created_at => Date.new(2015,1,1),
+                                             # this time is stored as its UTC equivalent 12/31/14
+                                             # so the date method returns the intended value, 1/1/15
+                                             :created_at => DateTime.new(2015,1,1,0,0,0,'-8'),
                                              :violation_coefficient => 10,
                                              :violation_severity => 5,
                                              :affected_people_count => 555)
@@ -43,7 +49,7 @@ def populate_media_appearances
   ma = FactoryGirl.create(:media_appearance, :hr_area,
                                              :crc_subarea,
                                              :title => "May the force be with you",
-                                             :created_at => Date.new(2014,1,1),
+                                             :created_at => DateTime.new(2014,1,1,0,0,0,'-8'),
                                              :violation_coefficient => 0.7,
                                              :violation_severity => 2,
                                              :affected_people_count => 55500000)
@@ -51,27 +57,41 @@ def populate_media_appearances
   ma.save
 
   6.times do
-    ma = FactoryGirl.create(:media_appearance, :no_f_in_title, :si_area, :created_at => Date.new(2014,1,1), :violation_coefficient => 10, :violation_severity => 9, :affected_people_count => 55500000)
+    ma = FactoryGirl.create(:media_appearance,
+                            :no_f_in_title,
+                            :si_area,
+                            :created_at => DateTime.new(2014,1,1,0,0,0,'-8'),
+                            :violation_coefficient => 10,
+                            :violation_severity => 9,
+                            :affected_people_count => 55500000)
     ma.positivity_rating = FactoryGirl.create(:positivity_rating, :rank => 9)
     ma.save
   end
 end
 
-populate_areas
 
 
 MagicLamp.define do
   fixture(:name => 'subareas_data') do
-    Subarea.all
+    Subarea.extended
   end
 
   fixture(:name => 'areas_data') do
     Area.all
   end
 
+  # e.g. on page do this:  window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
   fixture(:name => 'media_appearance_data') do
     populate_media_appearances
     MediaAppearance.all
+  end
+
+  fixture(:name => 'new_media_appearance') do
+    MediaAppearance.new
+  end
+
+  fixture(:name => 'create_media_appearance_url') do
+    MediaAppearance.new.create_url
   end
 
   fixture(:name => 'media_appearance_page') do

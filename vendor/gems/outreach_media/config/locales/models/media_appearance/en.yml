@@ -3,7 +3,7 @@ en:
     attributes:
       media_appearance:
         affected_people_count: "# People affected"
-        violation_severity: "Violation severity"
+        violation_severity_rank: "Violation severity"
         violation_coefficient: "Violation coefficient"
         positivity_rating_rank: "Positivity rating"
         positivity_rating_text: "Positivity rating"

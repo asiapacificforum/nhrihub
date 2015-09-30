@@ -31,9 +31,9 @@
 //
 // see https://github.com/crismali/magic_lamp
 //= require magic_lamp
+//= require magic_lamp/all_fixtures
 //
 // For more information: http://github.com/modeset/teaspoon
-// require outreach_media
 //= require simulant
 //
 // Chai

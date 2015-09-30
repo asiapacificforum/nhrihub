@@ -26,7 +26,7 @@ class @InpageEditElement
 
   switch_to_edit : ->
     unless _.isUndefined(@attribute) # in which case it's a control element not an input
-      @_stash()
+      @_stash() # save the value for restoral after cancel when changes have been made
     @hide(@text())
     @show(@input())
 
@@ -92,6 +92,8 @@ class @InpageEdit
         @context = $target.closest('.editable_container')
         @edit(@options.object)
         @context.find(@options.focus_element).first().focus()
+        if @options.start_callback
+          @options.start_callback()
 
     $(@options.on).find("[id$='_edit_cancel']").on 'click', (e)=>
       e.stopPropagation()

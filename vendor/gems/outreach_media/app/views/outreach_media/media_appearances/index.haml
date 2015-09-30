@@ -1,4 +1,8 @@
 %h1= t('.heading')
+.btn.btn-success.btn-sm.add_article{:style => "margin-bottom:12px; color:white;", :onclick => "media.new_article()"}
+  %i.fa.fa-plus.fa-lg{:style => "color:white"}
+  %span= t('.add_article')
+
 #media_appearances
 
 = render partial: "media_appearance_templates"
@@ -9,5 +13,7 @@
   media_appearances = #{@media_appearances.to_json}
   areas = #{@areas.to_json}
   subareas = #{@subareas.to_json}
+  new_media_appearance = #{@media_appearance.to_json}
+  create_media_appearance_url = "#{@media_appearance.create_url}"
 
 = javascript_include_tag "outreach_media"

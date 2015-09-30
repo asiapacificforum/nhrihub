@@ -13,12 +13,15 @@ $ ->
         @load()
       error : ->
         console.log "Changes were not saved, for some reason"
+      start_callback : -> ractive.expand()
     return {
       teardown : (id)->
       update : (id)->
       }
 
   Ractive.DEBUG = false
+
+  window.app_debug = false
 
   Ractive.decorators.inpage_edit = EditInPlace
 
@@ -39,7 +42,7 @@ $ ->
   Metric = Ractive.extend
     template : '#metric_template'
 
-  Subarea = Ractive.extend
+  SubareaFilter = Ractive.extend
     template : '#subarea_template'
     oninit : ->
       @select()
@@ -57,10 +60,10 @@ $ ->
       @root.remove_subarea_filter(@get('id'))
       @set('subarea_selected',false)
 
-  Area = Ractive.extend
+  AreaFilter = Ractive.extend
     template : '#area_template'
     components :
-      subarea : Subarea
+      subarea : SubareaFilter
     oninit : ->
       @select()
     toggle : ->
@@ -79,26 +82,75 @@ $ ->
       @root.remove_area_filter(@get('id'))
       @set('area_selected',false)
 
+  SubareaSelect = Ractive.extend
+    template : "#subarea_select_template"
+    show_metrics : (id)->
+      if (Subarea.find(id).extended_name == "Human Rights Violation") && @get('checked')
+        $('.hr_metrics').show(300)
+      else if (Subarea.find(id).extended_name == "Human Rights Violation") && !@get('checked')
+        $('.hr_metrics').hide(300)
+
+  AreaSelect = Ractive.extend
+    template : "#area_select_template"
+    components :
+      'subarea-select' : SubareaSelect
+
   MediaAppearance = Ractive.extend
     template : '#media_appearance_template'
     components :
       mediaarea : MediaArea
       metric : Metric
+      'area-select' : AreaSelect
+    oninit : ->
+      @set('expanded',false)
     computed :
+      debug : -> app_debug
+      formatted_metrics : ->
+        metrics = $.extend(true,{},@get('metrics'))
+        metrics.affected_people_count.value = @get('metrics').affected_people_count.value.toLocaleString()
+        metrics
+      count : ->
+        t = @get('title') || ""
+        100 - t.length
       area_ids : ->
         _(@get('media_areas')).map (ma)-> ma.area_id
       subarea_ids : ->
         ids = _(@get('media_areas')).map((ma)-> ma.subarea_ids)
         _(ids).flatten()
       include : ->
-        @_matches_title() &&
-        @_matches_from() &&
-        @_matches_to() &&
-        @_matches_area_subarea() &&
-        @_matches_violation_coefficient() &&
-        @_matches_positivity_rating() &&
-        @_matches_violation_severity() &&
+        if @get('debug')
+          true
+        else
+          @_matches_title() &&
+          @_matches_from() &&
+          @_matches_to() &&
+          @_matches_area_subarea() &&
+          @_matches_violation_coefficient() &&
+          @_matches_positivity_rating() &&
+          @_matches_violation_severity() &&
+          @_matches_people_affected()
+      matches_title : -> # the 'matches' attributes are for diagnosis during dev and can be removed
+        @_matches_title()
+      matches_from : ->
+        @_matches_from()
+      matches_to : ->
+        @_matches_to()
+      matches_area : ->
+        @_matches_area()
+      matches_subarea : ->
+        @_matches_subarea()
+      matches_area_subarea : ->
+        @_matches_area_subarea()
+      matches_violation_coefficient : ->
+        @_matches_violation_coefficient()
+      matches_positivity_rating : ->
+        @_matches_positivity_rating()
+      matches_violation_severity : ->
+        @_matches_violation_severity()
+      matches_people_affected : ->
         @_matches_people_affected()
+      persisted : ->
+        !_.isNull(@get('id'))
     _matches_from : ->
       new Date(@get('date')) >= new Date(@get('sort_criteria.from'))
     _matches_to : ->
@@ -108,6 +160,7 @@ $ ->
       return (@_matches_area() && @_matches_subarea()) if @get('sort_criteria.rule') == 'all'
     _matches_area : ->
       if @get('sort_criteria.rule') == 'any'
+        return true if _.isEmpty(@get('area_ids'))
         matches = _.intersection(@get('area_ids'), @get('sort_criteria.areas'))
         matches.length > 0
       else
@@ -120,13 +173,15 @@ $ ->
         return true if _.isEmpty(@get('sort_criteria.subareas'))
         _.isEqual(@get('subarea_ids').slice().sort(), @get('sort_criteria.subareas').slice().sort())
     _matches_people_affected : ->
-      @_between(parseInt(@get('sort_criteria.pa_min')),parseInt(@get('sort_criteria.pa_max')),@get('affected_people_count'))
+      @_between(parseInt(@get('sort_criteria.pa_min')),parseInt(@get('sort_criteria.pa_max')),parseInt(@get('metrics.affected_people_count.value')))
     _matches_violation_severity : ->
-      @_between(parseInt(@get('sort_criteria.vs_min')),parseInt(@get('sort_criteria.vs_max')),@get('violation_severity'))
+      @_between(parseInt(@get('sort_criteria.vs_min')),parseInt(@get('sort_criteria.vs_max')),parseInt(@get('metrics.violation_severity.value')))
     _matches_violation_coefficient : ->
-      @_between(parseFloat(@get('sort_criteria.vc_min')),parseFloat(@get('sort_criteria.vc_max')),@get('violation_coefficient'))
+      @_between(parseFloat(@get('sort_criteria.vc_min')),parseFloat(@get('sort_criteria.vc_max')),parseFloat(@get('metrics.violation_coefficient.value')))
+    _matches_positivity_rating : ->
+      @_between(parseInt(@get('sort_criteria.pr_min')),parseInt(@get('sort_criteria.pr_max')),parseInt(@get("metrics.positivity_rating_rank.value")))
     _between : (min,max,val)->
-      return true unless _.isNumber(val) # declare match if there's no value
+      return true if _.isNaN(val) # declare match if there's no value
       min = if _.isNaN(min) # from the input element a zero-length string can be presented
               0
             else
@@ -134,28 +189,65 @@ $ ->
       exceeds_min = (val >= min)
       less_than_max = _.isNaN(max) || (val <= max) # if max is not a number, then assume val is in-range
       exceeds_min && less_than_max
-    _matches_positivity_rating : ->
-      @_between(parseInt(@get('sort_criteria.pr_min')),parseInt(@get('sort_criteria.pr_max')),parseInt(@get('metrics')["Positivity rating"]))
     _matches_title : ->
       re = new RegExp(@get('sort_criteria.title'),'i')
       re.test(@get('title'))
     expand : ->
+      @set('expanded',true)
       $(@find('.collapse')).collapse('show')
     compact : ->
+      @set('expanded',false)
       $(@find('.collapse')).collapse('hide')
     show_reminders_panel : ->
       $('#reminders_modal').modal('show')
     show_notes_panel : ->
       $('#notes_modal').modal('show')
+    remove_title_errors : ->
+      @set('title_error',false)
+    cancel : ->
+      @parent.shift('media_appearances')
+    form : ->
+      $('.form input, .form select')
+    save : ->
+      data = @form().serializeArray()
+      url = @parent.get('create_media_appearance_url')
+      if @validate()
+        $.post(url, data, @update_ma, 'json')
+    validate : ->
+      @set('title',@get('title').trim())
+      if _.isEmpty(@get('title'))
+        @set('title_error',true)
+        false
+      else
+        true
+    update_ma : (data,textStatus,jqxhr)->
+      media.set('media_appearances.0', data)
+    delete_this : (event) ->
+      data = {'_method' : 'delete'}
+      url = @get('url')
+      # TODO if confirm
+      $.ajax
+        method : 'post'
+        url : url
+        data : data
+        success : @delete_callback
+        dataType : 'json'
+        context : @
+    delete_callback : (data,textStatus,jqxhr)->
+      @parent.delete(@)
+    remove_errors : ->
+      @compact() #nothing to do with errors, but this method is called on edit_cancel
+      console.log "remove errors"
 
   window.media_page_data = -> # an initialization data set so that tests can reset between
     expanded : false
     media_appearances: media_appearances
     areas : areas
+    create_media_appearance_url: create_media_appearance_url
     sort_criteria :
       title : ""
-      from : new Date(1995,0,1)
-      to : new Date()
+      from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation
+      to : new Date(new Date().toDateString()) # then it yields proper comparison with Rails timestamp
       areas : []
       subareas : []
       vc_min : 0.0
@@ -174,17 +266,18 @@ $ ->
     data : window.media_page_data()
     oninit : ->
       @populate_min_max_fields()
+      #@on 'edit', (event,id)-> @edit(event,id)
     computed :
       dates : ->
         _(@findAllComponents('ma')).map (ma)->new Date(ma.get('date'))
       violation_coefficients : ->
-        _(@findAllComponents('ma')).map (ma)->parseFloat (ma.get('metrics')["Violation coefficient"] )
+        _(@findAllComponents('ma')).map (ma)->parseFloat (ma.get("metrics.violation_coefficient.value") || 0.0 )
       positivity_ratings : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get('metrics')["Positivity rating"] )
+        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.positivity_rating_rank.value")  || 0)
       violation_severities : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get('metrics')["Violation severity"] )
+        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.violation_severity.value")  || 0)
       people_affecteds : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get('metrics')["# People affected"] )
+        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.affected_people_count.value")  || 0)
       earliest : ->
         @min('dates')
       most_recent : ->
@@ -212,31 +305,27 @@ $ ->
         get: -> $.datepicker.formatDate("dd/mm/yy", @get('sort_criteria.to'))
         set: (val)-> @set('sort_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
     min : (param)->
-      @get(param).reduce (min,date)->
-        if date<min
-          date
-        else
-          min
+      @get(param).reduce (min,val)->
+        return val if val<min
+        min
     max : (param)->
-      @get(param).reduce (max,date)->
-        if date > max
-          date
-        else
-          max
+      @get(param).reduce (max,val)->
+        return val if val > max
+        max
     components :
       ma : MediaAppearance
-      area : Area
+      area : AreaFilter
     populate_min_max_fields : ->
-      @set('sort_criteria.from',@get('earliest'))
-      @set('sort_criteria.to',@get('most_recent'))
-      @set('sort_criteria.vc_min',@get('vc_min'))
-      @set('sort_criteria.vc_max',@get('vc_max'))
-      @set('sort_criteria.pr_min',@get('pr_min'))
-      @set('sort_criteria.pr_max',@get('pr_max'))
-      @set('sort_criteria.vs_min',@get('vs_min'))
-      @set('sort_criteria.vs_max',@get('vs_max'))
-      @set('sort_criteria.pa_min',@get('pa_min'))
-      @set('sort_criteria.pa_max',@get('pa_max'))
+      @set('sort_criteria.from',@get('earliest'))  unless _.isUndefined(@get('earliest'))
+      @set('sort_criteria.to',@get('most_recent')) unless _.isUndefined(@get('most_recent'))
+      @set('sort_criteria.vc_min',@get('vc_min'))  unless _.isUndefined(@get('vc_min'))
+      @set('sort_criteria.vc_max',@get('vc_max'))  unless _.isUndefined(@get('vc_max'))
+      @set('sort_criteria.pr_min',@get('pr_min'))  unless _.isUndefined(@get('pr_min'))
+      @set('sort_criteria.pr_max',@get('pr_max'))  unless _.isUndefined(@get('pr_max'))
+      @set('sort_criteria.vs_min',@get('vs_min'))  unless _.isUndefined(@get('vs_min'))
+      @set('sort_criteria.vs_max',@get('vs_max'))  unless _.isUndefined(@get('vs_max'))
+      @set('sort_criteria.pa_min',@get('pa_min'))  unless _.isUndefined(@get('pa_min'))
+      @set('sort_criteria.pa_max',@get('pa_max'))  unless _.isUndefined(@get('pa_max'))
     expand : ->
       @set('expanded', true)
       _(@findAllComponents('ma')).each (ma)-> ma.expand()
@@ -264,6 +353,12 @@ $ ->
       @event.original.preventDefault()
       @event.original.stopPropagation()
       @set('sort_criteria.rule',name)
+    new_article : ->
+      @unshift('media_appearances', $.extend(true,{},new_media_appearance))
+      $(@find('#media_appearance_title')).focus()
+    delete : (media_appearance)->
+      index = @findAllComponents('ma').indexOf(media_appearance)
+      @splice('media_appearances',index,1)
 
   window.start_page = ->
     window.media = new Ractive options
@@ -282,5 +377,3 @@ $ ->
       $(".#{key}").addClass('error')
     else
       $(".#{key}").removeClass('error')
-
-

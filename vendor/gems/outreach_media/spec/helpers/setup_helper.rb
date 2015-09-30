@@ -5,6 +5,7 @@ module SetupHelper
   def setup_database
     setup_positivity_ratings
     setup_areas
+    setup_violation_severities
     FactoryGirl.create(:media_appearance,
                        :hr_area,
                        :positivity_rating => PositivityRating.first,
@@ -17,12 +18,16 @@ module SetupHelper
     ma.save
   end
 
+  def setup_articles
+    FactoryGirl.create(:media_appearance)
+  end
+
   def setup_positivity_ratings
-    PositivityRating.create({:rank => 1, :text => "Reflects very negatively on the office"})
-    PositivityRating.create({:rank => 2, :text => "Reflects slightly negatively on the office"})
-    PositivityRating.create({:rank => 3, :text => "Has no bearing on the office"})
-    PositivityRating.create({:rank => 4, :text => "Reflects slightly positively on the office"})
-    PositivityRating.create({:rank => 5, :text => "Reflects very positively on the office"})
+    PositivityRating::DefaultValues.each { |pr| PositivityRating.create(:rank => pr.rank, :text => pr.text) }
+  end
+
+  def setup_violation_severities
+    ViolationSeverity::DefaultValues.each { |vs| ViolationSeverity.create(:rank=>vs.rank, :text => vs.text) }
   end
 
   def setup_areas

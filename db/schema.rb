@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150920024842) do
+ActiveRecord::Schema.define(version: 20150928155803) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,19 +88,12 @@ ActiveRecord::Schema.define(version: 20150920024842) do
     t.string   "title"
     t.string   "note"
     t.integer  "affected_people_count"
-    t.integer  "violation_severity"
     t.float    "violation_coefficient"
     t.integer  "positivity_rating_id"
     t.integer  "reminder_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "media_area_subareas", force: :cascade do |t|
-    t.integer  "media_area_id"
-    t.integer  "subarea_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "violation_severity_id"
   end
 
   create_table "media_areas", force: :cascade do |t|
@@ -265,5 +258,12 @@ ActiveRecord::Schema.define(version: 20150920024842) do
   end
 
   add_index "users", ["login"], name: "index_users_on_login", using: :btree
+
+  create_table "violation_severities", force: :cascade do |t|
+    t.integer  "rank"
+    t.string   "text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

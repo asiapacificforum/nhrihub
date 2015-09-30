@@ -24,11 +24,11 @@ Capybara.register_driver :poltergeist do |app|
   #Capybara::Poltergeist::Driver.new(app, :debug => true)
 # use this configuration to enable the page.driver.debug interface
 # see https://github.com/teampoltergeist/poltergeist
-  #Capybara::Poltergeist::Driver.new(app, :inspector => true, :timeout => 300)
-  Capybara::Poltergeist::Driver.new(:window_size => [1524,768])
+  Capybara::Poltergeist::Driver.new(app, :inspector => true, :timeout => 300)
+  #Capybara::Poltergeist::Driver.new(:window_size => [1524,768])
 end
 #comment this line out to use the default javascript server firefox
-#Capybara.javascript_driver = :poltergeist
+Capybara.javascript_driver = :poltergeist
 
 #require 'simplecov'
 #SimpleCov.start

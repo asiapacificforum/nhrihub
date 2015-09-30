@@ -2,10 +2,10 @@ FactoryGirl.define do
   factory :media_appearance do
     user
     positivity_rating
+    violation_severity
     title {Faker::Lorem.sentence(5)}
     note {Faker::Lorem.sentences(1)}
     affected_people_count { rand(20000) }
-    violation_severity { rand(5) }
     violation_coefficient { (rand(100).to_f/100.to_f) }
 
     trait :link do
@@ -46,7 +46,7 @@ FactoryGirl.define do
 
     trait :crc_subarea do
       after(:create) do |ma|
-        ma.media_areas.first.subareas << Subarea.where(:name => "CRC").first
+        ma.subareas << Subarea.where(:name => "CRC").first
         ma.save
       end
     end
