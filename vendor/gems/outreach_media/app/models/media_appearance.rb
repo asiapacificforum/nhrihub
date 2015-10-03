@@ -26,6 +26,8 @@ class MediaAppearance < ActiveRecord::Base
                        :has_link,
                        :has_scanned_doc,
                        :media_areas,
+                       :area_ids,
+                       :subarea_ids,
                        :reminders,
                        :notes,
                        :create_reminder_url,

@@ -100,10 +100,11 @@ $ ->
     components :
       mediaarea : MediaArea
       metric : Metric
-      'area-select' : AreaSelect
+      'area-select' : AreaSelect # due to a ractive bug, checkboxes don't work in components, see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox, so this component is not used, until the bug is fixed
     oninit : ->
       @set('expanded',false)
     computed :
+      create_instance_attributes : -> {media_appearance : _(@get()).pick('area_ids','subarea_ids','title','affected_people_count','violation_severity_rank','positivity_rating_rank')}
       debug : -> app_debug
       formatted_metrics : ->
         metrics = $.extend(true,{},@get('metrics'))
@@ -112,11 +113,11 @@ $ ->
       count : ->
         t = @get('title') || ""
         100 - t.length
-      area_ids : ->
-        _(@get('media_areas')).map (ma)-> ma.area_id
-      subarea_ids : ->
-        ids = _(@get('media_areas')).map((ma)-> ma.subarea_ids)
-        _(ids).flatten()
+      #area_ids : -> # now delivered by server iso computed
+        #_(@get('media_areas')).map (ma)-> ma.area_id
+      #subarea_ids : -> # now delivered by server iso computed
+        #ids = _(@get('media_areas')).map((ma)-> ma.subarea_ids)
+        #_(ids).flatten()
       include : ->
         if @get('debug')
           true
@@ -209,10 +210,10 @@ $ ->
     form : ->
       $('.form input, .form select')
     save : ->
-      data = @form().serializeArray()
+      #data = @form().serializeArray()
       url = @parent.get('create_media_appearance_url')
       if @validate()
-        $.post(url, data, @update_ma, 'json')
+        $.post(url, @get('create_instance_attributes'), @update_ma, 'json')
     validate : ->
       @set('title',@get('title').trim())
       if _.isEmpty(@get('title'))
@@ -238,6 +239,11 @@ $ ->
     remove_errors : ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       console.log "remove errors"
+    show_metrics : (id)->
+      if (Subarea.find(id).extended_name == "Human Rights Violation") && !(_(@get('subarea_ids')).indexOf(id) == -1)
+        $('.hr_metrics').show(300)
+      else if (Subarea.find(id).extended_name == "Human Rights Violation") && (_(@get('subarea_ids')).indexOf(id) == -1)
+        $('.hr_metrics').hide(300)
 
   window.media_page_data = -> # an initialization data set so that tests can reset between
     expanded : false
@@ -332,6 +338,13 @@ $ ->
     compact : ->
       @set('expanded', false)
       _(@findAllComponents('ma')).each (ma)-> ma.compact()
+    #expand_toggle : ->
+      #state = @get('expanded')
+      #@set('expanded',!state)
+      #if @get('expanded')
+        #_(@findAllComponents('ma')).each (ma)-> ma.compact()
+      #else
+        #_(@findAllComponents('ma')).each (ma)-> ma.expand()
     add_area_filter : (id) ->
       @push('sort_criteria.areas',id)
     remove_area_filter : (id) ->

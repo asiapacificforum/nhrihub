@@ -25,7 +25,7 @@ def rand_filename
 end
 
 namespace :corporate_services do
-  desc "re-initialize database with 5 primary, 10 archive"
+  desc "re-initialize database with internal documents: 5 primary, 10 archive"
   task :init => :environment do
     DocumentGroup.delete_all
     InternalDocument.delete_all

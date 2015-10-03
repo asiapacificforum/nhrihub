@@ -81,7 +81,7 @@
         %input{:style=>"width:50px", :value => '{{sort_criteria.pr_max}}'}
         %span.error_message Invalid
   {{#media_appearances}}
-  <ma on-edit='edit' expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  metrics='{{metrics}}'  has_link='{{has_link}}'  has_scanned_doc='{{has_scanned_doc}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}' />
+  <ma on-edit='edit', area_ids='{{area_ids}}', expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  metrics='{{metrics}}'  has_link='{{has_link}}'  has_scanned_doc='{{has_scanned_doc}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}' />
   {{/media_appearances}}
 
 %script#media_appearance_template{:type => 'template/ractive'}
@@ -115,12 +115,12 @@
             {{/if}}
             .col-md-1.icon{ 'data-toggle' => 'edit'}
               .fade.edit
-                %i.fa.fa-remove{:id => "strategic_priority_editable{{id}}_edit_cancel", :style=>"position:relative; left:17px"}
+                %i.fa.fa-remove{:id => "media_appearance_editable{{id}}_edit_cancel"}
             .col-md-1.icon{'data-toggle' => 'edit'}
               .fade.edit
-                %i.fa.fa-check{:id => "strategic_priority_editable{{id}}_edit_save", :style => "position:relative; left:13px"}
+                %i.fa.fa-check{:id => "media_appearance_editable{{id}}_edit_save"}
               .fade.no_edit.in
-                %i.fa.fa-pencil-square-o{:id => "strategic_priority_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
+                %i.fa.fa-pencil-square-o{:id => "media_appearance_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
             .col-md-1
               %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
             {{#if expanded}}
@@ -154,7 +154,24 @@
         .panel-content
           .row
             .col-md-2.description{'data-toggle'=>'edit', :style => "width:50%"}
-              <div class="fade edit in"><div class="checkbox"><label><input id="media_appearance_area_ids_1" name="media_appearance[area_ids][]" type="checkbox" value="1"> Human Rights</label></div> <div class="checkbox subarea"><label><input id="media_appearance_subarea_ids_1" name="media_appearance[subarea_ids][]" type="checkbox" value="1"> Violation</label></div><div class="checkbox subarea"><label><input id="media_appearance_subarea_ids_2" name="media_appearance[subarea_ids][]" type="checkbox" value="2"> Education activities</label></div><div class="checkbox subarea"><label><input id="media_appearance_subarea_ids_3" name="media_appearance[subarea_ids][]" type="checkbox" value="3"> Office reports</label></div><div class="checkbox subarea"><label><input id="media_appearance_subarea_ids_4" name="media_appearance[subarea_ids][]" type="checkbox" value="4"> Universal periodic review</label></div><div class="checkbox subarea"><label><input id="media_appearance_subarea_ids_5" name="media_appearance[subarea_ids][]" type="checkbox" value="5"> CEDAW</label></div><div class="checkbox subarea"><label><input id="media_appearance_subarea_ids_6" name="media_appearance[subarea_ids][]" type="checkbox" value="6"> CRC</label></div><div class="checkbox subarea"><label><input id="media_appearance_subarea_ids_7" name="media_appearance[subarea_ids][]" type="checkbox" value="7"> CRPD</label></div><div class="checkbox"><label><input id="media_appearance_area_ids_2" name="media_appearance[area_ids][]" type="checkbox" value="2"> Good Governance</label></div> <div class="checkbox subarea"><label><input id="media_appearance_subarea_ids_8" name="media_appearance[subarea_ids][]" type="checkbox" value="8"> Violation</label></div><div class="checkbox subarea"><label><input id="media_appearance_subarea_ids_9" name="media_appearance[subarea_ids][]" type="checkbox" value="9"> Office report</label></div><div class="checkbox subarea"><label><input id="media_appearance_subarea_ids_10" name="media_appearance[subarea_ids][]" type="checkbox" value="10"> Office consultations</label></div><div class="checkbox"><label><input id="media_appearance_area_ids_3" name="media_appearance[area_ids][]" type="checkbox" value="3"> Corporate Services</label></div> <div class="checkbox"><label><input id="media_appearance_area_ids_4" name="media_appearance[area_ids][]" type="checkbox" value="4"> Special Investigations Unit</label></div> </div>
+              .fade.no_edit.in
+                {{#media_areas}}
+                <mediaarea/>
+                {{/media_areas}}
+              .fade.edit
+                {{#areas }}
+                /* <area-select id='{{id}}' area_id='{{id}}'/> */
+                .checkbox
+                  %label
+                    %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
+                    {{ name }}
+                {{#subareas }}
+                .checkbox.subarea
+                  %label
+                    %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :id => 'media_appearance_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
+                    {{ name }}
+                {{/subareas }}
+                {{/areas }}
             .col-md-2.metrics{:style=>"width:25%; display:flex; flex-direction:column;"}
               {{#formatted_metrics:key}}
               <metric/>
@@ -189,26 +206,36 @@
           .row
             .col-md-2{:style => "width:50%"}
               {{#areas }}
-              <area-select id='{{id}}' area_id='{{id}}'/>
+              /* <area-select id='{{id}}' area_id='{{id}}' area_ids='{{area_ids}}' name='{{name}}' subareas='{{subareas}}'/> */
+              .checkbox
+                %label
+                  %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
+                  {{ name }}
+              {{#subareas }}
+              .checkbox.subarea
+                %label
+                  %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :id => 'media_appearance_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
+                  {{ name }}
+              {{/subareas }}
               {{/areas }}
             .col-md-2{:style => "width:50%"}
               .form-group.hr_metrics.row#positivity_rating{:style => 'display:none'}
                 %label.control-label.col-md-2{:for => 'positivity_rating', :style => "width:40%"}= t('.pos_rating')
-                =select_tag "media_appearance[positivity_rating_rank]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%"
+                =select_tag "media_appearance[positivity_rating_rank]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%", :value => "{{positivity_rating_rank}}"
               .form-group.hr_metrics.row#violation_severity{:style => 'display:none'}
                 %label.control-label.col-md-2{:for => 'violation_severity', :style => "width:40%"}= t('.violation_severity')
-                =select_tag "media_appearance[violation_severity_rank]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%"
+                =select_tag "media_appearance[violation_severity_rank]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%", :value => "{{violation_severity_rank}}"
               .form-group.hr_metrics.row#people_affected{:style => 'display:none'}
                 %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.num_people')
-                %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "media_appearance[affected_people_count]", :style => "width:15%"}
+                %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "media_appearance[affected_people_count]", :style => "width:15%", :value => "{{affected_people_count}}"}
 
 %script#area_select_template{:type=> 'template/ractive'}
   .checkbox
     %label
-      %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => 'media_appearance[area_ids][]', :value => '{{id}}'}
+      %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
       {{ name }}
   {{#subareas }}
-  <subarea-select id='{{id}}'/>
+  <subarea-select id='{{id}}'/> 
   {{/subareas }}
 
 %script#subarea_select_template{:type=> 'template/ractive'}

@@ -54,7 +54,7 @@ feature "create a new article", :js => true do
     sleep(0.4)
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 1)
     expect(page.find("#media_appearances .media_appearance .basic_info .title").text).to eq "My new article title"
-    expand_panels
+    expand_all_panels
     expect(areas).to include "Human Rights"
     expect(areas).to include "Good Governance"
     expect(subareas).to include "CRC"
@@ -120,7 +120,20 @@ feature "when there are existing articles", :js => true do
     expect(media_appearances.length).to eq 0
   end
 
-  scenario "edit an article" do
+  scenario "edit an article without introducing errors" do
+    edit_article.click
+    fill_in("media_appearance_title", :with => "My new article title")
+    expect(chars_remaining).to eq "You have 80 characters left"
+    expect{edit_save.click; sleep(0.4)}.to change{MediaAppearance.title}
+    sleep(0.4)
+    expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq "My new article title"
+  end
+
+  scenario "edit an article and add errors" do
+  end
+
+  scenario "edit an article and cancel without saving" do
+    # goes back to original values
   end
 end
 

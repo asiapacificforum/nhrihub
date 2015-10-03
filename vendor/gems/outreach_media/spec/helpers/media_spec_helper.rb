@@ -3,6 +3,10 @@ require 'rspec/core/shared_context'
 module MediaSpecHelper
   extend RSpec::Core::SharedContext
 
+  def edit_article
+    page.find('.fa-pencil-square-o')
+  end
+
   def add_article_button
     page.find('.add_article')
   end
@@ -23,8 +27,8 @@ module MediaSpecHelper
     page.all("#media_appearances .media_appearance .expanded_info .description .subareas .subarea").map(&:text)
   end
 
-  def expand_panels
-    page.find('#expand').click
+  def expand_all_panels
+    page.find('#media_appearances_controls #expand').click
   end
 
   def people_affected
