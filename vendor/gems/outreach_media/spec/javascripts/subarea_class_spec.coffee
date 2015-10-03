@@ -10,5 +10,10 @@ describe "Subarea class", ->
 
   it "creates a collection class", ->
     expect(Subarea.all().length).to.equal 10
+
+  it "finds by id", ->
     expect(Subarea.find(1).name).to.equal "Violation"
     expect(Subarea.find(1).extended_name).to.equal "Human Rights Violation"
+
+  it "finds by extended_name", ->
+    expect(Subarea.find_by_extended_name("Human Rights Violation").id).to.equal 1

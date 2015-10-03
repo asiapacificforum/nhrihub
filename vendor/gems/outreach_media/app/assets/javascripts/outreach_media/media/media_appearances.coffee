@@ -6,10 +6,7 @@ $ ->
       object : @
       focus_element : 'input.title'
       success : (response, textStatus, jqXhr)->
-        ractive = @.options.object
-        # the whole dataset is replaced... Ractive figures out
-        # what has changed and what to re-render
-        media.set('media_appearances',response)
+        @.options.object.set(response)
         @load()
       error : ->
         console.log "Changes were not saved, for some reason"
@@ -104,7 +101,16 @@ $ ->
     oninit : ->
       @set('expanded',false)
     computed :
-      create_instance_attributes : -> {media_appearance : _(@get()).pick('area_ids','subarea_ids','title','affected_people_count','violation_severity_rank','positivity_rating_rank')}
+      hr_violation : ->
+        id = Subarea.find_by_extended_name("Human Rights Violation").id
+        _(@get('subarea_ids')).indexOf(id) != -1
+      create_instance_attributes : ->
+        media_appearance : _(@get()).pick 'area_ids',
+                                          'subarea_ids',
+                                          'title',
+                                          'affected_people_count',
+                                          'violation_severity_rank',
+                                          'positivity_rating_rank'
       debug : -> app_debug
       formatted_metrics : ->
         metrics = $.extend(true,{},@get('metrics'))
@@ -113,11 +119,6 @@ $ ->
       count : ->
         t = @get('title') || ""
         100 - t.length
-      #area_ids : -> # now delivered by server iso computed
-        #_(@get('media_areas')).map (ma)-> ma.area_id
-      #subarea_ids : -> # now delivered by server iso computed
-        #ids = _(@get('media_areas')).map((ma)-> ma.subarea_ids)
-        #_(ids).flatten()
       include : ->
         if @get('debug')
           true
@@ -239,11 +240,6 @@ $ ->
     remove_errors : ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       console.log "remove errors"
-    show_metrics : (id)->
-      if (Subarea.find(id).extended_name == "Human Rights Violation") && !(_(@get('subarea_ids')).indexOf(id) == -1)
-        $('.hr_metrics').show(300)
-      else if (Subarea.find(id).extended_name == "Human Rights Violation") && (_(@get('subarea_ids')).indexOf(id) == -1)
-        $('.hr_metrics').hide(300)
 
   window.media_page_data = -> # an initialization data set so that tests can reset between
     expanded : false

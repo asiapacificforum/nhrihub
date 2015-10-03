@@ -12,7 +12,7 @@ module MediaSpecHelper
   end
 
   def edit_save
-    page.find('#edit-save')
+    page.find('.fa-check')
   end
 
   def chars_remaining

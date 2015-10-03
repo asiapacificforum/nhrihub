@@ -100,7 +100,7 @@
           .fade.no_edit.in
             %span {{ title }}
           .fade.edit{:style => "width: 100%"}
-            %input.form-control#media_appearance_title{:name => "media_appearance[title]", :'value' => "{{ title }}", :style => 'background-color:#e4e0ce; width:100%; font-size: 16px; margin-left:2px; height:22px;', 'on-keydown' => "remove_title_errors()"}
+            {{> edit_title}}
         .col-md-2.actions{:style => "width:25%"}
           .row{:style => "margin-left:0px;"}
             .col-md-1.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px;"}
@@ -123,13 +123,12 @@
                 %i.fa.fa-pencil-square-o{:id => "media_appearance_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
             .col-md-1
               %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
-            {{#if expanded}}
             .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
+              {{#if expanded}}
               %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
-            {{else}}
-            .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
+              {{else}}
               %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
-            {{/if}}
+              {{/if}}
       {{#debug}}
       .row
         .col-md-1{:style => "color:{{#if matches_title }}green{{else}}red{{/if}}"} title
@@ -151,44 +150,35 @@
               \/
               =t('.subareas')
             .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
-        .panel-content
-          .row
-            .col-md-2.description{'data-toggle'=>'edit', :style => "width:50%"}
-              .fade.no_edit.in
+        .panel-content{'data-toggle'=>'edit'}
+          .fade.no_edit.in
+            .row
+              .col-md-2.description{:style => "width:50%"}
                 {{#media_areas}}
                 <mediaarea/>
                 {{/media_areas}}
-              .fade.edit
-                {{#areas }}
-                /* <area-select id='{{id}}' area_id='{{id}}'/> */
-                .checkbox
-                  %label
-                    %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
-                    {{ name }}
-                {{#subareas }}
-                .checkbox.subarea
-                  %label
-                    %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :id => 'media_appearance_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
-                    {{ name }}
-                {{/subareas }}
-                {{/areas }}
-            .col-md-2.metrics{:style=>"width:25%; display:flex; flex-direction:column;"}
-              {{#formatted_metrics:key}}
-              <metric/>
-              {{/formatted_metrics}}
+              .col-md-2.metrics{:style=>"width:25%; display:flex; flex-direction:column;"}
+                {{#formatted_metrics:key}}
+                <metric/>
+                {{/formatted_metrics}}
+          .fade.edit
+            {{> media_appearance_edit}}
     <reminders/>
     <notes/>
+
+%script#edit_title{:type => 'text/ractive'}
+  .form-group.clearfix{:class => "{{#title_error}}has-error{{/}}"}
+    =label_tag :title, t('.title'), :class => 'control-label sr-only'
+    .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
+    =text_field_tag 'media_appearance[title]', nil, :class => 'form-control', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
+    %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
 %script#new_media_appearance_template{:type => 'template/ractive'}
   .row.media_appearance.well.well-sm.form
     .col-md-12
       .col-md-1{:style => "padding-top:28px"}= t('.title')
       .col-md-8
-        .form-group.clearfix{:class => "{{#title_error}}has-error{{/}}"}
-          =label_tag :title, t('.title'), :class => 'control-label sr-only'
-          .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
-          =text_field_tag 'media_appearance[title]', nil, :class => 'form-control', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
-          %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
+        {{> edit_title }}
       .col-md-2
         .form-group
           .nothing{:style => 'visibility:hidden'} nothing
@@ -203,31 +193,35 @@
               =t('.subareas')
             .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
         .panel-content
-          .row
-            .col-md-2{:style => "width:50%"}
-              {{#areas }}
-              /* <area-select id='{{id}}' area_id='{{id}}' area_ids='{{area_ids}}' name='{{name}}' subareas='{{subareas}}'/> */
-              .checkbox
-                %label
-                  %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
-                  {{ name }}
-              {{#subareas }}
-              .checkbox.subarea
-                %label
-                  %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :id => 'media_appearance_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
-                  {{ name }}
-              {{/subareas }}
-              {{/areas }}
-            .col-md-2{:style => "width:50%"}
-              .form-group.hr_metrics.row#positivity_rating{:style => 'display:none'}
-                %label.control-label.col-md-2{:for => 'positivity_rating', :style => "width:40%"}= t('.pos_rating')
-                =select_tag "media_appearance[positivity_rating_rank]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%", :value => "{{positivity_rating_rank}}"
-              .form-group.hr_metrics.row#violation_severity{:style => 'display:none'}
-                %label.control-label.col-md-2{:for => 'violation_severity', :style => "width:40%"}= t('.violation_severity')
-                =select_tag "media_appearance[violation_severity_rank]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%", :value => "{{violation_severity_rank}}"
-              .form-group.hr_metrics.row#people_affected{:style => 'display:none'}
-                %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.num_people')
-                %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "media_appearance[affected_people_count]", :style => "width:15%", :value => "{{affected_people_count}}"}
+          {{> media_appearance_edit}}
+
+
+%script#media_appearance_edit{:type => 'text/ractive'}
+  .row
+    .col-md-2{:style => "width:50%"}
+      {{#areas }}
+      /* <area-select id='{{id}}' area_id='{{id}}' area_ids='{{area_ids}}' name='{{name}}' subareas='{{subareas}}'/> */
+      .checkbox
+        %label
+          %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
+          {{ name }}
+      {{#subareas }}
+      .checkbox.subarea
+        %label
+          %input{:type=>:checkbox, :id => 'media_appearance_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
+          {{ name }}
+      {{/subareas }}
+      {{/areas }}
+    .col-md-2{:style => "width:50%"}
+      .form-group.hr_metrics.row#positivity_rating
+        %label.control-label.col-md-2{:for => 'positivity_rating', :style => "width:40%"}= t('.pos_rating')
+        =select_tag "media_appearance[positivity_rating_rank]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%", :value => "{{positivity_rating_rank}}"
+      .form-group.hr_metrics.row#violation_severity{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
+        %label.control-label.col-md-2{:for => 'violation_severity', :style => "width:40%"}= t('.violation_severity')
+        =select_tag "media_appearance[violation_severity_rank]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%", :value => "{{violation_severity_rank}}"
+      .form-group.hr_metrics.row#people_affected{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
+        %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.num_people')
+        %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "media_appearance[affected_people_count]", :style => "width:15%", :value => "{{affected_people_count}}"}
 
 %script#area_select_template{:type=> 'template/ractive'}
   .checkbox

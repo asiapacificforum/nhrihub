@@ -124,7 +124,7 @@ feature "when there are existing articles", :js => true do
     edit_article.click
     fill_in("media_appearance_title", :with => "My new article title")
     expect(chars_remaining).to eq "You have 80 characters left"
-    expect{edit_save.click; sleep(0.4)}.to change{MediaAppearance.title}
+    expect{edit_save.click; sleep(0.4)}.to change{MediaAppearance.first.title}
     sleep(0.4)
     expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq "My new article title"
   end

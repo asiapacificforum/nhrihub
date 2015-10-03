@@ -11,3 +11,6 @@ class @Subarea
 
   @find : (id)->
     _(@all()).detect (a)-> a.id == id
+
+  @find_by_extended_name : (extended_name)->
+    _(@all()).detect (a)-> a.extended_name == extended_name

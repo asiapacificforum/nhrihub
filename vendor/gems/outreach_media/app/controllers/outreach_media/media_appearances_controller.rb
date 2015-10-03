@@ -21,6 +21,12 @@ class OutreachMedia::MediaAppearancesController < ApplicationController
     render :nothing => true, :status => 200
   end
 
+  def update
+    media_appearance = MediaAppearance.find(params[:id])
+    media_appearance.update_attributes(media_appearance_params)
+    render :json => media_appearance, :status => 200
+  end
+
   private
   def media_appearance_params
     params.require(:media_appearance).permit(:title, :affected_people_count, :positivity_rating_rank, :violation_severity_rank, :area_ids => [], :subarea_ids => [])
