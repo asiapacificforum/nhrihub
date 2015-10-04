@@ -36,16 +36,20 @@ module MediaSpecHelper
   end
 
   def positivity_rating
-    page.find(".metric#positivity_rating_rank .value").text
+    page.find(".metric#positivity_rating .value").text
   end
 
   def violation_severity
-    page.find(".metric#violation_severity_rank .value").text
+    page.find(".metric#violation_severity .value").text
   end
 
   def cancel_article_add
     page.find('.form #edit_cancel').click
     sleep(0.2)
+  end
+
+  def edit_cancel
+    page.find(".editable_container .basic_info .fa-remove")
   end
 
   def delete_article

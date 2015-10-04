@@ -58,8 +58,9 @@ feature "create a new article", :js => true do
     expect(areas).to include "Human Rights"
     expect(areas).to include "Good Governance"
     expect(subareas).to include "CRC"
-    expect(positivity_rating).to eq "3"
-    expect(violation_severity).to eq "4"
+    expect(positivity_rating).to eq "3: Has no bearing on the office"
+    expect(violation_severity).to eq "4: Serious"
+    expect(people_affected.gsub(/,/,'')).to eq "100000" # b/c phantomjs does not have a toLocaleString() method
   end
 
   scenario "repeated adds" do # b/c there was a bug!
@@ -124,16 +125,49 @@ feature "when there are existing articles", :js => true do
     edit_article.click
     fill_in("media_appearance_title", :with => "My new article title")
     expect(chars_remaining).to eq "You have 80 characters left"
+    uncheck("Human Rights")
+    check("media_appearance_subarea_ids_1")
+    expect(page).to have_selector("input#people_affected", :visible => true)
+    check("Good Governance")
+    check("CRC")
+    fill_in('people_affected', :with => " 100000 ")
+    select('3: Has no bearing on the office', :from => 'Positivity rating')
+    select('4: Serious', :from => 'Violation severity')
     expect{edit_save.click; sleep(0.4)}.to change{MediaAppearance.first.title}
+    expect(MediaAppearance.first.area_ids).to eql [2]
     sleep(0.4)
     expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq "My new article title"
+    expect(areas).not_to include "Human Rights"
+    expect(areas).to include "Good Governance"
   end
 
   scenario "edit an article and add errors" do
+    edit_article.click
+    fill_in("media_appearance_title", :with => "")
+    expect(chars_remaining).to eq "You have 100 characters left"
+    expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
+    expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
+    fill_in("media_appearance_title", :with => "m")
+    expect(page).not_to have_selector("#title_error", :visible => true)
   end
 
   scenario "edit an article and cancel without saving" do
-    # goes back to original values
+    original_media_appearance = MediaAppearance.first
+    edit_article.click
+    fill_in("media_appearance_title", :with => "My new article title")
+    expect(chars_remaining).to eq "You have 80 characters left"
+    uncheck("Human Rights")
+    check("media_appearance_subarea_ids_1")
+    expect(page).to have_selector("input#people_affected", :visible => true)
+    check("Good Governance")
+    check("CRC")
+    fill_in('people_affected', :with => " 100000 ")
+    select('3: Has no bearing on the office', :from => 'Positivity rating')
+    select('4: Serious', :from => 'Violation severity')
+    expect{edit_cancel.click; sleep(0.4)}.not_to change{MediaAppearance.first.title}
+    expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq original_media_appearance.title
+    expect(areas).to include "Human Rights"
+    expect(areas).not_to include "Good Governance"
   end
 end
 

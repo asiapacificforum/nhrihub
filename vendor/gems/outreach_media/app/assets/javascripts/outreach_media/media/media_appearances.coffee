@@ -7,6 +7,7 @@ $ ->
       focus_element : 'input.title'
       success : (response, textStatus, jqXhr)->
         @.options.object.set(response)
+        @.options.object.parent.populate_min_max_fields() # b/c value could be edited so that edited media appearance is hidden by filter, so reset filter to make sure it stays in view
         @load()
       error : ->
         console.log "Changes were not saved, for some reason"
@@ -104,13 +105,6 @@ $ ->
       hr_violation : ->
         id = Subarea.find_by_extended_name("Human Rights Violation").id
         _(@get('subarea_ids')).indexOf(id) != -1
-      create_instance_attributes : ->
-        media_appearance : _(@get()).pick 'area_ids',
-                                          'subarea_ids',
-                                          'title',
-                                          'affected_people_count',
-                                          'violation_severity_rank',
-                                          'positivity_rating_rank'
       debug : -> app_debug
       formatted_metrics : ->
         metrics = $.extend(true,{},@get('metrics'))
@@ -211,10 +205,9 @@ $ ->
     form : ->
       $('.form input, .form select')
     save : ->
-      #data = @form().serializeArray()
       url = @parent.get('create_media_appearance_url')
       if @validate()
-        $.post(url, @get('create_instance_attributes'), @update_ma, 'json')
+        $.post(url, @create_instance_attributes(), @update_ma, 'json')
     validate : ->
       @set('title',@get('title').trim())
       if _.isEmpty(@get('title'))
@@ -224,6 +217,7 @@ $ ->
         true
     update_ma : (data,textStatus,jqxhr)->
       media.set('media_appearances.0', data)
+      media.populate_min_max_fields() # to ensure that the newly-added media_appearance is included in the filter
     delete_this : (event) ->
       data = {'_method' : 'delete'}
       url = @get('url')
@@ -240,6 +234,21 @@ $ ->
     remove_errors : ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       console.log "remove errors"
+    create_instance_attributes : ->
+      attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id')
+      if _.isEmpty(@get('area_ids'))
+        attrs.area_ids = [""] # hack to workaround jQuery not sending empty arrays
+      else
+        attrs.area_ids = @get('area_ids')
+      if _.isEmpty(@get('subarea_ids'))
+        attrs.subarea_ids = [""]
+      else
+        attrs.subarea_ids = @get('subarea_ids')
+      {media_appearance : attrs}
+    stash : ->
+      @stashed_instance = $.extend(true,{},@get())
+    restore : ->
+      @set(@stashed_instance)
 
   window.media_page_data = -> # an initialization data set so that tests can reset between
     expanded : false
@@ -268,7 +277,6 @@ $ ->
     data : window.media_page_data()
     oninit : ->
       @populate_min_max_fields()
-      #@on 'edit', (event,id)-> @edit(event,id)
     computed :
       dates : ->
         _(@findAllComponents('ma')).map (ma)->new Date(ma.get('date'))
@@ -368,6 +376,7 @@ $ ->
     delete : (media_appearance)->
       index = @findAllComponents('ma').indexOf(media_appearance)
       @splice('media_appearances',index,1)
+
 
   window.start_page = ->
     window.media = new Ractive options

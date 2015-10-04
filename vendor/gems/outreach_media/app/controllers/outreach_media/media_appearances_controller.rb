@@ -29,7 +29,7 @@ class OutreachMedia::MediaAppearancesController < ApplicationController
 
   private
   def media_appearance_params
-    params.require(:media_appearance).permit(:title, :affected_people_count, :positivity_rating_rank, :violation_severity_rank, :area_ids => [], :subarea_ids => [])
+    params.require(:media_appearance).permit(:title, :affected_people_count, :positivity_rating_id, :violation_severity_id, :area_ids => [], :subarea_ids => [])
   end
 
 end

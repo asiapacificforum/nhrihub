@@ -1,8 +1,8 @@
 class MediaAppearance < ActiveRecord::Base
   belongs_to :violation_severity
   belongs_to :positivity_rating
-  delegate :text, :rank, :to => :positivity_rating, :prefix => true, :allow_nil => true
-  delegate :text, :rank, :to => :violation_severity, :prefix => true, :allow_nil => true
+  delegate :id, :text, :rank, :rank_text, :to => :positivity_rating, :prefix => true, :allow_nil => true
+  delegate :id, :text, :rank, :rank_text, :to => :violation_severity, :prefix => true, :allow_nil => true
   belongs_to :user
   has_many :reminders, :as => :remindable, :dependent => :delete_all
   has_many :notes, :as => :notable, :dependent => :delete_all
@@ -16,11 +16,9 @@ class MediaAppearance < ActiveRecord::Base
   def as_json(options={})
     super({:except => [:updated_at,
                        :created_at,
-                       :positivity_rating_id,
                        :affected_people_count,
                        :violation_severity,
-                       :violation_coefficient,
-                       :positivity_rating_rank],
+                       :violation_coefficient],
            :methods=> [:date,
                        :metrics,
                        :has_link,

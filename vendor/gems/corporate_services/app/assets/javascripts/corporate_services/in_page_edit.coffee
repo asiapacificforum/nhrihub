@@ -24,9 +24,10 @@
 class @InpageEditElement
   constructor : (@el,@object,@attribute) ->
 
-  switch_to_edit : ->
+  switch_to_edit : (stash)->
     unless _.isUndefined(@attribute) # in which case it's a control element not an input
-      @_stash() # save the value for restoral after cancel when changes have been made
+      if stash # object will stash and restore itself if stash is false
+        @_stash() # save the value for restoral after cancel when changes have been made
     @hide(@text())
     @show(@input())
 
@@ -90,7 +91,11 @@ class @InpageEdit
       $target = $(e.target)
       if $target.closest('.editable_container').get(0) == @root.get(0)
         @context = $target.closest('.editable_container')
-        @edit(@options.object)
+        if _.isFunction(@options.object.stash)
+          @options.object.stash()
+          @edit(false)
+        else
+          @edit(true)
         @context.find(@options.focus_element).first().focus()
         if @options.start_callback
           @options.start_callback()
@@ -99,6 +104,8 @@ class @InpageEdit
       e.stopPropagation()
       $target = $(e.target)
       if $target.closest('.editable_container').get(0) == @root.get(0)
+        if _.isFunction(@options.object.restore)
+          @options.object.restore()
         UserInput.reset()
         @context = $target.closest('.editable_container')
         @show()
@@ -111,8 +118,12 @@ class @InpageEdit
           return
         @context = $target.closest('.editable_container')
         url = @options.object.get('url')
-        data = @context.find(':input').serializeArray()
-        data[data.length] = {name : '_method', value : 'put'}
+        if _.isFunction(@options.object.create_instance_attributes) # pull the data from the object
+          data = @options.object.create_instance_attributes()
+          data['_method'] = 'put'
+        else
+          data = @context.find(':input').serializeArray() # pull the data from the dom
+          data[data.length] = {name : '_method', value : 'put'}
         $.ajax
           url: url
           method : 'post'
@@ -130,9 +141,9 @@ class @InpageEdit
     $('body').off 'click',"#{@options.on}_edit_cancel"
     $('body').off 'click',"#{@options.on}_edit_save"
 
-  edit : ->
+  edit : (stash)->
     _(@elements()).each (el,i) ->
-      el.switch_to_edit()
+      el.switch_to_edit(stash)
     UserInput.claim_user_input_request(@options.object.edit, 'show')
 
   show : ->
