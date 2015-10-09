@@ -34,7 +34,7 @@
         <i class="fa fa-check fa-lg" id="save_note" style="padding-left:60px" on-click="save_note()" data-toggle="tooltip" data-placement="bottom" title="save"/>
 
 %script#show_note_template{:type => 'text/ractive'}
-  .note.row.editable_container{:id => "note_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
+  .note.row.editable_container{:id => "note_editable{{id}}", :decorator => 'note_edit:{{id}}'}
     .col-md-1.date.form-group{:style => "width:15%"}
       %span {{ date }}
     .col-md-6.text.form-group{:class => '{{#text_error}}has-error{{/}}', :style => "width:65%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'text'}
@@ -83,6 +83,24 @@
 
 :coffeescript
   $ ->
+    NoteEdit = (node,id)->
+      ractive = @
+      @edit = new InpageEdit
+        on : node
+        object : @
+        focus_element : 'input.title'
+        success : (response, textStatus, jqXhr)->
+          @.options.object.set(response)
+          @load()
+        error : ->
+          console.log "Changes were not saved, for some reason"
+      return {
+        teardown : (id)->
+        update : (id)->
+        }
+
+    Ractive.decorators.note_edit = NoteEdit
+
     Ractive.DEBUG = false
 
     Note = Ractive.extend

@@ -4,9 +4,11 @@ FactoryGirl.define do
     positivity_rating
     violation_severity
     title {Faker::Lorem.sentence(5)}
-    note {Faker::Lorem.sentences(1)}
     affected_people_count { rand(20000) }
     violation_coefficient { (rand(100).to_f/100.to_f) }
+    #after :create do |ma|
+      #ma.notes << FactoryGirl.create(:note)
+    #end
 
     trait :link do
       url { Faker::Internet.url }

@@ -23,7 +23,7 @@ module NotesSpecCommonHelpers
   end
 
   def hover_over_info_icon
-    page.execute_script("$('div.icon.note_info i').last().trigger('mouseenter')")
+    page.execute_script("$('div.icon.note_info i').first().trigger('mouseenter')")
     sleep(0.2)
   end
 

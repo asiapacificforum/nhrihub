@@ -172,16 +172,34 @@ feature "when there are existing articles", :js => true do
 end
 
 feature "article notes", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaSpecHelper
+  include SetupHelper
+
+  before do
+    setup_database
+    visit outreach_media_media_appearances_path(:en)
+    click_note_icon
+  end
+
   scenario "view existing notes" do
+    expect(page).to have_selector("#notes_modal h4", :text => "Notes")
+    expect(page).to have_selector("#notes_modal #notes .note", :count => 1)
   end
 
   scenario "add a note" do
+    click_add_note
+    fill_in('#note_text', :with => "some words")
+    expect{save_note}.to change{Note.count}.from(1).to(2)
   end
 
   scenario "edit a note" do
   end
 
   scenario "delete a note" do
+  end
+
+  scenario "save a blank note" do
   end
 end
 

@@ -60,4 +60,18 @@ module MediaSpecHelper
   def media_appearances
     page.all('#media_appearances .media_appearance')
   end
+
+  def click_note_icon
+    page.find('#media_appearances .media_appearance .basic_info .actions .show_notes').click
+    sleep(0.4)
+  end
+
+  def click_add_note
+    page.find('#add_note').click
+    sleep(0.4)
+  end
+
+  def save_note
+    page.find('#save_note').click
+  end
 end
