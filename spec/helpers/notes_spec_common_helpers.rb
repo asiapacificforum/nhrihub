@@ -22,6 +22,10 @@ module NotesSpecCommonHelpers
     page.all("#new_note #text span.help-block")
   end
 
+  def edit_note_text_error
+    page.all(".note .text span.help-block")
+  end
+
   def hover_over_info_icon
     page.execute_script("$('div.icon.note_info i').first().trigger('mouseenter')")
     sleep(0.2)

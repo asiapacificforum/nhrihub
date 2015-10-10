@@ -200,7 +200,11 @@
       create_reminder : (response, statusText, jqxhr)->
         @parent.set('reminders',response)
       remove_errors : (field)->
-        @set(field+"_error",false)
+        if _.isUndefined(field) # after edit, failed save, and cancel, remove all errors
+          error_attrs = _(_(@get()).keys()).select (k)-> k.match(/error/)
+          _(error_attrs).each (a)=> @set(a,false)
+        else # user types into input or changes select
+          @set(field+"_error",false)
 
     Ractive.components.reminders = Reminders
     Ractive.components.reminder = Reminder

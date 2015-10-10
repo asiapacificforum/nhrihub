@@ -54,8 +54,13 @@ RSpec.shared_examples "notes" do
       original_text = note_text.first.text
       edit_note.first.click
       fill_in('note_text', :with => " ")
+      save_edit.click
+      sleep(0.2)
+      expect(edit_note_text_error.first.text).to eq "Text cannot be blank"
       cancel_edit.click
       expect(note_text.first.text).to eq original_text
+      edit_note.first.click
+      expect(page).not_to have_selector(".note .text.has-error")
     end
 
     scenario "edit and cancel without making changes" do

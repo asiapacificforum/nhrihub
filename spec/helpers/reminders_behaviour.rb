@@ -136,6 +136,10 @@ RSpec.shared_examples "reminders" do
         expect(page.find("#reminders .reminder .next .in").text).to eq next_date
         expect(page.find("#reminders .reminder .text .in").text).to eq "don't forget the fruit gums mum"
         expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.first.first_last_name
+        edit_reminder_icon.click
+        expect(page).not_to have_selector(".reminder .reminder_type.has-error")
+        expect(page).not_to have_selector(".reminder .recipients.has-error")
+        expect(page).not_to have_selector(".reminder .text.has-error")
       end
 
       scenario "cancel without making changes" do
