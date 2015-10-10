@@ -11,7 +11,7 @@ class RemindersController < ApplicationController
   def update
     reminder = Reminder.find(params[:id])
     if reminder.update_attributes(reminder_params)
-      render :json => reminder.page_data, :status => 200
+      render :json => reminder, :status => 200
     else
       render :nothing => true, :status => 500
     end

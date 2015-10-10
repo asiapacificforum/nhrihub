@@ -6,7 +6,7 @@
   {{/if}}
 
 %script#show_reminder_template{:type => 'text/ractive'}
-  .reminder.row.editable_container{:id => "reminder_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
+  .reminder.row.editable_container{:id => "reminder_editable{{id}}", :decorator => 'popover_edit:{{id}}'}
     .col-md-1.tight.reminder_type.form-group{:class => '{{#reminder_type_error}}has-error{{/}}', :style => "width:10%", 'data-toggle' => 'edit', 'data-id' => '{{id}}', 'data-attribute'=>'reminder_type'}
       .fade.no_edit.in
         %span {{ reminder_type }}
@@ -115,6 +115,24 @@
 
 :coffeescript
   $ ->
+    PopoverEdit = (node,id)->
+      ractive = @
+      @edit = new InpageEdit
+        on : node
+        object : @
+        focus_element : 'input.title'
+        success : (response, textStatus, jqXhr)->
+          @.options.object.set(response)
+          @load()
+        error : ->
+          console.log "Changes were not saved, for some reason"
+      return {
+        teardown : (id)->
+        update : (id)->
+        }
+
+    Ractive.decorators.popover_edit = PopoverEdit
+
     Ractive.DEBUG = false
 
     Recipient = Ractive.extend

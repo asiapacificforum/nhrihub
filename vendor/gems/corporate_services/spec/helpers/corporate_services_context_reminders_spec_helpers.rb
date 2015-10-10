@@ -14,6 +14,8 @@ module CorporateServicesContextRemindersSpecHelpers
                           :start_date => Date.new(2015,8,19),
                           :text => "don't forget the fruit gums mum",
                           :users => [User.first], :remindable => activity)
+    visit corporate_services_strategic_plan_path(:en, "current")
+    open_accordion_for_strategic_priority_one
     open_reminders_panel
   end
 end
