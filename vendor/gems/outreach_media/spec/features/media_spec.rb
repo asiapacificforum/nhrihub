@@ -40,6 +40,11 @@ feature "create a new article", :js => true do
     fill_in("media_appearance_title", :with => "My new article title")
     expect(chars_remaining).to eq "You have 80 characters left"
     expect(page).not_to have_selector("input#people_affected", :visible => true)
+    #expect(page.find('#media_appearance_subarea_ids_1')).to be_disabled
+    #expect(page.find('#media_appearance_subarea_ids_2')).to be_disabled
+    #expect(page.find('#media_appearance_subarea_ids_3')).to be_disabled
+    #expect(page.find('#media_appearance_subarea_ids_4')).to be_disabled
+    #expect(page.find('#media_appearance_subarea_ids_5')).to be_disabled
     check("Human Rights")
     check("media_appearance_subarea_ids_1")
     expect(page).to have_selector("input#people_affected", :visible => true)
@@ -168,51 +173,5 @@ feature "when there are existing articles", :js => true do
     expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq original_media_appearance.title
     expect(areas).to include "Human Rights"
     expect(areas).not_to include "Good Governance"
-  end
-end
-
-feature "article notes", :js => true do
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
-  include MediaSpecHelper
-  include SetupHelper
-
-  before do
-    setup_database
-    visit outreach_media_media_appearances_path(:en)
-    click_note_icon
-  end
-
-  scenario "view existing notes" do
-    expect(page).to have_selector("#notes_modal h4", :text => "Notes")
-    expect(page).to have_selector("#notes_modal #notes .note", :count => 1)
-  end
-
-  scenario "add a note" do
-    click_add_note
-    fill_in('#note_text', :with => "some words")
-    expect{save_note}.to change{Note.count}.from(1).to(2)
-  end
-
-  scenario "edit a note" do
-  end
-
-  scenario "delete a note" do
-  end
-
-  scenario "save a blank note" do
-  end
-end
-
-feature "article reminders", :js => true do
-  scenario "view existing reminders" do
-  end
-
-  scenario "add a reminder" do
-  end
-
-  scenario "edit a reminder" do
-  end
-
-  scenario "delete a reminder" do
   end
 end
