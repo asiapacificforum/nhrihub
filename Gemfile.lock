@@ -108,6 +108,7 @@ GEM
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
     builder (3.2.2)
+    byebug (6.0.2)
     capistrano (3.4.0)
       i18n
       rake (>= 10.0.0)
@@ -369,6 +370,7 @@ PLATFORMS
 DEPENDENCIES
   authengine!
   bootstrap-sass
+  byebug
   capistrano-bundler
   capistrano-faster-assets!
   capistrano-passenger (= 0.0.2)
