@@ -175,7 +175,7 @@ $ ->
     _matches_violation_coefficient : ->
       @_between(parseFloat(@get('sort_criteria.vc_min')),parseFloat(@get('sort_criteria.vc_max')),parseFloat(@get('metrics.violation_coefficient.value')))
     _matches_positivity_rating : ->
-      @_between(parseInt(@get('sort_criteria.pr_min')),parseInt(@get('sort_criteria.pr_max')),parseInt(@get("metrics.positivity_rating_rank.value")))
+      @_between(parseInt(@get('sort_criteria.pr_min')),parseInt(@get('sort_criteria.pr_max')),parseInt(@get("metrics.positivity_rating.rank")))
     _between : (min,max,val)->
       return true if _.isNaN(val) # declare match if there's no value
       min = if _.isNaN(min) # from the input element a zero-length string can be presented
@@ -283,9 +283,9 @@ $ ->
       violation_coefficients : ->
         _(@findAllComponents('ma')).map (ma)->parseFloat (ma.get("metrics.violation_coefficient.value") || 0.0 )
       positivity_ratings : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.positivity_rating_rank.value")  || 0)
+        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.positivity_rating.rank")  || 0)
       violation_severities : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.violation_severity.value")  || 0)
+        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.violation_severity.rank")  || 0)
       people_affecteds : ->
         _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.affected_people_count.value")  || 0)
       earliest : ->

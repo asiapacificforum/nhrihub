@@ -1,6 +1,6 @@
 MediaPage = ->
   text_fields : ->
-    _($('.media_appearance .basic_info .title:visible','.magic-lamp')).
+    _($('.media_appearance .basic_info .title:visible .no_edit span','.magic-lamp')).
       map (el)-> $(el).text()
   text_fields_length : -> @text_fields().length
   $media_appearance_controls : -> $('#media_appearances_controls')
