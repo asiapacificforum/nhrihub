@@ -68,3 +68,5 @@ en:
         expand : "Expand"
         compact : "Compact"
         clear : "Clear filter"
+        weblink : "Enter web link"
+        choose_file : "Choose file"

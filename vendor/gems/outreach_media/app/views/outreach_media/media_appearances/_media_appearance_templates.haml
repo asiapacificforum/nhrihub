@@ -173,17 +173,31 @@
     =text_field_tag 'media_appearance[title]', nil, :class => 'form-control', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
     %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
+%script#file_chooser_template{:type => 'template/ractive'}
+  %span.btn.btn-success.btn-xs.fileinput-button{'on-click' => 'choose_file()'}= t('.choose_file')
+  %span {{filename}}
+  %input#media_appearance_file{:name => "media_appearance[file]", :type => "file", :style => "position:absolute; left:-1000px;"}
+
 %script#new_media_appearance_template{:type => 'template/ractive'}
   .row.media_appearance.well.well-sm.form
     .col-md-12
-      .col-md-1{:style => "padding-top:28px"}= t('.title')
-      .col-md-8
-        {{> edit_title }}
-      .col-md-2
-        .form-group
-          .nothing{:style => 'visibility:hidden'} nothing
-          %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
-          %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
+      .row
+        .col-md-1{:style => "padding-top:28px"}= t('.title')
+        .col-md-8
+          {{> edit_title }}
+        .col-md-2
+          .form-group
+            .nothing{:style => 'visibility:hidden'} nothing
+            %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
+            %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
+      .row
+        .col-md-2
+          <file-chooser/>
+      .row
+        .col-md-2
+          %label{:for => 'media_appearance_link'}= t('.weblink')
+        .col-md-2
+          %input.link
       .panel.panel-default.expanded_info
         .panel-heading
           .row

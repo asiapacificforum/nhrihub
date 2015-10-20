@@ -80,6 +80,7 @@ $ ->
       @root.remove_area_filter(@get('id'))
       @set('area_selected',false)
 
+  # not currently used, until Ractive 0.8.0 is reliable
   SubareaSelect = Ractive.extend
     template : "#subarea_select_template"
     show_metrics : (id)->
@@ -88,19 +89,35 @@ $ ->
       else if (Subarea.find(id).extended_name == "Human Rights Violation") && !@get('checked')
         $('.hr_metrics').hide(300)
 
+  # not currently used, until Ractive 0.8.0 is reliable
   AreaSelect = Ractive.extend
     template : "#area_select_template"
     components :
       'subarea-select' : SubareaSelect
+
+  FileChooser = Ractive.extend
+    template : "#file_chooser_template"
+    select_file : (event)->
+      ractive = event.data.ractive
+      ractive.set('filename', @value.split(/[\/\\]/).pop())
+    onrender : ->
+      $(@el).on('change', '#media_appearance_file', {ractive : @}, @select_file )
+    choose_file : ->
+      $(@find('#media_appearance_file')).trigger('click')
 
   MediaAppearance = Ractive.extend
     template : '#media_appearance_template'
     components :
       mediaarea : MediaArea
       metric : Metric
-      'area-select' : AreaSelect # due to a ractive bug, checkboxes don't work in components, see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox, so this component is not used, until the bug is fixed
+      # due to a ractive bug, checkboxes don't work in components,
+      # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
+      # so this component is not used, until the bug is fixed
+      # update: bug is fixed in "edge" but many other problems prevent using it
+      'area-select' : AreaSelect
+      'file-chooser' : FileChooser
     oninit : ->
-      @set('expanded',false)
+      @set({'title_error': false, 'expanded':false})
     computed :
       hr_violation : ->
         id = Subarea.find_by_extended_name("Human Rights Violation").id
@@ -233,7 +250,7 @@ $ ->
       @parent.delete(@)
     remove_errors : ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
-      console.log "remove errors"
+      @restore()
     create_instance_attributes : ->
       attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id')
       if _.isEmpty(@get('area_ids'))

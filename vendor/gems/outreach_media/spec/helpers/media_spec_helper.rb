@@ -74,4 +74,12 @@ module MediaSpecHelper
   def save_note
     page.find('#save_note').click
   end
+
+  def upload_file_path(filename)
+    CapybaraRemote.upload_file_path(page,filename)
+  end
+
+  def upload_document
+    upload_file_path('first_upload_file.pdf')
+  end
 end

@@ -17,7 +17,7 @@ feature "show media archive", :js => true do
     visit outreach_media_media_appearances_path(:en)
   end
 
-  scenario "human rights description variable" do
+  scenario "lists media appearances" do
     expect(page_heading).to eq "Media Archive"
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 1)
   end
@@ -40,7 +40,7 @@ feature "create a new article", :js => true do
     fill_in("media_appearance_title", :with => "My new article title")
     expect(chars_remaining).to eq "You have 80 characters left"
     expect(page).not_to have_selector("input#people_affected", :visible => true)
-    #expect(page.find('#media_appearance_subarea_ids_1')).to be_disabled
+    #expect(page.find('#media_appearance_subarea_ids_1')).to be_disabled # defer until ractive 0.8.0 is stable
     #expect(page.find('#media_appearance_subarea_ids_2')).to be_disabled
     #expect(page.find('#media_appearance_subarea_ids_3')).to be_disabled
     #expect(page.find('#media_appearance_subarea_ids_4')).to be_disabled
@@ -66,6 +66,12 @@ feature "create a new article", :js => true do
     expect(positivity_rating).to eq "3: Has no bearing on the office"
     expect(violation_severity).to eq "4: Serious"
     expect(people_affected.gsub(/,/,'')).to eq "100000" # b/c phantomjs does not have a toLocaleString() method
+  end
+
+  scenario "upload article from file" do
+    fill_in("media_appearance_title", :with => "My new article title")
+    page.attach_file("media_appearance_file", upload_document, :visible => false)
+    expect(1).to eq 2
   end
 
   scenario "repeated adds" do # b/c there was a bug!
@@ -109,6 +115,20 @@ feature "attempt to save with errors", :js => true do
     fill_in("media_appearance_title", :with => "m")
     expect(page).not_to have_selector("#title_error", :visible => true)
   end
+
+  scenario "neither link nor file is included" do
+    expect(1).to eq 2
+  end
+
+  scenario "both link and file are included" do
+    expect(1).to eq 2
+  end
+
+  scenario "upload unpermitted file type" do
+  end
+
+  scenario "upload file which exceeds maximum file size" do
+  end
 end
 
 feature "when there are existing articles", :js => true do
@@ -124,6 +144,8 @@ feature "when there are existing articles", :js => true do
   scenario "delete an article" do
     expect{ delete_article }.to change{MediaAppearance.count}.from(1).to(0)
     expect(media_appearances.length).to eq 0
+    expect(saved_file).to have_been_deleted
+    #expect{ page.find('.template-download .delete').click; sleep(0.3)}.to change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
   end
 
   scenario "edit an article without introducing errors" do
@@ -146,13 +168,49 @@ feature "when there are existing articles", :js => true do
     expect(areas).to include "Good Governance"
   end
 
-  scenario "edit an article and add errors" do
+  scenario "edit an article and upload a different file" do
+    expect(1).to eq 2
+  end
+
+  scenario "edit an article and change the link" do
+    expect(1).to eq 2
+  end
+
+  scenario "edit a file article and change to link" do
+    expect(1).to eq 2
+  end
+
+  scenario "edit a link article and change to a file" do
+    expect(1).to eq 2
+  end
+
+  scenario "edit an article and add title error" do
     edit_article.click
     fill_in("media_appearance_title", :with => "")
     expect(chars_remaining).to eq "You have 100 characters left"
     expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in("media_appearance_title", :with => "m")
+    expect(page).not_to have_selector("#title_error", :visible => true)
+  end
+
+  scenario "edit an article and add file error" do
+    expect(1).to eq 2
+  end
+
+  scenario "edit an article and add link error" do
+    expect(1).to eq 2
+  end
+
+  scenario "edit an article, add errors, and cancel" do
+    edit_article.click
+    fill_in("media_appearance_title", :with => "")
+    expect(chars_remaining).to eq "You have 100 characters left"
+    expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
+    expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
+    edit_cancel.click
+    sleep(0.2)
+    edit_article.click
     expect(page).not_to have_selector("#title_error", :visible => true)
   end
 
