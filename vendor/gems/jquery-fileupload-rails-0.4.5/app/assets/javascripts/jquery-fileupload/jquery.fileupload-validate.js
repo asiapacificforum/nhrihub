@@ -87,16 +87,19 @@
                 if ($.type(options.maxNumberOfFiles) === 'number' &&
                         (settings.getNumberOfFiles() || 0) + data.files.length >
                             options.maxNumberOfFiles) {
-                    file.error = settings.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.maxNumberOfFiles');
+                    file.error = settings.i18n(current_locale+'.jquery.fileupload.errors.maxNumberOfFiles');
+                } else if (options.acceptFileTypes &&
+                           options.permittedFiletypes.length == 0) {
+                    file.error = settings.i18n(current_locale+'.jquery.fileupload.errors.noFileTypes');
                 } else if (options.acceptFileTypes &&
                         !(options.acceptFileTypes.test(file.type) ||
                         options.acceptFileTypes.test(file.name))) {
-                    file.error = settings.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.acceptFileTypes', {types : options.permittedFiletypes.join(", ")});
+                    file.error = settings.i18n(current_locale+'.jquery.fileupload.errors.acceptFileTypes', {types : options.permittedFiletypes.join(", ")});
                 } else if (fileSize > options.maxFileSize) {
-                    file.error = settings.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.maxFileSize');
+                    file.error = settings.i18n(current_locale+'.jquery.fileupload.errors.maxFileSize');
                 } else if ($.type(fileSize) === 'number' &&
                         fileSize < options.minFileSize) {
-                    file.error = settings.i18n(current_locale+'.corporate_services.internal_documents.fileupload.errors.minFileSize');
+                    file.error = settings.i18n(current_locale+'.jquery.fileupload.errors.minFileSize');
                 } else {
                     delete file.error;
                 }

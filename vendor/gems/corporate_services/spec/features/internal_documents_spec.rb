@@ -370,6 +370,27 @@ feature "internal document management", :js => true do
   end
 end
 
+feature "internal document management when no filetypes have been configured", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  extend ActiveSupport::NumberHelper
+
+  before do
+    create_a_document(:revision => "3.0", :title => "my important document")
+    @doc = InternalDocument.first
+    visit corporate_services_internal_documents_path('en')
+  end
+
+  scenario "upload an unpermitted file type and cancel" do
+    page.attach_file("primary_file", upload_image, :visible => false)
+    expect(page).to have_css('.error', :text => "No permitted file types have been configured")
+    page.find(".template-upload i.cancel").click
+    expect(page).not_to have_css(".files .template_upload")
+  end
+end
+
+
 feature "internal document management", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
