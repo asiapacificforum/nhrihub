@@ -95,15 +95,28 @@ $ ->
     components :
       'subarea-select' : SubareaSelect
 
-  FileChooser = Ractive.extend
-    template : "#file_chooser_template"
-    select_file : (event)->
-      ractive = event.data.ractive
-      ractive.set('filename', @value.split(/[\/\\]/).pop())
-    onrender : ->
-      $(@el).on('change', '#media_appearance_file', {ractive : @}, @select_file )
-    choose_file : ->
-      $(@find('#media_appearance_file')).trigger('click')
+  fileupload_options =
+    permittedFiletypes: permitted_filetypes,
+    maxFileSize: parseInt(maximum_filesize),
+    failed: (e,data)->
+      if data.errorThrown != 'abort'
+        alert("The upload failed for some reason")
+    prependFiles : false
+    filesContainer: '#media_appearances'
+    formData: ->
+      console.log "getting formdata"
+      inputs = @context.find(':input') # TODO must take formdata from the ractive instance not the dom
+      inputs.serializeArray()
+    downloadTemplateId: '#template-download'
+    uploadTemplateId: '#template-upload'
+    uploadTemplateContainerId: '.template-upload'
+    fileInput : ".template-upload #fileinput_button input:file"
+
+  FileUpload = (node)->
+    ractive = Ractive.getNodeInfo(node).ractive
+    $(node).fileupload _.extend(fileupload_options, {ractive : ractive})
+    teardown : ->
+      #noop for now
 
   MediaAppearance = Ractive.extend
     template : '#media_appearance_template'
@@ -115,7 +128,8 @@ $ ->
       # so this component is not used, until the bug is fixed
       # update: bug is fixed in "edge" but many other problems prevent using it
       'area-select' : AreaSelect
-      'file-chooser' : FileChooser
+    decorators :
+      file_upload : FileUpload
     oninit : ->
       @set({'title_error': false, 'expanded':false})
     computed :
@@ -224,7 +238,8 @@ $ ->
     save : ->
       url = @parent.get('create_media_appearance_url')
       if @validate()
-        $.post(url, @create_instance_attributes(), @update_ma, 'json')
+        $(@el).find('.start').trigger('click')
+        #$.post(url, @create_instance_attributes(), @update_ma, 'json')
     validate : ->
       @set('title',@get('title').trim())
       if _.isEmpty(@get('title'))
@@ -412,3 +427,4 @@ $ ->
       $(".#{key}").addClass('error')
     else
       $(".#{key}").removeClass('error')
+

@@ -64,12 +64,12 @@ class InternalDocument < ActiveRecord::Base
     SiteConfig['corporate_services.internal_documents.filesize']*1000000
   end
 
-
   def self.permitted_filetypes
     SiteConfig['corporate_services.internal_documents.filetypes'].to_json
   end
 
   # called from the initializer: config/intializers/internal_document.rb
+  # hmmmm... don't see it there, maybe it's obsolete... TODO check this
   def self.upload_document_attributes=(attrs)
     attrs.each do |k,v|
       cattr_accessor k

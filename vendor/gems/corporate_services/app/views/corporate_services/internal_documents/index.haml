@@ -116,19 +116,19 @@
     'use strict'
 
     fileupload_options =
-        permittedFiletypes: permitted_filetypes,
-        maxFileSize: parseInt(maximum_filesize),
-        failed: (e,data)->
-          if data.errorThrown != 'abort'
-            alert("The upload failed for some reason")
-        prependFiles : false
-        filesContainer: '.files'
-        formData: ->
-          inputs = @.context.find(':input')
-          arr = inputs.serializeArray()
-          return arr
-        downloadTemplateId: '#template-download'
-        uploadTemplateContainerId: '#uploads'
+      permittedFiletypes: permitted_filetypes,
+      maxFileSize: parseInt(maximum_filesize),
+      failed: (e,data)->
+        if data.errorThrown != 'abort'
+          alert("The upload failed for some reason")
+      prependFiles : false
+      filesContainer: '.files'
+      formData: ->
+        inputs = @.context.find(':input')
+        arr = inputs.serializeArray()
+        return arr
+      downloadTemplateId: '#template-download'
+      uploadTemplateContainerId: '#uploads'
 
     FileUpload = (node, url)->
       $(node).fileupload _.extend(fileupload_options, {url : url})
@@ -246,7 +246,8 @@
                             components:
                               doc : Doc
 
-    # /INIT
+    # initialize the buttonbar with fileupload widget
+    # contains .start, .cancel and .fileinput-button buttons
     $('.fileupload.buttonbar').fileupload(fileupload_options)
 
 

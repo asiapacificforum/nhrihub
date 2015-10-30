@@ -110,6 +110,7 @@
                     if ((that._trigger('added', e, data) !== false) &&
                             (options.autoUpload || data.autoUpload) &&
                             data.autoUpload !== false) {
+                        console.log("processing done")
                         data.submit();
                     }
                 }).fail(function () { // e.g. validation fail
@@ -547,12 +548,14 @@
         },
 
         _startHandler: function (e) {
+            console.log('responding in _startHandler')
             e.preventDefault();
             var button = $(e.currentTarget),
                 template = button.closest('.template-upload'),
                 data = template.data('data');
             button.prop('disabled', true);
             if (data && data.submit) {
+                console.log("_startHandler")
                 data.submit();
             }
         },

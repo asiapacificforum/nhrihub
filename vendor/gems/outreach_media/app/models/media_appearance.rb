@@ -13,6 +13,14 @@ class MediaAppearance < ActiveRecord::Base
 
   default_scope { order('created_at desc') }
 
+  def self.maximum_filesize
+    SiteConfig['outreach_media.media_appearances.filesize']*1000000
+  end
+
+  def self.permitted_filetypes
+    SiteConfig['outreach_media.media_appearances.filetypes'].to_json
+  end
+
   def as_json(options={})
     super({:except => [:updated_at,
                        :created_at,

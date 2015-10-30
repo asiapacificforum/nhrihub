@@ -15,5 +15,7 @@
   subareas = #{@subareas.to_json}
   new_media_appearance = #{@media_appearance.to_json}
   create_media_appearance_url = "#{@media_appearance.create_url}"
+  maximum_filesize = #{MediaAppearance.maximum_filesize}
+  permitted_filetypes = #{MediaAppearance.permitted_filetypes }
 
 = javascript_include_tag "outreach_media"

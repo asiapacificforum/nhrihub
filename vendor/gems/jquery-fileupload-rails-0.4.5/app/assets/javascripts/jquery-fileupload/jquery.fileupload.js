@@ -645,6 +645,7 @@
 
         // Adds convenience methods to the data callback argument:
         _addConvenienceMethods: function (e, data) {
+            console.log('_addConvenienceMethods')
             var that = this,
                 getPromise = function (args) {
                     return $.Deferred().resolveWith(that, args).promise();
@@ -665,6 +666,7 @@
                 return this._processQueue || getPromise([this]);
             };
             data.submit = function () {
+                console.log("data.submit convenience method")
                 if (this.state() !== 'pending') {
                     data.jqXHR = this.jqXHR =
                         (that._trigger(
@@ -893,6 +895,7 @@
                 pipe,
                 options = that._getAJAXSettings(data),
                 send = function () {
+                    console.log("_onSend")
                     that._sending += 1;
                     // Set timer for bitrate progress calculation:
                     options._bitrateTimer = new that._BitrateTimer();
@@ -1417,6 +1420,7 @@
         // .fileupload('send', {files: filesList});
         // The method returns a Promise object for the file upload call.
         send: function (data) {
+          console.log("send")
             if (data && !this.options.disabled) {
                 if (data.fileInput && !data.files) {
                     var that = this,

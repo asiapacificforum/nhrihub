@@ -173,11 +173,6 @@
     =text_field_tag 'media_appearance[title]', nil, :class => 'form-control', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
     %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
-%script#file_chooser_template{:type => 'template/ractive'}
-  %span.btn.btn-success.btn-xs.fileinput-button{'on-click' => 'choose_file()'}= t('.choose_file')
-  %span {{filename}}
-  %input#media_appearance_file{:name => "media_appearance[file]", :type => "file", :style => "position:absolute; left:-1000px;"}
-
 %script#new_media_appearance_template{:type => 'template/ractive'}
   .row.media_appearance.well.well-sm.form
     .col-md-12
@@ -190,9 +185,20 @@
             .nothing{:style => 'visibility:hidden'} nothing
             %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
             %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
-      .row
-        .col-md-2
-          <file-chooser/>
+      .row.template-upload{:decorator => 'file_upload'}
+        .col-md-2#fileinput_button
+          %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
+          %input{:type=>'file', :style => "opacity:0.01; width:0.01px;", :name=>'media_appearance[file]'}
+        // .fileupload.icon{:decorator => "fileupload:'{{url}}'",
+        //                  :id => "upload{{ id }}",
+        //                  :'data-file-input' => "#upload{{ id }} #archive_fileinput",
+        //                  :'data-type' => 'put',
+        //                  :'data-param-name' => 'internal_document[archive_files][][file]',
+        //                  :'data-upload-template-id' => '#archive_upload' }
+        //   %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
+        //   -# wierd opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
+        //   -# only required for testing, it actually works in firefox in real life!
+        //   %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:400px; opacity:0.01; width:0.01px;"}
       .row
         .col-md-2
           %label{:for => 'media_appearance_link'}= t('.weblink')
@@ -281,3 +287,17 @@
   .metric{:id =>"{{key}}"}
     .name {{ name }}
     .value {{ value }}
+
+%script#template-upload{:type => 'template/ractive'}
+  .col-md-10#attached_file
+    .start
+    %span#name {{ file.name }}
+    %span.error.help-block{:style => "padding-left:30px; display:inline-block"}
+    // TODO don't use form tags to contain file properties... put them in the ractive object
+    #file_properties
+      = hidden_field_tag "file[lastModifiedDate]", "{{ file.lastModifiedDate }}"
+      = hidden_field_tag "file[original_type]", "{{ file.type }}"
+      = hidden_field_tag "file[filesize]", "{{ file.size }}"
+
+%script#template-download{:type => 'template/ractive'}
+  .thing "foo"
