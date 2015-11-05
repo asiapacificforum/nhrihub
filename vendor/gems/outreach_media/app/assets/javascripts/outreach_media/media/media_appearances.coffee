@@ -95,28 +95,48 @@ $ ->
     components :
       'subarea-select' : SubareaSelect
 
-  fileupload_options =
-    permittedFiletypes: permitted_filetypes,
-    maxFileSize: parseInt(maximum_filesize),
-    failed: (e,data)->
-      if data.errorThrown != 'abort'
-        alert("The upload failed for some reason")
-    prependFiles : false
-    filesContainer: '#media_appearances'
-    formData: ->
-      console.log "getting formdata"
-      inputs = @context.find(':input') # TODO must take formdata from the ractive instance not the dom
-      inputs.serializeArray()
-    downloadTemplateId: '#template-download'
-    uploadTemplateId: '#template-upload'
-    uploadTemplateContainerId: '.template-upload'
-    fileInput : ".template-upload #fileinput_button input:file"
+  # fileupload_options =
+  #  permittedFiletypes: permitted_filetypes,
+  #  maxFileSize: parseInt(maximum_filesize),
+  #  failed: (e,data)->
+  #    if data.errorThrown != 'abort'
+  #      alert("The upload failed for some reason")
+  #  prependFiles : false
+  #  formData: ->
+  #    inputs = @context.find(':input') # TODO must take formdata from the ractive instance not the dom
+  #    inputs.serializeArray()
+  #  filesContainer: '#media_appearances'
+  #  downloadTemplateId: '#show_media_appearance_template'
+  #  uploadTemplateId: '#selected_file_template'
+  #  uploadTemplateContainerId: '#selected_file_container'
+  #  fileInput : "#media_appearance_file"
 
   FileUpload = (node)->
-    ractive = Ractive.getNodeInfo(node).ractive
-    $(node).fileupload _.extend(fileupload_options, {ractive : ractive})
+    $(node).fileupload
+      dataType: 'json'
+      add: (e, data) ->
+        upload_widget = $(@).data('blueimp-fileupload')
+        Ractive.
+          getNodeInfo(upload_widget.element[0]).
+          ractive.
+          set('fileupload', data) # so upload_widget ractive can configure/control upload with data.submit()
+        data.context = upload_widget._renderUpload(data.files).data('data', data).addClass('processing')
+        upload_widget.options.uploadTemplateContainer.append(data.context)
+        upload_widget._forceReflow(data.context)
+        upload_widget._transition(data.context)
+        return
+      done: (e, data) ->
+        data.context.text 'Upload finished.'
+        return
+      uploadTemplateId: '#selected_file_template'
+      uploadTemplateContainerId: '#selected_file_container'
+      downloadTemplateId: '#show_media_appearance_template'
+      permittedFiletypes: permitted_filetypes
+      maxFileSize: parseInt(maximum_filesize)
     teardown : ->
       #noop for now
+
+  Ractive.decorators.file_upload = FileUpload
 
   MediaAppearance = Ractive.extend
     template : '#media_appearance_template'
@@ -127,9 +147,7 @@ $ ->
       # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
       # so this component is not used, until the bug is fixed
       # update: bug is fixed in "edge" but many other problems prevent using it
-      'area-select' : AreaSelect
-    decorators :
-      file_upload : FileUpload
+      # 'area-select' : AreaSelect
     oninit : ->
       @set({'title_error': false, 'expanded':false})
     computed :
@@ -238,8 +256,7 @@ $ ->
     save : ->
       url = @parent.get('create_media_appearance_url')
       if @validate()
-        $(@el).find('.start').trigger('click')
-        #$.post(url, @create_instance_attributes(), @update_ma, 'json')
+        @get('fileupload').submit()
     validate : ->
       @set('title',@get('title').trim())
       if _.isEmpty(@get('title'))

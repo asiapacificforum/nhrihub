@@ -80,9 +80,10 @@
       .col-md-1.filter_field.pr_max
         %input{:style=>"width:50px", :value => '{{sort_criteria.pr_max}}'}
         %span.error_message Invalid
-  {{#media_appearances}}
-  <ma on-edit='edit', area_ids='{{area_ids}}', expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  metrics='{{metrics}}'  has_link='{{has_link}}'  has_scanned_doc='{{has_scanned_doc}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}' />
-  {{/media_appearances}}
+  #media_appearances
+    {{#media_appearances}}
+    <ma on-edit='edit', area_ids='{{area_ids}}', expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  metrics='{{metrics}}'  has_link='{{has_link}}'  has_scanned_doc='{{has_scanned_doc}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}' />
+    {{/media_appearances}}
 
 %script#media_appearance_template{:type => 'template/ractive'}
   {{#if persisted }}
@@ -174,7 +175,7 @@
     %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
 %script#new_media_appearance_template{:type => 'template/ractive'}
-  .row.media_appearance.well.well-sm.form
+  .row.media_appearance.well.well-sm.form.template-upload
     .col-md-12
       .row
         .col-md-1{:style => "padding-top:28px"}= t('.title')
@@ -185,20 +186,11 @@
             .nothing{:style => 'visibility:hidden'} nothing
             %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
             %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
-      .row.template-upload{:decorator => 'file_upload'}
+      .row.fileupload{:decorator => 'file_upload'}
         .col-md-2#fileinput_button
           %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-          %input{:type=>'file', :style => "opacity:0.01; width:0.01px;", :name=>'media_appearance[file]'}
-        // .fileupload.icon{:decorator => "fileupload:'{{url}}'",
-        //                  :id => "upload{{ id }}",
-        //                  :'data-file-input' => "#upload{{ id }} #archive_fileinput",
-        //                  :'data-type' => 'put',
-        //                  :'data-param-name' => 'internal_document[archive_files][][file]',
-        //                  :'data-upload-template-id' => '#archive_upload' }
-        //   %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
-        //   -# wierd opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
-        //   -# only required for testing, it actually works in firefox in real life!
-        //   %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:400px; opacity:0.01; width:0.01px;"}
+          %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px;", :name=>'media_appearance[file]'}
+        .col_md-2#selected_file_container
       .row
         .col-md-2
           %label{:for => 'media_appearance_link'}= t('.weblink')
@@ -219,6 +211,7 @@
   .row
     .col-md-2{:style => "width:50%"}
       {{#areas }}
+      /* this component will work when the ractive bug is fixed and version 0.8 is stable */
       /* <area-select id='{{id}}' area_id='{{id}}' area_ids='{{area_ids}}' name='{{name}}' subareas='{{subareas}}'/> */
       .checkbox
         %label
@@ -301,3 +294,7 @@
 
 %script#template-download{:type => 'template/ractive'}
   .thing "foo"
+
+%script#selected_file_template{:type => 'template/ractive'}
+  #selected_file
+    {{ file.name }}
