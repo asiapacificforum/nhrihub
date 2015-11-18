@@ -11,6 +11,8 @@ class MediaAppearance < ActiveRecord::Base
   has_many :media_subareas, :dependent => :destroy
   has_many :subareas, :through => :media_subareas
 
+  attachment :file
+
   default_scope { order('created_at desc') }
 
   def self.maximum_filesize
@@ -30,6 +32,7 @@ class MediaAppearance < ActiveRecord::Base
            :methods=> [:date,
                        :metrics,
                        :has_link,
+                       :article_link,
                        :has_scanned_doc,
                        :media_areas,
                        :area_ids,
@@ -38,7 +41,8 @@ class MediaAppearance < ActiveRecord::Base
                        :notes,
                        :create_reminder_url,
                        :create_note_url,
-                       :url]})
+                       :url,
+                       :attachment_url]})
   end
 
   def positivity_rating_rank=(val)
@@ -82,7 +86,7 @@ class MediaAppearance < ActiveRecord::Base
   end
 
   def has_link
-    !url.blank?
+    !article_link.blank?
   end
 
   def has_scanned_doc

@@ -102,6 +102,25 @@
             %span {{ title }}
           .fade.edit{:style => "width: 100%"}
             {{> edit_title}}
+            .row.fileupload{:decorator => 'file_upload'}
+              .col-md-3#fileinput_button
+                %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
+                %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'media_appearance[file]'}
+              .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
+                {{#original_filename}}
+                <file/>
+                {{/original_filename}}
+            .row.form-group{:class => "{{#media_appearance_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+              .col-md-5
+                %span.help-block#media_appearance_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_error_message')
+            .row.form-group{:class => "{{#media_appearance_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+              .col-md-5
+                %span.help-block#media_appearance_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_double_attachment_error_message')
+            .row
+              .col-md-3
+                %label{:for => 'media_appearance_article_link'}= t('.weblink')
+              .col-md-9
+                %input.article_link{:name => "media_appearance_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
         .col-md-2.actions{:style => "width:25%"}
           .row{:style => "margin-left:0px;"}
             .col-md-1.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px;"}
@@ -109,10 +128,10 @@
               %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
             {{#if has_link }}
             .col-md-1
-              %i.fa.fa-globe
+              %i.fa.fa-globe{'on-click' => 'fetch_link()'}
             {{elseif has_scanned_doc }}
             .col-md-1
-              %i.fa.fa-cloud-download
+              %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
             {{/if}}
             .col-md-1.icon{ 'data-toggle' => 'edit'}
               .fade.edit
@@ -130,19 +149,6 @@
               {{else}}
               %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
               {{/if}}
-      {{#debug}}
-      .row
-        .col-md-1{:style => "color:{{#if matches_title }}green{{else}}red{{/if}}"} title
-        .col-md-1{:style => "color:{{#if matches_from }}green{{else}}red{{/if}}"} from
-        .col-md-1{:style => "color:{{#if matches_to }}green{{else}}red{{/if}}"} to
-        .col-md-1{:style => "color:{{#if matches_area_subarea }}green{{else}}red{{/if}}"} area_subarea
-        .col-md-1{:style => "color:{{#if matches_violation_coefficient }}green{{else}}red{{/if}}"} violation_coefficient
-        .col-md-1{:style => "color:{{#if matches_positivity_rating }}green{{else}}red{{/if}}"} positivity_rating
-        .col-md-1{:style => "color:{{#if matches_violation_severity }}green{{else}}red{{/if}}"} violation_severity
-        .col-md-1{:style => "color:{{#if matches_people_affected }}green{{else}}red{{/if}}"} people_affected
-        .col-md-1{:style => "color:{{#if matches_area }}green{{else}}red{{/if}}"} area
-        .col-md-1{:style => "color:{{#if matches_subarea }}green{{else}}red{{/if}}"} subarea
-      {{/debug}}
       .panel.panel-default.collapse.expanded_info{:class => "collapse{{id}}"}
         .panel-heading
           .row
@@ -189,13 +195,22 @@
       .row.fileupload{:decorator => 'file_upload'}
         .col-md-2#fileinput_button
           %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-          %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px;", :name=>'media_appearance[file]'}
-        .col_md-2#selected_file_container
+          %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'media_appearance[file]'}
+        .col-md-4#selected_file_container{:style=>"display:flex; flex-direction: row"}
+          {{#fileupload}}
+          <file/>
+          {{/}}
+      .row.form-group{:class => "{{#media_appearance_error}}has-error{{/}}", :style => "padding-bottom:0px"}
+        .col-md-2
+          %span.help-block#media_appearance_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_error_message')
+      .row.form-group{:class => "{{#media_appearance_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+        .col-md-2
+          %span.help-block#media_appearance_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_double_attachment_error_message')
       .row
         .col-md-2
-          %label{:for => 'media_appearance_link'}= t('.weblink')
+          %label{:for => 'media_appearance_article_link'}= t('.weblink')
         .col-md-2
-          %input.link
+          %input.article_link{:name => "media_appearance_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
       .panel.panel-default.expanded_info
         .panel-heading
           .row
@@ -281,20 +296,12 @@
     .name {{ name }}
     .value {{ value }}
 
-%script#template-upload{:type => 'template/ractive'}
-  .col-md-10#attached_file
-    .start
-    %span#name {{ file.name }}
-    %span.error.help-block{:style => "padding-left:30px; display:inline-block"}
-    // TODO don't use form tags to contain file properties... put them in the ractive object
-    #file_properties
-      = hidden_field_tag "file[lastModifiedDate]", "{{ file.lastModifiedDate }}"
-      = hidden_field_tag "file[original_type]", "{{ file.type }}"
-      = hidden_field_tag "file[filesize]", "{{ file.size }}"
-
-%script#template-download{:type => 'template/ractive'}
-  .thing "foo"
-
 %script#selected_file_template{:type => 'template/ractive'}
   #selected_file
-    {{ file.name }}
+    {{ original_filename }}
+  %div
+    %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px', 'on-click'=>'deselect_file()'}
+  .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
+    %span.help-block#filesize_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.too_large')
+  .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
+    %span.help-block#filetype_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.unpermitted_type')

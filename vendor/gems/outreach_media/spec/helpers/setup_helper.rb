@@ -2,10 +2,31 @@ require 'rspec/core/shared_context'
 
 module SetupHelper
   extend RSpec::Core::SharedContext
-  def setup_database
+  def setup_database(type)
     setup_positivity_ratings
     setup_areas
     setup_violation_severities
+    if type == :media_appearance_with_file
+      FactoryGirl.create(:media_appearance,
+                         :hr_area,
+                         :file,
+                         :positivity_rating => PositivityRating.first,
+                         :reminders=>[] )
+    elsif type == :media_appearance_with_link
+      FactoryGirl.create(:media_appearance,
+                         :hr_area,
+                         :link,
+                         :positivity_rating => PositivityRating.first,
+                         :reminders=>[] )
+    else
+      FactoryGirl.create(:media_appearance,
+                         :hr_area,
+                         :positivity_rating => PositivityRating.first,
+                         :reminders=>[] )
+    end
+  end
+
+  def add_a_second_article
     FactoryGirl.create(:media_appearance,
                        :hr_area,
                        :positivity_rating => PositivityRating.first,
@@ -48,5 +69,10 @@ module SetupHelper
     good_governance_subareas.each do |ggsa|
       Subarea.create(:name => ggsa, :area_id => good_governance_id) unless Subarea.where(:name => ggsa, :area_id => good_governance_id).exists?
     end
+  end
+
+  def setup_file_constraints
+    SiteConfig['outreach_media.media_appearances.filetypes'] = ['pdf']
+    SiteConfig['outreach_media.media_appearances.filesize'] = 3
   end
 end

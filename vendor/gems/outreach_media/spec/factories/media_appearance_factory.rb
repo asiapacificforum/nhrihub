@@ -11,7 +11,8 @@ FactoryGirl.define do
     #end
 
     trait :link do
-      url { Faker::Internet.url }
+      #article_link { Faker::Internet.url }
+      article_link { "http://www.google.com" }
     end
 
     trait :file do
@@ -19,6 +20,12 @@ FactoryGirl.define do
       filesize            { 10000 + (30000*rand).to_i }
       original_filename   { "#{Faker::Lorem.words(2).join("_")}.pdf" }
       original_type       "application/pdf"
+    end
+
+    after(:build) do |media_appearance|
+      if media_appearance.file_id
+        FileUtils.touch Rails.root.join('tmp','uploads','store',media_appearance.file_id) 
+      end
     end
 
     trait :no_f_in_title do

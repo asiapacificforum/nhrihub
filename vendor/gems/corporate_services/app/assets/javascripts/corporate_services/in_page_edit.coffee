@@ -124,13 +124,17 @@ class @InpageEdit
         else
           data = @context.find(':input').serializeArray() # pull the data from the dom
           data[data.length] = {name : '_method', value : 'put'}
-        $.ajax
-          url: url
-          method : 'post'
-          data : data
-          success : @_success
-          error : @options.error
-          context : @
+
+        if _.isFunction(@options.object.update)
+          @options.object.update(@_success,@options.error,@)
+        else
+          $.ajax
+            url: url
+            method : 'post'
+            data : data
+            success : @_success
+            error : @options.error
+            context : @
 
   _success : (response, textStatus, jqXhr)->
     UserInput.reset()

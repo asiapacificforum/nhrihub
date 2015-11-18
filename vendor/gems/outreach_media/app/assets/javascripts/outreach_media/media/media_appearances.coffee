@@ -19,8 +19,6 @@ $ ->
 
   Ractive.DEBUG = false
 
-  window.app_debug = false
-
   Ractive.decorators.inpage_edit = EditInPlace
 
   MediaSubarea = Ractive.extend
@@ -114,20 +112,22 @@ $ ->
   FileUpload = (node)->
     $(node).fileupload
       dataType: 'json'
-      add: (e, data) ->
+      type: 'post'
+      add: (e, data) -> # data includes a files property containing added files and also a submit property
         upload_widget = $(@).data('blueimp-fileupload')
-        Ractive.
+        ractive = data.ractive = Ractive.
           getNodeInfo(upload_widget.element[0]).
-          ractive.
-          set('fileupload', data) # so upload_widget ractive can configure/control upload with data.submit()
-        data.context = upload_widget._renderUpload(data.files).data('data', data).addClass('processing')
-        upload_widget.options.uploadTemplateContainer.append(data.context)
-        upload_widget._forceReflow(data.context)
-        upload_widget._transition(data.context)
+          ractive
+        ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+        ractive.set('original_filename', data.files[0].name)
+        ractive.validate_file_constraints()
+        ractive._validate_attachment()
         return
       done: (e, data) ->
-        data.context.text 'Upload finished.'
+        data.ractive.update_ma(data.jqXHR.responseJSON)
         return
+      formData : ->
+        @ractive.formData()
       uploadTemplateId: '#selected_file_template'
       uploadTemplateContainerId: '#selected_file_container'
       downloadTemplateId: '#show_media_appearance_template'
@@ -138,23 +138,34 @@ $ ->
 
   Ractive.decorators.file_upload = FileUpload
 
+  File = Ractive.extend
+    template : "#selected_file_template"
+    deselect_file : ->
+      @parent.deselect_file()
+
   MediaAppearance = Ractive.extend
     template : '#media_appearance_template'
     components :
       mediaarea : MediaArea
       metric : Metric
+      file : File
       # due to a ractive bug, checkboxes don't work in components,
       # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
       # so this component is not used, until the bug is fixed
       # update: bug is fixed in "edge" but many other problems prevent using it
       # 'area-select' : AreaSelect
     oninit : ->
-      @set({'title_error': false, 'expanded':false})
+      @set
+        'title_error': false
+        'media_appearance_error':false
+        'expanded':false
+        'media_appearance_double_attachment_error',false
+        'filetype_error', false
+        'filesize_error', false
     computed :
       hr_violation : ->
         id = Subarea.find_by_extended_name("Human Rights Violation").id
         _(@get('subarea_ids')).indexOf(id) != -1
-      debug : -> app_debug
       formatted_metrics : ->
         metrics = $.extend(true,{},@get('metrics'))
         metrics.affected_people_count.value = @get('metrics').affected_people_count.value.toLocaleString()
@@ -163,36 +174,13 @@ $ ->
         t = @get('title') || ""
         100 - t.length
       include : ->
-        if @get('debug')
-          true
-        else
-          @_matches_title() &&
-          @_matches_from() &&
-          @_matches_to() &&
-          @_matches_area_subarea() &&
-          @_matches_violation_coefficient() &&
-          @_matches_positivity_rating() &&
-          @_matches_violation_severity() &&
-          @_matches_people_affected()
-      matches_title : -> # the 'matches' attributes are for diagnosis during dev and can be removed
-        @_matches_title()
-      matches_from : ->
-        @_matches_from()
-      matches_to : ->
-        @_matches_to()
-      matches_area : ->
-        @_matches_area()
-      matches_subarea : ->
-        @_matches_subarea()
-      matches_area_subarea : ->
-        @_matches_area_subarea()
-      matches_violation_coefficient : ->
-        @_matches_violation_coefficient()
-      matches_positivity_rating : ->
-        @_matches_positivity_rating()
-      matches_violation_severity : ->
-        @_matches_violation_severity()
-      matches_people_affected : ->
+        @_matches_title() &&
+        @_matches_from() &&
+        @_matches_to() &&
+        @_matches_area_subarea() &&
+        @_matches_violation_coefficient() &&
+        @_matches_positivity_rating() &&
+        @_matches_violation_severity() &&
         @_matches_people_affected()
       persisted : ->
         !_.isNull(@get('id'))
@@ -250,23 +238,77 @@ $ ->
     remove_title_errors : ->
       @set('title_error',false)
     cancel : ->
+      UserInput.reset()
       @parent.shift('media_appearances')
     form : ->
       $('.form input, .form select')
     save : ->
-      url = @parent.get('create_media_appearance_url')
       if @validate()
-        @get('fileupload').submit()
+        if !_.isUndefined(@get('fileupload'))
+          @get('fileupload').submit() # handled by jquery-fileupload
+        else
+          url = @parent.get('create_media_appearance_url')
+          $.post(url, @create_instance_attributes(), @update_ma, 'json') # handled right here
     validate : ->
+      vt = @_validate_title()
+      va = @_validate_attachment()
+      vt && va
+    _validate_title : ->
       @set('title',@get('title').trim())
       if _.isEmpty(@get('title'))
         @set('title_error',true)
         false
       else
         true
+    _validate_attachment : ->
+      @_validate_any_attachment() && @_validate_single_attachment()
+    _validate_any_attachment : ->
+      unless @_validate_file() || @_validate_link()
+        @set('media_appearance_error',true)
+        false
+      else
+        @set('media_appearance_error',false)
+        true
+    _validate_single_attachment : ->
+      if @_validate_file() && @_validate_link()
+        @set('media_appearance_double_attachment_error',true)
+        false
+      else
+        @set('media_appearance_double_attachment_error',false)
+        true
+    _validate_file : ->
+      # 3 cases to consider:
+      if !@get('persisted') # 1. not persisted... creating new, with file attached
+        !_.isNull(@get('original_filename')) && @validate_file_constraints()
+      else
+        if _.isEmpty(@get('fileupload')) # 2. persisted, only original_filename attribute is present
+          !_.isNull(@get('original_filename'))
+        else # 3. persisted, changing the attached file, so a fileupload object is present
+          !_.isNull(@get('original_filename')) && @validate_file_constraints()
+    _validate_link : ->
+      !_.isNull(@get('article_link')) && @get('article_link').length > 0
+    validate_file_constraints : ->
+      file = @get('fileupload').files[0]
+      size = file.size
+      extension = @get('fileupload').files[0].name.split('.').pop()
+      if permitted_filetypes.indexOf(extension) == -1
+        @set('filetype_error', true)
+      else
+        @set('filetype_error', false)
+      if size > maximum_filesize
+        @set('filesize_error', true)
+      else
+        @set('filesize_error', false)
+      !@get('filetype_error') && !@get('filesize_error')
+    #remove_attachment_errors : ->
+      #@set('media_appearance_double_attachment_error',false)
+      #@set('media_appearance_error',false)
     update_ma : (data,textStatus,jqxhr)->
       media.set('media_appearances.0', data)
       media.populate_min_max_fields() # to ensure that the newly-added media_appearance is included in the filter
+      UserInput.reset()
+      if !_.isUndefined(@edit)
+        @edit.load() # terminate edit, if it was active, but don't try to restore stashed instance
     delete_this : (event) ->
       data = {'_method' : 'delete'}
       url = @get('url')
@@ -283,8 +325,8 @@ $ ->
     remove_errors : ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
-    create_instance_attributes : ->
-      attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id')
+    create_instance_attributes: ->
+      attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id','article_link')
       if _.isEmpty(@get('area_ids'))
         attrs.area_ids = [""] # hack to workaround jQuery not sending empty arrays
       else
@@ -293,11 +335,52 @@ $ ->
         attrs.subarea_ids = [""]
       else
         attrs.subarea_ids = @get('subarea_ids')
-      {media_appearance : attrs}
+      {media_appearance : attrs }
+    formData : ->
+      file = @get('fileupload').files[0]
+      @set
+        lastModifiedDate : file.lastModifiedDate
+      attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id', 'lastModifiedDate')
+      name_value = _(attrs).keys().map (k)->{name:"media_appearance["+k+"]", value:attrs[k]}
+      if _.isEmpty(@get('area_ids'))
+        aids = [{name : 'media_appearance[area_ids][]', value: ""}]
+      else
+        aids = _(@get('area_ids')).map (aid)->
+                 {name : 'media_appearance[area_ids][]', value: aid}
+      if _.isEmpty(@get('subarea_ids'))
+        saids = [{name : 'media_appearance[subarea_ids][]', value: ""}]
+      else
+        saids = _(@get('subarea_ids')).map (said)->
+                  {name : 'media_appearance[subarea_ids][]', value: said}
+      _.union(name_value,aids,saids)
     stash : ->
       @stashed_instance = $.extend(true,{},@get())
     restore : ->
       @set(@stashed_instance)
+    deselect_file : ->
+      file_input = $(@find('#media_appearance_file'))
+      # see http://stackoverflow.com/questions/1043957/clearing-input-type-file-using-jquery
+      file_input.replaceWith(file_input.clone()) # the actual file input field
+      @set('fileupload',null) # remove all traces!
+      @set('original_filename',null) # remove all traces!
+      @validate()
+    update : (success, error, context) ->
+      if _.isEmpty(@get('fileupload')) # handle the update directly
+        $.ajax
+          url: @get('url')
+          method : 'put'
+          data : @create_instance_attributes()
+          success : success
+          error : error
+          context : context
+      else # handle it with jquery fileupload
+        $('.fileupload').fileupload('option',{url:@get('url'), type:'put', formData:@formData()})
+        @get('fileupload').submit()
+    download_attachment : ->
+      window.location = @get('url')
+    fetch_link : ->
+      window.location = @get('article_link')
+
 
   window.media_page_data = -> # an initialization data set so that tests can reset between
     expanded : false
@@ -391,13 +474,6 @@ $ ->
     compact : ->
       @set('expanded', false)
       _(@findAllComponents('ma')).each (ma)-> ma.compact()
-    #expand_toggle : ->
-      #state = @get('expanded')
-      #@set('expanded',!state)
-      #if @get('expanded')
-        #_(@findAllComponents('ma')).each (ma)-> ma.compact()
-      #else
-        #_(@findAllComponents('ma')).each (ma)-> ma.expand()
     add_area_filter : (id) ->
       @push('sort_criteria.areas',id)
     remove_area_filter : (id) ->
@@ -422,9 +498,12 @@ $ ->
     new_article : ->
       @unshift('media_appearances', $.extend(true,{},new_media_appearance))
       $(@find('#media_appearance_title')).focus()
+      UserInput.claim_user_input_request(@,'cancel')
     delete : (media_appearance)->
       index = @findAllComponents('ma').indexOf(media_appearance)
       @splice('media_appearances',index,1)
+    cancel : ->
+      @shift('media_appearances')
 
 
   window.start_page = ->

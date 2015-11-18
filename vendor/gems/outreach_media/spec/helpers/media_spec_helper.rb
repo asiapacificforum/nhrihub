@@ -2,9 +2,14 @@ require 'rspec/core/shared_context'
 
 module MediaSpecHelper
   extend RSpec::Core::SharedContext
+  def resize_browser_window
+    if page.driver.browser.respond_to?(:manage)
+      page.driver.browser.manage.window.resize_to(1400,800) # b/c selenium driver doesn't seem to click when target is not in the view
+    end
+  end
 
   def edit_article
-    page.find('.fa-pencil-square-o')
+    page.all('.fa-pencil-square-o')
   end
 
   def add_article_button
@@ -29,6 +34,7 @@ module MediaSpecHelper
 
   def expand_all_panels
     page.find('#media_appearances_controls #expand').click
+    sleep(0.3)
   end
 
   def people_affected
@@ -49,7 +55,7 @@ module MediaSpecHelper
   end
 
   def edit_cancel
-    page.find(".editable_container .basic_info .fa-remove")
+    page.find(".editable_container .basic_info .actions .fa-remove")
   end
 
   def delete_article
@@ -81,5 +87,40 @@ module MediaSpecHelper
 
   def upload_document
     upload_file_path('first_upload_file.pdf')
+  end
+
+  def big_upload_document
+    upload_file_path('big_upload_file.pdf')
+  end
+
+  def upload_image
+    upload_file_path('first_upload_image_file.png')
+  end
+
+  def clear_file_attachment
+    page.find("#deselect_file").click
+  end
+
+  def saved_file
+  end
+
+  def click_the_download_icon
+    page.find('.media_appearance .actions .fa-cloud-download').click
+  end
+
+  def click_the_link_icon
+    page.find('.media_appearance .actions .fa-globe').click
+  end
+
+  def first_article_link
+    MediaAppearance.first.article_link.gsub(/http/,'')
+  end
+
+  def delete_article_link_field
+    fill_in("media_appearance_article_link", :with => "")
+    # b/c setting the value by javascript (previous line) does not trigger the input event, as it would for a real user input
+    if !page.driver.browser.is_a?(Capybara::Poltergeist::Browser)
+      page.execute_script("event = new Event('input'); $('.article_link')[0].dispatchEvent(event)")
+    end
   end
 end
