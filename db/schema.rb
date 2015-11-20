@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.string   "human_name",    limit: 255
   end unless table_exists? "actions"
 
-  add_index "actions", ["action_name"], name: "index_actions_on_action_name", using: :btree
+  add_index "actions", ["action_name"], name: "index_actions_on_action_name", using: :btree unless index_name_exists? :actions, "index_actions_on_action_name", nil
 
   create_table "activities", force: :cascade do |t|
     t.integer  "outcome_id"
@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.datetime "updated_at"
   end unless table_exists? "controllers"
 
-  add_index "controllers", ["controller_name"], name: "index_controllers_on_controller_name", using: :btree
+  add_index "controllers", ["controller_name"], name: "index_controllers_on_controller_name", using: :btree unless index_name_exists? :controllers, "index_controllers_on_controller_name", nil
 
   create_table "document_groups", force: :cascade do |t|
     t.datetime "created_at"
@@ -188,7 +188,7 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.datetime "updated_at",              null: false
   end unless table_exists? "sessions"
 
-  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree unless index_name_exists? :sessions, "index_sessions_on_session_id", nil
 
   create_table "settings", force: :cascade do |t|
     t.string   "var",        limit: 255, null: false
@@ -199,7 +199,7 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.datetime "updated_at"
   end unless table_exists? "settings"
 
-  add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
+  add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree unless index_name_exists? :settings, "index_settings_on_thing_type_and_thing_id_and_var", nil
 
   create_table "strategic_plans", force: :cascade do |t|
     t.date     "start_date"
@@ -259,7 +259,7 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.integer  "organization_id"
   end unless table_exists? "users"
 
-  add_index "users", ["login"], name: "index_users_on_login", using: :btree
+  add_index "users", ["login"], name: "index_users_on_login", using: :btree unless index_name_exists? :users, "index_users_on_login", nil
 
   create_table "violation_severities", force: :cascade do |t|
     t.integer  "rank"
