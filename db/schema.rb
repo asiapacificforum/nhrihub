@@ -16,24 +16,24 @@ ActiveRecord::Schema.define(version: 20151115003736) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "action_roles", force: false do |t|
+  create_table "action_roles", force: :cascade do |t|
     t.integer  "role_id",    limit: 8
     t.integer  "action_id",  limit: 8
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "action_roles"
 
-  create_table "actions", force: false do |t|
+  create_table "actions", force: :cascade do |t|
     t.string   "action_name",   limit: 255
     t.integer  "controller_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "human_name",    limit: 255
-  end
+  end unless table_exists? "actions"
 
   add_index "actions", ["action_name"], name: "index_actions_on_action_name", using: :btree
 
-  create_table "activities", force: false do |t|
+  create_table "activities", force: :cascade do |t|
     t.integer  "outcome_id"
     t.text     "description"
     t.text     "performance_indicator"
@@ -41,29 +41,29 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "progress",              limit: 255
-  end
+  end unless table_exists? "activities"
 
-  create_table "areas", force: false do |t|
+  create_table "areas", force: :cascade do |t|
     t.text     "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "areas"
 
-  create_table "controllers", force: false do |t|
+  create_table "controllers", force: :cascade do |t|
     t.string   "controller_name", limit: 255
     t.datetime "last_modified"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "controllers"
 
   add_index "controllers", ["controller_name"], name: "index_controllers_on_controller_name", using: :btree
 
-  create_table "document_groups", force: false do |t|
+  create_table "document_groups", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "document_groups"
 
-  create_table "internal_documents", force: false do |t|
+  create_table "internal_documents", force: :cascade do |t|
     t.string   "file_id",           limit: 255
     t.string   "title",             limit: 255
     t.integer  "filesize"
@@ -76,9 +76,9 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.string   "original_type",     limit: 255
     t.integer  "document_group_id"
     t.integer  "user_id"
-  end
+  end unless table_exists? "internal_documents"
 
-  create_table "media_appearances", force: false do |t|
+  create_table "media_appearances", force: :cascade do |t|
     t.string   "file_id",               limit: 255
     t.integer  "filesize"
     t.string   "original_filename",     limit: 255
@@ -96,23 +96,23 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.integer  "violation_severity_id"
     t.datetime "lastModifiedDate"
     t.text     "article_link"
-  end
+  end unless table_exists? "media_appearances"
 
-  create_table "media_areas", force: false do |t|
+  create_table "media_areas", force: :cascade do |t|
     t.integer  "media_appearance_id"
     t.integer  "area_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "media_areas"
 
-  create_table "media_subareas", force: false do |t|
+  create_table "media_subareas", force: :cascade do |t|
     t.integer  "media_appearance_id"
     t.integer  "subarea_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "media_subareas"
 
-  create_table "notes", force: false do |t|
+  create_table "notes", force: :cascade do |t|
     t.text     "text"
     t.integer  "notable_id"
     t.integer  "author_id"
@@ -120,9 +120,9 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.string   "notable_type"
-  end
+  end unless table_exists? "notes"
 
-  create_table "organizations", force: false do |t|
+  create_table "organizations", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.string   "street",     limit: 255
     t.string   "city",       limit: 255
@@ -133,30 +133,30 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.datetime "updated_at",             null: false
     t.string   "contacts",   limit: 255
     t.string   "state",      limit: 255
-  end
+  end unless table_exists? "organizations"
 
-  create_table "outcomes", force: false do |t|
+  create_table "outcomes", force: :cascade do |t|
     t.integer  "planned_result_id"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "outcomes"
 
-  create_table "planned_results", force: false do |t|
+  create_table "planned_results", force: :cascade do |t|
     t.string   "description",           limit: 255
     t.integer  "strategic_priority_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "planned_results"
 
-  create_table "positivity_ratings", force: false do |t|
+  create_table "positivity_ratings", force: :cascade do |t|
     t.integer  "rank"
     t.string   "text"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "positivity_ratings"
 
-  create_table "reminders", force: false do |t|
+  create_table "reminders", force: :cascade do |t|
     t.string   "text",            limit: 255
     t.string   "reminder_type",   limit: 255
     t.date     "start_date"
@@ -164,82 +164,82 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "remindable_type"
-  end
+  end unless table_exists? "reminders"
 
-  create_table "reminders_users", id: false, force: false do |t|
+  create_table "reminders_users", id: false, force: :cascade do |t|
     t.integer "reminder_id"
     t.integer "user_id"
-  end
+  end unless table_exists? "reminders_users"
 
-  create_table "roles", force: false do |t|
+  create_table "roles", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.string   "short_name", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "parent_id"
-  end
+  end unless table_exists? "roles"
 
-  create_table "sessions", force: false do |t|
+  create_table "sessions", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "session_id",  limit: 255
     t.datetime "login_date"
     t.datetime "logout_date"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
-  end
+  end unless table_exists? "sessions"
 
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
 
-  create_table "settings", force: false do |t|
+  create_table "settings", force: :cascade do |t|
     t.string   "var",        limit: 255, null: false
     t.text     "value"
     t.integer  "thing_id"
     t.string   "thing_type", limit: 30
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "settings"
 
   add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
 
-  create_table "strategic_plans", force: false do |t|
+  create_table "strategic_plans", force: :cascade do |t|
     t.date     "start_date"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "strategic_plans"
 
-  create_table "strategic_priorities", force: false do |t|
+  create_table "strategic_priorities", force: :cascade do |t|
     t.integer  "priority_level"
     t.text     "description"
     t.integer  "strategic_plan_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "strategic_priorities"
 
-  create_table "subareas", force: false do |t|
+  create_table "subareas", force: :cascade do |t|
     t.text     "name"
     t.text     "full_name"
     t.integer  "area_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "subareas"
 
-  create_table "user_roles", force: false do |t|
+  create_table "user_roles", force: :cascade do |t|
     t.integer  "role_id",    limit: 8, null: false
     t.integer  "user_id",    limit: 8, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "user_roles"
 
-  create_table "useractions", force: false do |t|
+  create_table "useractions", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "action_id"
     t.string   "type",       limit: 255
     t.text     "params"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "useractions"
 
-  create_table "users", force: false do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "login",                     limit: 255
     t.string   "email",                     limit: 255
     t.string   "crypted_password",          limit: 40
@@ -257,15 +257,15 @@ ActiveRecord::Schema.define(version: 20151115003736) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "organization_id"
-  end
+  end unless table_exists? "users"
 
   add_index "users", ["login"], name: "index_users_on_login", using: :btree
 
-  create_table "violation_severities", force: false do |t|
+  create_table "violation_severities", force: :cascade do |t|
     t.integer  "rank"
     t.string   "text"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+  end unless table_exists? "violation_severities"
 
 end
