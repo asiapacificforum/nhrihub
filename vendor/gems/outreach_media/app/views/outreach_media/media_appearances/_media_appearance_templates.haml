@@ -82,7 +82,7 @@
         %span.error_message Invalid
   #media_appearances
     {{#media_appearances}}
-    <ma on-edit='edit', area_ids='{{area_ids}}', expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  metrics='{{metrics}}'  has_link='{{has_link}}'  has_scanned_doc='{{has_scanned_doc}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}' />
+    <ma on-edit='edit', area_ids='{{area_ids}}', expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  metrics='{{metrics}}'  has_link='{{has_link}}'  has_scanned_doc='{{has_scanned_doc}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}'  url='{{url}}'/>
     {{/media_appearances}}
 
 %script#media_appearance_template{:type => 'template/ractive'}
@@ -192,6 +192,14 @@
             .nothing{:style => 'visibility:hidden'} nothing
             %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
             %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
+      .row.fileupload_progress
+        / The global progress state
+        .col-lg-9.fileupload-progress.fade
+          / The global progress bar
+          .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
+            .progress-bar.progress-bar-success{:style => "width:0%;"}
+          / The extended global progress state
+          .progress-extended  
       .row.fileupload{:decorator => 'file_upload'}
         .col-md-2#fileinput_button
           %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
