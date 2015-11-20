@@ -17,7 +17,7 @@ SimpleNavigation::Configuration.run do |navigation|
     end
     primary.item :outreach_media, t('layout.nav.outreach_media') do |om|
       om.item :outreach, t('layout.nav.outreach'), outreach_media_outreach_index_path
-      om.item :media, t('layout.nav.media'), outreach_media_foobar_path
+      om.item :media, t('layout.nav.media'), outreach_media_media_appearances_path
     end
     primary.item :spec_inv, t('layout.nav.spec_inv'), placeholder_path
     primary.item :reports, t('layout.nav.reports'), placeholder_path
@@ -33,5 +33,3 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.dom_class = 'nav navbar-nav'
   end
 end
-
-
