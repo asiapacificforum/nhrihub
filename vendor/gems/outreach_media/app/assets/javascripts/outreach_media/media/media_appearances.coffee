@@ -118,6 +118,7 @@ $ ->
         ractive = data.ractive = Ractive.
           getNodeInfo(upload_widget.element[0]).
           ractive
+        data.context = upload_widget.element.closest('.media_appearance')
         ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
         ractive.set('original_filename', data.files[0].name)
         ractive.validate_file_constraints()
@@ -158,10 +159,10 @@ $ ->
       @set
         'title_error': false
         'media_appearance_error':false
+        'media_appearance_double_attachment_error':false
+        'filetype_error': false
+        'filesize_error': false
         'expanded':false
-        'media_appearance_double_attachment_error',false
-        'filetype_error', false
-        'filesize_error', false
     computed :
       hr_violation : ->
         id = Subarea.find_by_extended_name("Human Rights Violation").id
