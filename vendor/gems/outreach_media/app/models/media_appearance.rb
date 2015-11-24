@@ -45,36 +45,6 @@ class MediaAppearance < ActiveRecord::Base
                        :attachment_url]})
   end
 
-  #{"id":54,
-     #"file_id":"ea8dba7530e81e8d2ccb95b4f995d50e195c41065b7316ee4b4bbd929684",
-     #"filesize":1408570,
-     #"original_filename":"Men of Cylink.pdf",
-     #"original_type":"application/pdf",
-     #"user_id":1,
-     #"url":"/en/outreach_media/media_appearances/54",
-     #"title":"sdasdgadfgdafgadfgdaf",
-     #"note":null,
-     #"positivity_rating_id":1,
-     #"reminder_id":null,
-     #"violation_severity_id":null,
-     #"lastModifiedDate":"2002-11-25T08:24:00.000Z",
-     #"article_link":null,
-     #"date":"November 20,
-      #2015",
-     #"metrics":{"positivity_rating":{"rank":1, "name":"Positivity rating", "value":"1: Reflects very negatively on the office", "id":1},
-                 #"violation_severity":{"rank":null, "name":"Violation severity", "value":null, "id":null},
-                 #"violation_coefficient":{"name":"Violation coefficient", "value":null},
-                 #"affected_people_count":{"name":"# People affected", "value":null}},
-     #"has_link":false,
-     #"has_scanned_doc":true,
-     #"media_areas":[{"area_id":1, "subarea_ids":[3]}, {"area_id":2, "subarea_ids":[8]}],
-     #"area_ids":[1, 2],
-     #"subarea_ids":[3, 8],
-     #"reminders":[],
-     #"notes":[],
-     #"create_reminder_url":"/en/outreach_media/media_appearances/54/reminders",
-     #"create_note_url":"/en/outreach_media/media_appearances/54/notes"}
-
   def positivity_rating_rank=(val)
     self.positivity_rating_id = PositivityRating.where(:rank => val).first.id unless val.blank?
   end

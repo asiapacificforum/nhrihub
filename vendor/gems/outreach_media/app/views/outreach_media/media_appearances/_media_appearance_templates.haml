@@ -192,22 +192,24 @@
             .nothing{:style => 'visibility:hidden'} nothing
             %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
             %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
-      .row.fileupload_progress
-        / The global progress state
-        .col-lg-9.fileupload-progress.fade
-          / The global progress bar
-          .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
-            .progress-bar.progress-bar-success{:style => "width:0%;"}
-          / The extended global progress state
-          .progress-extended  
       .row.fileupload{:decorator => 'file_upload'}
-        .col-md-2#fileinput_button
-          %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-          %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'media_appearance[file]'}
-        .col-md-4#selected_file_container{:style=>"display:flex; flex-direction: row"}
-          {{#fileupload}}
-          <file/>
-          {{/}}
+        .col-md-12
+          .row.fileupload_progress
+            / The global progress state
+            .col-lg-9.fileupload-progress.fade
+              / The global progress bar
+              .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
+                .progress-bar.progress-bar-success{:style => "width:0%;"}
+              / The extended global progress state
+              .progress-extended  
+          .row
+            .col-md-2#fileinput_button
+              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
+              %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'media_appearance[file]'}
+            .col-md-4#selected_file_container{:style=>"display:flex; flex-direction: row"}
+              {{#fileupload}}
+              <file/>
+              {{/}}
       .row.form-group{:class => "{{#media_appearance_error}}has-error{{/}}", :style => "padding-bottom:0px"}
         .col-md-2
           %span.help-block#media_appearance_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_error_message')
