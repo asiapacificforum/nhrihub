@@ -12,7 +12,7 @@ FactoryGirl.define do
 
     trait :link do
       #article_link { Faker::Internet.url }
-      article_link { "http://www.google.com" }
+      article_link { "http://www.nytimes.com" }
     end
 
     trait :file do
@@ -24,7 +24,10 @@ FactoryGirl.define do
 
     after(:build) do |media_appearance|
       if media_appearance.file_id
-        FileUtils.touch Rails.root.join('tmp','uploads','store',media_appearance.file_id) 
+        path = Rails.env.development? ?
+          Rails.root.join('tmp') :
+          Rails.root.join('..','shared')
+        FileUtils.touch path.join('uploads','store',media_appearance.file_id) 
       end
     end
 

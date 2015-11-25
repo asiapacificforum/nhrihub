@@ -40,31 +40,14 @@ desc "populates media appearances with examples"
 task :populate_media => :environment do
   MediaAppearance.delete_all
 
-  hr_area = Area.where(:name => "Human Rights").first
-  gg_area = Area.where(:name => "Good Governance").first
-
-  # media appearance with human rights and good governance area with all subareas
-  ma = FactoryGirl.create(:media_appearance)
-  ma.areas << hr_area
-  ma.areas << gg_area
-  ma.subareas << hr_area.subareas << gg_area.subareas
-
-
-  # media appearance with human rights area with all subareas
-  ma = FactoryGirl.create(:media_appearance)
-  ma.areas << hr_area
-  ma.subareas << hr_area.subareas
-
-
-  # media appearance with good governance area with all subareas
-  ma = FactoryGirl.create(:media_appearance)
-  ma.areas << gg_area
-  ma.subareas << gg_area.subareas
-
-  # media appearance with other areas and no subareas
-  areas = ["Human Rights", "Good Governance", "Special Investigations Unit", "Corporate Services"].each do |a|
-    ma = FactoryGirl.create(:media_appearance)
-    ma.areas << Area.where(:name => a).first
+  100.times do
+    ma = FactoryGirl.create(:media_appearance,  [:file, :link].sample)
+    area = Area.all.sample
+    ma.areas << area
+    unless area.subareas.empty?
+      ma.subareas << area.subareas.sample(2)
+    end
   end
+
 end
 
