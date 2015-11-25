@@ -26,7 +26,7 @@ FactoryGirl.define do
       if media_appearance.file_id
         path = Rails.env.development? ?
           Rails.root.join('tmp') :
-          Rails.root.join('..','shared')
+          Rails.root.join('..','..','shared')
         FileUtils.touch path.join('uploads','store',media_appearance.file_id) 
       end
     end
