@@ -3,7 +3,7 @@ require 'rspec/core/shared_context'
 module MediaAppearanceContextNotesSpecHelpers
   extend RSpec::Core::SharedContext
   before do
-    setup_database
+    setup_database(nil)
     @note1 = FactoryGirl.create(:note, :notable_type => "MediaAppearance", :created_at => 3.days.ago, :notable_id => MediaAppearance.first.id)
     @note2 = FactoryGirl.create(:note, :notable_type => "MediaAppearance", :created_at => 4.days.ago, :notable_id => MediaAppearance.first.id)
     visit outreach_media_media_appearances_path(:en)

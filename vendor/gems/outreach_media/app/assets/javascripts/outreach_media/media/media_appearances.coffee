@@ -365,7 +365,7 @@ $ ->
       @set('fileupload',null) # remove all traces!
       @set('original_filename',null) # remove all traces!
       @validate()
-    update : (success, error, context) ->
+    update_persist : (success, error, context) ->
       if _.isEmpty(@get('fileupload')) # handle the update directly
         $.ajax
           url: @get('url')

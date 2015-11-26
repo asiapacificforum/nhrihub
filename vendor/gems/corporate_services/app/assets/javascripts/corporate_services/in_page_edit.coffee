@@ -125,8 +125,8 @@ class @InpageEdit
           data = @context.find(':input').serializeArray() # pull the data from the dom
           data[data.length] = {name : '_method', value : 'put'}
 
-        if _.isFunction(@options.object.update)
-          @options.object.update(@_success,@options.error,@)
+        if _.isFunction(@options.object.update_persist) # situations where a fileupload must be handled are delegated to the ractive object
+          @options.object.update_persist(@_success,@options.error,@)
         else
           $.ajax
             url: url
