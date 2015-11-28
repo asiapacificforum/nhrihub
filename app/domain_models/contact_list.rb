@@ -1,9 +1,10 @@
 require 'contact'
 # used for serialized contacts column in Organization model
 class ContactList
-  # contacts is an array of Contact objects
-  def initialize(contacts = [])
-    @contacts = contacts
+  attr_accessor :contacts
+
+  def initialize(contacts = []) # e.g [{:phone => "555-1212"},{:phone => "888-2347"}]
+    @contacts = contacts.map{|c| Contact.new(c)}
   end
 
   def []index

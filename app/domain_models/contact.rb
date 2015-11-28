@@ -3,7 +3,8 @@ class Contact
   include ActiveSupport::NumberHelper
   attr_accessor :phone
   def initialize(attrs = {})
-    @phone = attrs[:phone]
+    attrs = attrs.stringify_keys
+    @phone = attrs["phone"]
   end
 
   def to_s

@@ -8,8 +8,8 @@ module OrganizationPresetsHelper
                                                       :city => "Notting Hill",
                                                       :state => "Amnesia",
                                                       :zip => "12345",
-                                                      :contacts => ContactList.new([Contact.new(:phone => '862-385-1818'),
-                                                                                 Contact.new(:phone => '489-733-4829')]),
+                                                      :contacts => ContactList.new([{ :phone => '862-385-1818' },
+                                                                                    { :phone => '489-733-4829' }]),
                                                       :email => "kahuna@bigbrother.gov")
     @organization_with_users = Organization.create(:name => "Government of Maldonia")
     FactoryGirl.create(:user, :organization => @arganization_with_users)

@@ -9,11 +9,11 @@ class Admin::OrganizationsController < ApplicationController
 
   def new
     @organization = Organization.new
-    @organization.contacts = [Contact.new]
+    @organization.contacts = ContactList.new([{:phone => nil}])
   end
 
   def create
-    @organization = Organization.new(organization_params)
+    @organization = Organization.new(organization_params.merge({:contacts => ContactList.new(params[:organization][:contacts])}))
     if @organization.save
       flash[:notice] = t('.flash_notice')
       redirect_to admin_organizations_path
@@ -25,12 +25,12 @@ class Admin::OrganizationsController < ApplicationController
 
   def edit
     @organization = Organization.find(params[:id])
-    @organization.contacts = [Contact.new] if @organization.contacts.empty?
+    @organization.contacts = ContactList.new([{:phone => nil}]) if @organization.contacts.empty?
   end
 
   def update
     @organization = Organization.find(params[:id])
-    if @organization.update_attributes(organization_params)
+    if @organization.update_attributes(organization_params.merge({:contacts => ContactList.new(params[:organization][:contacts])}))
       flash[:notice] = t('.flash_notice')
       redirect_to admin_organizations_path
     else
@@ -54,7 +54,7 @@ class Admin::OrganizationsController < ApplicationController
               :zip,
               :phone,
               :email,
-              { :contacts => :phone} ]
+              :contacts => [:phone] ]
     params.require(:organization).permit(attrs)
   end
 

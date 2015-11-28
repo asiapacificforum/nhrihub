@@ -1,20 +1,25 @@
 = form_for [:admin,@organization] do |f|
-  %table.table{:style => "width:400px"}
+  %table.table{:style => "width:600px"}
     %tr
       %td= f.label :name
       %td= f.text_field :name
+      %td{:style => "width:200px"}
     %tr
       %td= f.label :street
       %td= f.text_field :street
+      %td
     %tr
       %td= f.label :city
       %td= f.text_field :city
+      %td
     %tr
       %td= f.label :state
       %td= f.text_field :state
+      %td
     %tr
       %td= f.label :zip
       %td= f.text_field :zip
+      %td
     - @organization.contacts.each do |contact|
       = fields_for "organization[contacts[]]", contact do |contact_fields|
         %tr
@@ -24,9 +29,11 @@
     %tr
       %td
       %td= link_to t('.add'), "javascript: void(0)", :onclick => "$(this).closest('tr').before($('#new_phone').html())"
+      %td
     %tr
       %td= f.label :email
       %td= f.text_field :email
+      %td
 
   - submit_or_return_to admin_organizations_path
 
