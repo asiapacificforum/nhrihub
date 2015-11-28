@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
-require_relative '../helpers/media_admin_spec_helpers'
+require_relative '../../helpers/media_admin_spec_helpers'
 
 feature "media admin", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
