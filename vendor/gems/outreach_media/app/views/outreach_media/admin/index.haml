@@ -20,22 +20,3 @@
 %script{:type => 'template/html', :id => :flash_error_template}
   %ul.error
     %li {{ message }}
-
-%script{:type => 'page/notes'}
-  :plain
-  config params:
-    positivity_defaults:
-      "Reflects very negatively on the office"
-      "Reflects slightly negatively on the office"
-      "Has no bearing on the office"
-      "Reflects slightly positively on the office"
-      "Reflects very positively on the office"
-    violation_severity_defaults:
-      "Negligible"
-      "Minor"
-      "Moderate"
-      "Significant"
-      "Substantial"
-      "Severe"
-      "Critical"
-      "Catastrophic"
