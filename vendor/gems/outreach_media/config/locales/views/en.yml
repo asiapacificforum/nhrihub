@@ -4,9 +4,9 @@ en:
       index:
         heading: "Outreach and Media"
         subheading:
-          filetypes: "Filetypes permitted for outreach media uploading"
+          filetypes: "Filetypes permitted for outreach and media uploading"
           filesize: "Maximum permitted file size"
-          areas: "Media description areas and subareas"
+          areas: "Areas and subareas"
       outreach_media_filesize:
         change: "Change"
         value: "Current value"
