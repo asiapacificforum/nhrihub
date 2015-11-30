@@ -4,10 +4,8 @@ Rails.application.routes.draw do
     namespace :outreach_media do
       get 'admin', :to => "admin#index"
       resources :outreach
-      namespace :media_appearances do
-        resources :filetypes, :param => :type, :only => [:create, :destroy]
-        resource :filesize, :only => :update
-      end
+      resources :filetypes, :param => :type, :only => [:create, :destroy]
+      resource :filesize, :only => :update
       resources :media_appearances do
         resources :reminders, :controller => "media_appearances/reminders"
         resources :notes, :controller => "media_appearances/notes"

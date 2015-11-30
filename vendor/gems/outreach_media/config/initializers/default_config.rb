@@ -1,2 +1,2 @@
-SiteConfig.defaults['outreach_media.media_appearances.filetypes'] = []
-SiteConfig.defaults['outreach_media.media_appearances.filesize'] = 5
+SiteConfig.defaults['outreach_media.filetypes'] = []
+SiteConfig.defaults['outreach_media.filesize'] = 5

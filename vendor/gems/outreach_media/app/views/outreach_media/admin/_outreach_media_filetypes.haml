@@ -2,7 +2,7 @@
   %table.table.borderless.filetypes{:style => "width:200px;"}
     %tbody
 
-  = form_for @filetype, :url => outreach_media_media_appearances_filetypes_path, :remote => true do |f|
+  = form_for @filetype, :url => outreach_media_filetypes_path, :remote => true do |f|
     %table.table.borderless{:style => "width:200px;"}
       %tr
         %td
@@ -42,7 +42,7 @@
       e.preventDefault()
       context = $(@).closest('tr')
       id = context.find('.type').html()
-      url = "#{outreach_media_media_appearances_filetype_path('id')}".replace("id",id)
+      url = "#{outreach_media_filetype_path('id')}".replace("id",id)
       $.ajax
         url: url
         method: 'delete'

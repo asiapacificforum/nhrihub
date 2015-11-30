@@ -1,6 +1,6 @@
 module OutreachMedia
   class Filetype < ::Filetype
-    SiteConfigKey = 'outreach_media.media_appearances.filetypes'
+    SiteConfigKey = 'outreach_media.filetypes'
     def initialize(attrs={})
       @site_config_key = SiteConfigKey
       super(attrs)

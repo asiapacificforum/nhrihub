@@ -33,7 +33,7 @@ module MediaAdminSpecHelpers
     ActionRole.
       joins(:action => :controller).
       where('actions.action_name' => ['create', 'destroy', 'update'],
-            'controllers.controller_name' => ['outreach_media/media_appearances/filetypes','outreach_media/media_appearances/filesizes']).
+            'controllers.controller_name' => ['outreach_media/filetypes','outreach_media/filesizes']).
       destroy_all
   end
 
