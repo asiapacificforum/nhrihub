@@ -9,6 +9,10 @@ FactoryGirl.define do
     remindable_type "MediaAppearance"
   end
 
+  trait :outreach_event do
+    remindable_type "OutreachEvent"
+  end
+
   trait :activity do
     remindable_type "Activity"
   end

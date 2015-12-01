@@ -1,0 +1,21 @@
+%h1= t('.heading')
+.btn.btn-success.btn-sm.add_outreach{:style => "margin-bottom:12px; color:white;", :onclick => "outreach.new_article()"}
+  %i.fa.fa-plus.fa-lg{:style => "color:white"}
+  %span= t('.add_outreach')
+
+#outreach_events
+
+= render :partial => 'outreach_event_templates'
+= render :partial => 'reminders/reminder' # it's in the main app
+= render :partial => 'notes/note' # it's in the main app
+
+:javascript
+  outreach_events = #{@outreach_events.to_json}
+  areas = #{@areas.to_json}
+  subareas = #{@subareas.to_json}
+  new_outreach_event = #{@outreach_event.to_json}
+  create_outreach_event_url = "#{@outreach_event.create_url}"
+  maximum_filesize = #{OutreachEvent.maximum_filesize}
+  permitted_filetypes = #{OutreachEvent.permitted_filetypes }
+
+= javascript_include_tag "outreach"

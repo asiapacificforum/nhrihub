@@ -1,6 +1,6 @@
 require 'rspec/core/shared_context'
 
-module SetupHelper
+module MediaSetupHelper
   extend RSpec::Core::SharedContext
   def setup_database(type)
     setup_positivity_ratings

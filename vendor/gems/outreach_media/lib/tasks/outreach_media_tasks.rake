@@ -1,7 +1,3 @@
-# desc "Explaining what the task does"
-# task :outreach_media do
-#   # Task goes here
-# end
 areas = ["Human Rights", "Good Governance", "Special Investigations Unit", "Corporate Services"]
 human_rights_subareas = ["Violation", "Education activities", "Office reports", "Universal periodic review", "CEDAW", "CRC", "CRPD"]
 good_governance_subareas = ["Violation", "Office report", "Office consultations"]
@@ -17,6 +13,18 @@ desc "populate positivity ratings"
 task :populate_pr => :environment do
   PositivityRating.delete_all
   PositivityRating::DefaultValues.each { |pr| PositivityRating.create(:rank => pr.rank, :text => pr.text) }
+end
+
+desc "populate impact ratings"
+task :populate_ir => :environment do
+  ImpactRating.delete_all
+  ImpactRating::DefaultValues.each { |ir| ImpactRating.create(ir.marshal_dump) }
+end
+
+desc "populate audience types"
+task :populate_at => :environment do
+  AudienceType.delete_all
+  AudienceType::DefaultValues.each { |at| AudienceType.create(at.marshal_dump) }
 end
 
 desc "populates areas and subareas"

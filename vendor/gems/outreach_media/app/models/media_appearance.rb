@@ -16,11 +16,11 @@ class MediaAppearance < ActiveRecord::Base
   default_scope { order('created_at desc') }
 
   def self.maximum_filesize
-    SiteConfig['outreach_media.media_appearances.filesize']*1000000
+    SiteConfig['outreach_media.filesize']*1000000
   end
 
   def self.permitted_filetypes
-    SiteConfig['outreach_media.media_appearances.filetypes'].to_json
+    SiteConfig['outreach_media.filetypes'].to_json
   end
 
   def as_json(options={})

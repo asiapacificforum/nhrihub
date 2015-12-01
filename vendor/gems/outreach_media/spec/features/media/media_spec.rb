@@ -2,13 +2,13 @@ require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
 require_relative '../../helpers/media_spec_helper'
-require_relative '../../helpers/setup_helper'
+require_relative '../../helpers/media_setup_helper'
 
 
 feature "show media archive", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include MediaSpecHelper
-  include SetupHelper
+  include MediaSetupHelper
 
   before do
     setup_positivity_ratings
@@ -27,7 +27,7 @@ end
 feature "create a new article", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include MediaSpecHelper
-  include SetupHelper
+  include MediaSetupHelper
 
   before do
     setup_positivity_ratings
@@ -112,7 +112,7 @@ end
 feature "attempt to save with errors", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include MediaSpecHelper
-  include SetupHelper
+  include MediaSetupHelper
 
   before do
     setup_positivity_ratings
@@ -189,7 +189,7 @@ end
 feature "when there are existing articles", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include MediaSpecHelper
-  include SetupHelper
+  include MediaSetupHelper
 
   feature "and existing article has file attachment" do
     before do
@@ -332,7 +332,7 @@ end
 feature "enforce single user add or edit action", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include MediaSpecHelper
-  include SetupHelper
+  include MediaSetupHelper
 
   before do
     setup_database(:media_appearance_with_file)
@@ -368,7 +368,7 @@ end
 feature "view attachments", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include MediaSpecHelper
-  include SetupHelper
+  include MediaSetupHelper
 
   scenario "download attached file" do
     unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download

@@ -21,9 +21,10 @@ en:
         enter_subarea_text: "Enter subarea name"
         area_error_message: "Area can't be blank"
         subarea_error_message: "Subarea can't be blank"
-    outreach:
+    outreach_events:
       index:
-        heading: "Outreach"
+        heading: "Outreach Events"
+        add_outreach: "Add outreach event"
     media_appearances:
       index:
         heading: "Media Archive"

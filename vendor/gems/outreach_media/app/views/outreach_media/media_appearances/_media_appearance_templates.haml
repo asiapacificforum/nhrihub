@@ -1,5 +1,5 @@
-%script#media_appearances_template{:type => 'template/ractive'}
-  .row#media_appearances_controls
+%script#outreach_events_template{:type => 'template/ractive'}
+  .row#outreach_events_controls
     .row
       .col-md-4
         %h4= t('.search_heading')
@@ -80,20 +80,20 @@
       .col-md-1.filter_field.pr_max
         %input{:style=>"width:50px", :value => '{{sort_criteria.pr_max}}'}
         %span.error_message Invalid
-  #media_appearances
-    {{#media_appearances}}
+  #outreach_events
+    {{#outreach_events}}
     <ma on-edit='edit', area_ids='{{area_ids}}', expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  metrics='{{metrics}}'  has_link='{{has_link}}'  has_scanned_doc='{{has_scanned_doc}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}'  url='{{url}}'/>
-    {{/media_appearances}}
+    {{/outreach_events}}
 
-%script#media_appearance_template{:type => 'template/ractive'}
+%script#outreach_event_template{:type => 'template/ractive'}
   {{#if persisted }}
-  {{> show_media_appearance_template }}
+  {{> show_outreach_event_template }}
   {{else}}
-  {{> new_media_appearance_template }}
+  {{> new_outreach_event_template }}
   {{/if}}
 
-%script#show_media_appearance_template{:type => 'template/ractive'}
-  .row.media_appearance.well.well-sm.editable_container{:style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+%script#show_outreach_event_template{:type => 'template/ractive'}
+  .row.outreach_event.well.well-sm.editable_container{:style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
       .row.basic_info
         .col-md-2.date{:style => "width:15%"} {{ date }}
@@ -105,22 +105,22 @@
             .row.fileupload{:decorator => 'file_upload'}
               .col-md-3#fileinput_button
                 %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-                %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'media_appearance[file]'}
+                %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[file]'}
               .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
                 {{#original_filename}}
                 <file/>
                 {{/original_filename}}
-            .row.form-group{:class => "{{#media_appearance_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+            .row.form-group{:class => "{{#outreach_event_error}}has-error{{/}}", :style => "margin-bottom:0px"}
               .col-md-5
-                %span.help-block#media_appearance_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_error_message')
-            .row.form-group{:class => "{{#media_appearance_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+                %span.help-block#outreach_event_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_error_message')
+            .row.form-group{:class => "{{#outreach_event_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
               .col-md-5
-                %span.help-block#media_appearance_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_double_attachment_error_message')
+                %span.help-block#outreach_event_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_double_attachment_error_message')
             .row
               .col-md-3
-                %label{:for => 'media_appearance_article_link'}= t('.weblink')
+                %label{:for => 'outreach_event_article_link'}= t('.weblink')
               .col-md-9
-                %input.article_link{:name => "media_appearance_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
+                %input.article_link{:name => "outreach_event_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
         .col-md-2.actions{:style => "width:25%"}
           .row{:style => "margin-left:0px;"}
             .col-md-1.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px;"}
@@ -135,12 +135,12 @@
             {{/if}}
             .col-md-1.icon{ 'data-toggle' => 'edit'}
               .fade.edit
-                %i.fa.fa-remove{:id => "media_appearance_editable{{id}}_edit_cancel"}
+                %i.fa.fa-remove{:id => "outreach_event_editable{{id}}_edit_cancel"}
             .col-md-1.icon{'data-toggle' => 'edit'}
               .fade.edit
-                %i.fa.fa-check{:id => "media_appearance_editable{{id}}_edit_save"}
+                %i.fa.fa-check{:id => "outreach_event_editable{{id}}_edit_save"}
               .fade.no_edit.in
-                %i.fa.fa-pencil-square-o{:id => "media_appearance_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
+                %i.fa.fa-pencil-square-o{:id => "outreach_event_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
             .col-md-1
               %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
             .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
@@ -169,7 +169,7 @@
                 <metric/>
                 {{/formatted_metrics}}
           .fade.edit
-            {{> media_appearance_edit}}
+            {{> outreach_event_edit}}
     <reminders/>
     <notes/>
 
@@ -177,11 +177,11 @@
   .form-group.clearfix{:class => "{{#title_error}}has-error{{/}}"}
     =label_tag :title, t('.title'), :class => 'control-label sr-only'
     .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
-    =text_field_tag 'media_appearance[title]', nil, :class => 'form-control', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
+    =text_field_tag 'outreach_event[title]', nil, :class => 'form-control', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
     %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
-%script#new_media_appearance_template{:type => 'template/ractive'}
-  .row.media_appearance.well.well-sm.form.template-upload
+%script#new_outreach_event_template{:type => 'template/ractive'}
+  .row.outreach_event.well.well-sm.form.template-upload
     .col-md-12
       .row
         .col-md-1{:style => "padding-top:28px"}= t('.title')
@@ -205,22 +205,22 @@
           .row
             .col-md-2#fileinput_button
               %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-              %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'media_appearance[file]'}
+              %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[file]'}
             .col-md-4#selected_file_container{:style=>"display:flex; flex-direction: row"}
               {{#fileupload}}
               <file/>
               {{/}}
-      .row.form-group{:class => "{{#media_appearance_error}}has-error{{/}}", :style => "padding-bottom:0px"}
+      .row.form-group{:class => "{{#outreach_event_error}}has-error{{/}}", :style => "padding-bottom:0px"}
         .col-md-2
-          %span.help-block#media_appearance_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_error_message')
-      .row.form-group{:class => "{{#media_appearance_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+          %span.help-block#outreach_event_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_error_message')
+      .row.form-group{:class => "{{#outreach_event_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
         .col-md-2
-          %span.help-block#media_appearance_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_double_attachment_error_message')
+          %span.help-block#outreach_event_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_double_attachment_error_message')
       .row
         .col-md-2
-          %label{:for => 'media_appearance_article_link'}= t('.weblink')
+          %label{:for => 'outreach_event_article_link'}= t('.weblink')
         .col-md-2
-          %input.article_link{:name => "media_appearance_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
+          %input.article_link{:name => "outreach_event_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
       .panel.panel-default.expanded_info
         .panel-heading
           .row
@@ -230,9 +230,9 @@
               =t('.subareas')
             .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
         .panel-content
-          {{> media_appearance_edit}}
+          {{> outreach_event_edit}}
 
-%script#media_appearance_edit{:type => 'text/ractive'}
+%script#outreach_event_edit{:type => 'text/ractive'}
   .row
     .col-md-2{:style => "width:50%"}
       {{#areas }}
@@ -240,30 +240,30 @@
       /* <area-select id='{{id}}' area_id='{{id}}' area_ids='{{area_ids}}' name='{{name}}' subareas='{{subareas}}'/> */
       .checkbox
         %label
-          %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
+          %input{:type=>:checkbox, :id => 'outreach_event_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
           {{ name }}
       {{#subareas }}
       .checkbox.subarea
         %label
-          %input{:type=>:checkbox, :id => 'media_appearance_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
+          %input{:type=>:checkbox, :id => 'outreach_event_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
           {{ name }}
       {{/subareas }}
       {{/areas }}
     .col-md-2{:style => "width:50%"}
       .form-group.hr_metrics.row#positivity_rating
         %label.control-label.col-md-2{:for => 'positivity_rating', :style => "width:40%"}= t('.pos_rating')
-        =select_tag "media_appearance[positivity_rating_id]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%", :value => "{{positivity_rating_id}}"
+        =select_tag "outreach_event[positivity_rating_id]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%", :value => "{{positivity_rating_id}}"
       .form-group.hr_metrics.row#violation_severity{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
         %label.control-label.col-md-2{:for => 'violation_severity', :style => "width:40%"}= t('.violation_severity')
-        =select_tag "media_appearance[violation_severity_id]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%", :value => "{{violation_severity_id}}"
+        =select_tag "outreach_event[violation_severity_id]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%", :value => "{{violation_severity_id}}"
       .form-group.hr_metrics.row#people_affected{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
         %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.num_people')
-        %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "media_appearance[affected_people_count]", :style => "width:15%", :value => "{{affected_people_count}}"}
+        %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "outreach_event[affected_people_count]", :style => "width:15%", :value => "{{affected_people_count}}"}
 
 %script#area_select_template{:type=> 'template/ractive'}
   .checkbox
     %label
-      %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
+      %input{:type=>:checkbox, :id => 'outreach_event_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
       {{ name }}
   {{#subareas }}
   <subarea-select id='{{id}}'/> 
@@ -272,7 +272,7 @@
 %script#subarea_select_template{:type=> 'template/ractive'}
   .checkbox.subarea
     %label
-      %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :checked => '{{checked}}', :id => 'media_appearance_subarea_ids_{{id}}', :name => 'media_appearance[subarea_ids][]', :value => '{{id}}'}
+      %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :checked => '{{checked}}', :id => 'outreach_event_subarea_ids_{{id}}', :name => 'outreach_event[subarea_ids][]', :value => '{{id}}'}
       {{ name }}
 
 %script#area_template{:type=> 'template/ractive'}
