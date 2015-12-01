@@ -380,7 +380,9 @@ $ ->
     download_attachment : ->
       window.location = @get('url')
     fetch_link : ->
-      window.location = @get('article_link')
+      #window.location = @get('article_link')
+      redirectWindow = window.open(@get('article_link'), '_blank')
+      redirectWindow.location
 
 
   window.media_page_data = -> # an initialization data set so that tests can reset between
