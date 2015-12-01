@@ -72,7 +72,7 @@ module MediaSetupHelper
   end
 
   def setup_file_constraints
-    SiteConfig['outreach_media.media_appearances.filetypes'] = ['pdf']
-    SiteConfig['outreach_media.media_appearances.filesize'] = 3
+    SiteConfig['outreach_media.filetypes'] = ['pdf']
+    SiteConfig['outreach_media.filesize'] = 3
   end
 end
