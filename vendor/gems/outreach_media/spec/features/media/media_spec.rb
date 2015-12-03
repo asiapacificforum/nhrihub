@@ -34,6 +34,7 @@ feature "create a new article", :js => true do
     setup_areas
     setup_violation_severities
     setup_file_constraints
+    setup_strategic_plan
     resize_browser_window
     visit outreach_media_media_appearances_path(:en)
     add_article_button.click
