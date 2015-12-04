@@ -9,11 +9,11 @@ module CorporateServicesContextRemindersSpecHelpers
   include StrategicPlanHelpers
 
   before do
-    activity = setup_activity
+    setup_performance_indicator
     rem = Reminder.create(:reminder_type => 'weekly',
                           :start_date => Date.new(2015,8,19),
                           :text => "don't forget the fruit gums mum",
-                          :users => [User.first], :remindable => activity)
+                          :users => [User.first], :remindable => PerformanceIndicator.first)
     visit corporate_services_strategic_plan_path(:en, "current")
     open_accordion_for_strategic_priority_one
     open_reminders_panel

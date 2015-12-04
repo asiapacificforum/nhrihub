@@ -368,6 +368,12 @@
         @parent.set(resp)
       remove_errors : ->
         @remove_description_errors()
+      show_reminders_panel : ->
+        $('#reminders_modal').modal('show')
+      show_notes_panel : ->
+        $('#notes_modal').modal('show')
+      show_rules_panel : ->
+        $('#rules_modal').modal('show')
 
     Activity = Ractive.extend
       template : '#activity_template'
@@ -421,12 +427,6 @@
         @remove_description_errors()
       remove_description_errors : ->
         @set("description_error","")
-      show_reminders_panel : ->
-        $('#reminders_modal').modal('show')
-      show_notes_panel : ->
-        $('#notes_modal').modal('show')
-      show_rules_panel : ->
-        $('#rules_modal').modal('show')
       new_performance_indicator : ->
         @push('performance_indicators',{description : '', indexed_description: '', target: '', id : null, activity_id : @get('id'), url:null, description_error:"", progress:""})
         UserInput.claim_user_input_request(@,'remove_performance_indicator_form')

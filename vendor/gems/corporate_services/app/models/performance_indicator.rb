@@ -1,5 +1,7 @@
 class PerformanceIndicator < ActiveRecord::Base
   belongs_to :activity
+  has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
+  has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
   default_scope ->{ order(:id) } # this naturally orders by index
 
   def as_json(options={})
@@ -15,12 +17,16 @@ class PerformanceIndicator < ActiveRecord::Base
          )
   end
 
+  def namespace
+    :corporate_services
+  end
+
   def create_note_url
-    Rails.application.routes.url_helpers.corporate_services_activity_notes_path(:en,id)
+    Rails.application.routes.url_helpers.corporate_services_performance_indicator_notes_path(:en,id)
   end
 
   def create_reminder_url
-    Rails.application.routes.url_helpers.corporate_services_activity_reminders_path(:en,id)
+    Rails.application.routes.url_helpers.corporate_services_performance_indicator_reminders_path(:en,id)
   end
 
   def url

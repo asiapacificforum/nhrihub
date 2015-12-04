@@ -23,9 +23,11 @@ Rails.application.routes.draw do
         resources :activities, :controller => "outcomes/activities"
       end
       resources :activities do
-        resources :reminders, :controller => "activities/reminders"
-        resources :notes, :controller => "activities/notes"
         resources :performance_indicators, :controller => "activities/performance_indicators"
+      end
+      resources :performance_indicators do
+        resources :reminders, :controller => "performance_indicators/reminders"
+        resources :notes, :controller => "performance_indicators/notes"
       end
       get 'admin', :to => "admin#index"
     end
