@@ -2,6 +2,7 @@ class Activity < ActiveRecord::Base
   belongs_to  :outcome
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
+  has_many :performance_indicators
   default_scope ->{ order(:id) } # this naturally orders by index
 
   # strip index if user has entered it
@@ -12,19 +13,19 @@ class Activity < ActiveRecord::Base
   def as_json(options={})
     super(:except =>  [:updated_at, :created_at],
           :methods => [:indexed_description,
-                       :indexed_performance_indicator,
-                       :indexed_target,
+                       :performance_indicators,
                        :url,
                        :description_error,
                        :reminders,
                        :create_reminder_url,
+                       :create_performance_indicator_url,
                        :notes,
                        :create_note_url]
          )
   end
 
-  def create_note_url
-    Rails.application.routes.url_helpers.corporate_services_activity_notes_path(:en,id)
+  def create_performance_indicator_url
+    Rails.application.routes.url_helpers.corporate_services_activity_performance_indicators_path(:en,id)
   end
 
   def page_data
@@ -35,10 +36,6 @@ class Activity < ActiveRecord::Base
     :corporate_services
   end
 
-  def create_reminder_url
-    Rails.application.routes.url_helpers.corporate_services_activity_reminders_path(:en,id)
-  end
-
   def url
     Rails.application.routes.url_helpers.corporate_services_outcome_activity_path(:en,outcome_id,id)
   end
@@ -47,27 +44,11 @@ class Activity < ActiveRecord::Base
     nil
   end
 
-  def indexed_target
-    if target.blank?
-      ""
-    else
-      [index, target].join(' ')
-    end
-  end
-
   def indexed_description
     if description.blank?
       ""
     else
       [index, description].join(' ')
-    end
-  end
-
-  def indexed_performance_indicator
-    if performance_indicator.blank?
-      ""
-    else
-      [index, performance_indicator].join(' ')
     end
   end
 

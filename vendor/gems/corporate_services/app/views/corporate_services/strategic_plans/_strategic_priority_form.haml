@@ -177,7 +177,7 @@
           %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2{:style=>"width:83.3333%;", :class => "{{^activities}}empty{{/activities}}"}
       {{#activities}}
-      <activity outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicator="{{performance_indicator}}" indexed_performance_indicator="{{indexed_performance_indicator}}" target="{{target}}" indexed_target="{{indexed_target}}" progress="{{progress}}"\>
+      <activity outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicators="{{performance_indicators}}" \>
       {{/activities}}
       {{^activities}}
       .row.activity
@@ -205,19 +205,6 @@
         :name => "activity[description]", :style => "z-index:10; width: initial;", "on-keydown"=>"remove_description_errors()",
         :value => "{{description}}"}
       %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.description_error_message')
-    .col-md-2{:style=>"width:20%; z-index:10"}
-      %textarea.form-control{ :id=>'new_activity_performance_indicator', :placeholder => "Enter performance indicator",
-        :name => "activity[performance_indicator]", :style => "z-index:10; width:initial;",
-        :value => "{{performance_indicator}}"}
-    .col-md-2{:style=>"width:20%; z-index:10"}
-      %textarea.form-control{ :id=>'new_activity_target', :placeholder => "Enter target",
-        :name => "activity[target]", :style => "z-index:10; width:initial;",
-        :value => "{{target}}"}
-    .col-md-2{:style=>"width:20%; z-index:10"}
-      %textarea.form-control{ :id=>'new_activity_progress', :placeholder => "Enter progress",
-        :name => "activity[progress]", :style => "z-index:10; width:initial;",
-        :value => "{{progress}}"}
-    .col-md-2{:style=>"width:20%"}
   .row.new_activity_control
     .col-md-2.description{:style=>"width:20%"}
       %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:36px"}
@@ -241,25 +228,83 @@
         .icon{'data-toggle' => 'edit', :style => 'height:20px; top:0px'}
           %i.fa.fa-remove.fa-lg{:id => "activity_editable{{id}}_edit_cancel", :style => "margin-left:17px"}
           %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
-    .col-md-2.performance_indicator{'data-toggle'=>'edit', :style=>"width:20%"}
-      .fade.no_edit.in
-        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_performance_indicator }}
+    .col-md-2{:style=>"width:80%;", :class => "{{^performance_indicators}}empty{{/performance_indicators}}"}
+      {{#performance_indicators}}
+      <pi activity_id="{{activity_id}}" description="{{description}}" indexed_description="{{indexed_description}}" target="{{target}}" indexed_target="{{indexed_target}}" progress="{{progress}}"\>
+      {{/performance_indicators}}
+      {{^performance_indicators}}
+      .row.performance_indicator
+        .col-md-2{:style=>"width:100%"}
+          %i.fa.fa-plus.fa-sm.new_performance_indicator{'on-click' => 'new_performance_indicator()', :style => 'position:relative; z-index:9; top:6px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add performance indicator"}
+      {{/performance_indicators}}
+  {{#if performance_indicators.length != 0}}
+  .row.performance_indicator_control
+    .col-md-2{:style=>"width:16.6667%"}
+    .col-md-2{:style=>"width:83.3335%"}
+      %i.fa.fa-plus.fa-sm.new_performance_indicator{'on-click' => 'new_performance_indicator()', :style => 'position:relative; z-index:9; top:6px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add performance indicator"}
+  {{/if}}
+
+%script#performance_indicator_template{:type => 'text/ractive'}
+  {{#if !persisted }}
+  {{> new_performance_indicator_template }}
+  {{else}}
+  {{> show_performance_indicator_template }}
+  {{/if}}
+
+%script#new_performance_indicator_template{:type => 'text/ractive'}
+  .row.new_performance_indicator
+    .col-md-2.description.form-group{:style=>"width:25%; z-index:10", :class => "{{#description_error}}has-error{{/}}"}
+      %textarea.form-control{ :id=>'new_performance_indicator_description', :placeholder => "Enter description",
+        :name => "performance_indicator[description]", :style => "z-index:10; width: initial;", "on-keydown"=>"remove_description_errors()",
+        :value => "{{description}}"}
+      %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.description_error_message')
+    .col-md-2{:style=>"width:25%; z-index:10"}
+      %textarea.form-control{ :id=>'new_performance_indicator_target', :placeholder => "Enter target",
+        :name => "performance_indicator[target]", :style => "z-index:10; width:initial;",
+        :value => "{{target}}"}
+    .col-md-2{:style=>"width:25%"}
+    .col-md-2{:style=>"width:25%"}
+  .row.new_activity_control
+    .col-md-2.description{:style=>"width:25%"}
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:36px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:56px"}
+
+    -#.col-md-2{:style=>"width:20%; z-index:10"}
+      -#%textarea.form-control{ :id=>'new_activity_performance_indicator', :placeholder => "Enter performance indicator",
+        -#:name => "activity[performance_indicator]", :style => "z-index:10; width:initial;",
+        -#:value => "{{performance_indicator}}"}
+    -#.col-md-2{:style=>"width:20%; z-index:10"}
+      -#%textarea.form-control{ :id=>'new_activity_target', :placeholder => "Enter target",
+        -#:name => "activity[target]", :style => "z-index:10; width:initial;",
+        -#:value => "{{target}}"}
+    -#.col-md-2{:style=>"width:20%; z-index:10"}
+      -#%textarea.form-control{ :id=>'new_activity_progress', :placeholder => "Enter progress",
+        -#:name => "activity[progress]", :style => "z-index:10; width:initial;",
+        -#:value => "{{progress}}"}
+    -#.col-md-2{:style=>"width:20%"}
+
+%script#show_performance_indicator_template{:type => 'text/ractive'}
+  .row.performance_indicator.editable_container{:id => "performance_indicator_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "padding-top:6px;"}
+    .col-md-2.description.form-group{'data-toggle'=>'edit', :class => "{{#description_error}}has-error{{/}}", :style=>"width:25%", 'data-attribute'=>'description'}
+      .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
+        %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
+          %i.fa.fa-sm.fa-trash-o
       .fade.edit
-        %textarea.form-control{ :id=>'activity_{{id}}_performance_indicator', :placeholder => "Enter performance indicator",
-            :name => "activity[performance_indicator]", :value => "{{ performance_indicator }}", :style => "width:initial; height:45px;"}
-    .col-md-2.target{'data-toggle'=>'edit', :style=>"width:20%"}
+        %textarea.form-control{ :id=>'performance_indicator_{{id}}_description', :placeholder => "Enter performance indicator",
+            :name => "performance_indicator[description]", :value => "{{ description }}", :style => "width:initial; height:45px;"}
+        %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.description_error_message')
+        .icon{'data-toggle' => 'edit', :style => 'height:20px; top:0px'}
+          %i.fa.fa-remove.fa-lg{:id => "performance_indicator_editable{{id}}_edit_cancel", :style => "margin-left:15%"}
+          %i.fa.fa-check.fa-lg{:id => "performance_indicator_editable{{id}}_edit_save", :style => "margin-left:40%"}
+    .col-md-2.target{'data-toggle'=>'edit', :style=>"width:25%", 'data-attribute'=>'target'}
       .fade.no_edit.in
-        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_target }}
+        %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_target }}
       .fade.edit
-        %textarea.form-control{ :id=>'activity_{{id}}_target', :placeholder => "Enter target",
-            :name => "activity[target]", :value => "{{ target }}", :style => "width:initial; height:45px;"}
-    .col-md-2.activity_progress{'data-toggle'=>'edit', :style=>"width:20%"}
-      .fade.no_edit.in
-        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ progress }}
-      .fade.edit
-        %textarea.form-control{ :id=>'activity_{{id}}_progress', :placeholder => "Enter progress",
-            :name => "activity[progress]", :value => "{{ progress }}", :style => "width:initial; height:45px;"}
-    .col-md-2.actions{:style=>"width:20%"}
+        %textarea.form-control{ :id=>'performance_indicator_{{id}}_target', :placeholder => "Enter target",
+            :name => "performance_indicator[target]", :value => "{{ target }}", :style => "width:initial; height:45px;"}
+    .col-md-2.performance_indicator_progress{:style=>"width:25%"}
+    .col-md-2.actions{:style=>"width:25%"}
       %div.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; float:left; width:20px; top:3px; margin-left:20px;"}
       %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "margin-left:28px; position:relative; float:left; top:3px;"}
       %div.rule{'on-click' => "show_rules_panel()"}
@@ -277,8 +322,57 @@
 
     strategic_plan_data = #{@strategic_plan.to_json}
 
+    PerformanceIndicator = Ractive.extend
+      template : '#performance_indicator_template'
+      computed :
+        persisted : ->
+          !isNaN(parseInt(@get('id')))
+      remove_description_errors : ->
+        @set("description_error","")
+      create_save : ->
+        context = $(@find('.new_performance_indicator'))
+        url = @parent.get('create_performance_indicator_url')
+        data = context.find(':input').serializeArray()
+        data.push({name: 'performance_indicator[activity_id]', value : @get('activity_id')})
+        if @validate()
+          $.ajax
+            type : 'post'
+            url : url
+            data : data
+            dataType : 'json'
+            success : @create_performance_indicator
+            context : @
+      validate : ->
+        @set('description', @get('description').trim())
+        if @get('description') == ""
+          @set("description_error",true)
+          false
+        else
+          true
+      create_performance_indicator : (response, statusText, jqxhr)->
+        UserInput.reset()
+        @parent.set('performance_indicators',response)
+      delete_this : (event,object)->
+        ev = $.Event(event)
+        ev.stopPropagation()
+        data = [{name:'_method', value: 'delete'}]
+        $.ajax
+          url : @get('url')
+          data : data
+          method : 'post'
+          dataType : 'json'
+          context : @
+          success : @update_performance_indicator
+      update_performance_indicator : (resp, statusText, jqxhr)->
+        UserInput.reset()
+        @parent.set(resp)
+      remove_errors : ->
+        @remove_description_errors()
+
     Activity = Ractive.extend
       template : '#activity_template'
+      components :
+        pi : PerformanceIndicator
       computed :
         persisted : ->
           !isNaN(parseInt(@get('id')))
@@ -333,6 +427,11 @@
         $('#notes_modal').modal('show')
       show_rules_panel : ->
         $('#rules_modal').modal('show')
+      new_performance_indicator : ->
+        @push('performance_indicators',{description : '', indexed_description: '', target: '', id : null, activity_id : @get('id'), url:null, description_error:"", progress:""})
+        UserInput.claim_user_input_request(@,'remove_performance_indicator_form')
+      remove_performance_indicator_form : ->
+        console.log "remove performance indicator form"
 
     Outcome = Ractive.extend
       template : '#outcome_template'
@@ -387,7 +486,7 @@
         UserInput.reset()
         @parent.set(resp)
       new_activity : ->
-        @push('activities',{description : '', indexed_description: '', performance_indicator: '', target: '', id : null, outcome_id : @get('id'), url:null, description_error:"", progress:""})
+        @push('activities',{description : '', indexed_description: '', id : null, outcome_id : @get('id'), url:null, description_error:"" })
         UserInput.claim_user_input_request(@,'remove_activity_form')
       remove_activity_form : ->
         if _.isNull(@findAllComponents('activity')[@get('activities').length-1].get('id'))

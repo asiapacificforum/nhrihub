@@ -9,4 +9,9 @@ module SetupHelpers
     o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
     Activity.create(:description => "Smarter thinking", :outcome_id => o.id)
   end
+
+  def setup_performance_indicator
+    a = setup_activity
+    PerformanceIndicator.create(:description => "number of complaints", :target => "none at all", :activity_id => a.id)
+  end
 end

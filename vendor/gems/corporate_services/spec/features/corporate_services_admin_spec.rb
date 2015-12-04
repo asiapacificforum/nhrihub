@@ -104,7 +104,7 @@ feature "internal document admin when user not permitted", :js => true do
   end
 end
 
-describe "strategic plan admin", :js => true do
+feature "strategic plan admin", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
 
   scenario "start date not configured" do

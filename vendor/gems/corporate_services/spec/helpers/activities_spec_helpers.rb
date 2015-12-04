@@ -23,10 +23,6 @@ module ActivitiesSpecHelpers
     page.all(activity_selector + ".description textarea").select{|i| i['id'] && i['id'].match(/activity_\d_description/)}
   end
 
-  def activity_performance_indicator_field
-    page.all(activity_selector + ".performance_indicator textarea").select{|i| i['id'] && i['id'].match(/activity_\d_performance_indicator/)}
-  end
-
   def activity_progress_field
     page.all(activity_selector + ".activity_progress textarea").select{|i| i['id'] && i['id'].match(/activity_\d_progress/)}
   end
