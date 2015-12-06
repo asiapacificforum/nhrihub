@@ -8,7 +8,7 @@ class OutreachEventArea < ActiveRecord::Base
   end
 
   def subarea_ids
-    outreach_events.subareas.where(:area_id => area_id).pluck('id')
+    outreach_event.subareas.where(:area_id => area_id).pluck('id')
   end
 
 end

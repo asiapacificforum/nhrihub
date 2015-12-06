@@ -22,18 +22,18 @@ $ ->
   Ractive.decorators.inpage_edit = EditInPlace
 
   OutreachSubarea = Ractive.extend
-    template : '#outreach_subarea_template'
+    template : '#outreach_media_subarea_template'
     computed :
       name : ->
         _(subareas).findWhere({id : @get('id')}).name
 
   OutreachArea = Ractive.extend
-    template : '#outreach_area_template'
+    template : '#outreach_media_area_template'
     computed :
       name : ->
         _(areas).findWhere({id : @get('area_id')}).name
     components :
-      outreachsubarea : OutreachSubarea
+      outreachmediasubarea : OutreachSubarea
 
   Metric = Ractive.extend
     template : '#metric_template'
@@ -148,6 +148,8 @@ $ ->
         'filesize_error': false
         'expanded':false
     computed :
+      model_name : ->
+        "outreach_event"
       hr_violation : ->
         id = Subarea.find_by_extended_name("Human Rights Violation").id
         _(@get('subarea_ids')).indexOf(id) != -1
@@ -163,9 +165,6 @@ $ ->
         @_matches_from() &&
         @_matches_to() &&
         @_matches_area_subarea() &&
-        @_matches_violation_coefficient() &&
-        @_matches_positivity_rating() &&
-        @_matches_violation_severity() &&
         @_matches_people_affected()
       persisted : ->
         !_.isNull(@get('id'))
@@ -192,12 +191,6 @@ $ ->
         _.isEqual(@get('subarea_ids').slice().sort(), @get('sort_criteria.subareas').slice().sort())
     _matches_people_affected : ->
       @_between(parseInt(@get('sort_criteria.pa_min')),parseInt(@get('sort_criteria.pa_max')),parseInt(@get('metrics.affected_people_count.value')))
-    _matches_violation_severity : ->
-      @_between(parseInt(@get('sort_criteria.vs_min')),parseInt(@get('sort_criteria.vs_max')),parseInt(@get('metrics.violation_severity.value')))
-    _matches_violation_coefficient : ->
-      @_between(parseFloat(@get('sort_criteria.vc_min')),parseFloat(@get('sort_criteria.vc_max')),parseFloat(@get('metrics.violation_coefficient.value')))
-    _matches_positivity_rating : ->
-      @_between(parseInt(@get('sort_criteria.pr_min')),parseInt(@get('sort_criteria.pr_max')),parseInt(@get("metrics.positivity_rating.rank")))
     _between : (min,max,val)->
       return true if _.isNaN(val) # declare match if there's no value
       min = if _.isNaN(min) # from the input element a zero-length string can be presented
@@ -246,7 +239,8 @@ $ ->
       else
         true
     _validate_attachment : ->
-      @_validate_any_attachment() && @_validate_single_attachment()
+      #@_validate_any_attachment() && @_validate_single_attachment()
+      true
     _validate_any_attachment : ->
       unless @_validate_file() || @_validate_link()
         @set('outreach_event_error',true)
@@ -311,7 +305,7 @@ $ ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
     create_instance_attributes: ->
-      attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id','article_link')
+      attrs = _(@get()).pick('title', 'affected_people_count')
       if _.isEmpty(@get('area_ids'))
         attrs.area_ids = [""] # hack to workaround jQuery not sending empty arrays
       else
@@ -325,7 +319,7 @@ $ ->
       file = @get('fileupload').files[0]
       @set
         lastModifiedDate : file.lastModifiedDate
-      attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id', 'lastModifiedDate')
+      attrs = _(@get()).pick('title', 'affected_people_count')
       name_value = _(attrs).keys().map (k)->{name:"outreach_event["+k+"]", value:attrs[k]}
       if _.isEmpty(@get('area_ids'))
         aids = [{name : 'outreach_event[area_ids][]', value: ""}]
@@ -396,31 +390,13 @@ $ ->
       @populate_min_max_fields()
     computed :
       dates : ->
-        _(@findAllComponents('ma')).map (ma)->new Date(ma.get('date'))
-      violation_coefficients : ->
-        _(@findAllComponents('ma')).map (ma)->parseFloat (ma.get("metrics.violation_coefficient.value") || 0.0 )
-      positivity_ratings : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.positivity_rating.rank")  || 0)
-      violation_severities : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.violation_severity.rank")  || 0)
+        _(@findAllComponents('oe')).map (ma)->new Date(ma.get('date'))
       people_affecteds : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.affected_people_count.value")  || 0)
+        _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("metrics.affected_people_count.value")  || 0)
       earliest : ->
         @min('dates')
       most_recent : ->
         @max('dates')
-      vc_min : ->
-        @min('violation_coefficients')
-      vc_max : ->
-        @max('violation_coefficients')
-      pr_min : ->
-        @min('positivity_ratings')
-      pr_max : ->
-        @max('positivity_ratings')
-      vs_min : ->
-        @min('violation_severities')
-      vs_max : ->
-        @max('violation_severities')
       pa_min : ->
         @min('people_affecteds')
       pa_max : ->
@@ -455,10 +431,10 @@ $ ->
       @set('sort_criteria.pa_max',@get('pa_max'))  unless _.isUndefined(@get('pa_max'))
     expand : ->
       @set('expanded', true)
-      _(@findAllComponents('ma')).each (ma)-> ma.expand()
+      _(@findAllComponents('oe')).each (ma)-> ma.expand()
     compact : ->
       @set('expanded', false)
-      _(@findAllComponents('ma')).each (ma)-> ma.compact()
+      _(@findAllComponents('oe')).each (ma)-> ma.compact()
     add_area_filter : (id) ->
       @push('sort_criteria.areas',id)
     remove_area_filter : (id) ->
@@ -485,11 +461,10 @@ $ ->
       $(@find('#outreach_event_title')).focus()
       UserInput.claim_user_input_request(@,'cancel')
     delete : (outreach_event)->
-      index = @findAllComponents('ma').indexOf(outreach_event)
+      index = @findAllComponents('oe').indexOf(outreach_event)
       @splice('outreach_events',index,1)
     cancel : ->
       @shift('outreach_events')
-
 
   window.start_page = ->
     window.outreach = new Ractive options

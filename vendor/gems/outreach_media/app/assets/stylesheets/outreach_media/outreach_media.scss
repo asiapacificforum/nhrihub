@@ -16,7 +16,7 @@
   background-size: 12px;
 }
 
-#media_appearances_controls {
+#media_appearances_controls, #outreach_events_controls {
   background-color : #9A9375;
   margin-bottom : 6px;
   border-radius : 10px;
@@ -46,7 +46,7 @@
     }
 }
 
-.media_appearance.well {
+.media_appearance.well, .outreach_event.well {
   background-image: -webkit-linear-gradient(top, #DBD2AB 0%, #D8CD9F 100%);
   background-image: linear-gradient(to bottom, #DBD2AB 0%, #D8CD9F 100%);
   border-color: #ABA58D;

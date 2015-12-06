@@ -40,7 +40,7 @@ feature "create a new outreach event", :js => true do
 
   scenario "without errors" do
     fill_in("outreach_event_title", :with => "My new outreach event title")
-    expect(chars_remaining).to eq "You have 80 characters left"
+    expect(chars_remaining).to eq "You have 73 characters left"
     expect(page).not_to have_selector("input#people_affected", :visible => true)
     #expect(page.find('#outreach_event_subarea_ids_1')).to be_disabled # defer until ractive 0.8.0 is stable
     #expect(page.find('#outreach_event_subarea_ids_2')).to be_disabled
@@ -53,8 +53,6 @@ feature "create a new outreach event", :js => true do
     check("Good Governance")
     check("CRC")
     fill_in('people_affected', :with => " 100000 ")
-    select('3: Has no bearing on the office', :from => 'Positivity rating')
-    select('4: Serious', :from => 'Violation severity')
     expect{edit_save.click; sleep(0.5)}.to change{OutreachEvent.count}.from(0).to(1)
     ma = OutreachEvent.first
     expect(ma.affected_people_count).to eq 100000
@@ -65,8 +63,6 @@ feature "create a new outreach event", :js => true do
     expect(areas).to include "Human Rights"
     expect(areas).to include "Good Governance"
     expect(subareas).to include "CRC"
-    expect(positivity_rating).to eq "3: Has no bearing on the office"
-    expect(violation_severity).to eq "4: Serious"
     expect(people_affected.gsub(/,/,'')).to eq "100000" # b/c phantomjs does not have a toLocaleString() method
   end
 
@@ -85,7 +81,7 @@ feature "create a new outreach event", :js => true do
 
   scenario "repeated adds" do # b/c there was a bug!
     fill_in("outreach_event_title", :with => "My new outreach event title")
-    expect(chars_remaining).to eq "You have 80 characters left"
+    expect(chars_remaining).to eq "You have 73 characters left"
     expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(0).to(1)
     sleep(0.4)
     expect(page).to have_selector("#outreach_events .outreach_event", :count => 1)
@@ -180,15 +176,13 @@ feature "when there are existing outreach events", :js => true do
     scenario "edit an outreach event without introducing errors" do
       edit_outreach_event[0].click
       fill_in("outreach_event_title", :with => "My new outreach event title")
-      expect(chars_remaining).to eq "You have 80 characters left"
+      expect(chars_remaining).to eq "You have 73 characters left"
       uncheck("Human Rights")
       check("outreach_event_subarea_ids_1")
       expect(page).to have_selector("input#people_affected", :visible => true)
       check("Good Governance")
       check("CRC")
       fill_in('people_affected', :with => " 100000 ")
-      select('3: Has no bearing on the office', :from => 'Positivity rating')
-      select('4: Serious', :from => 'Violation severity')
       expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.first.title}
       expect(OutreachEvent.first.area_ids).to eql [2]
       sleep(0.4)
@@ -208,21 +202,6 @@ feature "when there are existing outreach events", :js => true do
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq false
       new_file_id = page.evaluate_script("media.findAllComponents('ma')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',new_file_id))).to eq true
-    end
-
-    scenario "edit a file outreach event and change to link" do
-      edit_outreach_event[0].click
-      previous_file_id = page.evaluate_script("media.findAllComponents('ma')[0].get('file_id')")
-      expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
-      clear_file_attachment
-      fill_in('outreach_event_outreach_event_link', :with => "http://www.nytimes.com")
-      edit_save.click
-      sleep(0.4)
-      expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq false
-      expect(OutreachEvent.first.outreach_event__link).to eq "http://www.nytimes.com"
-      expect(OutreachEvent.first.original_filename).to be_nil
-      expect(OutreachEvent.first.filesize).to be_nil
-      expect(OutreachEvent.first.original_type).to be_nil
     end
 
     scenario "edit an outreach event and add title error" do
@@ -263,38 +242,18 @@ feature "when there are existing outreach events", :js => true do
       original_outreach_event = OutreachEvent.first
       edit_outreach_event[0].click
       fill_in("outreach_event_title", :with => "My new outreach event title")
-      expect(chars_remaining).to eq "You have 80 characters left"
+      expect(chars_remaining).to eq "You have 73 characters left"
       uncheck("Human Rights")
       check("outreach_event_subarea_ids_1")
       expect(page).to have_selector("input#people_affected", :visible => true)
       check("Good Governance")
       check("CRC")
       fill_in('people_affected', :with => " 100000 ")
-      select('3: Has no bearing on the office', :from => 'Positivity rating')
-      select('4: Serious', :from => 'Violation severity')
       expect{edit_cancel.click; sleep(0.4)}.not_to change{OutreachEvent.first.title}
       expect(page.all("#outreach_events .outreach_event .basic_info .title").first.text).to eq original_outreach_event.title
       expand_all_panels
       expect(areas).to include "Human Rights"
       expect(areas).not_to include "Good Governance"
-    end
-  end
-
-  feature "and existing outreach event has link attachment" do
-    before do
-      setup_database
-      visit outreach_media_outreach_events_path(:en) # again, b/c setup changed
-    end
-
-    scenario "edit a file outreach event and change to file" do
-      edit_outreach_event[0].click
-      page.attach_file("outreach_event_file", upload_document, :visible => false)
-      edit_save.click
-      sleep(0.4)
-      expect(OutreachEvent.first.outreach_event__link).to be_blank
-      expect(OutreachEvent.first.original_filename).to eq "first_upload_file.pdf"
-      expect(OutreachEvent.first.filesize).to be > 0
-      expect(OutreachEvent.first.original_type).to eq "application/pdf"
     end
   end
 end
@@ -351,18 +310,6 @@ feature "view attachments", :js => true do
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
     else
       expect(1).to eq 1 # download not supported by selenium driver
-    end
-  end
-
-  scenario "visit link" do
-    if page.driver.is_a?(Capybara::Poltergeist::Driver)
-      # b/c triggering a reload of another page triggers a phantomjs bug/error
-      expect(1).to eq 1
-    else
-      setup_database
-      visit outreach_media_outreach_events_path(:en)
-      click_the_link_icon
-      expect(page.evaluate_script('window.location.href')).to include first_outreach_event_link
     end
   end
 end

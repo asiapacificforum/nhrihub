@@ -1,0 +1,52 @@
+%script#outreach_media_subarea_template{:type=> 'template/ractive'}
+  %span.subarea {{ name }}
+
+%script#outreach_media_area_template{:type=> 'template/ractive'}
+  .area
+    .name {{ name }}
+    .subareas
+      {{#subarea_ids:i}}
+      <outreachmediasubarea id={{subarea_ids[i]}}>
+      {{/subarea_ids}}
+
+%script#metric_template{:type => 'template/ractive'}
+  .metric{:id =>"{{key}}"}
+    .name {{ name }}
+    .value {{ value }}
+
+%script#subarea_template{:type=> 'template/ractive'}
+  %li{:class => 'subarea {{#if subarea_selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle()'}
+      %span.text {{name}}
+      %span.fa.fa-check
+
+%script#area_template{:type=> 'template/ractive'}
+  %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
+    %a{'on-click'=>'toggle()'}
+      %span {{name}}
+      %span.fa.fa-check
+  {{#subareas}}
+  <subarea>
+  {{/subareas}}
+
+%script#subarea_select_template{:type=> 'template/ractive'}
+  .checkbox.subarea
+    %label
+      %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :checked => '{{checked}}', :id => '{{model_name}}_subarea_ids_{{id}}', :name => '{{model_name}}[subarea_ids][]', :value => '{{id}}'}
+      {{ name }}
+
+%script#area_select_template{:type=> 'template/ractive'}
+  .checkbox
+    %label
+      %input{:type=>:checkbox, :id => '{{model_name}}_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
+      {{ name }}
+  {{#subareas }}
+  <subarea-select id='{{id}}'/> 
+  {{/subareas }}
+
+%script#edit_title{:type => 'text/ractive'}
+  .form-group.clearfix{:class => "{{#title_error}}has-error{{/}}"}
+    =label_tag :title, t('.title'), :class => 'control-label sr-only'
+    .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
+    =text_field_tag '{{model_name}}[title]', nil, :class => 'form-control', :id => '{{model_name}}_title', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
+    %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')

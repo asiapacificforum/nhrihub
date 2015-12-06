@@ -7,7 +7,6 @@ module OutreachSetupHelper
     setup_areas
     FactoryGirl.create(:outreach_event,
                        :hr_area,
-                       :file,
                        :impact_rating => ImpactRating.first,
                        :reminders=>[] )
   end

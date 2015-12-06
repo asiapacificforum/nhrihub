@@ -22,18 +22,18 @@ $ ->
   Ractive.decorators.inpage_edit = EditInPlace
 
   MediaSubarea = Ractive.extend
-    template : '#media_subarea_template'
+    template : '#outreach_media_subarea_template'
     computed :
       name : ->
         _(subareas).findWhere({id : @get('id')}).name
 
   MediaArea = Ractive.extend
-    template : '#media_area_template'
+    template : '#outreach_media_area_template'
     computed :
       name : ->
         _(areas).findWhere({id : @get('area_id')}).name
     components :
-      mediasubarea : MediaSubarea
+      outreachmediasubarea : MediaSubarea
 
   Metric = Ractive.extend
     template : '#metric_template'
@@ -164,6 +164,8 @@ $ ->
         'filesize_error': false
         'expanded':false
     computed :
+      model_name : ->
+        "media_appearance"
       hr_violation : ->
         id = Subarea.find_by_extended_name("Human Rights Violation").id
         _(@get('subarea_ids')).indexOf(id) != -1

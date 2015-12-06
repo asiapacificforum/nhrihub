@@ -6,6 +6,7 @@ class AddOutreachEventsTableAndAssociations < ActiveRecord::Migration
       t.integer :audience_type_id
       t.string :audience_name
       t.integer :participant_count
+      t.integer :affected_people_count
       t.text :description
       t.integer :impact_rating_id
       t.timestamps
@@ -14,6 +15,12 @@ class AddOutreachEventsTableAndAssociations < ActiveRecord::Migration
     create_table :outreach_event_areas do |t|
       t.integer :outreach_event_id
       t.integer :area_id
+      t.timestamps
+    end
+
+    create_table :outreach_event_subareas do |t|
+      t.integer :outreach_event_id
+      t.integer :subarea_id
       t.timestamps
     end
 

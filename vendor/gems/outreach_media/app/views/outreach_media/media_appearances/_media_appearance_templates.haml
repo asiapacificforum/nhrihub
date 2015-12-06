@@ -173,13 +173,6 @@
     <reminders/>
     <notes/>
 
-%script#edit_title{:type => 'text/ractive'}
-  .form-group.clearfix{:class => "{{#title_error}}has-error{{/}}"}
-    =label_tag :title, t('.title'), :class => 'control-label sr-only'
-    .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
-    =text_field_tag 'media_appearance[title]', nil, :class => 'form-control', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
-    %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
-
 %script#new_media_appearance_template{:type => 'template/ractive'}
   .row.media_appearance.well.well-sm.form.template-upload
     .col-md-12
@@ -260,21 +253,6 @@
         %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.num_people')
         %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "media_appearance[affected_people_count]", :style => "width:15%", :value => "{{affected_people_count}}"}
 
-%script#area_select_template{:type=> 'template/ractive'}
-  .checkbox
-    %label
-      %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
-      {{ name }}
-  {{#subareas }}
-  <subarea-select id='{{id}}'/> 
-  {{/subareas }}
-
-%script#subarea_select_template{:type=> 'template/ractive'}
-  .checkbox.subarea
-    %label
-      %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :checked => '{{checked}}', :id => 'media_appearance_subarea_ids_{{id}}', :name => 'media_appearance[subarea_ids][]', :value => '{{id}}'}
-      {{ name }}
-
 %script#area_template{:type=> 'template/ractive'}
   %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
     %a{'on-click'=>'toggle()'}
@@ -283,28 +261,6 @@
   {{#subareas}}
   <subarea>
   {{/subareas}}
-
-%script#subarea_template{:type=> 'template/ractive'}
-  %li{:class => 'subarea {{#if subarea_selected}}selected{{/if}}'}
-    %a.opt{'on-click'=>'toggle()'}
-      %span.text {{name}}
-      %span.fa.fa-check
-
-%script#media_area_template{:type=> 'template/ractive'}
-  .area
-    .name {{ name }}
-    .subareas
-      {{#subarea_ids:i}}
-      <mediasubarea id={{subarea_ids[i]}}>
-      {{/subarea_ids}}
-
-%script#media_subarea_template{:type=> 'template/ractive'}
-  %span.subarea {{ name }}
-
-%script#metric_template{:type => 'template/ractive'}
-  .metric{:id =>"{{key}}"}
-    .name {{ name }}
-    .value {{ value }}
 
 %script#selected_file_template{:type => 'template/ractive'}
   #selected_file

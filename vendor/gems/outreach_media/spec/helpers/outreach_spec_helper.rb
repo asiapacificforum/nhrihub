@@ -8,12 +8,12 @@ module OutreachSpecHelper
     end
   end
 
-  def edit_article
+  def edit_outreach_event
     page.all('.fa-pencil-square-o')
   end
 
-  def add_article_button
-    page.find('.add_article')
+  def add_outreach_event_button
+    page.find('#add_outreach_event')
   end
 
   def edit_save
@@ -25,15 +25,15 @@ module OutreachSpecHelper
   end
 
   def areas
-    page.all("#media_appearances .media_appearance .expanded_info .description .area .name").map(&:text)
+    page.all("#outreach_events .outreach_event .expanded_info .description .area .name").map(&:text)
   end
 
   def subareas
-    page.all("#media_appearances .media_appearance .expanded_info .description .subareas .subarea").map(&:text)
+    page.all("#outreach_events .outreach_event .expanded_info .description .subareas .subarea").map(&:text)
   end
 
   def expand_all_panels
-    page.find('#media_appearances_controls #expand').click
+    page.find('#outreach_events_controls #expand').click
     sleep(0.3)
   end
 
@@ -49,7 +49,7 @@ module OutreachSpecHelper
     page.find(".metric#violation_severity .value").text
   end
 
-  def cancel_article_add
+  def cancel_outreach_event_add
     page.find('.form #edit_cancel').click
     sleep(0.2)
   end
@@ -58,17 +58,17 @@ module OutreachSpecHelper
     page.find(".editable_container .basic_info .actions .fa-remove")
   end
 
-  def delete_article
-    page.find('.media_appearance .delete_icon').click
+  def delete_outreach_event
+    page.find('.outreach_event .delete_icon').click
     sleep(0.4)
   end
 
-  def media_appearances
-    page.all('#media_appearances .media_appearance')
+  def outreach_events
+    page.all('#outreach_events .outreach_event')
   end
 
   def click_note_icon
-    page.find('#media_appearances .media_appearance .basic_info .actions .show_notes').click
+    page.find('#outreach_events .outreach_event .basic_info .actions .show_notes').click
     sleep(0.4)
   end
 
@@ -105,22 +105,22 @@ module OutreachSpecHelper
   end
 
   def click_the_download_icon
-    page.find('.media_appearance .actions .fa-cloud-download').click
+    page.find('.outreach_event .actions .fa-cloud-download').click
   end
 
   def click_the_link_icon
-    page.find('.media_appearance .actions .fa-globe').click
+    page.find('.outreach_event .actions .fa-globe').click
   end
 
-  def first_article_link
-    MediaAppearance.first.article_link.gsub(/http/,'')
+  def first_outreach_event_link
+    OutreachEvent.first.outreach_event_link.gsub(/http/,'')
   end
 
-  def delete_article_link_field
-    fill_in("media_appearance_article_link", :with => "")
+  def delete_outreach_event_link_field
+    fill_in("outreach_event_outreach_event_link", :with => "")
     # b/c setting the value by javascript (previous line) does not trigger the input event, as it would for a real user input
     if !page.driver.browser.is_a?(Capybara::Poltergeist::Browser)
-      page.execute_script("event = new Event('input'); $('.article_link')[0].dispatchEvent(event)")
+      page.execute_script("event = new Event('input'); $('.outreach_event_link')[0].dispatchEvent(event)")
     end
   end
 end

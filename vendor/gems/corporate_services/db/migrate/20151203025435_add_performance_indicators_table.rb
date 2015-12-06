@@ -7,7 +7,7 @@ class AddPerformanceIndicatorsTable < ActiveRecord::Migration
       t.timestamps
     end
 
-    remove_column :activities,:performance_indicator
-    remove_column :activities,:target
+    remove_column :activities,:performance_indicator, :text
+    remove_column :activities,:target, :text
   end
 end

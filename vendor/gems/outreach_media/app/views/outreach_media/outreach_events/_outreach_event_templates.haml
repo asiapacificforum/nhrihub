@@ -1,0 +1,257 @@
+%script#selected_file_template{:type => 'template/ractive'}
+
+%script#outreach_events_template{:type => 'template/ractive'}
+  .row#outreach_events_controls
+    .row
+      .col-md-4
+        %h4= t('.search_heading')
+    .row.labels
+      .col-md-2= t('.title')
+      .col-md-2= t('.from')
+      .col-md-2= t('.to')
+      .col-md-2
+        =t('.area')
+        \/
+        =t('.subarea')
+    .row{:style => "margin-bottom:12px;"}
+      .col-md-2= text_field_tag :title, "{{sort_criteria.title}}", :placeholder => t('.enter_text')
+      .col-md-2
+        %input{:type=>"text", :id=>"from", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
+      .col-md-2
+        %input{:type=>"text", :id=>"to", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}"}
+      .col-md-3
+        .btn-group.area-select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select')
+            %span.caret
+          %ul.dropdown-menu
+            %li.filter_rule
+              %a{'on-click'=>"filter_rule('all')", :class => "{{#if sort_criteria.rule == 'all'}}selected{{/if}}"}
+                %span=t('.all')
+                %span.fa.fa-check
+              %a{'on-click'=>"filter_rule('any')", :class => "{{#if sort_criteria.rule == 'any'}}selected{{/if}}"}
+                %span=t('.any')
+                %span.fa.fa-check
+            {{#areas}}
+            <area id='{{id}}' name='{{name}}'/>
+            {{/areas}}
+      .col-md-1
+        %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
+      .col-md-2{:style => 'padding-left:84px'}
+        {{#if expanded}}
+        %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all')}
+        {{else}}
+        %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
+        {{/if}}
+    .row.labels
+      .col-md-2= t('.people_affected')
+      .col-md-2= t('.severity')
+      .col-md-2= t('.coefficient')
+      .col-md-2= t('.positivity')
+    .row.labels
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+    .row
+      .col-md-1.filter_field.pa_min
+        %input{:style=>"width:80px", :value => '{{sort_criteria.pa_min}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.pa_max
+        %input{:style=>"width:80px", :value => '{{sort_criteria.pa_max}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.vs_min
+        %input{:style=>"width:50px", :value => '{{sort_criteria.vs_min}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.vs_max
+        %input{:style=>"width:50px", :value => '{{sort_criteria.vs_max}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.vc_min
+        %input{:style=>"width:50px", :value => '{{sort_criteria.vc_min}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.vc_max
+        %input{:style=>"width:50px", :value => '{{sort_criteria.vc_max}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.pr_min
+        %input{:style=>"width:50px", :value => '{{sort_criteria.pr_min}}'}
+        %span.error_message Invalid
+      .col-md-1.filter_field.pr_max
+        %input{:style=>"width:50px", :value => '{{sort_criteria.pr_max}}'}
+        %span.error_message Invalid
+  #outreach_events
+    {{#outreach_events}}
+    <oe on-edit='edit', area_ids='{{area_ids}}', expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  metrics='{{metrics}}'  has_link='{{has_link}}'  has_scanned_doc='{{has_scanned_doc}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}'  url='{{url}}'/>
+    {{/outreach_events}}
+
+%script#outreach_event_template{:type => 'template/ractive'}
+  {{#if persisted }}
+  {{> show_outreach_event_template }}
+  {{else}}
+  {{> new_outreach_event_template }}
+  {{/if}}
+
+%script#show_outreach_event_template{:type => 'template/ractive'}
+  .row.outreach_event.well.well-sm.editable_container{:style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+    .col-md-12
+      .row.basic_info
+        .col-md-2.date{:style => "width:15%"} {{ date }}
+        .col-md-2.title{'data-toggle'=>'edit', :style => "width:60%"}
+          .fade.no_edit.in
+            %span {{ title }}
+          .fade.edit{:style => "width: 100%"}
+            {{> edit_title}}
+            .row.fileupload{:decorator => 'file_upload'}
+              .col-md-3#fileinput_button
+                %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
+                %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[file]'}
+              .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
+                {{#original_filename}}
+                <file/>
+                {{/original_filename}}
+            .row.form-group{:class => "{{#outreach_event_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+              .col-md-5
+                %span.help-block#outreach_event_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_error_message')
+            .row.form-group{:class => "{{#outreach_event_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+              .col-md-5
+                %span.help-block#outreach_event_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_double_attachment_error_message')
+            .row
+              .col-md-3
+                %label{:for => 'outreach_event_article_link'}= t('.weblink')
+              .col-md-9
+                %input.article_link{:name => "outreach_event_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
+        .col-md-2.actions{:style => "width:25%"}
+          .row{:style => "margin-left:0px;"}
+            .col-md-1.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px;"}
+            .col-md-1
+              %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+            {{#if has_link }}
+            .col-md-1
+              %i.fa.fa-globe{'on-click' => 'fetch_link()'}
+            {{elseif has_scanned_doc }}
+            .col-md-1
+              %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+            {{/if}}
+            .col-md-1.icon{ 'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-remove{:id => "outreach_event_editable{{id}}_edit_cancel"}
+            .col-md-1.icon{'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-check{:id => "outreach_event_editable{{id}}_edit_save"}
+              .fade.no_edit.in
+                %i.fa.fa-pencil-square-o{:id => "outreach_event_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
+            .col-md-1
+              %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
+            .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
+              {{#if expanded}}
+              %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
+              {{else}}
+              %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
+              {{/if}}
+      .panel.panel-default.collapse.expanded_info{:class => "collapse{{id}}"}
+        .panel-heading
+          .row
+            .col-md-2.description{:style => "width:50%"}
+              =t('.areas')
+              \/
+              =t('.subareas')
+            .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
+        .panel-content{'data-toggle'=>'edit'}
+          .fade.no_edit.in
+            .row
+              .col-md-2.description{:style => "width:50%"}
+                {{#outreach_event_areas}}
+                <outreacharea/>
+                {{/outreach_event_areas}}
+              .col-md-2.metrics{:style=>"width:40%; display:flex; flex-direction:column;"}
+                {{#formatted_metrics:key}}
+                <metric/>
+                {{/formatted_metrics}}
+          .fade.edit
+            {{> outreach_event_edit}}
+    <reminders/>
+    <notes/>
+
+%script#new_outreach_event_template{:type => 'template/ractive'}
+  .row.outreach_event.well.well-sm.form.template-upload
+    .col-md-12
+      .row
+        .col-md-1{:style => "padding-top:28px"}= t('.title')
+        .col-md-8
+          {{> edit_title }}
+        .col-md-2
+          .form-group
+            .nothing{:style => 'visibility:hidden'} nothing
+            %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
+            %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
+      .row.fileupload{:decorator => 'file_upload'}
+        .col-md-12
+          .row.fileupload_progress
+            / The global progress state
+            .col-lg-9.fileupload-progress.fade
+              / The global progress bar
+              .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
+                .progress-bar.progress-bar-success{:style => "width:0%;"}
+              / The extended global progress state
+              .progress-extended  
+          .row
+            .col-md-2#fileinput_button
+              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
+              %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[file]'}
+            .col-md-4#selected_file_container{:style=>"display:flex; flex-direction: row"}
+              {{#fileupload}}
+              <file/>
+              {{/}}
+      .row.form-group{:class => "{{#outreach_event_error}}has-error{{/}}", :style => "padding-bottom:0px"}
+        .col-md-2
+          %span.help-block#outreach_event_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_error_message')
+      .row.form-group{:class => "{{#outreach_event_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+        .col-md-2
+          %span.help-block#outreach_event_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_double_attachment_error_message')
+      .row
+        .col-md-2
+          %label{:for => 'outreach_event_article_link'}= t('.weblink')
+        .col-md-2
+          %input.article_link{:name => "outreach_event_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
+      .panel.panel-default.expanded_info
+        .panel-heading
+          .row
+            .col-md-2.description{:style => "width:50%"}
+              =t('.areas')
+              \/
+              =t('.subareas')
+            .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
+        .panel-content
+          {{> outreach_event_edit}}
+
+%script#outreach_event_edit{:type => 'text/ractive'}
+  .row
+    .col-md-2{:style => "width:50%"}
+      {{#areas }}
+      /* this component will work when the ractive bug is fixed and version 0.8 is stable */
+      /* <area-select id='{{id}}' area_id='{{id}}' area_ids='{{area_ids}}' name='{{name}}' subareas='{{subareas}}'/> */
+      .checkbox
+        %label
+          %input{:type=>:checkbox, :id => 'outreach_event_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
+          {{ name }}
+      {{#subareas }}
+      .checkbox.subarea
+        %label
+          %input{:type=>:checkbox, :id => 'outreach_event_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
+          {{ name }}
+      {{/subareas }}
+      {{/areas }}
+    .col-md-2{:style => "width:50%"}
+      .form-group.hr_metrics.row#positivity_rating
+        %label.control-label.col-md-2{:for => 'positivity_rating', :style => "width:40%"}= t('.pos_rating')
+        =select_tag "outreach_event[positivity_rating_id]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%", :value => "{{positivity_rating_id}}"
+      .form-group.hr_metrics.row#violation_severity{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
+        %label.control-label.col-md-2{:for => 'violation_severity', :style => "width:40%"}= t('.violation_severity')
+        =select_tag "outreach_event[violation_severity_id]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%", :value => "{{violation_severity_id}}"
+      .form-group.hr_metrics.row#people_affected{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
+        %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.num_people')
+        %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "outreach_event[affected_people_count]", :style => "width:15%", :value => "{{affected_people_count}}"}
+
