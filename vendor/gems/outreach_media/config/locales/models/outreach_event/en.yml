@@ -1,0 +1,5 @@
+en:
+  activerecord:
+    attributes:
+      outreach_event:
+        affected_people_count: "# People affected"
