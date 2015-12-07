@@ -92,4 +92,14 @@ class MediaAppearance < ActiveRecord::Base
   def has_scanned_doc
     !file_id.blank?
   end
+
+  def violation_coefficient
+    vc = read_attribute(:violation_coefficient)
+    LocalMetric.new(vc, :media_appearance, :violation_coefficient)
+  end
+
+  def affected_people_count
+    apc = read_attribute(:affected_people_count)
+    LocalMetric.new(apc, :media_appearance, :affected_people_count)
+  end
 end

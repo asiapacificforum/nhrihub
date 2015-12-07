@@ -1,0 +1,14 @@
+en:
+  activerecord:
+    models:
+      violation_severity: "Violation severity"
+    attributes:
+      violation_severity:
+        rank:
+          one: "Extremely minor"
+          two: "Somewhat minor"
+          three: "Moderate"
+          four: "Serious"
+          five: "Severe"
+          six: "Extremely severe"
+          seven: "Grave"
