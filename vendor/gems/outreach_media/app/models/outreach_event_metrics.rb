@@ -1,21 +1,20 @@
 class OutreachEventMetrics < Hash
-  attr_accessor :source
-  delegate :affected_people_count,
-           :audience_name,
-           :participant_count,
-           :to => :source
+  #attr_accessor :source
+  #@@metrics = [ :affected_people_count,
+                #:audience_type,
+                #:audience_name,
+                #:description,
+                #:participant_count]
 
-  def metric_name(key)
-    I18n.t("activerecord.attributes.outreach_event."+key.to_s)
-  end
+  #delegate *@@metrics,:to => :source
 
-  def initialize(source)
-    @source = source
-    super[:affected_people_count] = {:name => metric_name(:affected_people_count), :value => send(:affected_people_count)}
-    super[:audience_name]= {:name => metric_name(:audience_name), :value => send(:audience_name)}
-    super[:participant_count]= {:name => metric_name(:participant_count), :value => send(:participant_count)}
-    #:description
-    #:impact_rating_id
-    #:audience_type_id
-  end
+  #def initialize(source)
+    #@source = source
+    #@@metrics.each do |metric|
+      #super[metric] = send(metric).to_h
+    #end
+    ##:description
+    ##:impact_rating_id
+    ##:audience_type_id
+  #end
 end

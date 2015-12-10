@@ -1,0 +1,100 @@
+.admin.well
+  %table.table.borderless{:style => "width:640px;"}
+    %thead
+      %tr
+        %th Short description
+        %th Long description
+        %th
+    %tbody#audience_types
+
+
+%script{:type => 'template/html', :id => :audience_types_template}
+  {{#audience_types}}
+  <at>
+  {{/}}
+  <atnew>
+
+%script{:type => 'template/html', :id => :new_audience_type_template}
+  %tr#new_audience_type
+    %td
+      = text_field :audience_type, :short_type, :size => 8, :placeholder => 'e.g. NGO', :value => '{{short_type}}', 'on-keydown' => 'remove_type_errors()'
+    %td
+      = text_field :audience_type, :long_type, :size => 60, :placeholder => 'e.g. Non-Governmental Organization', :value => '{{long_type}}', 'on-keydown' => 'remove_type_errors()'
+      #type_error.error{:style => 'font-size:0.8em; display:{{#if type_error}}block{{else}}none{{/if}}'} You must provide a short description and/or a long description
+    %td
+      %button.btn.btn-success.btn-xs#add_audience_type{:style => 'line-height:1.8;', 'on-click' => 'create_audience_type()'}= t('.add')
+
+%script{:type => 'template/html', :id => :audience_type_template}
+  %tr.audience_type
+    %td.short_type {{ short_type }}
+    %td.long_type {{ long_type }}
+    %td
+      %a.delete_audience_type{:href => '#', 'on-click'=>"delete_audience_type()"}= t('defaults.delete')
+
+:coffeescript
+  $ ->
+    Ractive.DEBUG = false
+
+    AudienceType = Ractive.extend
+      template: "#audience_type_template"
+      delete_audience_type: ->
+        @event.original.preventDefault()
+        data = {_method : 'delete'}
+        url = @get('url').replace(/id/,@get('id'))
+        $.ajax
+          url: url
+          type: 'post'
+          data: data
+          dataType: 'json'
+          success: @delete_cb
+          context: @
+        false
+      delete_cb : ->
+        @parent.remove(@)
+
+    NewAudienceType = Ractive.extend
+      template: "#new_audience_type_template"
+      create_audience_type : ->
+        if @validate()
+          data =
+            audience_type:
+              long_type : @get('long_type')
+              short_type : @get('short_type')
+          $.ajax
+            url: "#{outreach_media_audience_types_path}"
+            data: data
+            type: 'post'
+            success: @create_success
+            context: @
+      create_success : (response,status,xhr)->
+        audience_types.push('audience_types',response)
+        @reset({long_type: '', short_type:''})
+      validate : ->
+        @_trim()
+        if @get('short_type') == '' &&  @get('long_type') == ''
+          @set('type_error',true)
+          return false
+        else
+          @set('type_error',false)
+          return true
+      _trim : ->
+        @set('short_type',@get('short_type').trim())
+        @set('long_type',@get('long_type').trim())
+      remove_type_errors : ->
+        @set('type_error',false)
+
+    window.audience_types = new Ractive
+      el: "#audience_types"
+      template: "#audience_types_template"
+      data:
+        audience_types: #{@audience_types.to_json}
+        create_url: "#{outreach_media_audience_types_path}"
+        url: "#{outreach_media_audience_type_path('id')}"
+      components:
+        at : AudienceType
+        atnew :NewAudienceType
+      remove : (audience_type)->
+        index = _(@findAllComponents('at')).indexOf(audience_type)
+        @splice('audience_types', index, 1)
+    $('form#new_audience_type').on 'ajax:success', (e, response, status, xhr)->
+      audience_types.push('audience_types', response)

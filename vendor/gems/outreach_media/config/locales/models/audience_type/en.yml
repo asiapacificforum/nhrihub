@@ -2,6 +2,4 @@ en:
   activerecord:
     models:
       impact_rating: "Impact rating"
-    attributes:
-      impact_rating:
-        rank:
+      audience_type: "Audience type"

@@ -4,7 +4,7 @@ module OutreachMediaMetric
   end
 
   def to_h
-    {:rank => rank, :name => name, :value => text, :id => id}
+    {:rank => rank, :name => name, :value => rank_text, :id => id}
   end
 
   def key

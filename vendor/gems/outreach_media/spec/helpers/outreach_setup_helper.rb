@@ -11,6 +11,10 @@ module OutreachSetupHelper
                        :reminders=>[] )
   end
 
+  def setup_audience_types
+    AudienceType::DefaultValues.each { |at| AudienceType.create(at.marshal_dump) }
+  end
+
   def add_a_second_outreach_event
     FactoryGirl.create(:outreach_event,
                        :hr_area,

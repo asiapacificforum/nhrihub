@@ -60,7 +60,7 @@ feature "create a new article", :js => true do
     fill_in('media_appearance_article_link', :with => "http://www.nytimes.com")
     expect{edit_save.click; sleep(0.5)}.to change{MediaAppearance.count}.from(0).to(1)
     ma = MediaAppearance.first
-    expect(ma.affected_people_count).to eq 100000
+    expect(ma.read_attribute(:affected_people_count)).to eq 100000 # b/c this attribute now returns a hash!
     sleep(0.4)
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 1)
     expect(page.find("#media_appearances .media_appearance .basic_info .title").text).to eq "My new article title"

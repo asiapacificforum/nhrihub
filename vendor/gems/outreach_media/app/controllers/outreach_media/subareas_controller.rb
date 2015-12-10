@@ -9,6 +9,14 @@ class OutreachMedia::SubareasController < ApplicationController
     end
   end
 
+  def destroy
+    subarea = Subarea.find(params[:id])
+    if subarea.destroy
+      render :json => Area.all, :status => 200
+    else
+      render :nothing => true, :status => 500
+    end
+  end
 
   private
   def subarea_params

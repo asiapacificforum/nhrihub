@@ -7,5 +7,9 @@ module OutreachMedia
     def violation_severity_options
       options_from_collection_for_select ViolationSeverity.all, :id, :rank_text
     end
+
+    def audience_type_options
+      options_from_collection_for_select AudienceType.all, :id, :text
+    end
   end
 end

@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       get 'admin', :to => "admin#index"
       resources :filetypes, :param => :type, :only => [:create, :destroy]
       resource :filesize, :only => :update
+      resources :audience_types
       resources :media_appearances do
         resources :reminders, :controller => "media_appearances/reminders"
         resources :notes, :controller => "media_appearances/notes"

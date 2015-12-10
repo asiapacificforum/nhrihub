@@ -7,6 +7,7 @@ en:
           filetypes: "Filetypes permitted for outreach and media uploading"
           filesize: "Maximum permitted file size"
           areas: "Areas and subareas"
+          audience_types: "Outreach audience types"
       outreach_media_filesize:
         change: "Change"
         value: "Current value"
@@ -21,6 +22,10 @@ en:
         enter_subarea_text: "Enter subarea name"
         area_error_message: "Area can't be blank"
         subarea_error_message: "Subarea can't be blank"
+      outreach_event_audience_types:
+        add: "Add audience type"
+        short_description: "Short description or acronym"
+        long_description: "Long description, acronym expansion"
     outreach_events:
       index:
         heading: "Outreach Events"
@@ -50,7 +55,6 @@ en:
         min: "Min"
         max: "Max"
         choose_file : "Choose file"
-        choose_file : "Choose file"
         outreach_event_error_message: "A file or link must be included"
         outreach_event_double_attachment_error_message : "Either file or link, not both"
         weblink : "Enter web link"
@@ -58,8 +62,10 @@ en:
         subareas: "subareas"
         metrics: "Metrics"
         pos_rating: "Positivity rating"
+        aud_type: "Audience type"
         select_pr : "Select positivity rating"
         select_vs : "Select violation severity"
+        select_at : "Select audience type"
         violation_severity: "Violation severity"
         num_people: "Number of people affected"
         enter_num_val: "Enter numerical value"

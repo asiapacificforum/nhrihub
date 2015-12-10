@@ -15,7 +15,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require underscore
-//= require turbolinks
+// require turbolinks
 //= require bootstrap-sprockets
 //= require jquery-fileupload
 //= require corporate_services

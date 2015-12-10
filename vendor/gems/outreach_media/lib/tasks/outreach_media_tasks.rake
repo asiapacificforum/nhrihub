@@ -29,6 +29,8 @@ end
 
 desc "populates areas and subareas"
 task :populate_areas => :environment do
+  Area.delete_all
+  Subarea.delete_all
   areas.each do |a|
     Area.create(:name => a) unless Area.where(:name => a).exists?
   end

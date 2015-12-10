@@ -8,6 +8,14 @@ class OutreachMedia::AreasController < ApplicationController
     end
   end
 
+  def destroy
+    area = Area.find(params[:id])
+    if area.destroy
+      render :json => Area.all, :status => 200
+    else
+      render :nothing => true, :status => 500
+    end
+  end
 
   private
   def area_params

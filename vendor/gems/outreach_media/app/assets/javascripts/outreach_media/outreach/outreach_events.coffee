@@ -105,8 +105,8 @@ $ ->
         data.context = upload_widget.element.closest('.outreach_event')
         ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
         ractive.set('original_filename', data.files[0].name)
-        ractive.validate_file_constraints()
-        ractive._validate_attachment()
+        #ractive.validate_file_constraints()
+        #ractive._validate_attachment()
         return
       done: (e, data) ->
         data.ractive.update_ma(data.jqXHR.responseJSON)
@@ -153,10 +153,18 @@ $ ->
       hr_violation : ->
         id = Subarea.find_by_extended_name("Human Rights Violation").id
         _(@get('subarea_ids')).indexOf(id) != -1
-      formatted_metrics : ->
-        metrics = $.extend(true,{},@get('metrics'))
-        metrics.affected_people_count.value = @get('metrics').affected_people_count.value.toLocaleString()
-        metrics
+      formatted_affected_people_count : ->
+        @get('affected_people_count').toLocaleString()
+      formatted_participant_count : ->
+        @get('participant_count').toLocaleString()
+      impact_rating_text : ->
+        impact_rating = _(impact_ratings).find (ir)=>
+          ir.id == @get('impact_rating_id')
+        impact_rating.rank + ":" + impact_rating.text
+      audience_type_text : ->
+        audience_type = _(audience_types).find (ar)=>
+          ar.id == @get('audience_type_id')
+        audience_type.text
       count : ->
         t = @get('title') || ""
         100 - t.length
@@ -190,7 +198,7 @@ $ ->
         return true if _.isEmpty(@get('sort_criteria.subareas'))
         _.isEqual(@get('subarea_ids').slice().sort(), @get('sort_criteria.subareas').slice().sort())
     _matches_people_affected : ->
-      @_between(parseInt(@get('sort_criteria.pa_min')),parseInt(@get('sort_criteria.pa_max')),parseInt(@get('metrics.affected_people_count.value')))
+      @_between(parseInt(@get('sort_criteria.pa_min')),parseInt(@get('sort_criteria.pa_max')),parseInt(@get('affected_people_count')))
     _between : (min,max,val)->
       return true if _.isNaN(val) # declare match if there's no value
       min = if _.isNaN(min) # from the input element a zero-length string can be presented
@@ -241,44 +249,44 @@ $ ->
     _validate_attachment : ->
       #@_validate_any_attachment() && @_validate_single_attachment()
       true
-    _validate_any_attachment : ->
-      unless @_validate_file() || @_validate_link()
-        @set('outreach_event_error',true)
-        false
-      else
-        @set('outreach_event_error',false)
-        true
-    _validate_single_attachment : ->
-      if @_validate_file() && @_validate_link()
-        @set('outreach_event_double_attachment_error',true)
-        false
-      else
-        @set('outreach_event_double_attachment_error',false)
-        true
-    _validate_file : ->
-      # 3 cases to consider:
-      if !@get('persisted') # 1. not persisted... creating new, with file attached
-        !_.isNull(@get('original_filename')) && @validate_file_constraints()
-      else
-        if _.isEmpty(@get('fileupload')) # 2. persisted, only original_filename attribute is present
-          !_.isNull(@get('original_filename'))
-        else # 3. persisted, changing the attached file, so a fileupload object is present
-          !_.isNull(@get('original_filename')) && @validate_file_constraints()
-    _validate_link : ->
-      !_.isNull(@get('article_link')) && @get('article_link').length > 0
-    validate_file_constraints : ->
-      file = @get('fileupload').files[0]
-      size = file.size
-      extension = @get('fileupload').files[0].name.split('.').pop()
-      if permitted_filetypes.indexOf(extension) == -1
-        @set('filetype_error', true)
-      else
-        @set('filetype_error', false)
-      if size > maximum_filesize
-        @set('filesize_error', true)
-      else
-        @set('filesize_error', false)
-      !@get('filetype_error') && !@get('filesize_error')
+    #_validate_any_attachment : ->
+      #unless @_validate_file() || @_validate_link()
+        #@set('outreach_event_error',true)
+        #false
+      #else
+        #@set('outreach_event_error',false)
+        #true
+    #_validate_single_attachment : ->
+      #if @_validate_file() && @_validate_link()
+        #@set('outreach_event_double_attachment_error',true)
+        #false
+      #else
+        #@set('outreach_event_double_attachment_error',false)
+        #true
+    #_validate_file : ->
+      ## 3 cases to consider:
+      #if !@get('persisted') # 1. not persisted... creating new, with file attached
+        #!_.isNull(@get('original_filename')) && @validate_file_constraints()
+      #else
+        #if _.isEmpty(@get('fileupload')) # 2. persisted, only original_filename attribute is present
+          #!_.isNull(@get('original_filename'))
+        #else # 3. persisted, changing the attached file, so a fileupload object is present
+          #!_.isNull(@get('original_filename')) && @validate_file_constraints()
+    #_validate_link : ->
+      #!_.isNull(@get('article_link')) && @get('article_link').length > 0
+    #validate_file_constraints : ->
+      #file = @get('fileupload').files[0]
+      #size = file.size
+      #extension = @get('fileupload').files[0].name.split('.').pop()
+      #if permitted_filetypes.indexOf(extension) == -1
+        #@set('filetype_error', true)
+      #else
+        #@set('filetype_error', false)
+      #if size > maximum_filesize
+        #@set('filesize_error', true)
+      #else
+        #@set('filesize_error', false)
+      #!@get('filetype_error') && !@get('filesize_error')
     #remove_attachment_errors : ->
       #@set('outreach_event_double_attachment_error',false)
       #@set('outreach_event_error',false)
@@ -305,7 +313,7 @@ $ ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
     create_instance_attributes: ->
-      attrs = _(@get()).pick('title', 'affected_people_count')
+      attrs = _(@get()).pick('title', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count')
       if _.isEmpty(@get('area_ids'))
         attrs.area_ids = [""] # hack to workaround jQuery not sending empty arrays
       else
@@ -319,7 +327,7 @@ $ ->
       file = @get('fileupload').files[0]
       @set
         lastModifiedDate : file.lastModifiedDate
-      attrs = _(@get()).pick('title', 'affected_people_count')
+      attrs = _(@get()).pick('title', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count')
       name_value = _(attrs).keys().map (k)->{name:"outreach_event["+k+"]", value:attrs[k]}
       if _.isEmpty(@get('area_ids'))
         aids = [{name : 'outreach_event[area_ids][]', value: ""}]
@@ -360,7 +368,6 @@ $ ->
     fetch_link : ->
       window.location = @get('article_link')
 
-
   window.outreach_page_data = -> # an initialization data set so that tests can reset between
     expanded : false
     outreach_events: outreach_events
@@ -392,7 +399,7 @@ $ ->
       dates : ->
         _(@findAllComponents('oe')).map (ma)->new Date(ma.get('date'))
       people_affecteds : ->
-        _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("metrics.affected_people_count.value")  || 0)
+        _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("affected_people_count")  || 0)
       earliest : ->
         @min('dates')
       most_recent : ->

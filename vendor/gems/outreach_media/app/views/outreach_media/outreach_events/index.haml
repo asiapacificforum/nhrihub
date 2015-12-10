@@ -18,5 +18,7 @@
   create_outreach_event_url = "#{@outreach_event.create_url}"
   maximum_filesize = #{OutreachEvent.maximum_filesize}
   permitted_filetypes = #{OutreachEvent.permitted_filetypes }
+  audience_types = #{@audience_types.to_json}
+  impact_ratings = #{@impact_ratings.to_json}
 
 = javascript_include_tag "outreach"

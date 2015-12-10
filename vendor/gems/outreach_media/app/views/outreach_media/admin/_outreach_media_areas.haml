@@ -20,11 +20,12 @@
       .col-md-2
         %a#subareas_link{'data-toggle'=>:collapse, 'data-parent'=>'#accordion', :href => '#collapse_{{ id }}'}
           %i.fa.fa-caret-right{'data-toggle'=>:tooltip, :title=>'show subareas'}
-      .col-md-4= link_to t('defaults.delete'), nil, :class => 'delete_area'
+      .col-md-4
+        %a.delete_area{:href => '#', 'on-click' => 'delete_area()'}= t('defaults.delete') 
     .row.panel-collapse.collapse{:id => 'collapse_{{ id }}', :style => 'margin-left:0px; margin-right:0px; background-color: #D8D0AA'}
       .col-md-12{:style => "margin-left:15px"}
         {{#subareas}}
-        <subarea>
+        <subarea id={{id}} name={{name}} />
         {{/subareas}}
 
 %script#new_area_template{:type => 'ractive/template'}
@@ -37,7 +38,7 @@
 
 %script#areas_template{:type => 'ractive/template'}
   {{#areas}}
-  <area subareas={{subareas}}>
+  <area id={{id}} name={{name}} subareas={{subareas}} />
   {{/areas}}
 
 %script#subarea_template{:type => 'ractive/template'}
@@ -51,6 +52,8 @@
   .row.subarea
     .col-md-3
     .col-md-3.name {{ name }}
+    .col-md-3
+      %a.delete_subarea{:href => '#', 'on-click' => 'delete_subarea()'}= t('defaults.delete') 
 
 %script#new_subarea_template{:type => 'ractive/template'}
   .row.form-group{:class => "{{#subarea_error}}has-error{{/}}", :style => "padding-top:6px; padding-bottom:6px;"}
@@ -91,6 +94,17 @@
         areas.update(response)
       remove_errors : ->
         @set("subarea_error",false)
+      delete_subarea : ->
+        @event.original.preventDefault()
+        $.ajax
+          type : 'post'
+          url : @get('url')
+          data : {'_method' : 'delete'}
+          dataType : 'json'
+          success : @delete_subarea_callback
+          context : @
+      delete_subarea_callback : (response, status, xhr) ->
+        @parent.delete(@)
 
     Area = Ractive.extend
       template : '#area_template'
@@ -103,7 +117,7 @@
           @get('subarea_url').replace('id',@get('id'))
       onconfig : ->
         if @get('persisted')
-          @push('subareas',{id : null, name : ""})
+          @add_new_subarea_form()
       create: ->
         if @valid()
           $.ajax
@@ -124,6 +138,22 @@
         areas.update(response)
       remove_errors : ->
         @set("area_error",false)
+      delete_area : ->
+        @event.original.preventDefault()
+        $.ajax
+          type : 'post'
+          url : @get('url')
+          data : {'_method' : 'delete'}
+          dataType : 'json'
+          success : @delete_area_callback
+          context : @
+      delete_area_callback : (response, status, xhr) ->
+        @parent.delete(@)
+      delete : (subarea)->
+        index = _(@findAllComponents('subarea')).indexOf(subarea)
+        @splice('subareas', index, 1)
+      add_new_subarea_form : ->
+        @push('subareas',{id : null, name : ""})
 
     window.areas = new Ractive
       el : '.areas'
@@ -135,7 +165,12 @@
       components :
         area : Area
       onconfig : ->
-        @push('areas',{id : null, name : ""})
+        @push('areas',{id : null, name : "", subareas : []})
       update : (areas)->
         @set('areas',areas)
-        @push('areas',{id : null, name : ""})
+        @push('areas',{id : null, name : "", subareas : []})
+        _(@findAllComponents('area')).each (area)->
+          area.add_new_subarea_form()
+      delete : (area)->
+        index = _(@findAllComponents('area')).indexOf(area)
+        @splice('areas', index, 1)

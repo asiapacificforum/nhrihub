@@ -5,5 +5,7 @@ class OutreachMedia::AdminController < ApplicationController
     @filesize = SiteConfig['outreach_media.filesize']
     @areas = Area.all
     @subarea = Subarea.new
+    @audience_type = AudienceType.new
+    @audience_types = AudienceType.all
   end
 end

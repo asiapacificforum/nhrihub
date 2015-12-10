@@ -10,6 +10,9 @@
 %h4=t('.subheading.areas')
 = render :partial => 'outreach_media_areas'
 
+%h4=t('.subheading.audience_types')
+= render :partial => 'outreach_event_audience_types'
+
 :coffeescript
   $ ->
     _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }

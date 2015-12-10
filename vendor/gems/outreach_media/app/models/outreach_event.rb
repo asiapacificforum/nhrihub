@@ -7,6 +7,7 @@ class OutreachEvent < ActiveRecord::Base
   has_many :outreach_event_subareas
   has_many :subareas, :through => :outreach_event_subareas
   has_many :outreach_event_documents
+  belongs_to :audience_type
 
   def self.maximum_filesize
     SiteConfig['outreach_media.filesize']*1000000
@@ -20,8 +21,6 @@ class OutreachEvent < ActiveRecord::Base
     super({:except => [:updated_at,
                        :created_at ],
            :methods=> [:date,
-                       :metrics,
-                       :article_link,
                        :outreach_event_areas,
                        :area_ids,
                        :subarea_ids,
@@ -46,7 +45,43 @@ class OutreachEvent < ActiveRecord::Base
     :outreach_media
   end
 
-  def metrics
-    OutreachEventMetrics.new(self)
-  end
+  #def metrics
+    #OutreachEventMetrics.new(self)
+  #end
+
+  #def description
+    #d = read_attribute(:description)
+    #LocalMetric.new(d, :outreach_event, :description)
+  #end
+
+  #def description=(obj)
+    #write_attribute(:description, obj[:val]) if obj
+  #end
+
+  #def affected_people_count
+    #apc = read_attribute(:affected_people_count)
+    #LocalMetric.new(apc, :outreach_event, :affected_people_count)
+  #end
+
+  #def affected_people_count=(obj)
+    #write_attribute(:affected_people_count, obj[:val]) if obj
+  #end
+
+  #def audience_name
+    #an = read_attribute(:audience_name)
+    #LocalMetric.new(an, :outreach_event, :audience_name)
+  #end
+
+  #def audience_name=(obj)
+    #write_attribute(:audience_name, obj[:val]) if obj
+  #end
+
+  #def participant_count
+    #pc = read_attribute(:participant_count)
+    #LocalMetric.new(pc, :outreach_event, :participant_count)
+  #end
+
+  #def participant_count=(obj)
+    #write_attribute(:participant_count, obj[:val]) if obj
+  #end
 end

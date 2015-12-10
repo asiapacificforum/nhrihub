@@ -123,4 +123,16 @@ module OutreachSpecHelper
       page.execute_script("event = new Event('input'); $('.outreach_event_link')[0].dispatchEvent(event)")
     end
   end
+
+  def audience_type
+    page.find('div.metric#audience_type div.value').text
+  end
+
+  def audience_name
+    page.find('div.metric#audience_name div.value').text
+  end
+
+  def description
+    page.find('div.metric#description div.value').text
+  end
 end
