@@ -14,7 +14,7 @@
         \/
         =t('.subarea')
     .row{:style => "margin-bottom:12px;"}
-      .col-md-2= text_field_tag :title, "{{sort_criteria.title}}", :placeholder => t('.enter_title_text')
+      .col-md-2= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_title_text')
       .col-md-2
         %input{:type=>"text", :id=>"from", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
       .col-md-2
@@ -26,10 +26,10 @@
             %span.caret
           %ul.dropdown-menu
             %li.filter_rule
-              %a{'on-click'=>"filter_rule('all')", :class => "{{#if sort_criteria.rule == 'all'}}selected{{/if}}"}
+              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
                 %span=t('.all')
                 %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('any')", :class => "{{#if sort_criteria.rule == 'any'}}selected{{/if}}"}
+              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
                 %span=t('.any')
                 %span.fa.fa-check
             {{#areas}}
@@ -58,22 +58,22 @@
       .col-md-1= t('.max')
     .row
       .col-md-1.filter_field.pa_min
-        %input{:style=>"width:80px", :value => '{{sort_criteria.pa_min}}'}
+        %input{:style=>"width:80px", :value => '{{filter_criteria.pa_min}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pa_max
-        %input{:style=>"width:80px", :value => '{{sort_criteria.pa_max}}'}
+        %input{:style=>"width:80px", :value => '{{filter_criteria.pa_max}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pp_min
-        %input{:style=>"width:50px", :value => '{{sort_criteria.pp_min}}'}
+        %input{:style=>"width:50px", :value => '{{filter_criteria.pp_min}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pp_max
-        %input{:style=>"width:50px", :value => '{{sort_criteria.pp_max}}'}
+        %input{:style=>"width:50px", :value => '{{filter_criteria.pp_max}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.ir_min
-        %input{:style=>"width:50px", :value => '{{sort_criteria.impact_min}}'}
+        %input{:style=>"width:50px", :value => '{{filter_criteria.impact_min}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.ir_max
-        %input{:style=>"width:50px", :value => '{{sort_criteria.impact_max}}'}
+        %input{:style=>"width:50px", :value => '{{filter_criteria.impact_max}}'}
       .col-md-2{:style => 'width:270px'}
         .btn-group.audience_type-select
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
@@ -84,7 +84,7 @@
             <at id='{{id}}' text='{{text}}' long_type='{{long_type}}' short_type='{{short_type}}'/>
             {{/audience_types}}
       .col-md-1.filter_field.audience_name
-        %input.audience_name{:style=>"width:200px", :value => '{{sort_criteria.audience_name}}', :placeholder => t('.enter_audience_name')}
+        %input.audience_name{:style=>"width:200px", :value => '{{filter_criteria.audience_name}}', :placeholder => t('.enter_audience_name')}
     .row.labels
       .col-md-2= t('.impact')
     .row
