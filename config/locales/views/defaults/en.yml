@@ -10,3 +10,4 @@ en:
     none: 'None'
     sure: 'Are you sure?'
     delete: 'Delete'
+    invalid: 'Invalid'

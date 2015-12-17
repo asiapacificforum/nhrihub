@@ -149,11 +149,13 @@ class @InpageEdit
     _(@elements()).each (el,i) ->
       el.switch_to_edit(stash)
     UserInput.claim_user_input_request(@options.object.edit, 'show')
+    @options.object.set('editing',true)
 
   show : ->
     @options.object.remove_errors()
     _(@elements()).each (el,i) ->
       el.switch_to_show()
+    @options.object.set('editing',false)
 
   load : ->
     _(@elements()).each (el,i) ->

@@ -509,10 +509,19 @@ $ ->
       @splice('media_appearances',index,1)
     cancel : ->
       @shift('media_appearances')
+    set_sort_criteria_to_date : (selectedDate)->
+      @set('sort_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+      $('#from').datepicker 'option', 'maxDate', selectedDate
+      @update()
+    set_sort_criteria_from_date : (selectedDate)->
+      @set('sort_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+      $('#to').datepicker 'option', 'minDate', selectedDate
+      @update()
 
 
   window.start_page = ->
     window.media = new Ractive options
+    outreach_media_datepicker.start(media)
 
   start_page()
 

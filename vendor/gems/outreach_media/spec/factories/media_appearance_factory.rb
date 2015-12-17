@@ -35,6 +35,13 @@ FactoryGirl.define do
       title Faker::Lorem.sentence(5).gsub(/f/i,"b")
     end
 
+    trait :title_has_an_f do
+      str = Faker::Lorem.sentence(5)
+      i = rand(str.length)
+      l = str.length
+      title { new_str = (str.dup.slice(0,i-1)+'f'+str.dup.slice(i-l,1000)).dup }
+    end
+
     trait :hr_area do
       after(:create) do |ma|
         ma.areas << Area.where(:name => "Human Rights").first

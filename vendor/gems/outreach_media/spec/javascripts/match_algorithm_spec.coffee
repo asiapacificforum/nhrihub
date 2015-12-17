@@ -7,15 +7,25 @@ media_appearance_subarea_matches = ->
 media_appearance_area_subarea_matches = ->
   _(media.findAllComponents('ma')).map (ma)-> ma._matches_area_subarea()
 
+
 describe "within range evaluation", ->
-  before (done)->
+  before (finished)->
     window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
     window.new_media_appearance = MagicLamp.loadJSON('new_media_appearance')
     window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
+    window.maximum_filesize = MagicLamp.loadJSON('maximum_filesize')
+    window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
-    $.getScript "/assets/outreach_media.js", -> done() # the media_appearances.js app , start_page(), define_media
+    $.getScript("/assets/media.js").
+      done( -> 
+        console.log "javascript was loaded"
+        finished()). # the media_appearances.js app , start_page(), define_media
+      fail( (jqxhr, settings, exception) ->
+        console.log "Triggered ajaxError handler"
+        console.log settings
+        console.log exception)
 
   it "should evaluate integers", ->
     min = 0
@@ -92,7 +102,7 @@ describe "area and subarea matching algorithm", ->
     window.new_media_appearance = MagicLamp.loadJSON('new_media_appearance')
     window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
-    $.getScript "/assets/outreach_media.js", -> done()
+    $.getScript "/assets/media.js", -> done()
 
 #example:    media.set('media_appearances',[{"media_areas":[{"area_id":1,"subarea_ids":[1]},{"area_id":2,"subarea_ids":[8,9,10]}]}])
   describe "when sort criteria rule is 'all'", ->

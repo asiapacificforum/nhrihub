@@ -2,13 +2,22 @@ require 'rspec/core/shared_context'
 
 module OutreachSetupHelper
   extend RSpec::Core::SharedContext
-  def setup_database
+  def setup_database(type = nil)
     setup_impact_ratings
     setup_areas
     FactoryGirl.create(:outreach_event,
                        :hr_area,
                        :impact_rating => ImpactRating.first,
+                       :participant_count => 1000,
                        :reminders=>[] )
+
+    if type == :multiple
+      FactoryGirl.create(:outreach_event,
+                         :hr_area,
+                         :impact_rating => ImpactRating.first,
+                         :participant_count => 2000,
+                         :reminders=>[] )
+    end
   end
 
   def setup_audience_types

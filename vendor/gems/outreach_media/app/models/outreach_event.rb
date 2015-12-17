@@ -9,6 +9,8 @@ class OutreachEvent < ActiveRecord::Base
   has_many :outreach_event_documents
   belongs_to :audience_type
 
+  delegate :rank, :to => :impact_rating, :prefix => true, :allow_nil => true
+
   def self.maximum_filesize
     SiteConfig['outreach_media.filesize']*1000000
   end
@@ -19,13 +21,15 @@ class OutreachEvent < ActiveRecord::Base
 
   def as_json(options={})
     super({:except => [:updated_at,
-                       :created_at ],
+                       :created_at,
+                       :event_date ],
            :methods=> [:date,
                        :outreach_event_areas,
                        :area_ids,
                        :subarea_ids,
                        :reminders,
                        :create_reminder_url,
+                       :impact_rating_rank,
                        :url ]})
   end
 
@@ -38,7 +42,9 @@ class OutreachEvent < ActiveRecord::Base
   end
 
   def date
-    created_at.to_time.to_date.to_s(:default) if persisted? # to_time converts to localtime
+    if persisted? && event_date
+      event_date.to_time.to_date.to_s(:default)  # to_time converts to localtime
+    end
   end
 
   def namespace

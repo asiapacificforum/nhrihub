@@ -80,7 +80,7 @@ describe 'Media page', ->
     window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     @page = new MediaPage()
-    $.getScript "/assets/outreach_media.js", -> done()
+    $.getScript "/assets/media.js", -> done()
 
   beforeEach ->
     media.set_defaults()

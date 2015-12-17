@@ -1,5 +1,5 @@
-window.media_datepicker =
-  start : ->
+window.outreach_media_datepicker =
+  start : (outreach_media)->
     $('#from').datepicker
       maxDate: new Date()
       defaultDate: '+1w'
@@ -9,22 +9,16 @@ window.media_datepicker =
       dateFormat: "dd/mm/yy"
       onClose: (selectedDate) ->
         unless selectedDate == ""
-          media.set('sort_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate))
-          $('#to').datepicker 'option', 'minDate', selectedDate
-          media.update()
+          outreach_media.set_sort_criteria_from_date(selectedDate)
 
     $('#to').datepicker
       maxDate: new Date()
       defaultDate: '+1w'
       changeMonth: true
       changeYear: true
-      dateFormat: "dd/mm/yy"
       numberOfMonths: 3
+      dateFormat: "dd/mm/yy"
       onClose: (selectedDate) ->
         unless selectedDate == ""
-          media.set('sort_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate))
-          $('#from').datepicker 'option', 'maxDate', selectedDate
-          media.update()
+          outreach_media.set_sort_criteria_to_date(selectedDate)
 
-$ ->
-  media_datepicker.start()

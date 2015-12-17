@@ -180,7 +180,7 @@ ActiveRecord::Schema.define(version: 20151207033945) do
 
   create_table "outreach_events", force: :cascade do |t|
     t.string   "title"
-    t.date     "event_date"
+    t.datetime "event_date"
     t.integer  "audience_type_id"
     t.string   "audience_name"
     t.integer  "participant_count"

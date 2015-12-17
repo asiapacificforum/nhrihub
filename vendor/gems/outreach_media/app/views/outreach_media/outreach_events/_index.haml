@@ -1,0 +1,11 @@
+%h1= t('.heading')
+.btn.btn-success.btn-sm#add_outreach_event{:style => "margin-bottom:12px; color:white;", :onclick => "outreach.new_article()"}
+  %i.fa.fa-plus.fa-lg{:style => "color:white"}
+  %span= t('.add_outreach')
+
+#outreach_events
+
+= render :partial => '/outreach_media/outreach_events/outreach_event_templates'
+= render :partial => 'outreach_media/shared/common_templates'
+= render :partial => 'reminders/reminder' # it's in the main app
+= render :partial => 'notes/note' # it's in the main app

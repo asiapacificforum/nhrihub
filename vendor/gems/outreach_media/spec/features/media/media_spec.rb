@@ -330,6 +330,23 @@ feature "when there are existing articles", :js => true do
   end
 end
 
+feature "when there are multiple existing articles" , :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaSpecHelper
+  include MediaSetupHelper
+
+  before do
+    setup_database(:multiple_media_appearances)
+    setup_file_constraints
+    resize_browser_window
+    visit outreach_media_media_appearances_path(:en)
+  end
+
+  scenario "edit an article putting it outside of current filter criteria" do
+    expect(1).to eq 0 # Haha get it done!
+  end
+end
+
 feature "enforce single user add or edit action", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include MediaSpecHelper

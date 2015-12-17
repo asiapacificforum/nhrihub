@@ -128,6 +128,50 @@ $ ->
     deselect_file : ->
       @parent.deselect_file()
 
+  AudienceType = Ractive.extend
+    template : "#audience_type_template"
+    oninit : ->
+      @unselect()
+    computed :
+      dropdown : ->
+        $('.audience_type-select .dropdown-toggle')
+    toggle : ->
+      @event.original.preventDefault()
+      @event.original.stopPropagation()
+      @get('dropdown').dropdown('toggle')
+      if @get('audience_type_selected')
+        @unselect()
+      else
+        @select()
+    select : ->
+      @root.set_audience_type_filter(@get('id'))
+      @set('audience_type_selected',true)
+    unselect : ->
+      @root.unset_audience_type_filter()
+      @set('audience_type_selected',false)
+
+  ImpactRating = Ractive.extend
+    template : "#impact_rating_option_template"
+    oninit : ->
+      @unselect()
+    computed :
+      dropdown : ->
+        $('.impact_rating-select .dropdown-toggle')
+    toggle : ->
+      @event.original.preventDefault()
+      @event.original.stopPropagation()
+      @get('dropdown').dropdown('toggle')
+      if @get('impact_rating_selected')
+        @unselect()
+      else
+        @select()
+    select : ->
+      @root.set_impact_rating_filter(@get('id'))
+      @set('impact_rating_selected',true)
+    unselect : ->
+      @root.unset_impact_rating_filter()
+      @set('impact_rating_selected',false)
+
   OutreachEvent = Ractive.extend
     template : '#outreach_event_template'
     components :
@@ -169,13 +213,33 @@ $ ->
         t = @get('title') || ""
         100 - t.length
       include : ->
-        @_matches_title() &&
-        @_matches_from() &&
-        @_matches_to() &&
-        @_matches_area_subarea() &&
-        @_matches_people_affected()
+        @get('editing') || (
+          @_matches_title() &&
+          @_matches_from() &&
+          @_matches_to() &&
+          @_matches_area_subarea() &&
+          @_matches_people_affected() &&
+          @_matches_audience_type() &&
+          @_matches_audience_name() &&
+          @_matches_participant_count() &&
+          @_matches_impact_rating() )
       persisted : ->
         !_.isNull(@get('id'))
+    _matches_impact_rating : ->
+      if !_.isNull(@get('sort_criteria.impact_rating_id'))
+        @get('sort_criteria.impact_rating_id') == @get('impact_rating_id')
+      else
+        true
+    _matches_participant_count : ->
+      @_between(parseInt(@get('sort_criteria.pp_min')),parseInt(@get('sort_criteria.pp_max')),parseInt(@get('participant_count')))
+    _matches_audience_name : ->
+      re = new RegExp(@get('sort_criteria.audience_name'),'i')
+      re.test(@get('audience_name'))
+    _matches_audience_type : ->
+      if !_.isNull(@get('sort_criteria.audience_type_id'))
+        @get('sort_criteria.audience_type_id') == @get('audience_type_id')
+      else
+        true
     _matches_from : ->
       new Date(@get('date')) >= new Date(@get('sort_criteria.from'))
     _matches_to : ->
@@ -373,18 +437,20 @@ $ ->
     outreach_events: outreach_events
     areas : areas
     create_outreach_event_url: create_outreach_event_url
+    audience_types : audience_types
+    impact_ratings : impact_ratings
+    default_selected_audience_type : default_selected_audience_type
+    default_selected_impact_rating : default_selected_impact_rating
     sort_criteria :
       title : ""
       from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation
       to : new Date(new Date().toDateString()) # then it yields proper comparison with Rails timestamp
       areas : []
       subareas : []
-      vc_min : 0.0
-      vc_max : null
-      pr_min : 0
-      pr_max : null
-      vs_min : 0
-      vs_max : null
+      audience_type_id : null
+      impact_rating_id : null
+      pp_min : 0
+      pp_max : null
       pa_min : 0
       pa_max : null
       rule   : 'any'
@@ -400,6 +466,10 @@ $ ->
         _(@findAllComponents('oe')).map (ma)->new Date(ma.get('date'))
       people_affecteds : ->
         _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("affected_people_count")  || 0)
+      participants : ->
+        _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("participant_count")  || 0)
+      impact_ratings : ->
+        _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("impact_rating_rank")  || 0)
       earliest : ->
         @min('dates')
       most_recent : ->
@@ -408,12 +478,34 @@ $ ->
         @min('people_affecteds')
       pa_max : ->
         @max('people_affecteds')
+      pp_min : ->
+        @min('participants')
+      pp_max : ->
+        @max('participants')
+      ir_min : ->
+        @min('impact_ratings')
+      ir_max : ->
+        @max('impact_ratings')
       formatted_from_date:
         get: -> $.datepicker.formatDate("dd/mm/yy", @get('sort_criteria.from'))
         set: (val)-> @set('sort_criteria.from', $.datepicker.parseDate( "dd/mm/yy", val))
       formatted_to_date:
         get: -> $.datepicker.formatDate("dd/mm/yy", @get('sort_criteria.to'))
         set: (val)-> @set('sort_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
+      selected_audience_type: ->
+        if _.isNull(@get('sort_criteria.audience_type_id'))
+          @get('default_selected_audience_type')
+        else
+          audience_type_id = @get('sort_criteria.audience_type_id')
+          audience_type = _(@findAllComponents('at')).find (at)->at.get('id') == audience_type_id
+          audience_type.get('text')
+      selected_impact_rating: ->
+        if _.isNull(@get('sort_criteria.impact_rating_id'))
+          @get('default_selected_impact_rating')
+        else
+          impact_rating_id = @get('sort_criteria.impact_rating_id')
+          impact_rating = _(@findAllComponents('ir')).find (ir)->ir.get('id') == impact_rating_id
+          impact_rating.get('text')
     min : (param)->
       @get(param).reduce (min,val)->
         return val if val<min
@@ -425,17 +517,15 @@ $ ->
     components :
       oe : OutreachEvent
       area : AreaFilter
+      at : AudienceType
+      ir : ImpactRating
     populate_min_max_fields : ->
       @set('sort_criteria.from',@get('earliest'))  unless _.isUndefined(@get('earliest'))
       @set('sort_criteria.to',@get('most_recent')) unless _.isUndefined(@get('most_recent'))
-      @set('sort_criteria.vc_min',@get('vc_min'))  unless _.isUndefined(@get('vc_min'))
-      @set('sort_criteria.vc_max',@get('vc_max'))  unless _.isUndefined(@get('vc_max'))
-      @set('sort_criteria.pr_min',@get('pr_min'))  unless _.isUndefined(@get('pr_min'))
-      @set('sort_criteria.pr_max',@get('pr_max'))  unless _.isUndefined(@get('pr_max'))
-      @set('sort_criteria.vs_min',@get('vs_min'))  unless _.isUndefined(@get('vs_min'))
-      @set('sort_criteria.vs_max',@get('vs_max'))  unless _.isUndefined(@get('vs_max'))
-      @set('sort_criteria.pa_min',@get('pa_min'))  unless _.isUndefined(@get('pa_min'))
+      @set('sort_criteria.pa_min',@get('pa_min'))  unless _.isUndefined(@get('pa_min')) # people affected
       @set('sort_criteria.pa_max',@get('pa_max'))  unless _.isUndefined(@get('pa_max'))
+      @set('sort_criteria.pp_min',@get('pp_min'))  unless _.isUndefined(@get('pp_min')) # participant count
+      @set('sort_criteria.pp_max',@get('pp_max'))  unless _.isUndefined(@get('pp_max'))
     expand : ->
       @set('expanded', true)
       _(@findAllComponents('oe')).each (ma)-> ma.expand()
@@ -449,13 +539,27 @@ $ ->
       @splice('sort_criteria.areas',i,1)
     add_subarea_filter : (id) ->
       @push('sort_criteria.subareas',id)
+    set_audience_type_filter : (id) ->
+      _(@findAllComponents('at')).each (at)->
+        at.unselect() if at.get('id') != id
+      @set('sort_criteria.audience_type_id',id)
+    set_impact_rating_filter : (id) ->
+      _(@findAllComponents('ir')).each (ir)->
+        ir.unselect() if ir.get('id') != id
+      @set('sort_criteria.impact_rating_id',id)
     remove_subarea_filter : (id) ->
       i = _(@get('sort_criteria.subareas')).indexOf(id)
       @splice('sort_criteria.subareas',i,1)
+    unset_audience_type_filter : ->
+      @set('sort_criteria.audience_type_id',null)
+    unset_impact_rating_filter : ->
+      @set('sort_criteria.impact_rating_id',null)
     clear_filter : ->
       @set('sort_criteria',outreach_page_data().sort_criteria)
       _(@findAllComponents('area')).each (a)-> a.select()
       _(@findAllComponents('subarea')).each (a)-> a.select()
+      _(@findAllComponents('at')).each (at)-> at.unselect()
+      _(@findAllComponents('ir')).each (ir)-> ir.unselect()
       @populate_min_max_fields()
     set_defaults : ->
       @clear_filter()
@@ -472,9 +576,18 @@ $ ->
       @splice('outreach_events',index,1)
     cancel : ->
       @shift('outreach_events')
+    set_sort_criteria_to_date : (selectedDate)->
+      @set('sort_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+      $('#from').datepicker 'option', 'maxDate', selectedDate
+      @update()
+    set_sort_criteria_from_date : (selectedDate)->
+      @set('sort_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+      $('#to').datepicker 'option', 'minDate', selectedDate
+      @update()
 
   window.start_page = ->
     window.outreach = new Ractive options
+    outreach_media_datepicker.start(outreach)
 
   start_page()
 

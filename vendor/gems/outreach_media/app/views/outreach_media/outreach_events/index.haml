@@ -1,14 +1,4 @@
-%h1= t('.heading')
-.btn.btn-success.btn-sm#add_outreach_event{:style => "margin-bottom:12px; color:white;", :onclick => "outreach.new_article()"}
-  %i.fa.fa-plus.fa-lg{:style => "color:white"}
-  %span= t('.add_outreach')
-
-#outreach_events
-
-= render :partial => 'outreach_event_templates'
-= render :partial => 'outreach_media/shared/common_templates'
-= render :partial => 'reminders/reminder' # it's in the main app
-= render :partial => 'notes/note' # it's in the main app
+= render :partial => 'index' # b/c the partial is used for the javascript test suite
 
 :javascript
   outreach_events = #{@outreach_events.to_json}
@@ -20,5 +10,7 @@
   permitted_filetypes = #{OutreachEvent.permitted_filetypes }
   audience_types = #{@audience_types.to_json}
   impact_ratings = #{@impact_ratings.to_json}
+  default_selected_audience_type = "#{t('.select_audience_type')}"
+  default_selected_impact_rating = "#{t('.select_impact_rating')}"
 
 = javascript_include_tag "outreach"

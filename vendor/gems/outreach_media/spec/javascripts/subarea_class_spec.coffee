@@ -4,7 +4,7 @@ describe "Subarea class", ->
   before (done)->
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
-    $.getScript "/assets/outreach_media/media/subarea.js", ->
+    $.getScript "/assets/outreach_media/shared/subarea.js", ->
       Subarea = window.Subarea
       done()
 

@@ -71,7 +71,7 @@ feature "create a new outreach event", :js => true do
     #FILE!!!
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     expect{edit_save.click; sleep(0.5)}.to change{OutreachEvent.count}.from(0).to(1).
-                                        and change{OutreachEventDocument.count}.from(0).to(1)
+      and change{OutreachEventDocument.count}.from(0).to(1)
     oe = OutreachEvent.first
     expect(oe.affected_people_count).to eq 100000
     expect(oe.audience_type.text).to eq "Police"
@@ -206,9 +206,7 @@ feature "when there are existing outreach events", :js => true do
       expect(page).to have_selector("input#people_affected", :visible => true)
       check("Good Governance")
       check("CRC")
-      debugger
       fill_in('people_affected', :with => " 100000 ")
-      debugger
       expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.first.title}
       expect(OutreachEvent.first.area_ids).to eql [2]
       sleep(0.4)
@@ -281,6 +279,24 @@ feature "when there are existing outreach events", :js => true do
       expect(areas).to include "Human Rights"
       expect(areas).not_to include "Good Governance"
     end
+  end
+end
+
+feature "when there are multiple existing outreach events", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include OutreachSpecHelper
+  include OutreachSetupHelper
+  before do
+    setup_database(:multiple)
+    setup_file_constraints
+    resize_browser_window
+    visit outreach_media_outreach_events_path(:en)
+  end
+
+  scenario "edit an outreach event putting it outside filter criteria" do
+    edit_outreach_event[0].click
+    fill_in('participant_count', :with => " 100000 ")
+    expect(page).to have_selector("#outreach_events .outreach_event", :count => 2)
   end
 end
 

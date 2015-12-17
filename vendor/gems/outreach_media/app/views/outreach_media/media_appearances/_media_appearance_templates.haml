@@ -58,28 +58,28 @@
     .row
       .col-md-1.filter_field.pa_min
         %input{:style=>"width:80px", :value => '{{sort_criteria.pa_min}}'}
-        %span.error_message Invalid
+        %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pa_max
         %input{:style=>"width:80px", :value => '{{sort_criteria.pa_max}}'}
-        %span.error_message Invalid
+        %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.vs_min
         %input{:style=>"width:50px", :value => '{{sort_criteria.vs_min}}'}
-        %span.error_message Invalid
+        %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.vs_max
         %input{:style=>"width:50px", :value => '{{sort_criteria.vs_max}}'}
-        %span.error_message Invalid
+        %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.vc_min
         %input{:style=>"width:50px", :value => '{{sort_criteria.vc_min}}'}
-        %span.error_message Invalid
+        %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.vc_max
         %input{:style=>"width:50px", :value => '{{sort_criteria.vc_max}}'}
-        %span.error_message Invalid
+        %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pr_min
         %input{:style=>"width:50px", :value => '{{sort_criteria.pr_min}}'}
-        %span.error_message Invalid
+        %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pr_max
         %input{:style=>"width:50px", :value => '{{sort_criteria.pr_max}}'}
-        %span.error_message Invalid
+        %span.error_message= t('defaults.invalid')
   #media_appearances
     {{#media_appearances}}
     <ma on-edit='edit', area_ids='{{area_ids}}', expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  metrics='{{metrics}}'  has_link='{{has_link}}'  has_scanned_doc='{{has_scanned_doc}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}'  url='{{url}}'/>
