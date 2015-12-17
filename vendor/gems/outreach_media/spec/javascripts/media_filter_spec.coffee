@@ -53,23 +53,23 @@ MediaPage = ->
   pa_max : ->
     $(".filter_field.pa_max")
 
-sort_criteria =
-  title : -> media.get('sort_criteria.title')
-  areas : -> media.get('sort_criteria.areas')
-  subareas : -> media.get('sort_criteria.subareas')
-  from : -> media.get('sort_criteria.from').getTime()
-  to : -> media.get('sort_criteria.to').getTime()
-  vc_min : -> media.get('sort_criteria.vc_min')
-  vc_max : -> media.get('sort_criteria.vc_max')
-  pr_min : -> media.get('sort_criteria.pr_min')
-  pr_max : -> media.get('sort_criteria.pr_max')
-  vs_min : -> media.get('sort_criteria.vs_min')
-  vs_max : -> media.get('sort_criteria.vs_max')
-  pa_min : -> media.get('sort_criteria.pa_min')
-  pa_max : -> media.get('sort_criteria.pa_max')
+filter_criteria =
+  title : -> media.get('filter_criteria.title')
+  areas : -> media.get('filter_criteria.areas')
+  subareas : -> media.get('filter_criteria.subareas')
+  from : -> media.get('filter_criteria.from').getTime()
+  to : -> media.get('filter_criteria.to').getTime()
+  vc_min : -> media.get('filter_criteria.vc_min')
+  vc_max : -> media.get('filter_criteria.vc_max')
+  pr_min : -> media.get('filter_criteria.pr_min')
+  pr_max : -> media.get('filter_criteria.pr_max')
+  vs_min : -> media.get('filter_criteria.vs_min')
+  vs_max : -> media.get('filter_criteria.vs_max')
+  pa_min : -> media.get('filter_criteria.pa_min')
+  pa_max : -> media.get('filter_criteria.pa_max')
   reset_areas_subareas : ->
-    media.set('sort_criteria.areas',[])
-    media.set('sort_criteria.subareas',[])
+    media.set('filter_criteria.areas',[])
+    media.set('filter_criteria.subareas',[])
 
 describe 'Media page', ->
   before (done)->
@@ -97,17 +97,17 @@ describe 'Media page', ->
     expect(@page.text_fields_length()).to.equal 2
     expect(@page.text_fields()).to.include "Fantasy land"
     expect(@page.text_fields()).to.include "May the force be with you"
-    expect(sort_criteria.title()).to.equal 'F'
+    expect(filter_criteria.title()).to.equal 'F'
 
   it 'filters media appearances by earliest date', ->
     @page.set_from_date('19/08/2014')
-    expect(sort_criteria.from()).to.equal (new Date('08/19/2014')).getTime()
+    expect(filter_criteria.from()).to.equal (new Date('08/19/2014')).getTime()
     expect(@page.text_fields_length()).to.equal 1
     expect(@page.text_fields()).to.include "Fantasy land"
 
   it 'filters media appearances by latest date', ->
     @page.set_to_date('19/08/2014')
-    expect(sort_criteria.to()).to.equal (new Date('08/19/2014')).getTime()
+    expect(filter_criteria.to()).to.equal (new Date('08/19/2014')).getTime()
     expect(@page.text_fields_length()).to.equal 7
     expect(@page.text_fields()).to.not.include "Fantasy land"
 
@@ -117,12 +117,12 @@ describe 'Media page', ->
     human_rights_select = @page.$area().find('.area a')[0]
     human_rights_id = (_(areas).detect (a)->a.name == "Human Rights").id
     simulant.fire(human_rights_select,'click')
-    expect(sort_criteria.areas()).to.eql [human_rights_id]
+    expect(filter_criteria.areas()).to.eql [human_rights_id]
     expect(@page.text_fields_length()).to.equal 2
     expect(@page.text_fields()).to.include "Fantasy land"
     expect(@page.text_fields()).to.include "May the force be with you"
     simulant.fire(human_rights_select,'click')
-    expect(sort_criteria.areas()).to.eql []
+    expect(filter_criteria.areas()).to.eql []
     expect(@page.text_fields_length()).to.equal 0
 
   it 'filters media appearances by subarea returns matching subareas', ->
@@ -130,12 +130,12 @@ describe 'Media page', ->
     @page.open_area_dropdown()
     crc_id = (_(subareas).detect (sa)-> sa.name == "CRC").id
     @page.click_crc_subarea()
-    expect(sort_criteria.subareas()).to.eql [crc_id]
+    expect(filter_criteria.subareas()).to.eql [crc_id]
     expect(@page.text_fields_length()).to.equal 2
     expect(@page.text_fields()).to.include "Fantasy land"
     expect(@page.text_fields()).to.include "May the force be with you"
     @page.click_crc_subarea()
-    expect(sort_criteria.areas()).to.eql []
+    expect(filter_criteria.areas()).to.eql []
     expect(@page.text_fields_length()).to.equal 0
 
   it 'filters media appearances by violation coefficient', ->
@@ -143,8 +143,8 @@ describe 'Media page', ->
     simulant.fire(@page.violation_coefficient('min')[0],'change')
     @page.violation_coefficient('max').val(0.8)
     simulant.fire(@page.violation_coefficient('max')[0],'change')
-    expect(sort_criteria.vc_min()).to.equal "0.2"
-    expect(sort_criteria.vc_max()).to.equal "0.8"
+    expect(filter_criteria.vc_min()).to.equal "0.2"
+    expect(filter_criteria.vc_max()).to.equal "0.8"
     expect(@page.text_fields_length()).to.equal 1
     @page.violation_coefficient('max').val(20)
     simulant.fire(@page.violation_coefficient('max')[0],'change')
@@ -177,8 +177,8 @@ describe 'Media page', ->
     simulant.fire(@page.positivity_rating('min')[0],'change')
     @page.positivity_rating('max').val(6)
     simulant.fire(@page.positivity_rating('max')[0],'change')
-    expect(sort_criteria.pr_min()).to.equal "4"
-    expect(sort_criteria.pr_max()).to.equal "6"
+    expect(filter_criteria.pr_min()).to.equal "4"
+    expect(filter_criteria.pr_max()).to.equal "6"
     expect(@page.text_fields_length()).to.equal 1
 
   it 'shows error message when invalid min positivity rating values are entered',->
@@ -208,8 +208,8 @@ describe 'Media page', ->
     simulant.fire(@page.violation_severity('min')[0],'change')
     @page.violation_severity('max').val(6)
     simulant.fire(@page.violation_severity('max')[0],'change')
-    expect(sort_criteria.vs_min()).to.equal "4"
-    expect(sort_criteria.vs_max()).to.equal "6"
+    expect(filter_criteria.vs_min()).to.equal "4"
+    expect(filter_criteria.vs_max()).to.equal "6"
     expect(@page.text_fields_length()).to.equal 1
 
   it 'shows error message when invalid minimum violation severity values are entered',->
@@ -239,8 +239,8 @@ describe 'Media page', ->
     simulant.fire(@page.people_affected('min')[0],'change')
     @page.people_affected('max').val(6000000)
     simulant.fire(@page.people_affected('max')[0],'change')
-    expect(sort_criteria.pa_min()).to.equal "444"
-    expect(sort_criteria.pa_max()).to.equal "6000000"
+    expect(filter_criteria.pa_min()).to.equal "444"
+    expect(filter_criteria.pa_max()).to.equal "6000000"
     expect(@page.text_fields_length()).to.equal 1
 
   it 'shows error message when invalid minimum # people values are entered',->

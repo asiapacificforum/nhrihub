@@ -226,43 +226,43 @@ $ ->
       persisted : ->
         !_.isNull(@get('id'))
     _matches_impact_rating : ->
-      if !_.isNull(@get('sort_criteria.impact_rating_id'))
-        @get('sort_criteria.impact_rating_id') == @get('impact_rating_id')
+      if !_.isNull(@get('filter_criteria.impact_rating_id'))
+        @get('filter_criteria.impact_rating_id') == @get('impact_rating_id')
       else
         true
     _matches_participant_count : ->
-      @_between(parseInt(@get('sort_criteria.pp_min')),parseInt(@get('sort_criteria.pp_max')),parseInt(@get('participant_count')))
+      @_between(parseInt(@get('filter_criteria.pp_min')),parseInt(@get('filter_criteria.pp_max')),parseInt(@get('participant_count')))
     _matches_audience_name : ->
-      re = new RegExp(@get('sort_criteria.audience_name'),'i')
+      re = new RegExp(@get('filter_criteria.audience_name'),'i')
       re.test(@get('audience_name'))
     _matches_audience_type : ->
-      if !_.isNull(@get('sort_criteria.audience_type_id'))
-        @get('sort_criteria.audience_type_id') == @get('audience_type_id')
+      if !_.isNull(@get('filter_criteria.audience_type_id'))
+        @get('filter_criteria.audience_type_id') == @get('audience_type_id')
       else
         true
     _matches_from : ->
-      new Date(@get('date')) >= new Date(@get('sort_criteria.from'))
+      new Date(@get('date')) >= new Date(@get('filter_criteria.from'))
     _matches_to : ->
-      new Date(@get('date')) <= new Date(@get('sort_criteria.to'))
+      new Date(@get('date')) <= new Date(@get('filter_criteria.to'))
     _matches_area_subarea : ->
-      return (@_matches_area() || @_matches_subarea()) if @get('sort_criteria.rule') == 'any'
-      return (@_matches_area() && @_matches_subarea()) if @get('sort_criteria.rule') == 'all'
+      return (@_matches_area() || @_matches_subarea()) if @get('filter_criteria.rule') == 'any'
+      return (@_matches_area() && @_matches_subarea()) if @get('filter_criteria.rule') == 'all'
     _matches_area : ->
-      if @get('sort_criteria.rule') == 'any'
+      if @get('filter_criteria.rule') == 'any'
         return true if _.isEmpty(@get('area_ids'))
-        matches = _.intersection(@get('area_ids'), @get('sort_criteria.areas'))
+        matches = _.intersection(@get('area_ids'), @get('filter_criteria.areas'))
         matches.length > 0
       else
-        _.isEqual(@get('area_ids').slice().sort(), @get('sort_criteria.areas').slice().sort())
+        _.isEqual(@get('area_ids').slice().sort(), @get('filter_criteria.areas').slice().sort())
     _matches_subarea : ->
-      if @get('sort_criteria.rule') == 'any'
-        matches = _.intersection(@get('subarea_ids'), @get('sort_criteria.subareas'))
+      if @get('filter_criteria.rule') == 'any'
+        matches = _.intersection(@get('subarea_ids'), @get('filter_criteria.subareas'))
         matches.length > 0
       else
-        return true if _.isEmpty(@get('sort_criteria.subareas'))
-        _.isEqual(@get('subarea_ids').slice().sort(), @get('sort_criteria.subareas').slice().sort())
+        return true if _.isEmpty(@get('filter_criteria.subareas'))
+        _.isEqual(@get('subarea_ids').slice().sort(), @get('filter_criteria.subareas').slice().sort())
     _matches_people_affected : ->
-      @_between(parseInt(@get('sort_criteria.pa_min')),parseInt(@get('sort_criteria.pa_max')),parseInt(@get('affected_people_count')))
+      @_between(parseInt(@get('filter_criteria.pa_min')),parseInt(@get('filter_criteria.pa_max')),parseInt(@get('affected_people_count')))
     _between : (min,max,val)->
       return true if _.isNaN(val) # declare match if there's no value
       min = if _.isNaN(min) # from the input element a zero-length string can be presented
@@ -273,7 +273,7 @@ $ ->
       less_than_max = _.isNaN(max) || (val <= max) # if max is not a number, then assume val is in-range
       exceeds_min && less_than_max
     _matches_title : ->
-      re = new RegExp(@get('sort_criteria.title'),'i')
+      re = new RegExp(@get('filter_criteria.title'),'i')
       re.test(@get('title'))
     expand : ->
       @set('expanded',true)
@@ -441,7 +441,7 @@ $ ->
     impact_ratings : impact_ratings
     default_selected_audience_type : default_selected_audience_type
     default_selected_impact_rating : default_selected_impact_rating
-    sort_criteria :
+    filter_criteria :
       title : ""
       from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation
       to : new Date(new Date().toDateString()) # then it yields proper comparison with Rails timestamp
@@ -487,23 +487,23 @@ $ ->
       ir_max : ->
         @max('impact_ratings')
       formatted_from_date:
-        get: -> $.datepicker.formatDate("dd/mm/yy", @get('sort_criteria.from'))
-        set: (val)-> @set('sort_criteria.from', $.datepicker.parseDate( "dd/mm/yy", val))
+        get: -> $.datepicker.formatDate("dd/mm/yy", @get('filter_criteria.from'))
+        set: (val)-> @set('filter_criteria.from', $.datepicker.parseDate( "dd/mm/yy", val))
       formatted_to_date:
-        get: -> $.datepicker.formatDate("dd/mm/yy", @get('sort_criteria.to'))
-        set: (val)-> @set('sort_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
+        get: -> $.datepicker.formatDate("dd/mm/yy", @get('filter_criteria.to'))
+        set: (val)-> @set('filter_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
       selected_audience_type: ->
-        if _.isNull(@get('sort_criteria.audience_type_id'))
+        if _.isNull(@get('filter_criteria.audience_type_id'))
           @get('default_selected_audience_type')
         else
-          audience_type_id = @get('sort_criteria.audience_type_id')
+          audience_type_id = @get('filter_criteria.audience_type_id')
           audience_type = _(@findAllComponents('at')).find (at)->at.get('id') == audience_type_id
           audience_type.get('text')
       selected_impact_rating: ->
-        if _.isNull(@get('sort_criteria.impact_rating_id'))
+        if _.isNull(@get('filter_criteria.impact_rating_id'))
           @get('default_selected_impact_rating')
         else
-          impact_rating_id = @get('sort_criteria.impact_rating_id')
+          impact_rating_id = @get('filter_criteria.impact_rating_id')
           impact_rating = _(@findAllComponents('ir')).find (ir)->ir.get('id') == impact_rating_id
           impact_rating.get('text')
     min : (param)->
@@ -520,12 +520,12 @@ $ ->
       at : AudienceType
       ir : ImpactRating
     populate_min_max_fields : ->
-      @set('sort_criteria.from',@get('earliest'))  unless _.isUndefined(@get('earliest'))
-      @set('sort_criteria.to',@get('most_recent')) unless _.isUndefined(@get('most_recent'))
-      @set('sort_criteria.pa_min',@get('pa_min'))  unless _.isUndefined(@get('pa_min')) # people affected
-      @set('sort_criteria.pa_max',@get('pa_max'))  unless _.isUndefined(@get('pa_max'))
-      @set('sort_criteria.pp_min',@get('pp_min'))  unless _.isUndefined(@get('pp_min')) # participant count
-      @set('sort_criteria.pp_max',@get('pp_max'))  unless _.isUndefined(@get('pp_max'))
+      @set('filter_criteria.from',@get('earliest'))  unless _.isUndefined(@get('earliest'))
+      @set('filter_criteria.to',@get('most_recent')) unless _.isUndefined(@get('most_recent'))
+      @set('filter_criteria.pa_min',@get('pa_min'))  unless _.isUndefined(@get('pa_min')) # people affected
+      @set('filter_criteria.pa_max',@get('pa_max'))  unless _.isUndefined(@get('pa_max'))
+      @set('filter_criteria.pp_min',@get('pp_min'))  unless _.isUndefined(@get('pp_min')) # participant count
+      @set('filter_criteria.pp_max',@get('pp_max'))  unless _.isUndefined(@get('pp_max'))
     expand : ->
       @set('expanded', true)
       _(@findAllComponents('oe')).each (ma)-> ma.expand()
@@ -533,29 +533,29 @@ $ ->
       @set('expanded', false)
       _(@findAllComponents('oe')).each (ma)-> ma.compact()
     add_area_filter : (id) ->
-      @push('sort_criteria.areas',id)
+      @push('filter_criteria.areas',id)
     remove_area_filter : (id) ->
-      i = _(@get('sort_criteria.areas')).indexOf(id)
-      @splice('sort_criteria.areas',i,1)
+      i = _(@get('filter_criteria.areas')).indexOf(id)
+      @splice('filter_criteria.areas',i,1)
     add_subarea_filter : (id) ->
-      @push('sort_criteria.subareas',id)
+      @push('filter_criteria.subareas',id)
     set_audience_type_filter : (id) ->
       _(@findAllComponents('at')).each (at)->
         at.unselect() if at.get('id') != id
-      @set('sort_criteria.audience_type_id',id)
+      @set('filter_criteria.audience_type_id',id)
     set_impact_rating_filter : (id) ->
       _(@findAllComponents('ir')).each (ir)->
         ir.unselect() if ir.get('id') != id
-      @set('sort_criteria.impact_rating_id',id)
+      @set('filter_criteria.impact_rating_id',id)
     remove_subarea_filter : (id) ->
-      i = _(@get('sort_criteria.subareas')).indexOf(id)
-      @splice('sort_criteria.subareas',i,1)
+      i = _(@get('filter_criteria.subareas')).indexOf(id)
+      @splice('filter_criteria.subareas',i,1)
     unset_audience_type_filter : ->
-      @set('sort_criteria.audience_type_id',null)
+      @set('filter_criteria.audience_type_id',null)
     unset_impact_rating_filter : ->
-      @set('sort_criteria.impact_rating_id',null)
+      @set('filter_criteria.impact_rating_id',null)
     clear_filter : ->
-      @set('sort_criteria',outreach_page_data().sort_criteria)
+      @set('filter_criteria',outreach_page_data().filter_criteria)
       _(@findAllComponents('area')).each (a)-> a.select()
       _(@findAllComponents('subarea')).each (a)-> a.select()
       _(@findAllComponents('at')).each (at)-> at.unselect()
@@ -566,7 +566,7 @@ $ ->
     filter_rule : (name)->
       @event.original.preventDefault()
       @event.original.stopPropagation()
-      @set('sort_criteria.rule',name)
+      @set('filter_criteria.rule',name)
     new_article : ->
       @unshift('outreach_events', $.extend(true,{},new_outreach_event))
       $(@find('#outreach_event_title')).focus()
@@ -576,12 +576,12 @@ $ ->
       @splice('outreach_events',index,1)
     cancel : ->
       @shift('outreach_events')
-    set_sort_criteria_to_date : (selectedDate)->
-      @set('sort_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+    set_filter_criteria_to_date : (selectedDate)->
+      @set('filter_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate))
       $('#from').datepicker 'option', 'maxDate', selectedDate
       @update()
-    set_sort_criteria_from_date : (selectedDate)->
-      @set('sort_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+    set_filter_criteria_from_date : (selectedDate)->
+      @set('filter_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate))
       $('#to').datepicker 'option', 'minDate', selectedDate
       @update()
 
@@ -591,8 +591,8 @@ $ ->
 
   start_page()
 
-# validate the sort_criteria input fields whenever they change
-  outreach.observe 'sort_criteria.*', (newval, oldval, path)->
+# validate the filter_criteria input fields whenever they change
+  outreach.observe 'filter_criteria.*', (newval, oldval, path)->
     key = path.split('.')[1]
 
     has_error = ->

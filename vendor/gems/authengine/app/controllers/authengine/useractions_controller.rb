@@ -3,7 +3,7 @@ class Authengine::UseractionsController < ApplicationController
   def show
     eval("@useractions = Useraction#{params[:actionlog_id].to_i}.all.map{|u| u.becomes(Useraction)}")
     @date = Useraction.date_of_index(params[:actionlog_id].to_i)
-    @sort_criteria = [ :created_at, :user_lastName ]
+    @filter_criteria = [ :created_at, :user_lastName ]
   end
 
   def index

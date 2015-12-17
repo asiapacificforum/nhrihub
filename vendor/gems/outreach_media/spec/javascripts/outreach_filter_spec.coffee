@@ -70,20 +70,20 @@ OutreachPage = ->
   pp_max : ->
     $(".filter_field.pa_max")
 
-sort_criteria =
-  title : -> outreach.get('sort_criteria.title')
-  areas : -> outreach.get('sort_criteria.areas')
-  subareas : -> outreach.get('sort_criteria.subareas')
-  from : -> outreach.get('sort_criteria.from').getTime()
-  to : -> outreach.get('sort_criteria.to').getTime()
-  pa_min : -> outreach.get('sort_criteria.pa_min')
-  pa_max : -> outreach.get('sort_criteria.pa_max')
-  pp_min : -> outreach.get('sort_criteria.pp_min')
-  pp_max : -> outreach.get('sort_criteria.pp_max')
+filter_criteria =
+  title : -> outreach.get('filter_criteria.title')
+  areas : -> outreach.get('filter_criteria.areas')
+  subareas : -> outreach.get('filter_criteria.subareas')
+  from : -> outreach.get('filter_criteria.from').getTime()
+  to : -> outreach.get('filter_criteria.to').getTime()
+  pa_min : -> outreach.get('filter_criteria.pa_min')
+  pa_max : -> outreach.get('filter_criteria.pa_max')
+  pp_min : -> outreach.get('filter_criteria.pp_min')
+  pp_max : -> outreach.get('filter_criteria.pp_max')
   selected_audience_type_id : null
   reset_areas_subareas : ->
-    outreach.set('sort_criteria.areas',[])
-    outreach.set('sort_criteria.subareas',[])
+    outreach.set('filter_criteria.areas',[])
+    outreach.set('filter_criteria.subareas',[])
 
 describe 'Outreach page', ->
   before (done)->
@@ -124,17 +124,17 @@ describe 'Outreach page', ->
     expect(@page.text_fields_length()).to.equal 2
     expect(@page.text_fields()).to.include "Fantasy land"
     expect(@page.text_fields()).to.include "May the force be with you"
-    expect(sort_criteria.title()).to.equal 'F'
+    expect(filter_criteria.title()).to.equal 'F'
 
   it 'filters outreach events by earliest date', ->
     @page.set_from_date('19/08/2014')
-    expect(sort_criteria.from()).to.equal (new Date('08/19/2014')).getTime()
+    expect(filter_criteria.from()).to.equal (new Date('08/19/2014')).getTime()
     expect(@page.text_fields_length()).to.equal 1
     expect(@page.text_fields()).to.include "Fantasy land"
 
   it 'filters outreach events by latest date', ->
     @page.set_to_date('19/08/2014')
-    expect(sort_criteria.to()).to.equal (new Date('08/19/2014')).getTime()
+    expect(filter_criteria.to()).to.equal (new Date('08/19/2014')).getTime()
     expect(@page.text_fields_length()).to.equal 7
     expect(@page.text_fields()).to.not.include "Fantasy land"
 
@@ -144,12 +144,12 @@ describe 'Outreach page', ->
     human_rights_select = @page.$area().find('.area a')[0]
     human_rights_id = (_(areas).detect (a)->a.name == "Human Rights").id
     simulant.fire(human_rights_select,'click')
-    expect(sort_criteria.areas()).to.eql [human_rights_id]
+    expect(filter_criteria.areas()).to.eql [human_rights_id]
     expect(@page.text_fields_length()).to.equal 2
     expect(@page.text_fields()).to.include "Fantasy land"
     expect(@page.text_fields()).to.include "May the force be with you"
     simulant.fire(human_rights_select,'click')
-    expect(sort_criteria.areas()).to.eql []
+    expect(filter_criteria.areas()).to.eql []
     expect(@page.text_fields_length()).to.equal 0
 
   it 'filters outreach events by subarea returns matching subareas', ->
@@ -157,11 +157,11 @@ describe 'Outreach page', ->
     @page.open_area_dropdown()
     crc_id = (_(subareas).detect (sa)-> sa.name == "CRC").id
     @page.click_crc_subarea()
-    expect(sort_criteria.subareas()).to.eql [crc_id]
+    expect(filter_criteria.subareas()).to.eql [crc_id]
     expect(@page.text_fields_length()).to.equal 1
     expect(@page.text_fields()).to.include "Fantasy land"
     @page.click_crc_subarea()
-    expect(sort_criteria.areas()).to.eql []
+    expect(filter_criteria.areas()).to.eql []
     expect(@page.text_fields_length()).to.equal 0
 
   it 'filters outreach events by audience_type', ->
@@ -171,7 +171,7 @@ describe 'Outreach page', ->
     expect(@page.text_fields_length()).to.equal 2
     expect(@page.text_fields()).to.include "Fantasy land"
     expect(@page.text_fields()).to.include "May the force be with you"
-    expect(outreach.get('sort_criteria.audience_type_id')).to.equal 1
+    expect(outreach.get('filter_criteria.audience_type_id')).to.equal 1
 
   it 'filters outreach events by audience name', ->
     expect(@page.text_fields_length()).to.equal 8
@@ -180,15 +180,15 @@ describe 'Outreach page', ->
     expect(@page.text_fields_length()).to.equal 2
     expect(@page.text_fields()).to.include "Fantasy land"
     expect(@page.text_fields()).to.include "May the force be with you"
-    expect(outreach.get('sort_criteria.audience_name')).to.equal 'Gotham'
+    expect(outreach.get('filter_criteria.audience_name')).to.equal 'Gotham'
 
   it 'filters outreach events by number of participants', ->
     @page.participants('min').val(444)
     simulant.fire(@page.participants('min')[0],'change')
     @page.participants('max').val(6000)
     simulant.fire(@page.participants('max')[0],'change')
-    expect(sort_criteria.pp_min()).to.equal "444"
-    expect(sort_criteria.pp_max()).to.equal "6000"
+    expect(filter_criteria.pp_min()).to.equal "444"
+    expect(filter_criteria.pp_max()).to.equal "6000"
     expect(@page.text_fields_length()).to.equal 1
 
   it 'shows error message when invalid minimum number of participants is entered', ->
@@ -201,7 +201,7 @@ describe 'Outreach page', ->
     @page.select_impact_rating('No improved audience understanding')
     expect(@page.text_fields_length()).to.equal 1
     expect(@page.text_fields()).to.include "May the force be with you"
-    expect(outreach.get('sort_criteria.impact_rating_id')).to.equal 1
+    expect(outreach.get('filter_criteria.impact_rating_id')).to.equal 1
 
   it 'shows error message when invalid minimum impact rating value is entered', ->
 
@@ -212,8 +212,8 @@ describe 'Outreach page', ->
     simulant.fire(@page.people_affected('min')[0],'change')
     @page.people_affected('max').val(6000)
     simulant.fire(@page.people_affected('max')[0],'change')
-    expect(sort_criteria.pa_min()).to.equal "444"
-    expect(sort_criteria.pa_max()).to.equal "6000"
+    expect(filter_criteria.pa_min()).to.equal "444"
+    expect(filter_criteria.pa_max()).to.equal "6000"
     expect(@page.text_fields_length()).to.equal 1
 
   it 'shows error message when invalid minimum # people values are entered',->

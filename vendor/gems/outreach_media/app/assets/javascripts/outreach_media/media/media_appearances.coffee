@@ -188,34 +188,34 @@ $ ->
       persisted : ->
         !_.isNull(@get('id'))
     _matches_from : ->
-      new Date(@get('date')) >= new Date(@get('sort_criteria.from'))
+      new Date(@get('date')) >= new Date(@get('filter_criteria.from'))
     _matches_to : ->
-      new Date(@get('date')) <= new Date(@get('sort_criteria.to'))
+      new Date(@get('date')) <= new Date(@get('filter_criteria.to'))
     _matches_area_subarea : ->
-      return (@_matches_area() || @_matches_subarea()) if @get('sort_criteria.rule') == 'any'
-      return (@_matches_area() && @_matches_subarea()) if @get('sort_criteria.rule') == 'all'
+      return (@_matches_area() || @_matches_subarea()) if @get('filter_criteria.rule') == 'any'
+      return (@_matches_area() && @_matches_subarea()) if @get('filter_criteria.rule') == 'all'
     _matches_area : ->
-      if @get('sort_criteria.rule') == 'any'
+      if @get('filter_criteria.rule') == 'any'
         return true if _.isEmpty(@get('area_ids'))
-        matches = _.intersection(@get('area_ids'), @get('sort_criteria.areas'))
+        matches = _.intersection(@get('area_ids'), @get('filter_criteria.areas'))
         matches.length > 0
       else
-        _.isEqual(@get('area_ids').slice().sort(), @get('sort_criteria.areas').slice().sort())
+        _.isEqual(@get('area_ids').slice().sort(), @get('filter_criteria.areas').slice().sort())
     _matches_subarea : ->
-      if @get('sort_criteria.rule') == 'any'
-        matches = _.intersection(@get('subarea_ids'), @get('sort_criteria.subareas'))
+      if @get('filter_criteria.rule') == 'any'
+        matches = _.intersection(@get('subarea_ids'), @get('filter_criteria.subareas'))
         matches.length > 0
       else
-        return true if _.isEmpty(@get('sort_criteria.subareas'))
-        _.isEqual(@get('subarea_ids').slice().sort(), @get('sort_criteria.subareas').slice().sort())
+        return true if _.isEmpty(@get('filter_criteria.subareas'))
+        _.isEqual(@get('subarea_ids').slice().sort(), @get('filter_criteria.subareas').slice().sort())
     _matches_people_affected : ->
-      @_between(parseInt(@get('sort_criteria.pa_min')),parseInt(@get('sort_criteria.pa_max')),parseInt(@get('metrics.affected_people_count.value')))
+      @_between(parseInt(@get('filter_criteria.pa_min')),parseInt(@get('filter_criteria.pa_max')),parseInt(@get('metrics.affected_people_count.value')))
     _matches_violation_severity : ->
-      @_between(parseInt(@get('sort_criteria.vs_min')),parseInt(@get('sort_criteria.vs_max')),parseInt(@get('metrics.violation_severity.value')))
+      @_between(parseInt(@get('filter_criteria.vs_min')),parseInt(@get('filter_criteria.vs_max')),parseInt(@get('metrics.violation_severity.value')))
     _matches_violation_coefficient : ->
-      @_between(parseFloat(@get('sort_criteria.vc_min')),parseFloat(@get('sort_criteria.vc_max')),parseFloat(@get('metrics.violation_coefficient.value')))
+      @_between(parseFloat(@get('filter_criteria.vc_min')),parseFloat(@get('filter_criteria.vc_max')),parseFloat(@get('metrics.violation_coefficient.value')))
     _matches_positivity_rating : ->
-      @_between(parseInt(@get('sort_criteria.pr_min')),parseInt(@get('sort_criteria.pr_max')),parseInt(@get("metrics.positivity_rating.rank")))
+      @_between(parseInt(@get('filter_criteria.pr_min')),parseInt(@get('filter_criteria.pr_max')),parseInt(@get("metrics.positivity_rating.rank")))
     _between : (min,max,val)->
       return true if _.isNaN(val) # declare match if there's no value
       min = if _.isNaN(min) # from the input element a zero-length string can be presented
@@ -226,7 +226,7 @@ $ ->
       less_than_max = _.isNaN(max) || (val <= max) # if max is not a number, then assume val is in-range
       exceeds_min && less_than_max
     _matches_title : ->
-      re = new RegExp(@get('sort_criteria.title'),'i')
+      re = new RegExp(@get('filter_criteria.title'),'i')
       re.test(@get('title'))
     expand : ->
       @set('expanded',true)
@@ -392,7 +392,7 @@ $ ->
     media_appearances: media_appearances
     areas : areas
     create_media_appearance_url: create_media_appearance_url
-    sort_criteria :
+    filter_criteria :
       title : ""
       from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation
       to : new Date(new Date().toDateString()) # then it yields proper comparison with Rails timestamp
@@ -446,11 +446,11 @@ $ ->
       pa_max : ->
         @max('people_affecteds')
       formatted_from_date:
-        get: -> $.datepicker.formatDate("dd/mm/yy", @get('sort_criteria.from'))
-        set: (val)-> @set('sort_criteria.from', $.datepicker.parseDate( "dd/mm/yy", val))
+        get: -> $.datepicker.formatDate("dd/mm/yy", @get('filter_criteria.from'))
+        set: (val)-> @set('filter_criteria.from', $.datepicker.parseDate( "dd/mm/yy", val))
       formatted_to_date:
-        get: -> $.datepicker.formatDate("dd/mm/yy", @get('sort_criteria.to'))
-        set: (val)-> @set('sort_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
+        get: -> $.datepicker.formatDate("dd/mm/yy", @get('filter_criteria.to'))
+        set: (val)-> @set('filter_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
     min : (param)->
       @get(param).reduce (min,val)->
         return val if val<min
@@ -463,16 +463,16 @@ $ ->
       ma : MediaAppearance
       area : AreaFilter
     populate_min_max_fields : ->
-      @set('sort_criteria.from',@get('earliest'))  unless _.isUndefined(@get('earliest'))
-      @set('sort_criteria.to',@get('most_recent')) unless _.isUndefined(@get('most_recent'))
-      @set('sort_criteria.vc_min',@get('vc_min'))  unless _.isUndefined(@get('vc_min'))
-      @set('sort_criteria.vc_max',@get('vc_max'))  unless _.isUndefined(@get('vc_max'))
-      @set('sort_criteria.pr_min',@get('pr_min'))  unless _.isUndefined(@get('pr_min'))
-      @set('sort_criteria.pr_max',@get('pr_max'))  unless _.isUndefined(@get('pr_max'))
-      @set('sort_criteria.vs_min',@get('vs_min'))  unless _.isUndefined(@get('vs_min'))
-      @set('sort_criteria.vs_max',@get('vs_max'))  unless _.isUndefined(@get('vs_max'))
-      @set('sort_criteria.pa_min',@get('pa_min'))  unless _.isUndefined(@get('pa_min'))
-      @set('sort_criteria.pa_max',@get('pa_max'))  unless _.isUndefined(@get('pa_max'))
+      @set('filter_criteria.from',@get('earliest'))  unless _.isUndefined(@get('earliest'))
+      @set('filter_criteria.to',@get('most_recent')) unless _.isUndefined(@get('most_recent'))
+      @set('filter_criteria.vc_min',@get('vc_min'))  unless _.isUndefined(@get('vc_min'))
+      @set('filter_criteria.vc_max',@get('vc_max'))  unless _.isUndefined(@get('vc_max'))
+      @set('filter_criteria.pr_min',@get('pr_min'))  unless _.isUndefined(@get('pr_min'))
+      @set('filter_criteria.pr_max',@get('pr_max'))  unless _.isUndefined(@get('pr_max'))
+      @set('filter_criteria.vs_min',@get('vs_min'))  unless _.isUndefined(@get('vs_min'))
+      @set('filter_criteria.vs_max',@get('vs_max'))  unless _.isUndefined(@get('vs_max'))
+      @set('filter_criteria.pa_min',@get('pa_min'))  unless _.isUndefined(@get('pa_min'))
+      @set('filter_criteria.pa_max',@get('pa_max'))  unless _.isUndefined(@get('pa_max'))
     expand : ->
       @set('expanded', true)
       _(@findAllComponents('ma')).each (ma)-> ma.expand()
@@ -480,17 +480,17 @@ $ ->
       @set('expanded', false)
       _(@findAllComponents('ma')).each (ma)-> ma.compact()
     add_area_filter : (id) ->
-      @push('sort_criteria.areas',id)
+      @push('filter_criteria.areas',id)
     remove_area_filter : (id) ->
-      i = _(@get('sort_criteria.areas')).indexOf(id)
-      @splice('sort_criteria.areas',i,1)
+      i = _(@get('filter_criteria.areas')).indexOf(id)
+      @splice('filter_criteria.areas',i,1)
     add_subarea_filter : (id) ->
-      @push('sort_criteria.subareas',id)
+      @push('filter_criteria.subareas',id)
     remove_subarea_filter : (id) ->
-      i = _(@get('sort_criteria.subareas')).indexOf(id)
-      @splice('sort_criteria.subareas',i,1)
+      i = _(@get('filter_criteria.subareas')).indexOf(id)
+      @splice('filter_criteria.subareas',i,1)
     clear_filter : ->
-      @set('sort_criteria',media_page_data().sort_criteria)
+      @set('filter_criteria',media_page_data().filter_criteria)
       _(@findAllComponents('area')).each (a)-> a.select()
       _(@findAllComponents('subarea')).each (a)-> a.select()
       @populate_min_max_fields()
@@ -499,7 +499,7 @@ $ ->
     filter_rule : (name)->
       @event.original.preventDefault()
       @event.original.stopPropagation()
-      @set('sort_criteria.rule',name)
+      @set('filter_criteria.rule',name)
     new_article : ->
       @unshift('media_appearances', $.extend(true,{},new_media_appearance))
       $(@find('#media_appearance_title')).focus()
@@ -509,12 +509,12 @@ $ ->
       @splice('media_appearances',index,1)
     cancel : ->
       @shift('media_appearances')
-    set_sort_criteria_to_date : (selectedDate)->
-      @set('sort_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+    set_filter_criteria_to_date : (selectedDate)->
+      @set('filter_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate))
       $('#from').datepicker 'option', 'maxDate', selectedDate
       @update()
-    set_sort_criteria_from_date : (selectedDate)->
-      @set('sort_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+    set_filter_criteria_from_date : (selectedDate)->
+      @set('filter_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate))
       $('#to').datepicker 'option', 'minDate', selectedDate
       @update()
 
@@ -525,8 +525,8 @@ $ ->
 
   start_page()
 
-# validate the sort_criteria input fields whenever they change
-  media.observe 'sort_criteria.*', (newval, oldval, path)->
+# validate the filter_criteria input fields whenever they change
+  media.observe 'filter_criteria.*', (newval, oldval, path)->
     key = path.split('.')[1]
 
     has_error = ->
