@@ -9,6 +9,8 @@ OutreachPage = ->
   $date_from : -> @$outreach_event_controls().find('input#from')
   $date_to : -> @$outreach_event_controls().find('input#to')
   $area : -> @$outreach_event_controls().find('.area-select')
+  $filter_reset : -> @$outreach_event_controls().find('.fa-refresh')
+  $empty_message : -> $('#outreach_event_list').text()
   select_audience_type : (text)->
     $(".audience_type-select .audience_type .text:contains('#{text}')").closest('a.opt').find('.fa-check').click()
   select_impact_rating : (text)->
@@ -21,6 +23,8 @@ OutreachPage = ->
     @$date_to().datepicker('show')
     @$date_to().datepicker('setDate',date_str)
     @$date_to().datepicker('hide')
+  reset_filter_criteria : ->
+    @$filter_reset().trigger('click')
   human_rights_crc_li : ->
     _($('.area-select .subarea')).select (el)->
       re = new RegExp(/CRC/)
@@ -68,7 +72,7 @@ OutreachPage = ->
   pp_min : ->
     $(".filter_field.pp_min")
   pp_max : ->
-    $(".filter_field.pa_max")
+    $(".filter_field.pp_max")
 
 filter_criteria =
   title : -> outreach.get('filter_criteria.title')
@@ -192,8 +196,26 @@ describe 'Outreach page', ->
     expect(@page.text_fields_length()).to.equal 1
 
   it 'shows error message when invalid minimum number of participants is entered', ->
+    @page.participants('min').val('A')
+    simulant.fire(@page.participants('min')[0],'change')
+    expect(@page.pp_min()).to.have.$class('error')
+    @page.participants('min').val('')
+    simulant.fire(@page.participants('min')[0],'change')
+    expect(@page.pp_min()).to.not.have.$class('error')
+    @page.participants('min').val('2')
+    simulant.fire(@page.participants('min')[0],'change')
+    expect(@page.pp_min()).to.not.have.$class('error')
 
   it 'shows error message when invalid maximum number of participants is entered', ->
+    @page.participants('max').val('A')
+    simulant.fire(@page.participants('max')[0],'change')
+    expect(@page.pp_max()).to.have.$class('error')
+    @page.participants('max').val('')
+    simulant.fire(@page.participants('max')[0],'change')
+    expect(@page.pp_max()).to.not.have.$class('error')
+    @page.participants('max').val('2')
+    simulant.fire(@page.participants('max')[0],'change')
+    expect(@page.pp_max()).to.not.have.$class('error')
 
   it 'filters outreach events by impact_rating', ->
     expect(@page.text_fields_length()).to.equal 8
@@ -202,10 +224,6 @@ describe 'Outreach page', ->
     expect(@page.text_fields_length()).to.equal 1
     expect(@page.text_fields()).to.include "May the force be with you"
     expect(outreach.get('filter_criteria.impact_rating_id')).to.equal 1
-
-  it 'shows error message when invalid minimum impact rating value is entered', ->
-
-  it 'shows error message when invalid maximum impact rating value is entered', ->
 
   it 'filters outreach events by # people affected', ->
     @page.people_affected('min').val(444)
@@ -238,11 +256,38 @@ describe 'Outreach page', ->
     simulant.fire(@page.people_affected('max')[0],'change')
     expect(@page.pa_max()).to.not.have.$class('error')
 
-  #it 'clears all filter parameters when clear button is clicked', ->
-    # pending
+  it 'clears all filter parameters when clear button is clicked', ->
+    @page.$title_input().val('F')
+    simulant.fire(@page.$title_input()[0],'change')
+    @page.set_from_date('19/08/2014')
+    expect(filter_criteria.from()).to.equal (new Date('08/19/2014')).getTime()
+    @page.set_to_date('19/08/2014')
+    expect(filter_criteria.to()).to.equal (new Date('08/19/2014')).getTime()
+    @page.unselect_area_subarea()
+    @page.open_audience_type_dropdown()
+    @page.select_audience_type('Police')
+    @page.$audience_name_input().val('Gotham')
+    simulant.fire(@page.$audience_name_input()[0],'change')
+    @page.participants('min').val(444)
+    simulant.fire(@page.participants('min')[0],'change')
+    @page.open_impact_rating_dropdown()
+    @page.select_impact_rating('No improved audience understanding')
+    @page.people_affected('min').val(444)
+    simulant.fire(@page.people_affected('min')[0],'change')
+    @page.reset_filter_criteria()
+    expect(filter_criteria.title()).to.equal ''
+    expect(filter_criteria.areas()).to.eql [1,2,3,4]
+    expect(filter_criteria.subareas()).to.eql [1,2,3,4,5,6,7,8,9,10]
+    expect(filter_criteria.from()).to.equal Date.parse('2013/8/19')
+    expect(filter_criteria.to()).to.equal Date.parse('2015/8/19')
+    expect(filter_criteria.pa_min()).to.equal 222
+    expect(filter_criteria.pa_max()).to.equal 999
+    expect(filter_criteria.pp_min()).to.equal 333
+    expect(filter_criteria.pp_max()).to.equal 555
 
   it 'shows no matches message when there are no matches', ->
-    # pending
+    @page.$title_input().val('xxx')
+    expect(@page.$empty_message()).to.equal "No matches"
 
   it 'initializes the filter parameters with the lowest and highest actual values', ->
     expect(@page.$date_from().val()).to.equal '19/08/2013'
@@ -251,5 +296,3 @@ describe 'Outreach page', ->
     expect(@page.people_affected('max').val()).to.equal '999'
     expect(@page.participants('min').val()).to.equal '333'
     expect(@page.participants('max').val()).to.equal '555'
-    expect(@page.impact_rating('min').val()).to.equal '999'
-    expect(@page.impact_rating('max').val()).to.equal '999'

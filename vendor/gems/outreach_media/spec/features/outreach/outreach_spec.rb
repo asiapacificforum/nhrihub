@@ -49,6 +49,8 @@ feature "create a new outreach event", :js => true do
     #expect(page.find('#outreach_event_subarea_ids_3')).to be_disabled
     #expect(page.find('#outreach_event_subarea_ids_4')).to be_disabled
     #expect(page.find('#outreach_event_subarea_ids_5')).to be_disabled
+    # DATE
+    set_date_to("2014/8/19")
     # AREA
     check("Human Rights")
     #SUBAREA
@@ -70,15 +72,20 @@ feature "create a new outreach event", :js => true do
     fill_in('description', :with => "Briefing on progress to date and plans for the immediate and long-term future")
     #FILE!!!
     page.attach_file("outreach_event_file", upload_document, :visible => false)
-    expect{edit_save.click; sleep(0.5)}.to change{OutreachEvent.count}.from(0).to(1).
-      and change{OutreachEventDocument.count}.from(0).to(1)
+    #this rspec syntax unexpectedly fails, probably rspec bug
+    #expect{ edit_save.trigger('click'); sleep(0.5)}.to change{puts OutreachEvent.count; OutreachEvent.count}.from(0).to(1).
+      #and change{OutreachEventDocument.count}.from(0).to(1)
+    edit_save.trigger('click')
+    sleep(0.5)
+    expect(OutreachEvent.count).to eq 1
+    expect(OutreachEventDocument.count).to eq 1
     oe = OutreachEvent.first
     expect(oe.affected_people_count).to eq 100000
     expect(oe.audience_type.text).to eq "Police"
     expect(oe.audience_name).to eq "City of Monrovia PD"
     expect(oe.description).to match /Briefing/
     sleep(0.4)
-    expect(page).to have_selector("#outreach_events .outreach_event", :count => 1)
+    expect(page).to have_selector("#outreach_event_list .outreach_event", :count => 1)
     expect(page.find("#outreach_events .outreach_event .basic_info .title").text).to eq "My new outreach event title"
     expand_all_panels
     expect(areas).to include "Human Rights"
@@ -88,19 +95,38 @@ feature "create a new outreach event", :js => true do
     expect(audience_type).to eq "Police"
     expect(audience_name).to eq "City of Monrovia PD"
     expect(description).to match /Briefing/
+    expect(date).to eq "August 19, 2014"
   end
 
-  xscenario "upload outreach event from file" do
+  scenario "upload outreach event with attached file" do
     fill_in("outreach_event_title", :with => "My new outreach event title")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
+    expect(selected_file).to eq "first_upload_file.pdf"
     expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(0).to(1)
     expect(page).to have_css("#outreach_events .outreach_event", :count => 1)
     doc = OutreachEvent.last
     expect( doc.title ).to eq "My new outreach event title"
-    expect( doc.filesize ).to be > 0 # it's the best we can do, if we don't know the file size
-    expect( doc.original_filename ).to eq 'first_upload_file.pdf'
-    expect( doc.lastModifiedDate ).to be_a ActiveSupport::TimeWithZone # it's a weak assertion!
-    expect( doc.original_type ).to eq "application/pdf"
+    doc = OutreachEventDocument.last
+    expect( doc.file_size ).to be > 0 # it's the best we can do, if we don't know the file size
+    expect( doc.file_filename ).to eq 'first_upload_file.pdf'
+    expect( doc.file_content_type ).to eq "application/pdf"
+  end
+
+  scenario "upload outreach event with multiple attached files" do
+    fill_in("outreach_event_title", :with => "My new outreach event title")
+    page.attach_file("outreach_event_file", upload_document, :visible => false)
+    expect(selected_file).to eq "first_upload_file.pdf"
+    expect(page).to have_selector("#fileinput_button span.btn", :text => "Choose another file")
+    page.attach_file("outreach_event_file", upload_document, :visible => false)
+    expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(0).to(1)
+    expect(OutreachEventDocument.count).to eq 2
+    expect(page).to have_css("#outreach_events .outreach_event", :count => 2)
+    doc = OutreachEvent.last
+    expect( doc.title ).to eq "My new outreach event title"
+    doc = OutreachEventDocument.last
+    expect( doc.file_size ).to be > 0 # it's the best we can do, if we don't know the file size
+    expect( doc.file_filename ).to eq 'first_upload_file.pdf'
+    expect( doc.file_content_type ).to eq "application/pdf"
   end
 
   scenario "repeated adds" do # b/c there was a bug!
@@ -146,20 +172,7 @@ feature "attempt to save with errors", :js => true do
     expect(page).not_to have_selector("#title_error", :visible => true)
   end
 
-  feature "file is not included" do
-    before do
-      fill_in("outreach_event_title", :with => "My new outreach event title")
-      expect{edit_save.click; sleep(0.4)}.not_to change{OutreachEvent.count}
-      expect(page).to have_selector('#outreach_event_error', :text => "A file must be included")
-    end
-
-    xscenario "remove error by adding a file" do
-      page.attach_file("outreach_event_file", upload_document, :visible => false)
-      expect(page).not_to have_selector('#outreach_event_error', :text => "A file must be included")
-    end
-  end
-
-  xscenario "upload an unpermitted file type and cancel" do
+  scenario "upload an unpermitted file type and cancel" do
     fill_in("outreach_event_title", :with => "My new outreach event title")
     page.attach_file("outreach_event_file", upload_image, :visible => false)
     expect(page).to have_css('#filetype_error', :text => "File type not allowed")
@@ -189,8 +202,8 @@ feature "when there are existing outreach events", :js => true do
       visit outreach_media_outreach_events_path(:en)
     end
 
-    xscenario "delete an outreach event" do
-      saved_file_path = File.join('tmp','uploads','store',OutreachEvent.first.file.id)
+    scenario "delete an outreach event" do
+      saved_file_path = File.join('tmp','uploads','store',OutreachEvent.first.outreach_event_documents.first.file_id)
       expect(File.exists?(saved_file_path)).to eq true
       expect{ delete_outreach_event }.to change{OutreachEvent.count}.from(1).to(0)
       expect(outreach_events.length).to eq 0

@@ -93,28 +93,46 @@ $ ->
     components :
       'subarea-select' : SubareaSelect
 
+  Datepicker = (node)->
+    $(node).datepicker
+      maxDate: null
+      defaultDate: null
+      changeMonth: true
+      changeYear: true
+      numberOfMonths: 1
+      dateFormat: "dd/mm/yy"
+      onSelect : =>
+        @updateModel()
+    teardown : ->
+      $(node).datepicker('destroy')
+
+  Ractive.decorators.datepicker = Datepicker
+
   FileUpload = (node)->
     $(node).fileupload
       dataType: 'json'
       type: 'post'
+      multiple: true
       add: (e, data) -> # data includes a files property containing added files and also a submit property
         upload_widget = $(@).data('blueimp-fileupload')
-        ractive = data.ractive = Ractive.
+        outreach_event = data.ractive = Ractive.
           getNodeInfo(upload_widget.element[0]).
           ractive
         data.context = upload_widget.element.closest('.outreach_event')
-        ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-        ractive.set('original_filename', data.files[0].name)
-        #ractive.validate_file_constraints()
-        #ractive._validate_attachment()
+        outreach_event.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+        #outreach_event.set('original_filename', data.files[0].name)
+        outreach_event.push('outreach_event_documents',{original_filename : data.files[0].name})
+        #outreach_event.validate_file_constraints()
+        #outreach_event._validate_attachment()
         return
       done: (e, data) ->
         data.ractive.update_ma(data.jqXHR.responseJSON)
         return
       formData : ->
         @ractive.formData()
-      uploadTemplateId: '#selected_file_template'
-      uploadTemplateContainerId: '#selected_file_container'
+      uploadTemplateId: '#outreach_event_document_template'
+      uploadTemplateContainerId: '#outreach_event_documents'
+      filesContainer: '#outreach_event_documents'
       downloadTemplateId: '#show_outreach_event_template'
       permittedFiletypes: permitted_filetypes
       maxFileSize: parseInt(maximum_filesize)
@@ -123,10 +141,15 @@ $ ->
 
   Ractive.decorators.file_upload = FileUpload
 
-  File = Ractive.extend
-    template : "#selected_file_template"
+  OutreachEventDocument = Ractive.extend
+    template : "#outreach_event_document_template"
     deselect_file : ->
       @parent.deselect_file()
+
+  OutreachEventDocuments = Ractive.extend
+    template : "#outreach_event_documents_template"
+    components :
+      outreacheventdocument : OutreachEventDocument
 
   AudienceType = Ractive.extend
     template : "#audience_type_template"
@@ -177,7 +200,7 @@ $ ->
     components :
       outreacharea : OutreachArea
       metric : Metric
-      file : File
+      outreacheventdocuments : OutreachEventDocuments
       # due to a ractive bug, checkboxes don't work in components,
       # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
       # so this component is not used, until the bug is fixed
@@ -201,6 +224,9 @@ $ ->
         @get('affected_people_count').toLocaleString()
       formatted_participant_count : ->
         @get('participant_count').toLocaleString()
+      formatted_date :
+        get: -> $.datepicker.formatDate("dd/mm/yy", @get('date'))
+        set: (val)-> @set('date', $.datepicker.parseDate( "dd/mm/yy", val))
       impact_rating_text : ->
         impact_rating = _(impact_ratings).find (ir)=>
           ir.id == @get('impact_rating_id')
@@ -225,6 +251,8 @@ $ ->
           @_matches_impact_rating() )
       persisted : ->
         !_.isNull(@get('id'))
+      no_files_chosen : ->
+        @get('outreach_event_documents').length == 0
     _matches_impact_rating : ->
       if !_.isNull(@get('filter_criteria.impact_rating_id'))
         @get('filter_criteria.impact_rating_id') == @get('impact_rating_id')
@@ -241,8 +269,10 @@ $ ->
       else
         true
     _matches_from : ->
+      return true if _.isNull(@get('date'))
       new Date(@get('date')) >= new Date(@get('filter_criteria.from'))
     _matches_to : ->
+      return true if _.isNull(@get('date'))
       new Date(@get('date')) <= new Date(@get('filter_criteria.to'))
     _matches_area_subarea : ->
       return (@_matches_area() || @_matches_subarea()) if @get('filter_criteria.rule') == 'any'
@@ -377,7 +407,7 @@ $ ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
     create_instance_attributes: ->
-      attrs = _(@get()).pick('title', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count')
+      attrs = _(@get()).pick('title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count')
       if _.isEmpty(@get('area_ids'))
         attrs.area_ids = [""] # hack to workaround jQuery not sending empty arrays
       else
@@ -388,10 +418,10 @@ $ ->
         attrs.subarea_ids = @get('subarea_ids')
       {outreach_event : attrs }
     formData : ->
-      file = @get('fileupload').files[0]
-      @set
-        lastModifiedDate : file.lastModifiedDate
-      attrs = _(@get()).pick('title', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count')
+      #file = @get('fileupload').files[0]
+      #@set
+        #lastModifiedDate : file.lastModifiedDate
+      attrs = _(@get()).pick('title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count')
       name_value = _(attrs).keys().map (k)->{name:"outreach_event["+k+"]", value:attrs[k]}
       if _.isEmpty(@get('area_ids'))
         aids = [{name : 'outreach_event[area_ids][]', value: ""}]
@@ -431,6 +461,8 @@ $ ->
       window.location = @get('url')
     fetch_link : ->
       window.location = @get('article_link')
+    set_event_date_from_datepicker : (selectedDate)->
+      @set('date',$.datepicker.parseDate("dd/mm/yy",selectedDate))
 
   window.outreach_page_data = -> # an initialization data set so that tests can reset between
     expanded : false
@@ -463,13 +495,17 @@ $ ->
       @populate_min_max_fields()
     computed :
       dates : ->
-        _(@findAllComponents('oe')).map (ma)->new Date(ma.get('date'))
+        #_(@findAllComponents('oe')).map (ma)->
+          #unless _.isEmpty(ma.get('date'))
+            #new Date(ma.get('date'))
+        # workaround for a problem with ractive
+        # see http://stackoverflow.com/questions/34385694/fails-to-compute-attribute-derived-from-components-collection
+        _(@get('outreach_events')).map (oe)->
+          oe.date
       people_affecteds : ->
         _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("affected_people_count")  || 0)
       participants : ->
         _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("participant_count")  || 0)
-      impact_ratings : ->
-        _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("impact_rating_rank")  || 0)
       earliest : ->
         @min('dates')
       most_recent : ->
@@ -482,10 +518,6 @@ $ ->
         @min('participants')
       pp_max : ->
         @max('participants')
-      ir_min : ->
-        @min('impact_ratings')
-      ir_max : ->
-        @max('impact_ratings')
       formatted_from_date:
         get: -> $.datepicker.formatDate("dd/mm/yy", @get('filter_criteria.from'))
         set: (val)-> @set('filter_criteria.from', $.datepicker.parseDate( "dd/mm/yy", val))
@@ -587,7 +619,7 @@ $ ->
 
   window.start_page = ->
     window.outreach = new Ractive options
-    outreach_media_datepicker.start(outreach)
+    outreach_media_datepicker.start(outreach) # configures the "since" and "before" dates in the filter
 
   start_page()
 
@@ -596,8 +628,7 @@ $ ->
     key = path.split('.')[1]
 
     has_error = ->
-      return _.isNaN(parseFloat(newval)) if key.match(/vc_min|vc_max/)
-      return _.isNaN(parseInt(newval)) if key.match(/pr_min|pr_max|pa_min|pa_max|vs_min|vs_max/)
+      return _.isNaN(parseInt(newval)) if key.match(/pa_min|pa_max|pp_min|pp_max/)
 
     if has_error() && !_.isEmpty(newval)
       $(".#{key}").addClass('error')

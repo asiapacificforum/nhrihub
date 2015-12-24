@@ -1,7 +1,7 @@
 class OutreachMedia::OutreachEventsController < ApplicationController
   def index
     @outreach_events = OutreachEvent.all
-    @outreach_event = OutreachEvent.new
+    @outreach_event = OutreachEvent.new()
     @areas = Area.all
     @subareas = Subarea.extended
     @audience_types = AudienceType.all
@@ -32,6 +32,12 @@ class OutreachMedia::OutreachEventsController < ApplicationController
     render :json => outreach_event, :status => 200
   end
 
+  def destroy
+    outreach_event = OutreachEvent.find(params[:id])
+    outreach_event.destroy
+    render :nothing => true, :status => 200
+  end
+
   private
 
   def outreach_event_params
@@ -41,6 +47,7 @@ class OutreachMedia::OutreachEventsController < ApplicationController
              :affected_people_count,
              :audience_name,
              :description,
+             :date,
              :participant_count,
              :audience_type_id,
              :outreach_event_documents =>[:file],

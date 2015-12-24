@@ -6,7 +6,7 @@ class OutreachEvent < ActiveRecord::Base
   has_many :areas, :through => :outreach_event_areas
   has_many :outreach_event_subareas
   has_many :subareas, :through => :outreach_event_subareas
-  has_many :outreach_event_documents
+  has_many :outreach_event_documents, :dependent => :destroy
   belongs_to :audience_type
 
   delegate :rank, :to => :impact_rating, :prefix => true, :allow_nil => true
@@ -25,6 +25,7 @@ class OutreachEvent < ActiveRecord::Base
                        :event_date ],
            :methods=> [:date,
                        :outreach_event_areas,
+                       :outreach_event_documents,
                        :area_ids,
                        :subarea_ids,
                        :reminders,
@@ -45,6 +46,10 @@ class OutreachEvent < ActiveRecord::Base
     if persisted? && event_date
       event_date.to_time.to_date.to_s(:default)  # to_time converts to localtime
     end
+  end
+
+  def date=(date)
+    write_attribute(:event_date, date)
   end
 
   def namespace

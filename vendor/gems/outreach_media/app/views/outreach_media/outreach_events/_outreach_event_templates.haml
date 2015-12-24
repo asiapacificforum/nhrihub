@@ -1,4 +1,22 @@
-%script#selected_file_template{:type => 'template/ractive'}
+%script#outreach_event_documents_template{:type => 'template/ractive'}
+  .col-md-4#outreach_event_documents{:style=>"display:flex; flex-direction: column"}
+    {{#outreach_event_documents}}
+    <outreacheventdocument file_content_type={{file_content_type}} file_filename={{file_filename}} file_size={{file_size}} />
+    {{/}}
+
+%script#outreach_event_document_template{:type => 'template/ractive'}
+  .row
+    .col-md-10.col-md-offset-1
+      #selected_file
+        {{ original_filename }}
+    .col-md-1{:style => "padding-top:0px"}
+      %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px; vertical-align:0px', 'on-click'=>'deselect_file()'}
+  .row
+    .col-md-12
+      .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
+        %span.help-block#filesize_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.too_large')
+      .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
+        %span.help-block#filetype_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.unpermitted_type')
 
 %script#outreach_events_template{:type => 'template/ractive'}
   .row#outreach_events_controls
@@ -8,7 +26,7 @@
     .row.labels
       .col-md-2= t('.title')
       .col-md-2= t('.from')
-      .col-md-2= t('.to')
+      .col-md-2{:style => "width:23%"}= t('.to')
       .col-md-2
         =t('.area')
         \/
@@ -16,9 +34,9 @@
     .row{:style => "margin-bottom:12px;"}
       .col-md-2= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_title_text')
       .col-md-2
-        %input{:type=>"text", :id=>"from", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
-      .col-md-2
-        %input{:type=>"text", :id=>"to", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}"}
+        %input#from{:type=>"text", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
+      .col-md-2{:style => "width:23%"}
+        %input#to{:type=>"text", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}"}
       .col-md-3
         .btn-group.area-select
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
@@ -37,7 +55,7 @@
             {{/areas}}
       .col-md-1
         %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
-      .col-md-2{:style => 'padding-left:84px'}
+      .col-md-1
         {{#if expanded}}
         %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all')}
         {{else}}
@@ -46,12 +64,9 @@
     .row.labels
       .col-md-2= t('.people_affected')
       .col-md-2= t('.participant_count')
-      .col-md-2= t('.impact')
-      .col-md-2{:style => 'width:270px'}= t('.audience_type')
+      .col-md-2{:style => 'width:23%'}= t('.audience_type')
       .col-md-2= t('.audience_name')
     .row.labels
-      .col-md-1= t('.min')
-      .col-md-1= t('.max')
       .col-md-1= t('.min')
       .col-md-1= t('.max')
       .col-md-1= t('.min')
@@ -69,12 +84,7 @@
       .col-md-1.filter_field.pp_max
         %input{:style=>"width:50px", :value => '{{filter_criteria.pp_max}}'}
         %span.error_message= t('defaults.invalid')
-      .col-md-1.filter_field.ir_min
-        %input{:style=>"width:50px", :value => '{{filter_criteria.impact_min}}'}
-        %span.error_message= t('defaults.invalid')
-      .col-md-1.filter_field.ir_max
-        %input{:style=>"width:50px", :value => '{{filter_criteria.impact_max}}'}
-      .col-md-2{:style => 'width:270px'}
+      .col-md-2{:style => 'width:23%'}
         .btn-group.audience_type-select
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left {{ selected_audience_type }}
@@ -85,7 +95,7 @@
             {{/audience_types}}
       .col-md-1.filter_field.audience_name
         %input.audience_name{:style=>"width:200px", :value => '{{filter_criteria.audience_name}}', :placeholder => t('.enter_audience_name')}
-    .row.labels
+    .row.labels{:style => "margin-top: 12px; margin-bottom:8px;"}
       .col-md-2= t('.impact')
     .row
       .col-md-2{:style => 'width:270px'}
@@ -97,7 +107,7 @@
             {{#impact_ratings}}
             <ir id='{{id}}' rank='{{rank}}' text='{{text}}' />
             {{/impact_ratings}}
-  #outreach_events
+  #outreach_event_list
     {{#outreach_events}}
     <oe on-edit='edit', area_ids='{{area_ids}}', expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}'  url='{{url}}'/>
     {{/outreach_events}}
@@ -199,7 +209,7 @@
   .row.outreach_event.well.well-sm.form.template-upload
     .col-md-12
       .row
-        .col-md-1{:style => "padding-top:28px"}= t('.title')
+        .col-md-1{:style => "padding-top:28px; width: 108px"}= t('.title')
         .col-md-8
           {{> edit_title }}
         .col-md-2
@@ -207,6 +217,10 @@
             .nothing{:style => 'visibility:hidden'} nothing
             %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
             %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
+      .row
+        .col-md-1{:style => "width:108px; padding-top:4px"}= t('.date')
+        .col-md-2
+          %input#event_date{:type => :text, :decorator => 'datepicker', :value => '{{formatted_date}}'}
       .row.fileupload{:decorator => 'file_upload'}
         .col-md-12
           .row.fileupload_progress
@@ -219,12 +233,15 @@
               .progress-extended  
           .row
             .col-md-2#fileinput_button
-              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-              %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]'}
-            .col-md-4#selected_file_container{:style=>"display:flex; flex-direction: row"}
-              {{#fileupload}}
-              <file/>
-              {{/}}
+              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}
+                {{#if no_files_chosen }}
+                = t('.choose_file')
+                {{else}}
+                = t('.choose_another_file')
+                {{/if}}
+              %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
+          .row
+            <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
       .row.form-group{:class => "{{#outreach_event_error}}has-error{{/}}", :style => "padding-bottom:0px"}
         .col-md-2
           %span.help-block#outreach_event_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_error_message')

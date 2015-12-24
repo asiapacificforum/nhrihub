@@ -6,20 +6,6 @@ str_generator = Proc.new{
 }
 
 FactoryGirl.define do
-  factory :outreach_event_document do
-    file_id             { SecureRandom.hex(30) }
-    filesize            { 10000 + (30000*rand).to_i }
-    original_filename   { "#{Faker::Lorem.words(2).join("_")}.pdf" }
-    original_type       "application/pdf"
-
-    after(:build) do |oed|
-      path = Rails.env.production? ?
-        Rails.root.join('..','..','shared') :
-        Rails.root.join('tmp')
-      FileUtils.touch path.join('uploads','store',oed.file_id) 
-    end
-  end
-
   factory :outreach_event do
     impact_rating
     title {Faker::Lorem.sentence(5)}

@@ -32,11 +32,15 @@ en:
         add_outreach: "Add outreach event"
         select_audience_type: "Select audience type"
         select_impact_rating: "Select impact rating"
+
       outreach_event_templates:
+        too_large : "File is too large"
+        unpermitted_type : "File type not allowed"
         search_heading: "Search for outreach events by:"
         title: "Title"
         from: "Since date:"
         to: "Before date:"
+        date: "Event date"
         area: "Area"
         subarea: "subarea"
         enter_title_text: "All or part of title"
@@ -58,6 +62,7 @@ en:
         min: "Min"
         max: "Max"
         choose_file : "Choose file"
+        choose_another_file : "Choose another file"
         outreach_event_error_message: "A file or link must be included"
         outreach_event_double_attachment_error_message : "Either file or link, not both"
         weblink : "Enter web link"
@@ -75,6 +80,7 @@ en:
         impact: "Impact rating"
         audience_type: "Audience type"
         audience_name: "Audience name"
+
     shared:
       common_templates:
         title: "Title"
@@ -126,6 +132,7 @@ en:
         clear : "Clear filter"
         weblink : "Enter web link"
         choose_file : "Choose file"
+
       media_appearance_templates :
         too_large : "File is too large"
         unpermitted_type : "File type not allowed"

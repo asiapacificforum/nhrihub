@@ -135,4 +135,16 @@ module OutreachSpecHelper
   def description
     page.find('div.metric#description div.value').text
   end
+
+  def date
+    page.find('.outreach_event .basic_info .date').text
+  end
+
+  def set_date_to(date_string)
+    page.execute_script("outreach.findAllComponents('oe')[0].set('date', new Date(Date.parse('#{date_string}')))")
+  end
+
+  def selected_file
+    page.find("#outreach_events #outreach_event_list #outreach_event_documents #selected_file").text
+  end
 end
