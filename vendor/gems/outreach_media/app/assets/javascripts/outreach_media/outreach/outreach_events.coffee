@@ -151,6 +151,10 @@ $ ->
     computed :
       persisted : ->
         !_.isNull(@get('id'))
+    oninit : ->
+      @set
+        'filetype_error': false
+        'filesize_error': false
 
   OutreachEventDocuments = Ractive.extend
     template : "#outreach_event_documents_template"
@@ -203,10 +207,10 @@ $ ->
 
   OutreachEvent = Ractive.extend
     template : '#outreach_event_template'
-    components :
-      outreacharea : OutreachArea
-      metric : Metric
-      outreacheventdocuments : OutreachEventDocuments
+    #components :
+      #outreacharea : OutreachArea
+      #metric : Metric
+      #outreacheventdocuments : OutreachEventDocuments
       # due to a ractive bug, checkboxes don't work in components,
       # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
       # so this component is not used, until the bug is fixed
@@ -216,9 +220,6 @@ $ ->
       @set
         'title_error': false
         'outreach_event_error':false
-        'outreach_event_double_attachment_error':false
-        'filetype_error': false
-        'filesize_error': false
         'expanded':false
     computed :
       model_name : ->
@@ -244,6 +245,8 @@ $ ->
       count : ->
         t = @get('title') || ""
         100 - t.length
+      editing : ->
+        true
       include : ->
         @get('editing') || (
           @_matches_title() &&
@@ -260,45 +263,45 @@ $ ->
       no_files_chosen : ->
         @get('outreach_event_documents').length == 0
     _matches_impact_rating : ->
-      if !_.isNull(@get('filter_criteria.impact_rating_id'))
-        @get('filter_criteria.impact_rating_id') == @get('impact_rating_id')
+      if !_.isNull(outreach.get('filter_criteria.impact_rating_id'))
+        outreach.get('filter_criteria.impact_rating_id') == @get('impact_rating_id')
       else
         true
     _matches_participant_count : ->
-      @_between(parseInt(@get('filter_criteria.pp_min')),parseInt(@get('filter_criteria.pp_max')),parseInt(@get('participant_count')))
+      @_between(parseInt(outreach.get('filter_criteria.pp_min')),parseInt(outreach.get('filter_criteria.pp_max')),parseInt(@get('participant_count')))
     _matches_audience_name : ->
-      re = new RegExp(@get('filter_criteria.audience_name'),'i')
+      re = new RegExp(outreach.get('filter_criteria.audience_name'),'i')
       re.test(@get('audience_name'))
     _matches_audience_type : ->
-      if !_.isNull(@get('filter_criteria.audience_type_id'))
-        @get('filter_criteria.audience_type_id') == @get('audience_type_id')
+      if !_.isNull(outreach.get('filter_criteria.audience_type_id'))
+        outreach.get('filter_criteria.audience_type_id') == @get('audience_type_id')
       else
         true
     _matches_from : ->
       return true if _.isNull(@get('date'))
-      new Date(@get('date')) >= new Date(@get('filter_criteria.from'))
+      new Date(@get('date')) >= new Date(outreach.get('filter_criteria.from'))
     _matches_to : ->
       return true if _.isNull(@get('date'))
-      new Date(@get('date')) <= new Date(@get('filter_criteria.to'))
+      new Date(@get('date')) <= new Date(outreach.get('filter_criteria.to'))
     _matches_area_subarea : ->
-      return (@_matches_area() || @_matches_subarea()) if @get('filter_criteria.rule') == 'any'
-      return (@_matches_area() && @_matches_subarea()) if @get('filter_criteria.rule') == 'all'
+      return (@_matches_area() || @_matches_subarea()) if outreach.get('filter_criteria.rule') == 'any'
+      return (@_matches_area() && @_matches_subarea()) if outreach.get('filter_criteria.rule') == 'all'
     _matches_area : ->
-      if @get('filter_criteria.rule') == 'any'
+      if outreach.get('filter_criteria.rule') == 'any'
         return true if _.isEmpty(@get('area_ids'))
-        matches = _.intersection(@get('area_ids'), @get('filter_criteria.areas'))
+        matches = _.intersection(@get('area_ids'), outreach.get('filter_criteria.areas'))
         matches.length > 0
       else
-        _.isEqual(@get('area_ids').slice().sort(), @get('filter_criteria.areas').slice().sort())
+        _.isEqual(@get('area_ids').slice().sort(), outreach.get('filter_criteria.areas').slice().sort())
     _matches_subarea : ->
-      if @get('filter_criteria.rule') == 'any'
-        matches = _.intersection(@get('subarea_ids'), @get('filter_criteria.subareas'))
+      if outreach.get('filter_criteria.rule') == 'any'
+        matches = _.intersection(@get('subarea_ids'), outreach.get('filter_criteria.subareas'))
         matches.length > 0
       else
-        return true if _.isEmpty(@get('filter_criteria.subareas'))
-        _.isEqual(@get('subarea_ids').slice().sort(), @get('filter_criteria.subareas').slice().sort())
+        return true if _.isEmpty(outreach.get('filter_criteria.subareas'))
+        _.isEqual(@get('subarea_ids').slice().sort(), outreach.get('filter_criteria.subareas').slice().sort())
     _matches_people_affected : ->
-      @_between(parseInt(@get('filter_criteria.pa_min')),parseInt(@get('filter_criteria.pa_max')),parseInt(@get('affected_people_count')))
+      @_between(parseInt(outreach.get('filter_criteria.pa_min')),parseInt(outreach.get('filter_criteria.pa_max')),parseInt(@get('affected_people_count')))
     _between : (min,max,val)->
       return true if _.isNaN(val) # declare match if there's no value
       min = if _.isNaN(min) # from the input element a zero-length string can be presented
@@ -309,7 +312,7 @@ $ ->
       less_than_max = _.isNaN(max) || (val <= max) # if max is not a number, then assume val is in-range
       exceeds_min && less_than_max
     _matches_title : ->
-      re = new RegExp(@get('filter_criteria.title'),'i')
+      re = new RegExp(outreach.get('filter_criteria.title'),'i')
       re.test(@get('title'))
     expand : ->
       @set('expanded',true)
