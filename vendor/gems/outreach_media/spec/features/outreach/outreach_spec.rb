@@ -119,14 +119,19 @@ feature "create a new outreach event", :js => true do
     expect(page).to have_selector("#fileinput_button span.btn", :text => "Choose another file")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(0).to(1)
-    expect(OutreachEventDocument.count).to eq 2
-    expect(page).to have_css("#outreach_events .outreach_event", :count => 2)
-    doc = OutreachEvent.last
-    expect( doc.title ).to eq "My new outreach event title"
-    doc = OutreachEventDocument.last
-    expect( doc.file_size ).to be > 0 # it's the best we can do, if we don't know the file size
-    expect( doc.file_filename ).to eq 'first_upload_file.pdf'
-    expect( doc.file_content_type ).to eq "application/pdf"
+                                       .and change{OutreachEventDocument.count}.from(0).to(2)
+    outreach_event = OutreachEvent.last
+    expect( outreach_event.title ).to eq "My new outreach event title"
+    docs = outreach_event.outreach_event_documents
+    expect(docs.count).to eq 2
+    docs.each do |doc|
+      expect( doc.file_size ).to be > 0 # it's the best we can do, if we don't know the file size
+      expect( doc.file_filename ).to eq 'first_upload_file.pdf'
+      expect( doc.file_content_type ).to eq "application/pdf"
+    end
+    expect(page).to have_css("#outreach_events .outreach_event", :count => 1)
+    expand_all_panels
+    expect(page).to have_selector("#outreach_events .outreach_event .outreach_event_document", :count => 2)
   end
 
   scenario "repeated adds" do # b/c there was a bug!

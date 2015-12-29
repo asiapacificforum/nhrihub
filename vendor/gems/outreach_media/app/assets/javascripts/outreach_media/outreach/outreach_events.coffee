@@ -110,30 +110,33 @@ $ ->
 
   FileUpload = (node)->
     $(node).fileupload
-      dataType: 'json'
-      type: 'post'
-      multiple: true
+      #dataType: 'json'
+      #type: 'post'
+      #multiple: true
       add: (e, data) -> # data includes a files property containing added files and also a submit property
         upload_widget = $(@).data('blueimp-fileupload')
-        outreach_event = data.ractive = Ractive.
+        @outreach_event = outreach_event = data.ractive = Ractive.
           getNodeInfo(upload_widget.element[0]).
           ractive
         data.context = upload_widget.element.closest('.outreach_event')
         outreach_event.set('fileupload', data) # so ractive can configure/control upload with data.submit()
         #outreach_event.set('original_filename', data.files[0].name)
-        outreach_event.push('outreach_event_documents',{original_filename : data.files[0].name})
+        #outreach_event.push('outreach_event_documents',{original_filename : data.files[0].name})
+        outreach_event.push('outreach_event_documents', data.files[0])
         #outreach_event.validate_file_constraints()
         #outreach_event._validate_attachment()
         return
       done: (e, data) ->
-        data.ractive.update_ma(data.jqXHR.responseJSON)
+        ractive = Ractive.getNodeInfo(@).ractive
+        ractive.update_ma(data.jqXHR.responseJSON)
         return
       formData : ->
-        @ractive.formData()
+        Ractive.getNodeInfo(el[0]).ractive.formData()
       uploadTemplateId: '#outreach_event_document_template'
       uploadTemplateContainerId: '#outreach_event_documents'
       filesContainer: '#outreach_event_documents'
       downloadTemplateId: '#show_outreach_event_template'
+      fileInput: '#outreach_event_file'
       permittedFiletypes: permitted_filetypes
       maxFileSize: parseInt(maximum_filesize)
     teardown : ->
@@ -145,6 +148,9 @@ $ ->
     template : "#outreach_event_document_template"
     deselect_file : ->
       @parent.deselect_file()
+    computed :
+      persisted : ->
+        !_.isNull(@get('id'))
 
   OutreachEventDocuments = Ractive.extend
     template : "#outreach_event_documents_template"
@@ -325,7 +331,9 @@ $ ->
     save : ->
       if @validate()
         if !_.isUndefined(@get('fileupload'))
-          @get('fileupload').submit() # handled by jquery-fileupload
+          #@get('fileupload').submit() # handled by jquery-fileupload
+          # TODO fix this, should find a way to access fileupload without hard-coding the class here:
+          $('.fileupload').fileupload('send',{files : this.get('outreach_event_documents')})
         else
           url = @parent.get('create_outreach_event_url')
           $.post(url, @create_instance_attributes(), @update_ma, 'json') # handled right here
@@ -444,7 +452,6 @@ $ ->
       file_input.replaceWith(file_input.clone()) # the actual file input field
       @set('fileupload',null) # remove all traces!
       @set('original_filename',null) # remove all traces!
-      @validate()
     update_persist : (success, error, context) ->
       if _.isEmpty(@get('fileupload')) # handle the update directly
         $.ajax
@@ -463,6 +470,11 @@ $ ->
       window.location = @get('article_link')
     set_event_date_from_datepicker : (selectedDate)->
       @set('date',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+    choose_file : ->
+      # attention future coder: can't use @find('#outreach_event_file') here as
+      # jquery fileupload replaces the element. This doesn't behave well with ractive
+      # which seems to cache the original element?
+      $('#outreach_event_file').click()
 
   window.outreach_page_data = -> # an initialization data set so that tests can reset between
     expanded : false

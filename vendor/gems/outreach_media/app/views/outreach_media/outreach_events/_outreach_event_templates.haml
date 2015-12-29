@@ -1,14 +1,18 @@
 %script#outreach_event_documents_template{:type => 'template/ractive'}
   .col-md-4#outreach_event_documents{:style=>"display:flex; flex-direction: column"}
     {{#outreach_event_documents}}
-    <outreacheventdocument file_content_type={{file_content_type}} file_filename={{file_filename}} file_size={{file_size}} />
+    <outreacheventdocument file_content_type={{file_content_type}} file_filename={{file_filename}} file_size={{file_size}} name={{name}} id={{id}} filesize_error={{filesize_error}} filetype_error={{filetype_error}} outreach_event_id={{outreach_event_id}}/>
     {{/}}
 
 %script#outreach_event_document_template{:type => 'template/ractive'}
   .row
     .col-md-10.col-md-offset-1
       #selected_file
-        {{ original_filename }}
+        {{#if persisted}}
+        {{ file_filename }}
+        {{else}}
+        {{ name }}
+        {{/if}}
     .col-md-1{:style => "padding-top:0px"}
       %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px; vertical-align:0px', 'on-click'=>'deselect_file()'}
   .row
@@ -166,47 +170,104 @@
               {{else}}
               %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
               {{/if}}
-      .panel.panel-default.collapse.expanded_info{:class => "collapse{{id}}"}
-        .panel-heading
-          .row
-            .col-md-2.description{:style => "width:50%"}
-              =t('.areas')
-              \/
-              =t('.subareas')
-            .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
-        .panel-content{'data-toggle'=>'edit'}
-          .fade.no_edit.in
+      .collapse.expanded_info{:class => "collapse{{id}}"}
+        .panel.panel-default
+          .panel-heading= t('.files')
+          .panel-body
+            <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
+        .panel.panel-default
+          .panel-heading
             .row
               .col-md-2.description{:style => "width:50%"}
-                {{#outreach_event_areas}}
-                <outreacharea/>
-                {{/outreach_event_areas}}
-              .col-md-2.metrics{:style=>"width:40%; display:flex; flex-direction:column;"}
-                .metric#affected_people_count
-                  .name= t('activerecord.attributes.outreach_event.affected_people_count')
-                  .value {{ formatted_affected_people_count }}
-                .metric#audience_type
-                  .name= t('activerecord.models.audience_type')
-                  .value {{ audience_type_text }}
-                .metric#audience_name
-                  .name= t('activerecord.attributes.outreach_event.audience_name')
-                  .value {{ audience_name }}
-                .metric#description
-                  .name= t('activerecord.attributes.outreach_event.description')
-                  .value {{ description }}
-                .metric#participant_count
-                  .name= t('activerecord.attributes.outreach_event.participant_count')
-                  .value {{ formatted_participant_count }}
-                .metric#impact_rating
-                  .name= t('activerecord.models.impact_rating')
-                  .value {{ impact_rating_text }}
-          .fade.edit
-            {{> outreach_event_edit}}
-    <reminders/>
-    <notes/>
+                =t('.areas')
+                \/
+                =t('.subareas')
+              .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
+          .panel-body{'data-toggle'=>'edit'}
+            .fade.no_edit.in
+              .row
+                .col-md-2.description{:style => "width:50%"}
+                  {{#outreach_event_areas}}
+                  <outreacharea/>
+                  {{/outreach_event_areas}}
+                .col-md-2.metrics{:style=>"width:40%; display:flex; flex-direction:column;"}
+                  .metric#affected_people_count
+                    .name= t('activerecord.attributes.outreach_event.affected_people_count')
+                    .value {{ formatted_affected_people_count }}
+                  .metric#audience_type
+                    .name= t('activerecord.models.audience_type')
+                    .value {{ audience_type_text }}
+                  .metric#audience_name
+                    .name= t('activerecord.attributes.outreach_event.audience_name')
+                    .value {{ audience_name }}
+                  .metric#description
+                    .name= t('activerecord.attributes.outreach_event.description')
+                    .value {{ description }}
+                  .metric#participant_count
+                    .name= t('activerecord.attributes.outreach_event.participant_count')
+                    .value {{ formatted_participant_count }}
+                  .metric#impact_rating
+                    .name= t('activerecord.models.impact_rating')
+                    .value {{ impact_rating_text }}
+            .fade.edit
+              {{> outreach_event_edit}}
+      <reminders/>
+      <notes/>
+
+%script#temp_to_hold_stuff{:type => 'ractive/template'}
+  .fileupload.buttonbar{:'data-file-input' => '#outreach_event_file', :'data-url' => 'internal_documents.json', :'data-param-name' => 'internal_document[file]', :'data-upload-template-id' => '#primary_upload' }
+    / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
+    .row.fileupload-buttonbar
+      .col-lg-9
+        / The fileinput-button span is used to style the file input field as button
+        %span.btn.btn-success.fileinput-button
+          %i.fa.fa-plus.fa-lg{:style => "color:white"}
+          %span= t('.add')
+          %input#outreach_event_file{:multiple => "multiple", :name => "primary_file", :type => "file"}
+        %button.btn.btn-primary.start{:type => "submit"}
+          %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
+          %span= t('.start')
+        %button.btn.btn-warning.cancel{:type => "reset"}
+          %i.fa.fa-ban.fa-lg{:style => "color:white"}
+          %span= t('.cancel')
+        / The global file processing state
+        %span.fileupload-process
+    .row.fileupload_progress
+      / The global progress state
+      .col-lg-9.fileupload-progress.fade
+        / The global progress bar
+        .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
+          .progress-bar.progress-bar-success{:style => "width:0%;"}
+        / The extended global progress state
+        .progress-extended  
+    .row
+      .col-lg-9#uploads
+
+%script#old_stuff{:type => 'text/ractive'}
+  .row.fileupload{:decorator => 'file_upload'}
+    .col-md-12
+      .row.fileupload_progress
+        / The global progress state
+        .col-lg-9.fileupload-progress.fade
+          / The global progress bar
+          .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
+            .progress-bar.progress-bar-success{:style => "width:0%;"}
+          / The extended global progress state
+          .progress-extended  
+      .row
+        .col-md-2#fileinput_button
+          %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}
+            {{#if no_files_chosen }}
+            = t('.choose_file')
+            {{else}}
+            = t('.choose_another_file')
+            {{/if}}
+          %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
+      .row
+        <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
 
 %script#new_outreach_event_template{:type => 'template/ractive'}
-  .row.outreach_event.well.well-sm.form.template-upload
+  .row.outreach_event.well.well-sm.form.fileupload{:decorator => 'file_upload'}
     .col-md-12
       .row
         .col-md-1{:style => "padding-top:28px; width: 108px"}= t('.title')
@@ -221,27 +282,19 @@
         .col-md-1{:style => "width:108px; padding-top:4px"}= t('.date')
         .col-md-2
           %input#event_date{:type => :text, :decorator => 'datepicker', :value => '{{formatted_date}}'}
-      .row.fileupload{:decorator => 'file_upload'}
-        .col-md-12
-          .row.fileupload_progress
-            / The global progress state
-            .col-lg-9.fileupload-progress.fade
-              / The global progress bar
-              .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
-                .progress-bar.progress-bar-success{:style => "width:0%;"}
-              / The extended global progress state
-              .progress-extended  
-          .row
-            .col-md-2#fileinput_button
-              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}
-                {{#if no_files_chosen }}
-                = t('.choose_file')
-                {{else}}
-                = t('.choose_another_file')
-                {{/if}}
-              %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
-          .row
-            <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
+
+      .row.fileupload-buttonbar
+        .col-lg-9#fileinput_button
+          %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}
+            {{#if no_files_chosen }}
+            = t('.choose_file')
+            {{else}}
+            = t('.choose_another_file')
+            {{/if}}
+          %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
+
+      .row
+        <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
       .row.form-group{:class => "{{#outreach_event_error}}has-error{{/}}", :style => "padding-bottom:0px"}
         .col-md-2
           %span.help-block#outreach_event_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_error_message')

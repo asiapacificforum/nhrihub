@@ -124,6 +124,7 @@
                     }
                 });
             },
+
             // Callback for the start of each file upload request:
             send: function (e, data) {
                 //console.log("sending: "+$(this).data().blueimpFileupload.eventNamespace)
@@ -149,6 +150,7 @@
                 }
                 return that._trigger('sent', e, data);
             },
+
             // Callback for successful uploads:
             done: function (e, data) {
                 if (e.isDefaultPrevented()) {
@@ -222,6 +224,7 @@
                 //     );
                 // }
             },
+
             // Callback for failed (abort or error) uploads:
             fail: function (e, data) {
                 if (e.isDefaultPrevented()) {
