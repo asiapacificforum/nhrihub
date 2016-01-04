@@ -147,4 +147,8 @@ module OutreachSpecHelper
   def selected_file
     page.find("#outreach_events #outreach_event_list #outreach_event_documents #selected_file").text
   end
+
+  def deselect_first_file
+    page.all('#deselect_file').first.click
+  end
 end

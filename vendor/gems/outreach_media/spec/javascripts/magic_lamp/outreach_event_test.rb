@@ -5,7 +5,7 @@ class OutreachEventTest
                        :si_area,
                        :no_f_in_title,
                        :schools_audience_type,
-                       :event_date => Date.new(2013,8,19),
+                       :event_date => DateTime.new(2013,8,19,0,0,0,"PDT").utc,
                        :audience_name => "Public people",
                        :affected_people_count => 222,
                        :participant_count => 333 )
@@ -14,7 +14,7 @@ class OutreachEventTest
                        :si_area,
                        :no_f_in_title,
                        :schools_audience_type,
-                       :event_date => Date.new(2013,8,19),
+                       :event_date => DateTime.new(2013,8,19,0,0,0,"PDT").utc,
                        :audience_name => "Public people",
                        :affected_people_count => 222,
                        :participant_count => 333 )
@@ -23,7 +23,7 @@ class OutreachEventTest
                        :si_area,
                        :no_f_in_title,
                        :schools_audience_type,
-                       :event_date => Date.new(2013,8,19),
+                       :event_date => DateTime.new(2013,8,19,0,0,0,"PDT").utc,
                        :audience_name => "Public people",
                        :affected_people_count => 222,
                        :participant_count => 333 )
@@ -32,7 +32,7 @@ class OutreachEventTest
                        :si_area,
                        :no_f_in_title,
                        :schools_audience_type,
-                       :event_date => Date.new(2013,8,19),
+                       :event_date => DateTime.new(2013,8,19,0,0,0,"PDT").utc,
                        :audience_name => "Public people",
                        :affected_people_count => 222,
                        :participant_count => 333 )
@@ -41,7 +41,7 @@ class OutreachEventTest
                        :si_area,
                        :no_f_in_title,
                        :schools_audience_type,
-                       :event_date => Date.new(2013,8,19),
+                       :event_date => DateTime.new(2013,8,19,0,0,0,"PDT").utc,
                        :audience_name => "Public people",
                        :affected_people_count => 222,
                        :participant_count => 333 )
@@ -50,7 +50,7 @@ class OutreachEventTest
                        :si_area,
                        :no_f_in_title,
                        :schools_audience_type,
-                       :event_date => Date.new(2013,8,19),
+                       :event_date => DateTime.new(2013,8,19,0,0,0,"PDT").utc,
                        :audience_name => "Public people",
                        :affected_people_count => 222,
                        :participant_count => 333 )
@@ -60,7 +60,7 @@ class OutreachEventTest
                        :crc_subarea,
                        :police_audience_type,
                        :title => "Fantasy land",
-                       :event_date => Date.new(2015,8,19),
+                       :event_date => DateTime.new(2015,8,19,0,0,0,"PDT").utc,
                        :audience_name => "Gotham Police Department",
                        :affected_people_count => 222,
                        :participant_count => 333 )
@@ -70,7 +70,7 @@ class OutreachEventTest
                        :violation_subarea,
                        :police_audience_type,
                        :title => "May the force be with you",
-                       :event_date => Date.new(2013,8,19),
+                       :event_date => DateTime.new(2013,8,19,0,0,0,"PDT").utc,
                        :audience_name => "Gotham Police Department",
                        :affected_people_count => 999,
                        :participant_count => 555 )

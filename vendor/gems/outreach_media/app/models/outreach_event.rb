@@ -42,14 +42,15 @@ class OutreachEvent < ActiveRecord::Base
     Rails.application.routes.url_helpers.outreach_media_outreach_event_path(:en,id) if persisted?
   end
 
+  # date is stored in as UTC
+  # client delivers the value in the local (client) time zone
+  # and converts the database value to the local (client) time zone
   def date
-    if persisted? && event_date
-      event_date.to_time.to_date.to_s(:default)  # to_time converts to localtime
-    end
+    event_date.to_datetime.to_s if event_date # not sure why it's retrieved as an instance of Time, it should be DateTime, so convert it as a workaround
   end
 
   def date=(date)
-    write_attribute(:event_date, date)
+    write_attribute(:event_date, DateTime.parse(date).utc)
   end
 
   def namespace

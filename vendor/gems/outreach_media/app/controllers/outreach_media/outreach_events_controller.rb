@@ -1,7 +1,7 @@
 class OutreachMedia::OutreachEventsController < ApplicationController
   def index
     @outreach_events = OutreachEvent.all
-    @outreach_event = OutreachEvent.new()
+    @outreach_event = OutreachEvent.new(:event_date => DateTime.now)
     @areas = Area.all
     @subareas = Subarea.extended
     @audience_types = AudienceType.all

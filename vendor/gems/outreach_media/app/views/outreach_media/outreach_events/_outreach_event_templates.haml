@@ -1,13 +1,13 @@
 %script#outreach_event_documents_template{:type => 'template/ractive'}
   .col-md-4#outreach_event_documents{:style=>"display:flex; flex-direction: column"}
     {{#outreach_event_documents}}
-    <outreacheventdocument file_content_type={{file_content_type}} file_filename={{file_filename}} file_size={{file_size}} name={{name}} id={{id}} filesize_error={{filesize_error}} filetype_error={{filetype_error}} outreach_event_id={{outreach_event_id}}/>
+    <outreacheventdocument file_content_type={{file_content_type}} file_filename={{file_filename}} file_size={{file_size}} name={{name}} id={{id}} outreach_event_id={{outreach_event_id}}/>
     {{/}}
 
 %script#outreach_event_document_template{:type => 'template/ractive'}
   .row
     .col-md-10.col-md-offset-1
-      #selected_file
+      .outreach_event_document#selected_file
         {{#if persisted}}
         {{ file_filename }}
         {{else}}
@@ -116,7 +116,6 @@
     <oe affected_people_count='{{affected_people_count}}' area_ids='{{area_ids}}' areas='{{areas}}' audience_name='{{audience_name}}' audience_type_id='{{audience_type_id}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' description='{{description}}' description_error='{{description_error}}' expanded='false' id='{{id}}' impact_rating_id='{{impact_rating_id}}' media_areas='{{media_areas}}' notes='{{notes}}' outreach_event_areas='{{outreach_event_areas}}' outreach_event_documents='{{outreach_event_documents}}' outreach_event_error='{{outreach_event_error}}' participant_count='{{participant_count}}' on-edit='edit' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' title_error='false' url='{{url}}'/>
     {{/outreach_events}}
 
-
 %script#outreach_event_template{:type => 'template/ractive'}
   {{#if persisted }}
   {{> show_outreach_event_template }}
@@ -128,7 +127,7 @@
   .row.outreach_event.well.well-sm.editable_container{:style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
       .row.basic_info
-        .col-md-2.date{:style => "width:15%"} {{ date }}
+        .col-md-2.date{:style => "width:15%"} {{ formatted_date }}
         .col-md-2.title{'data-toggle'=>'edit', :style => "width:60%"}
           .fade.no_edit.in
             %span {{ title }}

@@ -96,13 +96,15 @@ $ ->
   Datepicker = (node)->
     $(node).datepicker
       maxDate: null
-      defaultDate: null
+      defaultDate: new Date()
       changeMonth: true
       changeYear: true
       numberOfMonths: 1
-      dateFormat: "dd/mm/yy"
-      onSelect : =>
-        @updateModel()
+      dateFormat: "yy, M d"
+      onClose: (selectedDate) ->
+        unless selectedDate == ""
+          outreach_event = Ractive.getNodeInfo(node).ractive
+          outreach_event.set_event_date_from_datepicker(selectedDate)
     teardown : ->
       $(node).datepicker('destroy')
 
@@ -123,7 +125,7 @@ $ ->
         #outreach_event.set('original_filename', data.files[0].name)
         #outreach_event.push('outreach_event_documents',{original_filename : data.files[0].name})
         outreach_event.push('outreach_event_documents', data.files[0])
-        #outreach_event.validate_file_constraints()
+        outreach_event.validate_files()
         #outreach_event._validate_attachment()
         return
       done: (e, data) ->
@@ -147,10 +149,31 @@ $ ->
   OutreachEventDocument = Ractive.extend
     template : "#outreach_event_document_template"
     deselect_file : ->
-      @parent.deselect_file()
+      @parent.deselect_file(@)
     computed :
       persisted : ->
         !_.isNull(@get('id'))
+      valid : ->
+        vf = @get('valid_filetype')
+        vs = @get('valid_filesize')
+        vf && vs
+      valid_filetype : ->
+        type = @get('type') # this is the attribute when the file has been just imported as a File object and not yet persisted
+        extension = type.split('/').pop()
+        if permitted_filetypes.indexOf(extension) == -1
+          @set('filetype_error', true)
+          false
+        else
+          @set('filetype_error', false)
+          true
+      valid_filesize : ->
+        size = @get('size') # this is the attribute when the file has been just imported as a File object and not yet persisted
+        if size > maximum_filesize
+          @set('filesize_error', true)
+          false
+        else
+          @set('filesize_error', false)
+          true
     oninit : ->
       @set
         'filetype_error': false
@@ -160,6 +183,9 @@ $ ->
     template : "#outreach_event_documents_template"
     components :
       outreacheventdocument : OutreachEventDocument
+    deselect_file : (file) ->
+      index = _(@findAllComponents('outreacheventdocument')).indexOf file
+      @splice('outreach_event_documents', index, 1)
 
   AudienceType = Ractive.extend
     template : "#audience_type_template"
@@ -207,10 +233,10 @@ $ ->
 
   OutreachEvent = Ractive.extend
     template : '#outreach_event_template'
-    #components :
-      #outreacharea : OutreachArea
-      #metric : Metric
-      #outreacheventdocuments : OutreachEventDocuments
+    components :
+      outreacharea : OutreachArea
+      metric : Metric
+      outreacheventdocuments : OutreachEventDocuments
       # due to a ractive bug, checkboxes don't work in components,
       # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
       # so this component is not used, until the bug is fixed
@@ -221,6 +247,59 @@ $ ->
         'title_error': false
         'outreach_event_error':false
         'expanded':false
+        'editing' : false
+    _between : (min,max,val)->
+      return true if _.isNaN(val) # declare match if there's no value
+      min = if _.isNaN(min) # from the input element a zero-length string can be presented
+              0
+            else
+              min
+      exceeds_min = (val >= min)
+      less_than_max = _.isNaN(max) || (val <= max) # if max is not a number, then assume val is in-range
+      exceeds_min && less_than_max
+    _matches_impact_rating : ->
+      if !_.isNull(@get('filter_criteria.impact_rating_id'))
+        @get('filter_criteria.impact_rating_id') == @get('impact_rating_id')
+      else
+        true
+    _matches_participant_count : ->
+      @_between(parseInt(@get('filter_criteria.pp_min')),parseInt(@get('filter_criteria.pp_max')),parseInt(@get('participant_count')))
+    _matches_audience_name : ->
+      re = new RegExp(@get('filter_criteria.audience_name'),'i')
+      re.test(@get('audience_name'))
+    _matches_audience_type : ->
+      if !_.isNull(@get('filter_criteria.audience_type_id'))
+        @get('filter_criteria.audience_type_id') == @get('audience_type_id')
+      else
+        true
+    _matches_from : ->
+      return true if _.isNull(@get('date')) || _.isNull(@get('filter_criteria.from'))
+      (new Date(@get('date'))).valueOf() >= (new Date(@get('filter_criteria.from'))).valueOf()
+    _matches_to : ->
+      return true if _.isNull(@get('date')) || _.isNull(@get('filter_criteria.to'))
+      new Date(@get('date')) <= new Date(@get('filter_criteria.to'))
+    _matches_area_subarea : ->
+      return (@_matches_area() || @_matches_subarea()) if @get('filter_criteria.rule') == 'any'
+      return (@_matches_area() && @_matches_subarea()) if @get('filter_criteria.rule') == 'all'
+    _matches_area : ->
+      if @get('filter_criteria.rule') == 'any'
+        return true if _.isEmpty(@get('area_ids'))
+        matches = _.intersection(@get('area_ids'), @get('filter_criteria.areas'))
+        matches.length > 0
+      else
+        _.isEqual(@get('area_ids').slice().sort(), @get('filter_criteria.areas').slice().sort())
+    _matches_subarea : ->
+      if @get('filter_criteria.rule') == 'any'
+        matches = _.intersection(@get('subarea_ids'), @get('filter_criteria.subareas'))
+        matches.length > 0
+      else
+        return true if _.isEmpty(@get('filter_criteria.subareas'))
+        _.isEqual(@get('subarea_ids').slice().sort(), @get('filter_criteria.subareas').slice().sort())
+    _matches_people_affected : ->
+      @_between(parseInt(@get('filter_criteria.pa_min')),parseInt(@get('filter_criteria.pa_max')),parseInt(@get('affected_people_count')))
+    _matches_title : ->
+      re = new RegExp(@get('filter_criteria.title'),'i')
+      re.test(@get('title'))
     computed :
       model_name : ->
         "outreach_event"
@@ -232,8 +311,9 @@ $ ->
       formatted_participant_count : ->
         @get('participant_count').toLocaleString()
       formatted_date :
-        get: -> $.datepicker.formatDate("dd/mm/yy", @get('date'))
-        set: (val)-> @set('date', $.datepicker.parseDate( "dd/mm/yy", val))
+        get: ->
+          $.datepicker.formatDate("yy, M d", new Date(@get('date')) )
+        set: (val)-> @set('date', $.datepicker.parseDate( "yy, M d", val))
       impact_rating_text : ->
         impact_rating = _(impact_ratings).find (ir)=>
           ir.id == @get('impact_rating_id')
@@ -245,75 +325,23 @@ $ ->
       count : ->
         t = @get('title') || ""
         100 - t.length
-      editing : ->
-        true
       include : ->
-        @get('editing') || (
-          @_matches_title() &&
-          @_matches_from() &&
-          @_matches_to() &&
-          @_matches_area_subarea() &&
-          @_matches_people_affected() &&
-          @_matches_audience_type() &&
-          @_matches_audience_name() &&
-          @_matches_participant_count() &&
-          @_matches_impact_rating() )
+        #@get('editing') || (
+        mt = @_matches_title()
+        mf = @_matches_from()
+        mto = @_matches_to()
+        ma = @_matches_area_subarea()
+        mp = @_matches_people_affected()
+        mat = @_matches_audience_type()
+        man = @_matches_audience_name()
+        mpc = @_matches_participant_count()
+        mir = @_matches_impact_rating()
+        #console.log {mt:mt,mf:mf,mto:mto,ma:ma,mp:mp,mat:mat,man:man,mpc:mpc,mir:mir}
+        mt && mf && mto && ma && mp && mat && man && mpc && mir
       persisted : ->
         !_.isNull(@get('id'))
       no_files_chosen : ->
         @get('outreach_event_documents').length == 0
-    _matches_impact_rating : ->
-      if !_.isNull(outreach.get('filter_criteria.impact_rating_id'))
-        outreach.get('filter_criteria.impact_rating_id') == @get('impact_rating_id')
-      else
-        true
-    _matches_participant_count : ->
-      @_between(parseInt(outreach.get('filter_criteria.pp_min')),parseInt(outreach.get('filter_criteria.pp_max')),parseInt(@get('participant_count')))
-    _matches_audience_name : ->
-      re = new RegExp(outreach.get('filter_criteria.audience_name'),'i')
-      re.test(@get('audience_name'))
-    _matches_audience_type : ->
-      if !_.isNull(outreach.get('filter_criteria.audience_type_id'))
-        outreach.get('filter_criteria.audience_type_id') == @get('audience_type_id')
-      else
-        true
-    _matches_from : ->
-      return true if _.isNull(@get('date'))
-      new Date(@get('date')) >= new Date(outreach.get('filter_criteria.from'))
-    _matches_to : ->
-      return true if _.isNull(@get('date'))
-      new Date(@get('date')) <= new Date(outreach.get('filter_criteria.to'))
-    _matches_area_subarea : ->
-      return (@_matches_area() || @_matches_subarea()) if outreach.get('filter_criteria.rule') == 'any'
-      return (@_matches_area() && @_matches_subarea()) if outreach.get('filter_criteria.rule') == 'all'
-    _matches_area : ->
-      if outreach.get('filter_criteria.rule') == 'any'
-        return true if _.isEmpty(@get('area_ids'))
-        matches = _.intersection(@get('area_ids'), outreach.get('filter_criteria.areas'))
-        matches.length > 0
-      else
-        _.isEqual(@get('area_ids').slice().sort(), outreach.get('filter_criteria.areas').slice().sort())
-    _matches_subarea : ->
-      if outreach.get('filter_criteria.rule') == 'any'
-        matches = _.intersection(@get('subarea_ids'), outreach.get('filter_criteria.subareas'))
-        matches.length > 0
-      else
-        return true if _.isEmpty(outreach.get('filter_criteria.subareas'))
-        _.isEqual(@get('subarea_ids').slice().sort(), outreach.get('filter_criteria.subareas').slice().sort())
-    _matches_people_affected : ->
-      @_between(parseInt(outreach.get('filter_criteria.pa_min')),parseInt(outreach.get('filter_criteria.pa_max')),parseInt(@get('affected_people_count')))
-    _between : (min,max,val)->
-      return true if _.isNaN(val) # declare match if there's no value
-      min = if _.isNaN(min) # from the input element a zero-length string can be presented
-              0
-            else
-              min
-      exceeds_min = (val >= min)
-      less_than_max = _.isNaN(max) || (val <= max) # if max is not a number, then assume val is in-range
-      exceeds_min && less_than_max
-    _matches_title : ->
-      re = new RegExp(outreach.get('filter_criteria.title'),'i')
-      re.test(@get('title'))
     expand : ->
       @set('expanded',true)
       $(@find('.collapse')).collapse('show')
@@ -341,60 +369,19 @@ $ ->
           url = @parent.get('create_outreach_event_url')
           $.post(url, @create_instance_attributes(), @update_ma, 'json') # handled right here
     validate : ->
-      vt = @_validate_title()
-      va = @_validate_attachment()
-      vt && va
-    _validate_title : ->
+      vt = @validate_title()
+      vf = @validate_files()
+      vt && vf
+    validate_title : ->
       @set('title',@get('title').trim())
       if _.isEmpty(@get('title'))
         @set('title_error',true)
         false
       else
         true
-    _validate_attachment : ->
-      #@_validate_any_attachment() && @_validate_single_attachment()
-      true
-    #_validate_any_attachment : ->
-      #unless @_validate_file() || @_validate_link()
-        #@set('outreach_event_error',true)
-        #false
-      #else
-        #@set('outreach_event_error',false)
-        #true
-    #_validate_single_attachment : ->
-      #if @_validate_file() && @_validate_link()
-        #@set('outreach_event_double_attachment_error',true)
-        #false
-      #else
-        #@set('outreach_event_double_attachment_error',false)
-        #true
-    #_validate_file : ->
-      ## 3 cases to consider:
-      #if !@get('persisted') # 1. not persisted... creating new, with file attached
-        #!_.isNull(@get('original_filename')) && @validate_file_constraints()
-      #else
-        #if _.isEmpty(@get('fileupload')) # 2. persisted, only original_filename attribute is present
-          #!_.isNull(@get('original_filename'))
-        #else # 3. persisted, changing the attached file, so a fileupload object is present
-          #!_.isNull(@get('original_filename')) && @validate_file_constraints()
-    #_validate_link : ->
-      #!_.isNull(@get('article_link')) && @get('article_link').length > 0
-    #validate_file_constraints : ->
-      #file = @get('fileupload').files[0]
-      #size = file.size
-      #extension = @get('fileupload').files[0].name.split('.').pop()
-      #if permitted_filetypes.indexOf(extension) == -1
-        #@set('filetype_error', true)
-      #else
-        #@set('filetype_error', false)
-      #if size > maximum_filesize
-        #@set('filesize_error', true)
-      #else
-        #@set('filesize_error', false)
-      #!@get('filetype_error') && !@get('filesize_error')
-    #remove_attachment_errors : ->
-      #@set('outreach_event_double_attachment_error',false)
-      #@set('outreach_event_error',false)
+    validate_files : ->
+      # note: .all method also returns true when the array is empty
+      _(@findAllComponents('outreacheventdocument')).all (doc) -> doc.get('valid')
     update_ma : (data,textStatus,jqxhr)->
       outreach.set('outreach_events.0', data)
       outreach.populate_min_max_fields() # to ensure that the newly-added outreach_event is included in the filter
@@ -472,7 +459,7 @@ $ ->
     fetch_link : ->
       window.location = @get('article_link')
     set_event_date_from_datepicker : (selectedDate)->
-      @set('date',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+      @set('date',$.datepicker.parseDate("yy, M d",selectedDate))
     choose_file : ->
       # attention future coder: can't use @find('#outreach_event_file') here as
       # jquery fileupload replaces the element. This doesn't behave well with ractive
@@ -510,17 +497,15 @@ $ ->
       @populate_min_max_fields()
     computed :
       dates : ->
-        #_(@findAllComponents('oe')).map (ma)->
-          #unless _.isEmpty(ma.get('date'))
-            #new Date(ma.get('date'))
-        # workaround for a problem with ractive
-        # see http://stackoverflow.com/questions/34385694/fails-to-compute-attribute-derived-from-components-collection
+        # see https://github.com/ractivejs/ractive/issues/2328
         _(@get('outreach_events')).map (oe)->
-          oe.date
+          new Date(oe.date).getTime() # oe.date is UTC, new Date is client time zone
       people_affecteds : ->
-        _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("affected_people_count")  || 0)
+        _(@get('outreach_events')).map (oe)->
+          oe.affected_people_count
       participants : ->
-        _(@findAllComponents('oe')).map (ma)->parseInt( ma.get("participant_count")  || 0)
+        _(@get('outreach_events')).map (oe)->
+          oe.participant_count
       earliest : ->
         @min('dates')
       most_recent : ->
@@ -534,10 +519,10 @@ $ ->
       pp_max : ->
         @max('participants')
       formatted_from_date:
-        get: -> $.datepicker.formatDate("dd/mm/yy", @get('filter_criteria.from'))
+        get: -> $.datepicker.formatDate("dd/mm/yy", new Date(@get('filter_criteria.from')))
         set: (val)-> @set('filter_criteria.from', $.datepicker.parseDate( "dd/mm/yy", val))
       formatted_to_date:
-        get: -> $.datepicker.formatDate("dd/mm/yy", @get('filter_criteria.to'))
+        get: -> $.datepicker.formatDate("dd/mm/yy", new Date(@get('filter_criteria.to')))
         set: (val)-> @set('filter_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
       selected_audience_type: ->
         if _.isNull(@get('filter_criteria.audience_type_id'))
@@ -624,11 +609,11 @@ $ ->
     cancel : ->
       @shift('outreach_events')
     set_filter_criteria_to_date : (selectedDate)->
-      @set('filter_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+      @set('filter_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate).getTime())
       $('#from').datepicker 'option', 'maxDate', selectedDate
       @update()
     set_filter_criteria_from_date : (selectedDate)->
-      @set('filter_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+      @set('filter_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate).getTime())
       $('#to').datepicker 'option', 'minDate', selectedDate
       @update()
 
