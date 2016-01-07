@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :outreach_events do
         resources :reminders, :controller => "outreach_events/reminders"
         #resources :notes, :controller => "outreach_events/notes"
+        resources :outreach_event_documents, :controller => "outreach_events/outreach_event_documents", :only => :destroy
       end
       resources :areas do
         resources :subareas

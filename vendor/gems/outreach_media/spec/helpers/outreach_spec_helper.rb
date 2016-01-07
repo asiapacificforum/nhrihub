@@ -149,6 +149,10 @@ module OutreachSpecHelper
   end
 
   def deselect_first_file
-    page.all('#deselect_file').first.click
+    remove_file.click
+  end
+
+  def remove_file
+    page.all('#deselect_file').first
   end
 end

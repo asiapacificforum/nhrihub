@@ -320,7 +320,22 @@ feature "when there are existing outreach events", :js => true do
       expect(areas).not_to include "Good Governance"
     end
 
-    xscenario "delete the attachment" do
+    scenario "delete an attached file" do
+      file_id = page.evaluate_script("outreach.findAllComponents('oe')[0].findAllComponents('outreacheventdocuments')[0].findAllComponents('outreacheventdocument')[0].get('file_id')")
+      expect(File.exists?(File.join('tmp','uploads','store',file_id))).to eq true
+      edit_outreach_event[0].click
+      sleep(0.2) # css transition
+      expect(page.find('#outreach_event_documents #selected_file').text).not_to be_blank
+      expect{ remove_file.click; sleep(0.4)}.to change{OutreachEventDocument.count}.from(1).to(0)
+      expect(page).not_to have_selector('#outreach_event_documents #selected_file')
+      expect(File.exists?(File.join('tmp','uploads','store',file_id))).to eq false
+    end
+
+    scenario "add a second file" do
+      edit_outreach_event[0].click
+      page.attach_file("outreach_event_file", upload_document, :visible => false)
+      expect{edit_save.click; sleep(0.4)}.to change{OutreachEventDocument.count}.from(1).to(2)
+      expect(OutreachEvent.count).to eq 1
     end
   end
 end
@@ -364,10 +379,10 @@ feature "enforce single user add or edit action", :js => true do
 
   scenario "user tries to edit while adding" do
     add_outreach_event_button.click
-    expect(page).to have_selector('.row.outreach_event.well.well-sm.form.template-upload')
+    expect(page).to have_selector('#outreach_event_list .outreach_event.fileupload')
     edit_outreach_event[0].click
     expect(page).to have_selector('.title .edit.in', :count => 1)
-    expect(page).not_to have_selector('.row.outreach_event.well.well-sm.form.template-upload')
+    expect(page).not_to have_selector('#outreach_event_list .outreach_event.fileupload')
   end
 
   scenario "user tries to add while editing" do
@@ -375,7 +390,7 @@ feature "enforce single user add or edit action", :js => true do
     expect(page).to have_selector('.title .edit.in', :count => 1)
     add_outreach_event_button.click
     expect(page).not_to have_selector('.title .edit.in', :count => 1)
-    expect(page).to have_selector('.row.outreach_event.well.well-sm.form.template-upload')
+    expect(page).to have_selector('#outreach_event_list .outreach_event.fileupload')
   end
 end
 

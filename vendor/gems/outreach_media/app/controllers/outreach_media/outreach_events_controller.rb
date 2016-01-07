@@ -27,8 +27,17 @@ class OutreachMedia::OutreachEventsController < ApplicationController
   end
 
   def update
+    oep = outreach_event_params.dup
+    if oep[:outreach_event_documents]
+      docs = oep.delete(:outreach_event_documents).collect do |doc|
+        OutreachEventDocument.new(doc)
+      end
+    else
+      docs = []
+    end
     outreach_event = OutreachEvent.find(params[:id])
-    outreach_event.update_attributes(outreach_event_params)
+    outreach_event.outreach_event_documents += docs
+    outreach_event.update_attributes(oep)
     render :json => outreach_event, :status => 200
   end
 

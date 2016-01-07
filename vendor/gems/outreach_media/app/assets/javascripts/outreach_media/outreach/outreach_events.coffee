@@ -149,14 +149,21 @@ $ ->
   OutreachEventDocument = Ractive.extend
     template : "#outreach_event_document_template"
     deselect_file : ->
-      @parent.deselect_file(@)
+      if @get('persisted')
+        @remove_file()
+      else
+        @parent.deselect_file(@)
     computed :
       persisted : ->
-        !_.isNull(@get('id'))
+        # null or undefined
+        !_.isEmpty(@get('file_id'))
       valid : ->
-        vf = @get('valid_filetype')
-        vs = @get('valid_filesize')
-        vf && vs
+        if @get('persisted')
+          true
+        else
+          vf = @get('valid_filetype')
+          vs = @get('valid_filesize')
+          vf && vs
       valid_filetype : ->
         type = @get('type') # this is the attribute when the file has been just imported as a File object and not yet persisted
         extension = type.split('/').pop()
@@ -178,6 +185,16 @@ $ ->
       @set
         'filetype_error': false
         'filesize_error': false
+    remove_file : ->
+      $.ajax
+        method : 'post'
+        url : @get('url')
+        data :
+          _method : 'delete'
+        success : @update_event_document
+        context : @
+    update_event_document : ->
+      @parent.remove(@)
 
   OutreachEventDocuments = Ractive.extend
     template : "#outreach_event_documents_template"
@@ -186,6 +203,8 @@ $ ->
     deselect_file : (file) ->
       index = _(@findAllComponents('outreacheventdocument')).indexOf file
       @splice('outreach_event_documents', index, 1)
+    remove : (file) ->
+      @deselect_file(file)
 
   AudienceType = Ractive.extend
     template : "#audience_type_template"
@@ -326,7 +345,6 @@ $ ->
         t = @get('title') || ""
         100 - t.length
       include : ->
-        #@get('editing') || (
         mt = @_matches_title()
         mf = @_matches_from()
         mto = @_matches_to()
@@ -337,7 +355,7 @@ $ ->
         mpc = @_matches_participant_count()
         mir = @_matches_impact_rating()
         #console.log {mt:mt,mf:mf,mto:mto,ma:ma,mp:mp,mat:mat,man:man,mpc:mpc,mir:mir}
-        mt && mf && mto && ma && mp && mat && man && mpc && mir
+        @get('editing') || ( mt && mf && mto && ma && mp && mat && man && mpc && mir )
       persisted : ->
         !_.isNull(@get('id'))
       no_files_chosen : ->
@@ -363,7 +381,7 @@ $ ->
       if @validate()
         if !_.isUndefined(@get('fileupload'))
           #@get('fileupload').submit() # handled by jquery-fileupload
-          # TODO fix this, should find a way to access fileupload without hard-coding the class here:
+          # TODO fix this, should find a way to access fileupload without hard-coding the css class here:
           $('.fileupload').fileupload('send',{files : this.get('outreach_event_documents')})
         else
           url = @parent.get('create_outreach_event_url')
@@ -452,8 +470,10 @@ $ ->
           error : error
           context : context
       else # handle it with jquery fileupload
+        #$('.fileupload').fileupload('send',{files : this.get('outreach_event_documents')})
         $('.fileupload').fileupload('option',{url:@get('url'), type:'put', formData:@formData()})
-        @get('fileupload').submit()
+        $('.fileupload').fileupload('send',{files : this.get('outreach_event_documents')})
+        #@get('fileupload').submit()
     download_attachment : ->
       window.location = @get('url')
     fetch_link : ->

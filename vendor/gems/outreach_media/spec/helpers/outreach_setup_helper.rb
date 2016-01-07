@@ -9,6 +9,7 @@ module OutreachSetupHelper
                        :hr_area,
                        :impact_rating => ImpactRating.first,
                        :participant_count => 1000,
+                       :event_date => DateTime.now,
                        :reminders=>[] )
 
     if type == :multiple
@@ -16,6 +17,7 @@ module OutreachSetupHelper
                          :hr_area,
                          :impact_rating => ImpactRating.first,
                          :participant_count => 2000,
+                         :event_date => DateTime.now,
                          :reminders=>[] )
     end
   end

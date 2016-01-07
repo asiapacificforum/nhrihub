@@ -1,20 +1,25 @@
 %script#outreach_event_documents_template{:type => 'template/ractive'}
-  .col-md-4#outreach_event_documents{:style=>"display:flex; flex-direction: column"}
+  .col-md-6#outreach_event_documents{:style=>"display:flex; flex-direction: column"}
     {{#outreach_event_documents}}
-    <outreacheventdocument file_content_type={{file_content_type}} file_filename={{file_filename}} file_size={{file_size}} name={{name}} id={{id}} outreach_event_id={{outreach_event_id}}/>
+    <outreacheventdocument file_content_type={{file_content_type}} file_filename={{file_filename}} file_size={{file_size}} name={{name}} id={{id}} outreach_event_id={{outreach_event_id}} url={{url}} file_id={{file_id}} />
     {{/}}
 
 %script#outreach_event_document_template{:type => 'template/ractive'}
   .row
-    .col-md-10.col-md-offset-1
+    .col-md-8.col-md-offset-1
       .outreach_event_document#selected_file
+        {{ persisted }}
         {{#if persisted}}
         {{ file_filename }}
         {{else}}
         {{ name }}
         {{/if}}
     .col-md-1{:style => "padding-top:0px"}
-      %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px; vertical-align:0px', 'on-click'=>'deselect_file()'}
+      %i.fa.fa-remove.fa-lg#deselect_file{:style =>'vertical-align:0px', 'on-click'=>'deselect_file()'}
+    .col-md-1
+      {{#if persisted }}
+      %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+      {{/if}}
   .row
     .col-md-12
       .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
@@ -136,7 +141,7 @@
             .row.fileupload{:decorator => 'file_upload'}
               .col-md-3#fileinput_button
                 %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-                %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[file]'}
+                %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
               .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
                 {{#original_filename}}
                 <file/>
@@ -149,11 +154,14 @@
                 %span.help-block#outreach_event_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_double_attachment_error_message')
         .col-md-2.actions{:style => "width:25%"}
           .row{:style => "margin-left:0px;"}
-            .col-md-1.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px;"}
-            .col-md-1
-              %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
-            .col-md-1
-              %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                .alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+              .edit
             .col-md-1.icon{ 'data-toggle' => 'edit'}
               .fade.edit
                 %i.fa.fa-remove{:id => "outreach_event_editable{{id}}_edit_cancel"}
@@ -162,14 +170,19 @@
                 %i.fa.fa-check{:id => "outreach_event_editable{{id}}_edit_save"}
               .fade.no_edit.in
                 %i.fa.fa-pencil-square-o{:id => "outreach_event_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
-            .col-md-1
-              %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
+            .col-md-1{'data-toggle' => :edit}
+              .fade.no_edit.in
+                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
+              .fade.edit
             .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
-              {{#if expanded}}
-              %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
-              {{else}}
-              %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
-              {{/if}}
+              %div{'data-toggle' => :edit}
+                .fade.no_edit.in
+                  {{#if expanded}}
+                  %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
+                  {{else}}
+                  %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
+                  {{/if}}
+                .fade.edit
       .collapse.expanded_info{:class => "collapse{{id}}"}
         .panel.panel-default
           .panel-heading= t('.files')
