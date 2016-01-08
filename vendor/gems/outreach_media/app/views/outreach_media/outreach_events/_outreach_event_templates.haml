@@ -7,13 +7,7 @@
 %script#outreach_event_document_template{:type => 'template/ractive'}
   .row
     .col-md-8.col-md-offset-1
-      .outreach_event_document#selected_file
-        {{ persisted }}
-        {{#if persisted}}
-        {{ file_filename }}
-        {{else}}
-        {{ name }}
-        {{/if}}
+      .outreach_event_document#selected_file {{ file_filename }}
     .col-md-1{:style => "padding-top:0px"}
       %i.fa.fa-remove.fa-lg#deselect_file{:style =>'vertical-align:0px', 'on-click'=>'deselect_file()'}
     .col-md-1

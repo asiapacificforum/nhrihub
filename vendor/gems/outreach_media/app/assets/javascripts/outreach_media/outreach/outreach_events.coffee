@@ -124,7 +124,8 @@ $ ->
         outreach_event.set('fileupload', data) # so ractive can configure/control upload with data.submit()
         #outreach_event.set('original_filename', data.files[0].name)
         #outreach_event.push('outreach_event_documents',{original_filename : data.files[0].name})
-        outreach_event.push('outreach_event_documents', data.files[0])
+        file = data.files[0]
+        outreach_event.push('outreach_event_documents', {file : file, file_id : '', file_filename : file.name})
         outreach_event.validate_files()
         #outreach_event._validate_attachment()
         return
@@ -165,7 +166,7 @@ $ ->
           vs = @get('valid_filesize')
           vf && vs
       valid_filetype : ->
-        type = @get('type') # this is the attribute when the file has been just imported as a File object and not yet persisted
+        type = @get('file').type # this is the attribute when the file has been just imported as a File object and not yet persisted
         extension = type.split('/').pop()
         if permitted_filetypes.indexOf(extension) == -1
           @set('filetype_error', true)
@@ -174,7 +175,7 @@ $ ->
           @set('filetype_error', false)
           true
       valid_filesize : ->
-        size = @get('size') # this is the attribute when the file has been just imported as a File object and not yet persisted
+        size = @get('file').size # this is the attribute when the file has been just imported as a File object and not yet persisted
         if size > maximum_filesize
           @set('filesize_error', true)
           false
@@ -382,7 +383,8 @@ $ ->
         if !_.isUndefined(@get('fileupload'))
           #@get('fileupload').submit() # handled by jquery-fileupload
           # TODO fix this, should find a way to access fileupload without hard-coding the css class here:
-          $('.fileupload').fileupload('send',{files : this.get('outreach_event_documents')})
+          files = _(@findAllComponents('outreacheventdocument')).map (oed)-> oed.get('file')
+          $('.fileupload').fileupload('send',{files : _(files).compact()})
         else
           url = @parent.get('create_outreach_event_url')
           $.post(url, @create_instance_attributes(), @update_ma, 'json') # handled right here
@@ -472,7 +474,8 @@ $ ->
       else # handle it with jquery fileupload
         #$('.fileupload').fileupload('send',{files : this.get('outreach_event_documents')})
         $('.fileupload').fileupload('option',{url:@get('url'), type:'put', formData:@formData()})
-        $('.fileupload').fileupload('send',{files : this.get('outreach_event_documents')})
+        files = _(@findAllComponents('outreacheventdocument')).map (oed)-> oed.get('file')
+        $('.fileupload').fileupload('send',{files : _(files).compact()})
         #@get('fileupload').submit()
     download_attachment : ->
       window.location = @get('url')
