@@ -94,6 +94,11 @@ feature "create a new outreach event", :js => true do
     expect(audience_name).to eq "City of Monrovia PD"
     expect(description).to match /Briefing/
     expect(date).to eq "2014, Aug 19"
+    # now edit and upload another file
+    edit_outreach_event[0].click
+    page.attach_file("outreach_event_file", upload_document, :visible => false)
+    expect{edit_save.click; sleep(0.4)}.to change{OutreachEventDocument.count}.from(1).to(2)
+    expect(OutreachEvent.count).to eq 1
   end
 
   scenario "upload outreach event with attached file" do
@@ -175,6 +180,7 @@ feature "create a new outreach event", :js => true do
     cancel_outreach_event_add
     expect(page).not_to have_selector('.form #outreach_event_title')
   end
+
 end
 
 feature "attempt to save with errors", :js => true do
@@ -255,19 +261,6 @@ feature "when there are existing outreach events", :js => true do
       expect(areas).to include "Good Governance"
     end
 
-    xscenario "edit an outreach event and upload a different file" do
-      edit_outreach_event[0].click
-      expect(page.find('#selected_file_container').text).not_to be_blank
-      previous_file_id = page.evaluate_script("media.findAllComponents('ma')[0].get('file_id')")
-      expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
-      page.attach_file("outreach_event_file", upload_document, :visible => false)
-      edit_save.click
-      sleep(0.4)
-      expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq false
-      new_file_id = page.evaluate_script("media.findAllComponents('ma')[0].get('file_id')")
-      expect(File.exists?(File.join('tmp','uploads','store',new_file_id))).to eq true
-    end
-
     scenario "edit an outreach event and add title error" do
       edit_outreach_event[0].click
       fill_in("outreach_event_title", :with => "")
@@ -278,16 +271,15 @@ feature "when there are existing outreach events", :js => true do
       expect(page).not_to have_selector("#title_error", :visible => true)
     end
 
-    xscenario "edit an outreach event and add file error" do
+    scenario "edit an outreach event and add file error" do
       edit_outreach_event[0].click
       page.attach_file("outreach_event_file", upload_image, :visible => false)
       expect(page).to have_css('#filetype_error', :text => "File type not allowed")
       clear_file_attachment
-      expect(page).to have_selector('#outreach_event_error', :text => "A file or link must be included")
       edit_cancel.click
       sleep(0.2)
       edit_outreach_event[0].click
-      expect(page).not_to have_selector('#outreach_event_error', :text => "A file or link must be included")
+      expect(page).not_to have_selector('#filetype_error', :text => "File type not allowed")
     end
 
     scenario "edit an outreach event, add errors, and cancel" do
@@ -335,6 +327,8 @@ feature "when there are existing outreach events", :js => true do
       edit_outreach_event[0].click
       page.attach_file("outreach_event_file", upload_document, :visible => false)
       expect{edit_save.click; sleep(0.4)}.to change{OutreachEventDocument.count}.from(1).to(2)
+      expect(OutreachEvent.count).to eq 1
+      expect{ remove_file.click; sleep(0.4)}.to change{OutreachEventDocument.count}.from(2).to(1)
       expect(OutreachEvent.count).to eq 1
     end
   end
@@ -399,14 +393,15 @@ feature "view attachments", :js => true do
   include OutreachSpecHelper
   include OutreachSetupHelper
 
-  xscenario "download attached file" do
+  scenario "download attached file" do
     unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
       setup_database
-      @doc = OutreachEvent.first
+      @doc = OutreachEventDocument.first
       visit outreach_media_outreach_events_path(:en)
+      expand_all_panels
       click_the_download_icon
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
-      filename = @doc.original_filename
+      filename = @doc.file_filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
     else
       expect(1).to eq 1 # download not supported by selenium driver

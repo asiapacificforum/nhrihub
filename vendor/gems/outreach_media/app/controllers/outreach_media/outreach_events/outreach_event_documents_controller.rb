@@ -4,4 +4,12 @@ class OutreachMedia::OutreachEvents::OutreachEventDocumentsController < Applicat
       render :nothing => true, :status => 200
     end
   end
+
+  def show
+    doc = OutreachEventDocument.find(params[:id])
+    send_opts = { :filename => doc.file_filename,
+                  :type => doc.file_content_type,
+                  :disposition => :attachment }
+    send_file doc.file.to_io, send_opts
+  end
 end

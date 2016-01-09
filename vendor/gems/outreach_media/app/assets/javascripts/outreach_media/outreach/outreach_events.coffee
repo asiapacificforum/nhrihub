@@ -122,16 +122,13 @@ $ ->
           ractive
         data.context = upload_widget.element.closest('.outreach_event')
         outreach_event.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-        #outreach_event.set('original_filename', data.files[0].name)
-        #outreach_event.push('outreach_event_documents',{original_filename : data.files[0].name})
         file = data.files[0]
-        outreach_event.push('outreach_event_documents', {file : file, file_id : '', file_filename : file.name})
+        outreach_event.push('outreach_event_documents', {file : file, file_id : '', url : '', file_filename : file.name})
         outreach_event.validate_files()
-        #outreach_event._validate_attachment()
         return
       done: (e, data) ->
         ractive = Ractive.getNodeInfo(@).ractive
-        ractive.update_ma(data.jqXHR.responseJSON)
+        ractive.update_oe(data.jqXHR.responseJSON)
         return
       formData : ->
         Ractive.getNodeInfo(el[0]).ractive.formData()
@@ -139,10 +136,12 @@ $ ->
       uploadTemplateContainerId: '#outreach_event_documents'
       filesContainer: '#outreach_event_documents'
       downloadTemplateId: '#show_outreach_event_template'
-      fileInput: '#outreach_event_file'
+      fileInput: $(node).find('#outreach_event_file')
       permittedFiletypes: permitted_filetypes
       maxFileSize: parseInt(maximum_filesize)
     teardown : ->
+      # TODO must turn off all event listeners, else they're still enabled!
+      # else destroy the jquery fileupload instance
       #noop for now
 
   Ractive.decorators.file_upload = FileUpload
@@ -196,6 +195,8 @@ $ ->
         context : @
     update_event_document : ->
       @parent.remove(@)
+    download_attachment : ->
+      window.location = @get('url')
 
   OutreachEventDocuments = Ractive.extend
     template : "#outreach_event_documents_template"
@@ -387,7 +388,7 @@ $ ->
           $('.fileupload').fileupload('send',{files : _(files).compact()})
         else
           url = @parent.get('create_outreach_event_url')
-          $.post(url, @create_instance_attributes(), @update_ma, 'json') # handled right here
+          $.post(url, @create_instance_attributes(), @update_oe, 'json') # handled right here
     validate : ->
       vt = @validate_title()
       vf = @validate_files()
@@ -402,7 +403,7 @@ $ ->
     validate_files : ->
       # note: .all method also returns true when the array is empty
       _(@findAllComponents('outreacheventdocument')).all (doc) -> doc.get('valid')
-    update_ma : (data,textStatus,jqxhr)->
+    update_oe : (data,textStatus,jqxhr)->
       outreach.set('outreach_events.0', data)
       outreach.populate_min_max_fields() # to ensure that the newly-added outreach_event is included in the filter
       UserInput.reset()
@@ -477,8 +478,6 @@ $ ->
         files = _(@findAllComponents('outreacheventdocument')).map (oed)-> oed.get('file')
         $('.fileupload').fileupload('send',{files : _(files).compact()})
         #@get('fileupload').submit()
-    download_attachment : ->
-      window.location = @get('url')
     fetch_link : ->
       window.location = @get('article_link')
     set_event_date_from_datepicker : (selectedDate)->

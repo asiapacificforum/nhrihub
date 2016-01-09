@@ -135,7 +135,7 @@
             .row.fileupload{:decorator => 'file_upload'}
               .col-md-3#fileinput_button
                 %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-                %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
+                %input.show#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
               .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
                 {{#original_filename}}
                 <file/>
@@ -298,7 +298,7 @@
             {{else}}
             = t('.choose_another_file')
             {{/if}}
-          %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
+          %input.new#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
 
       .row
         <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />

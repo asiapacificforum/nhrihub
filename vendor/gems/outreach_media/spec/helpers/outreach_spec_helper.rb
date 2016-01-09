@@ -98,14 +98,14 @@ module OutreachSpecHelper
   end
 
   def clear_file_attachment
-    page.find("#deselect_file").click
+    page.all("#deselect_file")[0].click
   end
 
   def saved_file
   end
 
   def click_the_download_icon
-    page.find('.outreach_event .actions .fa-cloud-download').click
+    page.find('#outreach_event_list .outreach_event #outreach_event_documents .fa-cloud-download').click
   end
 
   def click_the_link_icon
@@ -153,6 +153,6 @@ module OutreachSpecHelper
   end
 
   def remove_file
-    page.all('#deselect_file').first
+    page.all('#deselect_file').last
   end
 end
