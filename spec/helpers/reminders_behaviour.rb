@@ -37,7 +37,7 @@ RSpec.shared_examples "reminders" do
       scenario "with blank reminder_type error" do
         new_reminder_button.click
         page.find('#reminder_start_date_1i', :wait => 10) # forces wait until the element is available
-        select_date("Aug 19 2015", :from => :reminder_start_date)
+        select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_ids)
         fill_in(:reminder_text, :with => "time to check the database")
         expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
@@ -51,7 +51,7 @@ RSpec.shared_examples "reminders" do
         new_reminder_button.click
         sleep(0.3)
         select("one-time", :from => :reminder_reminder_type)
-        select_date("Aug 19 2015", :from => :reminder_start_date)
+        select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         fill_in(:reminder_text, :with => "time to check the database")
         expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
         expect(recipients_error_message).to eq "Please select recipient(s)"
@@ -64,7 +64,7 @@ RSpec.shared_examples "reminders" do
         new_reminder_button.click
         sleep(0.4)
         select("one-time", :from => :reminder_reminder_type)
-        select_date("Aug 19 2015", :from => :reminder_start_date)
+        select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_ids)
         expect{save_reminder.click; sleep(0.3)}.not_to change{Reminder.count}
         sleep(0.2)
@@ -79,7 +79,7 @@ RSpec.shared_examples "reminders" do
         new_reminder_button.click
         sleep(0.2)
         select("one-time", :from => :reminder_reminder_type)
-        select_date("Aug 19 2015", :from => :reminder_start_date)
+        select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         fill_in(:reminder_text, :with => "  ")
         select(User.first.first_last_name, :from => :reminder_user_ids)
         expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
@@ -90,7 +90,7 @@ RSpec.shared_examples "reminders" do
         new_reminder_button.click
         sleep(0.2)
         select("one-time", :from => :reminder_reminder_type)
-        select_date("Aug 19 2015", :from => :reminder_start_date)
+        select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_ids)
         fill_in(:reminder_text, :with => "time to check the database")
         cancel_reminder.click
@@ -103,7 +103,7 @@ RSpec.shared_examples "reminders" do
         expect(page).to have_selector("#reminders .reminder .text", :text => "don't forget the fruit gums mum")
         edit_reminder_icon.click
         select("one-time", :from => :reminder_reminder_type)
-        select_date("Dec 25 2015", :from => :reminder_start_date)
+        select_date("Dec 25 #{Date.today.year}", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_ids)
         select(User.last.first_last_name, :from => :reminder_user_ids)
         fill_in(:reminder_text, :with => "have a nice day")
@@ -111,7 +111,7 @@ RSpec.shared_examples "reminders" do
         #expect{ edit_reminder_save_icon.trigger('click'); sleep(0.2)}.to change{Reminder.first.text}.to('have a nice day')
         expect{ edit_reminder_save_icon.click; sleep(0.2)}.to change{Reminder.first.text}.from("don't forget the fruit gums mum").to('have a nice day')
         expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "one-time"
-        expect(page.find("#reminders .reminder .next .in").text).to eq "Dec 25, 2015"
+        expect(page.find("#reminders .reminder .next .in").text).to eq "Dec 25, #{Date.today.year}"
         expect(page.find("#reminders .reminder .text .in").text).to eq "have a nice day"
         expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.first.first_last_name
         expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.last.first_last_name

@@ -2,6 +2,7 @@ class OutreachEvent < ActiveRecord::Base
   belongs_to :impact_rating
   delegate :id, :text, :rank, :rank_text, :to => :impact_rating, :prefix => true, :allow_nil => true
   has_many :reminders, :as => :remindable, :dependent => :delete_all
+  has_many :notes, :as => :notable, :dependent => :delete_all
   has_many :outreach_event_areas
   has_many :areas, :through => :outreach_event_areas
   has_many :outreach_event_subareas
@@ -29,7 +30,9 @@ class OutreachEvent < ActiveRecord::Base
                        :area_ids,
                        :subarea_ids,
                        :reminders,
+                       :notes,
                        :create_reminder_url,
+                       :create_note_url,
                        :impact_rating_rank,
                        :url ]})
   end
@@ -40,6 +43,14 @@ class OutreachEvent < ActiveRecord::Base
 
   def url
     Rails.application.routes.url_helpers.outreach_media_outreach_event_path(:en,id) if persisted?
+  end
+
+  def create_note_url
+    Rails.application.routes.url_helpers.outreach_media_outreach_event_notes_path(:en,id) if persisted?
+  end
+
+  def create_reminder_url
+    Rails.application.routes.url_helpers.outreach_media_outreach_event_reminders_path(:en,id) if persisted?
   end
 
   # date is stored in as UTC

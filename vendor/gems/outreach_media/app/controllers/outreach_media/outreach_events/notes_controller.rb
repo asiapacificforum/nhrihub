@@ -15,8 +15,8 @@ class OutreachMedia::OutreachEvents::NotesController < NotesController
 
   private
   def note_params
-    params[:note][:notable_id] = params[:media_appearance_id]
-    params[:note][:notable_type] = "MediaAppearance"
+    params[:note][:notable_id] = params[:outreach_event_id]
+    params[:note][:notable_type] = "OutreachEvent"
     super
   end
 end

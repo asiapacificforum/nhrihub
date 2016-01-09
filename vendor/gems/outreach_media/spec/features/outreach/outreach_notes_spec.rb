@@ -1,16 +1,16 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
-require_relative '../../helpers/setup_helper'
+require_relative '../../helpers/outreach_setup_helper'
 require_relative '../../helpers/notes_spec_helpers'
-require_relative '../../helpers/media_appearance_context_notes_spec_helpers'
+require_relative '../../helpers/outreach_event_context_notes_spec_helpers'
 require Rails.root.join('spec','helpers','notes_behaviour')
 
 
 feature "media appearance notes", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
-  include SetupHelper
+  include OutreachSetupHelper
   include NotesSpecHelpers
-  include MediaAppearanceContextNotesSpecHelpers
+  include OutreachEventContextNotesSpecHelpers
   it_behaves_like "notes"
 end
