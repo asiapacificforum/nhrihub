@@ -13,8 +13,7 @@ class NotesController < ApplicationController
     note = Note.find(params[:id])
     note.editor = current_user
     if note.update_attributes(note_params)
-      strategic_priorities = note.notable.outcome.planned_result.strategic_priority.strategic_plan.strategic_priorities
-      render :json => strategic_priorities, :status => 200
+      render :json => note, :status => 200
     else
       render :nothing => true, :status => 500
     end

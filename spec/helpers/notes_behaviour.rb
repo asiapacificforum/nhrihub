@@ -48,6 +48,7 @@ RSpec.shared_examples "notes" do
       edit_note.first.click
       fill_in('note_text', :with => "carpe diem")
       expect{ save_edit.click; sleep(0.2) }.to change{Note.first.text}.to("carpe diem")
+      expect(page).to have_selector('#notes .note .text .no_edit span', :text => 'carpe diem')
     end
 
     scenario "edit to blank text and cancel" do
