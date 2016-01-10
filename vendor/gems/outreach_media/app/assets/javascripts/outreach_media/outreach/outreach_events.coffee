@@ -112,9 +112,6 @@ $ ->
 
   FileUpload = (node)->
     $(node).fileupload
-      #dataType: 'json'
-      #type: 'post'
-      #multiple: true
       add: (e, data) -> # data includes a files property containing added files and also a submit property
         upload_widget = $(@).data('blueimp-fileupload')
         @outreach_event = outreach_event = data.ractive = Ractive.
@@ -382,10 +379,9 @@ $ ->
     save : ->
       if @validate()
         if !_.isUndefined(@get('fileupload'))
-          #@get('fileupload').submit() # handled by jquery-fileupload
-          # TODO fix this, should find a way to access fileupload without hard-coding the css class here:
           files = _(@findAllComponents('outreacheventdocument')).map (oed)-> oed.get('file')
-          $('.fileupload').fileupload('send',{files : _(files).compact()})
+          # TODO fix this, should find a way to access fileupload without hard-coding the css class here:
+          $('.fileupload').fileupload('send',{files : _(files).compact()}) # handled by jquery-fileupload
         else
           url = @parent.get('create_outreach_event_url')
           $.post(url, @create_instance_attributes(), @update_oe, 'json') # handled right here
@@ -426,7 +422,10 @@ $ ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
     create_instance_attributes: ->
-      attrs = _(@get()).pick('title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count')
+      attrs = _.chain(@get()).
+        pick('title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
+        omit((value, key, object)-> _.isNull(value) ).
+        value()
       if _.isEmpty(@get('area_ids'))
         attrs.area_ids = [""] # hack to workaround jQuery not sending empty arrays
       else
@@ -437,11 +436,12 @@ $ ->
         attrs.subarea_ids = @get('subarea_ids')
       {outreach_event : attrs }
     formData : ->
-      #file = @get('fileupload').files[0]
-      #@set
-        #lastModifiedDate : file.lastModifiedDate
-      attrs = _(@get()).pick('title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count')
-      name_value = _(attrs).keys().map (k)->{name:"outreach_event["+k+"]", value:attrs[k]}
+      name_value = _.chain(@get()).
+        pick('title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
+        omit((value, key, object)-> _.isNull(value)).
+        pairs().
+        map((kv)->{name:"outreach_event["+kv[0]+"]", value:kv[1]}).
+        value()
       if _.isEmpty(@get('area_ids'))
         aids = [{name : 'outreach_event[area_ids][]', value: ""}]
       else
