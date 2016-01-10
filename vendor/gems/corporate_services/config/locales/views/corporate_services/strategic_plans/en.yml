@@ -6,7 +6,7 @@ en:
         current_year: "Strategic Plan: Current reporting year %{start} - %{end}"
         other_years: "Strategic Plan: Starting %{start}, ending %{end}"
         add_priority: "Add strategic priority"
-      strategic_priority_form:
+      strategic_plan_templates:
         new_strategic_priority: "New strategic priority"
         priority: "Priority level"
         description: "Description"

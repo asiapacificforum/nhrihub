@@ -6,7 +6,11 @@
 
 .panel-group#strategic_plan
 
-= render :partial => 'strategic_priority_form'
+= render :partial => 'strategic_plan_templates'
+= javascript_include_tag "corporate_services/strategic_plan"
+
+:coffeescript
+  window.strategic_plan_data = #{@strategic_plan.to_json}
 
 :coffeescript
   $ ->

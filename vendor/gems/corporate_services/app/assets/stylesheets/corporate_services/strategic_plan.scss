@@ -1,6 +1,31 @@
+$grey0: #FFFFFF;
+$grey1: #ECECEC;
+$grey2: #E0E0E0;
+$grey3: #CCCCCC;
+$heading0: #ABA494;
+$heading1: #A59D8D;
+$heading2: #9C9689;
+$heading3: #948E82;
 // the select box is styled to look like an h1 heading
 .h1_select {
   @extend h1;
+}
+
+.row.heading {
+  background-color: $heading0;
+  color: #FFF;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  div:nth-child(1){ background-color : $heading0}
+  div:nth-child(2){ background-color : $heading1}
+  div:nth-child(3){ background-color : $heading2}
+  div:nth-child(4), div:nth-child(5), div:nth-child(6), div:nth-child(7){ background-color : $heading3}
+  .col-md-2 {
+    width:14.2857%;
+    padding-top:4px;
+    padding-bottom: 4px;
+    height: 48px;
+  }
 }
 
 .sp-select {
@@ -43,39 +68,29 @@ select.priority_level {
 }
 
 .row.planned_result>div:nth-child(2){
-  background-color : #ECECEC;
+  background-color : $grey1;
 }
 
 #planned_results {
   padding-top : 0px;
 }
 
-.row.heading {
-  background-color: rgba(128, 65, 65, 0.56);
-  color: #FFF;
-  padding-top: 6px;
-  padding-bottom: 4px;
-}
-
-#planned_results>.row.planned_result_control{
-  div:nth-child(2){
-    background-color : #ECECEC;
-  }
-  div:nth-child(3){
-    background-color : #E0E0E0;
+#planned_results>.row.outcome_control{
+  div:nth-child(2), div:nth-child(3){
+    background-color : $grey1;
   }
 }
 
-.row.planned_result .row.planned_result_control{
+.row.planned_result .row.outcome_control{
   div:nth-child(1){
-    background-color : #ECECEC;
+    background-color : $grey1;
   }
   div:nth-child(2){
-    background-color : #E0E0E0;
+    background-color : $grey2;
   }
 }
 
-.row.planned_result_control{
+.row.outcome_control{
   border-bottom : 1px solid #E4E4E4
 }
 
@@ -84,19 +99,29 @@ select.priority_level {
 .row.new_activity,
 .row.new_activity_control,
 .row.outcome>div:nth-child(2) {
-  background-color : #E0E0E0;
+  background-color : $grey2;
+}
+
+.row.new_performance_indicator,
+.row.new_performance_indicator_control {
+  background-color : $grey3;
 }
 
 .row.outcome {
   display : flex;
   .empty {
     display : flex;
-    background-color : #E0E0E0;
+    background-color : $grey2;
     .activity {
       display :flex;
       width : 100%;
     }
   }
+}
+
+.row.performance_indicator,
+.row.performance_indicator_control>div:nth-child(2){
+  background-color : $grey3;
 }
 
 .form-group.has-error {
