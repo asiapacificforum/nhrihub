@@ -180,7 +180,6 @@ feature "create a new outreach event", :js => true do
     cancel_outreach_event_add
     expect(page).not_to have_selector('.form #outreach_event_title')
   end
-
 end
 
 feature "attempt to save with errors", :js => true do
@@ -249,6 +248,7 @@ feature "when there are existing outreach events", :js => true do
       expect(chars_remaining).to eq "You have 73 characters left"
       uncheck("Human Rights")
       check("outreach_event_subarea_ids_1")
+      set_date_to("2015/3/15")
       expect(page).to have_selector("input#people_affected", :visible => true)
       check("Good Governance")
       check("CRC")
@@ -259,6 +259,7 @@ feature "when there are existing outreach events", :js => true do
       expect(page.all("#outreach_events .outreach_event .basic_info .title").first.text).to eq "My new outreach event title"
       expect(areas).not_to include "Human Rights"
       expect(areas).to include "Good Governance"
+      expect(date).to eq "2015, Mar 15"
     end
 
     scenario "edit an outreach event and add title error" do

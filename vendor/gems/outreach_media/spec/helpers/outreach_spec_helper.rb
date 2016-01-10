@@ -17,6 +17,7 @@ module OutreachSpecHelper
   end
 
   def edit_save
+    page.execute_script("scrollTo(0,0)")
     page.find('.fa-check')
   end
 

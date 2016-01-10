@@ -126,26 +126,15 @@
   .row.outreach_event.well.well-sm.editable_container{:style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
       .row.basic_info
-        .col-md-2.date{:style => "width:15%"} {{ formatted_date }}
+        .col-md-2.date{:style => "width:15%", 'data-toggle'=>:edit}
+          .fade.no_edit.in {{formatted_date}}
+          .fade.edit{:style => 'padding-top:20px;'}
+            %input#event_date{:type => :text, :decorator => 'datepicker', :value => '{{formatted_date}}', :style => 'height:33px;'}
         .col-md-2.title{'data-toggle'=>'edit', :style => "width:60%"}
           .fade.no_edit.in
             %span {{ title }}
           .fade.edit{:style => "width: 100%"}
             {{> edit_title}}
-            .row.fileupload{:decorator => 'file_upload'}
-              .col-md-3#fileinput_button
-                %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-                %input.show#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
-              .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
-                {{#original_filename}}
-                <file/>
-                {{/original_filename}}
-            .row.form-group{:class => "{{#outreach_event_error}}has-error{{/}}", :style => "margin-bottom:0px"}
-              .col-md-5
-                %span.help-block#outreach_event_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_error_message')
-            .row.form-group{:class => "{{#outreach_event_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
-              .col-md-5
-                %span.help-block#outreach_event_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_double_attachment_error_message')
         .col-md-2.actions{:style => "width:25%"}
           .row{:style => "margin-left:0px;"}
             .col-md-1{'data-toggle'=>:edit}
@@ -177,6 +166,12 @@
                   %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
                   {{/if}}
                 .fade.edit
+      .row.fileupload{:decorator => 'file_upload', 'data-toggle'=>:edit}
+        .fade.no_edit.in
+        .fade.edit
+          .col-md-3#fileinput_button{:style => 'margin-bottom:12px;'}
+            %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
+            %input.show#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
       .collapse.expanded_info{:class => "collapse{{id}}"}
         .panel.panel-default
           .panel-heading= t('.files')
