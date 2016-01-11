@@ -53,6 +53,9 @@ $ ->
       $('#notes_modal').modal('show')
     show_rules_panel : ->
       $('#rules_modal').modal('show')
+    create_stop : ->
+      UserInput.reset()
+      @parent.remove_performance_indicator_form()
 
   Activity = Ractive.extend
     template : '#activity_template'
@@ -110,7 +113,8 @@ $ ->
       @push('performance_indicators',{description : '', indexed_description: '', target: '', id : null, activity_id : @get('id'), url:null, description_error:"", progress:""})
       UserInput.claim_user_input_request(@,'remove_performance_indicator_form')
     remove_performance_indicator_form : ->
-      console.log "remove performance indicator form"
+      if _.isNull(@findAllComponents('pi')[@get('performance_indicators').length-1].get('id'))
+        @pop('performance_indicators')
 
   Outcome = Ractive.extend
     template : '#outcome_template'

@@ -81,8 +81,12 @@ feature "populate activity performance indicators", :js => true do
       expect(page).to have_selector(performance_indicator_selector + ".description", :text => "1.1.1.1.2 great insight")
       expect(page).to have_selector(performance_indicator_selector + ".target", :text => "1.1.1.1.2 full employment")
     end
-  end
 
+    scenario "add performance indicators item but cancel addition" do
+      cancel_performance_indicator_addition
+      expect(page).not_to have_selector('div.new_performance_indicator')
+    end
+  end
 end
 
 

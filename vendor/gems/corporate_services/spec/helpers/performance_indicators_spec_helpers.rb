@@ -44,4 +44,8 @@ module PerformanceIndicatorsSpecHelpers
       page.driver.browser.manage.window.resize_to(1400,800) # b/c selenium driver doesn't seem to click when target is not in the view
     end
   end
+
+  def cancel_performance_indicator_addition
+    page.find('.new_performance_indicator_control #create_stop').click
+  end
 end
