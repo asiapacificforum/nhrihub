@@ -144,12 +144,16 @@ $ ->
     deselect_file : ->
       @parent.deselect_file()
 
+  PerformanceIndicatorSelect = Ractive.extend
+    template : '#performance_indicator_select'
+
   MediaAppearance = Ractive.extend
     template : '#media_appearance_template'
     components :
       mediaarea : MediaArea
       metric : Metric
       file : File
+      'performance-indicator-select' : PerformanceIndicatorSelect
       # due to a ractive bug, checkboxes don't work in components,
       # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
       # so this component is not used, until the bug is fixed
@@ -392,6 +396,7 @@ $ ->
     media_appearances: media_appearances
     areas : areas
     create_media_appearance_url: create_media_appearance_url
+    planned_results : planned_results
     filter_criteria :
       title : ""
       from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation

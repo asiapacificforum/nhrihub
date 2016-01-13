@@ -26,7 +26,7 @@ end
 
 namespace :corporate_services do
   desc "re-initialize database with internal documents: 5 primary, 10 archive"
-  task :init => :environment do
+  task :populate_id => :environment do
     DocumentGroup.delete_all
     InternalDocument.delete_all
 
@@ -38,6 +38,31 @@ namespace :corporate_services do
       first_archive = FactoryGirl.create(:internal_document, :document_group_id => dgid, :revision => first_archive_rev.to_s, :title => rand_title, :original_filename => rand_filename)
       second_archive_rev = (rand(20)).to_f/10
       second_archive = FactoryGirl.create(:internal_document, :document_group_id => dgid, :revision => second_archive_rev.to_s, :title => rand_title, :original_filename => rand_filename)
+    end
+  end
+
+  desc "re-initialize strategic priorities"
+  task :populate_sp => :environment do
+    StrategicPriority.delete_all
+    PlannedResult.delete_all
+    Outcome.delete_all
+    Activity.delete_all
+    PerformanceIndicator.delete_all
+
+    2.times do |i|
+      sp = FactoryGirl.create(:strategic_priority, :priority_level => i+1)
+      2.times do
+        pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
+        2.times do
+          o = FactoryGirl.create(:outcome, :planned_result => pr)
+          2.times do
+            a = FactoryGirl.create(:activity, :outcome => o)
+            2.times do
+              FactoryGirl.create(:performance_indicator, :activity => a)
+            end
+          end
+        end
+      end
     end
   end
 end

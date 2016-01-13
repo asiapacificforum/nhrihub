@@ -1,0 +1,91 @@
+.dropdown-submenu {
+  position:relative;
+}
+
+//.dropdown-menu {
+  //height : 38px;
+//}
+
+.dropdown-submenu>.dropdown-menu {
+  //top:0;
+  //left:100%;
+  top:100%;
+  left:25%;
+  margin-top:-6px;
+  margin-left:-1px;
+  -webkit-border-radius:6px 6px 6px 6px;
+  -moz-border-radius:6px 6px 6px 6px;
+  border-radius:6px 6px 6px 6px;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+  display:block;
+}
+
+.dropdown-submenu>a {
+  height : 30px;
+}
+
+.dropdown-submenu>a:after {
+  display:block;
+  content:" ";
+  float:right;
+  width:0;
+  height:0;
+  border-color:transparent;
+  border-style:solid;
+  border-width:5px 0 5px 5px;
+  border-left-color:#cccccc;
+  margin-top:5px;
+  margin-right:-10px;
+}
+
+// the right caret, disappears, so leave it unchanged
+.dropdown-submenu:hover>a:after {
+  //border-left-color:#ffffff;
+}
+
+.dropdown-submenu.pull-left {
+  float:none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left:-100%;
+  margin-left:10px;
+  -webkit-border-radius:6px 0 6px 6px;
+  -moz-border-radius:6px 0 6px 6px;
+  border-radius:6px 0 6px 6px;
+}
+
+.performance_indicator_select {
+  & li {
+    position: relative;
+    font-size : 14px;
+
+    &.selected a span.fa-check {
+      position: absolute;
+      display: inline-block;
+      right: 15px;
+      margin-top: 3px;
+    }
+
+    & a {
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      &.opt {
+        position: relative;
+        padding-left: 2.25em;
+      }
+      & span.text {
+        display: inline-block;
+        margin-right: 34px;
+      }
+      & span.fa-check {
+        display: none;
+      }
+    }
+  }
+}

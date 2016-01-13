@@ -6,6 +6,7 @@ class Activity < ActiveRecord::Base
   # strip index if user has entered it
   before_save do
     self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
+    self.index = StrategicPlanIndexer.new(self,outcome).next
   end
 
   def as_json(options={})
@@ -48,15 +49,5 @@ class Activity < ActiveRecord::Base
     else
       [index, description].join(' ')
     end
-  end
-
-  def index
-    prefix = outcome.index
-    last_digit = all_in_outcome.sort_by(&:id).index(self).succ.to_s
-    [prefix, last_digit].join('.')
-  end
-
-  def all_in_outcome
-    Activity.where(:outcome_id => outcome_id)
   end
 end

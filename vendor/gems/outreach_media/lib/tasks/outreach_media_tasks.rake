@@ -6,13 +6,13 @@ good_governance_subareas = ["Violation", "Office report", "Office consultations"
 desc "populate violation severity table"
 task :populate_vs => :environment do
   ViolationSeverity.delete_all
-  ViolationSeverity::DefaultValues.each { |vs| ViolationSeverity.create(:rank=>vs.rank, :text => vs.text) }
+  ViolationSeverity::DefaultValues.each { |vs| ViolationSeverity.create(:rank=>vs.rank) }
 end
 
 desc "populate positivity ratings"
 task :populate_pr => :environment do
   PositivityRating.delete_all
-  PositivityRating::DefaultValues.each { |pr| PositivityRating.create(:rank => pr.rank, :text => pr.text) }
+  PositivityRating::DefaultValues.each { |pr| PositivityRating.create(:rank => pr.rank) }
 end
 
 desc "populate impact ratings"

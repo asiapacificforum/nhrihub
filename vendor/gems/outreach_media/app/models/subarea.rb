@@ -13,7 +13,7 @@ class Subarea < ActiveRecord::Base
   end
 
   def self.extended
-    all.collect do |sa|
+    self.includes(:area).all.collect do |sa|
       sa.
         attributes.
         slice("id","name","full_name").

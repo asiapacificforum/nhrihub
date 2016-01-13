@@ -149,29 +149,40 @@
               {{else}}
               %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
               {{/if}}
-      .panel.panel-default.collapse.expanded_info{:class => "collapse{{id}}"}
-        .panel-heading
-          .row
-            .col-md-2.description{:style => "width:50%"}
-              =t('.areas')
-              \/
-              =t('.subareas')
-            .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
-        .panel-content{'data-toggle'=>'edit'}
-          .fade.no_edit.in
+      .collapse.expanded_info{:class => "collapse{{id}}"}
+        .panel.panel-default
+          .panel-heading
+            .row
+              .col-md-2= t('.performance_indicators')
+          .panel-content{'data-toggle' => :edit}
+            .fade.no_edit.in
+            .fade.edit
+              .form-group.row#performance_indicator
+                .col-md-6{:style => 'padding-left:40px;'}
+                  <performance-indicator-select \>
+        .panel.panel-default
+          .panel-heading
             .row
               .col-md-2.description{:style => "width:50%"}
-                {{#media_areas}}
-                <mediaarea/>
-                {{/media_areas}}
-              .col-md-2.metrics{:style=>"width:40%; display:flex; flex-direction:column;"}
-                {{#formatted_metrics:key}}
-                <metric/>
-                {{/formatted_metrics}}
-          .fade.edit
-            {{> media_appearance_edit}}
-    <reminders/>
-    <notes/>
+                =t('.areas')
+                \/
+                =t('.subareas')
+              .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
+          .panel-content{'data-toggle'=>'edit'}
+            .fade.no_edit.in
+              .row
+                .col-md-2.description{:style => "width:50%"}
+                  {{#media_areas}}
+                  <mediaarea/>
+                  {{/media_areas}}
+                .col-md-2.metrics{:style=>"width:40%; display:flex; flex-direction:column;"}
+                  {{#formatted_metrics:key}}
+                  <metric/>
+                  {{/formatted_metrics}}
+            .fade.edit
+              {{> media_appearance_edit}}
+      <reminders/>
+      <notes/>
 
 %script#new_media_appearance_template{:type => 'template/ractive'}
   .row.media_appearance.well.well-sm.form.template-upload
@@ -242,14 +253,14 @@
           {{ name }}
       {{/subareas }}
       {{/areas }}
-    .col-md-2{:style => "width:50%"}
-      .form-group.hr_metrics.row#positivity_rating
+    .col-md-2{:style => "width:50%; display:flex; flex-direction:column;"}
+      .form-group.hr_metrics#positivity_rating
         %label.control-label.col-md-2{:for => 'positivity_rating', :style => "width:40%"}= t('.pos_rating')
         =select_tag "media_appearance[positivity_rating_id]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%", :value => "{{positivity_rating_id}}"
-      .form-group.hr_metrics.row#violation_severity{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
+      .form-group.hr_metrics#violation_severity{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
         %label.control-label.col-md-2{:for => 'violation_severity', :style => "width:40%"}= t('.violation_severity')
         =select_tag "media_appearance[violation_severity_id]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%", :value => "{{violation_severity_id}}"
-      .form-group.hr_metrics.row#people_affected{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
+      .form-group.hr_metrics#people_affected{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
         %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.num_people')
         %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "media_appearance[affected_people_count]", :style => "width:15%", :value => "{{affected_people_count}}"}
 

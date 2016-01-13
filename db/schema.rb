@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151221005515) do
+ActiveRecord::Schema.define(version: 20160112235437) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20151221005515) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "progress",    limit: 255
+    t.string   "index",       limit: 10
   end
 
   create_table "areas", force: :cascade do |t|
@@ -152,6 +153,7 @@ ActiveRecord::Schema.define(version: 20151221005515) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "index",             limit: 10
   end
 
   create_table "outreach_event_areas", force: :cascade do |t|
@@ -197,6 +199,7 @@ ActiveRecord::Schema.define(version: 20151221005515) do
     t.text     "target"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "index",       limit: 10
   end
 
   create_table "planned_results", force: :cascade do |t|
@@ -204,6 +207,7 @@ ActiveRecord::Schema.define(version: 20151221005515) do
     t.integer  "strategic_priority_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "index",                 limit: 10
   end
 
   create_table "positivity_ratings", force: :cascade do |t|

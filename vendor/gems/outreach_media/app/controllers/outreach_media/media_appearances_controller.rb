@@ -4,6 +4,7 @@ class OutreachMedia::MediaAppearancesController < ApplicationController
     @media_appearance = MediaAppearance.new
     @areas = Area.all
     @subareas = Subarea.extended
+    @planned_results = PlannedResult.all_with_associations
   end
 
   def create

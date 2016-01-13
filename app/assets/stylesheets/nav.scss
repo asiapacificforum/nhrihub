@@ -62,7 +62,7 @@ $nav_active_text : #645252;
 }
 
 // show dropdown menu on hover of menu item
-.dropdown:hover .dropdown-menu {
+.nav .dropdown:hover .dropdown-menu {
   display: block;
 }
 
