@@ -1,4 +1,36 @@
 MediaPage = ->
+  new_media_appearance : ->
+    ma =
+        id: null
+        file_id: null
+        filesize: null
+        original_filename: null
+        original_type: null
+        user_id: null
+        url: null
+        title: null
+        positivity_rating_id: null
+        violation_severity_id: null
+        lastModifiedDate: null
+        article_link: null
+        date: null
+        positivity_rating: null
+        violation_severity: null
+        violation_coefficient: null
+        affected_people_count: null
+        has_link: false
+        has_scanned_doc: false
+        media_areas: []
+        area_ids: []
+        subarea_ids: []
+        performance_indicator_ids: []
+        reminders: []
+        notes: []
+        create_reminder_url: null
+        create_note_url: null
+
+    _.extend({},ma)
+
   text_fields : ->
     _($('.media_appearance .basic_info .title:visible .no_edit span','.magic-lamp')).
       map (el)-> $(el).text()
@@ -78,9 +110,20 @@ describe 'Media page', ->
     window.subareas = MagicLamp.loadJSON('subareas_data')
     window.new_media_appearance = MagicLamp.loadJSON('new_media_appearance')
     window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
+    window.maximum_filesize = MagicLamp.loadJSON('maximum_filesize')
+    window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
+    window.planned_results = []
+    window.performance_indicators = []
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     @page = new MediaPage()
-    $.getScript "/assets/media.js", -> done()
+    $.getScript("/assets/media.js").
+      done( -> 
+        console.log "(Media page) javascript was loaded"
+        done()). # the media_appearances.js app , start_page(), define_media
+      fail( (jqxhr, settings, exception) ->
+        console.log "Triggered ajaxError handler"
+        console.log settings
+        console.log exception)
 
   beforeEach ->
     media.set_defaults()
@@ -139,16 +182,19 @@ describe 'Media page', ->
     expect(@page.text_fields_length()).to.equal 0
 
   it 'filters media appearances by violation coefficient', ->
+    # only applies to hr_violation, all non-hr_violation instances have violation_coefficient set to 0
+    # so they're included if vc_min is 0 and not included if vc_min > 0
+    expect(@page.text_fields_length()).to.equal 8
     @page.violation_coefficient('min').val(0.2)
     simulant.fire(@page.violation_coefficient('min')[0],'change')
-    @page.violation_coefficient('max').val(0.8)
+    @page.violation_coefficient('max').val(10.1)
     simulant.fire(@page.violation_coefficient('max')[0],'change')
-    expect(filter_criteria.vc_min()).to.equal "0.2"
-    expect(filter_criteria.vc_max()).to.equal "0.8"
+    expect(filter_criteria.vc_min()).to.equal "0.2" # all non-hr_violation excluded
+    expect(filter_criteria.vc_max()).to.equal "10.1"
+    expect(@page.text_fields_length()).to.equal 2
+    @page.violation_coefficient('max').val(5)
+    simulant.fire(@page.violation_coefficient('max')[0],'change')
     expect(@page.text_fields_length()).to.equal 1
-    @page.violation_coefficient('max').val(20)
-    simulant.fire(@page.violation_coefficient('max')[0],'change')
-    expect(@page.text_fields_length()).to.equal 8
 
   it 'shows error message when invalid minimum validation coefficient values are entered',->
     @page.violation_coefficient('min').val('A')
@@ -237,10 +283,11 @@ describe 'Media page', ->
   it 'filters media appearances by # people affected', ->
     @page.people_affected('min').val(444)
     simulant.fire(@page.people_affected('min')[0],'change')
-    @page.people_affected('max').val(6000000)
+    @page.people_affected('max').val(4000)
     simulant.fire(@page.people_affected('max')[0],'change')
     expect(filter_criteria.pa_min()).to.equal "444"
-    expect(filter_criteria.pa_max()).to.equal "6000000"
+    expect(filter_criteria.pa_max()).to.equal "4000"
+    # one hr_violation instance matches, one hr_violation instance doesn't match, and all 6 not hr_violation are automatically excluded
     expect(@page.text_fields_length()).to.equal 1
 
   it 'shows error message when invalid minimum # people values are entered',->
@@ -275,11 +322,40 @@ describe 'Media page', ->
   it 'initializes the filter parameters with the lowest and highest actual values', ->
     expect(@page.$date_from().val()).to.equal '01/01/2014'
     expect(@page.$date_to().val()).to.equal '01/01/2015'
-    expect(@page.violation_coefficient('min').val()).to.equal '0.7'
+    expect(@page.violation_coefficient('min').val()).to.equal '0'
     expect(@page.violation_coefficient('max').val()).to.equal '10'
-    expect(@page.positivity_rating('min').val()).to.equal '2'
-    expect(@page.positivity_rating('max').val()).to.equal '9'
-    expect(@page.violation_severity('min').val()).to.equal '2'
-    expect(@page.violation_severity('max').val()).to.equal '9'
-    expect(@page.people_affected('min').val()).to.equal '555'
-    expect(@page.people_affected('max').val()).to.equal '55500000'
+    expect(@page.positivity_rating('min').val()).to.equal '1'
+    expect(@page.positivity_rating('max').val()).to.equal '5'
+    expect(@page.violation_severity('min').val()).to.equal '0'
+    expect(@page.violation_severity('max').val()).to.equal '5'
+    expect(@page.people_affected('min').val()).to.equal '0'
+    expect(@page.people_affected('max').val()).to.equal '555' #b/c all the non-hr_violation values were set to zero
+
+  it 'renders new media_appearance form even if entered values are outside filter range', ->
+    ma1 = _.extend({}, @page.new_media_appearance())
+
+    ma2 = _.extend(@page.new_media_appearance(), {
+                                            title: "bar",
+                                            id : 44,
+                                            affected_people_count : 15,
+                                            area_ids : [1],
+                                            subarea_ids : [1]})
+
+    ma3 = _.extend(@page.new_media_appearance(), {
+                                            title: "baz",
+                                            id : 48,
+                                            affected_people_count : 23 ,
+                                            area_ids : [1],
+                                            subarea_ids : [1]})
+
+
+    media.set({'media_appearances': [ma1,ma2,ma3]})
+    media.populate_min_max_fields()
+    expect($('.media_appearance:visible').length).to.equal 3
+    expect(media.get('filter_criteria.pa_min')).to.equal 0 # due to the new_media_appearance
+    expect(media.get('filter_criteria.pa_max')).to.equal 23
+    media.findAllComponents('ma')[0].set('metrics.affected_people_count.value',30)
+    expect($('.media_appearance:visible').length).to.equal 3
+    media.findAllComponents('ma')[1].set('editing',true)
+    media.findAllComponents('ma')[1].set('metrics.affected_people_count.value',40)
+    expect($('.media_appearance:visible').length).to.equal 3

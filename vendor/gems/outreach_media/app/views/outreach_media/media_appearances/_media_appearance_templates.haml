@@ -82,7 +82,7 @@
         %span.error_message= t('defaults.invalid')
   #media_appearances
     {{#media_appearances}}
-    <ma on-edit='edit', area_ids='{{area_ids}}', expanded='false', description_error='{{description_error}}' id='{{id}}' title='{{title}}' date='{{date}}'  metrics='{{metrics}}'  has_link='{{has_link}}'  has_scanned_doc='{{has_scanned_doc}}'  media_areas='{{media_areas}}'  reminders='{{reminders}}'  notes='{{notes}}'  create_reminder_url='{{create_reminder_url}}'  create_note_url='{{create_note_url}}'  url='{{url}}'/>
+    <ma area_ids='{{area_ids}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' description_error='{{description_error}}' file_id='{{file_id}}' filesize='{{filesize}}' description_error='{{description_error}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' media_areas='{{media_areas}}' metrics='{{metrics}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' positivity_rating_id='{{positivity_rating_id}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' violation_severity_id='{{violation_severity_id}}' />
     {{/media_appearances}}
 
 %script#media_appearance_template{:type => 'template/ractive'}
@@ -96,43 +96,40 @@
   .row.media_appearance.well.well-sm.editable_container{:style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
       .row.basic_info
-        .col-md-2.date{:style => "width:15%"} {{ date }}
+        .col-md-2.date{'data-toggle'=>:edit, :style => "width:15%"}
+          .fade.no_edit.in
+            %span {{ date }}
+          .fade.edit{:style => "margin-top:26px;"}
+            %span {{ date }}
         .col-md-2.title{'data-toggle'=>'edit', :style => "width:60%"}
           .fade.no_edit.in
             %span {{ title }}
           .fade.edit{:style => "width: 100%"}
             {{> edit_title}}
-            .row.fileupload{:decorator => 'file_upload'}
-              .col-md-3#fileinput_button
-                %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-                %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'media_appearance[file]'}
-              .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
-                {{#original_filename}}
-                <file/>
-                {{/original_filename}}
             .row.form-group{:class => "{{#media_appearance_error}}has-error{{/}}", :style => "margin-bottom:0px"}
               .col-md-5
                 %span.help-block#media_appearance_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_error_message')
             .row.form-group{:class => "{{#media_appearance_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
               .col-md-5
                 %span.help-block#media_appearance_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.media_appearance_double_attachment_error_message')
-            .row
-              .col-md-3
-                %label{:for => 'media_appearance_article_link'}= t('.weblink')
-              .col-md-9
-                %input.article_link{:name => "media_appearance_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
         .col-md-2.actions{:style => "width:25%"}
           .row{:style => "margin-left:0px;"}
-            .col-md-1.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px;"}
-            .col-md-1
-              %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
-            {{#if has_link }}
-            .col-md-1
-              %i.fa.fa-globe{'on-click' => 'fetch_link()'}
-            {{elseif has_scanned_doc }}
-            .col-md-1
-              %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
-            {{/if}}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                .alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                {{#if has_link }}
+                %i.fa.fa-globe{'on-click' => 'fetch_link()'}
+                {{elseif has_scanned_doc }}
+                %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+                {{/if}}
+              .edit
             .col-md-1.icon{ 'data-toggle' => 'edit'}
               .fade.edit
                 %i.fa.fa-remove{:id => "media_appearance_editable{{id}}_edit_cancel"}
@@ -141,14 +138,35 @@
                 %i.fa.fa-check{:id => "media_appearance_editable{{id}}_edit_save"}
               .fade.no_edit.in
                 %i.fa.fa-pencil-square-o{:id => "media_appearance_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
-            .col-md-1
-              %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
+              .edit
             .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
-              {{#if expanded}}
-              %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
-              {{else}}
-              %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
-              {{/if}}
+              %div{'data-toggle'=>:edit}
+                .no_edit.in
+                  {{#if expanded}}
+                  %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
+                  {{else}}
+                  %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
+                  {{/if}}
+                .edit
+      .row.fileupload{:decorator => 'file_upload', 'data-toggle'=>:edit}
+        .fade.no_edit.in
+        .fade.edit{:style => "padding-left:20px;"}
+          .row{:style => "margin-bottom: 12px;"}
+            .col-md-2{:style => "width:15%"}
+              %label{:for => 'media_appearance_article_link'}= t('.weblink')
+            .col-md-9{:style => "padding-left:8px"}
+              %input.article_link{:name => "media_appearance_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
+          .row{:style => "margin-bottom: 12px;"}
+            .col-md-2#fileinput_button{:style => "width:15%"}
+              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
+              %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'media_appearance[file]'}
+            .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row; padding-left:8px;"}
+              {{#original_filename}}
+              <file/>
+              {{/original_filename}}
       .collapse.expanded_info{:class => "collapse{{id}}"}
         .panel.panel-default
           .panel-heading
@@ -156,10 +174,15 @@
               .col-md-2= t('.performance_indicators')
           .panel-content{'data-toggle' => :edit}
             .fade.no_edit.in
+              .row
+                .col-md-6.col-md-offset-1#performance_indicators{:style => "display:flex; flex-direction:column"}
+                  {{>performance_indicator_list}}
             .fade.edit
               .form-group.row#performance_indicator
                 .col-md-6{:style => 'padding-left:40px;'}
                   <performance-indicator-select \>
+                .col-md-6#performance_indicators{:style => "display:flex; flex-direction:column"}
+                  {{>performance_indicator_list}}
         .panel.panel-default
           .panel-heading
             .row
@@ -176,13 +199,30 @@
                   <mediaarea/>
                   {{/media_areas}}
                 .col-md-2.metrics{:style=>"width:40%; display:flex; flex-direction:column;"}
-                  {{#formatted_metrics:key}}
-                  <metric/>
-                  {{/formatted_metrics}}
+                  .metric{:id =>:positivity_rating}
+                    .name= t('.positivity')
+                    .value {{ positivity_rating_rank_text }}
+                  .metric{:id =>"violation_severity", :style => '{{#unless hr_violation}}display:none{{/unless}}'}
+                    .name= t('.severity')
+                    .value {{ violation_severity_rank_text }}
+                  .metric{:id =>"violation_coefficient", :style => '{{#unless hr_violation}}display:none{{/unless}}'}
+                    .name= t('.coefficient')
+                    .value {{ violation_coefficient }}
+                  .metric{:id =>"affected_people_count", :style => '{{#unless hr_violation}}display:none{{/unless}}'}
+                    .name= t('.people_affected')
+                    .value {{ affected_people_count }}
             .fade.edit
               {{> media_appearance_edit}}
       <reminders/>
       <notes/>
+
+%script#performance_indicator_list{:type => 'template/ractive'}
+  {{#performance_indicator_ids}}
+  %div.performance_indicator {{performance_indicators[.]}}
+  {{/performance_indicator_ids}}
+  {{^performance_indicator_ids}}
+  %div.performance_indicator=t('.none_assigned')
+  {{/performance_indicator_ids}}
 
 %script#new_media_appearance_template{:type => 'template/ractive'}
   .row.media_appearance.well.well-sm.form.template-upload
@@ -239,17 +279,20 @@
 %script#media_appearance_edit{:type => 'text/ractive'}
   .row
     .col-md-2{:style => "width:50%"}
-      {{#areas }}
+      {{#areas:i}}
       /* this component will work when the ractive bug is fixed and version 0.8 is stable */
       /* <area-select id='{{id}}' area_id='{{id}}' area_ids='{{area_ids}}' name='{{name}}' subareas='{{subareas}}'/> */
+      /* media_appearance_areas is a hash {area_id:1, subarea_ids:[1,3,5]}
       .checkbox
         %label
           %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
+          {{@keypath}}
           {{ name }}
       {{#subareas }}
       .checkbox.subarea
         %label
           %input{:type=>:checkbox, :id => 'media_appearance_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
+          {{@keypath}}
           {{ name }}
       {{/subareas }}
       {{/areas }}
@@ -274,11 +317,11 @@
   {{/subareas}}
 
 %script#selected_file_template{:type => 'template/ractive'}
-  #selected_file
-    {{ original_filename }}
+  #selected_file {{ original_filename }}
   %div
     %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px', 'on-click'=>'deselect_file()'}
   .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
     %span.help-block#filesize_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.too_large')
   .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
     %span.help-block#filetype_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.unpermitted_type')
+

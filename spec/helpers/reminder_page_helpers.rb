@@ -8,7 +8,7 @@ module ReminderPageHelpers
   def open_reminders_panel
     reminders_icon.click
     page.find('i#add_reminder', :visible => true, :wait => 20)
-    sleep(0.2) # b/c capy finds it on the page before css transitions are complete, I think
+    sleep(0.2) # b/c capybara finds it on the page before css transitions are complete, I think
   end
 
   def reminders_icon

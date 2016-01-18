@@ -110,9 +110,8 @@
         persisted : ->
           !isNaN(parseInt(@get('id')))
       save_note : ->
-        context = $(@el)
         url = @parent.get('create_note_url')
-        data = context.find('#new_note :input').serializeArray()
+        data = $(@find('#new_note')).find(':input').serializeArray()
         if @validate(data)
           $.ajax
             type : 'post'

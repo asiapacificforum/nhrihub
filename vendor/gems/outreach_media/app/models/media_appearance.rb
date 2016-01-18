@@ -10,10 +10,25 @@ class MediaAppearance < ActiveRecord::Base
   has_many :areas, :through => :media_areas
   has_many :media_subareas, :dependent => :destroy
   has_many :subareas, :through => :media_subareas
+  has_many :media_appearance_performance_indicators, :dependent => :delete_all
+  has_many :performance_indicators, :through => :media_appearance_performance_indicators
 
   attachment :file
 
   default_scope { order('created_at desc') }
+
+  before_save do |media_appearance|
+    if !media_appearance.is_hr_violation?
+      # probably would always be zero, but this facilitates testing!
+      media_appearance.affected_people_count = 0
+      media_appearance.violation_coefficient = 0
+      media_appearance.violation_severity_id = nil
+    end
+  end
+
+  def is_hr_violation?
+    subarea_ids.include? Subarea.hr_violation_id
+  end
 
   def self.maximum_filesize
     SiteConfig['outreach_media.filesize']*1000000
@@ -25,24 +40,25 @@ class MediaAppearance < ActiveRecord::Base
 
   def as_json(options={})
     super({:except => [:updated_at,
-                       :created_at,
-                       :affected_people_count,
-                       :violation_severity,
-                       :violation_coefficient],
+                       :created_at],
            :methods=> [:date,
-                       :metrics,
+                       #:metrics,
                        :has_link,
                        :article_link,
                        :has_scanned_doc,
                        :media_areas,
                        :area_ids,
                        :subarea_ids,
+                       :performance_indicator_ids,
+                       :positivity_rating_rank_text,
+                       :positivity_rating_id,
                        :reminders,
                        :notes,
                        :create_reminder_url,
                        :create_note_url,
                        :url,
-                       :attachment_url]})
+                       :violation_severity_rank_text,
+                       :violation_severity_id]})
   end
 
   def positivity_rating_rank=(val)
@@ -81,9 +97,10 @@ class MediaAppearance < ActiveRecord::Base
     created_at.to_time.to_date.to_s(:default) if persisted? # to_time converts to localtime
   end
 
-  def metrics
-    MediaAppearanceMetrics.new(self)
-  end
+  #def metrics
+  #TODO remove the MediaAppearanceMetrics class
+    #MediaAppearanceMetrics.new(self)
+  #end
 
   def has_link
     !article_link.blank?
@@ -95,11 +112,13 @@ class MediaAppearance < ActiveRecord::Base
 
   #def violation_coefficient
     #vc = read_attribute(:violation_coefficient)
+  #TODO prob can delete LocalMetric class
     #LocalMetric.new(vc, :media_appearance, :violation_coefficient)
   #end
 
   #def affected_people_count
     #apc = read_attribute(:affected_people_count)
+  #TODO prob can delete LocalMetric class
     #LocalMetric.new(apc, :media_appearance, :affected_people_count)
   #end
 end

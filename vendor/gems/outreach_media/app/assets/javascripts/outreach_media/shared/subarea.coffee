@@ -14,3 +14,6 @@ class @Subarea
 
   @find_by_extended_name : (extended_name)->
     _(@all()).detect (a)-> a.extended_name == extended_name
+
+  @hr_violation : ->
+    @find_by_extended_name("Human Rights Violation")

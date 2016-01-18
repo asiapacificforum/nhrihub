@@ -96,6 +96,7 @@ class @InpageEdit
           @edit(false)
         else
           @edit(true)
+        @options.object.set('editing',true)
         @context.find(@options.focus_element).first().focus()
         if @options.start_callback
           @options.start_callback()
@@ -107,6 +108,7 @@ class @InpageEdit
         if _.isFunction(@options.object.restore)
           @options.object.restore()
         UserInput.reset()
+        @options.object.set('editing',false)
         @context = $target.closest('.editable_container')
         @show()
 

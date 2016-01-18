@@ -84,6 +84,7 @@ en:
         start: "Start upload"
         cancel: "Cancel upload"
         files: "Files"
+        none_assigned: "none assigned"
 
     shared:
       common_templates:
@@ -169,7 +170,6 @@ en:
         min: "Min"
         max: "Max"
         choose_file : "Choose file"
-        choose_file : "Choose file"
         media_appearance_error_message: "A file or link must be included"
         media_appearance_double_attachment_error_message : "Either file or link, not both"
         weblink : "Enter web link"
@@ -183,3 +183,4 @@ en:
         num_people: "Number of people affected"
         enter_num_val: "Enter numerical value"
         performance_indicators: "Performance indicators"
+        none_assigned: "none assigned"

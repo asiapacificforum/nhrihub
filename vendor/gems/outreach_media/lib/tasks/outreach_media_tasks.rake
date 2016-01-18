@@ -49,14 +49,15 @@ end
 desc "populates media appearances with examples"
 task :populate_media => :environment do
   MediaAppearance.delete_all
+  Organization.delete_all
 
   100.times do
-    ma = FactoryGirl.create(:media_appearance,  [:file, :link].sample)
-    area = Area.all.sample
-    ma.areas << area
-    unless area.subareas.empty?
-      ma.subareas << area.subareas.sample(2)
-    end
+    ma = FactoryGirl.create(:media_appearance,  [:file, :link].sample, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
+    #area = Area.all.sample
+    #ma.areas << area
+    #unless area.subareas.empty?
+      #ma.subareas << area.subareas.sample(2)
+    #end
   end
 
 end

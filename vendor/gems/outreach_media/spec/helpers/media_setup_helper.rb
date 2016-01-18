@@ -45,12 +45,12 @@ module MediaSetupHelper
 
   def setup_positivity_ratings
     PositivityRating.delete_all
-    PositivityRating::DefaultValues.each { |pr| PositivityRating.create(:rank => pr.rank, :text => pr.text) }
+    PositivityRating::DefaultValues.each { |pr| PositivityRating.create(:rank => pr.rank) }
   end
 
   def setup_violation_severities
     ViolationSeverity.delete_all
-    ViolationSeverity::DefaultValues.each { |vs| ViolationSeverity.create(:rank=>vs.rank, :text => vs.text) }
+    ViolationSeverity::DefaultValues.each { |vs| ViolationSeverity.create(:rank=>vs.rank) }
   end
 
   def setup_areas

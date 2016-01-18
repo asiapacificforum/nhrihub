@@ -93,22 +93,6 @@ $ ->
     components :
       'subarea-select' : SubareaSelect
 
-  # fileupload_options =
-  #  permittedFiletypes: permitted_filetypes,
-  #  maxFileSize: parseInt(maximum_filesize),
-  #  failed: (e,data)->
-  #    if data.errorThrown != 'abort'
-  #      alert("The upload failed for some reason")
-  #  prependFiles : false
-  #  formData: ->
-  #    inputs = @context.find(':input') # TODO must take formdata from the ractive instance not the dom
-  #    inputs.serializeArray()
-  #  filesContainer: '#media_appearances'
-  #  downloadTemplateId: '#show_media_appearance_template'
-  #  uploadTemplateId: '#selected_file_template'
-  #  uploadTemplateContainerId: '#selected_file_container'
-  #  fileInput : "#media_appearance_file"
-
   FileUpload = (node)->
     $(node).fileupload
       dataType: 'json'
@@ -146,6 +130,11 @@ $ ->
 
   PerformanceIndicatorSelect = Ractive.extend
     template : '#performance_indicator_select'
+    select : ->
+      id = $(@event.original.target).data('id')
+      outreach_event = @parent
+      @parent.push('performance_indicator_ids', id)
+      false
 
   MediaAppearance = Ractive.extend
     template : '#media_appearance_template'
@@ -161,6 +150,7 @@ $ ->
       # 'area-select' : AreaSelect
     oninit : ->
       @set
+        'editing' : false
         'title_error': false
         'media_appearance_error':false
         'media_appearance_double_attachment_error':false
@@ -171,26 +161,39 @@ $ ->
       model_name : ->
         "media_appearance"
       hr_violation : ->
-        id = Subarea.find_by_extended_name("Human Rights Violation").id
+        id = Subarea.hr_violation().id
         _(@get('subarea_ids')).indexOf(id) != -1
       formatted_metrics : ->
         metrics = $.extend(true,{},@get('metrics'))
-        metrics.affected_people_count.value = @get('metrics').affected_people_count.value.toLocaleString()
+        if !_.isNull(affected_people_count)
+          affected_people_count = @get('metrics').toLocaleString()
         metrics
       count : ->
         t = @get('title') || ""
         100 - t.length
       include : ->
-        @_matches_title() &&
-        @_matches_from() &&
-        @_matches_to() &&
-        @_matches_area_subarea() &&
-        @_matches_violation_coefficient() &&
-        @_matches_positivity_rating() &&
-        @_matches_violation_severity() &&
-        @_matches_people_affected()
+        @get('editing') ||
+          (@_matches_title() &&
+          @_matches_from() &&
+          @_matches_to() &&
+          @_matches_area_subarea() &&
+          @_matches_violation_coefficient() &&
+          @_matches_positivity_rating() &&
+          @_matches_violation_severity() &&
+          @_matches_people_affected())
       persisted : ->
         !_.isNull(@get('id'))
+      match_vector : ->
+        matches_from : @_matches_from()
+        matches_to : @_matches_to()
+        matches_area_subarea : @_matches_area_subarea()
+        matches_area : @_matches_area()
+        matches_subarea: @_matches_subarea()
+        matches_people_affected : @_matches_people_affected()
+        matches_violation_severity : @_matches_violation_severity()
+        matches_violation_coefficient : @_matches_violation_coefficient()
+        matches_positivity_rating : @_matches_positivity_rating()
+        matches_title: @_matches_title()
     _matches_from : ->
       new Date(@get('date')) >= new Date(@get('filter_criteria.from'))
     _matches_to : ->
@@ -213,13 +216,30 @@ $ ->
         return true if _.isEmpty(@get('filter_criteria.subareas'))
         _.isEqual(@get('subarea_ids').slice().sort(), @get('filter_criteria.subareas').slice().sort())
     _matches_people_affected : ->
-      @_between(parseInt(@get('filter_criteria.pa_min')),parseInt(@get('filter_criteria.pa_max')),parseInt(@get('metrics.affected_people_count.value')))
+      if @get('hr_violation')
+        value = parseInt(@get('affected_people_count'))
+        value = 0 if !_.isNumber(value) || _.isNaN(value) # null value is interpreted as zero for hr_violation instances
+      else
+        value = 0
+      @_between(parseInt(@get('filter_criteria.pa_min')),parseInt(@get('filter_criteria.pa_max')),value)
     _matches_violation_severity : ->
-      @_between(parseInt(@get('filter_criteria.vs_min')),parseInt(@get('filter_criteria.vs_max')),parseInt(@get('metrics.violation_severity.value')))
+      # note, violation_severity_rank_text is a string of the form "4: some text here", but parseInt converts appropriately!
+      if @get('hr_violation')
+        value = parseInt(@get('violation_severity_rank_text'))
+        value = 0 if !_.isNumber(value) || _.isNaN(value) # null value is interpreted as zero for hr_violation instances
+      else
+        value = 0
+      @_between(parseInt(@get('filter_criteria.vs_min')),parseInt(@get('filter_criteria.vs_max')),value)
     _matches_violation_coefficient : ->
-      @_between(parseFloat(@get('filter_criteria.vc_min')),parseFloat(@get('filter_criteria.vc_max')),parseFloat(@get('metrics.violation_coefficient.value')))
+      if @get('hr_violation')
+        value = parseFloat(@get('violation_coefficient'))
+        value = 0 if !_.isNumber(value) || _.isNaN(value) # null value is interpreted as zero for hr_violation instances
+      else
+        value = 0
+      @_between(parseFloat(@get('filter_criteria.vc_min')),parseFloat(@get('filter_criteria.vc_max')),value)
     _matches_positivity_rating : ->
-      @_between(parseInt(@get('filter_criteria.pr_min')),parseInt(@get('filter_criteria.pr_max')),parseInt(@get("metrics.positivity_rating.rank")))
+      # note, positivity_rating_rank_text is a string of the form "4: some text here", but parseInt converts appropriately!
+      @_between(parseInt(@get('filter_criteria.pr_min')),parseInt(@get('filter_criteria.pr_max')),parseInt(@get("positivity_rating_rank_text")))
     _between : (min,max,val)->
       return true if _.isNaN(val) # declare match if there's no value
       min = if _.isNaN(min) # from the input element a zero-length string can be presented
@@ -334,6 +354,10 @@ $ ->
       @restore()
     create_instance_attributes: ->
       attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id','article_link')
+      if _.isEmpty(@get('performance_indicator_ids'))
+        attrs.performance_indicator_ids = [""]
+      else
+        attrs.performance_indicator_ids = @get('performance_indicator_ids')
       if _.isEmpty(@get('area_ids'))
         attrs.area_ids = [""] # hack to workaround jQuery not sending empty arrays
       else
@@ -359,7 +383,12 @@ $ ->
       else
         saids = _(@get('subarea_ids')).map (said)->
                   {name : 'media_appearance[subarea_ids][]', value: said}
-      _.union(name_value,aids,saids)
+      if _.isEmpty(@get('performance_indicator_ids'))
+        pids = [{name : 'media_appearance[performance_indicator_ids][]', value: ""}]
+      else
+        pids = _(@get('performance_indicator_ids')).map (pid)->
+                  {name : 'media_appearance[performance_indicator_ids][]', value: pid}
+      _.union(name_value,aids,saids,pids)
     stash : ->
       @stashed_instance = $.extend(true,{},@get())
     restore : ->
@@ -390,13 +419,13 @@ $ ->
       redirectWindow = window.open(@get('article_link'), '_blank')
       redirectWindow.location
 
-
   window.media_page_data = -> # an initialization data set so that tests can reset between
     expanded : false
     media_appearances: media_appearances
     areas : areas
     create_media_appearance_url: create_media_appearance_url
     planned_results : planned_results
+    performance_indicators : performance_indicators
     filter_criteria :
       title : ""
       from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation
@@ -423,13 +452,13 @@ $ ->
       dates : ->
         _(@findAllComponents('ma')).map (ma)->new Date(ma.get('date'))
       violation_coefficients : ->
-        _(@findAllComponents('ma')).map (ma)->parseFloat (ma.get("metrics.violation_coefficient.value") || 0.0 )
+        _(@findAllComponents('ma')).map (ma)->parseFloat (ma.get("violation_coefficient") || 0.0 )
       positivity_ratings : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.positivity_rating.rank")  || 0)
+        _(@findAllComponents('ma')).map (ma)->parseInt( parseInt(ma.get("positivity_rating_rank_text"))  || 0)
       violation_severities : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.violation_severity.rank")  || 0)
+        _(@findAllComponents('ma')).map (ma)->parseInt( parseInt(ma.get("violation_severity_rank_text"))  || 0)
       people_affecteds : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("metrics.affected_people_count.value")  || 0)
+        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("affected_people_count")  || 0)
       earliest : ->
         @min('dates')
       most_recent : ->

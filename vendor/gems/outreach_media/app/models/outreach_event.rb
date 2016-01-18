@@ -9,6 +9,8 @@ class OutreachEvent < ActiveRecord::Base
   has_many :subareas, :through => :outreach_event_subareas
   has_many :outreach_event_documents, :dependent => :destroy
   belongs_to :audience_type
+  has_many :outreach_event_performance_indicators, :dependent => :delete_all
+  has_many :performance_indicators, :through => :outreach_event_performance_indicators
 
   delegate :rank, :to => :impact_rating, :prefix => true, :allow_nil => true
 
@@ -29,6 +31,7 @@ class OutreachEvent < ActiveRecord::Base
                        :outreach_event_documents,
                        :area_ids,
                        :subarea_ids,
+                       :performance_indicator_ids,
                        :reminders,
                        :notes,
                        :create_reminder_url,

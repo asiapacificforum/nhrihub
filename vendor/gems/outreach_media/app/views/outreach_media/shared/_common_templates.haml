@@ -45,11 +45,11 @@
   {{/subareas }}
 
 %script#edit_title{:type => 'text/ractive'}
-  .form-group.clearfix{:class => "{{#title_error}}has-error{{/}}"}
-    =label_tag :title, t('.title'), :class => 'control-label sr-only'
-    .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
-    =text_field_tag '{{model_name}}[title]', nil, :class => 'form-control', :id => '{{model_name}}_title', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
-    %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
+  .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
+    .col-md-12.clearfix
+      .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
+      =text_field_tag '{{model_name}}[title]', nil, :class => 'form-control', :id => '{{model_name}}_title', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
+      %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
 %script#performance_indicator_select{:type => 'template/ractive'}
   .dropdown.performance_indicator_select
@@ -59,24 +59,24 @@
     %ul.dropdown-menu
       %li.dropdown-header= t('.planned_result')
       {{#planned_results }}
-      %li.dropdown-submenu
-        %a{'on-click' => 'show_submenu()'} {{ indexed_description }}
+      %li.dropdown-submenu.planned_result
+        %a {{ indexed_description }}
         %ul.dropdown-menu
           %li.dropdown-header= t('.outcome')
           {{#outcomes }}
-          %li.dropdown-submenu
-            %a{'on-click' => 'show_submenu()'} {{ indexed_description }}
+          %li.dropdown-submenu.outcome
+            %a {{ indexed_description }}
             %ul.dropdown-menu
               %li.dropdown-header= t('.activity')
               {{#activities}}
-              %li.dropdown-submenu
-                %a{'on-click' => 'show_submenu()'} {{ indexed_description }}
+              %li.dropdown-submenu.activity
+                %a {{ indexed_description }}
                 %ul.dropdown-menu
                   %li.dropdown-header= t('.performance_indicator')
                   {{#performance_indicators}}
-                  %li.performance_indicator.selected
-                    %a.opt
-                      %span.text {{ indexed_description }}
+                  %li.performance_indicator
+                    %a.opt{ 'on-click'=>'select(this)'}
+                      %span.text{'data-id'=>'{{id}}'} {{ indexed_description }}
                       %span.fa.fa-check
                   {{/performance_indicators}}
               {{/activities}}

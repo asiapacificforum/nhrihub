@@ -115,6 +115,8 @@
 
 :coffeescript
   $ ->
+    Ractive.DEBUG = false
+
     PopoverEdit = (node,id)->
       ractive = @
       @edit = new InpageEdit
@@ -132,8 +134,6 @@
         }
 
     Ractive.decorators.popover_edit = PopoverEdit
-
-    Ractive.DEBUG = false
 
     Recipient = Ractive.extend
       template : '#recipient_template'
@@ -154,9 +154,8 @@
         persisted : ->
           !isNaN(parseInt(@get('id')))
       save_reminder : ->
-        context = $(@el)
         url = @parent.get('create_reminder_url')
-        data = context.find('#new_reminder :input').serializeArray()
+        data = $(@find('#new_reminder')).find(':input').serializeArray()
         if @validate(data)
           $.ajax
             type : 'post'

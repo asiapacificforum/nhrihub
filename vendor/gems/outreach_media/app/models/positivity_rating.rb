@@ -10,4 +10,8 @@ class PositivityRating < ActiveRecord::Base
                     OpenStruct.new(:rank => 5) ]
 
   include OutreachMediaMetric
+
+  def as_json(options={})
+    super(:only => [], :methods => :rank_text)
+  end
 end

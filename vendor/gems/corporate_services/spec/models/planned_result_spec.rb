@@ -53,3 +53,20 @@ describe "#indexed_description" do
     end
   end
 end
+
+describe "#indexed_description" do
+  context "for the first in the planned result" do
+    before do
+      stp = StrategicPlan.create(:start_date => 6.months.ago.to_date )
+      StrategicPriority.create(:description => 'first strategic priority', :priority_level => 1, :strategic_plan_id => stp.id)
+      @sp = StrategicPriority.create(:description => 'first strategic priority', :priority_level => 2, :strategic_plan_id => stp.id)
+      @planned_result = PlannedResult.create(:strategic_priority_id => @sp.id, :description => "first planned result")
+    end
+
+    it "should prepend the index to the description value" do
+      expect( @planned_result.indexed_description ).to eq "2.1 first planned result"
+      @planned_result = PlannedResult.create(:strategic_priority_id => @sp.id, :description => "second planned result")
+      expect( @planned_result.indexed_description ).to eq "2.2 second planned result"
+    end
+  end
+end

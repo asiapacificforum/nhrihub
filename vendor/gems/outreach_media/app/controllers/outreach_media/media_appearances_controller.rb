@@ -1,8 +1,8 @@
 class OutreachMedia::MediaAppearancesController < ApplicationController
   def index
-    @media_appearances = MediaAppearance.all
+    @media_appearances = MediaAppearance.includes(:subareas, :violation_severity, :positivity_rating, :performance_indicators, :notes, :reminders, :areas => :subareas).all
     @media_appearance = MediaAppearance.new
-    @areas = Area.all
+    @areas = Area.includes(:subareas).all
     @subareas = Subarea.extended
     @planned_results = PlannedResult.all_with_associations
   end
@@ -43,7 +43,7 @@ class OutreachMedia::MediaAppearancesController < ApplicationController
       params["media_appearance"]["filesize"] = params[:media_appearance][:file].size
       params["media_appearance"]["original_type"] = params[:media_appearance][:file].content_type
       params[:media_appearance][:article_link] = nil
-    elsif params[:media_appearance][:article_link]
+    elsif !params[:media_appearance][:article_link].blank?
       params["media_appearance"]["original_filename"] = nil
       params["media_appearance"]["filesize"] = nil
       params["media_appearance"]["original_type"] = nil
@@ -64,6 +64,7 @@ class OutreachMedia::MediaAppearancesController < ApplicationController
              :lastModifiedDate,
              :article_link,
              :user_id,
+             :performance_indicator_ids => [],
              :area_ids => [],
              :subarea_ids => [])
   end

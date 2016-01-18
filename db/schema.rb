@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160112235437) do
+ActiveRecord::Schema.define(version: 20160117020145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -91,6 +91,13 @@ ActiveRecord::Schema.define(version: 20160112235437) do
     t.integer  "user_id"
   end
 
+  create_table "media_appearance_performance_indicators", force: :cascade do |t|
+    t.integer  "media_appearance_id"
+    t.integer  "performance_indicator_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "media_appearances", force: :cascade do |t|
     t.string   "file_id",               limit: 255
     t.integer  "filesize"
@@ -99,11 +106,9 @@ ActiveRecord::Schema.define(version: 20160112235437) do
     t.integer  "user_id"
     t.string   "url"
     t.string   "title"
-    t.string   "note"
     t.integer  "affected_people_count"
     t.float    "violation_coefficient"
     t.integer  "positivity_rating_id"
-    t.integer  "reminder_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "violation_severity_id"
@@ -169,6 +174,13 @@ ActiveRecord::Schema.define(version: 20160112235437) do
     t.integer  "file_size"
     t.string   "file_filename",     limit: 255
     t.string   "file_content_type", limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "outreach_event_performance_indicators", force: :cascade do |t|
+    t.integer  "outreach_event_id"
+    t.integer  "performance_indicator_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -60,7 +60,7 @@ feature "create a new article", :js => true do
     fill_in('media_appearance_article_link', :with => "http://www.nytimes.com")
     expect{edit_save.click; sleep(0.5)}.to change{MediaAppearance.count}.from(0).to(1)
     ma = MediaAppearance.first
-    expect(ma.read_attribute(:affected_people_count)).to eq 100000 # b/c this attribute now returns a hash!
+    expect(ma.affected_people_count).to eq 100000 # b/c this attribute now returns a hash!
     sleep(0.4)
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 1)
     expect(page.find("#media_appearances .media_appearance .basic_info .title").text).to eq "My new article title"
@@ -330,23 +330,6 @@ feature "when there are existing articles", :js => true do
   end
 end
 
-feature "when there are multiple existing articles" , :js => true do
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
-  include MediaSpecHelper
-  include MediaSetupHelper
-
-  before do
-    setup_database(:multiple_media_appearances)
-    setup_file_constraints
-    resize_browser_window
-    visit outreach_media_media_appearances_path(:en)
-  end
-
-  scenario "edit an article putting it outside of current filter criteria" do
-    expect(1).to eq 0 # Haha get it done!
-  end
-end
-
 feature "enforce single user add or edit action", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include MediaSpecHelper
@@ -414,3 +397,31 @@ feature "view attachments", :js => true do
     end
   end
 end
+
+feature "performance indicator association", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaSpecHelper
+  include MediaSetupHelper
+
+  before do
+    setup_database(:media_appearance_with_file)
+    setup_strategic_plan
+    resize_browser_window
+    visit outreach_media_media_appearances_path(:en)
+    sleep(0.4)
+  end
+
+  scenario "add a performance indicator link" do
+    edit_article[0].click
+    select_performance_indicators.click
+    select_first_planned_result
+    select_first_outcome
+    select_first_activity
+    select_first_performance_indicator
+    pi = PerformanceIndicator.first
+    expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description )
+    page.execute_script("scrollTo(0,0)")
+    expect{edit_save.click; sleep(0.5)}.to change{MediaAppearance.first.performance_indicator_ids}.from([]).to([pi.id])
+  end
+end
+

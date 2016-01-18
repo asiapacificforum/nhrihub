@@ -2,17 +2,14 @@ FactoryGirl.define do
   factory :media_appearance do
     user
     positivity_rating
-    violation_severity
     title {Faker::Lorem.sentence(5)}
-    affected_people_count { rand(20000) }
-    violation_coefficient { (rand(100).to_f/100.to_f) }
     #after :create do |ma|
       #ma.notes << FactoryGirl.create(:note)
     #end
 
     trait :link do
       #article_link { Faker::Internet.url }
-      article_link { "http://www.nytimes.com" }
+      article_link { "http://www.nytimes.com" } # so we can actually test it!
     end
 
     trait :file do
@@ -43,30 +40,48 @@ FactoryGirl.define do
     end
 
     trait :hr_area do
-      after(:create) do |ma|
-        ma.areas << Area.where(:name => "Human Rights").first
-        ma.save
+      after(:build) do |ma|
+        hr_area = Area.where(:name => "Human Rights").first
+        ma.areas << hr_area
+        subareas = Subarea.where(:area_id => hr_area.id).where.not(:name => "Violation")
+        ma.subareas = subareas.sample(rand(6))
+        #if ma.subareas.map(&:name).include? 'Violation'
+          #violation_severity_ids = ViolationSeverity.pluck(:id)
+          #ma.violation_severity_id = violation_severity_ids.sample
+          #ma.affected_people_count = rand(20000)
+          #ma.violation_coefficient = rand(100).to_f/100.to_f
+        #end
+        #ma.save
       end
     end
 
     trait :si_area do
-      after(:create) do |ma|
+      after(:build) do |ma|
         ma.areas << Area.where(:name => "Special Investigations Unit").first
-        ma.save
+        #ma.save
       end
     end
 
     trait :gg_area do
-      after(:create) do |ma|
+      after(:build) do |ma|
         ma.areas << Area.where(:name => "Good Governance").first
-        ma.save
+        #ma.save
       end
     end
 
     trait :crc_subarea do
-      after(:create) do |ma|
+      after(:build) do |ma|
         ma.subareas << Subarea.where(:name => "CRC").first
-        ma.save
+        #ma.save
+      end
+    end
+
+    trait :hr_violation_subarea do
+      after(:build) do |ma|
+        hr_area = Area.where(:name => "Human Rights").first
+        ma.areas << hr_area
+        ma.subareas << Subarea.where(:name => "Violation", :area_id => hr_area.id).first
+        #ma.save
       end
     end
   end

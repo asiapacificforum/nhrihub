@@ -20,4 +20,16 @@
   permitted_filetypes = #{MediaAppearance.permitted_filetypes }
   planned_results = #{@planned_results.to_json }
 
+:coffeescript
+  window.performance_indicators = _.chain(planned_results).
+    map((pr)->pr.outcomes).
+    flatten().
+    map((pr)->pr.activities).
+    flatten().
+    map((a)->a.performance_indicators).
+    flatten().
+    map((a)->_(a).values()).
+    object().
+    value()
+
 = javascript_include_tag "media"

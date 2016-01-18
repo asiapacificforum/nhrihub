@@ -473,11 +473,9 @@ $ ->
           error : error
           context : context
       else # handle it with jquery fileupload
-        #$('.fileupload').fileupload('send',{files : this.get('outreach_event_documents')})
         $('.fileupload').fileupload('option',{url:@get('url'), type:'put', formData:@formData()})
         files = _(@findAllComponents('outreacheventdocument')).map (oed)-> oed.get('file')
         $('.fileupload').fileupload('send',{files : _(files).compact()})
-        #@get('fileupload').submit()
     fetch_link : ->
       window.location = @get('article_link')
     set_event_date_from_datepicker : (selectedDate)->

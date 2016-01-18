@@ -15,6 +15,11 @@ class StrategicPriority < ActiveRecord::Base
           :methods => [:url, :create_planned_result_url, :planned_results, :description_error] )
   end
 
+  # for the purposes of StrategicPlanIndexer
+  def index
+    priority_level.to_s
+  end
+
   def description_error
     nil
   end

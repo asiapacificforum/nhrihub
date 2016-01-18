@@ -6,10 +6,14 @@ media_appearance_subarea_matches = ->
   _(media.findAllComponents('ma')).map (ma)-> ma._matches_subarea()
 media_appearance_area_subarea_matches = ->
   _(media.findAllComponents('ma')).map (ma)-> ma._matches_area_subarea()
+media_appearance_affected_people_count_matches = ->
+  _(media.findAllComponents('ma')).map (ma)-> ma._matches_people_affected()
+media_appearance_violation_severity_matches = ->
+  _(media.findAllComponents('ma')).map (ma)-> ma._matches_violation_severity()
 
 
 describe "within range evaluation", ->
-  before (finished)->
+  before (done)->
     window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
@@ -17,11 +21,13 @@ describe "within range evaluation", ->
     window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
     window.maximum_filesize = MagicLamp.loadJSON('maximum_filesize')
     window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
+    window.planned_results = []
+    window.performance_indicators = []
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     $.getScript("/assets/media.js").
       done( -> 
-        console.log "javascript was loaded"
-        finished()). # the media_appearances.js app , start_page(), define_media
+        console.log "(within range evaluation) javascript was loaded"
+        done()). # the media_appearances.js app , start_page(), define_media
       fail( (jqxhr, settings, exception) ->
         console.log "Triggered ajaxError handler"
         console.log settings
@@ -101,8 +107,19 @@ describe "area and subarea matching algorithm", ->
     window.subareas = MagicLamp.loadJSON('subareas_data')
     window.new_media_appearance = MagicLamp.loadJSON('new_media_appearance')
     window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
+    window.maximum_filesize = MagicLamp.loadJSON('maximum_filesize')
+    window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
+    window.planned_results = []
+    window.performance_indicators = []
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
-    $.getScript "/assets/media.js", -> done()
+    $.getScript("/assets/media.js").
+      done( -> 
+        console.log "(area and subarea matching algorithm) javascript was loaded"
+        done()). # the media_appearances.js app , start_page(), define_media
+      fail( (jqxhr, settings, exception) ->
+        console.log "Triggered ajaxError handler"
+        console.log settings
+        console.log exception)
 
 #example:    media.set('media_appearances',[{"media_areas":[{"area_id":1,"subarea_ids":[1]},{"area_id":2,"subarea_ids":[8,9,10]}]}])
   describe "when sort criteria rule is 'all'", ->
@@ -208,3 +225,26 @@ describe "area and subarea matching algorithm", ->
         media.set({'filter_criteria.areas':[2], 'filter_criteria.subareas':[], 'filter_criteria.rule':'any'})
         expect(media_appearance_area_subarea_matches()).to.eql [false]
 
+  describe "matching of human rights-specific parameters", ->
+    describe "when instance is not human rights violation", ->
+      it "should ignore any value in the people affected criteria and interpret it as zero", ->
+        media.set({'media_appearances': [{'title':'foo','media_appearance_areas':[{'area_id':1, 'subarea_ids':[2]}],'metrics':{'affected_people_count':{'value':23}}}]})
+        media.set({'filter_criteria.pa_min':0, 'filter_criteria.pa_max':30})
+        expect(media_appearance_affected_people_count_matches()).to.eql [true]
+        media.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':30})
+        expect(media_appearance_affected_people_count_matches()).to.eql [false]
+
+    describe "when instance is human rights violation", ->
+      describe "and affected_people_count parameter value falls outside thresholds", ->
+        it "should exclude the instance", ->
+          media.set({'media_appearances': [{'title':'bar','media_appearance_areas':[{'area_id':1, 'subarea_ids':[1]}],'metrics':{'affected_people_count':{'value':23}}}]})
+          media.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':20})
+          expect(media_appearance_affected_people_count_matches()).to.eql [false]
+
+      describe "and affected_people_count parameter value is null", ->
+        it "should interpret the null value as zero", ->
+          media.set({'media_appearances': [{'title':'baz', 'media_appearance_areas':[{'area_id':1, 'subarea_ids':[1]}], 'metrics':{'affected_people_count':{'value':null}}}]})
+          media.set({'filter_criteria.pa_min':0, 'filter_criteria.pa_max':20})
+          expect(media_appearance_affected_people_count_matches()).to.eql [true]
+          media.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':20})
+          expect(media_appearance_affected_people_count_matches()).to.eql [false]

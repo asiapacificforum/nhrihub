@@ -8,18 +8,16 @@ class PlannedResult < ActiveRecord::Base
   # strip index if user has entered it
   before_save do
     self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
-    previous_index = PlannedResult.count.zero? ? strategic_priority.priority_level.to_s+".0" : PlannedResult.last.index
-    ar = previous_index.split('.')
-    self.index = ar.push(ar.pop.to_i.succ.to_s).join('.')
+    self.index = StrategicPlanIndexer.new(self,strategic_priority).next
   end
 
   def self.all_with_associations
     collection = includes(:outcomes => {:activities => :performance_indicators}).all.sort_by(&:index)
       def collection.as_json(options = {})
         performance_indicators = {:performance_indicators => {:only => :id, :methods => :indexed_description}}
-        activities = {:activities => {:methods => :indexed_description, :include => performance_indicators}}
-        outcomes = {:outcomes => {:methods => :indexed_description, :include => activities}}
-        planned_result_options = {:methods => :indexed_description, :include => outcomes }
+        activities = {:activities => {:only => [], :methods => :indexed_description, :include => performance_indicators}}
+        outcomes = {:outcomes => {:only => [], :methods => :indexed_description, :include => activities}}
+        planned_result_options = {:only => [], :methods => :indexed_description, :include => outcomes }
         super(planned_result_options)
       end
     collection

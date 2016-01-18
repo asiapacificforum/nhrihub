@@ -20,4 +20,8 @@ class Subarea < ActiveRecord::Base
         merge({"extended_name" => sa.extended_name})
     end
   end
+
+  def self.hr_violation_id
+    joins(:area).where("subareas.name = 'Violation' and areas.name = 'Human Rights'").pluck(:id)[0]
+  end
 end

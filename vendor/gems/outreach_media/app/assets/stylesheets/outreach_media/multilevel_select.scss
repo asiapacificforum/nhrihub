@@ -18,7 +18,8 @@
   border-radius:6px 6px 6px 6px;
 }
 
-.dropdown-submenu:hover>.dropdown-menu {
+// the select class is just for testing! couldn't find a way to trigger hover
+.dropdown-submenu:hover>.dropdown-menu, .dropdown-submenu.select>.dropdown-menu {
   display:block;
 }
 
