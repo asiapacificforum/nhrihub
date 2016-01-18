@@ -319,6 +319,10 @@ $ ->
       re = new RegExp(@get('filter_criteria.title'),'i')
       re.test(@get('title'))
     computed :
+      reminders_count : ->
+        @get('reminders').length
+      notes_count : ->
+        @get('notes').length
       model_name : ->
         "outreach_event"
       hr_violation : ->
