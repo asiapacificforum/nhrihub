@@ -158,6 +158,10 @@ $ ->
         'filesize_error': false
         'expanded':false
     computed :
+      reminders_count : ->
+        @get('reminders').length
+      notes_count : ->
+        @get('notes').length
       model_name : ->
         "media_appearance"
       hr_violation : ->

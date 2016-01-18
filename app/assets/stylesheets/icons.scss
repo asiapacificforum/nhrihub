@@ -1,0 +1,19 @@
+.counter:after{
+  content: attr(data-count);
+  position: absolute;
+  background: #fff;
+  height: 1.2rem;
+  top: -.7rem;
+  right: -0.5rem;
+  width: 1.2rem;
+  text-align: center;
+  line-height: 1.1rem;
+  font-size: .8rem;
+  border-radius: 50%;
+  border: 1px solid #000;
+  color: #000;
+}
+.counter[data-count="0"]:after{
+  display : none;
+}
+
