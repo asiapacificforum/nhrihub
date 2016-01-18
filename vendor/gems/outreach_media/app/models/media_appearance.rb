@@ -1,8 +1,8 @@
 class MediaAppearance < ActiveRecord::Base
   belongs_to :violation_severity
   belongs_to :positivity_rating
-  delegate :id, :text, :rank, :rank_text, :to => :positivity_rating, :prefix => true, :allow_nil => true
-  delegate :id, :text, :rank, :rank_text, :to => :violation_severity, :prefix => true, :allow_nil => true
+  delegate :text, :rank, :rank_text, :to => :positivity_rating, :prefix => true, :allow_nil => true
+  delegate :text, :rank, :rank_text, :to => :violation_severity, :prefix => true, :allow_nil => true
   belongs_to :user
   has_many :reminders, :as => :remindable, :dependent => :delete_all
   has_many :notes, :as => :notable, :dependent => :delete_all
@@ -22,7 +22,7 @@ class MediaAppearance < ActiveRecord::Base
       # probably would always be zero, but this facilitates testing!
       media_appearance.affected_people_count = 0
       media_appearance.violation_coefficient = 0
-      media_appearance.violation_severity_id = nil
+      media_appearance.violation_severity_id = 0
     end
   end
 
@@ -42,23 +42,18 @@ class MediaAppearance < ActiveRecord::Base
     super({:except => [:updated_at,
                        :created_at],
            :methods=> [:date,
-                       #:metrics,
                        :has_link,
-                       :article_link,
                        :has_scanned_doc,
                        :media_areas,
                        :area_ids,
                        :subarea_ids,
                        :performance_indicator_ids,
                        :positivity_rating_rank_text,
-                       :positivity_rating_id,
                        :reminders,
                        :notes,
                        :create_reminder_url,
                        :create_note_url,
-                       :url,
-                       :violation_severity_rank_text,
-                       :violation_severity_id]})
+                       :violation_severity_rank_text ]})
   end
 
   def positivity_rating_rank=(val)

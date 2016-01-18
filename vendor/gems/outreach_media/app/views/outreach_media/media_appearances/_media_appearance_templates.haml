@@ -82,7 +82,7 @@
         %span.error_message= t('defaults.invalid')
   #media_appearances
     {{#media_appearances}}
-    <ma area_ids='{{area_ids}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' description_error='{{description_error}}' file_id='{{file_id}}' filesize='{{filesize}}' description_error='{{description_error}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' media_areas='{{media_areas}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' positivity_rating_id='{{positivity_rating_id}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' violation_severity_id='{{violation_severity_id}}' />
+    <ma area_ids='{{area_ids}}' areas='{{areas}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' description_error='{{description_error}}' file_id='{{file_id}}' filesize='{{filesize}}' filesize_error='{{filesize_error}}' filetype_error='{{filetype_error}}' description_error='{{description_error}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' media_appearance_double_attachment_error='{{media_appearance_double_attachment_error}}' media_appearance_error='{{media_appearance_error}}' media_areas='{{media_areas}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' performance_indicators='{{performance_indicators}}' planned_results='{{planned_results}}' positivity_rating_id='{{positivity_rating_id}}' positivity_rating_rank_text='{{positivity_rating_rank_text}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' title_error='{{title_error}}' url='{{url}}' user_id='{{user_id}}' violation_coefficient='{{violation_coefficient}}' violation_severity_id='{{violation_severity_id}}' violation_severity_rank_text='{{violation_severity_rank_text}}' />
     {{/media_appearances}}
 
 %script#media_appearance_template{:type => 'template/ractive'}
@@ -303,7 +303,7 @@
         =select_tag "media_appearance[violation_severity_id]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%", :value => "{{violation_severity_id}}"
       .form-group.hr_metrics#people_affected{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
         %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.num_people')
-        %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "media_appearance[affected_people_count]", :style => "width:15%", :value => "{{affected_people_count}}"}
+        %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "media_appearance[affected_people_count]", :style => "width:15%; padding-left:6px;", :value => "{{affected_people_count}}"}
 
 %script#area_template{:type=> 'template/ractive'}
   %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
