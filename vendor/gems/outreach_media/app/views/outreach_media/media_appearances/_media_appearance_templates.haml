@@ -82,7 +82,7 @@
         %span.error_message= t('defaults.invalid')
   #media_appearances
     {{#media_appearances}}
-    <ma area_ids='{{area_ids}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' description_error='{{description_error}}' file_id='{{file_id}}' filesize='{{filesize}}' description_error='{{description_error}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' media_areas='{{media_areas}}' metrics='{{metrics}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' positivity_rating_id='{{positivity_rating_id}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' violation_severity_id='{{violation_severity_id}}' />
+    <ma area_ids='{{area_ids}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' description_error='{{description_error}}' file_id='{{file_id}}' filesize='{{filesize}}' description_error='{{description_error}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' media_areas='{{media_areas}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' positivity_rating_id='{{positivity_rating_id}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' violation_severity_id='{{violation_severity_id}}' />
     {{/media_appearances}}
 
 %script#media_appearance_template{:type => 'template/ractive'}
@@ -286,13 +286,11 @@
       .checkbox
         %label
           %input{:type=>:checkbox, :id => 'media_appearance_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
-          {{@keypath}}
           {{ name }}
       {{#subareas }}
       .checkbox.subarea
         %label
           %input{:type=>:checkbox, :id => 'media_appearance_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
-          {{@keypath}}
           {{ name }}
       {{/subareas }}
       {{/areas }}
