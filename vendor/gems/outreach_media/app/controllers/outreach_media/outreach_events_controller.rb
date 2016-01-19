@@ -1,6 +1,6 @@
 class OutreachMedia::OutreachEventsController < ApplicationController
   def index
-    @outreach_events = OutreachEvent.all
+    @outreach_events = OutreachEvent.all.sort_by(&:event_date).reverse
     @outreach_event = OutreachEvent.new(:event_date => DateTime.now)
     @areas = Area.all
     @subareas = Subarea.extended
