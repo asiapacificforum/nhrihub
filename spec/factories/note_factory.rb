@@ -1,7 +1,19 @@
 FactoryGirl.define do
   factory :note do
-    text "88 notes on a piano"
+    text { Faker::Lorem.sentence(10) }
     association :author, :factory => :user
     association :editor, :factory => :user
+
+    trait :media_appearance do
+      notable_type "MediaAppearance"
+    end
+
+    trait :outreach_event do
+      notable_type "OutreachEvent"
+    end
+
+    trait :activity do
+      notable_type "Activity"
+    end
   end
 end

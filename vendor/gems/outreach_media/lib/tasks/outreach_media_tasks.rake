@@ -62,3 +62,12 @@ task :populate_media => :environment do
 
 end
 
+
+desc "populates outreach events with examples"
+task :populate_outreach => :environment do
+  OutreachEvent.delete_all
+
+  20.times do
+    oe = FactoryGirl.create(:outreach_event, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
+  end
+end

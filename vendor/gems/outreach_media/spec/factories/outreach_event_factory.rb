@@ -11,9 +11,16 @@ FactoryGirl.define do
     title {Faker::Lorem.sentence(5)}
     participant_count { rand(2000) }
     audience_type_id { rand(8) }
+    event_date { Date.today.advance(:days => -rand(2000)) }
 
     after(:create) do |oe|
       FactoryGirl.create(:outreach_event_document, :outreach_event_id => oe.id)
+      rand(3).times do
+        FactoryGirl.create(:reminder, :outreach_event, :remindable_id => oe.id)
+      end
+      rand(3).times do
+        FactoryGirl.create(:note, :outreach_event, :notable_id => oe.id)
+      end
     end
 
     trait :police_audience_type do
@@ -33,9 +40,11 @@ FactoryGirl.define do
     end
 
     trait :hr_area do
-      after(:create) do |oe|
-        oe.areas << Area.where(:name => "Human Rights").first
-        oe.save
+      after(:build) do |ma|
+        hr_area = Area.where(:name => "Human Rights").first
+        ma.areas << hr_area
+        subareas = Subarea.where(:area_id => hr_area.id).where.not(:name => "Violation")
+        ma.subareas = subareas.sample(rand(6))
       end
     end
 
@@ -66,13 +75,23 @@ FactoryGirl.define do
         oe.save
       end
     end
-  end
 
-  trait :ir_min do
-    impact_rating ImpactRating.first
-  end
+    trait :ir_min do
+      impact_rating ImpactRating.first
+    end
 
-  trait :ir_not_min do
-    impact_rating ImpactRating.last
+    trait :ir_not_min do
+      impact_rating ImpactRating.last
+    end
+
+    trait :hr_violation_subarea do
+      after(:build) do |ma|
+        hr_area = Area.where(:name => "Human Rights").first
+        ma.areas << hr_area
+        ma.subareas << Subarea.where(:name => "Violation", :area_id => hr_area.id).first
+        #ma.save
+      end
+    end
   end
 end
+

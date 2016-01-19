@@ -263,9 +263,9 @@ $ ->
       @set('expanded',false)
       $(@find('.collapse')).collapse('hide')
     show_reminders_panel : ->
-      $('#reminders_modal').modal('show')
+      $(@find('#reminders_modal')).modal('show')
     show_notes_panel : ->
-      $('#notes_modal').modal('show')
+      $(@find('#notes_modal')).modal('show')
     remove_title_errors : ->
       @set('title_error',false)
     cancel : ->
