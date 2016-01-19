@@ -68,6 +68,6 @@ task :populate_outreach => :environment do
   OutreachEvent.delete_all
 
   20.times do
-    oe = FactoryGirl.create(:outreach_event, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
+    oe = FactoryGirl.create(:outreach_event, :with_reminders, :with_notes, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
   end
 end

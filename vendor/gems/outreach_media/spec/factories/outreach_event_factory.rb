@@ -15,11 +15,21 @@ FactoryGirl.define do
 
     after(:create) do |oe|
       FactoryGirl.create(:outreach_event_document, :outreach_event_id => oe.id)
-      rand(3).times do
-        FactoryGirl.create(:reminder, :outreach_event, :remindable_id => oe.id)
+    end
+
+    trait :with_notes do
+      after(:create) do |oe|
+        rand(3).times do
+          FactoryGirl.create(:note, :outreach_event, :notable_id => oe.id)
+        end
       end
-      rand(3).times do
-        FactoryGirl.create(:note, :outreach_event, :notable_id => oe.id)
+    end
+
+    trait :with_reminders do
+      after(:create) do |oe|
+        rand(3).times do
+          FactoryGirl.create(:reminder, :outreach_event, :remindable_id => oe.id)
+        end
       end
     end
 

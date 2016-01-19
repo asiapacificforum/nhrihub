@@ -373,7 +373,6 @@ $ ->
       $(@find('#reminders_modal')).modal('show')
     show_notes_panel : ->
       $(@find('#notes_modal')).modal('show')
-    show_notes_panel : ->
     remove_title_errors : ->
       @set('title_error',false)
     cancel : ->
