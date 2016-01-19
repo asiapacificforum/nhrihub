@@ -216,58 +216,6 @@
       <reminders/>
       <notes/>
 
-%script#temp_to_hold_stuff{:type => 'ractive/template'}
-  .fileupload.buttonbar{:'data-file-input' => '#outreach_event_file', :'data-url' => 'internal_documents.json', :'data-param-name' => 'internal_document[file]', :'data-upload-template-id' => '#primary_upload' }
-    / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
-    .row.fileupload-buttonbar
-      .col-lg-9
-        / The fileinput-button span is used to style the file input field as button
-        %span.btn.btn-success.fileinput-button
-          %i.fa.fa-plus.fa-lg{:style => "color:white"}
-          %span= t('.add')
-          %input#outreach_event_file{:multiple => "multiple", :name => "primary_file", :type => "file"}
-        %button.btn.btn-primary.start{:type => "submit"}
-          %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
-          %span= t('.start')
-        %button.btn.btn-warning.cancel{:type => "reset"}
-          %i.fa.fa-ban.fa-lg{:style => "color:white"}
-          %span= t('.cancel')
-        / The global file processing state
-        %span.fileupload-process
-    .row.fileupload_progress
-      / The global progress state
-      .col-lg-9.fileupload-progress.fade
-        / The global progress bar
-        .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
-          .progress-bar.progress-bar-success{:style => "width:0%;"}
-        / The extended global progress state
-        .progress-extended  
-    .row
-      .col-lg-9#uploads
-
-%script#old_stuff{:type => 'text/ractive'}
-  .row.fileupload{:decorator => 'file_upload'}
-    .col-md-12
-      .row.fileupload_progress
-        / The global progress state
-        .col-lg-9.fileupload-progress.fade
-          / The global progress bar
-          .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
-            .progress-bar.progress-bar-success{:style => "width:0%;"}
-          / The extended global progress state
-          .progress-extended  
-      .row
-        .col-md-2#fileinput_button
-          %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}
-            {{#if no_files_chosen }}
-            = t('.choose_file')
-            {{else}}
-            = t('.choose_another_file')
-            {{/if}}
-          %input#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
-      .row
-        <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
-
 %script#new_outreach_event_template{:type => 'template/ractive'}
   .row.outreach_event.well.well-sm.form.fileupload{:decorator => 'file_upload'}
     .col-md-12
