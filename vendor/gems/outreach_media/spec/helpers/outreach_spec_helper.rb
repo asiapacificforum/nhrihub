@@ -156,4 +156,29 @@ module OutreachSpecHelper
   def remove_file
     page.all('#deselect_file').last
   end
+
+  def select_performance_indicators
+    sleep(0.1)
+    page.find('.performance_indicator_select>a')
+  end
+
+  def select_first_planned_result
+    sleep(0.1)
+    page.all(".dropdown-submenu.planned_result").first.hover
+  end
+
+  def select_first_outcome
+    sleep(0.1)
+    page.all(".dropdown-submenu.outcome").first.hover
+  end
+
+  def select_first_activity
+    sleep(0.1)
+    page.all(".dropdown-submenu.activity").first.hover
+  end
+
+  def select_first_performance_indicator
+    sleep(0.1)
+    page.all("li.performance_indicator").first.click
+  end
 end

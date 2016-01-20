@@ -128,21 +128,12 @@ $ ->
     deselect_file : ->
       @parent.deselect_file()
 
-  PerformanceIndicatorSelect = Ractive.extend
-    template : '#performance_indicator_select'
-    select : ->
-      id = $(@event.original.target).data('id')
-      outreach_event = @parent
-      @parent.push('performance_indicator_ids', id)
-      false
-
   MediaAppearance = Ractive.extend
     template : '#media_appearance_template'
     components :
       mediaarea : MediaArea
       metric : Metric
       file : File
-      'performance-indicator-select' : PerformanceIndicatorSelect
       # due to a ractive bug, checkboxes don't work in components,
       # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
       # so this component is not used, until the bug is fixed

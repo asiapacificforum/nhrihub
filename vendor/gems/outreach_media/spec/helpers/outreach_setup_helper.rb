@@ -71,4 +71,17 @@ module OutreachSetupHelper
     SiteConfig['outreach_media.filetypes'] = ['pdf']
     SiteConfig['outreach_media.filesize'] = 3
   end
+
+  def setup_strategic_plan
+    sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
+    pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
+    o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
+    a1 = Activity.create(:description => "Smarter thinking", :outcome_id => o.id)
+    a2 = Activity.create(:description => "Public outreach", :outcome_id => o.id)
+    a3 = Activity.create(:description => "Media coverage", :outcome_id => o.id)
+    p1 = PerformanceIndicator.create(:description => "Happier people", :target => "90%", :activity_id => a1.id)
+    p2 = PerformanceIndicator.create(:description => "More wealth", :target => "80%", :activity_id => a2.id)
+    p3 = PerformanceIndicator.create(:description => "Greater justice", :target => "70%", :activity_id => a3.id)
+  end
 end

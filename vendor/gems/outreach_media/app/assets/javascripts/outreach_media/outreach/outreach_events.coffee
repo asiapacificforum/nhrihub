@@ -430,6 +430,10 @@ $ ->
         pick('title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
         omit((value, key, object)-> _.isNull(value) ).
         value()
+      if _.isEmpty(@get('performance_indicator_ids'))
+        attrs.performance_indicator_ids = [""]
+      else
+        attrs.performance_indicator_ids = @get('performance_indicator_ids')
       if _.isEmpty(@get('area_ids'))
         attrs.area_ids = [""] # hack to workaround jQuery not sending empty arrays
       else
@@ -456,7 +460,12 @@ $ ->
       else
         saids = _(@get('subarea_ids')).map (said)->
                   {name : 'outreach_event[subarea_ids][]', value: said}
-      _.union(name_value,aids,saids)
+      if _.isEmpty(@get('performance_indicator_ids'))
+        pids = [{name : 'media_appearance[performance_indicator_ids][]', value: ""}]
+      else
+        pids = _(@get('performance_indicator_ids')).map (pid)->
+                  {name : 'media_appearance[performance_indicator_ids][]', value: pid}
+      _.union(name_value,aids,saids,pids)
     stash : ->
       @stashed_instance = $.extend(true,{},@get())
     restore : ->
@@ -497,6 +506,8 @@ $ ->
     create_outreach_event_url: create_outreach_event_url
     audience_types : audience_types
     impact_ratings : impact_ratings
+    planned_results : planned_results
+    performance_indicators : performance_indicators
     default_selected_audience_type : default_selected_audience_type
     default_selected_impact_rating : default_selected_impact_rating
     filter_criteria :

@@ -173,6 +173,7 @@
             %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
             %input.show#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
       .collapse.expanded_info{:class => "collapse{{id}}"}
+        <performanceindicatorselect />
         .panel.panel-default
           .panel-heading= t('.files')
           .panel-body

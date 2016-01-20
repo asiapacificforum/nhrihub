@@ -6,6 +6,7 @@ class OutreachMedia::OutreachEventsController < ApplicationController
     @subareas = Subarea.extended
     @audience_types = AudienceType.all
     @impact_ratings = ImpactRating.all
+    @planned_results = PlannedResult.all_with_associations
   end
 
   def create
@@ -60,6 +61,7 @@ class OutreachMedia::OutreachEventsController < ApplicationController
              :participant_count,
              :audience_type_id,
              :outreach_event_documents =>[:file],
+             :performance_indicator_ids => [],
              :area_ids => [],
              :subarea_ids => [])
   end

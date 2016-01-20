@@ -12,5 +12,18 @@
   impact_ratings = #{@impact_ratings.to_json}
   default_selected_audience_type = "#{t('.select_audience_type')}"
   default_selected_impact_rating = "#{t('.select_impact_rating')}"
+  planned_results = #{@planned_results.to_json }
+
+:coffeescript
+  window.performance_indicators = _.chain(planned_results).
+    map((pr)->pr.outcomes).
+    flatten().
+    map((pr)->pr.activities).
+    flatten().
+    map((a)->a.performance_indicators).
+    flatten().
+    map((a)->_(a).values()).
+    object().
+    value()
 
 = javascript_include_tag "outreach"

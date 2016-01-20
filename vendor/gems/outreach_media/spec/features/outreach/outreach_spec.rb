@@ -409,3 +409,29 @@ feature "view attachments", :js => true do
     end
   end
 end
+
+feature "performance indicator association", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include OutreachSpecHelper
+  include OutreachSetupHelper
+
+  before do
+    setup_database(:media_appearance_with_file)
+    setup_strategic_plan
+    resize_browser_window
+    visit outreach_media_outreach_events_path(:en)
+    sleep(0.4)
+  end
+
+  scenario "add a performance indicator link" do
+    edit_outreach_event[0].click
+    select_performance_indicators.click
+    select_first_planned_result
+    select_first_outcome
+    select_first_activity
+    select_first_performance_indicator
+    pi = PerformanceIndicator.first
+    expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description )
+    expect{edit_save.click; sleep(0.5)}.to change{OutreachEvent.first.performance_indicator_ids}.from([]).to([pi.id])
+  end
+end

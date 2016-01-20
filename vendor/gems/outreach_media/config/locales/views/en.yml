@@ -84,7 +84,6 @@ en:
         start: "Start upload"
         cancel: "Cancel upload"
         files: "Files"
-        none_assigned: "none assigned"
 
     shared:
       common_templates:
@@ -96,6 +95,8 @@ en:
         outcome : "Outcome"
         activity : "Activity"
         performance_indicator : "Performance indicator"
+        performance_indicators: "Performance indicators"
+        none_assigned: "none assigned"
 
     media_appearances:
       index:
@@ -182,5 +183,4 @@ en:
         violation_severity: "Violation severity"
         num_people: "Number of people affected"
         enter_num_val: "Enter numerical value"
-        performance_indicators: "Performance indicators"
         none_assigned: "none assigned"

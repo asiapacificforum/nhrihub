@@ -168,21 +168,7 @@
               <file/>
               {{/original_filename}}
       .collapse.expanded_info{:class => "collapse{{id}}"}
-        .panel.panel-default
-          .panel-heading
-            .row
-              .col-md-2= t('.performance_indicators')
-          .panel-content{'data-toggle' => :edit}
-            .fade.no_edit.in
-              .row
-                .col-md-6.col-md-offset-1#performance_indicators{:style => "display:flex; flex-direction:column"}
-                  {{>performance_indicator_list}}
-            .fade.edit
-              .form-group.row#performance_indicator
-                .col-md-6{:style => 'padding-left:40px;'}
-                  <performance-indicator-select \>
-                .col-md-6#performance_indicators{:style => "display:flex; flex-direction:column"}
-                  {{>performance_indicator_list}}
+        <performanceindicatorselect />
         .panel.panel-default
           .panel-heading
             .row
@@ -215,14 +201,6 @@
               {{> media_appearance_edit}}
       <reminders/>
       <notes/>
-
-%script#performance_indicator_list{:type => 'template/ractive'}
-  {{#performance_indicator_ids}}
-  %div.performance_indicator {{performance_indicators[.]}}
-  {{/performance_indicator_ids}}
-  {{^performance_indicator_ids}}
-  %div.performance_indicator=t('.none_assigned')
-  {{/performance_indicator_ids}}
 
 %script#new_media_appearance_template{:type => 'template/ractive'}
   .row.media_appearance.well.well-sm.form.template-upload

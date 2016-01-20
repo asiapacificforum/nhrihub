@@ -52,33 +52,55 @@
       %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
 %script#performance_indicator_select{:type => 'template/ractive'}
-  .dropdown.performance_indicator_select
-    %a.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-      =t('.select_performance_indicator')
-      %span.caret
-    %ul.dropdown-menu
-      %li.dropdown-header= t('.planned_result')
-      {{#planned_results }}
-      %li.dropdown-submenu.planned_result
-        %a {{ indexed_description }}
-        %ul.dropdown-menu
-          %li.dropdown-header= t('.outcome')
-          {{#outcomes }}
-          %li.dropdown-submenu.outcome
-            %a {{ indexed_description }}
-            %ul.dropdown-menu
-              %li.dropdown-header= t('.activity')
-              {{#activities}}
-              %li.dropdown-submenu.activity
-                %a {{ indexed_description }}
-                %ul.dropdown-menu
-                  %li.dropdown-header= t('.performance_indicator')
-                  {{#performance_indicators}}
-                  %li.performance_indicator
-                    %a.opt{ 'on-click'=>'select(this)'}
-                      %span.text{'data-id'=>'{{id}}'} {{ indexed_description }}
-                      %span.fa.fa-check
-                  {{/performance_indicators}}
-              {{/activities}}
-          {{/outcomes }}
-      {{/planned_results }}
+  .panel.panel-default
+    .panel-heading
+      .row
+        .col-md-2= t('.performance_indicators')
+    .panel-content{'data-toggle' => :edit}
+      .fade.no_edit.in
+        .row
+          .col-md-6.col-md-offset-1#performance_indicators{:style => "display:flex; flex-direction:column"}
+            {{>performance_indicator_list}}
+      .fade.edit
+        .form-group.row#performance_indicator
+          .col-md-6{:style => 'padding-left:40px;'}
+            .dropdown.performance_indicator_select
+              %a.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                =t('.select_performance_indicator')
+                %span.caret
+              %ul.dropdown-menu
+                %li.dropdown-header= t('.planned_result')
+                {{#planned_results }}
+                %li.dropdown-submenu.planned_result
+                  %a {{ indexed_description }}
+                  %ul.dropdown-menu
+                    %li.dropdown-header= t('.outcome')
+                    {{#outcomes }}
+                    %li.dropdown-submenu.outcome
+                      %a {{ indexed_description }}
+                      %ul.dropdown-menu
+                        %li.dropdown-header= t('.activity')
+                        {{#activities}}
+                        %li.dropdown-submenu.activity
+                          %a {{ indexed_description }}
+                          %ul.dropdown-menu
+                            %li.dropdown-header= t('.performance_indicator')
+                            {{#performance_indicators}}
+                            %li.performance_indicator
+                              %a.opt{ 'on-click'=>'select(this)'}
+                                %span.text{'data-id'=>'{{id}}'} {{ indexed_description }}
+                                %span.fa.fa-check
+                            {{/performance_indicators}}
+                        {{/activities}}
+                    {{/outcomes }}
+                {{/planned_results }}
+          .col-md-6#performance_indicators{:style => "display:flex; flex-direction:column"}
+            {{>performance_indicator_list}}
+
+%script#performance_indicator_list{:type => 'template/ractive'}
+  {{#performance_indicator_ids}}
+  %div.performance_indicator {{performance_indicators[.]}}
+  {{/performance_indicator_ids}}
+  {{^performance_indicator_ids}}
+  %div.performance_indicator=t('.none_assigned')
+  {{/performance_indicator_ids}}
