@@ -1,11 +1,11 @@
+violation_severities = ViolationSeverity.pluck(:id)
+performance_indicator_ids = PerformanceIndicator.pluck(:id)
+
 FactoryGirl.define do
   factory :media_appearance do
     user
     positivity_rating
     title {Faker::Lorem.sentence(5)}
-    #after :create do |ma|
-      #ma.notes << FactoryGirl.create(:note)
-    #end
 
     trait :link do
       #article_link { Faker::Internet.url }
@@ -20,6 +20,7 @@ FactoryGirl.define do
     end
 
     after(:build) do |media_appearance|
+      media_appearance.performance_indicator_ids = performance_indicator_ids.sample(rand(2))
       if media_appearance.file_id
         path = Rails.env.production? ?
           Rails.root.join('..','..','shared') :
@@ -66,12 +67,29 @@ FactoryGirl.define do
       end
     end
 
+    trait :with_notes do
+      after(:create) do |oe|
+        rand(3).times do
+          FactoryGirl.create(:note, :outreach_event, :notable_id => oe.id)
+        end
+      end
+    end
+
+    trait :with_reminders do
+      after(:create) do |oe|
+        rand(3).times do
+          FactoryGirl.create(:reminder, :outreach_event, :remindable_id => oe.id)
+        end
+      end
+    end
+
     trait :hr_violation_subarea do
       after(:build) do |ma|
         hr_area = Area.where(:name => "Human Rights").first
         ma.areas << hr_area
         ma.subareas << Subarea.where(:name => "Violation", :area_id => hr_area.id).first
-        #ma.save
+        ma.affected_people_count = rand(9000)
+        ma.violation_severity_id = violation_severities.sample
       end
     end
   end

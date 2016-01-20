@@ -5,15 +5,23 @@ str_generator = Proc.new{
   (str.dup.slice(0,i-1)+'f'+str.dup.slice(i-l,1000)).dup
 }
 
+audience_type_ids = AudienceType.pluck(:id)
+
+performance_indicator_ids = PerformanceIndicator.pluck(:id)
+
 FactoryGirl.define do
   factory :outreach_event do
     impact_rating
     title {Faker::Lorem.sentence(5)}
     participant_count { rand(2000) }
-    audience_type_id { rand(8) }
+    audience_name { Faker::Lorem.words(2).join(' ') }
+    audience_type_id { audience_type_ids.sample }
     event_date { Date.today.advance(:days => -rand(2000)) }
+    description { Faker::Lorem.sentences(2).join(' ') }
 
     after(:create) do |oe|
+      oe.performance_indicator_ids = performance_indicator_ids.sample(rand(2))
+      oe.save
       FactoryGirl.create(:outreach_event_document, :outreach_event_id => oe.id)
     end
 
@@ -99,7 +107,7 @@ FactoryGirl.define do
         hr_area = Area.where(:name => "Human Rights").first
         ma.areas << hr_area
         ma.subareas << Subarea.where(:name => "Violation", :area_id => hr_area.id).first
-        #ma.save
+        ma.affected_people_count = rand(9000)
       end
     end
   end
