@@ -103,7 +103,7 @@ filter_criteria =
     media.set('filter_criteria.areas',[])
     media.set('filter_criteria.subareas',[])
 
-describe 'Media page', ->
+describe 'media filter', ->
   before (done)->
     window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
     window.areas = MagicLamp.loadJSON('areas_data')

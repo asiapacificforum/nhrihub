@@ -216,6 +216,7 @@ $ ->
         value = 0 if !_.isNumber(value) || _.isNaN(value) # null value is interpreted as zero for hr_violation instances
       else
         value = 0
+      console.log "comparing:  #{parseInt(@get('filter_criteria.pa_min'))} #{ parseInt(@get('filter_criteria.pa_max'))} #{ value }"
       @_between(parseInt(@get('filter_criteria.pa_min')),parseInt(@get('filter_criteria.pa_max')),value)
     _matches_violation_severity : ->
       # note, violation_severity_rank_text is a string of the form "4: some text here", but parseInt converts appropriately!

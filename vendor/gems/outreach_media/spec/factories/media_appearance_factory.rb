@@ -88,7 +88,9 @@ FactoryGirl.define do
         hr_area = Area.where(:name => "Human Rights").first
         ma.areas << hr_area
         ma.subareas << Subarea.where(:name => "Violation", :area_id => hr_area.id).first
-        ma.affected_people_count = rand(9000)
+        unless ma.affected_people_count
+          ma.affected_people_count = rand(9000)
+        end
         ma.violation_severity_id = violation_severities.sample
       end
     end

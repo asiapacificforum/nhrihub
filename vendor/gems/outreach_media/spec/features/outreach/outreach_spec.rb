@@ -315,7 +315,7 @@ feature "when there are existing outreach events", :js => true do
       check("Good Governance")
       check("CRC")
       fill_in('people_affected', :with => " 100000 ")
-      expect{edit_cancel.click; sleep(0.4)}.not_to change{OutreachEvent.first.title}
+      expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click; sleep(0.4)}.not_to change{OutreachEvent.first.title}
       expect(page.all("#outreach_events .outreach_event .basic_info .title").first.text).to eq original_outreach_event.title
       expand_all_panels
       expect(areas).to include "Human Rights"
