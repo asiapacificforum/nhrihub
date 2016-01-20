@@ -244,6 +244,7 @@
             {{/if}}
           %input.new#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
 
+      <performanceindicatorselect />
       .row
         <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
       .row.form-group{:class => "{{#outreach_event_error}}has-error{{/}}", :style => "padding-bottom:0px"}

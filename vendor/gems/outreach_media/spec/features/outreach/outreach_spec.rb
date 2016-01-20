@@ -30,6 +30,7 @@ feature "create a new outreach event", :js => true do
   include OutreachSetupHelper
 
   before do
+    setup_strategic_plan
     setup_impact_ratings
     setup_areas
     setup_file_constraints
@@ -72,8 +73,16 @@ feature "create a new outreach event", :js => true do
     fill_in('description', :with => "Briefing on progress to date and plans for the immediate and long-term future")
     #FILE!!!
     page.attach_file("outreach_event_file", upload_document, :visible => false)
+    select_performance_indicators.click
+    select_first_planned_result
+    select_first_outcome
+    select_first_activity
+    select_first_performance_indicator
+    pi = PerformanceIndicator.first
+    expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description )
     expect{ edit_save.click; sleep(0.5)}.to change{ OutreachEvent.count}.from(0).to(1).
       and change{OutreachEventDocument.count}.from(0).to(1)
+    expect(OutreachEvent.first.performance_indicator_ids).to eq [pi.id]
     sleep(0.5)
     expect(OutreachEvent.count).to eq 1
     expect(OutreachEventDocument.count).to eq 1
@@ -416,7 +425,7 @@ feature "performance indicator association", :js => true do
   include OutreachSetupHelper
 
   before do
-    setup_database(:media_appearance_with_file)
+    setup_database
     setup_strategic_plan
     resize_browser_window
     visit outreach_media_outreach_events_path(:en)

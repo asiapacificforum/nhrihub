@@ -57,11 +57,11 @@
       .row
         .col-md-2= t('.performance_indicators')
     .panel-content{'data-toggle' => :edit}
-      .fade.no_edit.in
+      %div{:class => 'fade no_edit {{#if persisted}}in{{/if}}'}
         .row
           .col-md-6.col-md-offset-1#performance_indicators{:style => "display:flex; flex-direction:column"}
             {{>performance_indicator_list}}
-      .fade.edit
+      %div{:class => 'fade edit {{#unless persisted}}in{{/unless}}'}
         .form-group.row#performance_indicator
           .col-md-6{:style => 'padding-left:40px;'}
             .dropdown.performance_indicator_select

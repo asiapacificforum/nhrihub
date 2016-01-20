@@ -30,6 +30,7 @@ feature "create a new article", :js => true do
   include MediaSetupHelper
 
   before do
+    setup_strategic_plan
     setup_positivity_ratings
     setup_areas
     setup_violation_severities
@@ -58,8 +59,16 @@ feature "create a new article", :js => true do
     select('3: Has no bearing on the office', :from => 'Positivity rating')
     select('4: Serious', :from => 'Violation severity')
     fill_in('media_appearance_article_link', :with => "http://www.nytimes.com")
+    select_performance_indicators.click
+    select_first_planned_result
+    select_first_outcome
+    select_first_activity
+    select_first_performance_indicator
+    pi = PerformanceIndicator.first
+    expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description )
     expect{edit_save.click; sleep(0.5)}.to change{MediaAppearance.count}.from(0).to(1)
     ma = MediaAppearance.first
+    expect(ma.performance_indicator_ids).to eq [pi.id]
     expect(ma.affected_people_count).to eq 100000 # b/c this attribute now returns a hash!
     sleep(0.4)
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 1)

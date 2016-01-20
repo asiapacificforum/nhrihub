@@ -461,10 +461,10 @@ $ ->
         saids = _(@get('subarea_ids')).map (said)->
                   {name : 'outreach_event[subarea_ids][]', value: said}
       if _.isEmpty(@get('performance_indicator_ids'))
-        pids = [{name : 'media_appearance[performance_indicator_ids][]', value: ""}]
+        pids = [{name : 'outreach_event[performance_indicator_ids][]', value: ""}]
       else
         pids = _(@get('performance_indicator_ids')).map (pid)->
-                  {name : 'media_appearance[performance_indicator_ids][]', value: pid}
+                  {name : 'outreach_event[performance_indicator_ids][]', value: pid}
       _.union(name_value,aids,saids,pids)
     stash : ->
       @stashed_instance = $.extend(true,{},@get())
