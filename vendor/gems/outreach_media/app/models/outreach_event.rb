@@ -36,7 +36,7 @@ class OutreachEvent < ActiveRecord::Base
                        :notes,
                        :create_reminder_url,
                        :create_note_url,
-                       :impact_rating_rank,
+                       :impact_rating_rank_text,
                        :url ]})
   end
 

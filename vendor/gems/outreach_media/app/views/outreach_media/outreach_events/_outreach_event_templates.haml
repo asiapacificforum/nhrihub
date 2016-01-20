@@ -108,7 +108,7 @@
             %span.caret
           %ul.dropdown-menu
             {{#impact_ratings}}
-            <ir id='{{id}}' rank='{{rank}}' text='{{text}}' />
+            <ir id='{{id}}' rank_text='{{rank_text}}' />
             {{/impact_ratings}}
   #outreach_event_list
     {{#outreach_events}}
@@ -307,6 +307,6 @@
 %script#impact_rating_option_template{:type => 'text/ractive'}
   %li{:class => 'impact_rating {{#if impact_rating_selected}}selected{{/if}}'}
     %a.opt{'on-click'=>'toggle()'}
-      %span.text {{text}}
+      %span.text {{rank_text}}
       %span.fa.fa-check
 

@@ -572,7 +572,7 @@ $ ->
         else
           impact_rating_id = @get('filter_criteria.impact_rating_id')
           impact_rating = _(@findAllComponents('ir')).find (ir)->ir.get('id') == impact_rating_id
-          impact_rating.get('text')
+          impact_rating.get('rank_text')
     min : (param)->
       @get(param).reduce (min,val)->
         return val if val<min

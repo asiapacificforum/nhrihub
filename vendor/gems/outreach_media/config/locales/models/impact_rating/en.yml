@@ -5,3 +5,8 @@ en:
     attributes:
       impact_rating:
         rank:
+          one:  "No improved audience understanding"
+          two:  "Some improved audience understanding"
+          three:  "Improved understanding among half of participants"
+          four:  "Improved understanding among most participants"
+          five:  "Universal improved understanding"

@@ -49,7 +49,6 @@ end
 desc "populates media appearances with examples"
 task :populate_media => :environment do
   MediaAppearance.delete_all
-  Organization.delete_all
 
   20.times do
     ma = FactoryGirl.create(:media_appearance, :with_reminders, :with_notes, [:file, :link].sample, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
@@ -65,4 +64,17 @@ task :populate_outreach => :environment do
   20.times do
     oe = FactoryGirl.create(:outreach_event, :with_reminders, :with_notes, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
   end
+end
+
+desc "populate both outreach and media, including dependencies"
+task :populate_om => :environment do
+  Rake::Task["populate_users"].invoke
+  Rake::Task["corporate_services:populate_sp"].invoke
+  Rake::Task["populate_vs"].invoke
+  Rake::Task["populate_pr"].invoke
+  Rake::Task["populate_ir"].invoke
+  Rake::Task["populate_at"].invoke
+  Rake::Task["populate_areas"].invoke
+  Rake::Task["populate_media"].invoke
+  Rake::Task["populate_outreach"].invoke
 end

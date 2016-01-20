@@ -5,22 +5,19 @@ str_generator = Proc.new{
   (str.dup.slice(0,i-1)+'f'+str.dup.slice(i-l,1000)).dup
 }
 
-audience_type_ids = AudienceType.pluck(:id)
-
-performance_indicator_ids = PerformanceIndicator.pluck(:id)
 
 FactoryGirl.define do
   factory :outreach_event do
-    impact_rating
     title {Faker::Lorem.sentence(5)}
     participant_count { rand(2000) }
     audience_name { Faker::Lorem.words(2).join(' ') }
-    audience_type_id { audience_type_ids.sample }
+    audience_type_id { AudienceType.pluck(:id).sample }
     event_date { Date.today.advance(:days => -rand(2000)) }
     description { Faker::Lorem.sentences(2).join(' ') }
 
     after(:create) do |oe|
-      oe.performance_indicator_ids = performance_indicator_ids.sample(rand(2))
+      oe.performance_indicator_ids = PerformanceIndicator.pluck(:id).sample(rand(2))
+      oe.impact_rating_id = ImpactRating.pluck(:id).sample
       oe.save
       FactoryGirl.create(:outreach_event_document, :outreach_event_id => oe.id)
     end

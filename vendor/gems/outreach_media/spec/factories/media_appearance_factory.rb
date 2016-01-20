@@ -1,10 +1,6 @@
-violation_severities = ViolationSeverity.pluck(:id)
-performance_indicator_ids = PerformanceIndicator.pluck(:id)
 
 FactoryGirl.define do
   factory :media_appearance do
-    user
-    positivity_rating
     title {Faker::Lorem.sentence(5)}
 
     trait :link do
@@ -20,7 +16,9 @@ FactoryGirl.define do
     end
 
     after(:build) do |media_appearance|
-      media_appearance.performance_indicator_ids = performance_indicator_ids.sample(rand(2))
+      media_appearance.performance_indicator_ids = PerformanceIndicator.pluck(:id).sample(rand(2))
+      media_appearance.user_id = User.pluck(:id)
+      media_appearance.positivity_rating_id = PositivityRating.pluck(:id)
       if media_appearance.file_id
         path = Rails.env.production? ?
           Rails.root.join('..','..','shared') :
@@ -70,7 +68,7 @@ FactoryGirl.define do
     trait :with_notes do
       after(:create) do |oe|
         rand(3).times do
-          FactoryGirl.create(:note, :outreach_event, :notable_id => oe.id)
+          FactoryGirl.create(:note, :media_appearance, :notable_id => oe.id)
         end
       end
     end
@@ -78,7 +76,7 @@ FactoryGirl.define do
     trait :with_reminders do
       after(:create) do |oe|
         rand(3).times do
-          FactoryGirl.create(:reminder, :outreach_event, :remindable_id => oe.id)
+          FactoryGirl.create(:reminder, :media_appearance, :remindable_id => oe.id)
         end
       end
     end
@@ -91,7 +89,7 @@ FactoryGirl.define do
         unless ma.affected_people_count
           ma.affected_people_count = rand(9000)
         end
-        ma.violation_severity_id = violation_severities.sample
+        ma.violation_severity_id = ViolationSeverity.pluck(:id).sample
       end
     end
   end

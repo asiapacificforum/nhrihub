@@ -1,4 +1,3 @@
-require 'ostruct'
 class ViolationSeverity < ActiveRecord::Base
   has_many :media_appearances
   # default values included here as a reference
