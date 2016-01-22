@@ -122,6 +122,17 @@ select.priority_level {
 .row.performance_indicator,
 .row.performance_indicator_control>div:nth-child(2){
   background-color : $grey3;
+
+  >.performance_indicator_progress > .title >span:before{
+    color : red;
+    margin-right : 10px;
+  }
+  >.performance_indicator_progress > .title.media >span:before{
+    content : "m";
+  }
+  >.performance_indicator_progress > .title.outreach >span:before{
+    content : "o";
+  }
 }
 
 .form-group.has-error {

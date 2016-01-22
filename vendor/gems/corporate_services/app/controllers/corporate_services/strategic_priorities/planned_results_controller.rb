@@ -2,7 +2,8 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
   def create
     planned_result = PlannedResult.new(planned_result_params)
     if planned_result.save
-      render :json => planned_result.all_in_strategic_priority, :status => 200
+      # call to_json here b/c the built in call seems to supply unwanted options!
+      render :json => planned_result.to_json, :status => 200
     else
       render :nothing => true, :status => 500
     end
@@ -11,7 +12,7 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
   def destroy
     planned_result = PlannedResult.find(params[:id])
     if planned_result.destroy
-      render :json => planned_result.all_in_strategic_priority, :status => 200
+      render :json => PlannedResult.where(:strategic_priority_id => planned_result.strategic_priority_id), :status => 200
     else
       render :nothing => true, :status => 500
     end
@@ -20,7 +21,7 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
   def update
     planned_result = PlannedResult.find(params[:id])
     if planned_result.update_attributes(planned_result_params)
-      render :json => planned_result.strategic_priority.strategic_plan.strategic_priorities, :status => 200
+      render :json => planned_result.to_json, :status => 200
     else
       render :nothing => true, :status => 500
     end

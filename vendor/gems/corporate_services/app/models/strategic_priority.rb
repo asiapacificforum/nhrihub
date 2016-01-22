@@ -10,9 +10,19 @@ class StrategicPriority < ActiveRecord::Base
       each{|sp| sp.increment!(:priority_level)}
   end
 
+  after_destroy do |strategic_priority|
+    lower_priorities = StrategicPriority.where("priority_level > #{strategic_priority.priority_level}")
+    lower_priorities.each{|sp| sp.decrement_priority_level}
+  end
+
   def as_json(options={})
     super(:except => [:created_at, :updated_at],
           :methods => [:url, :create_planned_result_url, :planned_results, :description_error] )
+  end
+
+  def decrement_priority_level
+    decrement!(:priority_level)
+    planned_results.each{|pr| pr.decrement_index_prefix(priority_level)}
   end
 
   # for the purposes of StrategicPlanIndexer
@@ -37,7 +47,7 @@ class StrategicPriority < ActiveRecord::Base
   end
 
   def all_in_plan
-    strategic_plan.strategic_priorities.reload.sort
+    StrategicPriority.where(:strategic_plan_id => strategic_plan_id)
   end
 
 end

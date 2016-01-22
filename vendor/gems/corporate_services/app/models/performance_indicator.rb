@@ -2,9 +2,13 @@ class PerformanceIndicator < ActiveRecord::Base
   belongs_to :activity
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
-  default_scope ->{ order(:id) } # this naturally orders by index
+  has_many :media_appearance_performance_indicators, :dependent => :destroy
+  has_many :media_appearances, :through => :media_appearance_performance_indicators
+  has_many :outreach_event_performance_indicators, :dependent => :destroy
+  has_many :outreach_events, :through => :outreach_event_performance_indicators
+  default_scope ->{ order(:index) }
 
-  before_save do
+  before_create do
     self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
     self.index = StrategicPlanIndexer.new(self,activity).next
   end
@@ -18,12 +22,51 @@ class PerformanceIndicator < ActiveRecord::Base
                                     :reminders,
                                     :create_reminder_url,
                                     :notes,
+                                    :outreach_event_titles,
+                                    :media_appearance_titles,
                                     :create_note_url]}
     super(default_options)
   end
 
   def namespace
     :corporate_services
+  end
+
+  after_destroy do |performance_indicator|
+    lower_indexes = PerformanceIndicator.
+                      where(:activity_id => performance_indicator.activity_id).
+                      select{|pi| pi >= self}
+    lower_indexes.each{|pi| pi.decrement_index }
+  end
+
+  def <=>(other)
+    self.index.split('.').map(&:to_i) <=> other.index.split('.').map(&:to_i)
+  end
+
+  def >=(other)
+    [0,1].include?(self <=> other)
+  end
+
+  def decrement_index
+    ar = index.split('.')
+    new_suffix = ar.pop.to_i.pred.to_i
+    ar << new_suffix
+    new_index = ar.join('.')
+    update_attribute(:index, ar.join('.'))
+  end
+
+  def decrement_index_prefix(new_prefix)
+    ar = index.split('.')
+    new_index = [new_prefix,ar[4]].join('.')
+    update_attribute(:index, new_index)
+  end
+
+  def outreach_event_titles
+    outreach_events.map(&:title)
+  end
+
+  def media_appearance_titles
+    media_appearances.map(&:title)
   end
 
   def create_note_url

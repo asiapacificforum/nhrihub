@@ -5,7 +5,7 @@ class StrategicPlanIndexer
   end
 
   def next
-    increment? ?  incremented_index : parent_index+".1"
+    increment? ? incremented_index : parent_index+'.1'
   end
 
   private
@@ -19,11 +19,11 @@ class StrategicPlanIndexer
 
   def incremented_index
     ar = previous_instance.index.split('.')
-    ar[-1] = ar[1].to_i.succ.to_s
+    ar[-1] = ar[-1].to_i.succ.to_s
     ar.join('.')
   end
 
   def previous_instance
-    object.class.name.constantize.send(:last)
+    parent.send(object.class.name.tableize.to_sym).last
   end
 end

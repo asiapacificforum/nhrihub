@@ -2,10 +2,10 @@ class Outcome < ActiveRecord::Base
   belongs_to :planned_result
   has_many :activities, :autosave => true, :dependent => :destroy
 
-  default_scope ->{ order(:id) } # this naturally orders by index
+  default_scope ->{ order(:index) }
 
   # strip index if user has entered it
-  before_save do
+  before_create do
     self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
     self.index = StrategicPlanIndexer.new(self,planned_result).next
   end
@@ -15,8 +15,40 @@ class Outcome < ActiveRecord::Base
           :methods => [:indexed_description, :description, :id, :url, :create_activity_url, :activities, :description_error])
   end
 
+  after_destroy do |outcome|
+    lower_indexes = Outcome.
+                      where(:planned_result_id => outcome.planned_result_id).
+                      select{|o| o >= self}
+    lower_indexes.each{|o| o.decrement_index }
+  end
+
+
+  def <=>(other)
+    self.index.split('.').map(&:to_i) <=> other.index.split('.').map(&:to_i)
+  end
+
+  def >=(other)
+    [0,1].include?(self <=> other)
+  end
+
+  def decrement_index
+    ar = index.split('.')
+    new_suffix = ar.pop.to_i.pred.to_i
+    ar << new_suffix
+    new_index = ar.join('.')
+    update_attribute(:index, ar.join('.'))
+    activities.each{|o| o.decrement_index_prefix(new_index)}
+  end
+
   def description_error
     nil
+  end
+
+  def decrement_index_prefix(new_prefix)
+    ar = index.split('.')
+    new_index = [new_prefix,ar[2]].join('.')
+    update_attribute(:index, new_index)
+    activities.each{|o| o.decrement_index_prefix(new_index)}
   end
 
   def url

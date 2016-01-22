@@ -2,7 +2,7 @@ class CorporateServices::PlannedResults::OutcomesController < ApplicationControl
   def create
     outcome = Outcome.new(outcome_params)
     if outcome.save
-      render :json => outcome.all_in_planned_result, :status => 200
+      render :json => outcome.to_json, :status => 200
     else
       render :nothing => true, :status => 500
     end
@@ -10,9 +10,8 @@ class CorporateServices::PlannedResults::OutcomesController < ApplicationControl
 
   def destroy
     outcome = Outcome.find(params[:id])
-    planned_result = outcome.planned_result
     if outcome.destroy
-      render :json => planned_result.reload, :status => 200
+      render :json => Outcome.where(:planned_result_id => outcome.planned_result_id), :status => 200
     else
       render :nothing => true, :status => 500
     end
@@ -21,7 +20,7 @@ class CorporateServices::PlannedResults::OutcomesController < ApplicationControl
   def update
     outcome = Outcome.find(params[:id])
     if outcome.update_attributes(outcome_params)
-      render :json => outcome.planned_result.strategic_priority.strategic_plan.strategic_priorities, :status => 200
+      render :json => outcome.to_json, :status => 200
     else
       render :nothing => true, :status => 500
     end

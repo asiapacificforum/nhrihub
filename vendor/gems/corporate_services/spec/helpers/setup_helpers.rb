@@ -14,4 +14,20 @@ module SetupHelpers
     a = setup_activity
     PerformanceIndicator.create(:description => "number of complaints", :target => "none at all", :activity_id => a.id)
   end
+
+  def setup_strategic_plan
+    @performance_indicator = setup_performance_indicator
+  end
+
+  def setup_outreach_events
+    oe = FactoryGirl.build(:outreach_event)
+    oe.performance_indicators = [@performance_indicator]
+    oe.save
+  end
+
+  def setup_media_appearances
+    ma = FactoryGirl.build(:media_appearance)
+    ma.performance_indicators = [@performance_indicator]
+    ma.save
+  end
 end

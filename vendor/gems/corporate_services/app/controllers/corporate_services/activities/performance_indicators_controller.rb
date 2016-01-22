@@ -2,18 +2,17 @@ class CorporateServices::Activities::PerformanceIndicatorsController < Applicati
   def create
     performance_indicator = PerformanceIndicator.new(performance_indicator_params)
     if performance_indicator.save
-      performance_indicators = performance_indicator.all_in_activity
-      render :json => performance_indicators, :status => 200
+      render :json => performance_indicator, :status => 200
     else
       render :nothing => true, :status => 500
     end
   end
 
+  # response to destroy must be all remaining siblings due to re-indexing
   def destroy
     performance_indicator = PerformanceIndicator.find(params[:id])
-    activity = performance_indicator.activity
     if performance_indicator.destroy
-      render :json => activity.reload, :status => 200
+      render :json => PerformanceIndicator.where(:activity_id => performance_indicator.activity_id), :status => 200
     else
       render :nothing => true, :status => 500
     end
@@ -22,7 +21,7 @@ class CorporateServices::Activities::PerformanceIndicatorsController < Applicati
   def update
     performance_indicator = PerformanceIndicator.find(params[:id])
     if performance_indicator.update_attributes(performance_indicator_params)
-      render :json => performance_indicator.activity.outcome.planned_result.strategic_priority.strategic_plan.strategic_priorities, :status => 200
+      render :json => performance_indicator, :status => 200
     else
       render :nothing => true, :status => 500
     end

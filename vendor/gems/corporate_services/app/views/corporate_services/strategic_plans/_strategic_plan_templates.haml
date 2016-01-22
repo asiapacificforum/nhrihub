@@ -40,7 +40,7 @@
           .col-md-2= t('.progress')
           .col-md-2= t('.reminders_etc')
         {{#planned_results}}
-        <pr description="{{description}}" indexed_description="{{indexed_description}}" id="{{id}}" outcomes="{{outcomes}}"/>
+        <pr create_outcome_url="{{create_outcome_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" outcomes="{{outcomes}}" strategic_priority_id="{{strategic_priority_id}}" url="{{url}}" />
         {{/planned_results}}
         .row.planned_result_control
           .col-md-2{:style=>"width:14.2857%"}
@@ -222,7 +222,7 @@
           %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2{:style=>"width:80%;", :class => "{{^performance_indicators}}empty{{/performance_indicators}}"}
       {{#performance_indicators}}
-      <pi activity_id="{{activity_id}}" description="{{description}}" indexed_description="{{indexed_description}}" target="{{target}}" indexed_target="{{indexed_target}}" progress="{{progress}}"\>
+      <pi activity_id="{{activity_id}}" create_note_url="{{create_note_url}}" create_reminder_url="{{create_reminder_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" indexed_target="{{indexed_target}}" media_appearance_titles="{{media_appearance_titles}}" notes="{{notes}}" outreach_event_titles="{{outreach_event_titles}}" reminders="{{reminders}}" target="{{target}}" url="{{url}}" />
       {{/performance_indicators}}
       {{^performance_indicators}}
       .row.performance_indicator
@@ -254,8 +254,7 @@
       %textarea.form-control{ :id=>'new_performance_indicator_target', :placeholder => "Enter target",
         :name => "performance_indicator[target]", :style => "z-index:10; width:initial;",
         :value => "{{target}}"}
-    .col-md-2{:style=>"width:25%"}
-    .col-md-2{:style=>"width:25%"}
+    .col-md-2{:style=>"width:50%"}
   .row.new_performance_indicator_control
     .col-md-2.description{:style=>"width:25%"}
       %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:36px"}
@@ -282,6 +281,8 @@
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_target', :placeholder => "Enter target",
             :name => "performance_indicator[target]", :value => "{{ target }}", :style => "width:initial; height:45px;"}
     .col-md-2.performance_indicator_progress{:style=>"width:25%"}
+      <outreachevents />
+      <mediaappearances />
     .col-md-2.actions{:style=>"width:25%"}
       %div.alarm_icon{'on-click' => "show_reminders_panel()", :style => "position:relative; float:left; width:20px; top:3px; margin-left:20px;"}
       %i.fa.fa-file-text-o.show_notes{'on-click' => "show_notes_panel()", :style => "margin-left:28px; position:relative; float:left; top:3px;"}
@@ -290,6 +291,24 @@
       <reminders>
     %div
       <notes>
+
+%script#outreach_events_template{:type => 'text/ractive'}
+  {{#outreach_events}}
+  <outreachevent title='{{.}}' />
+  {{/outreach_events}}
+
+%script#outreach_event_template{:type => 'text/ractive'}
+  .title.outreach
+    %span {{title}}
+
+%script#media_appearances_template{:type => 'text/ractive'}
+  {{#media_appearances}}
+  <mediaappearance title='{{.}}' />
+  {{/media_appearances}}
+
+%script#media_appearance_template{:type => 'text/ractive'}
+  .title.media
+    %span {{title}}
 
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note' # it's in the main app

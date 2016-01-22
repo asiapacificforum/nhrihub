@@ -1,8 +1,27 @@
 $ ->
   Ractive.DEBUG = false
 
+  MediaAppearance = Ractive.extend
+    template : "#media_appearance_template"
+
+  MediaAppearances = Ractive.extend
+    template : "#media_appearances_template"
+    components :
+      'mediaappearance' : MediaAppearance
+
+  OutreachEvent = Ractive.extend
+    template : "#outreach_event_template"
+
+  OutreachEvents = Ractive.extend
+    template : "#outreach_events_template"
+    components :
+      'outreachevent' : OutreachEvent
+
   PerformanceIndicator = Ractive.extend
     template : '#performance_indicator_template'
+    components :
+      outreachevents : OutreachEvents
+      mediaappearances : MediaAppearances
     computed :
       persisted : ->
         !isNaN(parseInt(@get('id')))
@@ -30,7 +49,7 @@ $ ->
         true
     create_performance_indicator : (response, statusText, jqxhr)->
       UserInput.reset()
-      @parent.set('performance_indicators',response)
+      @set(response)
     delete_this : (event,object)->
       ev = $.Event(event)
       ev.stopPropagation()
@@ -44,7 +63,7 @@ $ ->
         success : @update_performance_indicator
     update_performance_indicator : (resp, statusText, jqxhr)->
       UserInput.reset()
-      @parent.set(resp)
+      @parent.set('performance_indicators',resp)
     remove_errors : ->
       @remove_description_errors()
     show_reminders_panel : ->
@@ -56,6 +75,8 @@ $ ->
     create_stop : ->
       UserInput.reset()
       @parent.remove_performance_indicator_form()
+    edit_update : (performance_indicator) ->
+      @set(performance_indicator)
 
   Activity = Ractive.extend
     template : '#activity_template'
@@ -89,8 +110,7 @@ $ ->
         true
     create_activity : (response, statusText, jqxhr)->
       UserInput.reset()
-      @parent.set('activities',response)
-      #@parent.show_add_activity()
+      @set(response)
     delete_this : (event,object)->
       ev = $.Event(event)
       ev.stopPropagation()
@@ -104,17 +124,29 @@ $ ->
         success : @update_activity
     update_activity : (resp, statusText, jqxhr)->
       UserInput.reset()
-      @parent.set(resp)
+      @parent.set('activities', resp)
     remove_errors : ->
       @remove_description_errors()
     remove_description_errors : ->
       @set("description_error","")
     new_performance_indicator : ->
-      @push('performance_indicators',{description : '', indexed_description: '', target: '', id : null, activity_id : @get('id'), url:null, description_error:"", progress:""})
+      new_performance_indicator_attributes =
+            description : ''
+            indexed_description: ''
+            target: ''
+            indexed_target: ''
+            id : null
+            activity_id : @get('id')
+            url:null
+            description_error:""
+            progress:""
+      @push('performance_indicators', new_performance_indicator_attributes)
       UserInput.claim_user_input_request(@,'remove_performance_indicator_form')
     remove_performance_indicator_form : ->
       if _.isNull(@findAllComponents('pi')[@get('performance_indicators').length-1].get('id'))
         @pop('performance_indicators')
+    edit_update : (activity)->
+      @set(activity)
 
   Outcome = Ractive.extend
     template : '#outcome_template'
@@ -148,7 +180,7 @@ $ ->
         true
     create_outcome : (response, statusText, jqxhr)->
       UserInput.reset()
-      @parent.set('outcomes',response)
+      @set(response)
       @parent.show_add_outcome()
     remove_description_errors : ->
       @set("description_error","")
@@ -164,16 +196,29 @@ $ ->
         method : 'post'
         dataType : 'json'
         context : @
-        success : @update_pr
-    update_pr : (resp, statusText, jqxhr)->
+        success : @update_outcomes
+    update_outcomes : (resp, statusText, jqxhr)->
       UserInput.reset()
-      @parent.set(resp)
+      @parent.set('outcomes',resp)
     new_activity : ->
-      @push('activities',{description : '', indexed_description: '', id : null, outcome_id : @get('id'), url:null, description_error:"" })
+      new_activity_attributes =
+                id: null
+                outcome_id: @get('id')
+                description: ''
+                progress: null
+                index: ''
+                indexed_description: ''
+                performance_indicators: []
+                url: ''
+                description_error: null
+                create_performance_indicator_url: ''
+      @push('activities',new_activity_attributes)
       UserInput.claim_user_input_request(@,'remove_activity_form')
     remove_activity_form : ->
       if _.isNull(@findAllComponents('activity')[@get('activities').length-1].get('id'))
         @pop('activities')
+    edit_update : (outcome)->
+      @set(outcome)
 
   PlannedResult = Ractive.extend
     template : '#planned_result_template'
@@ -214,7 +259,7 @@ $ ->
       @remove_description_errors()
     create_pr : (response, statusText, jqxhr)->
       UserInput.reset()
-      @parent.set('planned_results',response)
+      @set(response)
       @parent.show_add_planned_result()
     delete_this : (event)->
       ev = $.Event(event)
@@ -234,7 +279,17 @@ $ ->
       @parent.set('planned_results',response)
     new_outcome : ->
       UserInput.claim_user_input_request(@,'remove_outcome_form')
-      @push('outcomes',{description : '', indexed_description: '', id : null, planned_result_id : @get('id'), url:null, description_error:""})
+      new_outcome_attributes =
+              id: null
+              planned_result_id: @get('id')
+              description: ''
+              index: ''
+              indexed_description: ''
+              url: ''
+              create_activity_url: ''
+              activities: []
+              description_error: ''
+      @push('outcomes',new_outcome_attributes)
       @hide_add_outcome()
     remove_outcome_form : ->
       if _.isNull(@findAllComponents('outcome')[@get('outcomes').length-1].get('id'))
@@ -248,6 +303,8 @@ $ ->
       @_add_outcome().hide()
     show_add_outcome : ->
       @_add_outcome().show()
+    edit_update : (planned_result)->
+      @set(planned_result)
 
   # response to save is assumed to be an array of all
   # the strategic priorities on the page
@@ -258,10 +315,7 @@ $ ->
       object : @
       focus_element : 'input.title'
       success : (response, textStatus, jqXhr)->
-        ractive = @.options.object
-        # the whole dataset is replaced... Ractive figures out
-        # what has changed and what to re-render
-        strategic_plan.set('strategic_priorities',response)
+        ractive.edit_update(response)
         @load()
       error : ->
         console.log "Changes were not saved, for some reason"
@@ -311,7 +365,17 @@ $ ->
         !isNaN(parseInt(@get('id')))
     new_planned_result: ->
       UserInput.claim_user_input_request(@,'remove_planned_result_form')
-      @push('planned_results', {id : null, description : "", strategic_priority_id : @get('id'), description_error:"", outcomes:[]})
+      new_planned_result_attributes = 
+              create_outcome_url: ''
+              description: ''
+              description_error: null 
+              id: null
+              index: ''
+              indexed_description: ''
+              outcomes: []
+              strategic_priority_id: @get('id')
+              url: ''
+      @push('planned_results', new_planned_result_attributes)
     cancel : ->
       UserInput.reset()
       @parent.get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
@@ -362,6 +426,8 @@ $ ->
       if _.isNull(@findAllComponents('pr')[@get('planned_results').length-1].get('id'))
         @pop('planned_results')
       @show_add_planned_result()
+    edit_update : (strategic_priorities)->
+      @parent.set('strategic_priorities',strategic_priorities) # different from other components, b/c user may update the priority level. In others, index is not user-settable
 
   window.strategic_plan = new Ractive
     el : "#strategic_plan"

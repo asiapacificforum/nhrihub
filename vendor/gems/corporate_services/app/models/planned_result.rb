@@ -3,12 +3,19 @@ class PlannedResult < ActiveRecord::Base
   has_many :outcomes, :dependent => :destroy, :autosave => true
   accepts_nested_attributes_for :outcomes
 
-  default_scope ->{ order(:id) }
+  default_scope ->{ order(:index) }
 
   # strip index if user has entered it
-  before_save do
+  before_create do
     self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
     self.index = StrategicPlanIndexer.new(self,strategic_priority).next
+  end
+
+  after_destroy do |planned_result|
+    lower_priorities = PlannedResult.
+                         where(:strategic_priority_id => planned_result.strategic_priority_id).
+                         select{|pr| pr >= self}
+    lower_priorities.each{|pr| pr.decrement_index }
   end
 
   def self.all_with_associations
@@ -23,6 +30,14 @@ class PlannedResult < ActiveRecord::Base
     collection
   end
 
+  def <=>(other)
+    self.index.split('.').map(&:to_i) <=> other.index.split('.').map(&:to_i)
+  end
+
+  def >=(other)
+    [0,1].include?(self <=> other)
+  end
+
   def as_json(options = {})
     default_options = {:except => [:updated_at, :created_at],
                        :methods => [:url, :indexed_description, :description, :outcomes, :create_outcome_url, :description_error]}
@@ -32,6 +47,24 @@ class PlannedResult < ActiveRecord::Base
 
   def description_error
     nil
+  end
+
+  # e.g. 2.1 -> 1.1
+  def decrement_index_prefix(new_prefix)
+    ar = index.split('.')
+    ar[0] = new_prefix
+    new_index = ar.join('.')
+    update_attribute(:index, new_index)
+    outcomes.each{|o| o.decrement_index_prefix(new_index)}
+  end
+
+  def decrement_index
+    ar = index.split('.')
+    new_suffix = ar.pop.to_i.pred.to_i
+    ar << new_suffix
+    new_index = ar.join('.')
+    update_attribute(:index, ar.join('.'))
+    outcomes.each{|o| o.decrement_index_prefix(new_index)}
   end
 
   def create_outcome_url
