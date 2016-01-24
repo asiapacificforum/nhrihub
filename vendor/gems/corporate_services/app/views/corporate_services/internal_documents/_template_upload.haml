@@ -18,7 +18,11 @@
         %tr
           %td.title
             = label_tag "#{label_prefix}_title", t('.doc_title')
-            = text_field_tag "#{prefix}[title]", '',:required => true
+            = text_field_tag "#{prefix}[title]", '',:required => true, :list => :icc_files
+            %datalist#icc_files
+              %option{:value=>"foo"}
+              %option{:value=>"bar"}
+              %option{:value=>"baz"}
           %td.revision
             = label_tag "#{label_prefix}_revision", t('.revision')
             = text_field_tag "#{prefix}[revision]", '', :style => "width:40px"
