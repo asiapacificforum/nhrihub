@@ -1,0 +1,45 @@
+%script#template-download{:type => 'html/template'}
+  .panel.panel-default.template-download
+    #headingOne.panel-heading{:role => "tab"}
+      %strong.error.text-danger {{= file.error }}
+      = render :partial => 'doc_table', :locals => {:file => 'file'}
+    .panel-collapse.collapse{:role => "tabpanel", :id => "collapse{{ id }}"}
+      .panel-body
+        %h4 Archive
+        {{^archive_files}}
+        %p empty
+        {{/}}
+        {{#_(archive_files).sortBy(revision).reverse()}}
+        <archivedoc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' update_url='{{update_url}}' delete_url='{{delete_url}}' url='{{url}}' save_url='{{save_url}}'/>
+        {{/}}
+
+%script#popover_template{:type => "template/ractive"}
+  .popover.fileDetails{:role=>"tooltip"}
+    .arrow
+    %h3.popover-title
+    .popover-content
+
+%script#detailsContent{:type => 'text/ractive'}
+  - scope = 'activerecord.attributes.internal_document'
+  %table{:style => 'width:500px'}
+    %tr
+      %td= t('original_filename', :scope => scope)
+      %td.name {{ original_filename }}
+    %tr
+      %td= t('filesize', :scope => scope)
+      %td.size {{ formatted_filesize }}
+    %tr
+      %td= t('revision', :scope => scope)
+      %td.rev {{ revision }}
+    %tr
+      %td= t('lastModified', :scope => scope)
+      %td.lastModified {{ formatted_modification_date }}
+    %tr
+      %td= t('uploadedOn', :scope => scope)
+      %td.uploadedOn {{ formatted_creation_date }}
+    %tr
+      %td= t('uploadedBy', :scope => scope)
+      %td.uploadedBy {{ uploaded_by.first_last_name }}
+
+%script#detailsTitle{:type => "template/ractive"}
+  %span{:style => 'z-index:20'}= t('.details')

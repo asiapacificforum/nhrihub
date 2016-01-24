@@ -7,7 +7,6 @@ en:
         cancel: "Cancel upload"
         delete: "Delete"
         error: "Error"
-        details: "File details"
         doc_title: "Document title"
         revision: "Revision"
         information: "Information"
@@ -29,3 +28,5 @@ en:
         doc_title: 'Document title'
         revision: "Revision"
         processing: "Processing..."
+      internal_documents_templates :
+        details: "File details"

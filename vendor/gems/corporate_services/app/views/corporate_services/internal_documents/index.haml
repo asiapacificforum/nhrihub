@@ -52,12 +52,9 @@
         #accordion.panel-group.files{:role => "tablist", :name => 'internal_document[file]'}
 
 
-= render :partial => 'details_popover'
-= render :partial => 'details_popover_content'
-= render :partial => 'details_popover_title'
 = render :partial => 'template_upload', :locals => {:id => 'primary_upload', :prefix => 'internal_document', :label_prefix => 'internal_document'}
 = render :partial => 'template_upload', :locals => {:id => 'archive_upload', :prefix => 'internal_document[archive_files][]', :label_prefix => 'internal_document_archive_files_'}
-= render :partial => 'template_download'
+= render :partial => 'internal_documents_templates'
 
 %script{:type => 'template/html', :id => 'doc_table'}
   = render :partial => 'doc_table', :locals => {:file => 'archive_file'}
