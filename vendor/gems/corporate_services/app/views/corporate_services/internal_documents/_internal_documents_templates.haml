@@ -2,7 +2,7 @@
   .panel.panel-default.template-download
     #headingOne.panel-heading{:role => "tab"}
       %strong.error.text-danger {{= file.error }}
-      {{> doctable }}
+      {{> document_template }}
     .panel-collapse.collapse{:role => "tabpanel", :id => "collapse{{ id }}"}
       .panel-body
         %h4 Archive
@@ -44,7 +44,7 @@
 %script#detailsTitle{:type => "template/ractive"}
   %span{:style => 'z-index:20'}= t('.details')
 
-%script#doctable{:type => 'template/html'}
+%script#document_template{:type => 'template/html'}
   %table.document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
     %tr
       %td.title.form-group{'data-toggle' => :edit, :style => "width:36%", 'data-attribute' => :title, :class =>"{{#title_error}}has-error{{/}}"}
@@ -88,7 +88,7 @@
       %td{:style => "text-align:center; width:8%"}
         {{#if file}}
         -# next tag is where the fileupload is attached
-        .fileupload.icon{:decorator => "fileupload:'{{url}}','{{id}}'",
+        .fileupload.icon{:decorator => "archive_fileupload:'{{url}}','{{id}}'",
                          :id => "upload{{ id }}",
                          :'data-file-input' => "#upload{{ id }} #archive_fileinput" }
           %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}

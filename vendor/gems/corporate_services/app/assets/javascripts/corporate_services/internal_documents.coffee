@@ -1,6 +1,7 @@
 Ractive.DEBUG = false
 
 $ ->
+  # these options apply to the primary fileupload
   fileupload_options =
     permittedFiletypes: permitted_filetypes,
     maxFileSize: parseInt(maximum_filesize),
@@ -20,14 +21,14 @@ $ ->
     paramName : 'internal_document[file]',
     uploadTemplateId : '#primary_upload' 
 
-  FileUpload = (node, url, id)->
-    local_options =
+  ArchiveFileUpload = (node, url, id)->
+    archive_options =
       url : url
       type : 'put'
       #fileInput :  "#upload#{id} #archive_fileinput"  # don't know why this doesn't work!
       paramName : 'internal_document[archive_files][][file]'
       uploadTemplateId : '#archive_upload'
-    $(node).fileupload _.extend({}, fileupload_options, local_options)
+    $(node).fileupload _.extend({}, fileupload_options, archive_options)
     teardown : ->
       #noop for now
 
@@ -79,13 +80,13 @@ $ ->
     teardown : ->
       $(node).off 'click'
 
-  Ractive.decorators.fileupload = FileUpload # for the archive file upload
+  Ractive.decorators.archive_fileupload = ArchiveFileUpload # for the archive file upload
   Ractive.decorators.inpage_edit = EditInPlace
   Ractive.decorators.doc_deleter = DocDeleter
   Ractive.decorators.popover = Popover
 
   ArchiveDoc = Ractive.extend
-    template: '#doctable'
+    template: '#document_template'
     computed :
       file : -> false
       archive_file : -> true
@@ -142,7 +143,7 @@ $ ->
                           el: '.files'
                           template: '#files'
                           data:
-                            required_files : required_files
+                            required_files_titles : required_files_titles 
                             files : files
                             _ : _ # use underscore for sorting
                           components:
