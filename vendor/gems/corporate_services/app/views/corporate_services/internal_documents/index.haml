@@ -3,10 +3,7 @@
 .container
   / The file upload form used as target for the jQuery fileupload widget
   / this is the fileupload configuration when uploading files via the buttonbar
-  .fileupload.buttonbar{:'data-file-input' => '#primary_fileinput',
-                        :'data-url' => 'internal_documents.json',
-                        :'data-param-name' => 'internal_document[file]',
-                        :'data-upload-template-id' => '#primary_upload' }
+  .fileupload.buttonbar{:'data-file-input' => '#primary_fileinput' }
     / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
     .row.fileupload-buttonbar
       .col-lg-9
@@ -56,20 +53,8 @@
 = render :partial => 'template_upload', :locals => {:id => 'archive_upload', :prefix => 'internal_document[archive_files][]', :label_prefix => 'internal_document_archive_files_'}
 = render :partial => 'internal_documents_templates'
 
-%script{:type => 'template/html', :id => 'doc_table'}
-  = render :partial => 'doc_table', :locals => {:file => 'archive_file'}
-
-%script{:type => 'template/ractive', :id => :flash_error_template}
-  %ul.error{:style => "display:none"}
-    %li {{ message }}
-
 = javascript_include_tag 'corporate_services/in_page_edit'
 = javascript_include_tag 'corporate_services/flash'
-
-%script{:type => 'ractive/template', :id => :files}
-  {{#files}}
-  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' url='{{url}}'/>
-  {{/files}}
 
 :coffeescript
   $ ->
@@ -78,7 +63,6 @@
 
     $('.fileupload-buttonbar .fileinput-button, .fileupload-buttonbar .cancel, .fileupload-buttonbar .delete').on 'click', (event)->
       event.stopPropagation()
-      # remove any flash msg
       flash.hide()
 
     $('.fileupload-buttonbar .fileinput-button').on 'click', '.fa-plus', (e)->
@@ -92,5 +76,6 @@
   var permitted_filetypes = #{ InternalDocument.permitted_filetypes }
   var files = #{ @internal_documents.to_json }
   var files_list_error = "#{t('.flash.no_files_error')}"
+  var required_files = []
 
 = javascript_include_tag "corporate_services/internal_documents"

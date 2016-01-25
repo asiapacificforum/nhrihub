@@ -15,9 +15,19 @@ $ ->
       return arr
     downloadTemplateId: '#template-download'
     uploadTemplateContainerId: '#uploads'
+    #fileInput: '#primary_fileinput'
+    url : 'internal_documents.json',
+    paramName : 'internal_document[file]',
+    uploadTemplateId : '#primary_upload' 
 
-  FileUpload = (node, url)->
-    $(node).fileupload _.extend(fileupload_options, {url : url})
+  FileUpload = (node, url, id)->
+    local_options =
+      url : url
+      type : 'put'
+      #fileInput :  "#upload#{id} #archive_fileinput"  # don't know why this doesn't work!
+      paramName : 'internal_document[archive_files][][file]'
+      uploadTemplateId : '#archive_upload'
+    $(node).fileupload _.extend({}, fileupload_options, local_options)
     teardown : ->
       #noop for now
 
@@ -69,14 +79,16 @@ $ ->
     teardown : ->
       $(node).off 'click'
 
-
-  Ractive.decorators.fileupload = FileUpload
+  Ractive.decorators.fileupload = FileUpload # for the archive file upload
   Ractive.decorators.inpage_edit = EditInPlace
   Ractive.decorators.doc_deleter = DocDeleter
   Ractive.decorators.popover = Popover
 
   ArchiveDoc = Ractive.extend
-    template: '#doc_table'
+    template: '#doctable'
+    computed :
+      file : -> false
+      archive_file : -> true
     remove_errors : ->
       @set("title_error", false)
       @set("revision_error", false)
@@ -99,6 +111,9 @@ $ ->
 
   Doc = Ractive.extend
     template: '#template-download'
+    computed :
+      file : -> true
+      archive_file : -> false
     components :
       archivedoc : ArchiveDoc
     download_file : ->
@@ -127,6 +142,7 @@ $ ->
                           el: '.files'
                           template: '#files'
                           data:
+                            required_files : required_files
                             files : files
                             _ : _ # use underscore for sorting
                           components:
@@ -134,7 +150,7 @@ $ ->
 
   # initialize the buttonbar with fileupload widget
   # contains .start, .cancel and .fileinput-button buttons
-  $('.fileupload.buttonbar').fileupload(fileupload_options)
+  $('.fileupload.buttonbar').fileupload(_.extend({},fileupload_options))
 
 
   # this is a hack to workaround a jquery-fileupload-ui bug
