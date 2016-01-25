@@ -1,0 +1,59 @@
+%table.document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
+  %tr
+    %td.title.form-group{'data-toggle' => :edit, :style => "width:36%", 'data-attribute' => :title, :class =>"{{#title_error}}has-error{{/}}"}
+      .fade.edit
+        %input.title{:name => "internal_document[title]", :'value' => "{{ title }}"}
+        %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.title_error_message')
+      .fade.no_edit.editable.in
+        %span {{ title }}
+    %td.revision.form-group{'data-attribute' => :revision, 'data-toggle' => :edit, :'data-name' => 'revision', :style => "width:8%", :class =>"{{#revision_error}}has-error{{/}}"}
+      .fade.edit
+        %input.revision{ :name => "internal_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px'}
+        %span.help-block#revision_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.revision_error_message')
+      .fade.no_edit.editable.in
+        %span {{ revision }}
+    -# make sure it's on top of the next td, even though it precedes in the html
+    %td.include_popover{:style => "text-align:center; width:8%"}
+      .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
+        %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
+    %td{:style => "text-align:center; width:8%"}
+      .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
+        .fade.edit
+          %i.fa.fa-remove.fa-lg{:id => "internal_document_editable{{id}}_edit_cancel",:style => "position:relative; left:30px;"}
+    %td{:style => "text-align:center; width:8%"}
+      %div.icon{:'data-toggle' => 'edit'}
+        .fade.edit
+          %i.fa.fa-check.fa-lg{:id => "internal_document_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+        .fade.no_edit.in
+          %i.fa.fa-pencil-square-o.fa-lg{:id => "internal_document_editable{{id}}_edit_start"}
+    %td{:style => "text-align:center; width:8%"}
+      .icon
+        %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
+    %td{:style => "text-align:center; width:8%"}
+      -if file == "file"
+        .icon{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{{ id }}"}
+          %i.fa.fa-folder-o.fa-lg
+      -else
+        -# just to keep the spacing the same
+        .icon{:style => 'visibility:hidden'}
+          %i.fa.fa-archive.fa-lg
+    %td{:style => "text-align:center; width:8%"}
+      -if file == "file"
+        -# next tag is where the fileupload is attached
+        .fileupload.icon{:decorator => "fileupload:'{{url}}'",
+                         :id => "upload{{ id }}",
+                         :'data-file-input' => "#upload{{ id }} #archive_fileinput",
+                         :'data-type' => 'put',
+                         :'data-param-name' => 'internal_document[archive_files][][file]',
+                         :'data-upload-template-id' => '#archive_upload' }
+          %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
+          -# weird opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
+          -# only required for testing, it actually works in firefox in real life!
+          %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:400px; opacity:0.01; width:0.01px;"}
+      -else
+        -# just to keep the spacing the same
+        #file_replace{:style => 'visibility:hidden'}
+          %i.fa.fa-plus.fa-lg
+    %td{:style => "text-align:center; width:8%"}
+      %div.icon.delete{'decorator'=>'doc_deleter'}
+        %i.fa.fa-trash-o.fa-lg

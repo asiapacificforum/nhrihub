@@ -1,1 +1,259 @@
-%h1=t('.heading')
+.message_block
+%h1= t('.heading')
+.container
+  / The file upload form used as target for the jQuery fileupload widget
+  / this is the fileupload configuration when uploading files via the buttonbar
+  .fileupload.buttonbar{:'data-file-input' => '#primary_fileinput',
+                        :'data-url' => 'internal_documents.json',
+                        :'data-param-name' => 'internal_document[file]',
+                        :'data-upload-template-id' => '#primary_upload' }
+    / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
+    .row.fileupload-buttonbar
+      .col-lg-9
+        / The fileinput-button span is used to style the file input field as button
+        %span.btn.btn-success.fileinput-button
+          %i.fa.fa-plus.fa-lg{:style => "color:white"}
+          %span add
+          %input#primary_fileinput{:multiple => "multiple", :name => "primary_file", :type => "file"}
+        %button.btn.btn-primary.start{:type => "submit"}
+          %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
+          %span start
+        %button.btn.btn-warning.cancel{:type => "reset"}
+          %i.fa.fa-ban.fa-lg{:style => "color:white"}
+          %span cancel
+        / The global file processing state
+        %span.fileupload-process
+    .row.fileupload_progress
+      / The global progress state
+      .col-lg-9.fileupload-progress.fade
+        / The global progress bar
+        .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
+          .progress-bar.progress-bar-success{:style => "width:0%;"}
+        / The extended global progress state
+        .progress-extended  
+    .row
+      .col-lg-9#uploads
+    .row
+      .col-lg-9.the_files
+    .row
+      .col-lg-9
+        / The table listing the files available for upload/download
+        .headings
+          %table
+            %tr
+              %td{:style => "width:36%; text-align:left"}= t('.doc_title')
+              %td{:style => "text-align:left"}= t('.revision')
+              %td= t('.information')
+              %td{:style => "width:16%"}=t('.edit')
+              %td= t('.download')
+              %td= t('.archive')
+              %td= t('.add1')
+              %td= t('.delete')
+        #accordion.panel-group.files{:role => "tablist", :name => 'internal_document[file]'}
+
+
+-#= render :partial => 'details_popover'
+-#= render :partial => 'details_popover_content'
+-#= render :partial => 'details_popover_title'
+= render :partial => 'template_upload', :locals => {:id => 'primary_upload', :prefix => 'internal_document', :label_prefix => 'internal_document'}
+= render :partial => 'template_upload', :locals => {:id => 'archive_upload', :prefix => 'internal_document[archive_files][]', :label_prefix => 'internal_document_archive_files_'}
+= render :partial => 'template_download'
+
+%script{:type => 'template/html', :id => 'doc_table'}
+  = render :partial => 'doc_table', :locals => {:file => 'archive_file'}
+
+%script{:type => 'template/html', :id => :flash_error_template}
+  %ul.error
+    %li {{ message }}
+
+= javascript_include_tag 'corporate_services/in_page_edit'
+
+%script{:type => 'ractive/template', :id => :files}
+  {{#files}}
+  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' url='{{url}}'/>
+  {{/files}}
+
+:coffeescript
+  $ ->
+    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+
+    flash_error_template = _.template($("#flash_error_template").html())
+
+    $('.fileupload-buttonbar .start').on 'click', ->
+      filesList = $('#uploads .template-upload')
+      # show flash msg if no files have been selected
+      if filesList.length == 0
+        $('.message_block').html(flash_error_template({message : "#{t('.flash.no_files_error')}"}))
+      else
+        $('.message_block').html("")
+
+    $('.fileupload-buttonbar .fileinput-button, .fileupload-buttonbar .cancel, .fileupload-buttonbar .delete').on 'click', ->
+      # remove any flash msg
+      $('.message_block').text("")
+
+    $('.fileupload-buttonbar .fileinput-button').on 'click', '.fa-plus', (e)->
+      $(@).parent().find('input:file').click()
+    $('.fileupload-buttonbar .fileinput-button').on 'click', 'span', (e)->
+      $(@).parent().find('input:file').click()
+
+:javascript
+  var maximum_filesize = #{InternalDocument.maximum_filesize}
+  var permitted_filetypes = #{ InternalDocument.permitted_filetypes }
+
+:coffeescript
+  Ractive.DEBUG = false
+
+  files = #{ @internal_documents.to_json }
+
+  $ ->
+    'use strict'
+
+    fileupload_options =
+      permittedFiletypes: permitted_filetypes,
+      maxFileSize: parseInt(maximum_filesize),
+      failed: (e,data)->
+        if data.errorThrown != 'abort'
+          alert("The upload failed for some reason")
+      prependFiles : false
+      filesContainer: '.files'
+      formData: ->
+        inputs = @.context.find(':input')
+        arr = inputs.serializeArray()
+        return arr
+      downloadTemplateId: '#template-download'
+      uploadTemplateContainerId: '#uploads'
+
+    FileUpload = (node, url)->
+      $(node).fileupload _.extend(fileupload_options, {url : url})
+      teardown : ->
+        #noop for now
+
+    EditInPlace = (node,id)->
+      edit = new InpageEdit
+        object : @
+        on : node
+        focus_element : 'input.title'
+        success : (response, statusText, jqxhr)->
+           ractive = @.options.object
+           @.show() # before updating b/c we'll lose the handle
+           if ractive.findParent('doc') # an archive file was updated
+             ractive.parent.set(response)
+           else
+             ractive.set(response)
+        error : ->
+          console.log "Changes were not saved, for some reason"
+      teardown : ->
+        edit.off()
+
+    Popover = (node)->
+      $(node).popover
+        html : true,
+        title : ->
+          $('#detailsTitle').html()
+        content : ->
+          data = Ractive.getNodeInfo(@).ractive.get()
+          ractive = new Ractive
+            template : '#detailsContent'
+            data : data
+          ractive.toHTML()
+        template : $('#popover_template').html()
+        trigger: 'hover'
+
+      teardown: ->
+        $(node).off('mouseenter')
+
+    DocDeleter = (node)->
+      $(node).on 'click', (event)->
+        ev = $.Event(event)
+        context = $(event.target).closest('table.document')
+        data = $(event.target).closest('.fileupload').data()
+        $(event.target).
+          closest('.fileupload').
+          fileupload('option','destroy')( ev, $.extend({
+                                                      context: context,
+                                                      type: 'DELETE'
+                                                  }, data))
+      teardown : ->
+        $(node).off 'click'
+
+
+    Ractive.decorators.fileupload = FileUpload
+    Ractive.decorators.inpage_edit = EditInPlace
+    Ractive.decorators.doc_deleter = DocDeleter
+    Ractive.decorators.popover = Popover
+
+    ArchiveDoc = Ractive.extend
+      template: '#doc_table'
+      remove_errors : ->
+        @set("title_error", false)
+        @set("revision_error", false)
+      validate : ->
+        @_validate_title() && @_validate_revision()
+      _validate_title : ->
+        @set('title', @get('title').trim())
+        if @get('title') == ""
+          @set("title_error",true)
+          false
+        else
+          true
+      _validate_revision : ->
+        @set('revision', @get('revision').trim())
+        if @get('revision') == ""
+          @set("revision_error",true)
+          false
+        else
+          true
+
+    Doc = Ractive.extend
+      template: '#template-download'
+      components :
+        archivedoc : ArchiveDoc
+      download_file : ->
+        window.location = @get('url')
+      remove_errors : ->
+        @set("title_error", false)
+        @set("revision_error", false)
+      validate : ->
+        @_validate_title() && @_validate_revision()
+      _validate_title : ->
+        @set('title', @get('title').trim())
+        if @get('title') == ""
+          @set("title_error",true)
+          false
+        else
+          true
+      _validate_revision : ->
+        @set('revision', @get('revision').trim())
+        if @get('revision') == ""
+          @set("revision_error",true)
+          false
+        else
+          true
+
+    window.internal_documents = new Ractive
+                            el: '.files'
+                            template: '#files'
+                            data:
+                              files : files
+                              _ : _ # use underscore for sorting
+                            components:
+                              doc : Doc
+
+    # initialize the buttonbar with fileupload widget
+    # contains .start, .cancel and .fileinput-button buttons
+    $('.fileupload.buttonbar').fileupload(fileupload_options)
+
+
+    # this is a hack to workaround a jquery-fileupload-ui bug
+    # that causes multiple cancel events, due to multiple event
+    # handlers being attached
+    $('#uploads').on 'click', 'i.cancel', (event)->
+      event.preventDefault()
+      template = $(event.currentTarget).closest('.template-upload,.template-download')
+      data = template.data('data') || {}
+      data.context = data.context || template
+      if data.abort
+        data.abort()
+      else
+        data.errorThrown = 'abort'
+        this._trigger('fail', event, data)

@@ -1,0 +1,24 @@
+en:
+  nhri:
+    icc:
+      index:
+        heading: "NHRI ICC Accreditation"
+        doc_title: "Document title"
+        revision: "Revision"
+        information: "Information"
+        edit: "Edit"
+        download: "Download"
+        archive: "Archive"
+        add1: "Add file"
+        delete: "Delete"
+        flash:
+          no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
+      template_upload:
+        start_one: "Start"
+        cancel_one: "Cancel"
+        doc_title: 'Document title'
+        revision: "Revision"
+        processing: "Processing..."
+      doc_table:
+        title_error_message: "Title cannot be blank"
+        revision_error_message: "Invalid"
