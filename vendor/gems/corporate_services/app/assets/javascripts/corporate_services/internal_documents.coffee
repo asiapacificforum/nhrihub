@@ -20,27 +20,20 @@ $ ->
     url : 'internal_documents.json',
     paramName : 'internal_document[file]',
     uploadTemplateId : '#primary_upload' 
-    done: (e, data) ->
-        if e.isDefaultPrevented()
-            return false
-        # 'this' is the upload form
-        that = $(this).data('blueimp-fileupload') || # $this.data is a jQuery widget
-                $(this).data('fileupload'),
-            current_locale = that.options.current_locale(),
-            getFilesFromResponse = data.getFilesFromResponse ||
-                that.options.getFilesFromResponse,
-            file = data.result, # the json list returned in ajax response
-            template,
-            deferred
-        ractive = Ractive.getNodeInfo(this).ractive
-        if(typeof ractive != "undefined"){ # a file is being added to a document group
-          ractive.set(file)
-        } else { # a new document group has been created
-          window.internal_documents.unshift("files", file)
-        }
-        data.context.remove()
-        that._trigger('completed', e, data)
-        that._trigger('finished', e, data)
+    done: (e, data)->
+      if e.isDefaultPrevented()
+          return false
+      # 'this' is the upload form
+      # $this.data is a jQuery widget
+      that = $(@).data('blueimp-fileupload') || $(@).data('fileupload')
+      current_locale = that.options.current_locale()
+      getFilesFromResponse = data.getFilesFromResponse || that.options.getFilesFromResponse
+      file = data.result
+      ractive = Ractive.getNodeInfo(@).ractive
+      ractive.add_file(file)
+      data.context.remove()
+      that._trigger('completed', e, data)
+      that._trigger('finished', e, data)
 
   ArchiveFileUpload = (node, url, id)->
     archive_options =
@@ -165,6 +158,8 @@ $ ->
         false
       else
         true
+    add_file : (file)->
+      @set(file)
 
   Docs = Ractive.extend
                   template: '#files'
@@ -182,6 +177,13 @@ $ ->
                     docs : Docs
                   select_file : ->
                     @find('#primary_fileinput').click()
+                  add_file : (file)->
+                    @push('files',file)
+                  check_files : ->
+                    flash.notify()
+                  flash_hide : ->
+                    @event.original.stopPropagation()
+                    flash.hide()
 
   # initialize the buttonbar with fileupload widget
   # contains .start, .cancel and .fileinput-button buttons

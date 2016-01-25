@@ -6,14 +6,14 @@
     .row.fileupload-buttonbar
       .col-lg-9
         / The fileinput-button span is used to style the file input field as button
-        %span.btn.btn-success.fileinput-button
+        %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
           %i.fa.fa-plus.fa-lg{'on-click'=>'select_file()', :style => "color:white"}
           %span{'on-click'=>'select_file()'}= t('.add')
           %input#primary_fileinput{:multiple => "multiple", :name => "primary_file", :type => "file"}
-        %button.btn.btn-primary.start{:type => "submit"}
+        %button.btn.btn-primary.start{'on-click'=>'check_files()', :type => "submit"}
           %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
           %span= t('.start')
-        %button.btn.btn-warning.cancel{:type => "reset"}
+        %button.btn.btn-warning.cancel{:type => "reset", 'on-click'=>'flash_hide()'}
           %i.fa.fa-ban.fa-lg{:style => "color:white"}
           %span= t('.cancel')
         / The global file processing state

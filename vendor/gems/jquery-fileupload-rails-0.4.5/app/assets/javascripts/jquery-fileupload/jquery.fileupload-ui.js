@@ -162,9 +162,7 @@
                     current_locale = that.options.current_locale(),
                     getFilesFromResponse = data.getFilesFromResponse ||
                         that.options.getFilesFromResponse,
-                    file = data.result, // the json list returned in ajax response
-                    template,
-                    deferred;
+                    file = data.result; // the json list returned in ajax response
                 var ractive = Ractive.getNodeInfo(this).ractive;
                 if(typeof ractive != "undefined"){ // a file is being added to a document group
                   ractive.set(file)

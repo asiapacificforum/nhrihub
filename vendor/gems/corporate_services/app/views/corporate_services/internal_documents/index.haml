@@ -10,20 +10,11 @@
 
 #container
 
-:coffeescript
-  $ ->
-    $('.fileupload-buttonbar .start').on 'click', ->
-      flash.notify()
-
-    $('.fileupload-buttonbar .fileinput-button, .fileupload-buttonbar .cancel, .fileupload-buttonbar .delete').on 'click', (event)->
-      event.stopPropagation()
-      flash.hide()
-
-:coffeescript
-  window.maximum_filesize = #{InternalDocument.maximum_filesize}
-  window.permitted_filetypes = #{ InternalDocument.permitted_filetypes }
-  window.files = #{ @internal_documents.to_json }
-  window.files_list_error = "#{t('.flash.no_files_error')}"
-  window.required_files_titles = #{@required_files_titles.to_json}
+:javascript
+  var maximum_filesize = #{InternalDocument.maximum_filesize}
+  var permitted_filetypes = #{ InternalDocument.permitted_filetypes }
+  var files = #{ @internal_documents.to_json }
+  var files_list_error = "#{t('.flash.no_files_error')}"
+  var required_files_titles = #{@required_files_titles.to_json}
 
 = javascript_include_tag "corporate_services/internal_documents"
