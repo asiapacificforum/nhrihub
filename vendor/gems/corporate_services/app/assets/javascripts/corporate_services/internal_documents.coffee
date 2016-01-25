@@ -3,8 +3,8 @@ Ractive.DEBUG = false
 $ ->
   # these options apply to the primary fileupload
   fileupload_options =
-    permittedFiletypes: permitted_filetypes,
-    maxFileSize: parseInt(maximum_filesize),
+    permittedFiletypes: window.permitted_filetypes
+    maxFileSize: parseInt(window.maximum_filesize)
     failed: (e,data)->
       if data.errorThrown != 'abort'
         alert("The upload failed for some reason")
@@ -20,6 +20,27 @@ $ ->
     url : 'internal_documents.json',
     paramName : 'internal_document[file]',
     uploadTemplateId : '#primary_upload' 
+    done: (e, data) ->
+        if e.isDefaultPrevented()
+            return false
+        # 'this' is the upload form
+        that = $(this).data('blueimp-fileupload') || # $this.data is a jQuery widget
+                $(this).data('fileupload'),
+            current_locale = that.options.current_locale(),
+            getFilesFromResponse = data.getFilesFromResponse ||
+                that.options.getFilesFromResponse,
+            file = data.result, # the json list returned in ajax response
+            template,
+            deferred
+        ractive = Ractive.getNodeInfo(this).ractive
+        if(typeof ractive != "undefined"){ # a file is being added to a document group
+          ractive.set(file)
+        } else { # a new document group has been created
+          window.internal_documents.unshift("files", file)
+        }
+        data.context.remove()
+        that._trigger('completed', e, data)
+        that._trigger('finished', e, data)
 
   ArchiveFileUpload = (node, url, id)->
     archive_options =
@@ -29,6 +50,11 @@ $ ->
       paramName : 'internal_document[archive_files][][file]'
       uploadTemplateId : '#archive_upload'
     $(node).fileupload _.extend({}, fileupload_options, archive_options)
+    teardown : ->
+      #noop for now
+
+  PrimaryFileUpload = (node)->
+    $(node).fileupload _.extend({}, fileupload_options)
     teardown : ->
       #noop for now
 
@@ -81,6 +107,7 @@ $ ->
       $(node).off 'click'
 
   Ractive.decorators.archive_fileupload = ArchiveFileUpload # for the archive file upload
+  Ractive.decorators.primary_fileupload = PrimaryFileUpload # for the archive file upload
   Ractive.decorators.inpage_edit = EditInPlace
   Ractive.decorators.doc_deleter = DocDeleter
   Ractive.decorators.popover = Popover
@@ -139,19 +166,26 @@ $ ->
       else
         true
 
-  window.internal_documents = new Ractive
-                          el: '.files'
-                          template: '#files'
-                          data:
-                            required_files_titles : required_files_titles 
-                            files : files
-                            _ : _ # use underscore for sorting
-                          components:
-                            doc : Doc
+  Docs = Ractive.extend
+                  template: '#files'
+                  components:
+                    doc : Doc
+
+  window.internal_document_uploader = new Ractive
+                  el: '#container'
+                  template : '#uploader_template'
+                  data:
+                    required_files_titles : window.required_files_titles 
+                    files : files
+                    _ : _ # use underscore for sorting
+                  components :
+                    docs : Docs
+                  select_file : ->
+                    @find('#primary_fileinput').click()
 
   # initialize the buttonbar with fileupload widget
   # contains .start, .cancel and .fileinput-button buttons
-  $('.fileupload.buttonbar').fileupload(_.extend({},fileupload_options))
+  #$('.fileupload.buttonbar').fileupload(_.extend({},fileupload_options))
 
 
   # this is a hack to workaround a jquery-fileupload-ui bug

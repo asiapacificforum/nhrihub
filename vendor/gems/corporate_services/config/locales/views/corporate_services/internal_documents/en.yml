@@ -3,18 +3,7 @@ en:
     internal_documents:
       index:
         heading: "Internal Documents"
-        start: "Start upload"
-        cancel: "Cancel upload"
-        delete: "Delete"
         error: "Error"
-        doc_title: "Document title"
-        revision: "Revision"
-        information: "Information"
-        edit: "Edit"
-        download: "Download"
-        archive: "Archive"
-        add: "Add files..."
-        add1: "Add file"
         flash:
           no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
       doc_table:
@@ -32,3 +21,14 @@ en:
         details: "File details"
         title_error_message: "Title cannot be blank"
         revision_error_message: "Invalid"
+        add: "Add files..."
+        start: "Start upload"
+        cancel: "Cancel upload"
+        doc_title: "Document title"
+        revision: "Revision"
+        information: "Information"
+        edit: "Edit"
+        download: "Download"
+        archive: "Archive"
+        add1: "Add file"
+        delete: "Delete"

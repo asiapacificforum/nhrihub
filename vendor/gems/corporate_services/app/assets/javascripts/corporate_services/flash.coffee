@@ -3,7 +3,7 @@ $ ->
     el : ".message_block"
     template : "#flash_error_template"
     data :
-      message :  files_list_error
+      message :  window.files_list_error
     computed :
       empty_fileslist : ->
         $('#uploads .template-upload').length == 0
