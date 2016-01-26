@@ -1,3 +1,12 @@
+# component hierarchy
+# internal_document_uploader template: #uploader_template (includes primary_fileupload decorator)
+#   docs                     template: #files
+#     doc                    template: #template-download (contains document_template as a partial)
+#       archivedoc           template: #document_template (includes archive_fileupload decorator here)
+#
+# decorators
+# primary_fileupload invokes #primary_upload as its upload template
+# archive_fileupload invokes #archive_upload as its upload template
 Ractive.DEBUG = false
 
 $ ->
@@ -184,10 +193,6 @@ $ ->
                   flash_hide : ->
                     @event.original.stopPropagation()
                     flash.hide()
-
-  # initialize the buttonbar with fileupload widget
-  # contains .start, .cancel and .fileinput-button buttons
-  #$('.fileupload.buttonbar').fileupload(_.extend({},fileupload_options))
 
 
   # this is a hack to workaround a jquery-fileupload-ui bug

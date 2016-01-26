@@ -20,9 +20,8 @@
             = label_tag "#{label_prefix}_title", t('.doc_title')
             = text_field_tag "#{prefix}[title]", '',:required => true, :list => :icc_files
             %datalist#icc_files
-              {{#required_files_titles}}
-              %option{:value=>"{{.}}"}
-              {{/required_files_titles}}
+              - @required_files_titles.each do |title|
+                %option{:value=>title}
           %td.revision
             = label_tag "#{label_prefix}_revision", t('.revision')
             = text_field_tag "#{prefix}[revision]", '', :style => "width:40px"

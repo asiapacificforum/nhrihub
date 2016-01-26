@@ -1,7 +1,7 @@
 %script#uploader_template{:type => 'html/template'}
   / The file upload form used as target for the jQuery fileupload widget
   / this is the fileupload configuration when uploading files via the buttonbar
-  .fileupload.buttonbar{:decorator => "primary_fileupload", :'data-file-input' => '#primary_fileinput' }
+  .fileupload.buttonbar{:decorator => "primary_fileupload:{{required_files_titles}}", :'data-file-input' => '#primary_fileinput' }
     / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
     .row.fileupload-buttonbar
       .col-lg-9
