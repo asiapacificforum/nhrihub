@@ -100,6 +100,55 @@ $ ->
       #fileInput :  "#upload#{id} #archive_fileinput"  # don't know why this doesn't work!
       paramName : 'internal_document[archive_files][][file]'
       uploadTemplateId : '#archive_upload'
+      add : (e, data) ->
+        if e.isDefaultPrevented()
+          return false
+        $this = $(this)
+        that = $this.data('blueimp-fileupload') or $this.data('fileupload')
+        options = that.options
+        # options include passed-in options when widget was initialized
+        # in initialization script on the index page
+        # merged with default options, above
+        data.context = that._renderUpload(data.files).data('data', data).addClass('processing')
+        #options.uploadTemplateContainer.append data.context
+        #that._forceReflow data.context
+        ractive = Ractive.getNodeInfo(@).ractive
+        ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+        # puts the upload template on the page, in the filesContainer
+        _(data.files).each (file)->
+          ractive.
+            # using the jquery.fileupload animation, based on the .fade class,
+            # better to use ractive easing TODO
+            push('archive_files', _.extend({},file, {prefix : 'internal_document', label_prefix : 'internal_document'})).
+            then(
+              new_upload = ractive.findAllComponents('uploadfile')[0]
+              $this.fileupload('option', 'formData', ->new_upload.get('formData'))
+              that._transition($(ractive.findAllComponents('uploadfile')[0].find('*')))
+              new_upload.validate_file_constraints()
+            )
+        data.process(->
+          # e.g. validation
+          $this.fileupload 'process', data
+        ).always(->
+          data.context.each((index) ->
+            $(this).find('.size').text that._formatFileSize(data.size)
+            return
+          ).removeClass 'processing'
+          return
+        ).done(->
+          data.context.find('.start').prop 'disabled', false
+          return
+        ).fail ->
+          # e.g. validation fail
+          if data.files.error
+            data.context.each (index) ->
+              error = data.files[index].error
+              if error
+                $(this).find('.error').text error
+                $(this).find('.start').prop 'disabled', true
+              return
+          return
+        return
     $(node).fileupload _.extend({}, fileupload_options, archive_options)
     teardown : ->
       #noop for now
@@ -247,11 +296,16 @@ $ ->
       else
         @set('filesize_error', false)
       !@get('filetype_error') && !@get('filesize_error')
+    cancel_upload : ->
+      @parent.remove(@)
 
   UploadFiles = Ractive.extend
     template: '{{#upload_files}}<uploadfile>{{/upload_files}}'
     components:
       uploadfile : UploadFile
+    remove : (uploadfile)->
+      index = _(@findAllComponents(uploadfile)).indexOf(uploadfile)
+      @splice('upload_files',index,1)
 
   window.internal_document_uploader = new Ractive
     el: '#container'
@@ -280,13 +334,14 @@ $ ->
   # this is a hack to workaround a jquery-fileupload-ui bug
   # that causes multiple cancel events, due to multiple event
   # handlers being attached
-  $('#uploads').on 'click', 'i.cancel', (event)->
-    event.preventDefault()
-    template = $(event.currentTarget).closest('.template-upload,.template-download')
-    data = template.data('data') || {}
-    data.context = data.context || template
-    if data.abort
-      data.abort()
-    else
-      data.errorThrown = 'abort'
-      this._trigger('fail', event, data)
+  #$('#uploads').on 'click', 'i.cancel', (event)->
+    #event.preventDefault()
+    #template = $(event.currentTarget).closest('.template-upload,.template-download')
+    #data = template.data('data') || {}
+    #data.context = data.context || template
+    #if data.abort
+      #data.abort()
+    #else
+      #data.errorThrown = 'abort'
+      ##this._trigger('fail', event, data)
+      #$(@).closest('.fileupload').data('blueimp-fileupload').options.fail(event)

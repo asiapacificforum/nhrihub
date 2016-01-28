@@ -172,7 +172,10 @@
         %tr
           %td{:colspan => 2}
             %p.name {{ name }}
-            %strong.error.text-danger
+            .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
+              %span.help-block.error#filesize_error= t('.too_large')
+            .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
+              %span.help-block.error#filetype_error= t('.unpermitted_type')
           %td{:colspan => 2}
             .size= t('.processing')
             .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
@@ -193,4 +196,4 @@
               %i.fa.fa-cloud-upload.fa-lg
           %td
             %div.cancel
-              %i.fa.fa-ban.cancel.fa-lg
+              %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
