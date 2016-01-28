@@ -19,10 +19,10 @@ $ ->
         alert("The upload failed for some reason")
     prependFiles : false
     filesContainer: '.files'
-    formData: ->
-      inputs = @.context.find(':input')
-      arr = inputs.serializeArray()
-      return arr
+    #formData: ->
+      #inputs = @.context.find(':input')
+      #arr = inputs.serializeArray()
+      #return arr
     downloadTemplateId: '#template-download'
     uploadTemplateContainerId: '#uploads'
     #fileInput: '#primary_fileinput'
@@ -43,6 +43,55 @@ $ ->
       data.context.remove()
       that._trigger('completed', e, data)
       that._trigger('finished', e, data)
+    add : (e, data) ->
+      if e.isDefaultPrevented()
+        return false
+      $this = $(this)
+      that = $this.data('blueimp-fileupload') or $this.data('fileupload')
+      options = that.options
+      # options include passed-in options when widget was initialized
+      # in initialization script on the index page
+      # merged with default options, above
+      data.context = that._renderUpload(data.files).data('data', data).addClass('processing')
+      #options.uploadTemplateContainer.append data.context
+      #that._forceReflow data.context
+      ractive = Ractive.getNodeInfo(@).ractive
+      ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+      # puts the upload template on the page, in the filesContainer
+      _(data.files).each (file)->
+        ractive.
+          # using the jquery.fileupload animation, based on the .fade class,
+          # better to use ractive easing TODO
+          push('upload_files', _.extend({},file, {prefix : 'internal_document', label_prefix : 'internal_document'})).
+          then(
+            new_upload = ractive.findAllComponents('uploadfile')[0]
+            $this.fileupload('option', 'formData', ->new_upload.get('formData'))
+            that._transition($(ractive.findAllComponents('uploadfile')[0].find('*')))
+            new_upload.validate_file_constraints()
+          )
+      data.process(->
+        # e.g. validation
+        $this.fileupload 'process', data
+      ).always(->
+        data.context.each((index) ->
+          $(this).find('.size').text that._formatFileSize(data.size)
+          return
+        ).removeClass 'processing'
+        return
+      ).done(->
+        data.context.find('.start').prop 'disabled', false
+        return
+      ).fail ->
+        # e.g. validation fail
+        if data.files.error
+          data.context.each (index) ->
+            error = data.files[index].error
+            if error
+              $(this).find('.error').text error
+              $(this).find('.start').prop 'disabled', true
+            return
+        return
+      return
 
   ArchiveFileUpload = (node, url, id)->
     archive_options =
@@ -171,28 +220,61 @@ $ ->
       @set(file)
 
   Docs = Ractive.extend
-                  template: '#files'
-                  components:
-                    doc : Doc
+    template: '#files'
+    components:
+      doc : Doc
+
+  UploadFile = Ractive.extend
+    template : "#pa_upload"
+    computed :
+      formData : ->
+        [
+          {name : 'internal_document[title]', value : @get('title')},
+          {name : 'internal_document[revision]', value : @get('revision')},
+          {name : 'internal_document[filesize]', value : @get('size')},
+          {name : 'internal_document[original_type]', value : @get('type')},
+          {name : 'internal_document[original_filename]', value : @get('name')},
+          {name : 'internal_document[lastModifiedDate]', value : @get('lastModifiedDate')}
+        ]
+    validate_file_constraints : ->
+      extension = @get('name').split('.').pop()
+      if permitted_filetypes.indexOf(extension) == -1
+        @set('filetype_error', true)
+      else
+        @set('filetype_error', false)
+      if @get('size') > maximum_filesize
+        @set('filesize_error', true)
+      else
+        @set('filesize_error', false)
+      !@get('filetype_error') && !@get('filesize_error')
+
+  UploadFiles = Ractive.extend
+    template: '{{#upload_files}}<uploadfile>{{/upload_files}}'
+    components:
+      uploadfile : UploadFile
 
   window.internal_document_uploader = new Ractive
-                  el: '#container'
-                  template : '#uploader_template'
-                  data:
-                    required_files_titles : window.required_files_titles 
-                    files : files
-                    _ : _ # use underscore for sorting
-                  components :
-                    docs : Docs
-                  select_file : ->
-                    @find('#primary_fileinput').click()
-                  add_file : (file)->
-                    @push('files',file)
-                  check_files : ->
-                    flash.notify()
-                  flash_hide : ->
-                    @event.original.stopPropagation()
-                    flash.hide()
+    el: '#container'
+    template : '#uploader_template'
+    data:
+      required_files_titles : window.required_files_titles 
+      files : files
+      upload_files : []
+      _ : _ # use underscore for sorting
+    components :
+      docs : Docs
+      uploadfiles : UploadFiles
+    select_file : ->
+      @find('#primary_fileinput').click()
+    add_file : (file)->
+      @push('files',file)
+    start_upload : ->
+      flash.notify()
+      if !_.isUndefined(@get('fileupload'))
+        @get('fileupload').submit() # handled by jquery-fileupload
+    flash_hide : ->
+      @event.original.stopPropagation()
+      flash.hide()
 
 
   # this is a hack to workaround a jquery-fileupload-ui bug

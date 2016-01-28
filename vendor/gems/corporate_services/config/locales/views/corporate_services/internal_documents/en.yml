@@ -32,3 +32,8 @@ en:
         archive: "Archive"
         add1: "Add file"
         delete: "Delete"
+        start_one: "Start"
+        cancel_one: "Cancel"
+        doc_title: 'Document title'
+        revision: "Revision"
+        processing: "Processing..."
