@@ -1,6 +1,8 @@
 class DocumentGroup < ActiveRecord::Base
   has_many :internal_documents
 
+  default_scope { order("created_at desc") }
+
   def primary
     internal_documents.last
   end

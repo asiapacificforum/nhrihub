@@ -3,10 +3,11 @@
 #   docs                     template: #files
 #     doc                    template: #template-download (contains document_template as a partial)
 #       archivedoc           template: #document_template (includes archive_fileupload decorator here)
+#         uploadfiles
+#           uploadfile
+#   uploadfiles
+#     uploadfile
 #
-# decorators
-# primary_fileupload invokes #primary_upload as its upload template
-# archive_fileupload invokes #archive_upload as its upload template
 Ractive.DEBUG = false
 
 $ ->
@@ -25,10 +26,11 @@ $ ->
       #return arr
     downloadTemplateId: '#template-download'
     uploadTemplateContainerId: '#uploads'
-    #fileInput: '#primary_fileinput'
+    fileInput: '#primary_fileinput'
     url : 'internal_documents.json',
     paramName : 'internal_document[file]',
-    uploadTemplateId : '#primary_upload' 
+    #uploadTemplateId : '#primary_upload' 
+    uploadTemplateId : '#pa_upload' 
     done: (e, data)->
       if e.isDefaultPrevented()
           return false
@@ -46,7 +48,7 @@ $ ->
     add : (e, data) ->
       if e.isDefaultPrevented()
         return false
-      $this = $(this)
+      $this = $(@)
       that = $this.data('blueimp-fileupload') or $this.data('fileupload')
       options = that.options
       # options include passed-in options when widget was initialized
@@ -64,9 +66,10 @@ $ ->
           # better to use ractive easing TODO
           push('upload_files', _.extend({},file, {prefix : 'internal_document', label_prefix : 'internal_document'})).
           then(
-            new_upload = ractive.findAllComponents('uploadfile')[0]
-            $this.fileupload('option', 'formData', ->new_upload.get('formData'))
-            that._transition($(ractive.findAllComponents('uploadfile')[0].find('*')))
+            new_upload = ractive.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
+            data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
+            $this.fileupload('option', 'formData', ->new_upload.get('formData')) # pass formData from ractive instance to jquery fileupload
+            that._transition(data.context) # make the DOM node appear on the page
             new_upload.validate_file_constraints()
           )
       data.process(->
@@ -99,7 +102,8 @@ $ ->
       type : 'put'
       #fileInput :  "#upload#{id} #archive_fileinput"  # don't know why this doesn't work!
       paramName : 'internal_document[archive_files][][file]'
-      uploadTemplateId : '#archive_upload'
+      #uploadTemplateId : '#archive_upload'
+      uploadTemplateId : '#pa_upload'
       add : (e, data) ->
         if e.isDefaultPrevented()
           return false
@@ -116,14 +120,14 @@ $ ->
         ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
         # puts the upload template on the page, in the filesContainer
         _(data.files).each (file)->
-          ractive.
+          internal_document_uploader.
             # using the jquery.fileupload animation, based on the .fade class,
             # better to use ractive easing TODO
-            push('archive_files', _.extend({},file, {prefix : 'internal_document', label_prefix : 'internal_document'})).
+            push('upload_files', _.extend({},file, {prefix : 'internal_document[archive_files][]', label_prefix : 'internal_document_archive_files_'})).
             then(
-              new_upload = ractive.findAllComponents('uploadfile')[0]
+              new_upload = internal_document_uploader.findAllComponents('uploadfile')[0]
               $this.fileupload('option', 'formData', ->new_upload.get('formData'))
-              that._transition($(ractive.findAllComponents('uploadfile')[0].find('*')))
+              that._transition($(internal_document_uploader.findAllComponents('uploadfile')[0].find('*')))
               new_upload.validate_file_constraints()
             )
         data.process(->
@@ -212,67 +216,6 @@ $ ->
   Ractive.decorators.doc_deleter = DocDeleter
   Ractive.decorators.popover = Popover
 
-  ArchiveDoc = Ractive.extend
-    template: '#document_template'
-    computed :
-      file : -> false
-      archive_file : -> true
-    remove_errors : ->
-      @set("title_error", false)
-      @set("revision_error", false)
-    validate : ->
-      @_validate_title() && @_validate_revision()
-    _validate_title : ->
-      @set('title', @get('title').trim())
-      if @get('title') == ""
-        @set("title_error",true)
-        false
-      else
-        true
-    _validate_revision : ->
-      @set('revision', @get('revision').trim())
-      if @get('revision') == ""
-        @set("revision_error",true)
-        false
-      else
-        true
-
-  Doc = Ractive.extend
-    template: '#template-download'
-    computed :
-      file : -> true
-      archive_file : -> false
-    components :
-      archivedoc : ArchiveDoc
-    download_file : ->
-      window.location = @get('url')
-    remove_errors : ->
-      @set("title_error", false)
-      @set("revision_error", false)
-    validate : ->
-      @_validate_title() && @_validate_revision()
-    _validate_title : ->
-      @set('title', @get('title').trim())
-      if @get('title') == ""
-        @set("title_error",true)
-        false
-      else
-        true
-    _validate_revision : ->
-      @set('revision', @get('revision').trim())
-      if @get('revision') == ""
-        @set("revision_error",true)
-        false
-      else
-        true
-    add_file : (file)->
-      @set(file)
-
-  Docs = Ractive.extend
-    template: '#files'
-    components:
-      doc : Doc
-
   UploadFile = Ractive.extend
     template : "#pa_upload"
     computed :
@@ -307,6 +250,69 @@ $ ->
       index = _(@findAllComponents(uploadfile)).indexOf(uploadfile)
       @splice('upload_files',index,1)
 
+  ArchiveDoc = Ractive.extend
+    template: '#document_template'
+    computed :
+      file : -> false
+      archive_file : -> true
+    remove_errors : ->
+      @set("title_error", false)
+      @set("revision_error", false)
+    validate : ->
+      @_validate_title() && @_validate_revision()
+    _validate_title : ->
+      @set('title', @get('title').trim())
+      if @get('title') == ""
+        @set("title_error",true)
+        false
+      else
+        true
+    _validate_revision : ->
+      @set('revision', @get('revision').trim())
+      if @get('revision') == ""
+        @set("revision_error",true)
+        false
+      else
+        true
+
+  Doc = Ractive.extend
+    template: '#template-download'
+    oninit : ->
+      @set('archive_upload_files',[])
+    computed :
+      file : -> true
+      archive_file : -> false
+    components :
+      archivedoc : ArchiveDoc
+    download_file : ->
+      window.location = @get('url')
+    remove_errors : ->
+      @set("title_error", false)
+      @set("revision_error", false)
+    validate : ->
+      @_validate_title() && @_validate_revision()
+    _validate_title : ->
+      @set('title', @get('title').trim())
+      if @get('title') == ""
+        @set("title_error",true)
+        false
+      else
+        true
+    _validate_revision : ->
+      @set('revision', @get('revision').trim())
+      if @get('revision') == ""
+        @set("revision_error",true)
+        false
+      else
+        true
+    add_file : (file)->
+      @set(file)
+
+  Docs = Ractive.extend
+    template: '#files'
+    components:
+      doc : Doc
+
   window.internal_document_uploader = new Ractive
     el: '#container'
     template : '#uploader_template'
@@ -321,7 +327,7 @@ $ ->
     select_file : ->
       @find('#primary_fileinput').click()
     add_file : (file)->
-      @push('files',file)
+      @unshift('files',file)
     start_upload : ->
       flash.notify()
       if !_.isUndefined(@get('fileupload'))

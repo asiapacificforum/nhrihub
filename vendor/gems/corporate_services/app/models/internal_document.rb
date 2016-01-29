@@ -1,6 +1,7 @@
 class InternalDocument < ActiveRecord::Base
 
   belongs_to :document_group
+  delegate :created_at, :to => :document_group, :prefix => true
   belongs_to :user
   alias_method :uploaded_by, :user
 

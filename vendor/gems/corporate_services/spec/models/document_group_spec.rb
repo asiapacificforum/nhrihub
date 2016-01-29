@@ -33,3 +33,20 @@ describe "behaviour when internal_documents are deleted" do
     expect{DocumentGroup.find(@group.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
 end
+
+describe "default scope" do
+  before do
+    @id1 = FactoryGirl.create(:internal_document, :null_revision)
+    @id2 = FactoryGirl.create(:internal_document, :null_revision, :document_group_id => @id1.document_group_id)
+    # second oldest document group
+    @id3 = FactoryGirl.create(:internal_document, :null_revision)
+    # newest document group
+    @id4 = FactoryGirl.create(:internal_document, :null_revision)
+    # oldest document group, so last in the list:
+    @id5 = FactoryGirl.create(:internal_document, :null_revision, :document_group_id => @id1.document_group_id)
+  end
+
+  it "should return internal documents in ascending date order" do
+    expect(DocumentGroup.all.map(&:primary).map(&:id)).to eq [@id4.id, @id3.id, @id5.id]
+  end
+end
