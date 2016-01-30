@@ -31,6 +31,7 @@ $ ->
     paramName : 'internal_document[file]',
     #uploadTemplateId : '#primary_upload' 
     uploadTemplateId : '#pa_upload' 
+    uploadTemplate : Ractive.parse($('#pa_upload').html())
     done: (e, data)->
       if e.isDefaultPrevented()
           return false
