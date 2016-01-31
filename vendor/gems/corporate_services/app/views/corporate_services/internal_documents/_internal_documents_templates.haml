@@ -136,7 +136,7 @@
       %td{:style => "text-align:center; width:8%"}
         {{#if file}}
         -# next tag is where the fileupload is attached
-        .fileupload.icon{:decorator => "archive_fileupload:'{{url}}','{{id}}'",
+        .fileupload.icon{:decorator => "archive_fileupload:'{{id}}','{{document_group_id}}'",
                          :id => "upload{{ id }}",
                          :'data-file-input' => "#upload{{ id }} #archive_fileinput" }
           %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
@@ -154,7 +154,7 @@
 
 %script#files{:type => 'ractive/template'}
   {{#files}}
-  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' url='{{url}}'/>
+  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' />
   {{/files}}
 
 %script#flash_error_template{:type => 'template/ractive'}
@@ -163,6 +163,7 @@
 
   / The template to display files ready for upload
   / used for both primary and archive (hence "pa_upload")
+
 %script#pa_upload{:type => 'html/template'}
   .panel.panel-default.fade.template-upload
     .panel-heading
@@ -181,16 +182,16 @@
         %tr
           %td.title
             %label{:for =>"{{label_prefix}}_title"}= t('.doc_title')
-            %input{:type => :text, :name => "{{prefix}}[title]", :id => "{{prefix}}_title", :list => :icc_files, :value => "{{title}}"}
+            %input{:type => :text, :name => "{{prefix}}[title]", :id => "{{label_prefix}}_title", :list => :icc_files, :value => "{{title}}"}
             %datalist#icc_files
               {{#required_files_titles}}
               %option{:value=>'{{.}}'}
               {{/required_files_titles}}
           %td.revision
             %label{:for => "{{label_prefix}}_revision"}= t('.revision')
-            %input{:type => :text, :name => "{{prefix}}[revision]", :id => "{{prefix}}_revision", :style => "width:40px", :value => "{{revision}}"}
+            %input{:type => :text, :name => "{{prefix}}[revision]", :id => "{{label_prefix}}_revision", :style => "width:40px", :value => "{{revision}}"}
           %td
-            %div.start{:disabled => true}
+            %div.start{'on-click'=>'upload_file()'}
               %i.fa.fa-cloud-upload.fa-lg
           %td
             %div.cancel

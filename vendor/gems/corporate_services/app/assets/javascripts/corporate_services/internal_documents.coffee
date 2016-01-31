@@ -27,6 +27,7 @@ $ ->
     downloadTemplateId: '#template-download'
     uploadTemplateContainerId: '#uploads'
     fileInput: '#primary_fileinput'
+    replaceFileInput: false # this doesn't seem to cause any problem, and it solves problems caused by replacing the file input!
     url : 'internal_documents.json',
     paramName : 'internal_document[file]',
     #uploadTemplateId : '#primary_upload' 
@@ -41,9 +42,11 @@ $ ->
       current_locale = that.options.current_locale()
       getFilesFromResponse = data.getFilesFromResponse || that.options.getFilesFromResponse
       file = data.result
-      ractive = Ractive.getNodeInfo(@).ractive
+      ractive = Ractive.getNodeInfo(@).ractive # it's the internal_documents_uploader ractive instance
       ractive.add_file(file)
-      data.context.remove()
+      #data.context.remove() # removes the dom elements
+      upload_file = Ractive.getNodeInfo(data.context[0]).ractive
+      upload_file.parent.remove_upload_file(upload_file._guid)
       that._trigger('completed', e, data)
       that._trigger('finished', e, data)
     add : (e, data) ->
@@ -51,25 +54,26 @@ $ ->
         return false
       $this = $(@)
       that = $this.data('blueimp-fileupload') or $this.data('fileupload')
-      options = that.options
+      #options = that.options
       # options include passed-in options when widget was initialized
       # in initialization script on the index page
       # merged with default options, above
-      data.context = that._renderUpload(data.files).data('data', data).addClass('processing')
+      #data.context = that._renderUpload(data.files).data('data', data).addClass('processing')
       #options.uploadTemplateContainer.append data.context
       #that._forceReflow data.context
-      ractive = Ractive.getNodeInfo(@).ractive
-      ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+      #ractive = Ractive.getNodeInfo(@).ractive
+      #ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
       # puts the upload template on the page, in the filesContainer
       _(data.files).each (file)->
-        ractive.
-          # using the jquery.fileupload animation, based on the .fade class,
-          # better to use ractive easing TODO
-          push('upload_files', _.extend({},file, {prefix : 'internal_document', label_prefix : 'internal_document'})).
+        internal_document_uploader.
+          unshift('upload_files', _.extend({},file, {prefix : 'internal_document', label_prefix : 'internal_document'})).
           then(
-            new_upload = ractive.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
+            new_upload = internal_document_uploader.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
+            new_upload.set('fileupload', data) # so ractive can configure/control upload with data.submit()
             data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
             $this.fileupload('option', 'formData', ->new_upload.get('formData')) # pass formData from ractive instance to jquery fileupload
+            # using the jquery.fileupload animation, based on the .fade class,
+            # better to use ractive easing TODO
             that._transition(data.context) # make the DOM node appear on the page
             new_upload.validate_file_constraints()
           )
@@ -97,38 +101,37 @@ $ ->
         return
       return
 
-  ArchiveFileUpload = (node, url, id)->
+  ArchiveFileUpload = (node, id, document_group_id)->
     archive_options =
-      url : url
-      type : 'put'
-      #fileInput :  "#upload#{id} #archive_fileinput"  # don't know why this doesn't work!
-      paramName : 'internal_document[archive_files][][file]'
-      #uploadTemplateId : '#archive_upload'
-      uploadTemplateId : '#pa_upload'
       add : (e, data) ->
         if e.isDefaultPrevented()
           return false
         $this = $(this)
         that = $this.data('blueimp-fileupload') or $this.data('fileupload')
-        options = that.options
+        #options = that.options}
         # options include passed-in options when widget was initialized
         # in initialization script on the index page
         # merged with default options, above
-        data.context = that._renderUpload(data.files).data('data', data).addClass('processing')
+        #data.context = that._renderUpload(data.files).data('data', data).addClass('processing')
         #options.uploadTemplateContainer.append data.context
         #that._forceReflow data.context
-        ractive = Ractive.getNodeInfo(@).ractive
-        ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+        #ractive = Ractive.getNodeInfo(@).ractive
+        #ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
         # puts the upload template on the page, in the filesContainer
         _(data.files).each (file)->
           internal_document_uploader.
-            # using the jquery.fileupload animation, based on the .fade class,
-            # better to use ractive easing TODO
-            push('upload_files', _.extend({},file, {prefix : 'internal_document[archive_files][]', label_prefix : 'internal_document_archive_files_'})).
+            push('upload_files', _.extend({},file, {prefix : 'internal_document', label_prefix : 'internal_document_'})).
             then(
               new_upload = internal_document_uploader.findAllComponents('uploadfile')[0]
-              $this.fileupload('option', 'formData', ->new_upload.get('formData'))
-              that._transition($(internal_document_uploader.findAllComponents('uploadfile')[0].find('*')))
+              new_upload.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+              data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
+              form_data = (->new_upload.get('formData'))()
+              form_data = _(form_data).slice(0,6) # b/c ractive is adding a _ractive object in the array!
+              form_data.push {name: 'internal_document[document_group_id]', value: document_group_id}
+              $this.fileupload('option', 'formData', form_data)
+              # using the jquery.fileupload animation, based on the .fade class,
+              # better to use ractive easing TODO
+              that._transition(data.context) # make the DOM node appear on the page
               new_upload.validate_file_constraints()
             )
         data.process(->
@@ -156,12 +159,23 @@ $ ->
         return
     $(node).fileupload _.extend({}, fileupload_options, archive_options)
     teardown : ->
-      #noop for now
+      id = Ractive.getNodeInfo(node).ractive.get('id')
+      $(node).fileupload "destroy"
+    update : ->
+      id = Ractive.getNodeInfo(node).ractive.get('id')
+      $(node).fileupload "destroy"
+      $(node).fileupload _.extend({}, fileupload_options, archive_options)
 
   PrimaryFileUpload = (node)->
     $(node).fileupload _.extend({}, fileupload_options)
     teardown : ->
-      #noop for now
+      id = Ractive.getNodeInfo(node).ractive.get('id')
+      $(node).fileupload "destroy"
+      $(node).fileupload _.extend({}, fileupload_options)
+    update : ->
+      id = Ractive.getNodeInfo(node).ractive.get('id')
+      $(node).fileupload "destroy"
+      $(node).fileupload _.extend({}, fileupload_options)
 
   EditInPlace = (node,id)->
     edit = new InpageEdit
@@ -193,7 +207,6 @@ $ ->
         ractive.toHTML()
       template : $('#popover_template').html()
       trigger: 'hover'
-
     teardown: ->
       $(node).off('mouseenter')
 
@@ -242,6 +255,8 @@ $ ->
       !@get('filetype_error') && !@get('filesize_error')
     cancel_upload : ->
       @parent.remove(@)
+    upload_file : ->
+      @get('fileupload').submit()
 
   UploadFiles = Ractive.extend
     template: '{{#upload_files}}<uploadfile>{{/upload_files}}'
@@ -249,6 +264,10 @@ $ ->
       uploadfile : UploadFile
     remove : (uploadfile)->
       index = _(@findAllComponents(uploadfile)).indexOf(uploadfile)
+      @splice('upload_files',index,1)
+    remove_upload_file : (upload_file_guid)->
+      guids = _(@findAllComponents('uploadfile')).map('_guid')
+      index = _(guids).indexOf(upload_file_guid)
       @splice('upload_files',index,1)
 
   ArchiveDoc = Ractive.extend
@@ -331,8 +350,12 @@ $ ->
       @unshift('files',file)
     start_upload : ->
       flash.notify()
-      if !_.isUndefined(@get('fileupload'))
-        @get('fileupload').submit() # handled by jquery-fileupload
+      _.chain(@findAllComponents('uploadfile')).map((doc) ->
+        doc.get 'fileupload'
+      ).select((fileupload) ->
+        !_.isUndefined(fileupload)
+      ).each (fileupload)->
+        fileupload.submit()
     flash_hide : ->
       @event.original.stopPropagation()
       flash.hide()

@@ -28,12 +28,6 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   # also invoked for adding replacing a file... updating the document group
   def update
     internal_document = InternalDocument.find(params[:id])
-    # copy the filename from the file object, if it's present
-    if params[:internal_document][:archive_files]
-      params["internal_document"][:archive_files][0]["original_filename"] =
-        params[:internal_document][:archive_files][0][:file].original_filename
-      params["internal_document"][:archive_files][0]["user_id"] = current_user.id
-    end
     if internal_document.update(doc_params)
       # return the primary, even if we're updating an archive doc
       @internal_document = internal_document.document_group_primary
@@ -56,9 +50,11 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   private
   def doc_params
     attrs = [:title, :revision, :file, :original_filename,
-             :original_type, :lastModifiedDate, :filesize, :user_id]
+             :original_type, :lastModifiedDate, :filesize,
+             :document_group_id, :user_id]
     params.
       require(:internal_document).
-      permit(*attrs, :archive_files =>[*attrs, :document_group_id])
+      #permit(*attrs, :archive_files =>[*attrs])
+      permit(*attrs)
   end
 end

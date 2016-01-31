@@ -588,6 +588,7 @@
 
         _transition: function (node) {
             var dfd = $.Deferred();
+            // node may be ':visible' with opacity:0
             if ($.support.transition && node.hasClass('fade') && node.is(':visible')) {
                 node.bind(
                     $.support.transition.end,
