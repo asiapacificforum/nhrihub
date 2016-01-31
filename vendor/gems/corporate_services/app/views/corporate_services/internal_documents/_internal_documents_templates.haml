@@ -191,7 +191,7 @@
             %label{:for => "{{label_prefix}}_revision"}= t('.revision')
             %input{:type => :text, :name => "{{prefix}}[revision]", :id => "{{label_prefix}}_revision", :style => "width:40px", :value => "{{revision}}"}
           %td
-            %div.start{'on-click'=>'upload_file()'}
+            %div.start{'on-click'=>'submit()'}
               %i.fa.fa-cloud-upload.fa-lg
           %td
             %div.cancel

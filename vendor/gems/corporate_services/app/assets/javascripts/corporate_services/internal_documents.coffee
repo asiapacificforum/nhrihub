@@ -255,11 +255,12 @@ $ ->
       !@get('filetype_error') && !@get('filesize_error')
     cancel_upload : ->
       @parent.remove(@)
-    upload_file : ->
-      @get('fileupload').submit()
+    submit : ->
+      if @get('fileupload')
+        @get('fileupload').submit()
 
   UploadFiles = Ractive.extend
-    template: '{{#upload_files}}<uploadfile>{{/upload_files}}'
+    template: '{{#upload_files}}<uploadfile/>{{/upload_files}}'
     components:
       uploadfile : UploadFile
     remove : (uploadfile)->
@@ -350,12 +351,8 @@ $ ->
       @unshift('files',file)
     start_upload : ->
       flash.notify()
-      _.chain(@findAllComponents('uploadfile')).map((doc) ->
-        doc.get 'fileupload'
-      ).select((fileupload) ->
-        !_.isUndefined(fileupload)
-      ).each (fileupload)->
-        fileupload.submit()
+      _(@findAllComponents('uploadfile')).each (uploadfile)->
+        uploadfile.submit()
     flash_hide : ->
       @event.original.stopPropagation()
       flash.hide()
