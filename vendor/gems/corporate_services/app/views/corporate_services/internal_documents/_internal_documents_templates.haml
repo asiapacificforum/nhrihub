@@ -181,15 +181,15 @@
               .progress-bar.progress-bar-success{:style => "width:0%"}
         %tr
           %td.title
-            %label{:for =>"{{label_prefix}}_title"}= t('.doc_title')
-            %input{:type => :text, :name => "{{prefix}}[title]", :id => "{{label_prefix}}_title", :list => :icc_files, :value => "{{title}}"}
+            %label{:for =>"internal_document_title"}= t('.doc_title')
+            %input{:type => :text, :name => "internal_document[title]", :id => "internal_document_title", :list => :icc_files, :value => "{{title}}"}
             %datalist#icc_files
               {{#required_files_titles}}
               %option{:value=>'{{.}}'}
               {{/required_files_titles}}
           %td.revision
-            %label{:for => "{{label_prefix}}_revision"}= t('.revision')
-            %input{:type => :text, :name => "{{prefix}}[revision]", :id => "{{label_prefix}}_revision", :style => "width:40px", :value => "{{revision}}"}
+            %label{:for => "internal_document_revision"}= t('.revision')
+            %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}
           %td
             %div.start{'on-click'=>'submit()'}
               %i.fa.fa-cloud-upload.fa-lg

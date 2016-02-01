@@ -65,8 +65,15 @@ $ ->
       #ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
       # puts the upload template on the page, in the filesContainer
       _(data.files).each (file)->
+        file_attrs =
+          lastModifiedDate: file.lastModifiedDate
+          name : file.name
+          size: file.size
+          type: file.type
+          title: ""
+          revision: ""
         internal_document_uploader.
-          unshift('upload_files', _.extend({},file, {prefix : 'internal_document', label_prefix : 'internal_document'})).
+          unshift('upload_files', file_attrs).
           then(
             new_upload = internal_document_uploader.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
             new_upload.set('fileupload', data) # so ractive can configure/control upload with data.submit()
@@ -119,14 +126,21 @@ $ ->
         #ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
         # puts the upload template on the page, in the filesContainer
         _(data.files).each (file)->
+          file_attrs =
+            lastModifiedDate: file.lastModifiedDate
+            name : file.name
+            size: file.size
+            type: file.type
+            title: ""
+            revision: ""
           internal_document_uploader.
-            push('upload_files', _.extend({},file, {prefix : 'internal_document', label_prefix : 'internal_document_'})).
+            push('upload_files', file_attrs).
             then(
               new_upload = internal_document_uploader.findAllComponents('uploadfile')[0]
               new_upload.set('fileupload', data) # so ractive can configure/control upload with data.submit()
               data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
-              form_data = (->new_upload.get('formData'))()
-              form_data = _(form_data).slice(0,6) # b/c ractive is adding a _ractive object in the array!
+              form_data = _.clone((->new_upload.get('formData'))())
+              #form_data = _(form_data).slice(0,6) # b/c ractive is adding a _ractive object in the array!
               form_data.push {name: 'internal_document[document_group_id]', value: document_group_id}
               $this.fileupload('option', 'formData', form_data)
               # using the jquery.fileupload animation, based on the .fade class,
@@ -232,10 +246,17 @@ $ ->
 
   UploadFile = Ractive.extend
     template : "#pa_upload"
+    #oninit : ->
+      #@set
+        #title : null
+        #revision : null
+        #size : null
+        #type : null
+        #name : null
+        #lastModifiedDate : null
     computed :
       formData : ->
-        [
-          {name : 'internal_document[title]', value : @get('title')},
+        [ {name : 'internal_document[title]', value : @get('title')},
           {name : 'internal_document[revision]', value : @get('revision')},
           {name : 'internal_document[filesize]', value : @get('size')},
           {name : 'internal_document[original_type]', value : @get('type')},
@@ -260,7 +281,8 @@ $ ->
         @get('fileupload').submit()
 
   UploadFiles = Ractive.extend
-    template: '{{#upload_files}}<uploadfile/>{{/upload_files}}'
+    #template: "{{#upload_files}}<uploadfile />{{/upload_files}}"
+    template: "{{#upload_files}}<uploadfile title='{{title}}' revision='{{revision}}' size='{{size}}' type='{{type}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' />{{/upload_files}}"
     components:
       uploadfile : UploadFile
     remove : (uploadfile)->

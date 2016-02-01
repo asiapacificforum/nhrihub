@@ -166,8 +166,8 @@ feature "internal document management", :js => true do
     before do
       expect(page_heading).to eq "Internal Documents"
       page.attach_file("replace_file", upload_document, :visible => false)
-      page.find("#internal_document__title").set("some replacement file name")
-      page.find('#internal_document__revision').set("3.5")
+      page.find("#internal_document_title").set("some replacement file name")
+      page.find('#internal_document_revision').set("3.5")
     end
 
     scenario "using the single-upload icon" do
@@ -191,8 +191,8 @@ feature "internal document management", :js => true do
       # uploading an archive file
        #page.driver.debug
       all(:file_field, "archive_fileinput")[0].set(upload_document)
-      page.find("#internal_document__title").set("some replacement file name")
-      page.find('#internal_document__revision').set("3.5")
+      page.find("#internal_document_title").set("some replacement file name")
+      page.find('#internal_document_revision').set("3.5")
       # problem is that the add callback is being called on the first, primary file, upload input,
       # so that the uploaded file is designated as a primary file
       expect{ page.find('.template-upload .start .fa-cloud-upload').click; sleep(0.5)}.to change{InternalDocument.count}
@@ -203,8 +203,8 @@ feature "internal document management", :js => true do
 
   scenario "initiate adding a revision but cancel" do
     page.attach_file("replace_file", upload_document, :visible => false)
-    page.find("#internal_document__title").set("some replacement file name")
-    page.find('#internal_document__revision').set("3.5")
+    page.find("#internal_document_title").set("some replacement file name")
+    page.find('#internal_document_revision').set("3.5")
     expect(page).to have_selector('.template-upload', :visible => true)
     click_cancel_icon
     expect(page).not_to have_selector('.template-upload', :visible => true)
@@ -217,8 +217,8 @@ feature "internal document management", :js => true do
   scenario "upload a revision then edit the title and revision" do
     expect(page_heading).to eq "Internal Documents"
     page.attach_file("replace_file", upload_document, :visible => false)
-    page.find("#internal_document__title").set("some replacement file name")
-    page.find('#internal_document__revision').set("3.5")
+    page.find("#internal_document_title").set("some replacement file name")
+    page.find('#internal_document_revision').set("3.5")
     expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
     expect(page.all('.template-download').count).to eq 1
     click_the_edit_icon(page)
@@ -232,9 +232,9 @@ feature "internal document management", :js => true do
     expect(page_heading).to eq "Internal Documents"
     # upload the revision
     page.attach_file("replace_file", upload_document, :visible => false)
-    page.find("#internal_document__title").set("some replacement file name")
+    page.find("#internal_document_title").set("some replacement file name")
     # make sure it worked
-    page.find('#internal_document__revision').set("3.5")
+    page.find('#internal_document_revision').set("3.5")
     expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
     expect(page.all('.template-download').count).to eq 1
     click_the_archive_icon
@@ -357,8 +357,8 @@ feature "internal document management", :js => true do
     expect(page.find('.template-download .panel-body')).to have_selector('table.document')
     # now make sure the new primary replace_file works
     page.attach_file("replace_file", upload_document, :visible => false)
-    page.find("#internal_document__title").set("some replacement file name")
-    page.find('#internal_document__revision').set("3.5")
+    page.find("#internal_document_title").set("some replacement file name")
+    page.find('#internal_document_revision').set("3.5")
     expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(2).to(3)
     expect(page.all('.template-download').count).to eq 1
   end
