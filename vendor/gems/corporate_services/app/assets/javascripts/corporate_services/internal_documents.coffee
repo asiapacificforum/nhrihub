@@ -20,17 +20,12 @@ $ ->
         alert("The upload failed for some reason")
     prependFiles : false
     filesContainer: '.files'
-    #formData: ->
-      #inputs = @.context.find(':input')
-      #arr = inputs.serializeArray()
-      #return arr
     downloadTemplateId: '#template-download'
     uploadTemplateContainerId: '#uploads'
     fileInput: '#primary_fileinput'
     replaceFileInput: false # this doesn't seem to cause any problem, and it solves problems caused by replacing the file input!
     url : 'internal_documents.json',
     paramName : 'internal_document[file]',
-    #uploadTemplateId : '#primary_upload' 
     uploadTemplateId : '#pa_upload' 
     uploadTemplate : Ractive.parse($('#pa_upload').html())
     done: (e, data)->
@@ -44,7 +39,6 @@ $ ->
       file = data.result
       ractive = Ractive.getNodeInfo(@).ractive # it's the internal_documents_uploader ractive instance
       ractive.add_file(file)
-      #data.context.remove() # removes the dom elements
       upload_file = Ractive.getNodeInfo(data.context[0]).ractive
       upload_file.parent.remove_upload_file(upload_file._guid)
       that._trigger('completed', e, data)
@@ -54,16 +48,6 @@ $ ->
         return false
       $this = $(@)
       that = $this.data('blueimp-fileupload') or $this.data('fileupload')
-      #options = that.options
-      # options include passed-in options when widget was initialized
-      # in initialization script on the index page
-      # merged with default options, above
-      #data.context = that._renderUpload(data.files).data('data', data).addClass('processing')
-      #options.uploadTemplateContainer.append data.context
-      #that._forceReflow data.context
-      #ractive = Ractive.getNodeInfo(@).ractive
-      #ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-      # puts the upload template on the page, in the filesContainer
       _(data.files).each (file)->
         file_attrs =
           lastModifiedDate: file.lastModifiedDate
@@ -115,16 +99,6 @@ $ ->
           return false
         $this = $(this)
         that = $this.data('blueimp-fileupload') or $this.data('fileupload')
-        #options = that.options}
-        # options include passed-in options when widget was initialized
-        # in initialization script on the index page
-        # merged with default options, above
-        #data.context = that._renderUpload(data.files).data('data', data).addClass('processing')
-        #options.uploadTemplateContainer.append data.context
-        #that._forceReflow data.context
-        #ractive = Ractive.getNodeInfo(@).ractive
-        #ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-        # puts the upload template on the page, in the filesContainer
         _(data.files).each (file)->
           file_attrs =
             lastModifiedDate: file.lastModifiedDate
@@ -140,7 +114,6 @@ $ ->
               new_upload.set('fileupload', data) # so ractive can configure/control upload with data.submit()
               data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
               form_data = _.clone((->new_upload.get('formData'))())
-              #form_data = _(form_data).slice(0,6) # b/c ractive is adding a _ractive object in the array!
               form_data.push {name: 'internal_document[document_group_id]', value: document_group_id}
               $this.fileupload('option', 'formData', form_data)
               # using the jquery.fileupload animation, based on the .fade class,
@@ -246,14 +219,6 @@ $ ->
 
   UploadFile = Ractive.extend
     template : "#pa_upload"
-    #oninit : ->
-      #@set
-        #title : null
-        #revision : null
-        #size : null
-        #type : null
-        #name : null
-        #lastModifiedDate : null
     computed :
       formData : ->
         [ {name : 'internal_document[title]', value : @get('title')},
@@ -281,7 +246,6 @@ $ ->
         @get('fileupload').submit()
 
   UploadFiles = Ractive.extend
-    #template: "{{#upload_files}}<uploadfile />{{/upload_files}}"
     template: "{{#upload_files}}<uploadfile title='{{title}}' revision='{{revision}}' size='{{size}}' type='{{type}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' />{{/upload_files}}"
     components:
       uploadfile : UploadFile
