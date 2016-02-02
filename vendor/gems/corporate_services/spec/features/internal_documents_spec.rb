@@ -411,3 +411,28 @@ feature "internal document management", :js => true do
 
 end
 
+feature "sequential operations", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  include InternalDocumentsSpecHelpers
+  before do
+    populate_database
+    visit corporate_services_internal_documents_path('en')
+  end
+
+  it "should correctly follow the sequence of operations" do
+    expect(InternalDocument.count).to eq 5
+    #delete a primary that has some archive files
+    expect{page.find('.template-download .delete').click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
+    click_the_archive_icon
+    expect(page).to have_selector('table.document.editable_container', :count => 4)
+    #again delete a primary file
+    expect{page.all('.template-download .delete')[0].click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
+    expect(page).to have_selector('table.document.editable_container', :count => 3)
+    # try to upload an archive file CURRENTLY FAILS
+    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find("#internal_document_title").set("some replacement file name")
+    page.find('#internal_document_revision').set("3.5")
+  end
+
+end

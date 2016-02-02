@@ -148,10 +148,10 @@ $ ->
     teardown : ->
       id = Ractive.getNodeInfo(node).ractive.get('id')
       $(node).fileupload "destroy"
-    update : ->
-      id = Ractive.getNodeInfo(node).ractive.get('id')
-      $(node).fileupload "destroy"
-      $(node).fileupload _.extend({}, fileupload_options, archive_options)
+    update : ( new_id, new_document_group_id)->
+      id = new_id
+      document_group_id = new_document_group_id
+      $("#upload#{new_id}").find('.fileupload').fileupload _.extend({}, fileupload_options, archive_options)
 
   PrimaryFileUpload = (node)->
     $(node).fileupload _.extend({}, fileupload_options)

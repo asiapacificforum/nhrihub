@@ -2,6 +2,24 @@ require 'rspec/core/shared_context'
 
 module InternalDocumentsSpecHelpers
   extend RSpec::Core::SharedContext
+  def populate_database
+    current_doc_rev = first_doc_rev = (rand(49)+50).to_f/10
+    doc = FactoryGirl.create(:internal_document,
+                             :revision => first_doc_rev.to_s,
+                             :title => Faker::Lorem.words(4).join(' '),
+                             :original_filename => Faker::Lorem.words(3).join('_')+'.doc')
+    dgid = doc.document_group_id
+    4.times do |i|
+      current_doc_rev -= 0.1
+      current_doc_rev = current_doc_rev.round(1)
+      FactoryGirl.create(:internal_document,
+                         :document_group_id => dgid,
+                         :revision => current_doc_rev.to_s,
+                         :title => Faker::Lorem.words(4).join(' '),
+                         :original_filename => Faker::Lorem.words(3).join('_')+'.doc')
+    end
+  end
+
   def click_edit_save_icon(context)
     context.find('.fa-check').click
     sleep(0.1)
