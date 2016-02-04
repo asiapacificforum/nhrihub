@@ -93,18 +93,19 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 %script#document_template{:type => 'template/html'}
-  %table.document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
+  %table.internal_document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
     %tr
       %td.title.form-group{'data-toggle' => :edit, :style => "width:36%", 'data-attribute' => :title, :class =>"{{#title_error}}has-error{{/}}"}
         .fade.edit
           %input.title{:name => "internal_document[title]", :'value' => "{{ title }}"}
-          %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.title_error_message')
+          %span.help-block.error#title_error= t('.title_error_message')
+          %span.help-block.error#duplicate_title_error= t('.duplicate_title_error_message')
         .fade.no_edit.editable.in
           %span {{ title }}
       %td.revision.form-group{'data-attribute' => :revision, 'data-toggle' => :edit, :'data-name' => 'revision', :style => "width:8%", :class =>"{{#revision_error}}has-error{{/}}"}
         .fade.edit
           %input.revision{ :name => "internal_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px'}
-          %span.help-block#revision_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.revision_error_message')
+          %span.help-block.error#revision_error= t('.revision_error_message')
         .fade.no_edit.editable.in
           %span {{ revision }}
       -# make sure it's on top of the next td, even though it precedes in the html

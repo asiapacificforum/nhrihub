@@ -42,7 +42,9 @@ class InternalDocument < ActiveRecord::Base
   end
 
   def url
-    Rails.application.routes.url_helpers.corporate_services_internal_document_path(I18n.locale, self)
+    if persisted?
+      Rails.application.routes.url_helpers.corporate_services_internal_document_path(I18n.locale, self)
+    end
   end
 
   def formatted_modification_date
@@ -79,7 +81,7 @@ class InternalDocument < ActiveRecord::Base
   end
 
   def document_group_primary
-    document_group.primary
+    document_group && document_group.primary
   end
 
   def revision

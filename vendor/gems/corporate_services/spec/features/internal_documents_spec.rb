@@ -420,7 +420,7 @@ feature "sequential operations", :js => true do
     visit corporate_services_internal_documents_path('en')
   end
 
-  it "should correctly follow the sequence of operations" do
+  it "should correctly follow the sequence of operations" do # b/c there was a bug!
     expect(InternalDocument.count).to eq 5
     #delete a primary that has some archive files
     expect{page.find('.template-download .delete').click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
@@ -435,4 +435,33 @@ feature "sequential operations", :js => true do
     page.find('#internal_document_revision').set("3.5")
   end
 
+end
+
+feature "icc accreditation required document behaviour", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  include InternalDocumentsSpecHelpers
+
+  describe "when an icc required file has already been saved" do
+    before do
+      FactoryGirl.create(:internal_document, :title => "Statement of Compliance")
+      visit corporate_services_internal_documents_path('en')
+    end
+
+    it "should not permit duplicate primary docs with icc required doc names to be created" do
+      page.attach_file("primary_file", upload_document, :visible => false)
+      page.find("#internal_document_title").set(" statement   of compliance ")
+      expect(page).to have_selector("Duplicate title not allowed")
+      expect{ click_edit_save_icon(page); sleep(0.5)}.not_to change{InternalDocument.count}
+    end
+
+    it "should automatically name archive docs with the same doc name" do
+    end
+  end
+
+  describe "when attempting to add primary files with duplicate icc required titles in the same upload" do
+  end
+
+  describe "when attemptint to add archive file with icc required title to primary file with different title" do
+  end
 end

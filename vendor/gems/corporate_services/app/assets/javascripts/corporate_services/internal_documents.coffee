@@ -8,7 +8,7 @@
 #   uploadfiles
 #     uploadfile
 #
-Ractive.DEBUG = false
+#Ractive.DEBUG = false
 
 $ ->
   # these options apply to the primary fileupload
@@ -228,6 +228,11 @@ $ ->
           {name : 'internal_document[original_filename]', value : @get('name')},
           {name : 'internal_document[lastModifiedDate]', value : @get('lastModifiedDate')}
         ]
+      duplicate_icc_title : ->
+        # title is currently staged for upload
+
+        # title is already amongst the uploaded files
+        _(internal_document_uploader.titles).indexOf(@get('title')) != -1
     validate_file_constraints : ->
       extension = @get('name').split('.').pop()
       if permitted_filetypes.indexOf(extension) == -1
@@ -320,17 +325,20 @@ $ ->
     components:
       doc : Doc
 
-  window.internal_document_uploader = new Ractive
+  uploader_options =
     el: '#container'
     template : '#uploader_template'
     data:
-      required_files_titles : window.required_files_titles 
+      required_files_titles : window.required_files_titles
       files : files
       upload_files : []
       _ : _ # use underscore for sorting
     components :
       docs : Docs
       uploadfiles : UploadFiles
+    computed :
+      titles : ->
+        _(@findAllComponents('Doc')).map (doc)->doc.get('title')
     select_file : ->
       @find('#primary_fileinput').click()
     add_file : (file)->
@@ -343,6 +351,11 @@ $ ->
       @event.original.stopPropagation()
       flash.hide()
 
+  window.start_page = ->
+    console.log "starting internal documents"
+    window.internal_document_uploader = new Ractive uploader_options
+
+  start_page()
 
   # this is a hack to workaround a jquery-fileupload-ui bug
   # that causes multiple cancel events, due to multiple event

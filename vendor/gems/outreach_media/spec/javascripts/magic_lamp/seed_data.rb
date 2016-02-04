@@ -1,8 +1,8 @@
-require_relative './area_test'
-require_relative './media_appearance_test'
-require_relative './outreach_event_test'
-require_relative './audience_type_test'
-require_relative './impact_rating_test'
+require_relative './seed_data/area_test'
+require_relative './seed_data/media_appearance_test'
+require_relative './seed_data/outreach_event_test'
+require_relative './seed_data/audience_type_test'
+require_relative './seed_data/impact_rating_test'
 class SeedData
   def self.initialize
     AudienceTypeTest.populate_test_data

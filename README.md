@@ -77,6 +77,8 @@ In other cases, dedicated javscript tests have been used. These use a suite of j
 * MagicLamp (https://github.com/crismali/magic_lamp)
 * Mocha (https://mochajs.org/)
 * Chai (http://chaijs.com/)
+
+#### Browser testing (slower, but facilitates debugging)
 To run the javascript test suite, first start a rails server up in the special environment configured for javascript testing:
   rails s -e jstest -p 5000 -P `pwd`/tmp/pids/jstestserver.pid
 This environment is configured for no asset caching, as in development environment. It has its own database, so that objects can be created and destroyed without affecting the development database, and also its own log (log/jstest.log).
@@ -84,6 +86,10 @@ Then point the browser to the teaspoon rack endpoint on that server:
   localhost:5000/en/teaspoon/testname
 where testname is the name of the test suite you wish to run. The following js test suites are included:
 * media
+
+#### Headless testing (faster, but testing is difficult, use this for regression testing)
+Requires phantomjs version 2.1.1 or later. From the application directory command line run
+    teaspoon --suite media
 
 ## Deployment
 Development updates are pushed manually to a git repository, using the normal git push procedure.

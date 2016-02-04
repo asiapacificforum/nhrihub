@@ -138,7 +138,7 @@ select.priority_level {
 .form-group.has-error {
   margin-bottom: 0px;
 
-  .help-block#priority_level_error, .help-block#description_error {
+  .help-block#priority_level_error, .help-block#description_error, .help-block#duplicate_title_error, .help-block#title_error, .help-block#revision_error {
     display : block;
   }
 }

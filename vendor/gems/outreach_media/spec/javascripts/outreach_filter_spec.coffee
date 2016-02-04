@@ -89,6 +89,11 @@ filter_criteria =
     outreach.set('filter_criteria.areas',[])
     outreach.set('filter_criteria.subareas',[])
 
+re = new RegExp('phantomjs','gi')
+log = (str)->
+  unless re.test navigator.userAgent
+    console.log str
+
 describe 'Outreach page', ->
   before (done)->
     window.outreach_events = MagicLamp.loadJSON('outreach_event_data')
@@ -106,12 +111,12 @@ describe 'Outreach page', ->
     @page = new OutreachPage()
     $.getScript("/assets/outreach.js").
       done( -> 
-        console.log "(Outreach page) javascript was loaded"
+        log "(Outreach page) javascript was loaded"
         done()). # the outreach_events.js app , start_page(), define outreach
       fail( (jqxhr, settings, exception) ->
-        console.log "Triggered ajaxError handler"
-        console.log settings
-        console.log exception)
+        log "Triggered ajaxError handler"
+        log settings
+        log exception)
 
   beforeEach ->
     outreach.set_defaults()

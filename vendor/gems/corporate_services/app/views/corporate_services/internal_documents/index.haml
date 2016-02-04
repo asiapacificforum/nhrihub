@@ -1,14 +1,8 @@
-.message_block
-%h1= t('.heading')
-
-= render :partial => 'template_upload', :locals => {:required_files_titles => "#{@required_files_titles}", :id => 'primary_upload', :prefix => 'internal_document', :label_prefix => 'internal_document'}
-= render :partial => 'template_upload', :locals => {:required_files_titles => "#{@required_files_titles}", :id => 'archive_upload', :prefix => 'internal_document[archive_files][]', :label_prefix => 'internal_document_archive_files_'}
-= render :partial => 'internal_documents_templates'
+= render :partial => 'index'
 
 = javascript_include_tag 'corporate_services/in_page_edit'
 = javascript_include_tag 'corporate_services/flash'
 
-#container
 
 :javascript
   var maximum_filesize = #{InternalDocument.maximum_filesize}

@@ -410,7 +410,6 @@ $ ->
     download_attachment : ->
       window.location = @get('url')
     fetch_link : ->
-      #window.location = @get('article_link')
       redirectWindow = window.open(@get('article_link'), '_blank')
       redirectWindow.location
 
@@ -547,8 +546,8 @@ $ ->
       $('#to').datepicker 'option', 'minDate', selectedDate
       @update()
 
-
   window.start_page = ->
+    console.log "starting ractive"
     window.media = new Ractive options
     outreach_media_datepicker.start(media)
 
