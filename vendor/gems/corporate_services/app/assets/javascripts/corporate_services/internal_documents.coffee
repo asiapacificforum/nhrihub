@@ -8,7 +8,7 @@
 #   uploadfiles
 #     uploadfile
 #
-#Ractive.DEBUG = false
+Ractive.DEBUG = false
 
 $ ->
   # these options apply to the primary fileupload
@@ -352,7 +352,6 @@ $ ->
       flash.hide()
 
   window.start_page = ->
-    console.log "starting internal documents"
     window.internal_document_uploader = new Ractive uploader_options
 
   start_page()
