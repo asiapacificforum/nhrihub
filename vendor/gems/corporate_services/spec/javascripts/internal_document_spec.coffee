@@ -11,6 +11,7 @@ describe 'Internal document', ->
     window.permitted_filetypes = ['pdf']
     window.files_list_error = MagicLamp.loadRaw('no_files_error_message')
     window.required_files_titles = MagicLamp.loadJSON('required_files_titles')
+    window.accreditation_required_document = MagicLamp.loadRaw('accreditation_required_document')
     MagicLamp.load("internal_document_page") # that's the _index partial being loaded
     $.getScript("/assets/corporate_services.js").
       then($.getScript("/assets/corporate_services/internal_documents.js")).
@@ -24,5 +25,8 @@ describe 'Internal document', ->
 
   it 'loads test fixtures and data', ->
     expect($("h1",'.magic-lamp').text()).to.equal "Internal Documents"
-    expect($(".internal_document", '.magic-lamp').length).to.equal 8
+    expect($(".internal_document", '.magic-lamp').length).to.equal 4
     expect(typeof(simulant)).to.not.equal("undefined")
+
+  it "fixes document titles for icc accreditation docs", ->
+    expect(1).to.equal(1)

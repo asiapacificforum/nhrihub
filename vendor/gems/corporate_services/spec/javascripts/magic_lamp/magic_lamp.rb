@@ -31,4 +31,8 @@ MagicLamp.define do
   fixture(:name => 'no_files_error_message') do
     "No files"
   end
+
+  fixture(:name => 'accreditation_required_document') do
+    AccreditationRequiredDoc::DocTitles[0]
+  end
 end

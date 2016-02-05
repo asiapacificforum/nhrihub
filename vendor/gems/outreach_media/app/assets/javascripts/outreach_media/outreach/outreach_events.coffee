@@ -653,7 +653,6 @@ $ ->
       @update()
 
   window.start_page = ->
-    console.log "start outreach ractive"
     window.outreach = new Ractive options
     outreach_media_datepicker.start(outreach) # configures the "since" and "before" dates in the filter
 

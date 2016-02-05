@@ -9,10 +9,13 @@ class InternalDocumentSeed
     Faker::Lorem.words(l).join('_').downcase + ".pdf"
   end
 
+  def self.rev
+    ((rand(49)+50).to_f/10).to_s
+  end
+
   def self.populate_test_data
-    5.times do
-      current_doc_rev = first_doc_rev = (rand(49)+50).to_f/10
-      doc = FactoryGirl.create(:internal_document, :revision => first_doc_rev.to_s, :title => rand_title, :original_filename => rand_filename)
+    3.times do
+      doc = FactoryGirl.create(:internal_document, :revision => rev, :title => rand_title, :original_filename => rand_filename)
       ##doc = FactoryGirl.create(:internal_document, :revision => first_doc_rev.to_s, :title => "one", :original_filename => rand_filename)
       #dgid = doc.document_group_id
       ##first_archive_rev = (rand(30)+20).to_f/10
@@ -27,6 +30,7 @@ class InternalDocumentSeed
       ##FactoryGirl.create(:internal_document, :document_group_id => dgid, :revision => current_doc_rev.to_s, :title => words[i], :original_filename => rand_filename)
       #end
     end
-
+    special_title = AccreditationRequiredDoc::DocTitles[0]
+    FactoryGirl.create(:internal_document, :revision => rev, :title => special_title, :original_filename => rand_filename)
   end
 end
