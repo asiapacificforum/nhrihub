@@ -103,6 +103,11 @@ filter_criteria =
     media.set('filter_criteria.areas',[])
     media.set('filter_criteria.subareas',[])
 
+re = new RegExp('phantomjs','gi')
+log = (str)->
+  unless re.test navigator.userAgent
+    console.log str
+
 describe 'media filter', ->
   before (done)->
     window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
@@ -117,13 +122,13 @@ describe 'media filter', ->
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     @page = new MediaPage()
     $.getScript("/assets/media.js").
-      done( -> 
-        console.log "(Media page) javascript was loaded"
+      done( ->
+        log "(Media page) javascript was loaded"
         done()). # the media_appearances.js app , start_page(), define_media
       fail( (jqxhr, settings, exception) ->
-        console.log "Triggered ajaxError handler"
-        console.log settings
-        console.log exception)
+        log "Triggered ajaxError handler"
+        log settings
+        log exception)
 
   beforeEach ->
     media.set_defaults()

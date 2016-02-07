@@ -6,20 +6,21 @@ en:
         error: "Error"
         flash:
           no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
-      doc_table:
-        title_error_message: "Title cannot be blank"
-        revision_error_message: "Invalid"
-      details_popover_title:
-        details: "File details"
-      template_upload:
-        start_one: "Start"
-        cancel_one: "Cancel"
-        doc_title: 'Document title'
-        revision: "Revision"
-        processing: "Processing..."
+      #doc_table:
+        #title_error_message: "Title cannot be blank"
+        #revision_error_message: "Invalid"
+      #details_popover_title:
+        #details: "File details"
+      #template_upload:
+        #start_one: "Start"
+        #cancel_one: "Cancel"
+        #doc_title: 'Document title'
+        #revision: "Revision"
+        #processing: "Processing..."
       internal_documents_templates :
         details: "File details"
         title_error_message: "Title cannot be blank"
+        duplicate_title_error_message: "Duplicate"
         revision_error_message: "Invalid"
         add: "Add files..."
         start: "Start upload"

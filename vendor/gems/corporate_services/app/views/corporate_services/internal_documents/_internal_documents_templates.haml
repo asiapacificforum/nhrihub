@@ -93,18 +93,20 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 %script#document_template{:type => 'template/html'}
-  %table.document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
+  %table.internal_document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
     %tr
-      %td.title.form-group{'data-toggle' => :edit, :style => "width:36%", 'data-attribute' => :title, :class =>"{{#title_error}}has-error{{/}}"}
+      %td.title.form-group{'data-toggle' => :edit, :style => "width:36%", 'data-attribute' => :title}
         .fade.edit
           %input.title{:name => "internal_document[title]", :'value' => "{{ title }}"}
-          %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.title_error_message')
+          %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
+          %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
+          %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
         .fade.no_edit.editable.in
           %span {{ title }}
       %td.revision.form-group{'data-attribute' => :revision, 'data-toggle' => :edit, :'data-name' => 'revision', :style => "width:8%", :class =>"{{#revision_error}}has-error{{/}}"}
         .fade.edit
           %input.revision{ :name => "internal_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px'}
-          %span.help-block#revision_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.revision_error_message')
+          %span.help-block.error#revision_error= t('.revision_error_message')
         .fade.no_edit.editable.in
           %span {{ revision }}
       -# make sure it's on top of the next td, even though it precedes in the html
@@ -136,7 +138,7 @@
       %td{:style => "text-align:center; width:8%"}
         {{#if file}}
         -# next tag is where the fileupload is attached
-        .fileupload.icon{:decorator => "archive_fileupload:'{{id}}','{{document_group_id}}'",
+        .fileupload.icon{:decorator => "archive_fileupload:'{{id}}','{{document_group_id}}','{{type}}'",
                          :id => "upload{{ id }}",
                          :'data-file-input' => "#upload{{ id }} #archive_fileinput" }
           %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
@@ -154,7 +156,7 @@
 
 %script#files{:type => 'ractive/template'}
   {{#files}}
-  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' />
+  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' />
   {{/files}}
 
 %script#flash_error_template{:type => 'template/ractive'}
@@ -165,7 +167,7 @@
   / used for both primary and archive (hence "pa_upload")
 
 %script#pa_upload{:type => 'html/template'}
-  .panel.panel-default.fade.template-upload
+  .panel.panel-default.fade.template-upload{:intro => :fade}
     .panel-heading
       %table{:width => '100%'}
         %tr
@@ -182,11 +184,18 @@
         %tr
           %td.title
             %label{:for =>"internal_document_title"}= t('.doc_title')
+            {{#if is_icc_doc}}
+            %span#icc_doc_title{:style => "margin-left:26px"} {{ title }}
+            {{else}}
             %input{:type => :text, :name => "internal_document[title]", :id => "internal_document_title", :list => :icc_files, :value => "{{title}}"}
             %datalist#icc_files
               {{#required_files_titles}}
-              %option{:value=>'{{.}}'}
+              %option{:value=>'{{title}}'}
               {{/required_files_titles}}
+            {{/if}}
+            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
+            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
+            %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
           %td.revision
             %label{:for => "internal_document_revision"}= t('.revision')
             %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}

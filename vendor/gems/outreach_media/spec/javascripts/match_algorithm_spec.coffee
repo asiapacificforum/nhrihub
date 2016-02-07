@@ -11,6 +11,10 @@ media_appearance_affected_people_count_matches = ->
 media_appearance_violation_severity_matches = ->
   _(media.findAllComponents('ma')).map (ma)-> ma._matches_violation_severity()
 
+log = (str)->
+  re = new RegExp('phantomjs','gi')
+  unless re.test navigator.userAgent
+    console.log str
 
 describe "within range evaluation", ->
   before (done)->
@@ -26,12 +30,12 @@ describe "within range evaluation", ->
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     $.getScript("/assets/media.js").
       done( -> 
-        console.log "(within range evaluation) javascript was loaded"
+        log "(within range evaluation) javascript was loaded"
         done()). # the media_appearances.js app , start_page(), define_media
       fail( (jqxhr, settings, exception) ->
-        console.log "Triggered ajaxError handler"
-        console.log settings
-        console.log exception)
+        log "Triggered ajaxError handler"
+        log settings
+        log exception)
 
   it "should evaluate integers", ->
     min = 0
@@ -114,12 +118,12 @@ describe "area and subarea matching algorithm", ->
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     $.getScript("/assets/media.js").
       done( -> 
-        console.log "(area and subarea matching algorithm) javascript was loaded"
+        log "(area and subarea matching algorithm) javascript was loaded"
         done()). # the media_appearances.js app , start_page(), define_media
       fail( (jqxhr, settings, exception) ->
-        console.log "Triggered ajaxError handler"
-        console.log settings
-        console.log exception)
+        log "Triggered ajaxError handler"
+        log settings
+        log exception)
 
 #example:    media.set('media_appearances',[{"media_areas":[{"area_id":1,"subarea_ids":[1]},{"area_id":2,"subarea_ids":[8,9,10]}]}])
   describe "when sort criteria rule is 'all'", ->

@@ -2,7 +2,7 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   def index
     @internal_document = InternalDocument.new
     @internal_documents = DocumentGroup.all.map(&:primary)
-    @required_files_titles = AccreditationRequiredDoc::DocTitles
+    @required_files_titles = AccreditationDocumentGroup.all_possible
   end
 
   def create

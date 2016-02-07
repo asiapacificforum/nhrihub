@@ -7,18 +7,19 @@ Teaspoon.configure do |config|
   # be useful to set this to your engines root (e.g. `Teaspoon::Engine.root`).
   # Note: Defaults to `Rails.root` if nil.
   #config.root = nil
-  config.root = OutreachMedia::Engine.root
+  #config.root = OutreachMedia::Engine.root
 
   # Paths that will be appended to the Rails assets paths
   # Note: Relative to `config.root`.
   #config.asset_paths = ["spec/javascripts", "spec/javascripts/stylesheets"]
   config.asset_paths = [OutreachMedia::Engine.root.join("spec/javascripts"),
-                        OutreachMedia::Engine.root.join("spec/stylesheets"),
-                        OutreachMedia::Engine.root.join("spec/support/javascript")]
+                        OutreachMedia::Engine.root.join("spec/support/javascript"),
+                        CorporateServices::Engine.root.join("spec/javascripts"),
+                        CorporateServices::Engine.root.join("spec/support/javascript")]
 
   # Fixtures are rendered through a controller, which allows using HAML, RABL/JBuilder, etc. Files in these paths will
   # be rendered as fixtures.
-  config.fixture_paths = ["spec/javascripts/fixtures"]
+  #config.fixture_paths = [OutreachMedia::Engine.root.join("spec/javascripts/fixtures")] # there aren't any fixtures in this path!
 
   # SUITES
   #
@@ -42,7 +43,9 @@ Teaspoon.configure do |config|
 
     # Specify a file matcher as a regular expression and all matching files will be loaded when the suite is run. These
     # files need to be within an asset path. You can add asset paths using the `config.asset_paths`.
-    suite.matcher = "{spec/javascripts,app/assets}/**/*_spec.{js,js.coffee,coffee}"
+    #suite.matcher = "{spec/javascripts,app/assets}/**/*_spec.{js,js.coffee,coffee}"
+    #suite.matcher = "vendor/gems/outreach_media/spec/javascripts/**/*_spec.coffee"
+    suite.matcher = "vendor/gems/**/spec/javascripts/**/*_spec.coffee"
 
     # Load additional JS files, but requiring them in your spec helper is the preferred way to do this.
     #suite.javascripts = []
@@ -98,7 +101,7 @@ Teaspoon.configure do |config|
   # PhantomJS: https://github.com/modeset/teaspoon/wiki/Using-PhantomJS
   # Selenium Webdriver: https://github.com/modeset/teaspoon/wiki/Using-Selenium-WebDriver
   # Capybara Webkit: https://github.com/modeset/teaspoon/wiki/Using-Capybara-Webkit
-  #config.driver = :phantomjs
+  config.driver = :phantomjs
 
   # Specify additional options for the driver.
   #
@@ -106,6 +109,7 @@ Teaspoon.configure do |config|
   # Selenium Webdriver: https://github.com/modeset/teaspoon/wiki/Using-Selenium-WebDriver
   # Capybara Webkit: https://github.com/modeset/teaspoon/wiki/Using-Capybara-Webkit
   #config.driver_options = nil
+  #config.driver_options = "--remote-debugger-port=9000 --debug=true --remote-debugger-autorun=yes"
 
   # Specify the timeout for the driver. Specs are expected to complete within this time frame or the run will be
   # considered a failure. This is to avoid issues that can arise where tests stall.
@@ -181,7 +185,10 @@ Teaspoon.configure do |config|
   end
   config.suite :media do |suite|
     suite.helper = Rails.root.join("vendor","gems","outreach_media","spec","javascripts","spec_helper.js")
+    suite.matcher = "vendor/gems/outreach_media/spec/javascripts/**/*_spec.coffee"
+  end
+  config.suite :corporate do |suite|
+    suite.helper = Rails.root.join("vendor","gems","corporate_services","spec","javascripts","spec_helper.js")
+    suite.matcher = "vendor/gems/corporate_services/spec/javascripts/**/*_spec.coffee"
   end
 end
-
-

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160124053548) do
+ActiveRecord::Schema.define(version: 20160205195334) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 20160124053548) do
   create_table "document_groups", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type",       limit: 40
   end
 
   create_table "impact_ratings", force: :cascade do |t|
