@@ -500,6 +500,23 @@ feature "icc accreditation required document behaviour", :js => true do
     end
   end
 
+  # b/c there was a bug!
+  describe "creating a new icc file, then add an archive file to it" do
+    before do
+      visit corporate_services_internal_documents_path('en')
+      page.attach_file("primary_file", upload_document, :visible => false)
+      page.find("#internal_document_title").set("Statement of Compliance")
+      upload_files_link.click
+      sleep(0.5)
+    end
+
+    it "should automatically assign archive files the Statement of Compliance title" do
+      page.attach_file("replace_file", upload_document, :visible => false)
+      expect(page).to have_selector("#icc_doc_title", :text=>'Statement of Compliance')
+      expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+    end
+  end
+
   describe "when attempting to add primary files with duplicate icc required titles in the same upload" do
   end
 

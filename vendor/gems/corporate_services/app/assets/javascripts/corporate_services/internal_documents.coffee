@@ -37,7 +37,8 @@ $ ->
       that = $(@).data('blueimp-fileupload') || $(@).data('fileupload')
       current_locale = that.options.current_locale()
       getFilesFromResponse = data.getFilesFromResponse || that.options.getFilesFromResponse
-      file = data.result
+      file = data.result.file
+      window.required_files_titles = data.result.required_files_titles
       ractive = Ractive.getNodeInfo(@).ractive # it's the internal_documents_uploader ractive instance
       ractive.add_file(file)
       upload_file = Ractive.getNodeInfo(data.context[0]).ractive

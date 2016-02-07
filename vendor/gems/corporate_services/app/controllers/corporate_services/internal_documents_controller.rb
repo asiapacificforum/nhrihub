@@ -9,7 +9,7 @@ class CorporateServices::InternalDocumentsController < ApplicationController
     params["internal_document"]["original_filename"] = params[:internal_document][:file].original_filename
     params["internal_document"]["user_id"] = current_user.id
     @internal_document = InternalDocument.create(doc_params)
-    render :json => @internal_document
+    render :json => {:file => @internal_document, :required_files_titles => AccreditationDocumentGroup.all_possible }
   end
 
   def destroy
