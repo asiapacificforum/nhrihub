@@ -1,3 +1,4 @@
+# an AccreditationRequiredDoc is a document whose title is in the DocTitles array constant
 class AccreditationRequiredDoc < InternalDocument
   def self.i18n_scope
     [:active_record, :models, :internal_document, :accreditation_required_document, :doc_title]

@@ -42,6 +42,10 @@ feature "internal document management", :js => true do
     expect( doc.original_type ).to eq "application/pdf"
   end
 
+  #scenario "add two new docs in the same upload" do
+    #expect(1).to equal(2)
+  #end
+
   scenario "add a new document but omit document name" do
     expect(page_heading).to eq "Internal Documents"
     page.attach_file("primary_file", upload_document, :visible => false)
@@ -121,7 +125,7 @@ feature "internal document management", :js => true do
     page.find('.template-download input.revision').set("4.4")
     expect{ click_edit_save_icon(page) }.
                not_to change{ @doc.reload.title }
-    expect(page).to have_selector(".document .title .edit.in #title_error", :text => "Title cannot be blank")
+    expect(page).to have_selector(".internal_document .title .edit.in #title_error", :text => "Title cannot be blank")
     click_edit_cancel_icon(page)
     expect(page.find('td.title .no_edit').text).to eq "my important document"
     expect(page.find('td.revision .no_edit').text).to eq "3.0"
@@ -133,7 +137,7 @@ feature "internal document management", :js => true do
     page.find('.template-download input.revision').set("")
     expect{ click_edit_save_icon(page) }.
                not_to change{ @doc.reload.title }
-    expect(page).to have_selector(".document .revision .edit.in #revision_error", :text => "Invalid")
+    expect(page).to have_selector(".internal_document .revision .edit.in #revision_error", :text => "Invalid")
     click_edit_cancel_icon(page)
     expect(page.find('td.title .no_edit').text).to eq "my important document"
     expect(page.find('td.revision .no_edit').text).to eq "3.0"
@@ -173,11 +177,15 @@ feature "internal document management", :js => true do
     scenario "using the single-upload icon" do
       expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
       expect(page.all('.template-download').count).to eq 1
+      expect(page.find('.template-download .internal_document .title .no_edit span').text).to eq "some replacement file name"
+      expect(page.find('.template-download .internal_document .revision .no_edit span').text).to eq "3.5"
     end
 
     scenario "using the buttonbar upload icon" do
       expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
       expect(page.all('.template-download').count).to eq 1
+      expect(page.find('.template-download .internal_document .title .no_edit span').text).to eq "some replacement file name"
+      expect(page.find('.template-download .internal_document .revision .no_edit span').text).to eq "3.5"
     end
   end
 
@@ -247,9 +255,9 @@ feature "internal document management", :js => true do
     end
     expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
     expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
-    expect(page.find('.template-download .panel-body')).to have_selector('table.document')
-    expect(page.find('.template-download .panel-body')).to have_selector('table.document .title .no_edit', :text => "changed my mind title")
-    expect(page.find('.template-download .panel-body')).to have_selector('table.document .revision .no_edit', :text => "0.1")
+    expect(page.find('.template-download .panel-body')).to have_selector('table.internal_document')
+    expect(page.find('.template-download .panel-body')).to have_selector('table.internal_document .title .no_edit', :text => "changed my mind title")
+    expect(page.find('.template-download .panel-body')).to have_selector('table.internal_document .revision .no_edit', :text => "0.1")
     expect(page.all('.template-download').count).to eq 1
   end
 
@@ -354,7 +362,7 @@ feature "internal document management", :js => true do
     # confirm that the archive accordion is opened after the deletion
     expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
     expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
-    expect(page.find('.template-download .panel-body')).to have_selector('table.document')
+    expect(page.find('.template-download .panel-body')).to have_selector('table.internal_document')
     # now make sure the new primary replace_file works
     page.attach_file("replace_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
@@ -370,9 +378,38 @@ feature "internal document management", :js => true do
     click_the_archive_icon
     expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
     expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
-    expect(page.find('.template-download .panel-body')).to have_selector('table.document')
+    expect(page.find('.template-download .panel-body')).to have_selector('table.internal_document')
   end
 end
+
+feature "behaviour with multiple primary files on the page", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  extend ActiveSupport::NumberHelper
+  include InternalDocumentsSpecHelpers
+
+  before do
+    SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
+    SiteConfig['corporate_services.internal_documents.filesize'] = 3
+    create_a_document(:revision => "3.0", :title => "my important document")
+    create_a_document(:revision => "3.0", :title => "another important document")
+    visit corporate_services_internal_documents_path('en')
+    page.find('.template-download:nth-of-type(1) .internal_document #archive_fileinput').set(upload_document)
+    page.all("#internal_document_title")[0].set("first replacement file name")
+    page.all('#internal_document_revision')[0].set("3.5")
+    page.find('.template-download:nth-of-type(2) .internal_document #archive_fileinput').set(upload_document)
+    page.all("#internal_document_title")[0].set("second replacement file name")
+    page.all('#internal_document_revision')[0].set("3.5")
+  end # /before
+
+  it "add multiple revisions to different primary files" do
+    expect{upload_files_link.click; sleep(1.0)}.to change{InternalDocument.count}.from(2).to(4)
+    expect(page.all('.template-download').count).to eq 2
+    expect(page.all('.template-download .internal_document .title .no_edit span')[0].text).to eq "first replacement file name"
+    expect(page.all('.template-download .internal_document .title .no_edit span')[1].text).to eq "second replacement file name"
+  end
+end # /feature
 
 feature "internal document management when no filetypes have been configured", :js => true do
   include IERemoteDetector
@@ -395,7 +432,6 @@ feature "internal document management when no filetypes have been configured", :
   end
 end
 
-
 feature "internal document management", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
@@ -408,7 +444,6 @@ feature "internal document management", :js => true do
   xscenario "add a new document when permission is not granted" do
     # error is in ajax response, must handle it appropriately
   end
-
 end
 
 feature "sequential operations", :js => true do
@@ -425,16 +460,15 @@ feature "sequential operations", :js => true do
     #delete a primary that has some archive files
     expect{page.find('.template-download .delete').click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
     click_the_archive_icon
-    expect(page).to have_selector('table.document.editable_container', :count => 4)
+    expect(page).to have_selector('table.internal_document.editable_container', :count => 4)
     #again delete a primary file
     expect{page.all('.template-download .delete')[0].click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
-    expect(page).to have_selector('table.document.editable_container', :count => 3)
+    expect(page).to have_selector('table.internal_document.editable_container', :count => 3)
     # try to upload an archive file CURRENTLY FAILS
     page.attach_file("replace_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
   end
-
 end
 
 feature "icc accreditation required document behaviour", :js => true do
@@ -451,11 +485,18 @@ feature "icc accreditation required document behaviour", :js => true do
     it "should not permit duplicate primary docs with icc required doc names to be created" do
       page.attach_file("primary_file", upload_document, :visible => false)
       page.find("#internal_document_title").set(" statement   of compliance ")
-      expect(page).to have_selector("Duplicate title not allowed")
-      expect{ click_edit_save_icon(page); sleep(0.5)}.not_to change{InternalDocument.count}
+      expect{ upload_files_link.click; sleep(0.5)}.not_to change{InternalDocument.count}
+      expect(page).to have_selector('#duplicate_icc_title_error',"Duplicate title not allowed")
     end
 
     it "should automatically name archive docs with the same doc name" do
+      page.attach_file("replace_file", upload_document, :visible => false)
+      expect(page).to have_selector("#icc_doc_title", :text=>'Statement of Compliance')
+      expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+    end
+
+    # b/c there was a bug
+    it "should behave as expected (above) when a non-icc archive file was previously staged and cancelled" do
     end
   end
 

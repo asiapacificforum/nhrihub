@@ -15,7 +15,10 @@ class InternalDocument < ActiveRecord::Base
     end
 
     if doc.document_group_id.blank?
-      doc.document_group_id = DocumentGroup.create.id
+      doc.document_group_id =
+        AccreditationRequiredDoc::DocTitles.include?(doc.title) ?
+                                        AccreditationDocumentGroup.create.id :
+                                        DocumentGroup.create.id
     end
 
     if doc.revision_major.nil?
@@ -38,6 +41,7 @@ class InternalDocument < ActiveRecord::Base
                        :formatted_modification_date,
                        :formatted_creation_date,
                        :formatted_filesize,
+                       :type,
                        :archive_files] )
   end
 

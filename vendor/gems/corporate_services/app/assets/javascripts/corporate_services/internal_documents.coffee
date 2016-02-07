@@ -11,6 +11,7 @@
 Ractive.DEBUG = false
 
 $ ->
+
   # these options apply to the primary fileupload
   fileupload_options =
     permittedFiletypes: window.permitted_filetypes
@@ -61,6 +62,7 @@ $ ->
           then(
             new_upload = internal_document_uploader.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
             new_upload.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+            new_upload.set('document_group_id', "")
             data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
             $this.fileupload('option', 'formData', ->new_upload.get('formData')) # pass formData from ractive instance to jquery fileupload
             # using the jquery.fileupload animation, based on the .fade class,
@@ -92,7 +94,7 @@ $ ->
         return
       return
 
-  ArchiveFileUpload = (node, id, document_group_id)->
+  ArchiveFileUpload = (node, id, document_group_id, type)->
     archive_options =
       add : (e, data) ->
         if e.isDefaultPrevented()
@@ -107,18 +109,20 @@ $ ->
             type: file.type
             title: ""
             revision: ""
+            fileupload : data
+            document_group_id : document_group_id
           internal_document_uploader.
-            push('upload_files', file_attrs).
+            unshift('upload_files', file_attrs).
             then(
               new_upload = internal_document_uploader.findAllComponents('uploadfile')[0]
-              new_upload.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+              if new_upload.get('is_icc_doc')
+                new_upload.set('title', new_upload.get('icc_title'))
               data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
-              form_data = _.clone((->new_upload.get('formData'))())
-              form_data.push {name: 'internal_document[document_group_id]', value: document_group_id}
-              $this.fileupload('option', 'formData', form_data)
+              #form_data = _.clone((->new_upload.get('formData'))())
+              $this.fileupload('option', 'formData', ->new_upload.get('formData')) # pass formData from ractive instance to jquery fileupload
               # using the jquery.fileupload animation, based on the .fade class,
-              # better to use ractive easing TODO
-              that._transition(data.context) # make the DOM node appear on the page
+              #that._transition(data.context) # make the DOM node appear on the page by toggling the 'in' class
+              data.context.addClass('in') # use bootstrap's fade animation
               new_upload.validate_file_constraints()
             )
         data.process(->
@@ -221,18 +225,28 @@ $ ->
     template : "#pa_upload"
     computed :
       formData : ->
-        [ {name : 'internal_document[title]', value : @get('title')},
-          {name : 'internal_document[revision]', value : @get('revision')},
-          {name : 'internal_document[filesize]', value : @get('size')},
-          {name : 'internal_document[original_type]', value : @get('type')},
-          {name : 'internal_document[original_filename]', value : @get('name')},
+        [ {name : 'internal_document[title]', value : @get('title')}
+          {name : 'internal_document[revision]', value : @get('revision')}
+          {name : 'internal_document[filesize]', value : @get('size')}
+          {name : 'internal_document[original_type]', value : @get('type')}
+          {name : 'internal_document[original_filename]', value : @get('name')}
           {name : 'internal_document[lastModifiedDate]', value : @get('lastModifiedDate')}
+          {name : 'internal_document[document_group_id]', value : @get('document_group_id')}
         ]
-      duplicate_icc_title : ->
-        # title is currently staged for upload
-
-        # title is already amongst the uploaded files
-        _(internal_document_uploader.titles).indexOf(@get('title')) != -1
+      icc_doc : ->
+        st = @get('stripped_title')
+        id = @get('document_group_id')
+        if !_.isEmpty(id) # it's an archive file so see if its document_group_id is one belonging to required files titles
+          _(required_files_titles).find((doc)-> doc.document_group_id == parseInt(id) )
+        else # primary file, so we compare its title with the required files titles
+          _(required_files_titles).find((doc)-> doc.title.replace(/\s/g,"").toLowerCase() == st )
+      is_icc_doc : ->
+        !_.isUndefined(@get('icc_doc'))
+      icc_title : -> # only for archive files being added to an existing icc doc
+        if @get('is_icc_doc')
+          @get('icc_doc').title
+      stripped_title : ->
+        @get('title').replace(/\s/g,"").toLowerCase()
     validate_file_constraints : ->
       extension = @get('name').split('.').pop()
       if permitted_filetypes.indexOf(extension) == -1
@@ -246,8 +260,24 @@ $ ->
       !@get('filetype_error') && !@get('filesize_error')
     cancel_upload : ->
       @parent.remove(@)
+    validate_icc_unique : ->
+      if _(internal_document_uploader.get('stripped_titles')).indexOf(@get('stripped_title')) != -1
+        @set('duplicate_icc_title_error',true)
+        false
+      else
+        @set('duplicate_icc_title_error',false)
+        true
+    is_icc_doc : ->
+      icc_doc = _(internal_document_uploader.get('required_files_titles')).
+          find((doc)=> doc.title.replace(/\s/g,"").toLowerCase() == @get('stripped_title') )
+      !_.isUndefined(icc_doc)
+    duplicate_icc_primary_file : ->
+      primary_file = _.isEmpty(@get('document_group_id'))
+      unique = @validate_icc_unique() # false is duplicate, true is unique
+      fileupload = @get('fileupload')
+      fileupload && (primary_file && @is_icc_doc() && !unique)
     submit : ->
-      if @get('fileupload')
+      unless @duplicate_icc_primary_file()
         @get('fileupload').submit()
 
   UploadFiles = Ractive.extend
@@ -294,6 +324,8 @@ $ ->
     computed :
       file : -> true
       archive_file : -> false
+      stripped_title : ->
+        @get('title').replace(/\s/g,"").toLowerCase()
     components :
       archivedoc : ArchiveDoc
     download_file : ->
@@ -337,8 +369,8 @@ $ ->
       docs : Docs
       uploadfiles : UploadFiles
     computed :
-      titles : ->
-        _(@findAllComponents('Doc')).map (doc)->doc.get('title')
+      stripped_titles : ->
+        _(@findAllComponents('doc')).map (doc)->doc.get('stripped_title')
     select_file : ->
       @find('#primary_fileinput').click()
     add_file : (file)->

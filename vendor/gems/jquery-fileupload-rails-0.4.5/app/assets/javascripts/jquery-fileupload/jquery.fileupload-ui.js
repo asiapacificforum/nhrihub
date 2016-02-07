@@ -389,7 +389,7 @@
                 var ractive = Ractive.getNodeInfo(event.originalEvent.target).ractive;
                 var delete_url = ractive.get('url');
                 var that = $(event.originalEvent.target).closest('.fileupload').data('blueimpFileupload');
-                var data = $.extend(data, that.options, ractive.get());
+                var data = $.extend(data, that.options, ractive.get(), {type : 'DELETE'}); // b/c ractive may have a type attribute
                 var removeNode = function (resp, stat, jqx) {
                       if(jqx.status == 205){ // http 'reset content', delete the document group
                         var index = this.parent.findAllComponents('doc').indexOf(this);
