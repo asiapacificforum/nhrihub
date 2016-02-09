@@ -60,6 +60,12 @@ feature "internal document management", :js => true do
     expect(flash_message).to eq "You must first click \"Add files...\" and select file(s) to upload"
   end
 
+  scenario "upload an unpermitted file type" do
+    page.attach_file("primary_file", upload_image, :visible => false)
+    expect(page).to have_css('.error', :text => "File type not allowed")
+    expect{ upload_files_link.click; sleep(0.5)}.not_to change{InternalDocument.count}
+  end
+
   scenario "upload an unpermitted file type and cancel" do
     page.attach_file("primary_file", upload_image, :visible => false)
     expect(page).to have_css('.error', :text => "File type not allowed")
@@ -319,24 +325,29 @@ feature "internal document management", :js => true do
     before do
       expect(page_heading).to eq "Internal Documents"
       # first doc
-      page.attach_file("primary_file", upload_document, :visible => false)
+      attach_file("primary_file", upload_document, :first_time)
       page.find("#internal_document_title").set("fancy file")
       page.find('#internal_document_revision').set("4.3")
       # second doc
-      page.attach_file("primary_file", upload_document, :visible => false)
-      page.execute_script("$('#primary_fileinput').trigger('change')")
+      attach_file("primary_file", upload_document)
       page.all("#internal_document_title")[0].set("kook file") # forms are prepended, so it's first in the array
       page.all('#internal_document_revision')[0].set("5.3")
       # third doc
-      page.attach_file("primary_file", upload_document, :visible => false)
-      page.execute_script("$('#primary_fileinput').trigger('change')")
+      attach_file("primary_file", upload_document)
       page.all("#internal_document_title")[0].set("ugly file")
       page.all('#internal_document_revision')[0].set("6.3")
     end
 
     scenario "upload with buttonbar action" do
       expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(4)
-      expect(page).to have_css(".files .template-download", :count => 4)
+      persisted_titles = InternalDocument.all.map(&:title)
+      expect(persisted_titles).to include("fancy file")
+      expect(persisted_titles).to include("kook file")
+      expect(persisted_titles).to include("ugly file")
+      expect(page).to have_css(".files .template-download .title .no_edit span", :count => 4)
+      expect(page).to have_css(".files .template-download .title .no_edit span", :text => "fancy file", :count => 1)
+      expect(page).to have_css(".files .template-download .title .no_edit span", :text => "kook file", :count => 1)
+      expect(page).to have_css(".files .template-download .title .no_edit span", :text => "ugly file", :count => 1)
     end
 
     scenario "upload with multiple individual actions" do
@@ -476,6 +487,11 @@ feature "icc accreditation required document behaviour", :js => true do
   include NavigationHelpers
   include InternalDocumentsSpecHelpers
 
+  before do
+    SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
+    SiteConfig['corporate_services.internal_documents.filesize'] = 3
+  end
+
   describe "when an icc required file has already been saved" do
     before do
       FactoryGirl.create(:internal_document, :title => "Statement of Compliance")
@@ -489,14 +505,19 @@ feature "icc accreditation required document behaviour", :js => true do
       expect(page).to have_selector('#duplicate_icc_title_error',"Duplicate title not allowed")
     end
 
+    it "should not permit duplicate primary docs with icc required doc names to be created by editing a non-icc doc title" do
+      FactoryGirl.create(:internal_document, :title => "Some non-icc doc title")
+      visit corporate_services_internal_documents_path('en')
+      click_the_edit_icon(page)
+      page.all('.template-download input.title')[0].set("Statement of Compliance")
+      expect{ click_edit_save_icon(page); sleep(0.5) }.not_to change{InternalDocument.count}
+      expect(page).to have_selector('#duplicate_icc_title_error',"Duplicate title not allowed")
+    end
+
     it "should automatically name archive docs with the same doc name" do
       page.attach_file("replace_file", upload_document, :visible => false)
       expect(page).to have_selector("#icc_doc_title", :text=>'Statement of Compliance')
       expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
-    end
-
-    # b/c there was a bug
-    it "should behave as expected (above) when a non-icc archive file was previously staged and cancelled" do
     end
   end
 
@@ -518,8 +539,35 @@ feature "icc accreditation required document behaviour", :js => true do
   end
 
   describe "when attempting to add primary files with duplicate icc required titles in the same upload" do
+    before do
+      visit corporate_services_internal_documents_path('en')
+      expect(page_heading).to eq "Internal Documents"
+      # first doc
+      attach_file("primary_file", upload_document, :first_time)
+      page.find("#internal_document_title").set("Statement of Compliance")
+      # second doc
+      attach_file("primary_file", upload_document)
+      page.all("#internal_document_title")[0].set("Statement of Compliance") # forms are prepended, so it's first in the array
+    end
+
+    it "should flag the duplication and prevent uploading until duplication is fixed" do
+      expect{ upload_files_link.click; sleep(0.5)}.not_to change{InternalDocument.count}
+      expect(page).to have_selector('#duplicate_icc_title_error', :text => "Duplicate", :count => 2)
+    end
   end
 
-  describe "when attemptint to add archive file with icc required title to primary file with different title" do
+  describe "when a non-icc required file has already been saved" do
+    before do
+      FactoryGirl.create(:internal_document, :title => "This is a non-icc file")
+      visit corporate_services_internal_documents_path('en')
+    end
+
+    it "should not permit adding icc archive file to non-icc primary" do
+      page.attach_file("replace_file", upload_document, :visible => false)
+      page.find("#internal_document_title").set("Statement of Compliance")
+      page.find('#internal_document_revision').set("3.5")
+      expect{ upload_files_link.click; sleep(0.5)}.not_to change{InternalDocument.count}
+      expect(page).to have_selector('#icc_revision_to_non_icc_primary_error', :text => "ICC accreditation file title not allowed")
+    end
   end
 end

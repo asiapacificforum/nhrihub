@@ -92,7 +92,7 @@
                                             // merged with default options, above
                 data.context = that._renderUpload(data.files) // data.context is the rendered upload template
                     .data('data', data)                       // it has all the data attached to it
-                    .addClass('processing');
+                    //.addClass('processing');
                 options.uploadTemplateContainer.append(data.context);
                 that._forceReflow(data.context);
                 that._transition(data.context); // puts the upload template on the page, in the filesContainer

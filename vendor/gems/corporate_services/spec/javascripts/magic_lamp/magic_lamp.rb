@@ -1,11 +1,11 @@
-require_relative './seed_data'
-
-SeedData.initialize
+require_relative './seed_data/internal_document_seed'
 
 MagicLamp.define do
   # e.g. on page do this:  window.internal_document_data = MagicLamp.loadJSON('internal_document_data')
   fixture(:name => 'internal_document_data') do
-    DocumentGroup.all.map(&:primary)
+    InternalDocumentSeed.populate_test_data
+    {:files => DocumentGroup.all.map(&:primary),
+     :required_files_titles => AccreditationDocumentGroup.all_possible }
   end
 
   fixture(:name => 'new_internal_document') do
@@ -13,7 +13,7 @@ MagicLamp.define do
   end
 
   fixture(:name => 'required_files_titles') do
-    AccreditationRequiredDoc::DocTitles
+    AccreditationDocumentGroup.all_possible
   end
 
   fixture(:name => 'internal_document_maximum_filesize') do

@@ -2,6 +2,15 @@ require 'rspec/core/shared_context'
 
 module InternalDocumentsSpecHelpers
   extend RSpec::Core::SharedContext
+  def attach_file(locator,file,index = nil)
+    page.attach_file("primary_file", upload_document, :visible => false)
+    if !index # when it's first time, we pass a non-nil argument like :first_time
+      if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
+        page.execute_script("$('#primary_fileinput').trigger('change')")
+      end
+    end
+  end
+
   def populate_database
     current_doc_rev = first_doc_rev = (rand(49)+50).to_f/10
     doc = FactoryGirl.create(:internal_document,
@@ -83,7 +92,8 @@ module InternalDocumentsSpecHelpers
   end
 
   def click_the_edit_icon(context)
-    context.find('.fa-pencil-square-o').click
+    context.all('.fa-pencil-square-o')[0].click
+    #context.find('.fa-pencil-square-o').click
     sleep(0.1)
   end
 

@@ -58,41 +58,18 @@ $ ->
           type: file.type
           title: ""
           revision: ""
+          document_group_id: ""
+          fileupload: data
         internal_document_uploader.
           unshift('upload_files', file_attrs).
           then(
             new_upload = internal_document_uploader.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
-            new_upload.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-            new_upload.set('document_group_id', "")
             data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
-            $this.fileupload('option', 'formData', ->new_upload.get('formData')) # pass formData from ractive instance to jquery fileupload
-            # using the jquery.fileupload animation, based on the .fade class,
-            # better to use ractive easing TODO
-            that._transition(data.context) # make the DOM node appear on the page
+            data.context.addClass('in') # use bootstrap's fade animation
             new_upload.validate_file_constraints()
           )
-      data.process(->
-        # e.g. validation
-        $this.fileupload 'process', data
-      ).always(->
-        data.context.each((index) ->
-          $(this).find('.size').text that._formatFileSize(data.size)
-          return
-        ).removeClass 'processing'
-        return
-      ).done(->
-        data.context.find('.start').prop 'disabled', false
-        return
-      ).fail ->
-        # e.g. validation fail
-        if data.files.error
-          data.context.each (index) ->
-            error = data.files[index].error
-            if error
-              $(this).find('.error').text error
-              $(this).find('.start').prop 'disabled', true
-            return
-        return
+      data.context.find('.start').prop 'disabled', false
+      data.context.removeClass('processing')
       return
 
   ArchiveFileUpload = (node, id, document_group_id, type)->
@@ -116,8 +93,6 @@ $ ->
             unshift('upload_files', file_attrs).
             then(
               new_upload = internal_document_uploader.findAllComponents('uploadfile')[0]
-              if new_upload.get('is_icc_doc')
-                new_upload.set('title', new_upload.get('icc_title'))
               data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
               #form_data = _.clone((->new_upload.get('formData'))())
               $this.fileupload('option', 'formData', ->new_upload.get('formData')) # pass formData from ractive instance to jquery fileupload
@@ -126,28 +101,8 @@ $ ->
               data.context.addClass('in') # use bootstrap's fade animation
               new_upload.validate_file_constraints()
             )
-        data.process(->
-          # e.g. validation
-          $this.fileupload 'process', data
-        ).always(->
-          data.context.each((index) ->
-            $(this).find('.size').text that._formatFileSize(data.size)
-            return
-          ).removeClass 'processing'
-          return
-        ).done(->
-          data.context.find('.start').prop 'disabled', false
-          return
-        ).fail ->
-          # e.g. validation fail
-          if data.files.error
-            data.context.each (index) ->
-              error = data.files[index].error
-              if error
-                $(this).find('.error').text error
-                $(this).find('.start').prop 'disabled', true
-              return
-          return
+        data.context.find('.start').prop 'disabled', false
+        data.context.removeClass('processing')
         return
     $(node).fileupload _.extend({}, fileupload_options, archive_options)
     teardown : ->
@@ -224,6 +179,9 @@ $ ->
 
   UploadFile = Ractive.extend
     template : "#pa_upload"
+    oninit : ->
+      if !_.isNaN(parseInt(@get('document_group_id')))
+        @set('title',@get('icc_title'))
     computed :
       formData : ->
         [ {name : 'internal_document[title]', value : @get('title')}
@@ -237,7 +195,7 @@ $ ->
       icc_doc : ->
         st = @get('stripped_title')
         id = @get('document_group_id')
-        if !_.isEmpty(id) # it's an archive file so see if its document_group_id is one belonging to required files titles
+        if !_.isNaN(parseInt(id)) # it's an archive file so see if its document_group_id is one belonging to required files titles
           _(required_files_titles).find((doc)-> doc.document_group_id == parseInt(id) )
         else # primary file, so we compare its title with the required files titles
           _(required_files_titles).find((doc)-> doc.title.replace(/\s/g,"").toLowerCase() == st )
@@ -248,21 +206,24 @@ $ ->
           @get('icc_doc').title
       stripped_title : ->
         @get('title').replace(/\s/g,"").toLowerCase()
-    validate_file_constraints : ->
+    validate_file_constraints : -> # the attributes that are checked when a file is added
       extension = @get('name').split('.').pop()
-      if permitted_filetypes.indexOf(extension) == -1
-        @set('filetype_error', true)
-      else
-        @set('filetype_error', false)
-      if @get('size') > maximum_filesize
-        @set('filesize_error', true)
-      else
-        @set('filesize_error', false)
-      !@get('filetype_error') && !@get('filesize_error')
+      @set('unconfigured_filetypes_error', permitted_filetypes.length == 0)
+      @set('filetype_error', permitted_filetypes.indexOf(extension) == -1)
+      @set('filesize_error', @get('size') > maximum_filesize)
+      !@get('filetype_error') && !@get('filesize_error') && !@get('unconfigured_filetypes_error')
     cancel_upload : ->
       @parent.remove(@)
-    validate_icc_unique : ->
+    validate_icc_unique : -> # returns false for duplicate files
       if _(internal_document_uploader.get('stripped_titles')).indexOf(@get('stripped_title')) != -1
+        @set('duplicate_icc_title_error',true)
+        false
+      else
+        @set('duplicate_icc_title_error',false)
+        true
+    validate_pending_icc_unique : (titles)-> # returns true for valid
+      identical_titles = _(titles).filter (title)=> title == @get('stripped_title')
+      if identical_titles.length != 1 # there should be exactly one
         @set('duplicate_icc_title_error',true)
         false
       else
@@ -272,13 +233,27 @@ $ ->
       icc_doc = _(internal_document_uploader.get('required_files_titles')).
           find((doc)=> doc.title.replace(/\s/g,"").toLowerCase() == @get('stripped_title') )
       !_.isUndefined(icc_doc)
-    duplicate_icc_primary_file : ->
+    duplicated_title_in_this_upload : ->
+      primary_file = _.isEmpty(@get('document_group_id'))
+      unique_this_upload = @parent.validate_pending_icc_unique() # true = valid
+      fileupload = @get('fileupload')
+      fileupload && (primary_file && @is_icc_doc() && !unique_this_upload)
+    duplicated_title_with_existing_file : -> #returns true for duplicate found
       primary_file = _.isEmpty(@get('document_group_id'))
       unique = @validate_icc_unique() # false is duplicate, true is unique
       fileupload = @get('fileupload')
       fileupload && (primary_file && @is_icc_doc() && !unique)
+    duplicate_icc_primary_file : ->
+      @duplicated_title_in_this_upload() || @duplicated_title_with_existing_file()
+    icc_revision_to_non_icc_primary : ->
+      non_icc_primary = !@get('is_icc_doc')
+      icc_revision = _(required_files_titles).map((doc)-> doc.title.replace(/\s/g,"").toLowerCase()).indexOf(@get('stripped_title')) != -1
+      error = non_icc_primary && icc_revision
+      @set('icc_revision_to_non_icc_primary_error',error)
+      error
     submit : ->
-      unless @duplicate_icc_primary_file()
+      unless @duplicate_icc_primary_file() || @icc_revision_to_non_icc_primary() || !@validate_file_constraints()
+        @get('fileupload').formData = @get('formData')
         @get('fileupload').submit()
 
   UploadFiles = Ractive.extend
@@ -292,6 +267,11 @@ $ ->
       guids = _(@findAllComponents('uploadfile')).map('_guid')
       index = _(guids).indexOf(upload_file_guid)
       @splice('upload_files',index,1)
+    validate_pending_icc_unique : -> # returns true if all files are valid by this criterion
+      all_titles = _(@findAllComponents('uploadfile')).map (uploadfile)-> uploadfile.get('stripped_title')
+      files_valid = _(@findAllComponents('uploadfile')).map (uploadfile) -> uploadfile.validate_pending_icc_unique(all_titles)
+      valid_files = _(files_valid).filter((a)->a) # each of the files_valid values should be true
+      valid_files.length == all_titles.length # true for no invalid files
 
   ArchiveDoc = Ractive.extend
     template: '#document_template'
@@ -335,7 +315,7 @@ $ ->
       @set("title_error", false)
       @set("revision_error", false)
     validate : ->
-      @_validate_title() && @_validate_revision()
+      @_validate_title() && @_validate_revision() && @_validate_icc_unique()
     _validate_title : ->
       @set('title', @get('title').trim())
       if @get('title') == ""
@@ -350,6 +330,13 @@ $ ->
         false
       else
         true
+    _validate_icc_unique : ->
+      if _(@parent.docs_without(@)).map((doc)-> doc.get('stripped_title')).indexOf(@get('stripped_title')) != -1
+        @set('duplicate_icc_title_error',true)
+        false
+      else
+        @set('duplicate_icc_title_error',false)
+        true
     add_file : (file)->
       @set(file)
 
@@ -357,6 +344,8 @@ $ ->
     template: '#files'
     components:
       doc : Doc
+    docs_without : (doc)->
+      _(@findAllComponents('doc')).reject((this_doc)-> this_doc.get('id') == doc.get('id'))
 
   uploader_options =
     el: '#container'

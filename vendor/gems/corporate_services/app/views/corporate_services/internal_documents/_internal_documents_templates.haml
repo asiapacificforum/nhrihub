@@ -97,10 +97,11 @@
     %tr
       %td.title.form-group{'data-toggle' => :edit, :style => "width:36%", 'data-attribute' => :title}
         .fade.edit
-          %input.title{:name => "internal_document[title]", :'value' => "{{ title }}"}
+          %input.title{:name => "internal_document[title]", :'value' => "{{ title }}", :style => "width:100%"}
           %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
           %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
           %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
+          %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}"}= t('.icc_revision_in_non_icc_primary_error_message')
         .fade.no_edit.editable.in
           %span {{ title }}
       %td.revision.form-group{'data-attribute' => :revision, 'data-toggle' => :edit, :'data-name' => 'revision', :style => "width:8%", :class =>"{{#revision_error}}has-error{{/}}"}
@@ -177,8 +178,10 @@
               %span.help-block.error#filesize_error= t('.too_large')
             .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
               %span.help-block.error#filetype_error= t('.unpermitted_type')
+            .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
+              %span.help-block.error#unconfigured_filetypes_error= t('.noFileTypes')
           %td{:colspan => 2}
-            .size= t('.processing')
+            .size
             .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
               .progress-bar.progress-bar-success{:style => "width:0%"}
         %tr
@@ -196,6 +199,7 @@
             %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
             %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
             %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
+            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}"}= t('.icc_revision_in_non_icc_primary_error_message')
           %td.revision
             %label{:for => "internal_document_revision"}= t('.revision')
             %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}
