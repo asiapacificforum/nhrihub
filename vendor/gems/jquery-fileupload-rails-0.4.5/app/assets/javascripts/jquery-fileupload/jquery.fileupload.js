@@ -1049,6 +1049,7 @@
             $('<form></form>').append(inputClone)[0].reset();
             // Detaching allows to insert the fileInput on another form
             // without loosing the file input value:
+            // detaches the original fileInput and leaves the clone in the DOM
             input.after(inputClone).detach();
             // Avoid memory leaks with the detached file input:
             $.cleanData(input.unbind('remove'));
@@ -1208,6 +1209,7 @@
         },
 
         _onChange: function (e) {
+          console.log("_onChange")
             var that = this,
                 data = {
                     fileInput: $(e.target),
@@ -1269,26 +1271,8 @@
             }
         },
 
-        //_onDragOver: getDragHandler('dragover'),
-
-        //_onDragEnter: getDragHandler('dragenter'),
-
-        //_onDragLeave: getDragHandler('dragleave'),
-
         _initEventHandlers: function () {
-            //if (this._isXHRUpload(this.options)) {
-                //this._on(this.options.dropZone, {
-                    //dragover: this._onDragOver,
-                    //drop: this._onDrop,
-                    //// event.preventDefault() on dragenter is required for IE10+:
-                    //dragenter: this._onDragEnter,
-                    //// dragleave is not required, but added for completeness:
-                    //dragleave: this._onDragLeave
-                //});
-                //this._on(this.options.pasteZone, {
-                    //paste: this._onPaste
-                //});
-            //}
+            console.log("_initEventHandlers: "+$(this.options.fileInput).attr('id'))
             if ($.support.fileInput) {
                 this._on(this.options.fileInput, {
                     change: this._onChange
@@ -1297,6 +1281,7 @@
         },
 
         _destroyEventHandlers: function () {
+          console.log("_destroyEventHandlers")
             this._off(this.options.dropZone, 'dragenter dragleave dragover drop');
             this._off(this.options.pasteZone, 'paste');
             this._off(this.options.fileInput, 'change');

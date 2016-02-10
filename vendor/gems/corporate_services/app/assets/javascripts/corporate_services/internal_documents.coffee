@@ -13,7 +13,7 @@ Ractive.DEBUG = false
 $ ->
 
   # these options apply to the primary fileupload
-  fileupload_options =
+  window.fileupload_options =
     permittedFiletypes: window.permitted_filetypes
     maxFileSize: parseInt(window.maximum_filesize)
     failed: (e,data)->
@@ -24,7 +24,8 @@ $ ->
     downloadTemplateId: '#template-download'
     uploadTemplateContainerId: '#uploads'
     fileInput: '#primary_fileinput'
-    replaceFileInput: false # this doesn't seem to cause any problem, and it solves problems caused by replacing the file input!
+    #replaceFileInput: false # this doesn't seem to cause any problem, and it solves problems caused by replacing the file input!
+    replaceFileInput: true
     url : 'internal_documents.json',
     paramName : 'internal_document[file]',
     uploadTemplateId : '#pa_upload' 
@@ -64,12 +65,40 @@ $ ->
           unshift('upload_files', file_attrs).
           then(
             new_upload = internal_document_uploader.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
+            #new_upload.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+            #new_upload.set('document_group_id', "")
             data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
-            data.context.addClass('in') # use bootstrap's fade animation
+            #$this.fileupload('option', 'formData', ->new_upload.get('formData')) # pass formData from ractive instance to jquery fileupload
+            # using the jquery.fileupload animation, based on the .fade class,
+            # better to use ractive easing TODO
+            #that._transition(data.context) # make the DOM node appear on the page
+            data.context.addClass('in')
             new_upload.validate_file_constraints()
           )
-      data.context.find('.start').prop 'disabled', false
-      data.context.removeClass('processing')
+      #data.context.find('.start').prop 'disabled', false
+      #data.context.removeClass('processing')
+      #data.process(->
+        ## e.g. validation
+        #$this.fileupload 'process', data
+      #).always(->
+        #data.context.each((index) ->
+          #$(this).find('.size').text that._formatFileSize(data.size)
+          #return
+        #).removeClass 'processing'
+        #return
+      #).done(->
+        #data.context.find('.start').prop 'disabled', false
+        #return
+      #).fail ->
+        # e.g. validation fail
+        #if data.files.error
+          #data.context.each (index) ->
+            #error = data.files[index].error
+            #if error
+              #$(this).find('.error').text error
+              #$(this).find('.start').prop 'disabled', true
+            #return
+        #return
       return
 
   ArchiveFileUpload = (node, id, document_group_id, type)->
@@ -103,6 +132,28 @@ $ ->
             )
         data.context.find('.start').prop 'disabled', false
         data.context.removeClass('processing')
+        #data.process(->
+          ## e.g. validation
+          #$this.fileupload 'process', data
+        #).always(->
+          #data.context.each((index) ->
+            #$(this).find('.size').text that._formatFileSize(data.size)
+            #return
+          #).removeClass 'processing'
+          #return
+        #).done(->
+          #data.context.find('.start').prop 'disabled', false
+          #return
+        #).fail ->
+          ## e.g. validation fail
+          #if data.files.error
+            #data.context.each (index) ->
+              #error = data.files[index].error
+              #if error
+                #$(this).find('.error').text error
+                #$(this).find('.start').prop 'disabled', true
+              #return
+          #return
         return
     $(node).fileupload _.extend({}, fileupload_options, archive_options)
     teardown : ->
@@ -184,6 +235,7 @@ $ ->
         @set('title',@get('icc_title'))
     computed :
       formData : ->
+        console.log "getting formData #{@get('title')}"
         [ {name : 'internal_document[title]', value : @get('title')}
           {name : 'internal_document[revision]', value : @get('revision')}
           {name : 'internal_document[filesize]', value : @get('size')}

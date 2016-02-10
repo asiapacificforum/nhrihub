@@ -463,6 +463,8 @@ feature "sequential operations", :js => true do
   include InternalDocumentsSpecHelpers
   before do
     populate_database
+    SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
+    SiteConfig['corporate_services.internal_documents.filesize'] = 3
     visit corporate_services_internal_documents_path('en')
   end
 
@@ -480,6 +482,17 @@ feature "sequential operations", :js => true do
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
   end
+
+  #it "should correctly follow the sequence of operations 2" do # b/c there was a bug!
+    #expect(InternalDocument.count).to eq 5
+    #attach_file("primary_file", upload_document, :first_time)
+    #expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(5).to(6)
+    ##delete the primary that was just uploaded
+    #expect{page.all('.template-download .delete')[0].click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
+    ## now add a file
+    #attach_file("primary_file", upload_document, :first_time)
+    #expect(page).to have_selector(".template-upload", :count => 1)
+  #end
 end
 
 feature "icc accreditation required document behaviour", :js => true do
