@@ -406,19 +406,23 @@ feature "behaviour with multiple primary files on the page", :js => true do
     create_a_document(:revision => "3.0", :title => "my important document")
     create_a_document(:revision => "3.0", :title => "another important document")
     visit corporate_services_internal_documents_path('en')
-    page.find('.template-download:nth-of-type(1) .internal_document #archive_fileinput').set(upload_document)
+    page.find('.template-download:nth-of-type(2) .internal_document #archive_fileinput').set(upload_document)
     page.all("#internal_document_title")[0].set("first replacement file name")
     page.all('#internal_document_revision')[0].set("3.5")
-    page.find('.template-download:nth-of-type(2) .internal_document #archive_fileinput').set(upload_document)
-    page.all("#internal_document_title")[0].set("second replacement file name")
+    page.find('.template-download:nth-of-type(1) .internal_document #archive_fileinput').set(upload_document)
+    page.all("#internal_document_title")[0].set("second replacement file name") # the newly added field is first
     page.all('#internal_document_revision')[0].set("3.5")
   end # /before
 
   it "add multiple revisions to different primary files" do
     expect{upload_files_link.click; sleep(1.0)}.to change{InternalDocument.count}.from(2).to(4)
     expect(page.all('.template-download').count).to eq 2
-    expect(page.all('.template-download .internal_document .title .no_edit span')[0].text).to eq "first replacement file name"
-    expect(page.all('.template-download .internal_document .title .no_edit span')[1].text).to eq "second replacement file name"
+    sleep(3.5)
+    expect(page.all('.template-download .internal_document .title .no_edit span').map(&:text)).to include "first replacement file name"
+    expect(page.all('.template-download .internal_document .title .no_edit span').map(&:text)).to include "second replacement file name"
+    #expect(page.all('.template-download .internal_document .title .no_edit span')[0].text).to eq "first replacement file name"
+    sleep(0.5)
+    #expect(page.all('.template-download .internal_document .title .no_edit span')[1].text).to eq "second replacement file name"
   end
 end # /feature
 
@@ -482,17 +486,6 @@ feature "sequential operations", :js => true do
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
   end
-
-  #it "should correctly follow the sequence of operations 2" do # b/c there was a bug!
-    #expect(InternalDocument.count).to eq 5
-    #attach_file("primary_file", upload_document, :first_time)
-    #expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(5).to(6)
-    ##delete the primary that was just uploaded
-    #expect{page.all('.template-download .delete')[0].click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
-    ## now add a file
-    #attach_file("primary_file", upload_document, :first_time)
-    #expect(page).to have_selector(".template-upload", :count => 1)
-  #end
 end
 
 feature "icc accreditation required document behaviour", :js => true do

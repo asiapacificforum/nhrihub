@@ -1209,7 +1209,6 @@
         },
 
         _onChange: function (e) {
-          console.log("_onChange")
             var that = this,
                 data = {
                     fileInput: $(e.target),
@@ -1272,7 +1271,6 @@
         },
 
         _initEventHandlers: function () {
-            console.log("_initEventHandlers: "+$(this.options.fileInput).attr('id'))
             if ($.support.fileInput) {
                 this._on(this.options.fileInput, {
                     change: this._onChange
@@ -1281,7 +1279,6 @@
         },
 
         _destroyEventHandlers: function () {
-          console.log("_destroyEventHandlers")
             this._off(this.options.dropZone, 'dragenter dragleave dragover drop');
             this._off(this.options.pasteZone, 'paste');
             this._off(this.options.fileInput, 'change');

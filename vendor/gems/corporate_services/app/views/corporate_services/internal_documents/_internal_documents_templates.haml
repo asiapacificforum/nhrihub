@@ -7,8 +7,8 @@
       .col-lg-9
         / The fileinput-button span is used to style the file input field as button
         %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
-          %i.fa.fa-plus.fa-lg{'on-click'=>'select_file()', :style => "color:white"}
-          %span{'on-click'=>'select_file()'}= t('.add')
+          %i.fa.fa-plus.fa-lg{'onclick'=>"$('#primary_fileinput').click()", :style => "color:white"}
+          %span{'onclick'=>"$('#primary_fileinput').click()"}= t('.add')
           %input#primary_fileinput{:multiple => "multiple", :name => "primary_file", :type => "file"}
         %button.btn.btn-primary.start{'on-click'=>'start_upload()', :type => "submit"}
           %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
@@ -139,9 +139,10 @@
       %td{:style => "text-align:center; width:8%"}
         {{#if file}}
         -# next tag is where the fileupload is attached
-        .fileupload.icon{:decorator => "archive_fileupload:'{{id}}','{{document_group_id}}','{{type}}'",
+        .fileupload.icon{:decorator => "archive_fileupload:'{{id}}','{{type}}'",
                          :id => "upload{{ id }}",
-                         :'data-file-input' => "#upload{{ id }} #archive_fileinput" }
+                         :'data-file-input' => "#upload{{ id }} #archive_fileinput",
+                         :'data-document_group_id' => "{{document_group_id}}"}
           %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
           -# weird opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
           -# only required for testing, it actually works in firefox in real life!

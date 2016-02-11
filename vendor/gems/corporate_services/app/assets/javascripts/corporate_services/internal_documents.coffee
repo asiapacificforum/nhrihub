@@ -101,12 +101,13 @@ $ ->
         #return
       return
 
-  ArchiveFileUpload = (node, id, document_group_id, type)->
+  ArchiveFileUpload = (node, id, type)->
     archive_options =
       add : (e, data) ->
         if e.isDefaultPrevented()
           return false
         $this = $(this)
+        document_group_id = $this.data('document_group_id')
         that = $this.data('blueimp-fileupload') or $this.data('fileupload')
         _(data.files).each (file)->
           file_attrs =
@@ -235,7 +236,6 @@ $ ->
         @set('title',@get('icc_title'))
     computed :
       formData : ->
-        console.log "getting formData #{@get('title')}"
         [ {name : 'internal_document[title]', value : @get('title')}
           {name : 'internal_document[revision]', value : @get('revision')}
           {name : 'internal_document[filesize]', value : @get('size')}
@@ -309,7 +309,7 @@ $ ->
         @get('fileupload').submit()
 
   UploadFiles = Ractive.extend
-    template: "{{#upload_files}}<uploadfile title='{{title}}' revision='{{revision}}' size='{{size}}' type='{{type}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' />{{/upload_files}}"
+    template: "{{#upload_files}}<uploadfile title='{{title}}' revision='{{revision}}' size='{{size}}' type='{{type}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' document_group_id='{{document_group_id}}' />{{/upload_files}}"
     components:
       uploadfile : UploadFile
     remove : (uploadfile)->
