@@ -22,9 +22,12 @@ describe 'Internal document', ->
         log settings
         log exception))
 
+  beforeEach ->
+    internal_document_uploader.set('upload_files',[])
+
   it 'loads test fixtures and data', ->
     expect($("h1",'.magic-lamp').text()).to.equal "Internal Documents"
-    expect($(".internal_document", '.magic-lamp').length).to.equal 4
+    expect($(".internal_document", '.magic-lamp').length).to.equal 10
     expect(typeof(simulant)).to.not.equal("undefined")
 
   it "fixes document titles for icc accreditation docs", ->
@@ -37,7 +40,6 @@ describe 'Internal document', ->
     expect(upload_file.validate_pending_icc_unique(["statementofcompliance"])).to.equal(true)
 
   it "flags as errored when another primary file upload is attempted with duplicate icc file title", ->
-    internal_document_uploader.set('upload_files',[])
     internal_document_uploader.unshift('upload_files',{title : "Statement of Compliance", fileupload : true, primary : true})
     upload_file = internal_document_uploader.findAllComponents('uploadfile')[0]
     expect(upload_file.get('is_icc_doc')).to.equal true
@@ -46,7 +48,6 @@ describe 'Internal document', ->
     expect(upload_file.duplicate_icc_primary_file()).to.equal true
 
   it "does not flag as errored when an icc-titled primary file upload is attempted that does not duplicate existing icc title",->
-    internal_document_uploader.set('upload_files',[])
     internal_document_uploader.unshift('upload_files',{title : "Enabling Legislation", fileupload : true, primary : true})
     upload_file = internal_document_uploader.findAllComponents('uploadfile')[0]
     expect(upload_file.get('is_icc_doc')).to.equal true
@@ -56,7 +57,6 @@ describe 'Internal document', ->
     expect(upload_file.duplicate_icc_primary_file()).to.equal false
 
   it "flags as errored when two primary file uploads is attempted in the same upload with identical icc file titles", ->
-    internal_document_uploader.set('upload_files',[])
     internal_document_uploader.unshift('upload_files',{title : "Enabling Legislation", fileupload : true, primary : true})
     internal_document_uploader.unshift('upload_files',{title : "Enabling Legislation", fileupload : true, primary : true})
 
@@ -73,7 +73,6 @@ describe 'Internal document', ->
     expect(upload_file.duplicated_title_in_this_upload()).to.equal true
 
   it "does not flag as errored when two primary file uploads are attempted in the same upload with different icc file titles", ->
-    internal_document_uploader.set('upload_files',[])
     internal_document_uploader.unshift('upload_files',{title : "Enabling Legislation", fileupload : true, primary : true})
     internal_document_uploader.unshift('upload_files',{title : "Annual Report", fileupload : true, primary : true})
 
@@ -90,7 +89,6 @@ describe 'Internal document', ->
     expect(upload_file.duplicated_title_in_this_upload()).to.equal false
 
   it "adds an error attribute when a revision of a non-icc file is assigned an icc title", ->
-    internal_document_uploader.set('upload_files',[])
     docs = _(internal_document_uploader.findAllComponents('doc')).select (doc)->!doc.get('title').match(/Statement of Compliance/)
     doc_group_id = docs[0].get('document_group_id')
     internal_document_uploader.push('upload_files',{title : "", document_group_id : doc_group_id, primary : false})
@@ -100,7 +98,18 @@ describe 'Internal document', ->
     expect(upload_file.get('icc_revision_to_non_icc_primary_error')).to.equal true
 
   it "adds an error attribute when a non-icc file is edited to an icc title and a dupe is created", ->
-    internal_document_uploader.set('upload_files',[])
     docs = _(internal_document_uploader.findAllComponents('doc')).select (doc)->!doc.get('title').match(/Statement of Compliance/)
     docs[0].set('title', "Statement of Compliance")
     expect(docs[0]._validate_icc_unique()).to.equal false
+
+  it "adds an error when non-icc archive docis edited to icc title", ->
+    docs = _(internal_document_uploader.findAllComponents('doc')).select (doc)->!doc.get('title').match(/Statement of Compliance/)
+    archive_doc = docs[0].findAllComponents('archivedoc')[0]
+    expect(archive_doc.get('is_icc_doc')).to.equal false
+    expect(archive_doc.get('non_icc_document_group')).to.equal true
+    expect(archive_doc._validate_non_icc_title()).to.equal true
+    expect(archive_doc.get('icc_title_error')).to.equal false
+    archive_doc.set('title','Statement of Compliance')
+    expect(archive_doc.get('is_icc_doc')).to.equal true
+    expect(archive_doc._validate_non_icc_title()).to.equal false
+    expect(archive_doc.get('icc_title_error')).to.equal true

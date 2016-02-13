@@ -250,13 +250,8 @@ $ ->
         st = @get('stripped_title')
         id = @get('document_group_id')
         if !_.isNaN(parseInt(id)) # it's an archive file so see if its document_group_id is one belonging to required files titles
-          #console.log "!isNaN"
           _(required_files_titles).find((doc)-> doc.document_group_id == parseInt(id) )
         else # primary file, so we compare its title with the required files titles
-          #console.log "isNaN"
-          #console.log JSON.stringify( _(required_files_titles).map((doc)-> doc.title.replace(/\s/g,"").toLowerCase() ))
-          #console.log @get('title')
-          #console.log @get('document_group_id')
           _(required_files_titles).find((doc)-> doc.title.replace(/\s/g,"").toLowerCase() == st )
       is_icc_doc : ->
         !_.isUndefined(@get('icc_doc'))
@@ -341,28 +336,41 @@ $ ->
 
   ArchiveDoc = Ractive.extend
     template: '#document_template'
+    oninit : ->
+      @remove_errors()
     computed :
       file : -> false
       archive_file : -> true
+      icc_doc : ->
+        st = @get('stripped_title')
+        _(required_files_titles).find((doc)-> doc.title.replace(/\s/g,"").toLowerCase() == st )
+      is_icc_doc : ->
+        !_.isUndefined(@get('icc_doc'))
+      stripped_title : ->
+        @get('title').replace(/\s/g,"").toLowerCase()
+      non_icc_document_group : ->
+        icc_document_group_ids = _(required_files_titles).map (doc)-> doc.document_group_id
+        icc_document_group_ids.indexOf(@get('document_group_id')) == -1
     remove_errors : ->
-      @set("title_error", false)
-      @set("revision_error", false)
+      @set
+        title_error: false
+        revision_error: false
+        icc_title_error:false
     validate : ->
-      @_validate_title() && @_validate_revision()
-    _validate_title : ->
+      @_validate_nonblank_title() && @_validate_non_icc_title() && @_validate_revision()
+    _validate_non_icc_title : ->
+      has_icc_title = @get('is_icc_doc')
+      non_icc_document_group = @get('non_icc_document_group')
+      @set('icc_title_error', has_icc_title && non_icc_document_group )
+      !@get('icc_title_error')
+    _validate_nonblank_title : ->
       @set('title', @get('title').trim())
-      if @get('title') == ""
-        @set("title_error",true)
-        false
-      else
-        true
+      @set("title_error", @get('title') == "" )
+      !@get('title_error')
     _validate_revision : ->
       @set('revision', @get('revision').trim())
-      if @get('revision') == ""
-        @set("revision_error",true)
-        false
-      else
-        true
+      @set("revision_error", @get('revision') == "")
+      !@get('revision_error')
 
   Doc = Ractive.extend
     template: '#template-download'

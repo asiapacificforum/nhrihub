@@ -58,7 +58,7 @@
         %p empty
         {{/}}
         {{#_(archive_files).sortBy(revision).reverse()}}
-        <archivedoc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' update_url='{{update_url}}' delete_url='{{delete_url}}' url='{{url}}' save_url='{{save_url}}'/>
+        <archivedoc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' update_url='{{update_url}}' delete_url='{{delete_url}}' url='{{url}}' save_url='{{save_url}}' document_group_id='{{document_group_id}}' />
         {{/}}
 
 %script#popover_template{:type => "template/ractive"}
@@ -102,6 +102,7 @@
           %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
           %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
           %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}"}= t('.icc_revision_in_non_icc_primary_error_message')
+          %span.help-block.error#icc_title_error{:class =>"{{#icc_title_error}}has-error{{/}}"}= t('.icc_title_error_message')
         .fade.no_edit.editable.in
           %span {{ title }}
       %td.revision.form-group{'data-attribute' => :revision, 'data-toggle' => :edit, :'data-name' => 'revision', :style => "width:8%", :class =>"{{#revision_error}}has-error{{/}}"}

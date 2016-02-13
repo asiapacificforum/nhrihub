@@ -22,6 +22,7 @@ en:
         title_error_message: "Title cannot be blank"
         duplicate_title_error_message: "Duplicate"
         icc_revision_in_non_icc_primary_error_message:  "ICC accreditation file title not allowed"
+        icc_title_error_message:  "ICC accreditation file title not allowed"
         revision_error_message: "Invalid"
         noFileTypes: "No permitted file types have been configured"
         add: "Add files..."

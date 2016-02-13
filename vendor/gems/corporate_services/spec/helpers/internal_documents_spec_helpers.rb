@@ -86,7 +86,7 @@ module InternalDocumentsSpecHelpers
     revision_major, revision_minor = options.delete(:revision).to_s.split('.') if options && options[:revision]
     group_id = @doc.document_group_id
     options = options.merge({ :revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9), :document_group_id => group_id})
-    @archive_doc = FactoryGirl.create(:internal_document, options)
+    FactoryGirl.create(:internal_document, options)
   end
 
   def click_the_download_icon
@@ -95,14 +95,13 @@ module InternalDocumentsSpecHelpers
 
   def click_the_edit_icon(context)
     context.all('.fa-pencil-square-o')[0].click
-    #context.find('.fa-pencil-square-o').click
     sleep(0.1)
   end
 
   def create_a_document(**options)
     revision_major, revision_minor = options.delete(:revision).split('.') if options && options[:revision]
     options = options.merge({:revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9)})
-    FactoryGirl.create(:internal_document, options)
+    doc = FactoryGirl.create(:internal_document, options)
   end
 
   def add_document_link
