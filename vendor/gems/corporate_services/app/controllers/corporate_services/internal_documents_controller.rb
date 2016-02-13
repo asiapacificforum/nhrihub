@@ -8,7 +8,7 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   def create
     params["internal_document"]["original_filename"] = params[:internal_document][:file].original_filename
     params["internal_document"]["user_id"] = current_user.id
-    @internal_document = InternalDocument.create(doc_params)
+    @internal_document = accreditation_type ? AccreditationRequiredDoc.create(doc_params) : InternalDocument.create(doc_params)
     render :json => {:file => @internal_document, :required_files_titles => AccreditationDocumentGroup.all_possible }
   end
 
@@ -28,11 +28,12 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   # also invoked for adding replacing a file... updating the document group
   def update
     internal_document = InternalDocument.find(params[:id])
+    if accreditation_type
+      internal_document.becomes(AccreditationRequiredDoc)
+    end
     if internal_document.update(doc_params)
       # return the primary, even if we're updating an archive doc
       @internal_document = internal_document.document_group_primary
-      # it's a jbuilder partial
-      #render :layout => false, :status => 200
       render :json => @internal_document, :status => 200
     else
       render :nothing => true, :status => 500
@@ -56,5 +57,9 @@ class CorporateServices::InternalDocumentsController < ApplicationController
       require(:internal_document).
       #permit(*attrs, :archive_files =>[*attrs])
       permit(*attrs)
+  end
+
+  def accreditation_type
+    AccreditationRequiredDoc::DocTitles.include?(params[:internal_document][:title])
   end
 end

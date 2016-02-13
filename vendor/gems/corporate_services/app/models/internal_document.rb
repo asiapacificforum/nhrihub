@@ -14,11 +14,12 @@ class InternalDocument < ActiveRecord::Base
       doc.title = doc.original_filename.split('.')[0]
     end
 
-    if doc.document_group_id.blank?
-      doc.document_group_id =
-        AccreditationRequiredDoc::DocTitles.include?(doc.title) ?
-                                        AccreditationDocumentGroup.create.id :
-                                        DocumentGroup.create.id
+    # it's an InternalDocument that has been edited to an AccreditationRequiredDoc
+    # or an AccreditationRequiredDoc being created
+    if AccreditationRequiredDoc::DocTitles.include?(doc.title)
+      AccreditationRequiredDocCallbacks.new.before_save(doc)
+    else
+      doc.document_group_id = DocumentGroup.create.id if doc.document_group_id.blank?
     end
 
     if doc.revision_major.nil?
@@ -30,6 +31,14 @@ class InternalDocument < ActiveRecord::Base
     # if it's the last document in the group, delete the group too
     if doc.document_group.empty?
       doc.document_group.destroy
+    end
+  end
+
+  after_save do |doc|
+    if doc.document_group_id_changed? && doc.document_group_id_was.present?
+      if (empty_group = DocumentGroup.find(doc.document_group_id_was)).internal_documents.count.zero?
+        empty_group.destroy
+      end
     end
   end
 
@@ -86,6 +95,10 @@ class InternalDocument < ActiveRecord::Base
 
   def document_group_primary
     document_group && document_group.primary
+  end
+
+  def document_group_primary?
+    document_group_primary == self
   end
 
   def revision

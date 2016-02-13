@@ -43,7 +43,7 @@ feature "internal document management", :js => true do
   end
 
   #scenario "add two new docs in the same upload" do
-    #expect(1).to equal(2)
+  #expect(1).to equal(2)
   #end
 
   scenario "add a new document but omit document name" do
@@ -71,6 +71,15 @@ feature "internal document management", :js => true do
     expect(page).to have_css('.error', :text => "File type not allowed")
     page.find(".template-upload i.cancel").click
     expect(page).not_to have_css(".files .template_upload")
+    page.attach_file("primary_file", upload_document, :visible => false)
+    expect(page).to have_selector('.template-upload')
+  end
+
+  scenario "upload a permitted file type, cancel, and retry with same file" do
+    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find(".template-upload i.cancel").click
+    page.attach_file("replace_file", upload_document, :visible => false)
+    expect(page).to have_selector('.template-upload')
   end
 
   scenario "upload a file that exceeds size limit" do
@@ -121,8 +130,8 @@ feature "internal document management", :js => true do
     page.find('.template-download input.title').set("new document title")
     page.find('.template-download input.revision').set("4.4")
     expect{ click_edit_save_icon(page) }.
-               to change{ @doc.reload.title }.to("new document title").
-               and change{ @doc.reload.revision }.to("4.4")
+      to change{ @doc.reload.title }.to("new document title").
+      and change{ @doc.reload.revision }.to("4.4")
   end
 
   scenario "edit filename to blank" do
@@ -130,7 +139,7 @@ feature "internal document management", :js => true do
     page.find('.template-download input.title').set("")
     page.find('.template-download input.revision').set("4.4")
     expect{ click_edit_save_icon(page) }.
-               not_to change{ @doc.reload.title }
+      not_to change{ @doc.reload.title }
     expect(page).to have_selector(".internal_document .title .edit.in #title_error", :text => "Title cannot be blank")
     click_edit_cancel_icon(page)
     expect(page.find('td.title .no_edit').text).to eq "my important document"
@@ -142,7 +151,7 @@ feature "internal document management", :js => true do
     page.find('.template-download input.title').set("new document title")
     page.find('.template-download input.revision').set("")
     expect{ click_edit_save_icon(page) }.
-               not_to change{ @doc.reload.title }
+      not_to change{ @doc.reload.title }
     expect(page).to have_selector(".internal_document .revision .edit.in #revision_error", :text => "Invalid")
     click_edit_cancel_icon(page)
     expect(page.find('td.title .no_edit').text).to eq "my important document"
@@ -173,25 +182,41 @@ feature "internal document management", :js => true do
   end
 
   feature "add a new revision" do
-    before do
-      expect(page_heading).to eq "Internal Documents"
-      page.attach_file("replace_file", upload_document, :visible => false)
-      page.find("#internal_document_title").set("some replacement file name")
-      page.find('#internal_document_revision').set("3.5")
+    context "including user configured title" do
+      before do
+        expect(page_heading).to eq "Internal Documents"
+        page.attach_file("replace_file", upload_document, :visible => false)
+        page.find("#internal_document_title").set("some replacement file name")
+        page.find('#internal_document_revision').set("3.5")
+      end
+
+      scenario "using the single-upload icon" do
+        expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+        expect(page.all('.template-download').count).to eq 1
+        expect(page.find('.template-download .internal_document .title .no_edit span').text).to eq "some replacement file name"
+        expect(page.find('.template-download .internal_document .revision .no_edit span').text).to eq "3.5"
+      end
+
+      scenario "using the buttonbar upload icon" do
+        expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+        expect(page.all('.template-download').count).to eq 1
+        expect(page.find('.template-download .internal_document .title .no_edit span').text).to eq "some replacement file name"
+        expect(page.find('.template-download .internal_document .revision .no_edit span').text).to eq "3.5"
+      end
     end
 
-    scenario "using the single-upload icon" do
-      expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
-      expect(page.all('.template-download').count).to eq 1
-      expect(page.find('.template-download .internal_document .title .no_edit span').text).to eq "some replacement file name"
-      expect(page.find('.template-download .internal_document .revision .no_edit span').text).to eq "3.5"
-    end
+    context "omitting user configured title and revision" do
+      before do
+        expect(page_heading).to eq "Internal Documents"
+        page.attach_file("replace_file", upload_document, :visible => false)
+      end
 
-    scenario "using the buttonbar upload icon" do
-      expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
-      expect(page.all('.template-download').count).to eq 1
-      expect(page.find('.template-download .internal_document .title .no_edit span').text).to eq "some replacement file name"
-      expect(page.find('.template-download .internal_document .revision .no_edit span').text).to eq "3.5"
+      scenario "using the buttonbar upload icon" do
+        expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+        expect(page.all('.template-download').count).to eq 1
+        expect(page.find('.template-download .internal_document .title .no_edit span').text).to eq "first_upload_file"
+        expect(page.find('.template-download .internal_document .revision .no_edit span').text).to eq "3.1" # previous was 3.0
+      end
     end
   end
 
@@ -203,7 +228,7 @@ feature "internal document management", :js => true do
       add_a_second_file
       # attach to the second file input
       # uploading an archive file
-       #page.driver.debug
+      #page.driver.debug
       all(:file_field, "archive_fileinput")[0].set(upload_document)
       page.find("#internal_document_title").set("some replacement file name")
       page.find('#internal_document_revision').set("3.5")
@@ -225,7 +250,7 @@ feature "internal document management", :js => true do
   end
 
   xscenario "ensure all functions in download-template work for newly added docs and edited docs" do
-    
+
   end
 
   scenario "upload a revision then edit the title and revision" do
@@ -488,6 +513,34 @@ feature "sequential operations", :js => true do
   end
 end
 
+feature "icc accreditation required document behaviour", :driver => :selenium, :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  include InternalDocumentsSpecHelpers
+
+  describe "creating a new icc file, then add an archive file to it" do
+    before do
+      SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
+      SiteConfig['corporate_services.internal_documents.filesize'] = 3
+      visit corporate_services_internal_documents_path('en')
+      page.attach_file("primary_file", upload_document, :visible => false)
+      page.find("#internal_document_title").set("Statement of Compliance")
+      upload_files_link.click
+      sleep(0.5)
+    end
+
+    it "should automatically assign archive files the Statement of Compliance title" do
+      page.execute_script("console.log('setup complete')")
+      page.attach_file("replace_file", upload_document, :visible => false)
+      expect(page).to have_selector("#icc_doc_title", :text=>'Statement of Compliance')
+      expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+      # phantomjs uploads a primary file and so the document group ids are [1,2]
+      # that's why we use selenium for this test!
+      expect(InternalDocument.all.map(&:document_group_id)).to eq [1,1]
+    end
+  end
+end
+
 feature "icc accreditation required document behaviour", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
@@ -527,22 +580,6 @@ feature "icc accreditation required document behaviour", :js => true do
     end
   end
 
-  # b/c there was a bug!
-  describe "creating a new icc file, then add an archive file to it" do
-    before do
-      visit corporate_services_internal_documents_path('en')
-      page.attach_file("primary_file", upload_document, :visible => false)
-      page.find("#internal_document_title").set("Statement of Compliance")
-      upload_files_link.click
-      sleep(0.5)
-    end
-
-    it "should automatically assign archive files the Statement of Compliance title" do
-      page.attach_file("replace_file", upload_document, :visible => false)
-      expect(page).to have_selector("#icc_doc_title", :text=>'Statement of Compliance')
-      expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
-    end
-  end
 
   describe "when attempting to add primary files with duplicate icc required titles in the same upload" do
     before do

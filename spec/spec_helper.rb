@@ -19,6 +19,9 @@
 require 'faker'
 require 'capybara_remote'
 require 'capybara/poltergeist'
+Capybara.register_driver :selenium do |app|
+  Capybara::Selenium::Driver.new(app, :browser => :chrome)
+end
 Capybara.register_driver :poltergeist do |app|
 # use this configuration to show the messages between poltergeist and phantomjs
   #Capybara::Poltergeist::Driver.new(app, :debug => true)
@@ -29,6 +32,7 @@ Capybara.register_driver :poltergeist do |app|
 end
 #comment this line out to use the default javascript server firefox
 Capybara.javascript_driver = :poltergeist
+#Capybara.javascript_driver = :selenium
 
 #require 'simplecov'
 #SimpleCov.start

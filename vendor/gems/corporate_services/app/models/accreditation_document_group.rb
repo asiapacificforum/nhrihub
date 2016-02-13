@@ -1,4 +1,5 @@
 class AccreditationDocumentGroup < DocumentGroup
+  has_many :accreditation_required_docs, :foreign_key => :document_group_id
   # an array of hashes
   # each hash with required doc title and
   # either the AccreditationDocumentGroup id or nil

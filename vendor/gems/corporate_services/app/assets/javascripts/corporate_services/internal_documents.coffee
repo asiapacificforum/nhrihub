@@ -61,6 +61,7 @@ $ ->
           revision: ""
           document_group_id: ""
           fileupload: data
+          primary : true
         internal_document_uploader.
           unshift('upload_files', file_attrs).
           then(
@@ -119,6 +120,7 @@ $ ->
             revision: ""
             fileupload : data
             document_group_id : document_group_id
+            primary : false
           internal_document_uploader.
             unshift('upload_files', file_attrs).
             then(
@@ -248,14 +250,21 @@ $ ->
         st = @get('stripped_title')
         id = @get('document_group_id')
         if !_.isNaN(parseInt(id)) # it's an archive file so see if its document_group_id is one belonging to required files titles
+          #console.log "!isNaN"
           _(required_files_titles).find((doc)-> doc.document_group_id == parseInt(id) )
         else # primary file, so we compare its title with the required files titles
+          #console.log "isNaN"
+          #console.log JSON.stringify( _(required_files_titles).map((doc)-> doc.title.replace(/\s/g,"").toLowerCase() ))
+          #console.log @get('title')
+          #console.log @get('document_group_id')
           _(required_files_titles).find((doc)-> doc.title.replace(/\s/g,"").toLowerCase() == st )
       is_icc_doc : ->
         !_.isUndefined(@get('icc_doc'))
       icc_title : -> # only for archive files being added to an existing icc doc
         if @get('is_icc_doc')
           @get('icc_doc').title
+        else
+          ""
       stripped_title : ->
         @get('title').replace(/\s/g,"").toLowerCase()
     validate_file_constraints : -> # the attributes that are checked when a file is added
@@ -267,7 +276,9 @@ $ ->
     cancel_upload : ->
       @parent.remove(@)
     validate_icc_unique : -> # returns false for duplicate files
-      if _(internal_document_uploader.get('stripped_titles')).indexOf(@get('stripped_title')) != -1
+      title_matches_a_primary_title = _(internal_document_uploader.get('stripped_titles')).indexOf(@get('stripped_title')) != -1
+      primary_file = @get('primary')
+      if title_matches_a_primary_title && primary_file
         @set('duplicate_icc_title_error',true)
         false
       else
@@ -304,6 +315,9 @@ $ ->
       @set('icc_revision_to_non_icc_primary_error',error)
       error
     submit : ->
+      #console.log  @duplicate_icc_primary_file() #true
+      #console.log  @icc_revision_to_non_icc_primary() # false
+      #console.log  @validate_file_constraints() # true
       unless @duplicate_icc_primary_file() || @icc_revision_to_non_icc_primary() || !@validate_file_constraints()
         @get('fileupload').formData = @get('formData')
         @get('fileupload').submit()
@@ -444,3 +458,11 @@ $ ->
       #data.errorThrown = 'abort'
       ##this._trigger('fail', event, data)
       #$(@).closest('.fileupload').data('blueimp-fileupload').options.fail(event)
+  window.replaceFileInput = (input) ->
+    inputClone = input.clone(true)
+    fileInputClone = inputClone
+    $('<form></form>').append(inputClone)[0].reset()
+    input.after(inputClone).detach()
+    $.cleanData input.unbind('remove')
+    input = inputClone
+    return
