@@ -166,10 +166,31 @@
   %ul.error{:style => "display:none"}
     %li {{ message }}
 
-  / The template to display files ready for upload
-  / used for both primary and archive (hence "pa_upload")
+%script#internal_document_title_selector{:type => 'html/template'}
+  %label{:for =>"internal_document_title"}= t('.doc_title')
+  {{#if is_icc_doc}}
+  %span#icc_doc_title{:style => "margin-left:26px"} {{ title }}
+  {{else}}
+  %input{:type => :text, :name => "internal_document[title]", :id => "internal_document_title", :list => :icc_files, :value => "{{title}}"}
+  %datalist#icc_files
+    {{#required_files_titles}}
+    %option{:value=>'{{title}}'}
+    {{/required_files_titles}}
+  {{/if}}
 
-%script#pa_upload{:type => 'html/template'}
+%script#icc_title_selector{:type => 'html/template'}
+  .form-horizontal
+    .form-group
+      %label.control-label.col-sm-3{:for =>"internal_document_title", :style => "left: -21px;"}= t('.doc_title')
+      .col-sm-6
+        %select.form-control.accreditation_required_doc_title{:style => "height:28px; position: relative; top:3px;"}
+          %option{:value => 0, :disabled => true}= t('.select_icc')
+          {{#required_files_titles}}
+          %option{:value=>'{{document_group_id}}'} {{title}}
+          {{/required_files_titles}}
+
+  / The template to display files ready for upload
+%script#upload_template{:type => 'html/template'}
   .panel.panel-default.fade.template-upload{:intro => :fade}
     .panel-heading
       %table{:width => '100%'}
@@ -188,16 +209,7 @@
               .progress-bar.progress-bar-success{:style => "width:0%"}
         %tr
           %td.title
-            %label{:for =>"internal_document_title"}= t('.doc_title')
-            {{#if is_icc_doc}}
-            %span#icc_doc_title{:style => "margin-left:26px"} {{ title }}
-            {{else}}
-            %input{:type => :text, :name => "internal_document[title]", :id => "internal_document_title", :list => :icc_files, :value => "{{title}}"}
-            %datalist#icc_files
-              {{#required_files_titles}}
-              %option{:value=>'{{title}}'}
-              {{/required_files_titles}}
-            {{/if}}
+            {{> .context+"_title_selector" }}
             %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
             %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
             %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')

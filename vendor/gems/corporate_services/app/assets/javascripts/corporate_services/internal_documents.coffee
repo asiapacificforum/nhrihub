@@ -28,8 +28,8 @@ $ ->
     replaceFileInput: true
     url : 'internal_documents.json',
     paramName : 'internal_document[file]',
-    uploadTemplateId : '#pa_upload' 
-    uploadTemplate : Ractive.parse($('#pa_upload').html())
+    uploadTemplateId : '#upload_template' 
+    uploadTemplate : Ractive.parse($('#upload_template').html())
     done: (e, data)->
       if e.isDefaultPrevented()
           return false
@@ -62,6 +62,7 @@ $ ->
           document_group_id: ""
           fileupload: data
           primary : true
+          context : context
         internal_document_uploader.
           unshift('upload_files', file_attrs).
           then(
@@ -232,7 +233,7 @@ $ ->
   Ractive.decorators.popover = Popover
 
   UploadFile = Ractive.extend
-    template : "#pa_upload"
+    template : "#upload_template"
     oninit : ->
       if !_.isNaN(parseInt(@get('document_group_id')))
         @set('title',@get('icc_title'))
@@ -318,7 +319,7 @@ $ ->
         @get('fileupload').submit()
 
   UploadFiles = Ractive.extend
-    template: "{{#upload_files}}<uploadfile title='{{title}}' revision='{{revision}}' size='{{size}}' type='{{type}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' document_group_id='{{document_group_id}}' />{{/upload_files}}"
+    template: "{{#upload_files}}<uploadfile context='{{context}}' title='{{title}}' revision='{{revision}}' size='{{size}}' type='{{type}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' document_group_id='{{document_group_id}}' />{{/upload_files}}"
     components:
       uploadfile : UploadFile
     remove : (uploadfile)->
@@ -428,6 +429,7 @@ $ ->
       required_files_titles : window.required_files_titles
       files : files
       upload_files : []
+      context : window.context
       _ : _ # use underscore for sorting
     components :
       docs : Docs

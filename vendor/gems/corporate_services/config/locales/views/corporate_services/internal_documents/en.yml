@@ -43,3 +43,4 @@ en:
         processing: "Processing..."
         too_large : "File is too large"
         unpermitted_type : "File type not allowed"
+        select_icc : "Select ICC document title"

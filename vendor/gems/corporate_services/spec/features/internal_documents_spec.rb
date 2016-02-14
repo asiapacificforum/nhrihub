@@ -3,6 +3,7 @@ require 'login_helpers'
 require 'navigation_helpers'
 require 'active_support/number_helper'
 require_relative '../helpers/internal_documents_spec_helpers'
+require_relative '../helpers/internal_documents_default_settings'
 
 feature "internal document management", :js => true do
   include IERemoteDetector
@@ -10,6 +11,7 @@ feature "internal document management", :js => true do
   include NavigationHelpers
   extend ActiveSupport::NumberHelper
   include InternalDocumentsSpecHelpers
+  include InternalDocumentDefaultSettings
 
   before do
     SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
@@ -436,6 +438,7 @@ feature "behaviour with multiple primary files on the page", :js => true do
   include NavigationHelpers
   extend ActiveSupport::NumberHelper
   include InternalDocumentsSpecHelpers
+  include InternalDocumentDefaultSettings
 
   before do
     SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
@@ -469,10 +472,10 @@ feature "internal document management when no filetypes have been configured", :
   include NavigationHelpers
   extend ActiveSupport::NumberHelper
   include InternalDocumentsSpecHelpers
+  include InternalDocumentDefaultSettings
 
   before do
     create_a_document(:revision => "3.0", :title => "my important document")
-    @doc = InternalDocument.first
     visit corporate_services_internal_documents_path('en')
   end
 
@@ -488,6 +491,8 @@ feature "internal document management", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   include InternalDocumentsSpecHelpers
+  include InternalDocumentDefaultSettings
+
   before do
     toggle_navigation_dropdown("Corporate Services")
     select_dropdown_menu_item("Internal documents")
@@ -502,6 +507,7 @@ feature "sequential operations", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   include InternalDocumentsSpecHelpers
+  include InternalDocumentDefaultSettings
   before do
     populate_database
     SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
@@ -529,6 +535,7 @@ feature "icc accreditation required document behaviour", :driver => :selenium, :
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   include InternalDocumentsSpecHelpers
+  include InternalDocumentDefaultSettings
 
   describe "creating a new icc file, then add an archive file to it" do
     before do
@@ -557,6 +564,7 @@ feature "icc accreditation required document behaviour", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   include InternalDocumentsSpecHelpers
+  include InternalDocumentDefaultSettings
 
   before do
     SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
