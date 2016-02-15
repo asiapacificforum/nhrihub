@@ -1,0 +1,26 @@
+.message_block
+%h1=t('.heading')
+
+%script#flash_error_template{:type => 'template/ractive'}
+  %ul.error
+    %li {{ message }}
+
+%h4=t('.subheading.required_files_titles')
+= render :partial => 'admin/collection_configuration',
+  :locals => { :new_item => @doc_group,
+               :create_url => nhri_icc_accreditation_required_document_groups_path,
+               :delete_url =>  nhri_icc_accreditation_required_document_group_path('id'),
+               :collection => @doc_groups.to_json,
+               :item_name => 'doc_group',
+               :param_name => 'title',
+               :placeholder => 'e.g. Statement of Compliance'}
+
+:coffeescript
+  $ ->
+    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+    window.flash_error_template = _.template($("#flash_error_template").html())
+
+
+%script{:type => 'template/html', :id => :flash_error_template}
+  %ul.error
+    %li {{ message }}

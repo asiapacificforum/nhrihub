@@ -23,10 +23,10 @@ feature "internal document admin", :js => true do
     visit corporate_services_admin_path('en')
     sleep(0.1)
     expect(page).to have_selector '#empty'
-    page.find('#corporate_services_filetype_ext').set('docx')
+    page.find('#filetype_ext').set('docx')
     expect{ new_filetype_button.click; sleep(0.2) }.to change{ SiteConfig['corporate_services.internal_documents.filetypes'] }.from([]).to(["docx"])
     expect(page).not_to have_selector '#empty'
-    page.find('#corporate_services_filetype_ext').set('ppt')
+    page.find('#filetype_ext').set('ppt')
     expect{ new_filetype_button.click; sleep(0.2) }.to change{ SiteConfig['corporate_services.internal_documents.filetypes'].length }.from(1).to(2)
   end
 
@@ -34,7 +34,7 @@ feature "internal document admin", :js => true do
     SiteConfig['corporate_services.internal_documents.filetypes']=["pdf", "doc"]
     visit corporate_services_admin_path('en')
     sleep(0.1)
-    page.find('#corporate_services_filetype_ext').set('doc')
+    page.find('#filetype_ext').set('doc')
     expect{ new_filetype_button.click; sleep(0.2) }.not_to change{ SiteConfig['corporate_services.internal_documents.filetypes'] }
     expect( flash_message ).to eq "Filetype already exists, must be unique."
   end
@@ -42,7 +42,7 @@ feature "internal document admin", :js => true do
   scenario "add duplicate filetype" do
     visit corporate_services_admin_path('en')
     sleep(0.1)
-    page.find('#corporate_services_filetype_ext').set('a_very_long_filename')
+    page.find('#filetype_ext').set('a_very_long_filename')
     expect{ new_filetype_button.click; sleep(0.2) }.not_to change{ SiteConfig['corporate_services.internal_documents.filetypes'] }
     expect( flash_message ).to eq "Filetype too long, 4 characters maximum."
   end
@@ -79,7 +79,7 @@ feature "internal document admin when user not permitted", :js => true do
   end
 
   scenario "update filetypes" do
-    page.find('#corporate_services_filetype_ext').set('docx')
+    page.find('#filetype_ext').set('docx')
     expect{ new_filetype_button.click; sleep(0.2) }.
       not_to change{ SiteConfig['corporate_services.internal_documents.filetypes'] }
     expect( flash_message ).to eq "You don't have permission to complete that action."

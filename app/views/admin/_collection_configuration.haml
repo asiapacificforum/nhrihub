@@ -1,0 +1,63 @@
+.admin.well
+  %table.table.borderless{:class => "#{item_name}s", :style => "width:200px;"}
+    %tbody
+
+  = form_for new_item, :url => create_url, :remote => true, :html => {:id => "new_#{item_name}"} do |f|
+    %table.table.borderless{:style => "width:200px;"}
+      %tr
+        %td
+          %button.btn.btn-success.btn-xs{:style => 'line-height:1.8;', :type => 'submit'}= t(".#{item_name}.add")
+        %td= f.text_field "#{param_name}", :size => 8, :placeholder => placeholder, :id => "#{item_name}_#{param_name}"
+
+%script{:type => 'template/html', :id => "item_template"}
+  %tr
+    %td.type {{ attribute }}
+    %td= link_to t('defaults.delete'), nil, :class => "delete_#{item_name}"
+
+:coffeescript
+  $ ->
+    collection = #{collection}
+    delete_url = "#{delete_url}"
+    el = $(".#{item_name}s tbody")
+    delete_link =  "a.delete_#{item_name}"
+    form = $("#new_#{item_name}")
+    param_field = $("##{item_name}_#{param_name}")
+
+    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+
+    item_template = _.template($("#item_template").html())
+
+    if collection.length == 0
+      el.append "<tr><td id='empty'>#{ t('.empty')}</td></tr>"
+    else
+      _.each collection, (item)->
+        el.append item_template({attribute : item})
+
+    param_field.attr('size',param_field.attr('placeholder').length)
+
+    form.bind "ajax:success", (e,data,status,xhr)->
+      el.append item_template({attribute : data})
+      param_field.val('')
+      $('td#empty').closest('tr').remove()
+      $('.message_block').html ''
+
+    form.bind "ajax:error", (e,data,status,xhr)->
+      $('.message_block').html window.flash_error_template({message : data.responseText})
+
+    el.on 'click', delete_link, (e)->
+      e.preventDefault()
+      context = $(@).closest('tr')
+      id = context.find('.type').html()
+      url = delete_url.replace("id",id)
+      $.ajax
+        url: url
+        method: 'delete'
+        dataType: 'json'
+        context: context # becomes 'this' in the callback
+        success: (data, status, xhr)->
+          this.remove()
+          if $('.type').length == 0
+            el.append "<tr><td id='empty'>#{ t('.empty')}</td></tr>"
+          $('.message_block').html('')
+        error: (data,status,xhr) ->
+          $('.message_block').html window.flash_error_template({message : data.responseText})

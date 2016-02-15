@@ -9,3 +9,8 @@ en:
             org_chart: "Organization Chart"
             report: "Annual Report"
             budget: "Budget"
+  activemodel:
+    errors:
+      models:
+        accreditation_document_group:
+          duplicate: "already exists, must be unique."

@@ -4,7 +4,7 @@ module CorporateServicesAdminSpecHelpers
   extend RSpec::Core::SharedContext
 
   def new_filetype_button
-    page.find("#new_corporate_services_filetype table button")
+    page.find("#new_filetype table button")
   end
 
   def set_filesize(val)
