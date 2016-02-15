@@ -4,6 +4,6 @@ class AccreditationDocumentGroup < DocumentGroup
   validates :title, :uniqueness => {:message => I18n.t('activemodel.errors.models.accreditation_document_group.duplicate') }
 
   def id_and_title
-    {:document_group_id => id, :title => title}
+    {:document_group_id => id, :title => title, :empty => archive_doc_count.zero? }
   end
 end

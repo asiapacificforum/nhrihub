@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160215043218) do
+ActiveRecord::Schema.define(version: 20160215222701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,17 @@ ActiveRecord::Schema.define(version: 20160215043218) do
     t.string   "type",              limit: 40
     t.string   "title"
     t.integer  "archive_doc_count",            default: 0
+  end
+
+  create_table "icc_reference_documents", force: :cascade do |t|
+    t.string   "source_url"
+    t.string   "title"
+    t.integer  "filesize"
+    t.string   "original_filename", limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "original_type",     limit: 255
+    t.integer  "user_id"
   end
 
   create_table "impact_ratings", force: :cascade do |t|

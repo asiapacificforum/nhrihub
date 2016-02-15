@@ -1,12 +1,11 @@
-class CorporateServices::InternalDocuments::FilesizesController < ApplicationController
-
+class CorporateServices::InternalDocuments::FilesizesController < FilesizesController
   def update
-    if params[:filesize].match(/^\d+$/) && params[:filesize].to_i < 100
-      SiteConfig['corporate_services.internal_documents.filesize'] = params[:filesize].to_i
-      render :text => params[:filesize], :status => 200
-    else
-      render :nothing => true, :status => 200
-    end
+    super
+  end
+
+  private
+  def config_param
+    'corporate_services.internal_documents.filesize'
   end
 
 end

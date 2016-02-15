@@ -7,9 +7,6 @@ en:
         add: "Add filetype"
         filesize_max: "Maximum permitted file size"
         start_date: "Strategic plan annual start date"
-      internal_document_filesize:
-        current_val: "Current value"
-        change: "Change to"
       start_date:
         current_val: "Current value"
         change: "Change to"

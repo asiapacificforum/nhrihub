@@ -3,5 +3,6 @@ en:
     admin:
       index:
         heading: "NHRI Module"
+        filesize_max: "Maximum permitted file size"
         subheading:
           required_files_titles: "ICC Accreditation: Required Documents Titles"

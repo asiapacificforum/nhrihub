@@ -1,2 +1,0 @@
-class IccGuidanceDoc < InternalDocument
-end

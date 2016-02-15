@@ -48,4 +48,12 @@ feature "internal document admin", :js => true do
     expect{ delete_title("Annual Report"); sleep(0.2) }.to change{AccreditationDocumentGroup.count}.to(0)
     expect(page).to have_selector '#empty'
   end
+
+  scenario "change filesize" do
+    visit nhri_admin_path('en')
+    set_filesize("22")
+    expect{ page.find('#change_filesize').click; sleep(0.2)}.
+      to change{ SiteConfig['nhri.icc.filesize']}.to(22)
+    expect( page.find('span#filesize').text ).to eq "22"
+  end
 end

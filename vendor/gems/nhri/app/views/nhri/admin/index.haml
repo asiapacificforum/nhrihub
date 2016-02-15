@@ -11,6 +11,9 @@
                :param_name => 'title',
                :placeholder => 'e.g. Statement of Compliance'}
 
+%h4= t('.filesize_max')
+= render :partial => 'admin/document_filesize_configuration', :locals => { :update_url => nhri_icc_filesize_path }
+
 :coffeescript
   $ ->
     _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
