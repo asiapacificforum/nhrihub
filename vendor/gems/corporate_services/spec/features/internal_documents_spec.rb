@@ -16,7 +16,7 @@ feature "internal document management", :js => true do
   before do
     SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
     SiteConfig['corporate_services.internal_documents.filesize'] = 3
-    setup_accreditation_required_docs
+    setup_accreditation_required_groups
     @doc = create_a_document(:revision => "3.0", :title => "my important document")
     @archive_doc = create_a_document_in_the_same_group(:title => 'first archive document', :revision => '2.9')
     visit corporate_services_internal_documents_path('en')
@@ -542,7 +542,7 @@ feature "icc accreditation required document behaviour", :driver => :selenium, :
     before do
       SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
       SiteConfig['corporate_services.internal_documents.filesize'] = 3
-      setup_accreditation_required_docs
+      setup_accreditation_required_groups
       visit corporate_services_internal_documents_path('en')
       page.attach_file("primary_file", upload_document, :visible => false)
       page.find("#internal_document_title").set("Statement of Compliance")
@@ -562,6 +562,30 @@ feature "icc accreditation required document behaviour", :driver => :selenium, :
   end
 end
 
+feature "icc accreditation archive document", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  include InternalDocumentsSpecHelpers
+  include InternalDocumentDefaultSettings
+
+  before do
+    SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
+    SiteConfig['corporate_services.internal_documents.filesize'] = 3
+    setup_accreditation_required_groups
+    setup_accreditation_required_docs
+    visit corporate_services_internal_documents_path('en')
+  end
+
+  scenario "editing of title is not permitted" do
+    click_the_archive_icon
+    within archive_panel do
+      # the page element is now contextualized within the archive panel
+      click_the_edit_icon(page)
+      expect(page).not_to have_selector('.internal_document .title .edit.in')
+    end
+  end
+end
+
 feature "icc accreditation required document behaviour", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
@@ -571,7 +595,7 @@ feature "icc accreditation required document behaviour", :js => true do
   before do
     SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
     SiteConfig['corporate_services.internal_documents.filesize'] = 3
-    setup_accreditation_required_docs
+    setup_accreditation_required_groups
   end
 
   describe "when an icc required file has already been saved" do

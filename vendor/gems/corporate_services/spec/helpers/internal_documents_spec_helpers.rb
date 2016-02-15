@@ -31,10 +31,19 @@ module InternalDocumentsSpecHelpers
     end
   end
 
-  def setup_accreditation_required_docs
+  def setup_accreditation_required_groups
     titles = ["Statement of Compliance", "Enabling Legislation", "Organization Chart", "Annual Report", "Budget"]
     titles.each do |title|
       AccreditationDocumentGroup.create(:title => title)
+    end
+  end
+
+  def setup_accreditation_required_docs
+    titles = ["Statement of Compliance", "Enabling Legislation", "Organization Chart", "Annual Report", "Budget"]
+    titles.each do |title|
+      2.times do
+        AccreditationRequiredDoc.create(:title => title)
+      end
     end
   end
 
@@ -85,7 +94,7 @@ module InternalDocumentsSpecHelpers
   end
 
   def click_the_archive_icon
-    page.find('.template-download .fa-folder-o').click
+    page.all('.template-download .fa-folder-o')[0].click
     sleep(0.2)
   end
 

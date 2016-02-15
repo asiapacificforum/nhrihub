@@ -352,6 +352,8 @@ $ ->
       non_icc_document_group : ->
         icc_document_group_ids = _(required_files_titles).map (doc)-> doc.document_group_id
         icc_document_group_ids.indexOf(@get('document_group_id')) == -1
+      title_edit_permitted : ->
+        @get('non_icc_document_group')
     remove_errors : ->
       @set
         title_error: false
@@ -382,6 +384,8 @@ $ ->
       archive_file : -> false
       stripped_title : ->
         @get('title').replace(/\s/g,"").toLowerCase()
+      title_edit_permitted : ->
+        true
     components :
       archivedoc : ArchiveDoc
     download_file : ->

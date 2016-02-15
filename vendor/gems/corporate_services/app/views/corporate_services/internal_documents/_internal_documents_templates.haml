@@ -95,7 +95,7 @@
 %script#document_template{:type => 'template/html'}
   %table.internal_document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
     %tr
-      %td.title.form-group{'data-toggle' => :edit, :style => "width:36%", 'data-attribute' => :title}
+      %td.title.form-group{'data-toggle' => '{{#title_edit_permitted}}edit{{/}}', :style => "width:36%", 'data-attribute' => :title}
         .fade.edit
           %input.title{:name => "internal_document[title]", :'value' => "{{ title }}", :style => "width:100%"}
           %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
