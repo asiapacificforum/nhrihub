@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :nhr_indicators
       resources :hr_protection
       resources :icc
+      resources :ref
       resources :accreditation_required_docs
       get 'admin', :to => "admin#index"
     end

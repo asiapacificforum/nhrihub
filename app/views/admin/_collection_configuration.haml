@@ -1,5 +1,5 @@
 .admin.well
-  %table.table.borderless{:class => "#{item_name}s", :style => "width:200px;"}
+  %table.table.borderless{:class => "#{item_name}s", :style => "width:auto;"}
     %tbody
 
   = form_for new_item, :url => create_url, :remote => true, :html => {:id => "new_#{item_name}"} do |f|

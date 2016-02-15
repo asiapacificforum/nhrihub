@@ -24,7 +24,8 @@
         .container-fluid
           .navbar-header
             %a.navbar-brand{:href=>"#"}
-          = render_navigation(level: 1..2, renderer: :bootstrap, expand_all: true)
+              // bootstrap renderer: https://github.com/pdf/simple-navigation-bootstrap
+          = render_navigation(level: 1..3, renderer: :bootstrap, expand_all: true)
     - else
       #banner
         #main= t('banner.line_1')
