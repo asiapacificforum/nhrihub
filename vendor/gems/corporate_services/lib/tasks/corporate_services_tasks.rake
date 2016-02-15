@@ -74,4 +74,12 @@ namespace :corporate_services do
       end
     end
   end
+
+  desc "set up accreditation required doc groups"
+  task :populate_accred_groups => :environment do
+    titles = ["Statement of Compliance", "Enabling Legislation", "Organization Chart", "Annual Report", "Budget"]
+    titles.each do |title|
+      AccreditationDocumentGroup.create(:title => title)
+    end
+  end
 end

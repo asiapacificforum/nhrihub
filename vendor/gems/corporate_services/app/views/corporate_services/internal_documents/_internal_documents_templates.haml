@@ -147,7 +147,7 @@
           %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
           -# weird opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
           -# only required for testing, it actually works in firefox in real life!
-          %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; left:-1000px"}
+          %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; opacity:0.01;"}
         {{else}}
         -# just to keep the spacing the same
         #file_replace{:style => 'visibility:hidden'}

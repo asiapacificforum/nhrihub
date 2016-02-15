@@ -22,7 +22,7 @@ FactoryGirl.define do
 
   factory :accreditation_required_document, :parent => :internal_document, :class => AccreditationRequiredDoc do
     type "AccreditationRequiredDoc"
-    title { AccreditationRequiredDoc::DocTitles.sample }
+    title { ["Statement of Compliance", "Enabling Legislation", "Organization Chart", "Annual Report", "Budget"].sample }
   end
 
 end

@@ -31,6 +31,13 @@ module InternalDocumentsSpecHelpers
     end
   end
 
+  def setup_accreditation_required_docs
+    titles = ["Statement of Compliance", "Enabling Legislation", "Organization Chart", "Annual Report", "Budget"]
+    titles.each do |title|
+      AccreditationDocumentGroup.create(:title => title)
+    end
+  end
+
   def click_edit_save_icon(context)
     context.find('.fa-check').click
     sleep(0.1)
