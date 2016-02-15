@@ -20,10 +20,6 @@ module ApplicationHelper
     #haml_tag :script, "$(function(){$('##{input}').focus()})"
   #end
 
-  #def nav_enable(path)
-    #current_role_permits?(path) ? 'enabled' : 'disabled'
-  #end
-
   def current_user_permitted?(path)
     user_is_developer? || permissions_granted?(path)
   end
@@ -45,24 +41,6 @@ module ApplicationHelper
     #action = Action.find_by_action_name_and_controller_id(path[:action],controller.id) unless controller.nil?
     #role_ids = session[:role].current_role_ids
     #role_ids.any?{|rid| action && ActionRole.exists?(:action_id => action.id, :role_id => rid )}
-  #end
-  #def nav_dropdown(text, menu)
-    ## when links are all populated, hide this navbar menu toggle when all links are not permitted for current user
-    ## for maintainability, the navbar should be extracted into a navbar ruby object
-    ## which handles permissions, translations, links and navigation hierarchy
-    #haml_tag 'li.dropdown' do
-      #haml_tag 'a.dropdown-toggle', {:href => "#", :"data-toggle"=>"dropdown", :role=>"button", :"aria-expanded"=>"false"} do
-        #haml_concat t(text)
-        #haml_tag 'span.caret'
-      #end
-      #haml_tag 'ul.dropdown-menu', {:role => :menu} do
-        #menu.each do |menu_text, href|
-          #haml_tag :li do
-            #haml_tag :a, t(menu_text), {:href => href}
-          #end
-        #end
-      #end
-    #end
   #end
 end
 

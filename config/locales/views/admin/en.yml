@@ -2,3 +2,9 @@ en:
   admin:
     index:
       heading: 'Site administration dashboard'
+    collection_configuration:
+      empty: "None configured"
+      filetype:
+        add: "Add file type"
+      doc_group:
+        add: "Add document group title"

@@ -20,7 +20,6 @@ class InternalDocumentSeed
         FactoryGirl.create(:internal_document, :document_group_id => doc.document_group_id)
       end
     end
-    special_title = AccreditationRequiredDoc::DocTitles[0]
-    FactoryGirl.create(:accreditation_required_document, :revision => rev, :title => special_title, :original_filename => rand_filename)
+    FactoryGirl.create(:accreditation_required_document, :revision => rev, :title => "Statement of Compliance", :original_filename => rand_filename)
   end
 end

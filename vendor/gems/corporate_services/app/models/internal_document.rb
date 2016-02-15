@@ -1,6 +1,6 @@
 class InternalDocument < ActiveRecord::Base
 
-  belongs_to :document_group
+  belongs_to :document_group, :counter_cache => :archive_doc_count
   delegate :created_at, :to => :document_group, :prefix => true
   belongs_to :user
   alias_method :uploaded_by, :user
@@ -16,7 +16,7 @@ class InternalDocument < ActiveRecord::Base
 
     # it's an InternalDocument that has been edited to an AccreditationRequiredDoc
     # or an AccreditationRequiredDoc being created
-    if AccreditationRequiredDoc::DocTitles.include?(doc.title)
+    if AccreditationDocumentGroup.pluck(:title).include?(doc.title)
       AccreditationRequiredDocCallbacks.new.before_save(doc)
     else
       doc.document_group_id = DocumentGroup.create.id if doc.document_group_id.blank?

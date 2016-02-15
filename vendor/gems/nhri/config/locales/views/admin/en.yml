@@ -1,0 +1,7 @@
+en:
+  nhri:
+    admin:
+      index:
+        heading: "NHRI Module"
+        subheading:
+          required_files_titles: "ICC Accreditation: Required Documents Titles"

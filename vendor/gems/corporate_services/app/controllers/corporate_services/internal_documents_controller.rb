@@ -1,15 +1,15 @@
 class CorporateServices::InternalDocumentsController < ApplicationController
   def index
     @internal_document = InternalDocument.new
-    @internal_documents = DocumentGroup.all.map(&:primary)
-    @required_files_titles = AccreditationDocumentGroup.all_possible
+    @internal_documents = DocumentGroup.non_empty.map(&:primary)
+    @required_files_titles = AccreditationDocumentGroup.all.map(&:id_and_title)
   end
 
   def create
     params["internal_document"]["original_filename"] = params[:internal_document][:file].original_filename
     params["internal_document"]["user_id"] = current_user.id
     @internal_document = accreditation_type ? AccreditationRequiredDoc.create(doc_params) : InternalDocument.create(doc_params)
-    render :json => {:file => @internal_document, :required_files_titles => AccreditationDocumentGroup.all_possible }
+    render :json => {:file => @internal_document, :required_files_titles => AccreditationDocumentGroup.all.map(&:id_and_title) }
   end
 
   def destroy
@@ -60,6 +60,6 @@ class CorporateServices::InternalDocumentsController < ApplicationController
   end
 
   def accreditation_type
-    AccreditationRequiredDoc::DocTitles.include?(params[:internal_document][:title])
+    AccreditationDocumentGroup.pluck(:title).include?(params[:internal_document][:title])
   end
 end

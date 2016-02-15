@@ -5,7 +5,10 @@ SimpleNavigation::Configuration.run do |navigation|
       nhri.item :adv_council, t('layout.nav.adv_council'), nhri_advisory_council_index_path
       nhri.item :nhr_indicators, t('layout.nav.nhr_indicators'), nhri_nhr_indicators_path
       nhri.item :hr_prot, t('layout.nav.hr_prot'), nhri_hr_protection_index_path
-      nhri.item :icc, t('layout.nav.icc'), nhri_icc_index_path
+      nhri.item :icc, t('layout.nav.icc.icc') do |icc|
+        icc.item :icc_int, t('layout.nav.icc.int'), nhri_icc_index_path
+        icc.item :icc_ref, t('layout.nav.icc.ref'), nhri_ref_index_path
+      end
     end
     primary.item :gg, t('layout.nav.gg') do |gg|
       gg.item :action, '??',placeholder_path
@@ -28,6 +31,7 @@ SimpleNavigation::Configuration.run do |navigation|
       ad.item :access, t('layout.nav.access'), authengine_action_roles_path
       ad.item :corp_svcs, t('layout.nav.corporate_services'), corporate_services_admin_path
       ad.item :or_media, t('layout.nav.outreach_media'), outreach_media_admin_path
+      ad.item :nhri, t('layout.nav.nhri'), nhri_admin_path
     end
     primary.item :logout, t('layout.nav.logout'), logout_path
     primary.dom_class = 'nav navbar-nav'

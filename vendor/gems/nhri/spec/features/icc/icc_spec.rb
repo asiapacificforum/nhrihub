@@ -13,7 +13,7 @@ feature "show icc index page", :js => true do
   before do
     setup_database
     visit nhri_icc_index_path(:en)
-    @title = AccreditationRequiredDoc::DocTitles[0]
+    @title = "Statement of Compliance"
   end
 
   scenario "shows list of required icc docs" do

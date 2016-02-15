@@ -3,6 +3,9 @@ class DocumentGroup < ActiveRecord::Base
 
   default_scope { order("created_at desc") }
 
+  scope :non_empty, ->{ where("archive_doc_count > 0") }
+  scope :empty, ->{ where("archive_doc_count = 0") }
+
   def primary
     internal_documents.last
   end
