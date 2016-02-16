@@ -5,7 +5,6 @@ class Nhri::Icc::FilesizesController < FilesizesController
 
   private
   def config_param
-    'nhri.icc.filesize'
+    IccReferenceDocument::ConfigPrefix+'.filesize'
   end
-
 end

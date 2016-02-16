@@ -16,7 +16,7 @@ feature "icc reference document admin", :js => true do
   scenario "titles configured" do
     FactoryGirl.create(:accreditation_document_group, :title => "Statement of Compliance")
     visit nhri_admin_path('en')
-    expect(page.find('.type').text).to eq 'Statement of Compliance'
+    expect(page.find('.doc_groups .type').text).to eq 'Statement of Compliance'
   end
 
   scenario "add title" do
@@ -53,7 +53,7 @@ feature "icc reference document admin", :js => true do
     visit nhri_admin_path('en')
     set_filesize("22")
     expect{ page.find('#change_filesize').click; sleep(0.2)}.
-      to change{ SiteConfig['nhri.icc.filesize']}.to(22)
+      to change{ SiteConfig['nhri.icc_reference_documents.filesize']}.to(22)
     expect( page.find('span#filesize').text ).to eq "22"
   end
 end
@@ -69,9 +69,9 @@ feature "icc reference document filetype admin", :js => true do
   end
 
   scenario "filetypes configured" do
-    SiteConfig['nhri.icc.filetypes']=["pdf"]
+    SiteConfig['nhri.icc_reference_documents.filetypes']=["pdf"]
     visit nhri_admin_path('en')
-    expect(page.find('.type').text).to eq 'pdf'
+    expect(page.find('.filetypes .type').text).to eq 'pdf'
   end
 
   scenario "add filetype" do
@@ -79,18 +79,18 @@ feature "icc reference document filetype admin", :js => true do
     sleep(0.1)
     expect(page).to have_selector '#empty'
     page.find('#filetype_ext').set('docx')
-    expect{ new_filetype_button.click; sleep(0.2) }.to change{ SiteConfig['nhri.icc.filetypes'] }.from([]).to(["docx"])
+    expect{ new_filetype_button.click; sleep(0.2) }.to change{ SiteConfig['nhri.icc_reference_documents.filetypes'] }.from([]).to(["docx"])
     expect(page).not_to have_selector '#empty'
     page.find('#filetype_ext').set('ppt')
-    expect{ new_filetype_button.click; sleep(0.2) }.to change{ SiteConfig['nhri.icc.filetypes'].length }.from(1).to(2)
+    expect{ new_filetype_button.click; sleep(0.2) }.to change{ SiteConfig['nhri.icc_reference_documents.filetypes'].length }.from(1).to(2)
   end
 
   scenario "add duplicate filetype" do
-    SiteConfig['nhri.icc.filetypes']=["pdf", "doc"]
+    SiteConfig['nhri.icc_reference_documents.filetypes']=["pdf", "doc"]
     visit nhri_admin_path('en')
     sleep(0.1)
     page.find('#filetype_ext').set('doc')
-    expect{ new_filetype_button.click; sleep(0.2) }.not_to change{ SiteConfig['nhri.icc.filetypes'] }
+    expect{ new_filetype_button.click; sleep(0.2) }.not_to change{ SiteConfig['nhri.icc_reference_documents.filetypes'] }
     expect( flash_message ).to eq "Filetype already exists, must be unique."
   end
 
@@ -98,19 +98,19 @@ feature "icc reference document filetype admin", :js => true do
     visit nhri_admin_path('en')
     sleep(0.1)
     page.find('#filetype_ext').set('a_very_long_filename')
-    expect{ new_filetype_button.click; sleep(0.2) }.not_to change{ SiteConfig['nhri.icc.filetypes'] }
+    expect{ new_filetype_button.click; sleep(0.2) }.not_to change{ SiteConfig['nhri.icc_reference_documents.filetypes'] }
     expect( flash_message ).to eq "Filetype too long, 4 characters maximum."
   end
 
   scenario "delete a filetype" do
-    SiteConfig['nhri.icc.filetypes']=["pdf", "ppt"]
+    SiteConfig['nhri.icc_reference_documents.filetypes']=["pdf", "ppt"]
     visit nhri_admin_path('en')
     delete_filetype("pdf")
     sleep(0.2)
-    expect( SiteConfig['nhri.icc.filetypes'] ).to eq ["ppt"]
+    expect( SiteConfig['nhri.icc_reference_documents.filetypes'] ).to eq ["ppt"]
     delete_filetype("ppt")
     sleep(0.2)
-    expect( SiteConfig['nhri.icc.filetypes'] ).to eq []
+    expect( SiteConfig['nhri.icc_reference_documents.filetypes'] ).to eq []
     expect(page).to have_selector '#empty'
   end
 
@@ -118,7 +118,7 @@ feature "icc reference document filetype admin", :js => true do
     visit nhri_admin_path('en')
     set_filesize("22")
     expect{ page.find('#change_filesize').click; sleep(0.2)}.
-      to change{ SiteConfig['nhri.icc.filesize']}.to(22)
+      to change{ SiteConfig['nhri.icc_reference_documents.filesize']}.to(22)
     expect( page.find('span#filesize').text ).to eq "22"
   end
 end

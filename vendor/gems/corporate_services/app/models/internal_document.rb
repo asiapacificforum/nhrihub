@@ -1,4 +1,5 @@
 class InternalDocument < ActiveRecord::Base
+  ConfigPrefix = 'corporate_services.internal_documents'
 
   belongs_to :document_group, :counter_cache => :archive_doc_count
   delegate :created_at, :to => :document_group, :prefix => true
@@ -77,11 +78,11 @@ class InternalDocument < ActiveRecord::Base
   end
 
   def self.maximum_filesize
-    SiteConfig['corporate_services.internal_documents.filesize']*1000000
+    SiteConfig[ConfigPrefix+'.filesize']*1000000
   end
 
   def self.permitted_filetypes
-    SiteConfig['corporate_services.internal_documents.filetypes'].to_json
+    SiteConfig[ConfigPrefix'.filetypes'].to_json
   end
 
   # called from the initializer: config/intializers/internal_document.rb

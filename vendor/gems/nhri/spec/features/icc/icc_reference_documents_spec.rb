@@ -14,8 +14,8 @@ feature "internal document management", :js => true do
   include IccReferenceDocumentDefaultSettings
 
   before do
-    SiteConfig['nhri.ref.filetypes'] = ['pdf']
-    SiteConfig['nhri.ref.filesize'] = 3
+    SiteConfig['nhri.icc_reference_documents.filetypes'] = ['pdf']
+    SiteConfig['nhri.icc_reference_documents.filesize'] = 3
     @doc = FactoryGirl.create(:icc_reference_document, :title => "my important document")
     visit nhri_ref_index_path('en')
   end

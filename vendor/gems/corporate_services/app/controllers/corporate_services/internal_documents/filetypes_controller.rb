@@ -12,6 +12,10 @@ class CorporateServices::InternalDocuments::FiletypesController < FiletypesContr
     CorporateServices::Filetype
   end
 
+  def config_param
+    InternalDocument::ConfigPrefix+'.filetypes'
+  end
+
   def param
     params[:corporate_services_filetype][:ext]
   end

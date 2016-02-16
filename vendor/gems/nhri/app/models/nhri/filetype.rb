@@ -1,13 +1,12 @@
 module Nhri
   class Filetype < ::Filetype
-    SiteConfigKey = 'nhri.icc.filetypes'
     def initialize(attrs={})
-      @site_config_key = SiteConfigKey
+      @site_config_key = IccReferenceDocument::ConfigPrefix+'.filetypes'
       super(attrs)
     end
 
     def self.create(val)
-      @site_config_key = SiteConfigKey
+      @site_config_key = IccReferenceDocument::ConfigPrefix+'.filetypes'
       super(val)
     end
   end

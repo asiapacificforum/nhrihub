@@ -1,9 +1,10 @@
 class IccReferenceDocument < ActiveRecord::Base
+  ConfigPrefix = 'nhri.icc_reference_documents'
   def self.maximum_filesize
-    SiteConfig['nhri.icc_reference_documents.filesize']*1000000
+    SiteConfig[ConfigPrefix+'.filesize']*1000000
   end
 
   def self.permitted_filetypes
-    SiteConfig['nhri.icc_reference_documents.filetypes'].to_json
+    SiteConfig[ConfigPrefix+'.filetypes'].to_json
   end
 end

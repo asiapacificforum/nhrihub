@@ -9,7 +9,6 @@ class FiletypesController < ApplicationController
   end
 
   def destroy
-    config_param = klass::SiteConfigKey
     SiteConfig[config_param] = SiteConfig[config_param] - [delete_key]
     render :json => {}, :status => 200
   end

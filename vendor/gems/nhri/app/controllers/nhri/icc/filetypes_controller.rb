@@ -12,6 +12,10 @@ class Nhri::Icc::FiletypesController < FiletypesController
     Nhri::Filetype
   end
 
+  def config_param
+    IccReferenceDocument::ConfigPrefix+'.filetypes'
+  end
+
   def param
     params[:nhri_filetype][:ext]
   end

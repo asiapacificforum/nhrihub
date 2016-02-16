@@ -56,7 +56,7 @@
         context: context # becomes 'this' in the callback
         success: (data, status, xhr)->
           this.remove()
-          if $('.type').length == 0
+          if el.find(".type").length == 0
             el.append "<tr><td id='empty'>#{ t('.empty')}</td></tr>"
           $('.message_block').html('')
         error: (data,status,xhr) ->
