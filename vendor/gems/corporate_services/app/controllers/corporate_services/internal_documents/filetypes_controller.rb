@@ -1,16 +1,22 @@
-class CorporateServices::InternalDocuments::FiletypesController < ApplicationController
+class CorporateServices::InternalDocuments::FiletypesController < FiletypesController
   def create
-    filetype = CorporateServices::Filetype.create(params[:corporate_services_filetype][:ext])
-    if filetype.errors.empty?
-      render :text => filetype.ext, :status => 200, :content_type => 'text/plain'
-    else
-      render :text => filetype.errors.full_messages.first, :status => 422
-    end
+    super
   end
 
   def destroy
-    SiteConfig['corporate_services.internal_documents.filetypes'] =
-      SiteConfig['corporate_services.internal_documents.filetypes'] - [params[:type]]
-    render :json => {}, :status => 200
+    super
+  end
+
+  private
+  def klass
+    CorporateServices::Filetype
+  end
+
+  def param
+    params[:corporate_services_filetype][:ext]
+  end
+
+  def delete_key
+    params[:type]
   end
 end

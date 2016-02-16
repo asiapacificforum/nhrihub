@@ -1,0 +1,209 @@
+require 'rails_helper'
+require 'login_helpers'
+require 'navigation_helpers'
+require 'active_support/number_helper'
+require_relative '../../helpers/icc/icc_reference_documents_spec_helpers'
+require_relative '../../helpers/icc/icc_reference_documents_default_settings'
+
+feature "internal document management", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  extend  ActiveSupport::NumberHelper
+  include IccReferenceDocumentsSpecHelpers
+  include IccReferenceDocumentDefaultSettings
+
+  before do
+    SiteConfig['nhri.ref.filetypes'] = ['pdf']
+    SiteConfig['nhri.ref.filesize'] = 3
+    @doc = FactoryGirl.create(:icc_reference_document, :title => "my important document")
+    visit nhri_ref_index_path('en')
+  end
+
+  scenario "add a new document" do
+    expect(page_heading).to eq "ICC Accreditation Reference Documents"
+    expect(page_title).to eq "ICC Accreditation Reference Documents"
+    expect(page.find('td.title .no_edit').text).to eq "my important document"
+    page.attach_file("primary_file", upload_document, :visible => false)
+    ## not sure how this field has become visible, but it works!
+    page.find("#icc_reference_document_title").set("some file name")
+    expect{upload_files_link.click; sleep(0.5)}.to change{IccReferenceDocument.count}.from(1).to(2)
+    #expect(page).to have_css(".files .template-download", :count => 2)
+    #doc = IccReferenceDocument.last
+    #expect( doc.title ).to eq "some file name"
+    #expect( doc.filesize ).to be > 0 # it's the best we can do, if we don't know the file size
+    #expect( doc.original_filename ).to eq 'first_upload_file.pdf'
+    #expect( doc.lastModifiedDate ).to be_a ActiveSupport::TimeWithZone # it's a weak assertion!
+    #expect( doc.document_group_id ).to eq @doc.document_group_id.succ
+    #expect( doc.primary? ).to eq true
+    #expect( doc.original_type ).to eq "application/pdf"
+  end
+
+  scenario "add a new document but omit document name" do
+    expect(page_heading).to eq "ICC Accreditation Reference Documents"
+    page.attach_file("primary_file", upload_document, :visible => false)
+    page.find("#icc_reference_document_title").set("")
+    expect{upload_files_link.click; sleep(0.5)}.to change{IccReferenceDocument.count}
+    expect(page).to have_css(".title", :text => 'first_upload_file')
+  end
+
+  scenario "start upload before any docs have been selected" do
+    expect(page_heading).to eq "ICC Accreditation Reference Documents"
+    upload_files_link.click
+    expect(flash_message).to eq "You must first click \"Add files...\" and select file(s) to upload"
+  end
+
+  scenario "upload an unpermitted file type" do
+    page.attach_file("primary_file", upload_image, :visible => false)
+    expect(page).to have_css('.error', :text => "File type not allowed")
+    expect{ upload_files_link.click; sleep(0.5)}.not_to change{IccReferenceDocument.count}
+  end
+
+  scenario "upload an unpermitted file type and cancel" do
+    page.attach_file("primary_file", upload_image, :visible => false)
+    expect(page).to have_css('.error', :text => "File type not allowed")
+    page.find(".template-upload i.cancel").click
+    expect(page).not_to have_css(".files .template_upload")
+    page.attach_file("primary_file", upload_document, :visible => false)
+    expect(page).to have_selector('.template-upload')
+  end
+
+  scenario "upload a permitted file type, cancel, and retry with same file" do
+    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find(".template-upload i.cancel").click
+    page.attach_file("replace_file", upload_document, :visible => false)
+    expect(page).to have_selector('.template-upload')
+  end
+
+  scenario "upload a file that exceeds size limit" do
+    page.attach_file("primary_file", big_upload_document, :visible => false)
+    expect(page).to have_css('.error', :text => "File is too large")
+    page.find(".template-upload i.cancel").click
+    expect(page).not_to have_css(".files .template_upload")
+  end
+
+  scenario "filesize threshold increased by user config" do
+    SiteConfig['nhri.ref.filesize'] = 8
+    visit nhri_ref_index_path('en')
+    page.attach_file("primary_file", big_upload_document, :visible => false)
+    expect(page).not_to have_css('.error', :text => "File is too large")
+    page.find(".template-upload i.cancel").click
+    expect(page).not_to have_css(".files .template_upload")
+  end
+
+  scenario "delete a file from database" do
+    page.find('.template-download .delete').click
+    sleep(0.3)
+    expect(IccReferenceDocument.count).to eq 1
+  end
+
+  scenario "delete a file from filesystem" do
+    expect{ page.find('.template-download .delete').click; sleep(0.3)}.to change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
+  end
+
+  scenario "view file details", :js => true do
+    expect(page).to have_css(".files .template-download", :count => 1)
+    expect(page).to have_css("div.icon.details")
+    page.execute_script("$('div.icon.details').first().trigger('mouseenter')")
+    sleep(0.2) # transition animation
+    expect(page).to have_css('.fileDetails')
+    expect(page.find('.popover-content .name' ).text).to         eq (@doc.original_filename)
+    expect(page.find('.popover-content .size' ).text).to         match /\d+\.?\d+ KB/
+    expect(page.find('.popover-content .lastModified' ).text).to eq (@doc.lastModifiedDate.to_s)
+    expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.created_at.to_s)
+    expect(page.find('.popover-content .uploadedBy' ).text).to   eq (@doc.uploaded_by.first_last_name)
+    page.execute_script("$('div.icon.details').first().trigger('mouseout')")
+    expect(page).not_to have_css('.fileDetails')
+  end
+
+  scenario "edit filename" do
+    click_the_edit_icon(page)
+    page.find('.template-download input.title').set("new document title")
+    expect{ click_edit_save_icon(page) }.to change{ @doc.reload.title }.to("new document title")
+  end
+
+  scenario "edit filename to blank" do
+    click_the_edit_icon(page)
+    page.find('.template-download input.title').set("")
+    expect{ click_edit_save_icon(page) }.
+      not_to change{ @doc.reload.title }
+    expect(page).to have_selector(".internal_document .title .edit.in #title_error", :text => "Title cannot be blank")
+    click_edit_cancel_icon(page)
+    expect(page.find('td.title .no_edit').text).to eq "my important document"
+  end
+
+  scenario "start editing, cancel editing, start editing" do
+    click_the_edit_icon(page)
+    page.find('.template-download input.title').set("new document title")
+    click_edit_cancel_icon(page)
+    expect(page.find('td.title .no_edit').text).to eq "my important document"
+    click_the_edit_icon(page)
+    expect(page.find('td.title .edit input').value).to eq "my important document"
+  end
+
+  scenario "download a file" do
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
+      click_the_download_icon
+      expect(page.response_headers['Content-Type']).to eq('application/pdf')
+      filename = @doc.original_filename
+      expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+    else
+      expect(1).to eq 1 # download not supported by selenium driver
+    end
+  end
+
+
+  describe "add multiple primary files" do
+    before do
+      expect(page_heading).to eq "ICC Accreditation Reference Documents"
+      # first doc
+      attach_file("primary_file", upload_document, :first_time)
+      page.find("#icc_reference_document_title").set("fancy file")
+      # second doc
+      attach_file("primary_file", upload_document)
+      page.all("#icc_reference_document_title")[0].set("kook file") # forms are prepended, so it's first in the array
+      # third doc
+      attach_file("primary_file", upload_document)
+      page.all("#icc_reference_document_title")[0].set("ugly file")
+    end
+
+    scenario "upload with buttonbar action" do
+      expect{upload_files_link.click; sleep(0.5)}.to change{IccReferenceDocument.count}.by(3)
+      persisted_titles = IccReferenceDocument.all.map(&:title)
+      expect(persisted_titles).to include("fancy file")
+      expect(persisted_titles).to include("kook file")
+      expect(persisted_titles).to include("ugly file")
+      expect(page).to have_css(".files .template-download .title .no_edit span", :count => 4)
+      expect(page).to have_css(".files .template-download .title .no_edit span", :text => "fancy file", :count => 1)
+      expect(page).to have_css(".files .template-download .title .no_edit span", :text => "kook file", :count => 1)
+      expect(page).to have_css(".files .template-download .title .no_edit span", :text => "ugly file", :count => 1)
+    end
+
+    scenario "upload with multiple individual actions" do
+      expect{ upload_single_file_link_click(:first) ; sleep(0.4) }.to change{ IccReferenceDocument.count }.by(1)
+      expect{ upload_single_file_link_click(:second); sleep(0.4) }.to change{ IccReferenceDocument.count }.by(1)
+      expect{ upload_single_file_link_click(:third) ; sleep(0.4) }.to change{ IccReferenceDocument.count }.by(1)
+    end
+  end
+end
+
+feature "internal document management when no filetypes have been configured", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  extend ActiveSupport::NumberHelper
+  include IccReferenceDocumentsSpecHelpers
+  include IccReferenceDocumentDefaultSettings
+
+  before do
+    create_a_document( :title => "my important document")
+    visit nhri_ref_index_path('en')
+  end
+
+  scenario "upload an unpermitted file type and cancel" do
+    page.attach_file("primary_file", upload_image, :visible => false)
+    expect(page).to have_css('.error', :text => "No permitted file types have been configured")
+    page.find(".template-upload i.cancel").click
+    expect(page).not_to have_css(".files .template_upload")
+  end
+end

@@ -4,3 +4,10 @@ en:
       models:
         accreditation_document_group:
           duplicate: "already exists, must be unique."
+  activerecord:
+    attributes:
+      icc_reference_document:
+        original_filename: "Original file name"
+        filesize: "File size"
+        uploadedOn: "Uploaded on"
+        uploadedBy: "Uploaded by"

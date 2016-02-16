@@ -4,5 +4,6 @@ en:
       index:
         heading: "NHRI Module"
         filesize_max: "Maximum permitted file size"
+        filetypes: "Permitted file types"
         subheading:
           required_files_titles: "ICC Accreditation: Required Documents Titles"

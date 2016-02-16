@@ -1,7 +1,7 @@
 %script#uploader_template{:type => 'html/template'}
   / The file upload form used as target for the jQuery fileupload widget
   / this is the fileupload configuration when uploading files via the buttonbar
-  .fileupload.buttonbar{:decorator => "primary_fileupload:{{required_files_titles}}", :'data-file-input' => '#primary_fileinput' }
+  .fileupload.buttonbar{:decorator => "primary_fileupload", :'data-file-input' => '#primary_fileinput' }
     / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
     .row.fileupload-buttonbar
       .col-lg-9
@@ -36,14 +36,13 @@
           %table
             %tr
               %td{:style => "width:36%; text-align:left"}= t('.doc_title')
-              %td{:style => "text-align:left"}= t('.revision')
               %td= t('.information')
               %td{:style => "width:16%"}=t('.edit')
               %td= t('.download')
               %td= t('.archive')
               %td= t('.add1')
               %td= t('.delete')
-        #accordion.panel-group.files{:role => "tablist", :name => 'internal_document[file]'}
+        #accordion.panel-group.files{:role => "tablist", :name => 'icc_reference_document[file]'}
           <docs/>
 
 %script#template-download{:type => 'html/template'}
@@ -68,7 +67,7 @@
     .popover-content
 
 %script#detailsContent{:type => 'text/ractive'}
-  - scope = 'activerecord.attributes.internal_document'
+  - scope = 'activerecord.attributes.icc_reference_document'
   %table{:style => 'width:500px'}
     %tr
       %td= t('original_filename', :scope => scope)
@@ -76,12 +75,6 @@
     %tr
       %td= t('filesize', :scope => scope)
       %td.size {{ formatted_filesize }}
-    %tr
-      %td= t('revision', :scope => scope)
-      %td.rev {{ revision }}
-    %tr
-      %td= t('lastModified', :scope => scope)
-      %td.lastModified {{ formatted_modification_date }}
     %tr
       %td= t('uploadedOn', :scope => scope)
       %td.uploadedOn {{ formatted_creation_date }}
@@ -93,11 +86,11 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 %script#document_template{:type => 'template/html'}
-  %table.internal_document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
+  %table.icc_reference_document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"icc_reference_document_editable{{id}}"}
     %tr
       %td.title.form-group{'data-toggle' => '{{#title_edit_permitted}}edit{{/}}', :style => "width:36%", 'data-attribute' => :title}
         .fade.edit
-          %input.title{:name => "internal_document[title]", :'value' => "{{ title }}", :style => "width:100%"}
+          %input.title{:name => "icc_reference_document[title]", :'value' => "{{ title }}", :style => "width:100%"}
           %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
           %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
           %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
@@ -107,7 +100,7 @@
           %span {{ title }}
       %td.revision.form-group{'data-attribute' => :revision, 'data-toggle' => :edit, :'data-name' => 'revision', :style => "width:8%", :class =>"{{#revision_error}}has-error{{/}}"}
         .fade.edit
-          %input.revision{ :name => "internal_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px'}
+          %input.revision{ :name => "icc_reference_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px'}
           %span.help-block.error#revision_error= t('.revision_error_message')
         .fade.no_edit.editable.in
           %span {{ revision }}
@@ -118,13 +111,13 @@
       %td{:style => "text-align:center; width:8%"}
         .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
           .fade.edit
-            %i.fa.fa-remove.fa-lg{:id => "internal_document_editable{{id}}_edit_cancel",:style => "position:relative; left:30px;"}
+            %i.fa.fa-remove.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_cancel",:style => "position:relative; left:30px;"}
       %td{:style => "text-align:center; width:8%"}
         %div.icon{:'data-toggle' => 'edit'}
           .fade.edit
-            %i.fa.fa-check.fa-lg{:id => "internal_document_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+            %i.fa.fa-check.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
           .fade.no_edit.in
-            %i.fa.fa-pencil-square-o.fa-lg{:id => "internal_document_editable{{id}}_edit_start"}
+            %i.fa.fa-pencil-square-o.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_start"}
       %td{:style => "text-align:center; width:8%"}
         .icon
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
@@ -136,22 +129,6 @@
         -# just to keep the spacing the same
         .icon{:style => 'visibility:hidden'}
           %i.fa.fa-archive.fa-lg
-        {{/if}}
-      %td{:style => "text-align:center; width:8%"}
-        {{#if file}}
-        -# next tag is where the fileupload is attached
-        .fileupload.icon{:decorator => "archive_fileupload:'{{id}}','{{type}}'",
-                         :id => "upload{{ id }}",
-                         :'data-file-input' => "#upload{{ id }} #archive_fileinput",
-                         :'data-document_group_id' => "{{document_group_id}}"}
-          %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
-          -# weird opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
-          -# only required for testing, it actually works in firefox in real life!
-          %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; opacity:0.01;"}
-        {{else}}
-        -# just to keep the spacing the same
-        #file_replace{:style => 'visibility:hidden'}
-          %i.fa.fa-plus.fa-lg
         {{/if}}
       %td{:style => "text-align:center; width:8%"}
         %div.icon.delete{'decorator'=>'doc_deleter'}
@@ -166,31 +143,7 @@
   %ul.error{:style => "display:none"}
     %li {{ message }}
 
-%script#internal_document_title_selector{:type => 'html/template'}
-  %label{:for =>"internal_document_title"}= t('.doc_title')
-  {{#if is_icc_doc}}
-  %span#icc_doc_title{:style => "margin-left:26px"} {{ title }}
-  {{else}}
-  %input{:type => :text, :name => "internal_document[title]", :id => "internal_document_title", :list => :icc_files, :value => "{{title}}"}
-  %datalist#icc_files
-    {{#required_files_titles}}
-    %option{:value=>'{{title}}'}
-    {{/required_files_titles}}
-  {{/if}}
-
-%script#icc_title_selector{:type => 'html/template'}
-  .form-horizontal
-    .form-group
-      %label.control-label.col-sm-3{:for =>"internal_document_title", :style => "left: -21px;"}= t('.doc_title')
-      .col-sm-6
-        %select.form-control.accreditation_required_doc_title{:style => "height:28px; position: relative; top:3px;"}
-          %option{:value => 0}= t('.select_icc')
-          {{#unassigned_titles}}
-          %option{:value=>'{{document_group_id}}'} {{title}}
-          {{/unassigned_titles}}
-
   / The template to display files ready for upload
-
 %script#upload_template{:type => 'html/template'}
   .panel.panel-default.fade.template-upload{:intro => :fade}
     .panel-heading
@@ -210,14 +163,15 @@
               .progress-bar.progress-bar-success{:style => "width:0%"}
         %tr
           %td.title
-            {{> .context+"_title_selector" }}
+            %label{:for =>"icc_reference_document_title"}= t('.doc_title')
+            %input{:type => :text, :name => "icc_reference_document[title]", :id => "icc_reference_document_title", :list => :icc_files, :value => "{{title}}"}
             %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
             %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
             %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
             %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}"}= t('.icc_revision_in_non_icc_primary_error_message')
           %td.revision
-            %label{:for => "internal_document_revision"}= t('.revision')
-            %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}
+            %label{:for => "icc_reference_document_revision"}= t('.revision')
+            %input{:type => :text, :name => "icc_reference_document[revision]", :id => "icc_reference_document_revision", :style => "width:40px", :value => "{{revision}}"}
           %td
             %div.start{'on-click'=>'submit()'}
               %i.fa.fa-cloud-upload.fa-lg
