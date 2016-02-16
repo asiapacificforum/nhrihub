@@ -7,7 +7,7 @@ en:
       filetype:
         add: "Add file type"
       doc_group:
-        add: "Add document group title"
+        add: "Add document title"
     document_filesize_configuration:
       current_val: "Current value"
       change: "Change to"

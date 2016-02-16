@@ -39,6 +39,14 @@ feature "icc reference document admin", :js => true do
     expect( flash_message ).to eq "Title already exists, must be unique."
   end
 
+  scenario "add blank title" do
+    visit nhri_admin_path('en')
+    sleep(0.1)
+    page.find('#doc_group_title').set('')
+    expect{ new_doc_group_button.click; sleep(0.2) }.not_to change{ AccreditationDocumentGroup.count }
+    expect( flash_message ).to eq "Cannot be blank."
+  end
+
   scenario "delete a title" do
     FactoryGirl.create(:accreditation_document_group, :title => "Statement of Compliance")
     FactoryGirl.create(:accreditation_document_group, :title => "Annual Report")

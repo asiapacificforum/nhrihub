@@ -82,7 +82,7 @@ class InternalDocument < ActiveRecord::Base
   end
 
   def self.permitted_filetypes
-    SiteConfig[ConfigPrefix'.filetypes'].to_json
+    SiteConfig[ConfigPrefix+'.filetypes'].to_json
   end
 
   # called from the initializer: config/intializers/internal_document.rb

@@ -35,6 +35,14 @@
 
     param_field.attr('size',param_field.attr('placeholder').length)
 
+    form.bind "ajax:before", (e)->
+      if param_field.val() == ''
+        $('.message_block').html window.flash_error_template({message : "Cannot be blank."})
+        false
+      else
+        $('.message_block').html window.flash_error_template({message : ""})
+        true
+
     form.bind "ajax:success", (e,data,status,xhr)->
       el.append item_template({attribute : data})
       param_field.val('')
