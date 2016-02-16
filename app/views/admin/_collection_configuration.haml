@@ -9,7 +9,7 @@
           %button.btn.btn-success.btn-xs{:style => 'line-height:1.8;', :type => 'submit'}= t(".#{item_name}.add")
         %td= f.text_field "#{param_name}", :size => 8, :placeholder => placeholder, :id => "#{item_name}_#{param_name}"
 
-%script{:type => 'template/html', :id => "item_template"}
+%script{:type => 'template/html', :id => "#{item_name}_item_template"}
   %tr
     %td.type {{ attribute }}
     %td= link_to t('defaults.delete'), nil, :class => "delete_#{item_name}"
@@ -25,7 +25,7 @@
 
     _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
 
-    item_template = _.template($("#item_template").html())
+    item_template = _.template($("##{item_name}_item_template").html())
 
     if collection.length == 0
       el.append "<tr><td id='empty'>#{ t('.empty')}</td></tr>"

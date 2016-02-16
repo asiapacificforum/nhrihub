@@ -17,9 +17,9 @@
 %h4= t('.filetypes')
 = render :partial => 'admin/collection_configuration',
   :locals => { :new_item => @filetype,
-               :create_url => corporate_services_internal_documents_filetypes_path,
-               :delete_url => corporate_services_internal_documents_filetype_path('id'),
-               :collection => @internal_document_filetypes.to_json,
+               :create_url => nhri_icc_filetypes_path,
+               :delete_url => nhri_icc_filetype_path('id'),
+               :collection => @icc_reference_document_filetypes.to_json,
                :item_name => 'filetype',
                :param_name => 'ext',
                :placeholder => 'e.g. ppt'}

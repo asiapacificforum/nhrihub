@@ -3,7 +3,7 @@ require 'login_helpers'
 require 'navigation_helpers'
 require_relative '../../helpers/icc/icc_admin_spec_helper'
 
-feature "internal document admin", :js => true do
+feature "icc reference document admin", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include IccAdminSpecHelper
 
@@ -46,6 +46,71 @@ feature "internal document admin", :js => true do
     expect{ delete_title("Statement of Compliance"); sleep(0.2) }.to change{AccreditationDocumentGroup.count}.by(-1)
     expect(AccreditationDocumentGroup.all.map(&:title).first).to eq "Annual Report"
     expect{ delete_title("Annual Report"); sleep(0.2) }.to change{AccreditationDocumentGroup.count}.to(0)
+    expect(page).to have_selector '#empty'
+  end
+
+  scenario "change filesize" do
+    visit nhri_admin_path('en')
+    set_filesize("22")
+    expect{ page.find('#change_filesize').click; sleep(0.2)}.
+      to change{ SiteConfig['nhri.icc.filesize']}.to(22)
+    expect( page.find('span#filesize').text ).to eq "22"
+  end
+end
+
+feature "icc reference document filetype admin", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include IccAdminSpecHelper
+
+  scenario "no filetypes configured" do
+    visit nhri_admin_path('en')
+    sleep(0.1)
+    expect(page).to have_selector '#empty'
+  end
+
+  scenario "filetypes configured" do
+    SiteConfig['nhri.icc.filetypes']=["pdf"]
+    visit nhri_admin_path('en')
+    expect(page.find('.type').text).to eq 'pdf'
+  end
+
+  scenario "add filetype" do
+    visit nhri_admin_path('en')
+    sleep(0.1)
+    expect(page).to have_selector '#empty'
+    page.find('#filetype_ext').set('docx')
+    expect{ new_filetype_button.click; sleep(0.2) }.to change{ SiteConfig['nhri.icc.filetypes'] }.from([]).to(["docx"])
+    expect(page).not_to have_selector '#empty'
+    page.find('#filetype_ext').set('ppt')
+    expect{ new_filetype_button.click; sleep(0.2) }.to change{ SiteConfig['nhri.icc.filetypes'].length }.from(1).to(2)
+  end
+
+  scenario "add duplicate filetype" do
+    SiteConfig['nhri.icc.filetypes']=["pdf", "doc"]
+    visit nhri_admin_path('en')
+    sleep(0.1)
+    page.find('#filetype_ext').set('doc')
+    expect{ new_filetype_button.click; sleep(0.2) }.not_to change{ SiteConfig['nhri.icc.filetypes'] }
+    expect( flash_message ).to eq "Filetype already exists, must be unique."
+  end
+
+  scenario "add duplicate filetype" do
+    visit nhri_admin_path('en')
+    sleep(0.1)
+    page.find('#filetype_ext').set('a_very_long_filename')
+    expect{ new_filetype_button.click; sleep(0.2) }.not_to change{ SiteConfig['nhri.icc.filetypes'] }
+    expect( flash_message ).to eq "Filetype too long, 4 characters maximum."
+  end
+
+  scenario "delete a filetype" do
+    SiteConfig['nhri.icc.filetypes']=["pdf", "ppt"]
+    visit nhri_admin_path('en')
+    delete_filetype("pdf")
+    sleep(0.2)
+    expect( SiteConfig['nhri.icc.filetypes'] ).to eq ["ppt"]
+    delete_filetype("ppt")
+    sleep(0.2)
+    expect( SiteConfig['nhri.icc.filetypes'] ).to eq []
     expect(page).to have_selector '#empty'
   end
 

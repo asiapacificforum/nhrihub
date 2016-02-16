@@ -1,6 +1,6 @@
-module CorporateServices
+module Nhri
   class Filetype < ::Filetype
-    SiteConfigKey = 'corporate_services.internal_documents.filetypes'
+    SiteConfigKey = 'nhri.icc.filetypes'
     def initialize(attrs={})
       @site_config_key = SiteConfigKey
       super(attrs)

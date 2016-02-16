@@ -13,11 +13,7 @@ class Nhri::Icc::FiletypesController < FiletypesController
   end
 
   def param
-    params[:corporate_services][:ext]
-  end
-
-  def config_param
-    'corporate_services.internal_documents.filetypes'
+    params[:nhri_filetype][:ext]
   end
 
   def delete_key
