@@ -108,11 +108,14 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete the last file in a document group" do
-    expect(1).to eq 0
-  end
-
-  scenario "delete the last file in an icc document group" do
-    expect(1).to eq 0
+    page.find('.template-download .delete').click
+    sleep(0.3)
+    expect(InternalDocument.count).to eq 1
+    sleep(0.3)
+    page.find('.template-download .delete').click
+    sleep(0.3)
+    expect(InternalDocument.count).to eq 0
+    expect(DocumentGroup.count).to eq 5 # the 5 icc doc groups
   end
 
   scenario "delete a file from filesystem" do
@@ -632,6 +635,17 @@ feature "icc accreditation required document behaviour", :js => true do
       page.attach_file("replace_file", upload_document, :visible => false)
       expect(page).to have_selector("#icc_doc_title", :text=>'Statement of Compliance')
       expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+    end
+
+    it "should leave the icc document group in the db when the last icc file is deleted" do
+      expect(AccreditationRequiredDoc.count).to eq 1
+      page.find('.template-download .delete').click
+      sleep(0.3)
+      expect(InternalDocument.count).to eq 0
+      expect(AccreditationRequiredDoc.count).to eq 0
+      expect(DocumentGroup.count).to eq 5 # the 5 icc doc groups
+      sleep(0.5)
+      expect(page).not_to have_selector('.template-download')
     end
   end
 

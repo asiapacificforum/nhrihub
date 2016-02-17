@@ -11,14 +11,14 @@ class DocumentGroup < ActiveRecord::Base
   end
 
   def next_minor_revision
-    if internal_documents.empty?
+    if empty?
       "1.0"
     else
-      [primary.revision_major, primary.revision_minor.succ].join('.')
+      primary.next_minor_revision
     end
   end
 
   def empty?
-    internal_documents.count.zero?
+    archive_doc_count.zero?
   end
 end

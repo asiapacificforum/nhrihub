@@ -16,11 +16,11 @@ class CorporateServices::InternalDocumentsController < ApplicationController
     doc = InternalDocument.find(params[:id])
     document_group_id = doc.document_group_id
     doc.destroy
-    unless DocumentGroup.exists?(document_group_id)
-      render :nothing => true, :status => 205
-    else
+    if DocumentGroup.exists?(document_group_id) && !DocumentGroup.find(document_group_id).empty?
       internal_document = DocumentGroup.find(document_group_id).primary
       render :json => internal_document, :status => 200
+    else # no doc group (last non-icc file was deleted) or last icc file was deleted
+      render :nothing => true, :status => 205
     end
   end
 

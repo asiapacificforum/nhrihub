@@ -30,8 +30,8 @@ class InternalDocument < ActiveRecord::Base
 
   after_destroy do |doc|
     # if it's the last document in the group, delete the group too
-    if doc.document_group.empty?
-      doc.document_group.destroy
+    if doc.document_group.reload.empty?
+      doc.document_group.destroy unless doc.document_group.is_a?(AccreditationDocumentGroup)
     end
   end
 
@@ -136,6 +136,10 @@ class InternalDocument < ActiveRecord::Base
 
   def has_archive_files?
     archive_files.count > 0
+  end
+
+  def next_minor_revision
+    [revision_major, revision_minor.succ].join('.')
   end
 
 end
