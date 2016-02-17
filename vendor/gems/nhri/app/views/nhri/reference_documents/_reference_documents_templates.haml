@@ -39,7 +39,6 @@
               %td= t('.information')
               %td{:style => "width:16%"}=t('.edit')
               %td= t('.download')
-              %td= t('.archive')
               %td= t('.add1')
               %td= t('.delete')
         #accordion.panel-group.files{:role => "tablist", :name => 'icc_reference_document[file]'}
@@ -50,15 +49,6 @@
     #headingOne.panel-heading{:role => "tab"}
       %strong.error.text-danger {{= file.error }}
       {{> document_template }}
-    .panel-collapse.collapse{:role => "tabpanel", :id => "collapse{{ id }}"}
-      .panel-body
-        %h4 Archive
-        {{^archive_files}}
-        %p empty
-        {{/}}
-        {{#_(archive_files).sortBy(revision).reverse()}}
-        <archivedoc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' update_url='{{update_url}}' delete_url='{{delete_url}}' url='{{url}}' save_url='{{save_url}}' document_group_id='{{document_group_id}}' />
-        {{/}}
 
 %script#popover_template{:type => "template/ractive"}
   .popover.fileDetails{:role=>"tooltip"}
@@ -94,16 +84,9 @@
           %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
           %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
           %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
-          %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}"}= t('.icc_revision_in_non_icc_primary_error_message')
           %span.help-block.error#icc_title_error{:class =>"{{#icc_title_error}}has-error{{/}}"}= t('.icc_title_error_message')
         .fade.no_edit.editable.in
           %span {{ title }}
-      %td.revision.form-group{'data-attribute' => :revision, 'data-toggle' => :edit, :'data-name' => 'revision', :style => "width:8%", :class =>"{{#revision_error}}has-error{{/}}"}
-        .fade.edit
-          %input.revision{ :name => "icc_reference_document[revision]", :'value' => "{{ revision }}", :style => 'width:40px'}
-          %span.help-block.error#revision_error= t('.revision_error_message')
-        .fade.no_edit.editable.in
-          %span {{ revision }}
       -# make sure it's on top of the next td, even though it precedes in the html
       %td.include_popover{:style => "text-align:center; width:8%"}
         .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
@@ -122,21 +105,12 @@
         .icon
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
       %td{:style => "text-align:center; width:8%"}
-        {{#if file}}
-        .icon{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{{ id }}"}
-          %i.fa.fa-folder-o.fa-lg
-        {{else}}
-        -# just to keep the spacing the same
-        .icon{:style => 'visibility:hidden'}
-          %i.fa.fa-archive.fa-lg
-        {{/if}}
-      %td{:style => "text-align:center; width:8%"}
         %div.icon.delete{'decorator'=>'doc_deleter'}
           %i.fa.fa-trash-o.fa-lg
 
 %script#files{:type => 'ractive/template'}
   {{#files}}
-  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' />
+  <doc id='{{id}}' title='{{title}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' />
   {{/files}}
 
 %script#flash_error_template{:type => 'template/ractive'}
@@ -168,10 +142,6 @@
             %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
             %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
             %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
-            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}"}= t('.icc_revision_in_non_icc_primary_error_message')
-          %td.revision
-            %label{:for => "icc_reference_document_revision"}= t('.revision')
-            %input{:type => :text, :name => "icc_reference_document[revision]", :id => "icc_reference_document_revision", :style => "width:40px", :value => "{{revision}}"}
           %td
             %div.start{'on-click'=>'submit()'}
               %i.fa.fa-cloud-upload.fa-lg

@@ -17,7 +17,7 @@ feature "internal document management", :js => true do
     SiteConfig['nhri.icc_reference_documents.filetypes'] = ['pdf']
     SiteConfig['nhri.icc_reference_documents.filesize'] = 3
     @doc = FactoryGirl.create(:icc_reference_document, :title => "my important document")
-    visit nhri_ref_index_path('en')
+    visit nhri_reference_documents_path('en')
   end
 
   scenario "add a new document" do
@@ -25,18 +25,14 @@ feature "internal document management", :js => true do
     expect(page_title).to eq "ICC Accreditation Reference Documents"
     expect(page.find('td.title .no_edit').text).to eq "my important document"
     page.attach_file("primary_file", upload_document, :visible => false)
-    ## not sure how this field has become visible, but it works!
     page.find("#icc_reference_document_title").set("some file name")
     expect{upload_files_link.click; sleep(0.5)}.to change{IccReferenceDocument.count}.from(1).to(2)
-    #expect(page).to have_css(".files .template-download", :count => 2)
-    #doc = IccReferenceDocument.last
-    #expect( doc.title ).to eq "some file name"
-    #expect( doc.filesize ).to be > 0 # it's the best we can do, if we don't know the file size
-    #expect( doc.original_filename ).to eq 'first_upload_file.pdf'
-    #expect( doc.lastModifiedDate ).to be_a ActiveSupport::TimeWithZone # it's a weak assertion!
-    #expect( doc.document_group_id ).to eq @doc.document_group_id.succ
-    #expect( doc.primary? ).to eq true
-    #expect( doc.original_type ).to eq "application/pdf"
+    expect(page).to have_css(".files .template-download", :count => 2)
+    doc = IccReferenceDocument.last
+    expect( doc.title ).to eq "some file name"
+    expect( doc.filesize ).to be > 0 # it's the best we can do, if we don't know the file size
+    expect( doc.original_filename ).to eq 'first_upload_file.pdf'
+    expect( doc.original_type ).to eq "application/pdf"
   end
 
   scenario "add a new document but omit document name" do
@@ -69,9 +65,9 @@ feature "internal document management", :js => true do
   end
 
   scenario "upload a permitted file type, cancel, and retry with same file" do
-    page.attach_file("replace_file", upload_document, :visible => false)
+    page.attach_file("primary_file", upload_document, :visible => false)
     page.find(".template-upload i.cancel").click
-    page.attach_file("replace_file", upload_document, :visible => false)
+    page.attach_file("primary_file", upload_document, :visible => false)
     expect(page).to have_selector('.template-upload')
   end
 
@@ -83,8 +79,8 @@ feature "internal document management", :js => true do
   end
 
   scenario "filesize threshold increased by user config" do
-    SiteConfig['nhri.ref.filesize'] = 8
-    visit nhri_ref_index_path('en')
+    IccReferenceDocument.maximum_filesize = 8
+    visit nhri_reference_documents_path('en')
     page.attach_file("primary_file", big_upload_document, :visible => false)
     expect(page).not_to have_css('.error', :text => "File is too large")
     page.find(".template-upload i.cancel").click
@@ -92,9 +88,8 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete a file from database" do
-    page.find('.template-download .delete').click
-    sleep(0.3)
-    expect(IccReferenceDocument.count).to eq 1
+    expect{page.find('.template-download .delete').click; sleep(0.3)}.to change{IccReferenceDocument.count}.to(0)
+    expect(page.all('.template-download').count).to eq 0
   end
 
   scenario "delete a file from filesystem" do
@@ -109,7 +104,6 @@ feature "internal document management", :js => true do
     expect(page).to have_css('.fileDetails')
     expect(page.find('.popover-content .name' ).text).to         eq (@doc.original_filename)
     expect(page.find('.popover-content .size' ).text).to         match /\d+\.?\d+ KB/
-    expect(page.find('.popover-content .lastModified' ).text).to eq (@doc.lastModifiedDate.to_s)
     expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.created_at.to_s)
     expect(page.find('.popover-content .uploadedBy' ).text).to   eq (@doc.uploaded_by.first_last_name)
     page.execute_script("$('div.icon.details').first().trigger('mouseout')")
@@ -127,7 +121,7 @@ feature "internal document management", :js => true do
     page.find('.template-download input.title').set("")
     expect{ click_edit_save_icon(page) }.
       not_to change{ @doc.reload.title }
-    expect(page).to have_selector(".internal_document .title .edit.in #title_error", :text => "Title cannot be blank")
+    expect(page).to have_selector(".icc_reference_document .title .edit.in #title_error", :text => "Title cannot be blank")
     click_edit_cancel_icon(page)
     expect(page.find('td.title .no_edit').text).to eq "my important document"
   end
@@ -153,7 +147,7 @@ feature "internal document management", :js => true do
   end
 
 
-  describe "add multiple primary files" do
+  describe "add multiple icc accreditation files" do
     before do
       expect(page_heading).to eq "ICC Accreditation Reference Documents"
       # first doc
@@ -196,8 +190,7 @@ feature "internal document management when no filetypes have been configured", :
   include IccReferenceDocumentDefaultSettings
 
   before do
-    create_a_document( :title => "my important document")
-    visit nhri_ref_index_path('en')
+    visit nhri_reference_documents_path('en')
   end
 
   scenario "upload an unpermitted file type and cancel" do

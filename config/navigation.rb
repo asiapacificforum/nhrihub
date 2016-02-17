@@ -7,7 +7,7 @@ SimpleNavigation::Configuration.run do |navigation|
       nhri.item :hr_prot, t('layout.nav.hr_prot'), nhri_hr_protection_index_path
       nhri.item :icc, t('layout.nav.icc.icc') do |icc|
         icc.item :icc_int, t('layout.nav.icc.int'), nhri_icc_index_path
-        icc.item :icc_ref, t('layout.nav.icc.ref'), nhri_ref_index_path
+        icc.item :icc_ref, t('layout.nav.icc.ref'), nhri_reference_documents_path
       end
     end
     primary.item :gg, t('layout.nav.gg') do |gg|

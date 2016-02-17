@@ -107,6 +107,14 @@ feature "internal document management", :js => true do
     expect(InternalDocument.count).to eq 1
   end
 
+  scenario "delete the last file in a document group" do
+    expect(1).to eq 0
+  end
+
+  scenario "delete the last file in an icc document group" do
+    expect(1).to eq 0
+  end
+
   scenario "delete a file from filesystem" do
     expect{ page.find('.template-download .delete').click; sleep(0.3)}.to change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
   end

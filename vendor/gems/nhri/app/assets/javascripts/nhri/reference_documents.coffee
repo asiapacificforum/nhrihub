@@ -1,8 +1,7 @@
 # component hierarchy
-# internal_document_uploader template: #uploader_template (includes primary_fileupload decorator)
+# icc_reference_document_uploader template: #uploader_template (includes primary_fileupload decorator)
 #   docs                     template: #files
 #     doc                    template: #template-download (contains document_template as a partial)
-#       archivedoc           template: #document_template (includes archive_fileupload decorator here)
 #         uploadfiles
 #           uploadfile
 #   uploadfiles
@@ -26,8 +25,8 @@ $ ->
     fileInput: '#primary_fileinput'
     #replaceFileInput: false # this doesn't seem to cause any problem, and it solves problems caused by replacing the file input!
     replaceFileInput: true
-    url : 'internal_documents.json',
-    paramName : 'internal_document[file]',
+    url : 'reference_documents.json',
+    paramName : 'icc_reference_document[file]',
     uploadTemplateId : '#upload_template' 
     uploadTemplate : Ractive.parse($('#upload_template').html())
     done: (e, data)->
@@ -39,7 +38,7 @@ $ ->
       current_locale = that.options.current_locale()
       getFilesFromResponse = data.getFilesFromResponse || that.options.getFilesFromResponse
       file = data.result.file
-      ractive = Ractive.getNodeInfo(@).ractive # it's the internal_documents_uploader ractive instance
+      ractive = Ractive.getNodeInfo(@).ractive # it's the icc_reference_documents_uploader ractive instance
       ractive.add_file(file)
       upload_file = Ractive.getNodeInfo(data.context[0]).ractive
       upload_file.parent.remove_upload_file(upload_file._guid)
@@ -52,29 +51,37 @@ $ ->
       that = $this.data('blueimp-fileupload') or $this.data('fileupload')
       _(data.files).each (file)->
         file_attrs =
-          lastModifiedDate: file.lastModifiedDate
           name : file.name
           size: file.size
           type: file.type
           title: ""
-          revision: ""
-          document_group_id: ""
           fileupload: data
           primary : true
-        internal_document_uploader.
+        icc_reference_document_uploader.
           unshift('upload_files', file_attrs).
           then(
-            new_upload = internal_document_uploader.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
-            #new_upload.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-            #new_upload.set('document_group_id', "")
+            new_upload = icc_reference_document_uploader.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
             data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
-            #$this.fileupload('option', 'formData', ->new_upload.get('formData')) # pass formData from ractive instance to jquery fileupload
-            # using the jquery.fileupload animation, based on the .fade class,
-            # better to use ractive easing TODO
-            #that._transition(data.context) # make the DOM node appear on the page
             data.context.addClass('in')
             new_upload.validate_file_constraints()
           )
+      return
+    destroy : (event, data) ->
+      if event.isDefaultPrevented()
+        return false
+      ractive = Ractive.getNodeInfo(event.originalEvent.target).ractive
+      delete_url = ractive.get('url')
+      that = $(event.originalEvent.target).closest('.fileupload').data('blueimpFileupload')
+      data = $.extend(data, that.options, ractive.get(), type: 'DELETE')
+      removeNode = (resp, stat, jqx) ->
+          index = @parent.findAllComponents('doc').indexOf(this)
+          @parent.splice 'files', index, 1
+      data.url = delete_url
+      data.dataType = 'json'
+      data.context = ractive
+      $.ajax(data).done(removeNode).fail ->
+        that._trigger 'destroyfailed', event, data
+        return
       return
 
   PrimaryFileUpload = (node)->
@@ -96,10 +103,7 @@ $ ->
       success : (response, statusText, jqxhr)->
          ractive = @.options.object
          @.show() # before updating b/c we'll lose the handle
-         if ractive.findParent('doc') # an archive file was updated
-           ractive.parent.set(response)
-         else
-           ractive.set(response)
+         ractive.set(response)
       error : ->
         console.log "Changes were not saved, for some reason"
     teardown : ->
@@ -135,7 +139,7 @@ $ ->
     teardown : ->
       $(node).off 'click'
 
-  Ractive.decorators.primary_fileupload = PrimaryFileUpload # for the archive file upload
+  Ractive.decorators.primary_fileupload = PrimaryFileUpload
   Ractive.decorators.inpage_edit = EditInPlace
   Ractive.decorators.doc_deleter = DocDeleter
   Ractive.decorators.popover = Popover
@@ -144,13 +148,10 @@ $ ->
     template : "#upload_template"
     computed :
       formData : ->
-        [ {name : 'internal_document[title]', value : @get('title')}
-          {name : 'internal_document[revision]', value : @get('revision')}
-          {name : 'internal_document[filesize]', value : @get('size')}
-          {name : 'internal_document[original_type]', value : @get('type')}
-          {name : 'internal_document[original_filename]', value : @get('name')}
-          {name : 'internal_document[lastModifiedDate]', value : @get('lastModifiedDate')}
-          {name : 'internal_document[document_group_id]', value : @get('document_group_id')}
+        [ {name : 'icc_reference_document[title]', value : @get('title')}
+          {name : 'icc_reference_document[filesize]', value : @get('size')}
+          {name : 'icc_reference_document[original_type]', value : @get('type')}
+          {name : 'icc_reference_document[original_filename]', value : @get('name')}
         ]
       stripped_title : ->
         @get('title').replace(/\s/g,"").toLowerCase()
@@ -174,7 +175,7 @@ $ ->
         @get('fileupload').submit()
 
   UploadFiles = Ractive.extend
-    template: "{{#upload_files}}<uploadfile title='{{title}}' revision='{{revision}}' size='{{size}}' type='{{type}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' document_group_id='{{document_group_id}}' />{{/upload_files}}"
+    template: "{{#upload_files}}<uploadfile title='{{title}}' size='{{size}}' name='{{name}}' />{{/upload_files}}"
     components:
       uploadfile : UploadFile
     remove : (uploadfile)->
@@ -185,55 +186,23 @@ $ ->
       index = _(guids).indexOf(upload_file_guid)
       @splice('upload_files',index,1)
 
-  ArchiveDoc = Ractive.extend
-    template: '#document_template'
-    oninit : ->
-      @remove_errors()
-    computed :
-      file : -> false
-      archive_file : -> true
-    remove_errors : ->
-      @set
-        title_error: false
-        revision_error: false
-    validate : ->
-      @_validate_nonblank_title()
-    _validate_nonblank_title : ->
-      @set('title', @get('title').trim())
-      @set("title_error", @get('title') == "" )
-      !@get('title_error')
-
   Doc = Ractive.extend
     template: '#template-download'
-    oninit : ->
-      @set('archive_upload_files',[])
     computed :
-      file : -> true
-      archive_file : -> false
       stripped_title : ->
         @get('title').replace(/\s/g,"").toLowerCase()
       title_edit_permitted : ->
         true
-    components :
-      archivedoc : ArchiveDoc
     download_file : ->
       window.location = @get('url')
     remove_errors : ->
       @set("title_error", false)
-      @set("revision_error", false)
     validate : ->
-      @_validate_title() && @_validate_revision()
+      @_validate_title()
     _validate_title : ->
       @set('title', @get('title').trim())
       if @get('title') == ""
         @set("title_error",true)
-        false
-      else
-        true
-    _validate_revision : ->
-      @set('revision', @get('revision').trim())
-      if @get('revision') == ""
-        @set("revision_error",true)
         false
       else
         true
@@ -273,7 +242,7 @@ $ ->
       flash.hide()
 
   window.start_page = ->
-    window.internal_document_uploader = new Ractive uploader_options
+    window.icc_reference_document_uploader = new Ractive uploader_options
 
   start_page()
 
