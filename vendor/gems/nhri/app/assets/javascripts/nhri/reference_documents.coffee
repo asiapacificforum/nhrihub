@@ -245,26 +245,3 @@ $ ->
     window.icc_reference_document_uploader = new Ractive uploader_options
 
   start_page()
-
-  # this is a hack to workaround a jquery-fileupload-ui bug
-  # that causes multiple cancel events, due to multiple event
-  # handlers being attached
-  #$('#uploads').on 'click', 'i.cancel', (event)->
-    #event.preventDefault()
-    #template = $(event.currentTarget).closest('.template-upload,.template-download')
-    #data = template.data('data') || {}
-    #data.context = data.context || template
-    #if data.abort
-      #data.abort()
-    #else
-      #data.errorThrown = 'abort'
-      ##this._trigger('fail', event, data)
-      #$(@).closest('.fileupload').data('blueimp-fileupload').options.fail(event)
-  window.replaceFileInput = (input) ->
-    inputClone = input.clone(true)
-    fileInputClone = inputClone
-    $('<form></form>').append(inputClone)[0].reset()
-    input.after(inputClone).detach()
-    $.cleanData input.unbind('remove')
-    input = inputClone
-    return
