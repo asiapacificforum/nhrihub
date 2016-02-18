@@ -36,11 +36,12 @@
           %table
             %tr
               %td{:style => "width:36%; text-align:left"}= t('.doc_title')
+              %td= t('.link')
               %td= t('.information')
               %td{:style => "width:16%"}=t('.edit')
               %td= t('.download')
               %td= t('.delete')
-        #accordion.panel-group.files{:role => "tablist", :name => 'icc_reference_document[file]'}
+        .panel-group.files
           <docs/>
 
 %script#template-download{:type => 'html/template'}
@@ -61,6 +62,9 @@
     %tr
       %td= t('original_filename', :scope => scope)
       %td.name {{ original_filename }}
+    %tr
+      %td= t('source_url', :scope => scope)
+      %td.source_url {{ source_url }}
     %tr
       %td= t('filesize', :scope => scope)
       %td.size {{ formatted_filesize }}
@@ -86,6 +90,12 @@
           %span.help-block.error#icc_title_error{:class =>"{{#icc_title_error}}has-error{{/}}"}= t('.icc_title_error_message')
         .fade.no_edit.editable.in
           %span {{ title }}
+      %td.source_url.form-group{'data-toggle'=>:edit, 'data-attribute'=>:source_url}
+        .fade.edit
+          %input.source_url{:name=>"icc_reference_document[source_url]", :value=>"{{source_url}}", :style => "width:100%"}
+        .fade.no_edit.editable.in
+          %span
+            %a{:href=>'{{ source_url }}'} {{source_url}}
       -# make sure it's on top of the next td, even though it precedes in the html
       %td.include_popover{:style => "text-align:center; width:8%"}
         .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
@@ -109,7 +119,7 @@
 
 %script#files{:type => 'ractive/template'}
   {{#files}}
-  <doc id='{{id}}' title='{{title}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' />
+  <doc id='{{id}}' title='{{title}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' source_url='{{source_url}}' />
   {{/files}}
 
 %script#flash_error_template{:type => 'template/ractive'}
@@ -117,6 +127,7 @@
     %li {{ message }}
 
   / The template to display files ready for upload
+
 %script#upload_template{:type => 'html/template'}
   .panel.panel-default.fade.template-upload{:intro => :fade}
     .panel-heading
@@ -137,10 +148,13 @@
         %tr
           %td.title
             %label{:for =>"icc_reference_document_title"}= t('.doc_title')
-            %input{:type => :text, :name => "icc_reference_document[title]", :id => "icc_reference_document_title", :list => :icc_files, :value => "{{title}}"}
+            %input#icc_reference_document_title{:type => :text, :name => "icc_reference_document[title]", :value => "{{title}}"}
             %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
             %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
             %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
+          %td.source_url
+            %label{:for =>"icc_reference_document_source_url"}= t('.doc_url')
+            %input#icc_reference_document_source_url{:type => :text, :name => "icc_reference_document[source_url]", :value => "{{source_url}}"}
           %td
             %div.start{'on-click'=>'submit()'}
               %i.fa.fa-cloud-upload.fa-lg

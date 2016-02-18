@@ -38,7 +38,7 @@ class Nhri::ReferenceDocumentsController < ApplicationController
   def doc_params
     attrs = [:title, :revision, :file, :original_filename,
              :original_type, :lastModifiedDate, :filesize,
-             :user_id]
+             :user_id, :source_url]
     params.
       require(:icc_reference_document).
       permit(*attrs)

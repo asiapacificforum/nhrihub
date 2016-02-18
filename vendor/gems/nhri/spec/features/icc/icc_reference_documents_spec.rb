@@ -26,6 +26,7 @@ feature "internal document management", :js => true do
     expect(page.find('td.title .no_edit').text).to eq "my important document"
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#icc_reference_document_title").set("some file name")
+    page.find("#icc_reference_document_source_url").set("http://www.nytimes.com")
     expect{upload_files_link.click; sleep(0.5)}.to change{IccReferenceDocument.count}.from(1).to(2)
     expect(page).to have_css(".files .template-download", :count => 2)
     doc = IccReferenceDocument.last
@@ -106,6 +107,7 @@ feature "internal document management", :js => true do
     expect(page.find('.popover-content .size' ).text).to         match /\d+\.?\d+ KB/
     expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.created_at.to_s)
     expect(page.find('.popover-content .uploadedBy' ).text).to   eq (@doc.uploaded_by.first_last_name)
+    expect(page.find('.popover-content .source_url' ).text).to   eq (@doc.source_url)
     page.execute_script("$('div.icon.details').first().trigger('mouseout')")
     expect(page).not_to have_css('.fileDetails')
   end
@@ -113,7 +115,12 @@ feature "internal document management", :js => true do
   scenario "edit filename" do
     click_the_edit_icon(page)
     page.find('.template-download input.title').set("new document title")
+    page.find('.template-download input.source_url').set("http://www.google.com")
     expect{ click_edit_save_icon(page) }.to change{ @doc.reload.title }.to("new document title")
+    expect(@doc.source_url).to eq "http://www.google.com"
+    sleep(0.3)
+    expect(page.find('.template-download .title .no_edit').text).to eq "new document title"
+    expect(page.find('.template-download .source_url .no_edit').text).to eq "http://www.google.com"
   end
 
   scenario "edit filename to blank" do
@@ -146,6 +153,9 @@ feature "internal document management", :js => true do
     end
   end
 
+  scenario "open the source_url link" do
+    expect(1).to eq "ha ha fix me!"
+  end
 
   describe "add multiple icc accreditation files" do
     before do

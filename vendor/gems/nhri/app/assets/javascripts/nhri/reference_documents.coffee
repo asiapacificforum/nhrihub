@@ -152,6 +152,7 @@ $ ->
           {name : 'icc_reference_document[filesize]', value : @get('size')}
           {name : 'icc_reference_document[original_type]', value : @get('type')}
           {name : 'icc_reference_document[original_filename]', value : @get('name')}
+          {name : 'icc_reference_document[source_url]', value : @get('source_url')}
         ]
       stripped_title : ->
         @get('title').replace(/\s/g,"").toLowerCase()
