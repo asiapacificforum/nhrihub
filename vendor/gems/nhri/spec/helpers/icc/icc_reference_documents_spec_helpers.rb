@@ -115,4 +115,8 @@ module IccReferenceDocumentsSpecHelpers
   def upload_image
     upload_file_path('first_upload_image_file.png')
   end
+
+  def click_the_source_url_link
+    page.find('a.source_url').click
+  end
 end

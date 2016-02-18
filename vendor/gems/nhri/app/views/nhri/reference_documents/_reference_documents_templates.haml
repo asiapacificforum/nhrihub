@@ -95,7 +95,7 @@
           %input.source_url{:name=>"icc_reference_document[source_url]", :value=>"{{source_url}}", :style => "width:100%"}
         .fade.no_edit.editable.in
           %span
-            %a{:href=>'{{ source_url }}'} {{source_url}}
+            %a.source_url{:href=>'{{ source_url }}', :target=>"_new"} {{source_url}}
       -# make sure it's on top of the next td, even though it precedes in the html
       %td.include_popover{:style => "text-align:center; width:8%"}
         .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}

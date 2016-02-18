@@ -153,9 +153,6 @@ feature "internal document management", :js => true do
     end
   end
 
-  scenario "open the source_url link" do
-    expect(1).to eq "ha ha fix me!"
-  end
 
   describe "add multiple icc accreditation files" do
     before do
@@ -208,5 +205,25 @@ feature "internal document management when no filetypes have been configured", :
     expect(page).to have_css('.error', :text => "No permitted file types have been configured")
     page.find(".template-upload i.cancel").click
     expect(page).not_to have_css(".files .template_upload")
+  end
+end
+
+feature "open document from source_url", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  extend  ActiveSupport::NumberHelper
+  include IccReferenceDocumentsSpecHelpers
+  include IccReferenceDocumentDefaultSettings
+
+  before do
+    @doc = FactoryGirl.create(:icc_reference_document, :title => "my important document", :source_url => "http://www.nytimes.com")
+    visit nhri_reference_documents_path('en')
+  end
+
+  scenario "open the source_url link" do
+    click_the_source_url_link
+    page.switch_to_window(page.windows[1])
+    expect(page.evaluate_script('window.location.href')).to include @doc.source_url
   end
 end
