@@ -11,7 +11,9 @@ Rails.application.routes.draw do
       resources :nhr_indicators
       resources :hr_protection
       resources :icc
-      resources :reference_documents
+      resources :reference_documents do
+        resources :reminders, :controller => "icc_reference_document/reminders"
+      end
       resources :accreditation_required_docs
       get 'admin', :to => "admin#index"
     end

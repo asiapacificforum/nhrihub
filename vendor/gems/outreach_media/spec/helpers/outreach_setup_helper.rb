@@ -44,7 +44,7 @@ module OutreachSetupHelper
   end
 
   def setup_impact_ratings
-    ImpactRating::DefaultValues.each { |pr| ImpactRating.create(:rank => pr.rank, :text => pr.text) }
+    ImpactRating::DefaultValues.each { |pr| ImpactRating.create(:rank => pr.rank) }
   end
 
   def setup_areas

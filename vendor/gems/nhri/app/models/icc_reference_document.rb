@@ -3,6 +3,7 @@ class IccReferenceDocument < ActiveRecord::Base
 
   belongs_to :user
   alias_method :uploaded_by, :user
+  has_many :reminders, :as => :remindable, :dependent => :delete_all
 
   attachment :file
 
@@ -29,13 +30,19 @@ class IccReferenceDocument < ActiveRecord::Base
           :methods => [:uploaded_by,
                        :url,
                        :formatted_creation_date,
-                       :formatted_filesize ] )
+                       :formatted_filesize,
+                       :reminders,
+                       :create_reminder_url ] )
   end
 
   def url
     if persisted?
       Rails.application.routes.url_helpers.nhri_reference_document_path(I18n.locale, self)
     end
+  end
+
+  def create_reminder_url
+    Rails.application.routes.url_helpers.nhri_reference_document_reminders_path(:en,id) if persisted?
   end
 
   def formatted_creation_date

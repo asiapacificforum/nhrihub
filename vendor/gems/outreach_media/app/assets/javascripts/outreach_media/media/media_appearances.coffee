@@ -547,7 +547,6 @@ $ ->
       @update()
 
   window.start_page = ->
-    console.log "starting ractive"
     window.media = new Ractive options
     outreach_media_datepicker.start(media)
 

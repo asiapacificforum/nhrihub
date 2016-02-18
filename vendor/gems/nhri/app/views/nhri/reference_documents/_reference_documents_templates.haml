@@ -110,6 +110,8 @@
             %i.fa.fa-check.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_save"}
           .fade.no_edit.in
             %i.fa.fa-pencil-square-o.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_start", :style => "position:relative; left:-34px;"}
+      %td{:style => "width: 8%"}
+        .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
       %td{:style => "text-align:center; width:8%"}
         .icon
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
