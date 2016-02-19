@@ -2,7 +2,7 @@ class RemindersController < ApplicationController
   def create
     reminder = Reminder.new(reminder_params)
     if reminder.save
-      render :json => Reminder.where(:remindable_id => reminder.remindable_id), :status => 200
+      render :json => Reminder.where(:remindable_id => reminder.remindable_id, :remindable_type => reminder.remindable_type), :status => 200
     else
       render :nothing => true, :status => 500
     end

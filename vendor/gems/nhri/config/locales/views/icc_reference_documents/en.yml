@@ -2,7 +2,7 @@
 #en.nhri.ref.reference_documents_templates.add
 en:
   nhri:
-    reference_documents:
+    icc_reference_documents:
       index:
         heading: "ICC Accreditation Reference Documents"
         error: "Error"

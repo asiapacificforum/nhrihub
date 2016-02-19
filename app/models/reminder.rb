@@ -1,4 +1,3 @@
-
 class Reminder < ActiveRecord::Base
   include ActionDispatch::Routing::PolymorphicRoutes
   include Rails.application.routes.url_helpers

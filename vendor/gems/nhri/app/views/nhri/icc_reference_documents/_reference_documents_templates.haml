@@ -79,9 +79,9 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 %script#document_template{:type => 'template/html'}
-  %table.icc_reference_document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"icc_reference_document_editable{{id}}"}
-    %tr
-      %td.title.form-group{'data-toggle' => '{{#title_edit_permitted}}edit{{/}}', :style => "width:36%", 'data-attribute' => :title}
+  .icc_reference_document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"icc_reference_document_editable{{id}}"}
+    .row
+      .col-md-2.title.form-group{'data-toggle' => '{{#title_edit_permitted}}edit{{/}}', :style => "width:30%; margin-bottom:0px;", 'data-attribute' => :title}
         .fade.edit
           %input.title{:name => "icc_reference_document[title]", :'value' => "{{ title }}", :style => "width:100%"}
           %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
@@ -90,34 +90,36 @@
           %span.help-block.error#icc_title_error{:class =>"{{#icc_title_error}}has-error{{/}}"}= t('.icc_title_error_message')
         .fade.no_edit.editable.in
           %span {{ title }}
-      %td.source_url.form-group{'data-toggle'=>:edit, 'data-attribute'=>:source_url}
+      .col-md-2.source_url.form-group{'data-toggle'=>:edit, 'data-attribute'=>:source_url, :style => "width:20%; margin-bottom:0px;"}
         .fade.edit
           %input.source_url{:name=>"icc_reference_document[source_url]", :value=>"{{source_url}}", :style => "width:100%"}
         .fade.no_edit.editable.in
           %span
             %a.source_url{:href=>'{{ source_url }}', :target=>"_new"} {{source_url}}
       -# make sure it's on top of the next td, even though it precedes in the html
-      %td.include_popover{:style => "text-align:center; width:8%"}
+      .col-md-2.include_popover{:style => "text-align:center; width:8%"}
         .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
           %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
-      %td{:style => "text-align:center; width:8%"}
+      .col-md-1{:style => "text-align:center; width:8%"}
         .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
           .fade.edit
             %i.fa.fa-remove.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_cancel",:style => "position:relative; left:15px;"}
-      %td{:style => "text-align:center; width:8%"}
-        %div.icon{:'data-toggle' => 'edit'}
+      .col-md-1{:style => "text-align:center; width:8%"}
+        .icon{:'data-toggle' => 'edit'}
           .fade.edit
             %i.fa.fa-check.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_save"}
           .fade.no_edit.in
             %i.fa.fa-pencil-square-o.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_start", :style => "position:relative; left:-34px;"}
-      %td{:style => "width: 8%"}
+      -# the actions class it just to facilitate testing with a common reminders test spec
+      .col-md-1.actions{:style => "width: 8%"}
         .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
-      %td{:style => "text-align:center; width:8%"}
+      .col-md-1{:style => "text-align:center; width:8%"}
         .icon
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
-      %td{:style => "text-align:center; width:8%"}
-        %div.icon.delete{'decorator'=>'doc_deleter'}
+      .col-md-1{:style => "text-align:center; width:8%"}
+        .icon.delete{'decorator'=>'doc_deleter'}
           %i.fa.fa-trash-o.fa-lg
+    <reminders/>
 
 %script#files{:type => 'ractive/template'}
   {{#files}}

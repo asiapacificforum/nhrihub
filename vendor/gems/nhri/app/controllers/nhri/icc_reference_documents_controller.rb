@@ -1,6 +1,8 @@
-class Nhri::ReferenceDocumentsController < ApplicationController
+require 'icc_reference_document' # why? don't know, but without it Ruby fails to find the IccReferenceDocument constant!
+
+class Nhri::IccReferenceDocumentsController < ApplicationController
   def index
-    @icc_reference_document = IccReferenceDocument.new
+    @icc_reference_document  = IccReferenceDocument.new
     @icc_reference_documents = IccReferenceDocument.all
   end
 
@@ -29,7 +31,7 @@ class Nhri::ReferenceDocumentsController < ApplicationController
     doc = IccReferenceDocument.find(params[:id])
     send_opts = { :filename => doc.original_filename,
                   :type => doc.original_type,
-                  :disposition => :attachment }
+                 :disposition => :attachment }
     send_file doc.file.to_io, send_opts
   end
 

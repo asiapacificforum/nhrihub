@@ -1,6 +1,6 @@
 require 'reminders_controller'
 
-class Nhri::IccReferenceDocument::RemindersController < RemindersController
+class Nhri::IccReferenceDocuments::RemindersController < RemindersController
   # methods must be included here in order to control permissions
   def create
     super

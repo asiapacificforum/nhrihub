@@ -194,6 +194,8 @@ $ ->
         @get('title').replace(/\s/g,"").toLowerCase()
       title_edit_permitted : ->
         true
+      reminders_count : ->
+        @get('reminders').length
     download_file : ->
       window.location = @get('url')
     remove_errors : ->
@@ -209,6 +211,8 @@ $ ->
         true
     add_file : (file)->
       @set(file)
+    show_reminders_panel : ->
+      $(@find('#reminders_modal')).modal('show')
 
   Docs = Ractive.extend
     template: '#files'

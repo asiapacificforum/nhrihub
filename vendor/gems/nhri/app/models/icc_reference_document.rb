@@ -37,12 +37,12 @@ class IccReferenceDocument < ActiveRecord::Base
 
   def url
     if persisted?
-      Rails.application.routes.url_helpers.nhri_reference_document_path(I18n.locale, self)
+      Rails.application.routes.url_helpers.nhri_icc_reference_document_path(I18n.locale, self)
     end
   end
 
   def create_reminder_url
-    Rails.application.routes.url_helpers.nhri_reference_document_reminders_path(:en,id) if persisted?
+    Rails.application.routes.url_helpers.nhri_icc_reference_document_reminders_path(:en,id) if persisted?
   end
 
   def formatted_creation_date
@@ -51,5 +51,9 @@ class IccReferenceDocument < ActiveRecord::Base
 
   def formatted_filesize
     ActiveSupport::NumberHelper.number_to_human_size(filesize)
+  end
+
+  def namespace
+    :nhri
   end
 end
