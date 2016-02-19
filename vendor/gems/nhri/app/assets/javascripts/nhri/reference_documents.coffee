@@ -25,7 +25,7 @@ $ ->
     fileInput: '#primary_fileinput'
     #replaceFileInput: false # this doesn't seem to cause any problem, and it solves problems caused by replacing the file input!
     replaceFileInput: true
-    url : 'reference_documents.json',
+    url : 'icc_reference_documents.json',
     paramName : 'icc_reference_document[file]',
     uploadTemplateId : '#upload_template' 
     uploadTemplate : Ractive.parse($('#upload_template').html())

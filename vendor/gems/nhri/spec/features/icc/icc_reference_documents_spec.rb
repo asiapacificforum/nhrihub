@@ -17,13 +17,13 @@ feature "internal document management", :js => true do
     SiteConfig['nhri.icc_reference_documents.filetypes'] = ['pdf']
     SiteConfig['nhri.icc_reference_documents.filesize'] = 3
     @doc = FactoryGirl.create(:icc_reference_document, :title => "my important document")
-    visit nhri_reference_documents_path('en')
+    visit nhri_icc_reference_documents_path('en')
   end
 
   scenario "add a new document" do
     expect(page_heading).to eq "ICC Accreditation Reference Documents"
     expect(page_title).to eq "ICC Accreditation Reference Documents"
-    expect(page.find('td.title .no_edit').text).to eq "my important document"
+    expect(page.find('div.title .no_edit').text).to eq "my important document"
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#icc_reference_document_title").set("some file name")
     page.find("#icc_reference_document_source_url").set("http://www.nytimes.com")
@@ -81,7 +81,7 @@ feature "internal document management", :js => true do
 
   scenario "filesize threshold increased by user config" do
     IccReferenceDocument.maximum_filesize = 8
-    visit nhri_reference_documents_path('en')
+    visit nhri_icc_reference_documents_path('en')
     page.attach_file("primary_file", big_upload_document, :visible => false)
     expect(page).not_to have_css('.error', :text => "File is too large")
     page.find(".template-upload i.cancel").click
@@ -130,16 +130,16 @@ feature "internal document management", :js => true do
       not_to change{ @doc.reload.title }
     expect(page).to have_selector(".icc_reference_document .title .edit.in #title_error", :text => "Title cannot be blank")
     click_edit_cancel_icon(page)
-    expect(page.find('td.title .no_edit').text).to eq "my important document"
+    expect(page.find('div.title .no_edit').text).to eq "my important document"
   end
 
   scenario "start editing, cancel editing, start editing" do
     click_the_edit_icon(page)
     page.find('.template-download input.title').set("new document title")
     click_edit_cancel_icon(page)
-    expect(page.find('td.title .no_edit').text).to eq "my important document"
+    expect(page.find('div.title .no_edit').text).to eq "my important document"
     click_the_edit_icon(page)
-    expect(page.find('td.title .edit input').value).to eq "my important document"
+    expect(page.find('div.title .edit input').value).to eq "my important document"
   end
 
   scenario "download a file" do
@@ -197,7 +197,7 @@ feature "internal document management when no filetypes have been configured", :
   include IccReferenceDocumentDefaultSettings
 
   before do
-    visit nhri_reference_documents_path('en')
+    visit nhri_icc_reference_documents_path('en')
   end
 
   scenario "upload an unpermitted file type and cancel" do
@@ -218,7 +218,7 @@ feature "open document from source_url", :js => true do
 
   before do
     @doc = FactoryGirl.create(:icc_reference_document, :title => "my important document", :source_url => "http://www.nytimes.com")
-    visit nhri_reference_documents_path('en')
+    visit nhri_icc_reference_documents_path('en')
   end
 
   scenario "open the source_url link" do

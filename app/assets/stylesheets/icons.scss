@@ -16,4 +16,7 @@
 .counter[data-count="0"]:after{
   display : none;
 }
-
+//yuk! special case, can we eliminate it?
+.icc_reference_document .alarm_icon.counter:after{
+  right:1em;
+}

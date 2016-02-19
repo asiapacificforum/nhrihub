@@ -4,7 +4,7 @@
   .fileupload.buttonbar{:decorator => "primary_fileupload", :'data-file-input' => '#primary_fileinput' }
     / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
     .row.fileupload-buttonbar
-      .col-lg-9
+      .col-lg-10
         / The fileinput-button span is used to style the file input field as button
         %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
           %i.fa.fa-plus.fa-lg{'onclick'=>"$('#primary_fileinput').click()", :style => "color:white"}
@@ -18,29 +18,28 @@
           %span= t('.cancel')
     .row.fileupload_progress
       / The global progress state
-      .col-lg-9.fileupload-progress.fade
+      .col-lg-10.fileupload-progress.fade
         / The global progress bar
         .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
           .progress-bar.progress-bar-success{:style => "width:0%;"}
         / The extended global progress state
         .progress-extended  
     .row
-      .col-lg-9#uploads
+      .col-lg-10#uploads
         <uploadfiles/>
     .row
-      .col-lg-9.the_files
+      .col-lg-10.the_files
     .row
-      .col-lg-9
+      .col-lg-10
         / The table listing the files available for upload/download
-        .headings
-          %table
-            %tr
-              %td{:style => "width:36%; text-align:left"}= t('.doc_title')
-              %td= t('.link')
-              %td= t('.information')
-              %td{:style => "width:16%"}=t('.edit')
-              %td= t('.download')
-              %td= t('.delete')
+        .row.headings{:style => "margin-left:0px; margin-right:0px;"}
+          .col-md-2{:style => "padding-right:3px; width:30%"}= t('.doc_title')
+          .col-md-2{:style => "padding-left:3px; padding-right:3px; width:20%"}= t('.link')
+          .col-md-2{:style => "text-align: center; padding-left:3px; padding-right:3px; width:8%"}= t('.information')
+          .col-md-1{:style => "text-align: center; padding-left:3px; padding-right:3px; width:16%"}=t('.edit')
+          .col-md-1{:style => "text-align: center; padding-left:3px; padding-right:3px; width:8%"}= t('.reminder')
+          .col-md-1{:style => "text-align: center; padding-left:3px; padding-right:3px; width:8%"}= t('.download')
+          .col-md-1{:style => "text-align: center; padding-left:3px; padding-right:3px; width: 8%"}= t('.delete')
         .panel-group.files
           <docs/>
 
@@ -79,7 +78,7 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 %script#document_template{:type => 'template/html'}
-  .icc_reference_document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"icc_reference_document_editable{{id}}"}
+  .icc_reference_document.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"icc_reference_document_editable{{id}}"}
     .row
       .col-md-2.title.form-group{'data-toggle' => '{{#title_edit_permitted}}edit{{/}}', :style => "width:30%; margin-bottom:0px;", 'data-attribute' => :title}
         .fade.edit
@@ -90,7 +89,7 @@
           %span.help-block.error#icc_title_error{:class =>"{{#icc_title_error}}has-error{{/}}"}= t('.icc_title_error_message')
         .fade.no_edit.editable.in
           %span {{ title }}
-      .col-md-2.source_url.form-group{'data-toggle'=>:edit, 'data-attribute'=>:source_url, :style => "width:20%; margin-bottom:0px;"}
+      .col-md-2.source_url.form-group{'data-toggle'=>:edit, 'data-attribute'=>:source_url, :style => "width:20%; margin-bottom:0px; padding-left:3px;"}
         .fade.edit
           %input.source_url{:name=>"icc_reference_document[source_url]", :value=>"{{source_url}}", :style => "width:100%"}
         .fade.no_edit.editable.in
@@ -111,8 +110,8 @@
           .fade.no_edit.in
             %i.fa.fa-pencil-square-o.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_start", :style => "position:relative; left:-34px;"}
       -# the actions class it just to facilitate testing with a common reminders test spec
-      .col-md-1.actions{:style => "width: 8%"}
-        .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
+      .col-md-1.actions{:style => "text-align:center; width: 8%"}
+        .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; background-position-x:50%;"}
       .col-md-1{:style => "text-align:center; width:8%"}
         .icon
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
