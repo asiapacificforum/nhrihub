@@ -18,6 +18,11 @@ en:
         icc: 'ICC'
         int: "ICC internal documents"
         ref: "ICC accreditation reference documents"
+      adv:
+        tor: "Terms of Reference"
+        memb: "Membership"
+        min: "Minutes"
+        issues: "Issues"
       gg: 'Good Governance'
       outreach_media: 'Outreach and media'
       outreach: 'Outreach'

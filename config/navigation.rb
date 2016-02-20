@@ -2,10 +2,15 @@ SimpleNavigation::Configuration.run do |navigation|
   navigation.items do |primary|
     primary.item :nhri, t('layout.nav.nhri') do |nhri|
       nhri.item :hre, t('layout.nav.hre'), nhri_hr_education_index_path
-      nhri.item :adv_council, t('layout.nav.adv_council'), nhri_advisory_council_index_path
+      nhri.item :adv_council, t('layout.nav.adv_council'), :class => 'dropdown-submenu' do |adv|
+        adv.item :tor, t('layout.nav.adv.tor'), nhri_advisory_council_terms_of_references_path
+        adv.item :memb, t('layout.nav.adv.memb'), nhri_advisory_council_members_path
+        adv.item :min, t('layout.nav.adv.min'), nhri_advisory_council_meetings_path
+        adv.item :issues, t('layout.nav.adv.issues'), nhri_advisory_council_issues_path
+      end
       nhri.item :nhr_indicators, t('layout.nav.nhr_indicators'), nhri_nhr_indicators_path
       nhri.item :hr_prot, t('layout.nav.hr_prot'), nhri_hr_protection_index_path
-      nhri.item :icc, t('layout.nav.icc.icc') do |icc|
+      nhri.item :icc, t('layout.nav.icc.icc'), :class => 'dropdown-submenu' do |icc|
         icc.item :icc_int, t('layout.nav.icc.int'), nhri_icc_index_path
         icc.item :icc_ref, t('layout.nav.icc.ref'), nhri_icc_reference_documents_path
       end

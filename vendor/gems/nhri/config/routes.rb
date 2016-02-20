@@ -7,7 +7,12 @@ Rails.application.routes.draw do
         resources :filetypes, :param => :type, :only => [:create, :destroy]
       end
       resources :hr_education
-      resources :advisory_council
+      namespace :advisory_council do
+        resources :terms_of_references
+        resources :members
+        resources :meetings
+        resources :issues
+      end
       resources :nhr_indicators
       resources :hr_protection
       resources :icc

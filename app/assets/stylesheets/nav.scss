@@ -96,3 +96,7 @@ $nav_active_text : #645252;
   color: #E4E2D9;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 }
+
+//override the style from the simple-navigation-bootstrap gem
+//as it duplicates bootstrap's own caret
+a.dropdown-toggle>b.caret { display : none; }
