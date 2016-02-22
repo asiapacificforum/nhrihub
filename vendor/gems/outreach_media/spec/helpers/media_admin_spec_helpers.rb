@@ -45,7 +45,7 @@ module MediaAdminSpecHelpers
   end
 
   def new_filetype_button
-    page.find("#new_outreach_media_filetype table button")
+    page.find("#new_outreach_event_filetype table button")
   end
 
   def set_filesize(val)

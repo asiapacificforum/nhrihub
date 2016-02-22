@@ -1,0 +1,199 @@
+%script#uploader_template{:type => 'html/template'}
+  / The file upload form used as target for the jQuery fileupload widget
+  / this is the fileupload configuration when uploading files via the buttonbar
+  .fileupload.buttonbar{:decorator => "primary_fileupload:{{required_files_titles}}", :'data-file-input' => '#primary_fileinput' }
+    / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
+    .row.fileupload-buttonbar
+      .col-lg-9
+        / The fileinput-button span is used to style the file input field as button
+        %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
+          %i.fa.fa-plus.fa-lg{'onclick'=>"$('#primary_fileinput').click()", :style => "color:white"}
+          %span{'onclick'=>"$('#primary_fileinput').click()"}  t('.add')
+          %input#primary_fileinput{:multiple => "multiple", :name => "primary_file", :type => "file"}
+        %button.btn.btn-primary.start{'on-click'=>'start_upload()', :type => "submit"}
+          %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
+          %span  t('.start')
+        %button.btn.btn-warning.cancel{:type => "reset", 'on-click'=>'flash_hide()'}
+          %i.fa.fa-ban.fa-lg{:style => "color:white"}
+          %span  t('.cancel')
+    .row.fileupload_progress
+      / The global progress state
+      .col-lg-9.fileupload-progress.fade
+        / The global progress bar
+        .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
+          .progress-bar.progress-bar-success{:style => "width:0%;"}
+        / The extended global progress state
+        .progress-extended  
+    .row
+      .col-lg-9#uploads
+        <uploadfiles/>
+    .row
+      .col-lg-9.the_files
+    .row
+      .col-lg-9
+        / The table listing the files available for upload/download
+        .headings
+          %table
+            %tr
+              %td{:style => "width:36%; text-align:left"}  t('.doc_title')
+              %td{:style => "text-align:left"}  t('.revision')
+              %td  t('.information')
+              %td{:style => "width:16%"}  t('.edit')
+              %td  t('.download')
+              %td  t('.delete')
+        .panel-group.files#terms_of_reference_versions
+          <docs/>
+
+%script#template-download{:type => 'html/template'}
+  .panel.panel-default.template-download
+    #headingOne.panel-heading{:role => "tab"}
+      %strong.error.text-danger {{= file.error }}
+      {{> document_template }}
+    .panel-collapse.collapse{:role => "tabpanel", :id => "collapse{{ id }}"}
+      .panel-body
+        %h4 Archive
+        {{^archive_files}}
+        %p empty
+        {{/}}
+        {{#_(archive_files).sortBy(revision).reverse()}}
+        <archivedoc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' update_url='{{update_url}}' delete_url='{{delete_url}}' url='{{url}}' save_url='{{save_url}}' document_group_id='{{document_group_id}}' />
+        {{/}}
+
+%script#popover_template{:type => "template/ractive"}
+  .popover.fileDetails{:role=>"tooltip"}
+    .arrow
+    %h3.popover-title
+    .popover-content
+
+%script#detailsContent{:type => 'text/ractive'}
+  - scope = 'activerecord.attributes.terms_of_reference_version'
+  %table{:style => 'width:500px'}
+    %tr
+      %td  t('original_filename', :scope => scope)
+      %td.name {{ original_filename }}
+    %tr
+      %td  t('filesize', :scope => scope)
+      %td.size {{ formatted_filesize }}
+    %tr
+      %td  t('revision', :scope => scope)
+      %td.rev {{ revision }}
+    %tr
+      %td  t('lastModified', :scope => scope)
+      %td.lastModified {{ formatted_modification_date }}
+    %tr
+      %td  t('uploadedOn', :scope => scope)
+      %td.uploadedOn {{ formatted_creation_date }}
+    %tr
+      %td  t('uploadedBy', :scope => scope)
+      %td.uploadedBy {{ uploaded_by.first_last_name }}
+
+%script#detailsTitle{:type => "template/ractive"}
+  %span{:style => 'z-index:20'}  t('.details')
+
+%script#document_template{:type => 'template/html'}
+  %table.terms_of_reference_version.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"terms_of_reference_version_editable{{id}}"}
+    %tr
+      %td.title.form-group{'data-toggle' => '{{#title_edit_permitted}}edit{{/}}', :style => "width:36%", 'data-attribute' => :title}
+        .fade.edit
+          %input.title{:name => "terms_of_reference_version[title]", :'value' => "{{ title }}", :style => "width:100%"}
+          %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}  t('.title_error_message')
+          %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}  t('.duplicate_title_error_message')
+          %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}  t('.duplicate_title_error_message')
+          %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}"}  t('.icc_revision_in_non_icc_primary_error_message')
+          %span.help-block.error#icc_title_error{:class =>"{{#icc_title_error}}has-error{{/}}"}  t('.icc_title_error_message')
+        .fade.no_edit.editable.in
+          %span {{ title }}
+      %td.revision.form-group{'data-attribute' => :revision, 'data-toggle' => :edit, :'data-name' => 'revision', :style => "width:8%", :class =>"{{#revision_error}}has-error{{/}}"}
+        .fade.edit
+          %input.revision{ :name => "terms_of_reference_version[revision]", :'value' => "{{ revision }}", :style => 'width:40px'}
+          %span.help-block.error#revision_error  t('.revision_error_message')
+        .fade.no_edit.editable.in
+          %span {{ revision }}
+      -# make sure it's on top of the next td, even though it precedes in the html
+      %td.include_popover{:style => "text-align:center; width:8%"}
+        .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
+          %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
+      %td{:style => "text-align:center; width:8%"}
+        .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
+          .fade.edit
+            %i.fa.fa-remove.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_cancel",:style => "position:relative; left:30px;"}
+      %td{:style => "text-align:center; width:8%"}
+        %div.icon{:'data-toggle' => 'edit'}
+          .fade.edit
+            %i.fa.fa-check.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+          .fade.no_edit.in
+            %i.fa.fa-pencil-square-o.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_start"}
+      %td{:style => "text-align:center; width:8%"}
+        .icon
+          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
+      %td{:style => "text-align:center; width:8%"}
+        %div.icon.delete{'decorator'=>'doc_deleter'}
+          %i.fa.fa-trash-o.fa-lg
+
+%script#files{:type => 'ractive/template'}
+  {{#files}}
+  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' />
+  {{/files}}
+
+%script#flash_error_template{:type => 'template/ractive'}
+  %ul.error{:style => "display:none"}
+    %li {{ message }}
+
+%script#terms_of_reference_version_title_selector{:type => 'html/template'}
+  %label{:for =>"terms_of_reference_version_title"}  t('.doc_title')
+  {{#if is_icc_doc}}
+  %span#icc_doc_title{:style => "margin-left:26px"} {{ title }}
+  {{else}}
+  %input{:type => :text, :name => "terms_of_reference_version[title]", :id => "terms_of_reference_version_title", :list => :icc_files, :value => "{{title}}"}
+  %datalist#icc_files
+    {{#required_files_titles}}
+    %option{:value=>'{{title}}'}
+    {{/required_files_titles}}
+  {{/if}}
+
+%script#icc_title_selector{:type => 'html/template'}
+  .form-horizontal
+    .form-group
+      %label.control-label.col-sm-3{:for =>"terms_of_reference_version_title", :style => "left: -21px;"}  t('.doc_title')
+      .col-sm-6
+        %select.form-control.accreditation_required_doc_title{:style => "height:28px; position: relative; top:3px;"}
+          %option{:value => 0}  t('.select_icc')
+          {{#unassigned_titles}}
+          %option{:value=>'{{document_group_id}}'} {{title}}
+          {{/unassigned_titles}}
+
+  / The template to display files ready for upload
+
+%script#upload_template{:type => 'html/template'}
+  .panel.panel-default.fade.template-upload{:intro => :fade}
+    .panel-heading
+      %table{:width => '100%'}
+        %tr
+          %td{:colspan => 2}
+            %p.name {{ name }}
+            .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
+              %span.help-block.error#filesize_error  t('.too_large')
+            .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
+              %span.help-block.error#filetype_error  t('.unpermitted_type')
+            .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
+              %span.help-block.error#unconfigured_filetypes_error  t('.noFileTypes')
+          %td{:colspan => 2}
+            .size
+            .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
+              .progress-bar.progress-bar-success{:style => "width:0%"}
+        %tr
+          %td.title
+            {{> .context+"_title_selector" }}
+            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}  t('.title_error_message')
+            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}  t('.duplicate_title_error_message')
+            %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}  t('.duplicate_title_error_message')
+            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}"}  t('.icc_revision_in_non_icc_primary_error_message')
+          %td.revision
+            %label{:for => "terms_of_reference_version_revision"}  t('.revision')
+            %input{:type => :text, :name => "terms_of_reference_version[revision]", :id => "terms_of_reference_version_revision", :style => "width:40px", :value => "{{revision}}"}
+          %td
+            %div.start{'on-click'=>'submit()'}
+              %i.fa.fa-cloud-upload.fa-lg
+          %td
+            %div.cancel
+              %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}

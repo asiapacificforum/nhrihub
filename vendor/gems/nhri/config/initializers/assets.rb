@@ -1,1 +1,1 @@
-Rails.application.config.assets.precompile += %w( nhri/reference_documents.js )
+Rails.application.config.assets.precompile += %w( nhri/reference_documents.js nhri/terms_of_reference.js)

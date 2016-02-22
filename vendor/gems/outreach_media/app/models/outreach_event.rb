@@ -1,4 +1,7 @@
 class OutreachEvent < ActiveRecord::Base
+  include FileConstraints
+  ConfigPrefix = 'outreach_event'
+
   belongs_to :impact_rating
   delegate :text, :rank, :rank_text, :to => :impact_rating, :prefix => true, :allow_nil => true
   has_many :reminders, :as => :remindable, :dependent => :delete_all
@@ -13,14 +16,6 @@ class OutreachEvent < ActiveRecord::Base
   has_many :performance_indicators, :through => :outreach_event_performance_indicators
 
   delegate :rank, :to => :impact_rating, :prefix => true, :allow_nil => true
-
-  def self.maximum_filesize
-    SiteConfig['outreach_media.filesize']*1000000
-  end
-
-  def self.permitted_filetypes
-    SiteConfig['outreach_media.filetypes'].to_json
-  end
 
   def as_json(options={})
     super({:except => [:updated_at,

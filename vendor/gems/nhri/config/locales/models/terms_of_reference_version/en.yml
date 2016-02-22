@@ -1,0 +1,5 @@
+en:
+  activerecord:
+    models:
+      terms_of_reference_version: "Terms of Reference, revision %{revision} "
+

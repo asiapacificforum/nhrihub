@@ -1,7 +1,7 @@
 .message_block
 %h1=t('.heading')
 
-%h4=t('.subheading.required_files_titles')
+%h4=t('.accreditation.required_files_titles')
 = render :partial => 'admin/collection_configuration',
   :locals => { :new_item => @doc_group,
                :create_url => nhri_icc_accreditation_required_document_groups_path,
@@ -11,19 +11,41 @@
                :param_name => 'title',
                :placeholder => 'e.g. Statement of Compliance'}
 
-%h4= t('.filesize_max')
-= render :partial => 'admin/document_filesize_configuration', :locals => { :update_url => nhri_icc_filesize_path }
+%h4= t('.reference.filesize_max')
+#icc_reference_document
+  = render :partial => 'admin/document_filesize_configuration',
+    :locals => { :update_url => nhri_icc_filesize_path ,
+                 :param => @icc_reference_document_filesize,
+                 :context => "icc_reference_document"}
 
-%h4= t('.filetypes')
-= render :partial => 'admin/collection_configuration',
-  :locals => { :new_item => @filetype,
-               :create_url => nhri_icc_filetypes_path,
-               :delete_url => nhri_icc_filetype_path('id'),
-               :collection => @icc_reference_document_filetypes,
-               :item_name => 'filetype',
-               :param_name => 'ext',
-               :placeholder => 'e.g. ppt'}
+%h4= t('.reference.filetypes')
+#icc_reference_document_filetypes
+  = render :partial => 'admin/collection_configuration',
+    :locals => { :new_item => @icc_reference_doc_filetype,
+                 :create_url => nhri_icc_filetypes_path,
+                 :delete_url => nhri_icc_filetype_path('id'),
+                 :collection => @icc_reference_document_filetypes,
+                 :item_name => 'icc_reference_document_filetype',
+                 :param_name => 'ext',
+                 :placeholder => 'e.g. ppt'}
 
+%h4= t('.tor.filesize_max')
+#terms_of_reference_version_filesize
+  = render :partial => 'admin/document_filesize_configuration',
+           :locals => { :update_url => nhri_advisory_council_filesize_path ,
+                        :param => @terms_of_reference_version_filesize,
+                        :context => "terms_of_reference_version_filesize"}
+
+%h4= t('.tor.filetypes')
+#terms_of_reference_version_filetypes
+  = render :partial => 'admin/collection_configuration',
+    :locals => { :new_item => @terms_of_reference_doc_filetype,
+                 :create_url => nhri_advisory_council_filetypes_path,
+                 :delete_url => nhri_advisory_council_filetype_path('id'),
+                 :collection => @terms_of_reference_version_filetypes,
+                 :item_name => 'terms_of_reference_version_filetype',
+                 :param_name => 'ext',
+                 :placeholder => 'e.g. ppt'}
 
 :coffeescript
   $ ->

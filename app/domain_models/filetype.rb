@@ -1,11 +1,12 @@
 class Filetype
   include ActiveModel::Model
-  attr_accessor :ext
+  attr_accessor :ext, :model
 
   validate :instance_validations
 
   def initialize(attrs={})
     @ext = attrs[:ext]
+    @model = attrs[:model]
   end
 
   #TODO client-side validations would be better
@@ -16,18 +17,20 @@ class Filetype
       errors.add :ext, I18n.t('activemodel.errors.models.filetype.too_short')
     elsif ext.length > 4
       errors.add :ext, I18n.t('activemodel.errors.models.filetype.too_long')
-    elsif SiteConfig[@site_config_key].include? ext
+    elsif model.permitted_filetypes.include? ext
       errors.add :ext, I18n.t('activemodel.errors.models.filetype.duplicate')
     end
   end
 
   def self.create(val)
-    val = val.match(/\w+/) if val
-    val = val[0].downcase if val
-    filetype = new(:ext=>val)
+    ext = val[:ext]
+    model = val[:model]
+    ext = ext.match(/\w+/) if ext
+    ext = ext[0].downcase if ext
+    filetype = new(:ext=>ext, :model => model)
     if filetype.valid?
-      filetypes = SiteConfig[@site_config_key] << val
-      SiteConfig[@site_config_key] = filetypes
+      filetypes = model.permitted_filetypes << ext
+      model.permitted_filetypes = filetypes
     end
     filetype
   end

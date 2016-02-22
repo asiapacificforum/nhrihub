@@ -1,4 +1,7 @@
 class MediaAppearance < ActiveRecord::Base
+  include FileConstraints
+  ConfigPrefix = 'media_appearance'
+
   belongs_to :violation_severity
   belongs_to :positivity_rating
   delegate :text, :rank, :rank_text, :to => :positivity_rating, :prefix => true, :allow_nil => true
@@ -28,14 +31,6 @@ class MediaAppearance < ActiveRecord::Base
 
   def is_hr_violation?
     subarea_ids.include? Subarea.hr_violation_id
-  end
-
-  def self.maximum_filesize
-    SiteConfig['outreach_media.filesize']*1000000
-  end
-
-  def self.permitted_filetypes
-    SiteConfig['outreach_media.filetypes'].to_json
   end
 
   def as_json(options={})
@@ -92,11 +87,6 @@ class MediaAppearance < ActiveRecord::Base
     created_at.to_time.to_date.to_s(:default) if persisted? # to_time converts to localtime
   end
 
-  #def metrics
-  #TODO remove the MediaAppearanceMetrics class
-    #MediaAppearanceMetrics.new(self)
-  #end
-
   def has_link
     !article_link.blank?
   end
@@ -105,15 +95,4 @@ class MediaAppearance < ActiveRecord::Base
     !file_id.blank?
   end
 
-  #def violation_coefficient
-    #vc = read_attribute(:violation_coefficient)
-  #TODO prob can delete LocalMetric class
-    #LocalMetric.new(vc, :media_appearance, :violation_coefficient)
-  #end
-
-  #def affected_people_count
-    #apc = read_attribute(:affected_people_count)
-  #TODO prob can delete LocalMetric class
-    #LocalMetric.new(apc, :media_appearance, :affected_people_count)
-  #end
 end

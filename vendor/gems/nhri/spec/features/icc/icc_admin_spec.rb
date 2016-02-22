@@ -60,9 +60,9 @@ feature "icc reference document admin", :js => true do
   scenario "change filesize" do
     visit nhri_admin_path('en')
     set_filesize("22")
-    expect{ page.find('#change_filesize').click; sleep(0.2)}.
+    expect{ page.find('#icc_reference_document #change_filesize').click; sleep(0.3)}.
       to change{ SiteConfig['nhri.icc_reference_documents.filesize']}.to(22)
-    expect( page.find('span#filesize').text ).to eq "22"
+    expect( page.find('#icc_reference_document span#filesize').text ).to eq "22"
   end
 end
 
@@ -79,17 +79,17 @@ feature "icc reference document filetype admin", :js => true do
   scenario "filetypes configured" do
     SiteConfig['nhri.icc_reference_documents.filetypes']=["pdf"]
     visit nhri_admin_path('en')
-    expect(page.find('.filetypes .type').text).to eq 'pdf'
+    expect(page.find('#icc_reference_document_filetypes .type').text).to eq 'pdf'
   end
 
   scenario "add filetype" do
     visit nhri_admin_path('en')
     sleep(0.1)
     expect(page).to have_selector '#empty'
-    page.find('#filetype_ext').set('docx')
+    page.find('#icc_reference_document_filetypes input').set('docx')
     expect{ new_filetype_button.click; sleep(0.2) }.to change{ SiteConfig['nhri.icc_reference_documents.filetypes'] }.from([]).to(["docx"])
     expect(page).not_to have_selector '#empty'
-    page.find('#filetype_ext').set('ppt')
+    page.find('#icc_reference_document_filetypes input').set('ppt')
     expect{ new_filetype_button.click; sleep(0.2) }.to change{ SiteConfig['nhri.icc_reference_documents.filetypes'].length }.from(1).to(2)
   end
 
@@ -97,7 +97,7 @@ feature "icc reference document filetype admin", :js => true do
     SiteConfig['nhri.icc_reference_documents.filetypes']=["pdf", "doc"]
     visit nhri_admin_path('en')
     sleep(0.1)
-    page.find('#filetype_ext').set('doc')
+    page.find('#icc_reference_document_filetypes input').set('doc')
     expect{ new_filetype_button.click; sleep(0.2) }.not_to change{ SiteConfig['nhri.icc_reference_documents.filetypes'] }
     expect( flash_message ).to eq "Filetype already exists, must be unique."
   end
@@ -105,7 +105,7 @@ feature "icc reference document filetype admin", :js => true do
   scenario "add duplicate filetype" do
     visit nhri_admin_path('en')
     sleep(0.1)
-    page.find('#filetype_ext').set('a_very_long_filename')
+    page.find('#icc_reference_document_filetypes input').set('a_very_long_filename')
     expect{ new_filetype_button.click; sleep(0.2) }.not_to change{ SiteConfig['nhri.icc_reference_documents.filetypes'] }
     expect( flash_message ).to eq "Filetype too long, 4 characters maximum."
   end
@@ -113,6 +113,7 @@ feature "icc reference document filetype admin", :js => true do
   scenario "delete a filetype" do
     SiteConfig['nhri.icc_reference_documents.filetypes']=["pdf", "ppt"]
     visit nhri_admin_path('en')
+    resize_browser_window
     delete_filetype("pdf")
     sleep(0.2)
     expect( SiteConfig['nhri.icc_reference_documents.filetypes'] ).to eq ["ppt"]
@@ -125,8 +126,8 @@ feature "icc reference document filetype admin", :js => true do
   scenario "change filesize" do
     visit nhri_admin_path('en')
     set_filesize("22")
-    expect{ page.find('#change_filesize').click; sleep(0.2)}.
+    expect{ page.find('#icc_reference_document #change_filesize').click; sleep(0.2)}.
       to change{ SiteConfig['nhri.icc_reference_documents.filesize']}.to(22)
-    expect( page.find('span#filesize').text ).to eq "22"
+    expect( page.find('#icc_reference_document span#filesize').text ).to eq "22"
   end
 end

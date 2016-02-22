@@ -1,4 +1,8 @@
 class InternalDocument < ActiveRecord::Base
+  include DocumentVersioning
+  include FileConstraints
+  include DocumentApi
+
   ConfigPrefix = 'corporate_services.internal_documents'
 
   belongs_to :document_group, :counter_cache => :archive_doc_count
@@ -61,54 +65,12 @@ class InternalDocument < ActiveRecord::Base
     end
   end
 
-  def formatted_modification_date
-    lastModifiedDate.to_s
-  end
-
-  def formatted_creation_date
-    created_at.to_s
-  end
-
-  def formatted_filesize
-    ActiveSupport::NumberHelper.number_to_human_size(filesize)
-  end
-
-  def <=>(other)
-    [revision_major, revision_minor] <=> [other.revision_major, other.revision_minor]
-  end
-
-  def self.maximum_filesize
-    SiteConfig[ConfigPrefix+'.filesize']*1000000
-  end
-
-  def self.permitted_filetypes
-    SiteConfig[ConfigPrefix+'.filetypes'].to_json
-  end
-
-  # called from the initializer: config/intializers/internal_document.rb
-  # hmmmm... don't see it there, maybe it's obsolete... TODO check this
-  def self.upload_document_attributes=(attrs)
-    attrs.each do |k,v|
-      cattr_accessor k
-      send("#{k}=",v)
-    end
-  end
-
   def document_group_primary
     document_group && document_group.primary
   end
 
   def document_group_primary?
     document_group_primary == self
-  end
-
-  def revision
-    revs = [revision_major, revision_minor]
-    revs.join('.') unless revs.all?(&:blank?)
-  end
-
-  def revision=(val)
-    self.revision_major, self.revision_minor = val.split('.').map(&:to_i) if val
   end
 
   def primary?
@@ -130,16 +92,8 @@ class InternalDocument < ActiveRecord::Base
     end
   end
 
-  def has_revision?
-    revision_major.is_a?(Integer)
-  end
-
   def has_archive_files?
     archive_files.count > 0
-  end
-
-  def next_minor_revision
-    [revision_major, revision_minor.succ].join('.')
   end
 
 end

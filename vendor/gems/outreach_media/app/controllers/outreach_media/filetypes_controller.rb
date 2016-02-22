@@ -1,16 +1,22 @@
-class OutreachMedia::FiletypesController < ApplicationController
+class OutreachMedia::FiletypesController < FiletypesController
   def create
-    filetype = OutreachMedia::Filetype.create(params[:outreach_media_filetype][:ext])
-    if filetype.errors.empty?
-      render :text => filetype.ext, :status => 200, :content_type => 'text/plain'
-    else
-      render :text => filetype.errors.full_messages.first, :status => 422
-    end
+    super
   end
 
   def destroy
-    SiteConfig['outreach_media.filetypes'] =
-      SiteConfig['outreach_media.filetypes'] - [params[:type]]
-    render :json => {}, :status => 200
+    super
+  end
+
+  private
+  def config_param
+    'outreach_event.filetypes'
+  end
+
+  def attrs
+    params[:filetype].merge!(:model => OutreachEvent)
+  end
+
+  def delete_key
+    params[:type]
   end
 end

@@ -3,7 +3,11 @@ en:
     admin:
       index:
         heading: "NHRI Module"
-        filesize_max: "Maximum permitted file size"
-        filetypes: "Permitted file types"
-        subheading:
+        accreditation:
           required_files_titles: "ICC Accreditation: Required Documents Titles"
+        reference:
+          filesize_max: "ICC Reference Documents: Maximum permitted file size"
+          filetypes: "ICC Reference Documents: Permitted file types"
+        tor:
+          filesize_max: "Terms Of Reference: Maximum permitted file size"
+          filetypes: "Terms Of Reference: Permitted file types"

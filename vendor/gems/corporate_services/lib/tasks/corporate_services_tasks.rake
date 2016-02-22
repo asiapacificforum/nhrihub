@@ -25,6 +25,9 @@ def rand_filename
 end
 
 namespace :corporate_services do
+  desc "populate all models within the corporate services module"
+  task :populate => [:populate_id, :populate_sp, :populate_accred_groups]
+
   desc "re-initialize database with internal documents: 5 primary, 10 archive"
   task :populate_id => :environment do
     DocumentGroup.delete_all

@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     namespace :nhri do
       namespace :icc do # note this must be before the icc resource
         resources :accreditation_required_document_groups, :param => :title, :only => [:create, :destroy]
-        resource :filesize, :only => :update
+        resource  :filesize, :only => :update
         resources :filetypes, :param => :type, :only => [:create, :destroy]
       end
       resources :hr_education
@@ -12,6 +12,8 @@ Rails.application.routes.draw do
         resources :members
         resources :meetings
         resources :issues
+        resource  :filesize, :only => :update
+        resources :filetypes, :param => :type, :only => [:create, :destroy]
       end
       resources :nhr_indicators
       resources :hr_protection

@@ -8,16 +8,12 @@ class CorporateServices::InternalDocuments::FiletypesController < FiletypesContr
   end
 
   private
-  def klass
-    CorporateServices::Filetype
-  end
-
   def config_param
     InternalDocument::ConfigPrefix+'.filetypes'
   end
 
-  def param
-    params[:corporate_services_filetype][:ext]
+  def attrs
+    params[:filetype].merge!(:model => InternalDocument)
   end
 
   def delete_key

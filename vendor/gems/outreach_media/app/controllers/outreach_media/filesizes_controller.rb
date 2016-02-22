@@ -1,12 +1,12 @@
-class OutreachMedia::FilesizesController < ApplicationController
+class OutreachMedia::FilesizesController < FilesizesController
 
   def update
-    if params[:filesize].match(/^\d+$/) && params[:filesize].to_i < 100
-      SiteConfig['outreach_media.filesize'] = params[:filesize].to_i
-      render :text => params[:filesize], :status => 200
-    else
-      render :nothing => true, :status => 200
-    end
+    super
+  end
+
+  private
+  def config_param
+    'outreach_event.filesize'
   end
 
 end

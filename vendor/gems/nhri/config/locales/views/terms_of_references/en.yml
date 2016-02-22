@@ -4,3 +4,5 @@ en:
       terms_of_references:
         index:
           heading: "Terms of Reference"
+          flash:
+            no_files_error: "You must select a file to upload."

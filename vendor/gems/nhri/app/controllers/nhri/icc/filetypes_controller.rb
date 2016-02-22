@@ -8,16 +8,12 @@ class Nhri::Icc::FiletypesController < FiletypesController
   end
 
   private
-  def klass
-    Nhri::Filetype
-  end
-
   def config_param
     IccReferenceDocument::ConfigPrefix+'.filetypes'
   end
 
-  def param
-    params[:nhri_filetype][:ext]
+  def attrs
+    params[:filetype].merge!(:model => IccReferenceDocument)
   end
 
   def delete_key

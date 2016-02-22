@@ -1,6 +1,6 @@
 class FiletypesController < ApplicationController
   def create
-    filetype = klass.send(:create,param)
+    filetype = Filetype.create(attrs)
     if filetype.errors.empty?
       render :text => filetype.ext, :status => 200, :content_type => 'text/plain'
     else

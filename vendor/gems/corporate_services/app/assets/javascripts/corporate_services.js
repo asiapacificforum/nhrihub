@@ -10,5 +10,4 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require ./corporate_services/in_page_edit
 //= require ./corporate_services/user_input_manager

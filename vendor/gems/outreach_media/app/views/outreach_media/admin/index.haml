@@ -2,10 +2,22 @@
 %h1=t('.heading')
 
 %h4=t('.subheading.filetypes')
-= render :partial => 'outreach_media_filetypes'
+#outreach_event_filetypes
+  = render :partial => 'admin/collection_configuration',
+    :locals => { :new_item => @outreach_filetype,
+                 :create_url => outreach_media_filetypes_path,
+                 :delete_url => outreach_media_filetype_path('id'),
+                 :collection => @outreach_filetypes,
+                 :item_name => 'outreach_event_filetype',
+                 :param_name => 'ext',
+                 :placeholder => 'e.g. ppt'}
 
 %h4=t('.subheading.filesize')
-= render :partial => 'outreach_media_filesize'
+#outreach
+  = render :partial => 'admin/document_filesize_configuration',
+    :locals => { :update_url => outreach_media_filesize_path,
+                 :param => @outreach_filesize,
+                 :context => "outreach"}
 
 %h4=t('.subheading.areas')
 = render :partial => 'outreach_media_areas'

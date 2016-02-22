@@ -6,6 +6,14 @@ en:
       empty: "None configured"
       filetype:
         add: "Add file type"
+      outreach_event_filetype:
+        add: "Add file type"
+      media_filetype:
+        add: "Add file type"
+      icc_reference_document_filetype:
+        add: "Add file type"
+      terms_of_reference_version_filetype:
+        add: "Add file type"
       doc_group:
         add: "Add document title"
     document_filesize_configuration:

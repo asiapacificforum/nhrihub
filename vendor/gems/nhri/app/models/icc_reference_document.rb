@@ -1,4 +1,6 @@
 class IccReferenceDocument < ActiveRecord::Base
+  include FileConstraints
+  include DocumentApi
   ConfigPrefix = 'nhri.icc_reference_documents'
 
   belongs_to :user
@@ -11,18 +13,6 @@ class IccReferenceDocument < ActiveRecord::Base
     if doc.title.blank?
       doc.title = doc.original_filename.split('.')[0]
     end
-  end
-
-  def self.maximum_filesize
-    SiteConfig[ConfigPrefix+'.filesize']*1000000
-  end
-
-  def self.maximum_filesize=(val)
-    SiteConfig[ConfigPrefix+'.filesize'] = val
-  end
-
-  def self.permitted_filetypes
-    SiteConfig[ConfigPrefix+'.filetypes'].to_json
   end
 
   def as_json(options = {})
@@ -43,14 +33,6 @@ class IccReferenceDocument < ActiveRecord::Base
 
   def create_reminder_url
     Rails.application.routes.url_helpers.nhri_icc_reference_document_reminders_path(:en,id) if persisted?
-  end
-
-  def formatted_creation_date
-    created_at.to_s
-  end
-
-  def formatted_filesize
-    ActiveSupport::NumberHelper.number_to_human_size(filesize)
   end
 
   def namespace
