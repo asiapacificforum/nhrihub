@@ -25,7 +25,6 @@ set :pty, true
 # Default value for :linked_files is []
 set :linked_files, fetch(:linked_files, []).push('config/database.yml',
                                                  'config/secrets.yml',
-                                                 'config/navigation.rb',
                                                  'lib/constants.rb',
                                                  'config/deploy/production.rb',
                                                  'app/assets/images/banner_logo.png',
