@@ -8,14 +8,14 @@
         / The fileinput-button span is used to style the file input field as button
         %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
           %i.fa.fa-plus.fa-lg{'onclick'=>"$('#primary_fileinput').click()", :style => "color:white"}
-          %span{'onclick'=>"$('#primary_fileinput').click()"}  t('.add')
+          %span{'onclick'=>"$('#primary_fileinput').click()"}= t('.add')
           %input#primary_fileinput{:multiple => "multiple", :name => "primary_file", :type => "file"}
         %button.btn.btn-primary.start{'on-click'=>'start_upload()', :type => "submit"}
           %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
-          %span  t('.start')
+          %span= t('.start')
         %button.btn.btn-warning.cancel{:type => "reset", 'on-click'=>'flash_hide()'}
           %i.fa.fa-ban.fa-lg{:style => "color:white"}
-          %span  t('.cancel')
+          %span= t('.cancel')
     .row.fileupload_progress
       / The global progress state
       .col-lg-9.fileupload-progress.fade
@@ -35,12 +35,12 @@
         .headings
           %table
             %tr
-              %td{:style => "width:36%; text-align:left"}  t('.doc_title')
-              %td{:style => "text-align:left"}  t('.revision')
-              %td  t('.information')
-              %td{:style => "width:16%"}  t('.edit')
-              %td  t('.download')
-              %td  t('.delete')
+              %td{:style => "width:36%; text-align:left"}= t('.doc_title')
+              %td{:style => "text-align:left"}= t('.revision')
+              %td= t('.information')
+              %td{:style => "width:16%"}= t('.edit')
+              %td= t('.download')
+              %td= t('.delete')
         .panel-group.files#terms_of_reference_versions
           <docs/>
 
@@ -60,26 +60,26 @@
   - scope = 'activerecord.attributes.terms_of_reference_version'
   %table{:style => 'width:500px'}
     %tr
-      %td  t('original_filename', :scope => scope)
+      %td= t('original_filename', :scope => scope)
       %td.name {{ original_filename }}
     %tr
-      %td  t('filesize', :scope => scope)
+      %td= t('filesize', :scope => scope)
       %td.size {{ formatted_filesize }}
     %tr
-      %td  t('revision', :scope => scope)
+      %td= t('revision', :scope => scope)
       %td.rev {{ revision }}
     %tr
-      %td  t('lastModified', :scope => scope)
+      %td= t('lastModified', :scope => scope)
       %td.lastModified {{ formatted_modification_date }}
     %tr
-      %td  t('uploadedOn', :scope => scope)
+      %td= t('uploadedOn', :scope => scope)
       %td.uploadedOn {{ formatted_creation_date }}
     %tr
-      %td  t('uploadedBy', :scope => scope)
+      %td= t('uploadedBy', :scope => scope)
       %td.uploadedBy {{ uploaded_by.first_last_name }}
 
 %script#detailsTitle{:type => "template/ractive"}
-  %span{:style => 'z-index:20'}  t('.details')
+  %span{:style => 'z-index:20'}= t('.details')
 
 %script#document_template{:type => 'template/html'}
   %table.terms_of_reference_version.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"terms_of_reference_version_editable{{id}}"}
@@ -123,28 +123,6 @@
   %ul.error{:style => "display:none"}
     %li {{ message }}
 
-%script#terms_of_reference_version_title_selector{:type => 'html/template'}
-  %label{:for =>"terms_of_reference_version_title"}  t('.doc_title')
-  {{#if is_icc_doc}}
-  %span#icc_doc_title{:style => "margin-left:26px"} {{ title }}
-  {{else}}
-  %input{:type => :text, :name => "terms_of_reference_version[title]", :id => "terms_of_reference_version_title", :list => :icc_files, :value => "{{title}}"}
-  %datalist#icc_files
-    {{#required_files_titles}}
-    %option{:value=>'{{title}}'}
-    {{/required_files_titles}}
-  {{/if}}
-
-%script#icc_title_selector{:type => 'html/template'}
-  .form-horizontal
-    .form-group
-      %label.control-label.col-sm-3{:for =>"terms_of_reference_version_title", :style => "left: -21px;"}  t('.doc_title')
-      .col-sm-6
-        %select.form-control.accreditation_required_doc_title{:style => "height:28px; position: relative; top:3px;"}
-          %option{:value => 0}  t('.select_icc')
-          {{#unassigned_titles}}
-          %option{:value=>'{{document_group_id}}'} {{title}}
-          {{/unassigned_titles}}
 
   / The template to display files ready for upload
 
@@ -156,18 +134,18 @@
           %td{:colspan => 2}
             %p.name {{ name }}
             .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
-              %span.help-block.error#filesize_error  t('.too_large')
+              %span.help-block.error#filesize_error= t('.too_large')
             .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
-              %span.help-block.error#filetype_error  t('.unpermitted_type')
+              %span.help-block.error#filetype_error= t('.unpermitted_type')
             .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
-              %span.help-block.error#unconfigured_filetypes_error  t('.noFileTypes')
+              %span.help-block.error#unconfigured_filetypes_error= t('.noFileTypes')
           %td{:colspan => 2}
             .size
             .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
               .progress-bar.progress-bar-success{:style => "width:0%"}
         %tr
           %td.revision
-            %label{:for => "terms_of_reference_version_revision"}  t('.revision')
+            %label{:for => "terms_of_reference_version_revision"}= t('.revision')
             %input{:type => :text, :name => "terms_of_reference_version[revision]", :id => "terms_of_reference_version_revision", :style => "width:40px", :value => "{{revision}}"}
             %span.help-block.error#duplicate_revision_error{:class =>"{{#duplicate_revision_error}}has-error{{/}}"}= t('.duplicate_revision_error_message')
             %span.help-block.error#invalid_revision_error{:class =>"{{#invalid_revision_error}}has-error{{/}}"}= t('.invalid_revision_error_message')
