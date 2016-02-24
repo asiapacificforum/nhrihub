@@ -11,3 +11,4 @@
 // about supported directives.
 //
 //= require ./corporate_services/user_input_manager
+//= require in_page_edit

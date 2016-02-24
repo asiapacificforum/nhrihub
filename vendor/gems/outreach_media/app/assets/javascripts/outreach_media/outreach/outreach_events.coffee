@@ -149,6 +149,12 @@ $ ->
       if @get('persisted')
         @remove_file()
       else
+        file_input = $(@findParent('oe').find('#outreach_event_file'))
+        # see http://stackoverflow.com/questions/1043957/clearing-input-type-file-using-jquery
+        file_input.replaceWith(file_input.clone()) # the actual file input field
+        if @parent.findAllComponents('outreacheventdocument').length == 1
+          @findParent('oe').set('fileupload',null) # remove all traces!
+        @set('file_filename',null) # remove all traces!
         @parent.deselect_file(@)
     computed :
       persisted : ->
@@ -382,7 +388,7 @@ $ ->
       $('.form input, .form select')
     save : ->
       if @validate()
-        if !_.isUndefined(@get('fileupload'))
+        if !_.isUndefined(@get('fileupload')) && !_.isNull(@get('fileupload'))
           files = _(@findAllComponents('outreacheventdocument')).map (oed)-> oed.get('file')
           # TODO fix this, should find a way to access fileupload without hard-coding the css class here:
           $('.fileupload').fileupload('send',{files : _(files).compact()}) # handled by jquery-fileupload

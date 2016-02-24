@@ -15,7 +15,7 @@
       %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
       {{/if}}
   .row
-    .col-md-12
+    .col-md-12.col-md-offset-1
       .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
         %span.help-block#filesize_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.too_large')
       .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
@@ -243,10 +243,10 @@
             = t('.choose_another_file')
             {{/if}}
           %input.new#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
-
-      <performanceindicatorselect />
       .row
         <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
+
+      <performanceindicatorselect />
       .row.form-group{:class => "{{#outreach_event_error}}has-error{{/}}", :style => "padding-bottom:0px"}
         .col-md-2
           %span.help-block#outreach_event_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.outreach_event_error_message')

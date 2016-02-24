@@ -6,7 +6,7 @@
 
 
 :javascript
-  var maximum_filesize = #{IccReferenceDocument.maximum_filesize}
+  var maximum_filesize = #{IccReferenceDocument.maximum_filesize * 1000000}
   var permitted_filetypes = #{ IccReferenceDocument.permitted_filetypes }
   var files = #{ @icc_reference_documents.to_json }
   var files_list_error = "#{t('.flash.no_files_error')}"

@@ -16,8 +16,8 @@
   subareas = #{@subareas.to_json}
   new_media_appearance = #{@media_appearance.to_json}
   create_media_appearance_url = "#{@media_appearance.create_url}"
-  maximum_filesize = #{MediaAppearance.maximum_filesize}
-  permitted_filetypes = #{MediaAppearance.permitted_filetypes }
+  maximum_filesize = #{OutreachEvent.maximum_filesize * 1000000}
+  permitted_filetypes = #{OutreachEvent.permitted_filetypes }
   planned_results = #{@planned_results.to_json }
 
 :coffeescript

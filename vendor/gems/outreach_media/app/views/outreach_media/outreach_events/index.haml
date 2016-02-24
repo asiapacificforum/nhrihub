@@ -6,7 +6,7 @@
   subareas = #{@subareas.to_json}
   new_outreach_event = #{@outreach_event.to_json}
   create_outreach_event_url = "#{@outreach_event.create_url}"
-  maximum_filesize = #{OutreachEvent.maximum_filesize}
+  maximum_filesize = #{OutreachEvent.maximum_filesize * 1000000}
   permitted_filetypes = #{OutreachEvent.permitted_filetypes }
   audience_types = #{@audience_types.to_json}
   impact_ratings = #{@impact_ratings.to_json}

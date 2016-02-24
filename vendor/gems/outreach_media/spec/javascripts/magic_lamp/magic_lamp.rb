@@ -27,11 +27,11 @@ MagicLamp.define do
   end
 
   fixture(:name => 'maximum_filesize') do
-    MediaAppearance.maximum_filesize
+    OutreachEvent.maximum_filesize # shared by OutreachEvent and MediaAppearance
   end
 
   fixture(:name => 'permitted_filetypes') do
-    MediaAppearance.permitted_filetypes
+    OutreachEvent.permitted_filetypes # shared by OutreachEvent and MediaAppearance
   end
 
   fixture(:name => 'media_appearance_page') do

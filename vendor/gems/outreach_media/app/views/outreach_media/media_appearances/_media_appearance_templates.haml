@@ -228,7 +228,7 @@
             .col-md-2#fileinput_button
               %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
               %input#media_appearance_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'media_appearance[file]'}
-            .col-md-4#selected_file_container{:style=>"display:flex; flex-direction: row"}
+            .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
               {{#fileupload}}
               <file/>
               {{/}}
