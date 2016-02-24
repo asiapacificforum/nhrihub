@@ -13,7 +13,15 @@ fr:
       adv_council: "Conseil consultatif"
       nhr_indicators: "Indicateurs nationales des droits de l'homme"
       hr_prot: "Protection des droits humains"
-      icc: "ICC"
+      icc:
+        icc: 'ICC'
+        int: "Documents internes ICC"
+        ref: "Accréditation Documents de référence ICC"
+      adv:
+        tor: "Termes de Référence"
+        memb: "Appartenance"
+        min: "Procès-verbal"
+        issues: "Problèmes"
       gg: "Bonne gouvernance"
       outreach_media: "Sensibilisation et les médias"
       outreach: "Sensibilisation"

@@ -63,7 +63,7 @@ feature "populate strategic plan contents", :js => true do
   scenario "try to save planned result with whitespace-only description field" do
     expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => " "
-    expect{save_planned_result.click; sleep(0.2)}.not_to change{PlannedResult.count}
+    expect{save_planned_result.click; sleep(0.3)}.not_to change{PlannedResult.count}
     expect(page).to have_selector("#description_error", :text => "You must enter a description")
   end
 

@@ -2,10 +2,10 @@ class OutreachMedia::AdminController < ApplicationController
   # NOTE OutreachEvent and MediaAppearances share the same config variables
   def index
     #@outreach_filetypes = SiteConfig['outreach_event.filetypes']
-    @outreach_filetypes = OutreachEvent.filetypes
+    @outreach_filetypes = OutreachEvent.permitted_filetypes
     @outreach_filetype = Filetype.new
     #@media_filetypes = SiteConfig['media_appearance.filetypes']
-    @media_filetypes = OutreachEvent.filetypes
+    @media_filetypes = OutreachEvent.permitted_filetypes
     @media_filetype = Filetype.new
     #@outreach_filesize = SiteConfig['outreach_event.filesize']
     @outreach_filesize = OutreachEvent.maximum_filesize
