@@ -24,7 +24,9 @@ class InternalDocument < ActiveRecord::Base
     if AccreditationDocumentGroup.pluck(:title).include?(doc.title)
       AccreditationRequiredDocCallbacks.new.before_save(doc)
     else
-      doc.document_group_id = DocumentGroup.create.id if doc.document_group_id.blank?
+      if doc.document_group_id.blank? && !doc.is_a?(AccreditationRequiredDoc)
+        doc.document_group_id = DocumentGroup.create.id
+      end
     end
 
     if doc.revision_major.nil?

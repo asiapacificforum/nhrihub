@@ -6,3 +6,6 @@ en:
           heading: "Terms of Reference"
           flash:
             no_files_error: "You must select a file to upload."
+        terms_of_reference_templates:
+          duplicate_revision_error_message: "Duplicate revision not allowed."
+          invalid_revision_error_message: "Invalid revision."

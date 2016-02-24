@@ -8,7 +8,7 @@ module FileConstraints
     end
 
     def maximum_filesize=(val)
-      SiteConfig[ConfigPrefix+'.filesize'] = val
+      SiteConfig[self::ConfigPrefix+'.filesize'] = val
     end
 
     def permitted_filetypes

@@ -109,14 +109,14 @@ describe "#next" do
       let(:start_date){ Date.new(2015,8,1)}
       it "should be the 'none'" do
         expect(reminder_next).to eq 'none'
-        expect(reminder_previous).to eq start_date.to_formatted_s(:default)
+        expect(reminder_previous).to eq start_date.to_formatted_s(:short)
       end
     end
 
     context "and start_date is in the future" do
       let(:start_date){ Date.new(2020,8,1)}
       it "should be equal to the start date" do
-        expect(reminder_next).to eq start_date.to_formatted_s(:default)
+        expect(reminder_next).to eq start_date.to_formatted_s(:short)
         expect(reminder_previous).to eq 'none'
       end
     end

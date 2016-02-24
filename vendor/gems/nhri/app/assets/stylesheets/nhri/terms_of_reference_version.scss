@@ -1,0 +1,8 @@
+.help-block#duplicate_revision_error:not(.has-error),
+.help-block#invalid_revision_error:not(.has-error){
+  display : none;
+}
+.help-block#duplicate_revision_error.has-error,
+.help-block#invalid_revision_error.has-error{
+  display : block;
+}

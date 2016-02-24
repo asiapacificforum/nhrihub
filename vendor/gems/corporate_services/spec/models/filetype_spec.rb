@@ -7,7 +7,7 @@ describe '.create class method' do
     end
 
     it "should be saved as a setting" do
-      expect(@return_value = Filetype.create("FOOD")).to be_a Filetype
+      expect(@return_value = Filetype.create(:ext => "FOOD",:model => InternalDocument)).to be_a Filetype
       expect(@return_value.ext).to eq "food"
       expect(SiteConfig['corporate_services.internal_documents.filetypes']).to eq ["food"]
     end
@@ -19,7 +19,7 @@ describe '.create class method' do
     end
 
     it "should be cleaned up and saved as a setting" do
-      expect(@return_value = Filetype.create(".pst ")).to be_a Filetype
+      expect(@return_value = Filetype.create(:ext => ".pst ", :model => InternalDocument)).to be_a Filetype
       expect(@return_value.ext).to eq "pst"
       expect(SiteConfig['corporate_services.internal_documents.filetypes']).to eq ["pst"]
     end
@@ -31,7 +31,7 @@ describe '.create class method' do
     end
 
     it "should not be saved, it should have errors" do
-      expect(@return_value = Filetype.create("drink")).to be_a Filetype
+      expect(@return_value = Filetype.create(:ext => "drink", :model => InternalDocument)).to be_a Filetype
       expect(@return_value.ext).to eq "drink"
       expect(SiteConfig['corporate_services.internal_documents.filetypes']).to eq []
       expect(@return_value.errors.full_messages.first).to eq "Filetype too long, 4 characters maximum."
@@ -41,7 +41,7 @@ describe '.create class method' do
   context "with duplicate value" do
     it "should not be saved, it should have errors" do
       SiteConfig['corporate_services.internal_documents.filetypes'] = ["asm"]
-      expect(@return_value = Filetype.create("asm")).to be_a Filetype
+      expect(@return_value = Filetype.create(:ext => "asm", :model => InternalDocument)).to be_a Filetype
       expect(@return_value.ext).to eq "asm"
       expect(SiteConfig['corporate_services.internal_documents.filetypes']).to eq ["asm"]
       expect(@return_value.errors.full_messages.first).to eq "Filetype already exists, must be unique."
@@ -54,7 +54,7 @@ describe '.create class method' do
     end
 
     it "should not be saved, it should have errors" do
-      expect(@return_value = Filetype.create(nil)).to be_a Filetype
+      expect(@return_value = Filetype.create(:ext => nil, :model => InternalDocument)).to be_a Filetype
       expect(@return_value.ext).to eq nil
       expect(SiteConfig['corporate_services.internal_documents.filetypes']).to eq []
       expect(@return_value.errors.full_messages.first).to eq "Filetype can't be blank"
@@ -67,7 +67,7 @@ describe '.create class method' do
     end
 
     it "should not be saved, it should have errors" do
-      expect(@return_value = Filetype.create("x")).to be_a Filetype
+      expect(@return_value = Filetype.create(:ext => "x", :model => InternalDocument)).to be_a Filetype
       expect(@return_value.ext).to eq "x"
       expect(SiteConfig['corporate_services.internal_documents.filetypes']).to eq []
       expect(@return_value.errors.full_messages.first).to eq "Filetype too short, must be at least 2 characters."

@@ -9,7 +9,7 @@
 :javascript
   var files_list_error = "#{t('.flash.no_files_error')}"
   var files = #{ @terms_of_reference_versions.to_json }
-  var permitted_filetypes = []
-  var maximum_filesize = 5
+  var permitted_filetypes = #{@permitted_filetypes}
+  var maximum_filesize = #{@maximum_filesize * 1000000}
 
 = javascript_include_tag "nhri/terms_of_reference"

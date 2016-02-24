@@ -25,7 +25,7 @@ $ ->
       that = $(@).data('blueimp-fileupload') || $(@).data('fileupload')
       current_locale = that.options.current_locale()
       getFilesFromResponse = data.getFilesFromResponse || that.options.getFilesFromResponse
-      file = data.result.file
+      file = data.result
       ractive = Ractive.getNodeInfo(@).ractive # it's the ractive instance
       ractive.add_file(file)
       upload_file = Ractive.getNodeInfo(data.context[0]).ractive
@@ -90,63 +90,62 @@ $ ->
       on : node
       focus_element : 'input.title'
       success : (response, statusText, jqxhr)->
-         ractive = @.options.object
-         @.show() # before updating b/c we'll lose the handle
-         if ractive.findParent('doc') # an archive file was updated
-           ractive.parent.set(response)
-         else
-           ractive.set(response)
+         ractive = @options.object
+         @show() # before updating b/c we'll lose the handle
+         ractive.set(response)
+         terms_of_reference_document_uploader.sort()
       error : ->
         console.log "Changes were not saved, for some reason"
     teardown : ->
       edit.off()
 
-  DocDeleter = (node)->
-    $(node).on 'click', (event)->
-      ev = $.Event(event)
-      context = $(event.target).closest('table.document')
-      data = $(event.target).closest('.fileupload').data()
-      $(event.target).
-        closest('.fileupload').
-        fileupload('option','destroy')( ev, $.extend({
-                                                    context: context,
-                                                    type: 'DELETE'
-                                                }, data))
-    teardown : ->
-      $(node).off 'click'
 
   Ractive.decorators.inpage_edit = EditInPlace
   Ractive.decorators.primary_fileupload = PrimaryFileUpload # for the archive file upload
-  Ractive.decorators.doc_deleter = DocDeleter
   Ractive.decorators.popover = Popover
 
-  UploadFile = Ractive.extend
-    template : "#upload_template"
-    computed :
-      formData : ->
-        [ {name : 'terms_of_reference_version[title]', value : @get('title')}
-          {name : 'terms_of_reference_version[revision]', value : @get('revision')}
-          {name : 'terms_of_reference_version[filesize]', value : @get('size')}
-          {name : 'terms_of_reference_version[original_type]', value : @get('type')}
-          {name : 'terms_of_reference_version[original_filename]', value : @get('name')}
-          {name : 'terms_of_reference_version[lastModifiedDate]', value : @get('lastModifiedDate')}
-          {name : 'terms_of_reference_version[document_group_id]', value : @get('document_group_id')}
-        ]
+  TermsOfReferenceValidation =
+    oninit : ->
+      @set
+        invalid_revision_error : false
+        duplicate_revision_error : false
     validate_file_constraints : -> # the attributes that are checked when a file is added
       extension = @get('name').split('.').pop()
       @set('unconfigured_filetypes_error', permitted_filetypes.length == 0)
       @set('filetype_error', permitted_filetypes.indexOf(extension) == -1)
       @set('filesize_error', @get('size') > maximum_filesize)
       !@get('filetype_error') && !@get('filesize_error') && !@get('unconfigured_filetypes_error')
+    validate_revision : ->
+      @validate_revision_format() && @validate_unique_revision()
+    validate_revision_format : ->
+      re = new RegExp((/^\s*$|\d+\.\d+/))
+      @set('invalid_revision_error', !re.test(@get('revision')))
+      !@get('invalid_revision_error')
+    validate_unique_revision : ->
+      all_revisions = terms_of_reference_document_uploader.all_revisions_except(@)
+      @set('duplicate_revision_error', _(all_revisions).contains(@get('revision')))
+      !@get('duplicate_revision_error')
+
+  UploadFile = Ractive.extend
+    template : "#upload_template"
+    computed :
+      formData : ->
+        [ {name : 'terms_of_reference_version[revision]', value : @get('revision')}
+          {name : 'terms_of_reference_version[filesize]', value : @get('size')}
+          {name : 'terms_of_reference_version[original_type]', value : @get('type')}
+          {name : 'terms_of_reference_version[original_filename]', value : @get('name')}
+          {name : 'terms_of_reference_version[lastModifiedDate]', value : @get('lastModifiedDate')}
+        ]
     cancel_upload : ->
       @parent.remove(@)
     submit : ->
-      unless !@validate_file_constraints()
+      if @validate_file_constraints() && @validate_revision()
         @get('fileupload').formData = @get('formData')
         @get('fileupload').submit()
+  , TermsOfReferenceValidation
 
   UploadFiles = Ractive.extend
-    template: "{{#upload_files}}<uploadfile context='{{context}}' title='{{title}}' revision='{{revision}}' size='{{size}}' type='{{type}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' document_group_id='{{document_group_id}}' />{{/upload_files}}"
+    template: "{{#upload_files}}<uploadfile title='{{title}}' revision='{{revision}}' size='{{size}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' document_group_id='{{document_group_id}}' />{{/upload_files}}"
     components:
       uploadfile : UploadFile
     remove : (uploadfile)->
@@ -159,45 +158,35 @@ $ ->
 
   Doc = Ractive.extend
     template: '#template-download'
-    oninit : ->
-      @set('archive_upload_files',[])
-    computed :
-      file : -> true
-      archive_file : -> false
-      stripped_title : ->
-        @get('title').replace(/\s/g,"").toLowerCase()
-      title_edit_permitted : ->
-        true
     download_file : ->
       window.location = @get('url')
     remove_errors : ->
-      @set("title_error", false)
-      @set("revision_error", false)
+      @set("duplicate_revision_error", false)
+      @set("invalid_revision_error", false)
     validate : ->
-      @_validate_title() && @_validate_revision()
-    _validate_title : ->
-      @set('title', @get('title').trim())
-      if @get('title') == ""
-        @set("title_error",true)
-        false
-      else
-        true
-    _validate_revision : ->
-      @set('revision', @get('revision').trim())
-      if @get('revision') == ""
-        @set("revision_error",true)
-        false
-      else
-        true
-    add_file : (file)->
-      @set(file)
+      @validate_revision()
+    delete_this : (event) ->
+      data = {'_method' : 'delete'}
+      url = @get('url')
+      # TODO if confirm
+      $.ajax
+        method : 'post'
+        url : url
+        data : data
+        success : @delete_callback
+        dataType : 'json'
+        context : @
+    delete_callback : (data,textStatus,jqxhr)->
+      @parent.delete(@)
+  , TermsOfReferenceValidation
 
   Docs = Ractive.extend
     template: '#files'
     components:
       doc : Doc
-    docs_without : (doc)->
-      _(@findAllComponents('doc')).reject((this_doc)-> this_doc.get('id') == doc.get('id'))
+    delete : (doc)->
+      index = @findAllComponents('doc').indexOf(doc)
+      @splice('files',index,1)
 
   uploader_options =
     el: '#container'
@@ -210,13 +199,11 @@ $ ->
     components :
       docs : Docs
       uploadfiles : UploadFiles
-    computed :
-      stripped_titles : ->
-        _(@findAllComponents('doc')).map (doc)->doc.get('stripped_title')
     select_file : ->
       @find('#primary_fileinput').click()
     add_file : (file)->
       @unshift('files',file)
+      @sort()
     start_upload : ->
       flash.notify()
       _(@findAllComponents('uploadfile')).each (uploadfile)->
@@ -224,6 +211,12 @@ $ ->
     flash_hide : ->
       @event.original.stopPropagation()
       flash.hide()
+    sort : ->
+      new_files = _(@get('files')).sortBy (f)-> -parseFloat(f.revision)
+      @set('files',new_files)
+    all_revisions_except : (doc)->
+      _(@findAllComponents('doc')).map (this_doc)->
+        this_doc.get('revision') unless this_doc.get('id') == doc.get('id')
 
   window.start_page = ->
     window.terms_of_reference_document_uploader = new Ractive uploader_options

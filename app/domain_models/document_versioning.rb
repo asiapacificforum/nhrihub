@@ -22,4 +22,15 @@ module DocumentVersioning
   def next_minor_revision
     [revision_major, revision_minor.succ].join('.')
   end
+
+  def receives_next_major_rev
+    self.revision_major = self.class.highest_major_rev.to_i.succ
+    self.revision_minor = 0
+  end
+
+  module ClassMethods
+    def highest_major_rev
+      pluck(:revision_major).max
+    end
+  end
 end

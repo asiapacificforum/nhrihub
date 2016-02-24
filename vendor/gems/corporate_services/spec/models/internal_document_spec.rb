@@ -1,16 +1,8 @@
 require 'rails_helper'
 
 describe "create internal documents without supplying document_group_id" do
-  before do
-    @doc1 = FactoryGirl.create(:internal_document)
-    @doc2 = FactoryGirl.create(:internal_document)
-    @doc3 = FactoryGirl.create(:internal_document)
-  end
-
   it "should create documents in different groups" do
-    expect(@doc1.document_group_id).to eq 1
-    expect(@doc2.document_group_id).to eq 2
-    expect(@doc3.document_group_id).to eq 3
+    expect { 3.times{ FactoryGirl.create(:internal_document) }}.to change{DocumentGroup.count}.by(3)
   end
 end
 

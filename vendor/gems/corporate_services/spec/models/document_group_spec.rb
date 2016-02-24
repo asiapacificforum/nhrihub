@@ -11,9 +11,9 @@ describe "next_minor_revision" do
   context "when group is not empty" do
     it "should assign the next minor rev" do
       group = FactoryGirl.create(:document_group)
-      first_doc = FactoryGirl.create(:internal_document, :document_group_id => group.id, :revision_major => 3, :revision_minor => 100)
-      second_doc = FactoryGirl.create(:internal_document, :document_group_id => group.id, :revision_major => 2, :revision_minor => 100)
-      expect(group.next_minor_revision).to eq "3.101"
+      first_doc = FactoryGirl.create(:internal_document, :document_group => group, :revision_major => 3, :revision_minor => 100)
+      second_doc = FactoryGirl.create(:internal_document, :document_group => group, :revision_major => 2, :revision_minor => 100)
+      expect(group.reload.next_minor_revision).to eq "3.101"
     end
   end
 end

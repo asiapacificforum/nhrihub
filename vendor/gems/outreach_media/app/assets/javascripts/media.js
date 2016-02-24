@@ -3,3 +3,4 @@
 //= require './outreach_media/shared/subarea'
 //= require './outreach_media/shared/performance_indicator'
 //= require './outreach_media/media/media_appearances'
+//= require 'in_page_edit'
