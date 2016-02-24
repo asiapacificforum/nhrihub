@@ -27,7 +27,6 @@ en:
         delete: "Delete"
         start_one: "Start"
         cancel_one: "Cancel"
-        doc_title: 'Document title'
         revision: "Revision"
         processing: "Processing..."
         too_large : "File is too large"

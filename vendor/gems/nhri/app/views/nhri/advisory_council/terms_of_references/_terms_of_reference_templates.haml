@@ -97,16 +97,16 @@
       %td.include_popover{:style => "text-align:center; width:8%"}
         .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
           %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
-      %td{:style => "text-align:center; width:8%"}
+      %td{:style => "width:8%"}
         .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
           .fade.edit
-            %i.fa.fa-remove.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_cancel",:style => "position:relative; left:30px;"}
-      %td{:style => "text-align:center; width:8%"}
+            %i.fa.fa-remove.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_cancel",:style => "position:relative; left:40px;"}
+      %td{:style => "width:8%"}
         %div.icon{:'data-toggle' => 'edit'}
           .fade.edit
             %i.fa.fa-check.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
           .fade.no_edit.in
-            %i.fa.fa-pencil-square-o.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_start"}
+            %i.fa.fa-pencil-square-o.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_start", :style => "position:relative; left:-5px;"}
       %td{:style => "text-align:center; width:8%"}
         .icon
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
