@@ -206,6 +206,8 @@ feature "attempt to save with errors", :js => true do
   end
 
   scenario "title is blank" do
+    sleep(0.8)
+    expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
     expect{edit_save.click; sleep(0.4)}.not_to change{OutreachEvent.count}
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in("outreach_event_title", :with => "m")
@@ -286,9 +288,11 @@ feature "when there are existing outreach events", :js => true do
       page.attach_file("outreach_event_file", upload_image, :visible => false)
       expect(page).to have_css('#filetype_error', :text => "File type not allowed")
       clear_file_attachment
+      page.execute_script("scrollTo(0,0)")
       edit_cancel.click
       sleep(0.2)
       edit_outreach_event[0].click
+      sleep(0.2)
       expect(page).not_to have_selector('#filetype_error', :text => "File type not allowed")
     end
 

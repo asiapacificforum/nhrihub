@@ -66,7 +66,7 @@ feature "create a new article", :js => true do
     select_first_performance_indicator
     pi = PerformanceIndicator.first
     expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description )
-    expect{edit_save.click; sleep(0.5)}.to change{MediaAppearance.count}.from(0).to(1)
+    expect{page.execute_script("scrollTo(0,0)"); edit_save.click; sleep(0.5)}.to change{MediaAppearance.count}.from(0).to(1)
     ma = MediaAppearance.first
     expect(ma.performance_indicator_ids).to eq [pi.id]
     expect(ma.affected_people_count).to eq 100000 # b/c this attribute now returns a hash!
@@ -135,6 +135,8 @@ feature "attempt to save with errors", :js => true do
   end
 
   scenario "title is blank" do
+    sleep(0.8)
+    expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
     expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in("media_appearance_title", :with => "m")
@@ -229,7 +231,7 @@ feature "when there are existing articles", :js => true do
       fill_in('people_affected', :with => " 100000 ")
       select('3: Has no bearing on the office', :from => 'Positivity rating')
       select('4: Serious', :from => 'Violation severity')
-      expect{edit_save.click; sleep(0.4)}.to change{MediaAppearance.first.title}
+      expect{page.execute_script("scrollTo(0,0)"); edit_save.click; sleep(0.4)}.to change{MediaAppearance.first.title}
       expect(MediaAppearance.first.area_ids).to eql [2]
       sleep(0.4)
       expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq "My new article title"
@@ -312,11 +314,22 @@ feature "when there are existing articles", :js => true do
       fill_in('people_affected', :with => " 100000 ")
       select('3: Has no bearing on the office', :from => 'Positivity rating')
       select('4: Serious', :from => 'Violation severity')
-      expect{edit_cancel.click; sleep(0.4)}.not_to change{MediaAppearance.first.title}
+      expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click; sleep(0.4)}.not_to change{MediaAppearance.first.title}
       expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq original_media_appearance.title
       expand_all_panels
       expect(areas).to include "Human Rights"
       expect(areas).not_to include "Good Governance"
+    end
+
+    scenario "title is blank, error propagates" do # b/c there was a bug!
+      add_article_button.click
+      sleep(0.8)
+      expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
+      expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
+      expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
+      page.find(".media_appearance i#edit_cancel").click
+      edit_article[0].click
+      expect(page).not_to have_selector("#title_error", :visible => true)
     end
   end
 
@@ -402,7 +415,9 @@ feature "view attachments", :js => true do
       setup_database(:media_appearance_with_link)
       visit outreach_media_media_appearances_path(:en)
       click_the_link_icon
-      expect(page.evaluate_script('window.location.href')).to include first_article_link
+      sleep(0.5)
+      page.switch_to_window(page.windows[1])
+      expect( page.evaluate_script('window.location.href')).to include first_article_link
     end
   end
 end

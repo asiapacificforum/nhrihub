@@ -3,7 +3,7 @@
 
 = link_to t('.add'), new_admin_organization_path
 
-%table#organizations.table{:style => "width:360px"}
+%table#organizations.table{:style => "width:860px"}
   %tr
     %th= t('activerecord.attributes.organization.name')
     - if @organizations.empty?
@@ -23,11 +23,8 @@
               = link_to "delete", admin_organization_path(organization), :method => :delete, :data => {:confirm => t('defaults.sure')}
             -else
               = link_to "delete", "javascript:void(0)", :onclick => 'show_warning(this)'
+          %td.message{:style => "width:400px"}
 
 :coffeescript
   @show_warning = (element)->
-    table_width = $(element).closest('table').css('width')
-    new_table_width = 400 + parseInt(table_width)
-
-    $(element).closest('table').css('width', new_table_width + 'px')
-    $(element).closest('tr').append("<td style='width:400px'>#{t('.warning')}</td>")
+    $(element).closest('tr').find('.message').text("#{t('.warning')}")

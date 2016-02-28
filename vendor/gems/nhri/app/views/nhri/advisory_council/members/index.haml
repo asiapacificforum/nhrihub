@@ -1,1 +1,290 @@
 %h1=t('.heading')
+
+#membership
+
+%script#membership_template{:type => 'template/ractive'}
+  .btn.btn-success#add_member{'on-click'=>'add_member()'}
+    %i.fa.fa-plus.fa-lg{:style => "color:white"}
+    %span= t('.add')
+
+  .row.headings{:style=>"width:860px; margin-top:35px;"}
+    .col-md-2{:style=>'width:20%'}= t('.member')
+    .col-md-4= t('.bio')
+    .col-md-4= t('.contact')
+    .col-md-1
+  #members
+    <members />
+  <newmember first_name='{{first_name}}' last_name='{{last_name}}' title='{{title}}' organization='{{organization}}' department='{{department}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' home_phone='{{home_phone}}' email='{{email}}' alternate_email='{{alternate_email}}' bio='{{bio}}' />
+
+:css
+  table#new_member tr td {
+    padding-left : 10px;
+    padding-right : 10px;
+    vertical-align : top;
+    padding-top : 8px;
+  }
+  table#new_member tr td input {
+    position : relative;
+    top : -8px;
+  }
+  table#new_member tr td span.help-block {
+    position : relative;
+    top : -14px;
+    margin-bottom : 0px;
+  }
+  table#new_member tr {
+    height : 56px;
+  }
+
+%script#new_member_template{:type => 'template/ractive'}
+  {{>member_form {type : 'new_member', id:''}}}
+
+%script#edit_member_template{:type => 'template/ractive'}
+  {{>member_form {type : 'edit_member', id:id} }}
+
+%script#member_form{:type => 'template/ractive'}
+  <modal-custom id="{{type}}{{id}}_modal" type="xl">
+  <modal-header>
+  <h4>
+  {{#type==='new_member'}}
+  #{t(".new_member")}
+  {{/type}}
+  {{#type==='edit_member'}}
+  #{t(".edit_member")}
+  {{/type}}
+  <modal-close/></h4>
+  %table#new_member
+    %tr
+      %td
+        %label{:for => 'new_member_first_name'}= t('.first_name')
+      %td.form-group{:class => "{{#first_name_error}}has-error{{/}}"}
+        %input.form-control#new_member_first_name{:name => 'member[first_name]', :value => '{{first_name}}'}
+        %span.help-block.error#first_name_error= t('.first_name_error_message')
+      %td
+        %label{:for => 'new_member_last_name'}= t('.last_name')
+      %td.form-group{:class => "{{#last_name_error}}has-error{{/}}"}
+        %input.form-control#new_member_last_name{:name => 'member[last_name]', :value => '{{last_name}}'}
+        %span.help-block.error#last_name_error= t('.last_name_error_message')
+      %td
+        %label{:for => 'new_member_title'}= t('.title')
+      %td
+        %input.form-control#new_member_title{:name => 'member[title]', :value => '{{title}}'}
+    %tr
+      %td
+        %label{:for => 'new_member_office_phone', :style => "width:100px;"}= t('.office_phone')
+      %td
+        %input.form-control#new_member_office_phone{:name => 'member[office_phone]', :value => '{{office_phone}}'}
+      %td
+        %label{:for => 'new_member_mobile_phone'}= t('.mobile_phone')
+      %td
+        %input.form-control#new_member_mobile_phone{:name => 'member[mobile_phone]', :value => '{{mobile_phone}}'}
+      %td
+        %label{:for => 'new_member_home_phone'}= t('.home_phone')
+      %td
+        %input.form-control#new_member_home_phone{:name => 'member[home_phone]', :value => '{{home_phone}}'}
+    %tr
+      %td
+        %label{:for => 'new_member_email'}= t('.email')
+      %td
+        %input#new_member_email{:name => 'member[email]', :value => '{{email}}'}
+      %td
+        %label{:for => 'new_member_alternate_email'}= t('.alternate_email')
+      %td
+        %input#new_member_alternate_email{:name => 'member[alternate_email]', :value => '{{alternate_email}}'}
+    %tr
+      %td
+        %label{:for => 'new_member_bio'}= t('.bio')
+      %td{:colspan => 3}
+        %textarea#new_member_bio{:name => 'member[bio]', :style => 'width:100%', :value => '{{bio}}'}
+    %tr
+      %td
+        %label{:for => 'new_member_organization'}= t('.organization')
+      %td
+        %input#new_member_organization{:name => 'member[organization]', :value => '{{organization}}'}
+      %td
+        %label{:for => 'new_member_department'}= t('.department')
+      %td
+        %input#new_member_department{:name => 'member[department]', :value => '{{department}}'}
+    %tr
+      %td
+      %td
+        .icon{:style => 'height:20px'}
+          %i.fa.fa-remove.fa-lg#cancel{'on-click' => 'cancel_modal()', :style => "position:relative; left:15px;"}
+      %td
+        .icon
+          %i.fa.fa-check.fa-lg#save{'on-click' => 'save_member()'}
+  </modal-header>
+  <modal-body>
+  </modal-body>
+  </modal-custom>
+
+%script#member_template{:type => 'template/ractive'}
+  .row.member{:style => 'width:860px; margin-bottom:12px;'}
+    .col-md-2.name{:style => "width:20%"} {{first_name}} {{last_name}}
+    .col-md-4 {{bio}}
+    .col-md-4 <contact home_phone='{{home_phone}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' />
+    .col-md-1{:style => "display:flex; flex-direction:row;"}
+      .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
+        %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
+      .icon.edit{'on-click'=>'edit_this()', :style=>'margin-left:18px;'}
+        %i.fa.fa-lg.fa-pencil-square-o
+      .icon.delete{'on-click'=>'delete_this()', :style=>'margin-left:18px;'}
+        %i.fa.fa-trash-o.fa-lg
+  <editmember />
+
+%script#contact_template{:type => 'template/ractive'}
+  {{#home_phone}}<homephone class='home_phone' letter='h' value='{{home_phone}}' />{{/}}
+  {{#mobile_phone}}<mobilephone class='mobile_phone' letter='m' value='{{mobile_phone}}' />{{/}}
+  {{#office_phone}}<officephone class='office_phone' letter='w' value='{{office_phone}}' />{{/}}
+  {{#email}}<email class='email' letter='e' value='{{email}}' />{{/}}
+  {{#alternate_email}}<alternateemail class='alternate_email' letter='e' value='{{alternate_email}}' />{{/}}
+
+%script#contact_item{:type => 'template/ractive'}
+  %div{ :style=>'margin-bottom:2px; display:flex; flex-direction:row;'}
+    %div{:style => 'display:inline-table; width:18px'}
+      {{letter}}
+      %span{:style => 'float:right;'} :
+    %div{:class => '{{class}}',:style => 'margin-left:14px;'} {{value}}
+
+%script#popover_template{:type => "template/ractive"}
+  .popover.fileDetails{:role=>"tooltip"}
+    .arrow
+    %h3.popover-title
+    .popover-content
+
+%script#detailsContent{:type => 'text/ractive'}
+  %table{:style => 'width:350px'}
+    %tr
+      %td= t('.title')
+      %td.name {{ title }}
+    %tr
+      %td= t('.organization')
+      %td.size {{ organization }}
+    %tr
+      %td= t('.department')
+      %td.rev {{ department }}
+
+%script#detailsTitle{:type => "template/ractive"}
+  %span{:style => 'z-index:20'}= t('.details')
+
+:coffeescript
+  window.members = #{@members.to_json}
+  window.new_member = #{@new_member.to_json}
+  window.create_url = "#{AdvisoryCouncilMember.create_url}"
+
+  $ ->
+    Ractive.DEBUG = false
+
+    Popover = (node)->
+      $(node).popover
+        html : true,
+        title : ->
+          $('#detailsTitle').html()
+        content : ->
+          data = Ractive.getNodeInfo(@).ractive.get()
+          ractive = new Ractive
+            template : '#detailsContent'
+            data : data
+          ractive.toHTML()
+        template : $('#popover_template').html()
+        trigger: 'hover'
+      teardown: ->
+        $(node).off('mouseenter')
+
+    Ractive.decorators.popover = Popover
+
+    AlternateEmail = Email = HomePhone = MobilePhone = OfficePhone = Ractive.extend template : '#contact_item'
+
+    Contact = Ractive.extend
+      template : '#contact_template'
+      components :
+        homephone : HomePhone
+        mobilephone : MobilePhone
+        officephone : OfficePhone
+        email : Email
+        alternateemail : AlternateEmail
+
+    EditMember = Ractive.extend
+      isolated : true
+      template : '#edit_member_template'
+      oninit : ->
+        @copy_parent_attrs()
+      save_member : ->
+        url = @get('url').replace(/id$/,@get('id'))
+        data = {member : _(@get()).omit(['url', 'id', 'first_name_error', 'last_name_error']), '_method':'put'}
+        context = @
+        $.ajax
+          url : url
+          type : 'post'
+          data : data
+          context : context
+          success : @update_callback
+      update_callback : (response, status, jqxhr)->
+        @parent.set(response)
+        @cancel_modal()
+      cancel_modal : ->
+        @copy_parent_attrs()
+        $("#edit_member"+@get('id')+"_modal").modal('hide')
+      copy_parent_attrs : ->
+        @set(@parent.get())
+
+    Member = Ractive.extend
+      template : '#member_template'
+      components :
+        contact : Contact
+        editmember : EditMember
+      delete_this : ->
+        data = {id : @get('id'), '_method':'delete'}
+        url = @get('url').replace(/id/,@get('id'))
+        context = @
+        $.ajax
+          type: "POST"
+          url: url
+          data: data
+          success: @delete_callback
+          dataType: 'json'
+          context: context
+      edit_this : ->
+        $("#edit_member"+@get('id')+"_modal").modal('show')
+      delete_callback : ->
+        @parent.remove(@get('id'))
+
+    Members = Ractive.extend
+      template : "{{#members}}<member alternate_email='{{alternate_email}}' bio='{{bio}}' created_at='{{created_at}}' department='{{department}}' email='{{email}}' first_name='{{first_name}}' home_phone='{{home_phone}}' id='{{id}}' last_name='{{last_name}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' organization='{{organization}}' title='{{title}}' url='{{url}}' />{{/}}"
+      components :
+        member : Member
+      remove : (id)->
+        index = _(@get('members')).pluck('id').indexOf(id)
+        @splice('members',index,1)
+
+    NewMember = Ractive.extend
+      template : '#new_member_template'
+      oninit : ->
+        @set('first_name_error',false)
+      onrender : ->
+        $('#new_member_modal').on 'hidden.bs.modal', => @set(new_member)
+      cancel_modal : ->
+        $('#new_member_modal').modal('hide')
+        @set(new_member)
+      save_member : ->
+        if @validate()
+          data = {member : _(@get()).omit(['first_name_error', 'last_name_error'])}
+          $.post(create_url, data, @create_callback )
+          @cancel_modal()
+      create_callback : (response, statusText, jqxhr)->
+        membership.unshift('members',response)
+      validate : ->
+        @set('first_name_error', _.isEmpty(@get('first_name').trim()))
+        @set('last_name_error', _.isEmpty(@get('last_name').trim()))
+        !@get('first_name_error') && !@get('last_name_error')
+
+    window.membership = new Ractive
+      el : '#membership'
+      template : '#membership_template'
+      data :
+        members : members
+      components :
+        members : Members
+        newmember : NewMember
+      add_member : ->
+        $('#new_member_modal').modal('show')
