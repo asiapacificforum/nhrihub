@@ -3,20 +3,28 @@ module FileConstraints
   extend ActiveSupport::Concern
 
   module ClassMethods
+    def filesize_config_param
+      self::ConfigPrefix+'.filesize'
+    end
+
+    def filetypes_config_param
+      self::ConfigPrefix+'.filetypes'
+    end
+
     def maximum_filesize
-      SiteConfig[self::ConfigPrefix+'.filesize']
+      SiteConfig[filesize_config_param]
     end
 
     def maximum_filesize=(val)
-      SiteConfig[self::ConfigPrefix+'.filesize'] = val
+      SiteConfig[filesize_config_param] = val
     end
 
     def permitted_filetypes
-      SiteConfig[self::ConfigPrefix+'.filetypes']
+      SiteConfig[filetypes_config_param]
     end
 
     def permitted_filetypes=(val)
-      SiteConfig[self::ConfigPrefix+'.filetypes'] = val
+      SiteConfig[filetypes_config_param] = val
     end
   end
 end

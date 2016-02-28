@@ -5,8 +5,7 @@ class OutreachMedia::FilesizesController < FilesizesController
   end
 
   private
-  def config_param
-    'outreach_event.filesize'
+  def model
+    OutreachEvent
   end
-
 end

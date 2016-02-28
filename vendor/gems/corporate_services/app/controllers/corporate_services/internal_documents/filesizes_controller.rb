@@ -4,7 +4,7 @@ class CorporateServices::InternalDocuments::FilesizesController < FilesizesContr
   end
 
   private
-  def config_param
-    InternalDocument::ConfigPrefix+'.filesize'
+  def model
+    InternalDocument
   end
 end

@@ -9,7 +9,7 @@ class FiletypesController < ApplicationController
   end
 
   def destroy
-    config_param = model::ConfigPrefix+'.filetypes'
+    config_param = model.filetypes_config_param
     SiteConfig[config_param] = SiteConfig[config_param] - [params[:ext]]
     render :json => {}, :status => 200
   end
