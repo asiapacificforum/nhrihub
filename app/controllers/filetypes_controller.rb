@@ -1,7 +1,6 @@
 class FiletypesController < ApplicationController
   def create
-    attrs = params[:filetype].merge!(:model => model)
-    filetype = Filetype.create(attrs)
+    filetype = Filetype.create(params[:filetype],model)
     if filetype.errors.empty?
       render :text => filetype.ext, :status => 200, :content_type => 'text/plain'
     else

@@ -22,9 +22,8 @@ class Filetype
     end
   end
 
-  def self.create(val)
+  def self.create(val,model)
     ext = val[:ext]
-    model = val[:model]
     ext = ext.match(/\w+/) if ext
     ext = ext[0].downcase if ext
     filetype = new(:ext=>ext, :model => model)
