@@ -86,25 +86,25 @@
       %td
         %label{:for => 'new_member_email'}= t('.email')
       %td
-        %input#new_member_email{:name => 'member[email]', :value => '{{email}}'}
+        %input.form-control#new_member_email{:name => 'member[email]', :value => '{{email}}'}
       %td
         %label{:for => 'new_member_alternate_email'}= t('.alternate_email')
       %td
-        %input#new_member_alternate_email{:name => 'member[alternate_email]', :value => '{{alternate_email}}'}
-    %tr
+        %input.form-control#new_member_alternate_email{:name => 'member[alternate_email]', :value => '{{alternate_email}}'}
+    %tr{:style => "height:70px;"}
       %td
         %label{:for => 'new_member_bio'}= t('.bio')
       %td{:colspan => 3}
-        %textarea#new_member_bio{:name => 'member[bio]', :style => 'width:100%', :value => '{{bio}}'}
+        %textarea.form-control#new_member_bio{:name => 'member[bio]', :style => 'width:100%', :value => '{{bio}}'}
     %tr
       %td
         %label{:for => 'new_member_organization'}= t('.organization')
       %td
-        %input#new_member_organization{:name => 'member[organization]', :value => '{{organization}}'}
+        %input.form-control#new_member_organization{:name => 'member[organization]', :value => '{{organization}}'}
       %td
         %label{:for => 'new_member_department'}= t('.department')
       %td
-        %input#new_member_department{:name => 'member[department]', :value => '{{department}}'}
+        %input.form-control#new_member_department{:name => 'member[department]', :value => '{{department}}'}
     %tr
       %td
       %td
