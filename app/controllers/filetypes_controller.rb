@@ -1,5 +1,6 @@
 class FiletypesController < ApplicationController
   def create
+    attrs = params[:filetype].merge!(:model => model)
     filetype = Filetype.create(attrs)
     if filetype.errors.empty?
       render :text => filetype.ext, :status => 200, :content_type => 'text/plain'
@@ -9,7 +10,8 @@ class FiletypesController < ApplicationController
   end
 
   def destroy
-    SiteConfig[config_param] = SiteConfig[config_param] - [delete_key]
+    config_param = model::ConfigPrefix+'.filetypes'
+    SiteConfig[config_param] = SiteConfig[config_param] - [params[:ext]]
     render :json => {}, :status => 200
   end
 end

@@ -8,15 +8,7 @@ class OutreachMedia::FiletypesController < FiletypesController
   end
 
   private
-  def config_param
-    'outreach_event.filetypes'
-  end
-
-  def attrs
-    params[:filetype].merge!(:model => OutreachEvent)
-  end
-
-  def delete_key
-    params[:type]
+  def model
+    OutreachEvent
   end
 end
