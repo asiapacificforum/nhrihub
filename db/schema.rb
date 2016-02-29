@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160224184153) do
+ActiveRecord::Schema.define(version: 20160228174227) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,19 @@ ActiveRecord::Schema.define(version: 20160224184153) do
     t.datetime "updated_at"
     t.string   "progress",    limit: 255
     t.string   "index",       limit: 10
+  end
+
+  create_table "advisory_council_documents", force: :cascade do |t|
+    t.string   "file_id",           limit: 255
+    t.integer  "filesize"
+    t.string   "original_filename", limit: 255
+    t.integer  "revision_major"
+    t.integer  "revision_minor"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "lastModifiedDate"
+    t.string   "original_type",     limit: 255
+    t.integer  "user_id"
   end
 
   create_table "advisory_council_members", force: :cascade do |t|
@@ -324,19 +337,6 @@ ActiveRecord::Schema.define(version: 20160224184153) do
     t.integer  "area_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "terms_of_reference_versions", force: :cascade do |t|
-    t.string   "file_id",           limit: 255
-    t.integer  "filesize"
-    t.string   "original_filename", limit: 255
-    t.integer  "revision_major"
-    t.integer  "revision_minor"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "lastModifiedDate"
-    t.string   "original_type",     limit: 255
-    t.integer  "user_id"
   end
 
   create_table "user_roles", force: :cascade do |t|

@@ -11,3 +11,6 @@ en:
         tor:
           filesize_max: "Terms Of Reference: Maximum permitted file size"
           filetypes: "Terms Of Reference: Permitted file types"
+        min:
+          filesize_max: "Advisory council minutes: Maximum permitted file size"
+          filetypes: "Advisory council minutes: Permitted file types"

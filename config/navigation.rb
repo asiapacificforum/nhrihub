@@ -5,7 +5,7 @@ SimpleNavigation::Configuration.run do |navigation|
       nhri.item :adv_council, t('layout.nav.adv_council'), :class => 'dropdown-submenu' do |adv|
         adv.item :tor, t('layout.nav.adv.tor'), nhri_advisory_council_terms_of_references_path
         adv.item :memb, t('layout.nav.adv.memb'), nhri_advisory_council_members_path
-        adv.item :min, t('layout.nav.adv.min'), nhri_advisory_council_meetings_path
+        adv.item :min, t('layout.nav.adv.min'), nhri_advisory_council_minutes_index_path
         adv.item :issues, t('layout.nav.adv.issues'), nhri_advisory_council_issues_path
       end
       nhri.item :nhr_indicators, t('layout.nav.nhr_indicators'), nhri_nhr_indicators_path

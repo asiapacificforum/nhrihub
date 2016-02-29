@@ -4,16 +4,22 @@ Rails.application.routes.draw do
       namespace :icc do # note this must be before the icc resource
         resources :accreditation_required_document_groups, :param => :title, :only => [:create, :destroy]
         resource  :filesize, :only => :update
-        resources :filetypes, :param => :type, :only => [:create, :destroy]
+        resources :filetypes, :param => :ext, :only => [:create, :destroy]
       end
       resources :hr_education
       namespace :advisory_council do
         resources :terms_of_references
         resources :members
-        resources :meetings
+        resources :minutes
         resources :issues
-        resource  :filesize, :only => :update
-        resources :filetypes, :param => :type, :only => [:create, :destroy]
+        namespace :terms_of_reference_version do
+          resource  :filesize, :only => :update
+          resources :filetypes, :param => :ext, :only => [:create, :destroy]
+        end
+        namespace :advisory_council_minutes do
+          resource  :filesize, :only => :update
+          resources :filetypes, :param => :ext, :only => [:create, :destroy]
+        end
       end
       resources :nhr_indicators
       resources :hr_protection

@@ -1,0 +1,5 @@
+en:
+  activerecord:
+    models:
+      advisory_council_minutes: "Advisory Council Meeting Minutes, %{date} "
+

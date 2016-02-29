@@ -32,7 +32,7 @@
 %h4= t('.tor.filesize_max')
 #terms_of_reference_version_filesize
   = render :partial => 'admin/document_filesize_configuration',
-           :locals => { :update_url => nhri_advisory_council_filesize_path ,
+           :locals => { :update_url => nhri_advisory_council_terms_of_reference_version_filesize_path ,
                         :param => @terms_of_reference_version_filesize,
                         :context => "terms_of_reference_version_filesize"}
 
@@ -40,10 +40,28 @@
 #terms_of_reference_version_filetypes
   = render :partial => 'admin/collection_configuration',
     :locals => { :new_item => @terms_of_reference_doc_filetype,
-                 :create_url => nhri_advisory_council_filetypes_path,
-                 :delete_url => nhri_advisory_council_filetype_path('id'),
+                 :create_url => nhri_advisory_council_terms_of_reference_version_filetypes_path,
+                 :delete_url => nhri_advisory_council_terms_of_reference_version_filetype_path('id'),
                  :collection => @terms_of_reference_version_filetypes,
                  :item_name => 'terms_of_reference_version_filetype',
+                 :param_name => 'ext',
+                 :placeholder => 'e.g. ppt'}
+
+%h4= t('.min.filesize_max')
+#advisory_council_minutes_filesize
+  = render :partial => 'admin/document_filesize_configuration',
+           :locals => { :update_url => nhri_advisory_council_advisory_council_minutes_filesize_path ,
+                        :param => @advisory_council_minutes_filesize,
+                        :context => "advisory_council_minutes_filesize"}
+
+%h4= t('.min.filetypes')
+#advisory_council_minutes_filetypes
+  = render :partial => 'admin/collection_configuration',
+    :locals => { :new_item => @advisory_council_minutes_filetype,
+                 :create_url => nhri_advisory_council_advisory_council_minutes_filetypes_path,
+                 :delete_url => nhri_advisory_council_advisory_council_minutes_filetype_path('id'),
+                 :collection => @advisory_council_minutes_filetypes,
+                 :item_name => 'advisory_council_minutes_filetype',
                  :param_name => 'ext',
                  :placeholder => 'e.g. ppt'}
 

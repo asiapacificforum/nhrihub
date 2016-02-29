@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   scope ":locale", locale: /en|fr/ do
     namespace :corporate_services do
       namespace :internal_documents do # note this must be before the internal documents resource
-        resources :filetypes, :param => :type, :only => [:create, :destroy]
+        resources :filetypes, :param => :ext, :only => [:create, :destroy]
         resource :filesize, :only => :update
       end
       namespace :strategic_plans do

@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   scope ':locale' do
     namespace :outreach_media do
       get 'admin', :to => "admin#index"
-      resources :filetypes, :param => :type, :only => [:create, :destroy]
+      resources :filetypes, :param => :ext, :only => [:create, :destroy]
       resource :filesize, :only => :update
       resources :audience_types
       resources :media_appearances do
