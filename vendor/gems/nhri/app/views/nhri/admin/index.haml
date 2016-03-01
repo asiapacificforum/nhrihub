@@ -82,8 +82,8 @@
   \:
   = t('.filesize_max')
 = render :partial => 'admin/document_filesize_configuration',
-         :locals => { :update_url => nhri_advisory_council_advisory_council_minutes_filesize_path ,
-                      :param => @advisory_council_minutes_filesize,
+         :locals => { :update_url => nhri_advisory_council_advisory_council_issue_filesize_path ,
+                      :param => @advisory_council_issues_filesize,
                       :context => "advisory_council_issues_filesize"}
 
 %h4
@@ -92,8 +92,8 @@
   = t('.filetypes')
 = render :partial => 'admin/collection_configuration',
   :locals => { :new_item => @advisory_council_issues_filetype,
-               :create_url => nhri_advisory_council_advisory_council_issues_filetypes_path,
-               :delete_url => nhri_advisory_council_advisory_council_issues_filetype_path('id'),
+               :create_url => nhri_advisory_council_advisory_council_issue_filetypes_path,
+               :delete_url => nhri_advisory_council_advisory_council_issue_filetype_path('id'),
                :collection => @advisory_council_issues_filetypes,
                :item_name => 'advisory_council_issues_filetype',
                :param_name => 'ext',
