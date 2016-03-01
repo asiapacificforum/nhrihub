@@ -5,6 +5,6 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes::FilesizesController < Files
 
   private
   def model
-    AdvisoryCouncilMinutes
+    Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes
   end
 end

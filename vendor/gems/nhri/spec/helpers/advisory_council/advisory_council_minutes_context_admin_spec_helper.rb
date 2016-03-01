@@ -5,7 +5,7 @@ module AdvisoryCouncilMinutesContextAdminSpecHelper
   include AdvisoryCouncilMinutesAdminSpecHelper
   extend RSpec::Core::SharedContext
   def model
-    AdvisoryCouncilMinutes
+    Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes
   end
 
   def filesize_selector

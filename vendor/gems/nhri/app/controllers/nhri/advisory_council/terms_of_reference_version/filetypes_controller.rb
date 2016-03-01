@@ -9,6 +9,6 @@ class Nhri::AdvisoryCouncil::TermsOfReferenceVersion::FiletypesController < File
 
   private
   def model
-    TermsOfReferenceVersion
+    Nhri::AdvisoryCouncil::TermsOfReferenceVersion
   end
 end

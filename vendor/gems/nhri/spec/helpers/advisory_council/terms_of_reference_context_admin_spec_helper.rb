@@ -5,7 +5,7 @@ module TermsOfReferenceContextAdminSpecHelper
   include TermsOfReferenceAdminSpecHelper
   extend RSpec::Core::SharedContext
   def model
-    TermsOfReferenceVersion
+    Nhri::AdvisoryCouncil::TermsOfReferenceVersion
   end
 
   def filesize_selector

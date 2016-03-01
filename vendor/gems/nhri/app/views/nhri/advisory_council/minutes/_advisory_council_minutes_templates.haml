@@ -1,0 +1,153 @@
+%script#uploader_template{:type => 'html/template'}
+  / The file upload form used as target for the jQuery fileupload widget
+  / this is the fileupload configuration when uploading files via the buttonbar
+  .fileupload.buttonbar{:decorator => "primary_fileupload:{{required_files_titles}}", :'data-file-input' => '#primary_fileinput' }
+    / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
+    .row.fileupload-buttonbar
+      .col-lg-9
+        / The fileinput-button span is used to style the file input field as button
+        %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
+          %i.fa.fa-plus.fa-lg{'onclick'=>"$('#primary_fileinput').click()", :style => "color:white"}
+          %span{'onclick'=>"$('#primary_fileinput').click()"}= t('.add')
+          %input#primary_fileinput{:multiple => "multiple", :name => "primary_file", :type => "file"}
+        %button.btn.btn-primary.start{'on-click'=>'start_upload()', :type => "submit"}
+          %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
+          %span= t('.start')
+        %button.btn.btn-warning.cancel{:type => "reset", 'on-click'=>'flash_hide()'}
+          %i.fa.fa-ban.fa-lg{:style => "color:white"}
+          %span= t('.cancel')
+    .row.fileupload_progress
+      / The global progress state
+      .col-lg-9.fileupload-progress.fade
+        / The global progress bar
+        .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
+          .progress-bar.progress-bar-success{:style => "width:0%;"}
+        / The extended global progress state
+        .progress-extended  
+    .row
+      .col-lg-9#uploads
+        <uploadfiles/>
+    .row
+      .col-lg-9.the_files
+    .row
+      .col-lg-9
+        / The table listing the files available for upload/download
+        .headings
+          %table
+            %tr
+              %td{:style => "width:36%; text-align:left"}= t('.doc_title')
+              %td{:style => "text-align:left"}= t('.date')
+              %td= t('.information')
+              %td{:style => "width:16%"}= t('.edit')
+              %td= t('.download')
+              %td= t('.delete')
+        .panel-group.files#advisory_council_minutes
+          <docs/>
+
+%script#template-download{:type => 'html/template'}
+  .panel.panel-default.template-download
+    #headingOne.panel-heading{:role => "tab"}
+      %strong.error.text-danger {{= file.error }}
+      {{> document_template }}
+
+%script#popover_template{:type => "template/ractive"}
+  .popover.fileDetails{:role=>"tooltip"}
+    .arrow
+    %h3.popover-title
+    .popover-content
+
+%script#detailsContent{:type => 'text/ractive'}
+  - scope = 'activerecord.attributes.advisory_council_minutes'
+  %table{:style => 'width:500px'}
+    %tr
+      %td= t('original_filename', :scope => scope)
+      %td.name {{ original_filename }}
+    %tr
+      %td= t('filesize', :scope => scope)
+      %td.size {{ formatted_filesize }}
+    %tr
+      %td= t('.date')
+      %td.rev {{ date }}
+    %tr
+      %td= t('lastModified', :scope => scope)
+      %td.lastModified {{ formatted_modification_date }}
+    %tr
+      %td= t('uploadedOn', :scope => scope)
+      %td.uploadedOn {{ formatted_creation_date }}
+    %tr
+      %td= t('uploadedBy', :scope => scope)
+      %td.uploadedBy {{ uploaded_by.first_last_name }}
+
+%script#detailsTitle{:type => "template/ractive"}
+  %span{:style => 'z-index:20'}= t('.details')
+
+%script#document_template{:type => 'template/html'}
+  %table.advisory_council_minutes.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"advisory_council_minutes_editable{{id}}"}
+    %tr
+      %td.title.form-group{ :style => "width:36%", 'data-attribute' => :title}
+        %span {{ title }}
+      %td.date.form-group{'data-attribute' => :date, 'data-toggle' => :edit, :'data-name' => 'date', :style => "width:8%"}
+        .fade.edit
+          %input.date{ :name => "advisory_council_minutes[date]", :'value' => "{{ date }}", :style => 'width:40px'}
+        .fade.no_edit.editable.in
+          %span {{ date }}
+      -# make sure it's on top of the next td, even though it precedes in the html
+      %td.include_popover{:style => "text-align:center; width:8%"}
+        .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
+          %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
+      %td{:style => "width:8%"}
+        .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
+          .fade.edit
+            %i.fa.fa-remove.fa-lg{:id => "advisory_council_minutes_editable{{id}}_edit_cancel",:style => "position:relative; left:40px;"}
+      %td{:style => "width:8%"}
+        %div.icon{:'data-toggle' => 'edit'}
+          .fade.edit
+            %i.fa.fa-check.fa-lg{:id => "advisory_council_minutes_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+          .fade.no_edit.in
+            %i.fa.fa-pencil-square-o.fa-lg{:id => "advisory_council_minutes_editable{{id}}_edit_start", :style => "position:relative; left:-5px;"}
+      %td{:style => "text-align:center; width:8%"}
+        .icon
+          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
+      %td{:style => "text-align:center; width:8%"}
+        %div.icon.delete{'on-click'=>'delete_this()'}
+          %i.fa.fa-trash-o.fa-lg
+
+%script#files{:type => 'ractive/template'}
+  {{#files}}
+  <doc id='{{id}}' title='{{title}}' date='{{date}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' url='{{url}}' />
+  {{/files}}
+
+%script#flash_error_template{:type => 'template/ractive'}
+  %ul.error{:style => "display:none"}
+    %li {{ message }}
+
+
+  / The template to display files ready for upload
+
+%script#upload_template{:type => 'html/template'}
+  .panel.panel-default.fade.template-upload{:intro => :fade}
+    .panel-heading
+      %table{:width => '100%'}
+        %tr
+          %td{:colspan => 2}
+            %p.name {{ name }}
+            .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
+              %span.help-block.error#filesize_error= t('.too_large')
+            .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
+              %span.help-block.error#filetype_error= t('.unpermitted_type')
+            .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
+              %span.help-block.error#unconfigured_filetypes_error= t('.noFileTypes')
+          %td{:colspan => 2}
+            .size
+            .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
+              .progress-bar.progress-bar-success{:style => "width:0%"}
+        %tr
+          %td.date
+            %label{:for => "advisory_council_minutes_date"}= t('.date')
+            %input{:type => :text, :decorator=>:datepicker, :name => "advisory_council_minutes[date]", :id => "advisory_council_minutes_date", :style => "width:150px", :value => "{{date}}"}
+          %td
+            %div.start{'on-click'=>'submit()'}
+              %i.fa.fa-cloud-upload.fa-lg
+          %td
+            %div.cancel
+              %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}

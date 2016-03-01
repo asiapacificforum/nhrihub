@@ -1,0 +1,15 @@
+.message_block
+%h1=t('.heading')
+#container
+
+= render :partial => 'advisory_council_minutes_templates'
+= javascript_include_tag 'flash'
+= javascript_include_tag 'in_page_edit'
+
+:javascript
+  var files_list_error = "#{t('.flash.no_files_error')}"
+  var files = #{ @advisory_council_minutes.to_json }
+  var permitted_filetypes = #{@permitted_filetypes}
+  var maximum_filesize = #{@maximum_filesize * 1000000}
+
+= javascript_include_tag "nhri/minutes"

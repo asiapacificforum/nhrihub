@@ -4,11 +4,11 @@
 # end
 namespace :nhri do
   desc "populate all nhri modules"
-  task :populate => [:populate_tor, :populate_mem]
+  task :populate => [:populate_tor, :populate_mem, :populate_min]
 
   desc "populates terms of reference"
   task :populate_tor => :environment do
-    TermsOfReferenceVersion.delete_all
+    Nhri::AdvisoryCouncil::TermsOfReferenceVersion.delete_all
     3.times do |i|
       FactoryGirl.create(:terms_of_reference_version, :revision_major => i+1, :revision_minor => 0)
     end
@@ -19,6 +19,14 @@ namespace :nhri do
     AdvisoryCouncilMember.delete_all
     3.times do
       FactoryGirl.create(:advisory_council_member)
+    end
+  end
+
+  desc "populates advisory council minutes list"
+  task :populate_min => :environment do
+    Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.delete_all
+    3.times do
+      FactoryGirl.create(:advisory_council_minutes)
     end
   end
 end

@@ -1,3 +1,4 @@
+require 'nhri/advisory_council/advisory_council_minutes'
 class Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes::FiletypesController < FiletypesController
   def create
     super
@@ -9,6 +10,6 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes::FiletypesController < Filet
 
   private
   def model
-    AdvisoryCouncilMinutes
+    Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes
   end
 end

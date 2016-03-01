@@ -5,6 +5,6 @@ class Nhri::AdvisoryCouncil::TermsOfReferenceVersion::FilesizesController < File
 
   private
   def model
-    TermsOfReferenceVersion
+    Nhri::AdvisoryCouncil::TermsOfReferenceVersion
   end
 end

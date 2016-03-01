@@ -1,5 +1,12 @@
 en:
   activerecord:
     models:
-      advisory_council_minutes: "Advisory Council Meeting Minutes, %{date} "
-
+      nhri/advisory_council/advisory_council_minutes: "Advisory Council Meeting Minutes, %{date} "
+    attributes:
+      advisory_council_minutes:
+        original_filename: "Original filename"
+        filesize: "File size"
+        revision: "Revision"
+        lastModified: "Last modified"
+        uploadedOn: "Uploaded on"
+        uploadedBy: "Uploaded by"

@@ -8,8 +8,6 @@ class AdvisoryCouncilDocument < ActiveRecord::Base
 
   attachment :file
 
-  default_scope ->{ order(:revision_major => :desc, :revision_minor => :desc) }
-
   before_save do |doc|
     doc.receives_next_major_rev if doc.revision.blank?
   end
@@ -20,6 +18,7 @@ class AdvisoryCouncilDocument < ActiveRecord::Base
                        :revision,
                        :uploaded_by,
                        :url,
+                       :date,
                        :formatted_modification_date,
                        :formatted_creation_date,
                        :formatted_filesize ] )
