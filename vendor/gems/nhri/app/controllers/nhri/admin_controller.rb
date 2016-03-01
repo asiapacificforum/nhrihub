@@ -11,5 +11,8 @@ class Nhri::AdminController < ApplicationController
     @advisory_council_minutes_filetype = Filetype.new
     @advisory_council_minutes_filetypes = Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.permitted_filetypes
     @advisory_council_minutes_filesize = Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.maximum_filesize
+    @advisory_council_issues_filetype = Filetype.new
+    @advisory_council_issues_filetypes = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.permitted_filetypes
+    @advisory_council_issues_filesize = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.maximum_filesize
   end
 end

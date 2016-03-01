@@ -4,7 +4,7 @@
 # end
 namespace :nhri do
   desc "populate all nhri modules"
-  task :populate => [:populate_tor, :populate_mem, :populate_min]
+  task :populate => [:populate_tor, :populate_mem, :populate_min, :populate_iss]
 
   desc "populates terms of reference"
   task :populate_tor => :environment do
@@ -29,4 +29,14 @@ namespace :nhri do
       FactoryGirl.create(:advisory_council_minutes)
     end
   end
+
+  desc "populates advisory council issues"
+  task :populate_iss => :environment do
+    AdvisoryCouncilIssue.delete_all
+
+    20.times do
+      ma = FactoryGirl.create(:advisory_council_issue, :with_reminders, :with_notes, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
+    end
+  end
+
 end

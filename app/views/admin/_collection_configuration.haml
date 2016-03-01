@@ -1,13 +1,14 @@
-.admin.well
-  %table.table.borderless{:class => "#{item_name}s", :style => "width:auto;"}
-    %tbody
+%div{:id => "#{item_name}s"}
+  .admin.well
+    %table.table.borderless{:class => "#{item_name}s", :style => "width:auto;"}
+      %tbody
 
-  = form_for new_item, :url => create_url, :remote => true, :html => {:id => "new_#{item_name}"} do |f|
-    %table.table.borderless{:style => "width:200px;"}
-      %tr
-        %td
-          %button.btn.btn-success.btn-xs{:style => 'line-height:1.8;', :type => 'submit'}= t(".#{item_name}.add")
-        %td= f.text_field "#{param_name}", :size => 8, :placeholder => placeholder, :id => "#{item_name}_#{param_name}"
+    = form_for new_item, :url => create_url, :remote => true, :html => {:id => "new_#{item_name}"} do |f|
+      %table.table.borderless{:style => "width:200px;"}
+        %tr
+          %td
+            %button.btn.btn-success.btn-xs{:style => 'line-height:1.8;', :type => 'submit'}= t(".#{item_name}.add")
+          %td= f.text_field "#{param_name}", :size => 8, :placeholder => placeholder, :id => "#{item_name}_#{param_name}"
 
 %script{:type => 'template/html', :id => "#{item_name}_item_template"}
   %tr

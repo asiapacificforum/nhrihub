@@ -20,6 +20,10 @@ Rails.application.routes.draw do
           resource  :filesize, :only => :update
           resources :filetypes, :param => :ext, :only => [:create, :destroy]
         end
+        namespace :advisory_council_issues do
+          resource  :filesize, :only => :update
+          resources :filetypes, :param => :ext, :only => [:create, :destroy]
+        end
       end
       resources :nhr_indicators
       resources :hr_protection

@@ -18,6 +18,8 @@ en:
         add: "Add document title"
       advisory_council_minutes_filetype:
         add: "Add file type"
+      advisory_council_issues_filetype:
+        add: "Add file type"
     document_filesize_configuration:
       current_val: "Current value"
       change: "Change to"

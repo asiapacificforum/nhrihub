@@ -5,12 +5,9 @@ en:
         heading: "NHRI Module"
         accreditation:
           required_files_titles: "ICC Accreditation: Required Documents Titles"
-        reference:
-          filesize_max: "ICC Reference Documents: Maximum permitted file size"
-          filetypes: "ICC Reference Documents: Permitted file types"
-        tor:
-          filesize_max: "Terms Of Reference: Maximum permitted file size"
-          filetypes: "Terms Of Reference: Permitted file types"
-        min:
-          filesize_max: "Advisory council minutes: Maximum permitted file size"
-          filetypes: "Advisory council minutes: Permitted file types"
+        reference: "ICC Reference Documents"
+        terms: "Terms Of Reference"
+        minutes: "Advisory council minutes"
+        issues: "Advisory council issues"
+        filetypes: "Permitted file types"
+        filesize_max: "Maximum permitted file size"

@@ -1,18 +1,19 @@
-.admin.well
-  =form_tag update_url, :method => :put, :remote => true, :id => "update_#{context}_filesize" do
-    %table.table.borderless.filesize{:style => "width:200px;"}
-      %tbody
-        %tr
-          %td= t('.current_val')
-          %td
-            %span#filesize #{ param }
-            %span MB
-        %tr
-          %td
-            %button.btn.btn-success.btn-xs#change_filesize{:style => 'line-height:1.8;', :type => 'submit'}= t('.change')
-          %td
-            = text_field_tag :filesize, nil, :size => 6, :placeholder => "e.g. #{param.to_i+2}"
-            %span MB
+%div{:id => "#{context}"}
+  .admin.well
+    =form_tag update_url, :method => :put, :remote => true, :id => "update_#{context}_filesize" do
+      %table.table.borderless.filesize{:style => "width:200px;"}
+        %tbody
+          %tr
+            %td= t('.current_val')
+            %td
+              %span#filesize #{ param }
+              %span MB
+          %tr
+            %td
+              %button.btn.btn-success.btn-xs#change_filesize{:style => 'line-height:1.8;', :type => 'submit'}= t('.change')
+            %td
+              = text_field_tag :filesize, nil, :size => 6, :placeholder => "e.g. #{param.to_i+2}"
+              %span MB
 
 :coffeescript
   $ ->

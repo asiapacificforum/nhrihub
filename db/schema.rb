@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160229173934) do
+ActiveRecord::Schema.define(version: 20160301185412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,22 @@ ActiveRecord::Schema.define(version: 20160229173934) do
     t.string   "original_type",     limit: 255
     t.integer  "user_id"
     t.string   "type"
+  end
+
+  create_table "advisory_council_issues", force: :cascade do |t|
+    t.string   "file_id",               limit: 255
+    t.integer  "filesize"
+    t.string   "original_filename",     limit: 255
+    t.string   "original_type",         limit: 255
+    t.integer  "user_id"
+    t.string   "title"
+    t.integer  "affected_people_count"
+    t.float    "violation_coefficient"
+    t.integer  "positivity_rating_id"
+    t.integer  "violation_severity_id"
+    t.datetime "lastModifiedDate"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "advisory_council_members", force: :cascade do |t|
@@ -134,6 +150,20 @@ ActiveRecord::Schema.define(version: 20160229173934) do
     t.integer  "document_group_id"
     t.integer  "user_id"
     t.string   "type",              limit: 40
+  end
+
+  create_table "issue_areas", force: :cascade do |t|
+    t.integer  "advisory_council_issue_id"
+    t.integer  "area_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "issue_subareas", force: :cascade do |t|
+    t.integer  "advisory_council_issue_id"
+    t.integer  "subarea_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "media_appearance_performance_indicators", force: :cascade do |t|
