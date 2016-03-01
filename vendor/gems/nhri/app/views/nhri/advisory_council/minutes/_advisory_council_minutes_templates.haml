@@ -36,9 +36,7 @@
           %table
             %tr
               %td{:style => "width:36%; text-align:left"}= t('.doc_title')
-              %td{:style => "text-align:left"}= t('.date')
               %td= t('.information')
-              %td{:style => "width:16%"}= t('.edit')
               %td= t('.download')
               %td= t('.delete')
         .panel-group.files#advisory_council_minutes
@@ -86,25 +84,10 @@
     %tr
       %td.title.form-group{ :style => "width:36%", 'data-attribute' => :title}
         %span {{ title }}
-      %td.date.form-group{'data-attribute' => :date, 'data-toggle' => :edit, :'data-name' => 'date', :style => "width:8%"}
-        .fade.edit
-          %input.date{ :name => "advisory_council_minutes[date]", :'value' => "{{ date }}", :style => 'width:40px'}
-        .fade.no_edit.editable.in
-          %span {{ date }}
       -# make sure it's on top of the next td, even though it precedes in the html
       %td.include_popover{:style => "text-align:center; width:8%"}
         .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
           %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
-      %td{:style => "width:8%"}
-        .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
-          .fade.edit
-            %i.fa.fa-remove.fa-lg{:id => "advisory_council_minutes_editable{{id}}_edit_cancel",:style => "position:relative; left:40px;"}
-      %td{:style => "width:8%"}
-        %div.icon{:'data-toggle' => 'edit'}
-          .fade.edit
-            %i.fa.fa-check.fa-lg{:id => "advisory_council_minutes_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
-          .fade.no_edit.in
-            %i.fa.fa-pencil-square-o.fa-lg{:id => "advisory_council_minutes_editable{{id}}_edit_start", :style => "position:relative; left:-5px;"}
       %td{:style => "text-align:center; width:8%"}
         .icon
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
