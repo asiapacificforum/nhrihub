@@ -208,9 +208,6 @@ $ ->
     sort : ->
       new_files = _(@get('files')).sortBy( (f)-> new Date(f.date)).reverse()
       @set('files',new_files)
-    all_revisions_except : (doc)->
-      _(@findAllComponents('doc')).map (this_doc)->
-        this_doc.get('revision') unless this_doc.get('id') == doc.get('id')
 
   window.start_page = ->
     window.advisory_council_minutes_document_uploader = new Ractive uploader_options
