@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :advisory_council_issue do
+  factory :advisory_council_issue, :class => Nhri::AdvisoryCouncil::AdvisoryCouncilIssue do
     title {Faker::Lorem.sentence(5)}
     file_id             { SecureRandom.hex(30) }
     filesize            { 10000 + (30000*rand).to_i }

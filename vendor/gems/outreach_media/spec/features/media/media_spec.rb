@@ -147,17 +147,17 @@ feature "attempt to save with errors", :js => true do
     before do
       fill_in("media_appearance_title", :with => "My new article title")
       expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
-      expect(page).to have_selector('#media_appearance_error', :text => "A file or link must be included")
+      expect(page).to have_selector('#collection_item_error', :text => "A file or link must be included")
     end
 
     scenario "remove error by adding a file" do
       page.attach_file("media_appearance_file", upload_document, :visible => false)
-      expect(page).not_to have_selector('#media_appearance_error', :text => "A file or link must be included")
+      expect(page).not_to have_selector('#collection_item_error', :text => "A file or link must be included")
     end
 
     scenario "remove error by adding a link" do
       fill_in("media_appearance_article_link", :with => "h")
-      expect(page).not_to have_selector('#media_appearance_error', :text => "A file or link must be included")
+      expect(page).not_to have_selector('#collection_item_error', :text => "A file or link must be included")
     end
   end
 
@@ -167,17 +167,17 @@ feature "attempt to save with errors", :js => true do
       page.attach_file("media_appearance_file", upload_document, :visible => false)
       fill_in("media_appearance_article_link", :with => "h")
       expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
-      expect(page).to have_selector('#media_appearance_attachment_error', :text => "Either file or link, not both")
+      expect(page).to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
     end
 
     scenario "remove error by removing file" do
       clear_file_attachment
-      expect(page).not_to have_selector('#media_appearance_attachment_error', :text => "Either file or link, not both")
+      expect(page).not_to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
     end
 
     scenario "remove error by deleting link" do
       delete_article_link_field
-      expect(page).not_to have_selector('#media_appearance_attachment_error', :text => "Either file or link, not both")
+      expect(page).not_to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
     end
   end
 
@@ -282,11 +282,11 @@ feature "when there are existing articles", :js => true do
       page.attach_file("media_appearance_file", upload_image, :visible => false)
       expect(page).to have_css('#filetype_error', :text => "File type not allowed")
       clear_file_attachment
-      expect(page).to have_selector('#media_appearance_error', :text => "A file or link must be included")
+      expect(page).to have_selector('#collection_item_error', :text => "A file or link must be included")
       edit_cancel.click
       sleep(0.2)
       edit_article[0].click
-      expect(page).not_to have_selector('#media_appearance_error', :text => "A file or link must be included")
+      expect(page).not_to have_selector('#collection_item_error', :text => "A file or link must be included")
     end
 
     scenario "edit an article, add errors, and cancel" do

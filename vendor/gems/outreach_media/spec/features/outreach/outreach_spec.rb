@@ -207,7 +207,6 @@ feature "attempt to save with errors", :js => true do
 
   scenario "title is blank" do
     sleep(0.8)
-    expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
     expect{edit_save.click; sleep(0.4)}.not_to change{OutreachEvent.count}
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in("outreach_event_title", :with => "m")

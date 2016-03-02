@@ -1,0 +1,320 @@
+%script#collection_item_template{:type => 'template/ractive'}
+  {{#if persisted }}
+  {{> show_collection_item_template }}
+  {{else}}
+  {{> new_collection_item_template }}
+  {{/if}}
+
+%script#show_collection_item_template{:type => 'template/ractive'}
+  .row.well.well-sm.editable_container{:class=> "#{item}", :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+    .col-md-12
+      .row.basic_info
+        .col-md-2.date{'data-toggle'=>:edit, :style => "width:15%"}
+          .fade.no_edit.in
+            %span {{ date }}
+          .fade.edit{:style => "margin-top:26px;"}
+            %span {{ date }}
+        .col-md-2.title{'data-toggle'=>'edit', :style => "width:60%"}
+          .fade.no_edit.in
+            %span {{ title }}
+          .fade.edit{:style => "width: 100%"}
+            {{> edit_title}}
+            .row.form-group{:class => "{{#collection_item_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+              .col-md-5
+                %span.help-block{:id => "collection_item_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t("#{i18n_key}.item_error_message")
+            .row.form-group{:class => "{{#collection_item_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+              .col-md-5
+                %span.help-block{:id => "collection_item_attachment_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t("#{i18n_key}.item_double_attachment_error_message")
+        .col-md-2.actions{:style => "width:25%"}
+          .row{:style => "margin-left:0px;"}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                {{#if has_link }}
+                %i.fa.fa-globe{'on-click' => 'fetch_link()'}
+                {{elseif has_scanned_doc }}
+                %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+                {{/if}}
+              .edit
+            .col-md-1.icon{ 'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-remove{:id => "#{item}_editable{{id}}_edit_cancel"}
+            .col-md-1.icon{'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-check{:id => "#{item}_editable{{id}}_edit_save"}
+              .fade.no_edit.in
+                %i.fa.fa-pencil-square-o{:id => "#{item}_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
+              .edit
+            .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
+              %div{'data-toggle'=>:edit}
+                .no_edit.in
+                  {{#if expanded}}
+                  %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
+                  {{else}}
+                  %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
+                  {{/if}}
+                .edit
+      .row.fileupload{:decorator => 'file_upload', 'data-toggle'=>:edit}
+        .fade.no_edit.in
+        .fade.edit{:style => "padding-left:20px;"}
+          .row{:style => "margin-bottom: 12px;"}
+            .col-md-2{:style => "width:15%"}
+              %label{:for => "#{item}_article_link"}= t('.weblink')
+            .col-md-9{:style => "padding-left:8px"}
+              %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
+          .row{:style => "margin-bottom: 12px;"}
+            .col-md-2#fileinput_button{:style => "width:15%"}
+              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
+              %input{:id => "#{item}_file", :type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"#{item}[file]"}
+            .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row; padding-left:8px;"}
+              {{#original_filename}}
+              <file/>
+              {{/original_filename}}
+      .collapse.expanded_info{:class => "collapse{{id}}"}
+        <performanceindicatorselect />
+        .panel.panel-default
+          .panel-heading
+            .row
+              .col-md-2.description{:style => "width:50%"}
+                =t('.areas')
+                \/
+                =t('.subareas')
+              .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
+          .panel-content{'data-toggle'=>'edit'}
+            .fade.no_edit.in
+              .row
+                .col-md-2.description{:style => "width:50%"}
+                  {{> item_areas}}
+                .col-md-2.metrics{:style=>"width:40%; display:flex; flex-direction:column;"}
+                  .metric{:id =>:positivity_rating}
+                    .name= t('.positivity')
+                    .value {{ positivity_rating_rank_text }}
+                  .metric{:id =>"violation_severity", :style => '{{#unless hr_violation}}display:none{{/unless}}'}
+                    .name= t('.violation_severity')
+                    .value {{ violation_severity_rank_text }}
+                  .metric{:id =>"violation_coefficient", :style => '{{#unless hr_violation}}display:none{{/unless}}'}
+                    .name= t('.coefficient')
+                    .value {{ violation_coefficient }}
+                  .metric{:id =>"affected_people_count", :style => '{{#unless hr_violation}}display:none{{/unless}}'}
+                    .name= t('.people_affected')
+                    .value {{ affected_people_count }}
+            .fade.edit
+              {{> collection_item_edit}}
+      <reminders/>
+      <notes/>
+
+%script#new_collection_item_template{:type => 'template/ractive'}
+  .row.well.well-sm.form.template-upload{:class => "#{item}"}
+    .col-md-12
+      .row
+        .col-md-1{:style => "padding-top:28px"}= t('.title')
+        .col-md-8
+          {{> edit_title }}
+        .col-md-2
+          .form-group
+            .nothing{:style => 'visibility:hidden'} nothing
+            %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
+            %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
+      .row.fileupload{:decorator => 'file_upload'}
+        .col-md-12
+          .row.fileupload_progress
+            / The global progress state
+            .col-lg-9.fileupload-progress.fade
+              / The global progress bar
+              .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
+                .progress-bar.progress-bar-success{:style => "width:0%;"}
+              / The extended global progress state
+              .progress-extended  
+          .row
+            .col-md-2#fileinput_button
+              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
+              %input{:id => "#{item}_file", :type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"#{item}[file]"}
+            .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
+              {{#fileupload}}
+              <file/>
+              {{/}}
+      .row.form-group{:class => "{{#collection_item_error}}has-error{{/}}", :style => "padding-bottom:0px"}
+        .col-md-2
+          %span.help-block{:id => "collection_item_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t(".collection_item_error_message")
+      .row.form-group{:class => "{{#collection_item_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+        .col-md-2
+          %span.help-block{:id => "collection_item_attachment_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t(".collection_item_double_attachment_error_message")
+      .row
+        .col-md-2
+          %label{:for => "#{item}_article_link"}= t('.weblink')
+        .col-md-2
+          %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
+      <performanceindicatorselect />
+      .panel.panel-default.expanded_info
+        .panel-heading
+          .row
+            .col-md-2.description{:style => "width:50%"}
+              =t('.areas')
+              \/
+              =t('.subareas')
+            .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
+        .panel-content
+          {{> collection_item_edit}}
+
+%script#collection_item_edit{:type => 'text/ractive'}
+  .row
+    .col-md-2{:style => "width:50%"}
+      {{#areas:i}}
+      /* this component will work when the ractive bug is fixed and version 0.8 is stable */
+      /* <area-select id='{{id}}' area_id='{{id}}' area_ids='{{area_ids}}' name='{{name}}' subareas='{{subareas}}'/> */
+      .checkbox
+        %label
+          %input{:type=>:checkbox, :id => "#{item}_area_ids_{{id}}", :name => '{{area_ids}}', :value => '{{id}}'}
+          {{ name }}
+      {{#subareas }}
+      .checkbox.subarea
+        %label
+          %input{:type=>:checkbox, :id => "#{item}_subarea_ids_{{id}}", :name => '{{subarea_ids}}', :value => '{{id}}'}
+          {{ name }}
+      {{/subareas }}
+      {{/areas }}
+    .col-md-2{:style => "width:50%; display:flex; flex-direction:column;"}
+      .form-group.hr_metrics#positivity_rating
+        %label.control-label.col-md-2{:for => 'positivity_rating', :style => "width:40%"}= t('.positivity')
+        =select_tag "#{item}[positivity_rating_id]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%", :value => "{{positivity_rating_id}}"
+      .form-group.hr_metrics#violation_severity{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
+        %label.control-label.col-md-2{:for => 'violation_severity', :style => "width:40%"}= t('.violation_severity')
+        =select_tag "#{item}[violation_severity_id]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%", :value => "{{violation_severity_id}}"
+      .form-group.hr_metrics#people_affected{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
+        %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.people_affected')
+        %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "#{item}[affected_people_count]", :style => "width:15%; padding-left:6px;", :value => "{{affected_people_count}}"}
+
+%script#area_template{:type=> 'template/ractive'}
+  %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
+    %a{'on-click'=>'toggle()'}
+      %span {{name}}
+      %span.fa.fa-check
+  {{#subareas}}
+  <subarea>
+  {{/subareas}}
+
+%script#selected_file_template{:type => 'template/ractive'}
+  #selected_file {{ original_filename }}
+  %div
+    %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px', 'on-click'=>'deselect_file()'}
+  .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
+    %span.help-block#filesize_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.too_large')
+  .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
+    %span.help-block#filetype_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.unpermitted_type')
+
+%script#collection_item_subarea_template{:type=> 'template/ractive'}
+  %span.subarea {{ name }}
+
+%script#collection_item_area_template{:type=> 'template/ractive'}
+  .area
+    .name {{ name }}
+    .subareas
+      {{#subarea_ids:i}}
+      <collectionitemsubarea id={{subarea_ids[i]}}>
+      {{/subarea_ids}}
+
+%script#metric_template{:type => 'template/ractive'}
+  .metric{:id =>"{{key}}"}
+    .name {{ name }}
+    .value {{ value }}
+
+%script#subarea_template{:type=> 'template/ractive'}
+  %li{:class => 'subarea {{#if subarea_selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle()'}
+      %span.text {{name}}
+      %span.fa.fa-check
+
+%script#area_template{:type=> 'template/ractive'}
+  %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
+    %a{'on-click'=>'toggle()'}
+      %span {{name}}
+      %span.fa.fa-check
+  {{#subareas}}
+  <subarea>
+  {{/subareas}}
+
+%script#subarea_select_template{:type=> 'template/ractive'}
+  .checkbox.subarea
+    %label
+      %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :checked => '{{checked}}', :id => '{{model_name}}_subarea_ids_{{id}}', :name => '{{model_name}}[subarea_ids][]', :value => '{{id}}'}
+      {{ name }}
+
+%script#area_select_template{:type=> 'template/ractive'}
+  .checkbox
+    %label
+      %input{:type=>:checkbox, :id => '{{model_name}}_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
+      {{ name }}
+  {{#subareas }}
+  <subarea-select id='{{id}}'/> 
+  {{/subareas }}
+
+%script#edit_title{:type => 'text/ractive'}
+  .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
+    .col-md-12.clearfix
+      .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
+      =text_field_tag '{{model_name}}[title]', nil, :class => 'form-control', :id => '{{model_name}}_title', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
+      %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
+
+%script#performance_indicator_select{:type => 'template/ractive'}
+  .panel.panel-default
+    .panel-heading
+      .row
+        .col-md-2= t('.performance_indicators')
+    .panel-content{'data-toggle' => :edit}
+      %div{:class => 'fade no_edit {{#if persisted}}in{{/if}}'}
+        .row
+          .col-md-6.col-md-offset-1#performance_indicators{:style => "display:flex; flex-direction:column"}
+            {{>performance_indicator_list}}
+      %div{:class => 'fade edit {{#unless persisted}}in{{/unless}}'}
+        .form-group.row#performance_indicator
+          .col-md-6{:style => 'padding-left:40px;'}
+            .dropdown.performance_indicator_select
+              %a.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                =t('.select_performance_indicator')
+                %span.caret
+              %ul.dropdown-menu
+                %li.dropdown-header= t('.planned_result')
+                {{#planned_results }}
+                %li.dropdown-submenu.planned_result
+                  %a {{ indexed_description }}
+                  %ul.dropdown-menu
+                    %li.dropdown-header= t('.outcome')
+                    {{#outcomes }}
+                    %li.dropdown-submenu.outcome
+                      %a {{ indexed_description }}
+                      %ul.dropdown-menu
+                        %li.dropdown-header= t('.activity')
+                        {{#activities}}
+                        %li.dropdown-submenu.activity
+                          %a {{ indexed_description }}
+                          %ul.dropdown-menu
+                            %li.dropdown-header= t('.performance_indicator')
+                            {{#performance_indicators}}
+                            %li.performance_indicator
+                              %a.opt{ 'on-click'=>'select(this)'}
+                                %span.text{'data-id'=>'{{id}}'} {{ indexed_description }}
+                                %span.fa.fa-check
+                            {{/performance_indicators}}
+                        {{/activities}}
+                    {{/outcomes }}
+                {{/planned_results }}
+          .col-md-6#performance_indicators{:style => "display:flex; flex-direction:column"}
+            {{>performance_indicator_list}}
+
+%script#performance_indicator_list{:type => 'template/ractive'}
+  {{#performance_indicator_ids}}
+  %div.performance_indicator {{performance_indicators[.]}}
+  {{/performance_indicator_ids}}
+  {{^performance_indicator_ids}}
+  %div.performance_indicator=t('.none_assigned')
+  {{/performance_indicator_ids}}

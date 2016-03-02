@@ -21,19 +21,19 @@ $ ->
 
   Ractive.decorators.inpage_edit = EditInPlace
 
-  OutreachSubarea = Ractive.extend
-    template : '#outreach_media_subarea_template'
+  CollectionItemSubarea = Ractive.extend
+    template : '#collection_item_subarea_template'
     computed :
       name : ->
         _(subareas).findWhere({id : @get('id')}).name
 
-  OutreachArea = Ractive.extend
-    template : '#outreach_media_area_template'
+  CollectionItemArea = Ractive.extend
+    template : '#collection_item_area_template'
     computed :
       name : ->
         _(areas).findWhere({id : @get('area_id')}).name
     components :
-      outreachmediasubarea : OutreachSubarea
+      collectionitemsubarea : CollectionItemSubarea
 
   Metric = Ractive.extend
     template : '#metric_template'
@@ -258,7 +258,7 @@ $ ->
   OutreachEvent = Ractive.extend
     template : '#outreach_event_template'
     components :
-      outreacharea : OutreachArea
+      outreacharea : CollectionItemArea
       metric : Metric
       outreacheventdocuments : OutreachEventDocuments
       # due to a ractive bug, checkboxes don't work in components,

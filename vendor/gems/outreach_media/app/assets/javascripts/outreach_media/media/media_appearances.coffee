@@ -21,19 +21,19 @@ $ ->
 
   Ractive.decorators.inpage_edit = EditInPlace
 
-  MediaSubarea = Ractive.extend
-    template : '#outreach_media_subarea_template'
+  CollectionItemSubarea = Ractive.extend
+    template : '#collection_item_subarea_template'
     computed :
       name : ->
         _(subareas).findWhere({id : @get('id')}).name
 
-  MediaArea = Ractive.extend
-    template : '#outreach_media_area_template'
+  CollectionItemArea = Ractive.extend
+    template : '#collection_item_area_template'
     computed :
       name : ->
         _(areas).findWhere({id : @get('area_id')}).name
     components :
-      outreachmediasubarea : MediaSubarea
+      collectionitemsubarea : CollectionItemSubarea
 
   Metric = Ractive.extend
     template : '#metric_template'
@@ -115,7 +115,7 @@ $ ->
         @ractive.formData()
       uploadTemplateId: '#selected_file_template'
       uploadTemplateContainerId: '#selected_file_container'
-      downloadTemplateId: '#show_media_appearance_template'
+      downloadTemplateId: '#show_collection_item_template'
       permittedFiletypes: permitted_filetypes
       maxFileSize: parseInt(maximum_filesize)
     teardown : ->
@@ -129,9 +129,9 @@ $ ->
       @parent.deselect_file()
 
   MediaAppearance = Ractive.extend
-    template : '#media_appearance_template'
+    template : '#collection_item_template'
     components :
-      mediaarea : MediaArea
+      mediaarea : CollectionItemArea
       metric : Metric
       file : File
       # due to a ractive bug, checkboxes don't work in components,
@@ -143,8 +143,8 @@ $ ->
       @set
         'editing' : false
         'title_error': false
-        'media_appearance_error':false
-        'media_appearance_double_attachment_error':false
+        'collection_item_error':false
+        'collection_item_double_attachment_error':false
         'filetype_error': false
         'filesize_error': false
         'expanded':false
@@ -286,17 +286,17 @@ $ ->
       @_validate_any_attachment() && @_validate_single_attachment()
     _validate_any_attachment : ->
       unless @_validate_file() || @_validate_link()
-        @set('media_appearance_error',true)
+        @set('collection_item_error',true)
         false
       else
-        @set('media_appearance_error',false)
+        @set('collection_item_error',false)
         true
     _validate_single_attachment : ->
       if @_validate_file() && @_validate_link()
-        @set('media_appearance_double_attachment_error',true)
+        @set('collection_item_double_attachment_error',true)
         false
       else
-        @set('media_appearance_double_attachment_error',false)
+        @set('collection_item_double_attachment_error',false)
         true
     _validate_file : ->
       # 3 cases to consider:
@@ -323,8 +323,8 @@ $ ->
         @set('filesize_error', false)
       !@get('filetype_error') && !@get('filesize_error')
     #remove_attachment_errors : ->
-      #@set('media_appearance_double_attachment_error',false)
-      #@set('media_appearance_error',false)
+      #@set('collection_item_double_attachment_error',false)
+      #@set('collection_item_error',false)
     update_ma : (data,textStatus,jqxhr)->
       media.set('media_appearances.0', data)
       media.populate_min_max_fields() # to ensure that the newly-added media_appearance is included in the filter

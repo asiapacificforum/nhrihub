@@ -1,0 +1,85 @@
+%script{:id => "#{collection}_template", :type => 'template/ractive'}
+  .row{:id => "#{collection}_controls"}
+    .row
+      .col-md-4
+        %h4= search_heading
+    .row.labels
+      .col-md-2= t('.title')
+      .col-md-2= t('.from')
+      .col-md-2= t('.to')
+      .col-md-2
+        =t('.area')
+        \/
+        =t('.subarea')
+    .row{:style => "margin-bottom:12px;"}
+      .col-md-2= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_text')
+      .col-md-2
+        %input{:type=>"text", :id=>"from", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
+      .col-md-2
+        %input{:type=>"text", :id=>"to", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}"}
+      .col-md-3
+        .btn-group.area-select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select')
+            %span.caret
+          %ul.dropdown-menu
+            %li.filter_rule
+              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
+                %span=t('.all')
+                %span.fa.fa-check
+              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
+                %span=t('.any')
+                %span.fa.fa-check
+            {{#areas}}
+            <area id='{{id}}' name='{{name}}'/>
+            {{/areas}}
+      .col-md-1
+        %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
+      .col-md-2{:style => 'padding-left:84px'}
+        {{#if expanded}}
+        %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all')}
+        {{else}}
+        %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
+        {{/if}}
+    .row.labels
+      .col-md-2= t('.people_affected')
+      .col-md-2= t('.severity')
+      .col-md-2= t('.coefficient')
+      .col-md-2= t('.positivity')
+    .row.labels
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+      .col-md-1= t('.min')
+      .col-md-1= t('.max')
+    .row
+      .col-md-1.filter_field.pa_min
+        %input{:style=>"width:80px", :value => '{{filter_criteria.pa_min}}'}
+        %span.error_message= t('defaults.invalid')
+      .col-md-1.filter_field.pa_max
+        %input{:style=>"width:80px", :value => '{{filter_criteria.pa_max}}'}
+        %span.error_message= t('defaults.invalid')
+      .col-md-1.filter_field.vs_min
+        %input{:style=>"width:50px", :value => '{{filter_criteria.vs_min}}'}
+        %span.error_message= t('defaults.invalid')
+      .col-md-1.filter_field.vs_max
+        %input{:style=>"width:50px", :value => '{{filter_criteria.vs_max}}'}
+        %span.error_message= t('defaults.invalid')
+      .col-md-1.filter_field.vc_min
+        %input{:style=>"width:50px", :value => '{{filter_criteria.vc_min}}'}
+        %span.error_message= t('defaults.invalid')
+      .col-md-1.filter_field.vc_max
+        %input{:style=>"width:50px", :value => '{{filter_criteria.vc_max}}'}
+        %span.error_message= t('defaults.invalid')
+      .col-md-1.filter_field.pr_min
+        %input{:style=>"width:50px", :value => '{{filter_criteria.pr_min}}'}
+        %span.error_message= t('defaults.invalid')
+      .col-md-1.filter_field.pr_max
+        %input{:style=>"width:50px", :value => '{{filter_criteria.pr_max}}'}
+        %span.error_message= t('defaults.invalid')
+  %div{:id => "#{collection}"}
+    {{>collection}}
+
