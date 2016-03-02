@@ -56,8 +56,8 @@ MediaPage = ->
   open_area_dropdown : ->
     @$area().find('.dropdown-toggle').click()
   unselect_area_subarea : ->
-    _(media.findAllComponents('area')).each (a)-> a.unselect()
-    _(media.findAllComponents('subarea')).each (a)-> a.unselect()
+    _(collection.findAllComponents('area')).each (a)-> a.unselect()
+    _(collection.findAllComponents('subarea')).each (a)-> a.unselect()
   click_crc_subarea : ->
     simulant.fire(@hr_crc_link(),'click')
   violation_coefficient : (minmax)->
@@ -359,8 +359,8 @@ describe 'media filter', ->
     expect($('.media_appearance:visible').length).to.equal 3
     expect(media.get('filter_criteria.pa_min')).to.equal 0 # due to the new_media_appearance
     expect(media.get('filter_criteria.pa_max')).to.equal 23
-    media.findAllComponents('ma')[0].set('metrics.affected_people_count.value',30)
+    collection.findAllComponents('ma')[0].set('metrics.affected_people_count.value',30)
     expect($('.media_appearance:visible').length).to.equal 3
-    media.findAllComponents('ma')[1].set('editing',true)
-    media.findAllComponents('ma')[1].set('metrics.affected_people_count.value',40)
+    collection.findAllComponents('ma')[1].set('editing',true)
+    collection.findAllComponents('ma')[1].set('metrics.affected_people_count.value',40)
     expect($('.media_appearance:visible').length).to.equal 3

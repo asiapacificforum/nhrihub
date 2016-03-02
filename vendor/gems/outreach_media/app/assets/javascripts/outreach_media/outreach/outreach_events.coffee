@@ -660,7 +660,7 @@ $ ->
 
   window.start_page = ->
     window.outreach = new Ractive options
-    outreach_media_datepicker.start(outreach) # configures the "since" and "before" dates in the filter
+    filter_criteria_datepicker.start(outreach) # configures the "since" and "before" dates in the filter
 
   start_page()
 

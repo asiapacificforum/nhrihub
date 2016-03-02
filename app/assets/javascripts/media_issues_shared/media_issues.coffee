@@ -7,7 +7,7 @@ $ ->
       focus_element : 'input.title'
       success : (response, textStatus, jqXhr)->
         @.options.object.set(response)
-        @.options.object.parent.populate_min_max_fields() # b/c value could be edited so that edited media appearance is hidden by filter, so reset filter to make sure it stays in view
+        @.options.object.parent.populate_min_max_fields() # b/c value could be edited so that edited collection item is hidden by filter, so reset filter to make sure it stays in view
         @load()
       error : ->
         console.log "Changes were not saved, for some reason"
@@ -102,14 +102,14 @@ $ ->
         ractive = data.ractive = Ractive.
           getNodeInfo(upload_widget.element[0]).
           ractive
-        data.context = upload_widget.element.closest('.media_appearance')
+        data.context = upload_widget.element.closest(".#{item_name}")
         ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
         ractive.set('original_filename', data.files[0].name)
         ractive.validate_file_constraints()
         ractive._validate_attachment()
         return
       done: (e, data) ->
-        data.ractive.update_ma(data.jqXHR.responseJSON)
+        data.ractive.update_collection_item(data.jqXHR.responseJSON)
         return
       formData : ->
         @ractive.formData()
@@ -128,10 +128,10 @@ $ ->
     deselect_file : ->
       @parent.deselect_file()
 
-  MediaAppearance = Ractive.extend
+  CollectionItem = Ractive.extend
     template : '#collection_item_template'
     components :
-      mediaarea : CollectionItemArea
+      collectionItemArea : CollectionItemArea
       metric : Metric
       file : File
       # due to a ractive bug, checkboxes don't work in components,
@@ -154,7 +154,7 @@ $ ->
       notes_count : ->
         @get('notes').length
       model_name : ->
-        "media_appearance"
+        item_name
       hr_violation : ->
         id = Subarea.hr_violation().id
         _(@get('subarea_ids')).indexOf(id) != -1
@@ -261,7 +261,7 @@ $ ->
       @set('title_error',false)
     cancel : ->
       UserInput.reset()
-      @parent.shift('media_appearances')
+      @parent.shift('collection_items')
     form : ->
       $('.form input, .form select')
     save : ->
@@ -269,8 +269,8 @@ $ ->
         if !_.isUndefined(@get('fileupload'))
           @get('fileupload').submit() # handled by jquery-fileupload
         else
-          url = @parent.get('create_media_appearance_url')
-          $.post(url, @create_instance_attributes(), @update_ma, 'json') # handled right here
+          url = @parent.get('create_collection_item_url')
+          $.post(url, @create_instance_attributes(), @update_collection_item, 'json') # handled right here
     validate : ->
       vt = @_validate_title()
       va = @_validate_attachment()
@@ -325,9 +325,9 @@ $ ->
     #remove_attachment_errors : ->
       #@set('collection_item_double_attachment_error',false)
       #@set('collection_item_error',false)
-    update_ma : (data,textStatus,jqxhr)->
-      media.set('media_appearances.0', data)
-      media.populate_min_max_fields() # to ensure that the newly-added media_appearance is included in the filter
+    update_collection_item : (data,textStatus,jqxhr)->
+      collection.set('collection_items.0', data)
+      collection.populate_min_max_fields() # to ensure that the newly-added collection_item is included in the filter
       UserInput.reset()
       if !_.isUndefined(@edit)
         @edit.load() # terminate edit, if it was active, but don't try to restore stashed instance
@@ -361,35 +361,35 @@ $ ->
         attrs.subarea_ids = [""]
       else
         attrs.subarea_ids = @get('subarea_ids')
-      {media_appearance : attrs }
+      {"#{item_name}" : attrs }
     formData : ->
       file = @get('fileupload').files[0]
       @set
         lastModifiedDate : file.lastModifiedDate
       attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id', 'lastModifiedDate')
-      name_value = _(attrs).keys().map (k)->{name:"media_appearance["+k+"]", value:attrs[k]}
+      name_value = _(attrs).keys().map (k)->{name:"#{item_name}["+k+"]", value:attrs[k]}
       if _.isEmpty(@get('area_ids'))
-        aids = [{name : 'media_appearance[area_ids][]', value: ""}]
+        aids = [{name : "#{item_name}[area_ids][]", value: ""}]
       else
         aids = _(@get('area_ids')).map (aid)->
-                 {name : 'media_appearance[area_ids][]', value: aid}
+                 {name : "#{item_name}[area_ids][]", value: aid}
       if _.isEmpty(@get('subarea_ids'))
-        saids = [{name : 'media_appearance[subarea_ids][]', value: ""}]
+        saids = [{name : "#{item_name}[subarea_ids][]", value: ""}]
       else
         saids = _(@get('subarea_ids')).map (said)->
-                  {name : 'media_appearance[subarea_ids][]', value: said}
+                  {name : "#{item_name}[subarea_ids][]", value: said}
       if _.isEmpty(@get('performance_indicator_ids'))
-        pids = [{name : 'media_appearance[performance_indicator_ids][]', value: ""}]
+        pids = [{name : "#{item_name}[performance_indicator_ids][]", value: ""}]
       else
         pids = _(@get('performance_indicator_ids')).map (pid)->
-                  {name : 'media_appearance[performance_indicator_ids][]', value: pid}
+                  {name : "#{item_name}[performance_indicator_ids][]", value: pid}
       _.union(name_value,aids,saids,pids)
     stash : ->
       @stashed_instance = $.extend(true,{},@get())
     restore : ->
       @set(@stashed_instance)
     deselect_file : ->
-      file_input = $(@find('#media_appearance_file'))
+      file_input = $(@find("##{item_name}_file"))
       # see http://stackoverflow.com/questions/1043957/clearing-input-type-file-using-jquery
       file_input.replaceWith(file_input.clone()) # the actual file input field
       @set('fileupload',null) # remove all traces!
@@ -413,11 +413,11 @@ $ ->
       redirectWindow = window.open(@get('article_link'), '_blank')
       redirectWindow.location
 
-  window.media_page_data = -> # an initialization data set so that tests can reset between
+  window.collection_items_data = -> # an initialization data set so that tests can reset between
     expanded : false
-    media_appearances: media_appearances
+    collection_items: collection_items
     areas : areas
-    create_media_appearance_url: create_media_appearance_url
+    create_collection_item_url: create_collection_item_url
     planned_results : planned_results
     performance_indicators : performance_indicators
     filter_criteria :
@@ -437,22 +437,22 @@ $ ->
       rule   : 'any'
 
   window.options =
-    el : '#media_appearances'
-    template : '#media_appearances_template'
-    data : window.media_page_data()
+    el : '#collection_container'
+    template : '#collection_template'
+    data : window.collection_items_data()
     oninit : ->
       @populate_min_max_fields()
     computed :
       dates : ->
-        _(@findAllComponents('ma')).map (ma)->new Date(ma.get('date'))
+        _(@findAllComponents('collectionItem')).map (collectionItem)->new Date(collectionItem.get('date'))
       violation_coefficients : ->
-        _(@findAllComponents('ma')).map (ma)->parseFloat (ma.get("violation_coefficient") || 0.0 )
+        _(@findAllComponents('collectionItem')).map (collectionItem)->parseFloat (collectionItem.get("violation_coefficient") || 0.0 )
       positivity_ratings : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( parseInt(ma.get("positivity_rating_rank_text"))  || 0)
+        _(@findAllComponents('collectionItem')).map (collectionItem)->parseInt( parseInt(collectionItem.get("positivity_rating_rank_text"))  || 0)
       violation_severities : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( parseInt(ma.get("violation_severity_rank_text"))  || 0)
+        _(@findAllComponents('collectionItem')).map (collectionItem)->parseInt( parseInt(collectionItem.get("violation_severity_rank_text"))  || 0)
       people_affecteds : ->
-        _(@findAllComponents('ma')).map (ma)->parseInt( ma.get("affected_people_count")  || 0)
+        _(@findAllComponents('collectionItem')).map (collectionItem)->parseInt( collectionItem.get("affected_people_count")  || 0)
       earliest : ->
         @min('dates')
       most_recent : ->
@@ -488,7 +488,7 @@ $ ->
         return val if val > max
         max
     components :
-      ma : MediaAppearance
+      collectionItem : CollectionItem
       area : AreaFilter
     populate_min_max_fields : ->
       @set('filter_criteria.from',@get('earliest'))  unless _.isUndefined(@get('earliest'))
@@ -503,10 +503,10 @@ $ ->
       @set('filter_criteria.pa_max',@get('pa_max'))  unless _.isUndefined(@get('pa_max'))
     expand : ->
       @set('expanded', true)
-      _(@findAllComponents('ma')).each (ma)-> ma.expand()
+      _(@findAllComponents('collectionItem')).each (collectionItem)-> collectionItem.expand()
     compact : ->
       @set('expanded', false)
-      _(@findAllComponents('ma')).each (ma)-> ma.compact()
+      _(@findAllComponents('collectionItem')).each (collectionItem)-> collectionItem.compact()
     add_area_filter : (id) ->
       @push('filter_criteria.areas',id)
     remove_area_filter : (id) ->
@@ -518,7 +518,7 @@ $ ->
       i = _(@get('filter_criteria.subareas')).indexOf(id)
       @splice('filter_criteria.subareas',i,1)
     clear_filter : ->
-      @set('filter_criteria',media_page_data().filter_criteria)
+      @set('filter_criteria',collection_items_data().filter_criteria)
       _(@findAllComponents('area')).each (a)-> a.select()
       _(@findAllComponents('subarea')).each (a)-> a.select()
       @populate_min_max_fields()
@@ -529,14 +529,14 @@ $ ->
       @event.original.stopPropagation()
       @set('filter_criteria.rule',name)
     new_article : ->
-      @unshift('media_appearances', $.extend(true,{},new_media_appearance))
-      $(@find('#media_appearance_title')).focus()
+      @unshift('collection_items', $.extend(true,{},new_collection_item))
+      $(@find("##{item_name}_title")).focus()
       UserInput.claim_user_input_request(@,'cancel')
-    delete : (media_appearance)->
-      index = @findAllComponents('ma').indexOf(media_appearance)
-      @splice('media_appearances',index,1)
+    delete : (child)->
+      index = @findAllComponents('collectionItem').indexOf(child)
+      @splice('collection_items',index,1)
     cancel : ->
-      @shift('media_appearances')
+      @shift('collection_items')
     set_filter_criteria_to_date : (selectedDate)->
       @set('filter_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate))
       $('#from').datepicker 'option', 'maxDate', selectedDate
@@ -547,13 +547,13 @@ $ ->
       @update()
 
   window.start_page = ->
-    window.media = new Ractive options
-    outreach_media_datepicker.start(media)
+    window.collection = new Ractive options
+    filter_criteria_datepicker.start(collection)
 
   start_page()
 
 # validate the filter_criteria input fields whenever they change
-  media.observe 'filter_criteria.*', (newval, oldval, path)->
+  collection.observe 'filter_criteria.*', (newval, oldval, path)->
     key = path.split('.')[1]
 
     has_error = ->

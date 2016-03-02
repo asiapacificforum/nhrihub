@@ -242,19 +242,19 @@ feature "when there are existing articles", :js => true do
     scenario "edit an article and upload a different file" do
       edit_article[0].click
       expect(page.find('#selected_file_container').text).not_to be_blank
-      previous_file_id = page.evaluate_script("media.findAllComponents('ma')[0].get('file_id')")
+      previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
       page.attach_file("media_appearance_file", upload_document, :visible => false)
       edit_save.click
       sleep(0.4)
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq false
-      new_file_id = page.evaluate_script("media.findAllComponents('ma')[0].get('file_id')")
+      new_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',new_file_id))).to eq true
     end
 
     scenario "edit a file article and change to link" do
       edit_article[0].click
-      previous_file_id = page.evaluate_script("media.findAllComponents('ma')[0].get('file_id')")
+      previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
       clear_file_attachment
       fill_in('media_appearance_article_link', :with => "http://www.nytimes.com")

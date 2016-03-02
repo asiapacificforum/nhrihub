@@ -39,7 +39,7 @@ class MediaAppearance < ActiveRecord::Base
            :methods=> [:date,
                        :has_link,
                        :has_scanned_doc,
-                       :media_areas,
+                       :collection_item_areas,
                        :area_ids,
                        :subarea_ids,
                        :performance_indicator_ids,
@@ -50,6 +50,9 @@ class MediaAppearance < ActiveRecord::Base
                        :create_note_url,
                        :violation_severity_rank_text ]})
   end
+
+  # assign a generic name so that javascript is reusable for differenct collections
+  alias_method :collection_item_areas, :media_areas
 
   def positivity_rating_rank=(val)
     self.positivity_rating_id = PositivityRating.where(:rank => val).first.id unless val.blank?

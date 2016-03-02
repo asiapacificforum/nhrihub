@@ -1,5 +1,5 @@
-window.outreach_media_datepicker =
-  start : (outreach_media)->
+window.filter_criteria_datepicker =
+  start : (collection)->
     $('#from').datepicker
       maxDate: new Date()
       defaultDate: '+1w'
@@ -9,7 +9,7 @@ window.outreach_media_datepicker =
       dateFormat: "dd/mm/yy"
       onClose: (selectedDate) ->
         unless selectedDate == ""
-          outreach_media.set_filter_criteria_from_date(selectedDate)
+          collection.set_filter_criteria_from_date(selectedDate)
 
     $('#to').datepicker
       maxDate: new Date()
@@ -20,5 +20,5 @@ window.outreach_media_datepicker =
       dateFormat: "dd/mm/yy"
       onClose: (selectedDate) ->
         unless selectedDate == ""
-          outreach_media.set_filter_criteria_to_date(selectedDate)
+          collection.set_filter_criteria_to_date(selectedDate)
 

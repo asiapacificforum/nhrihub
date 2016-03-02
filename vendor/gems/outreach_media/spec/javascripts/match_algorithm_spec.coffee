@@ -1,15 +1,15 @@
 test = (min,max,val)->
-  media.findAllComponents('ma')[0]._between(min,max,val)
+  collection.findAllComponents('ma')[0]._between(min,max,val)
 media_appearance_area_matches = ->
-  _(media.findAllComponents('ma')).map (ma)-> ma._matches_area()
+  _(collection.findAllComponents('ma')).map (ma)-> ma._matches_area()
 media_appearance_subarea_matches = ->
-  _(media.findAllComponents('ma')).map (ma)-> ma._matches_subarea()
+  _(collection.findAllComponents('ma')).map (ma)-> ma._matches_subarea()
 media_appearance_area_subarea_matches = ->
-  _(media.findAllComponents('ma')).map (ma)-> ma._matches_area_subarea()
+  _(collection.findAllComponents('ma')).map (ma)-> ma._matches_area_subarea()
 media_appearance_affected_people_count_matches = ->
-  _(media.findAllComponents('ma')).map (ma)-> ma._matches_people_affected()
+  _(collection.findAllComponents('ma')).map (ma)-> ma._matches_people_affected()
 media_appearance_violation_severity_matches = ->
-  _(media.findAllComponents('ma')).map (ma)-> ma._matches_violation_severity()
+  _(collection.findAllComponents('ma')).map (ma)-> ma._matches_violation_severity()
 
 log = (str)->
   re = new RegExp('phantomjs','gi')
