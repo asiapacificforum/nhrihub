@@ -15,5 +15,9 @@ FactoryGirl.define do
     trait :activity do
       notable_type "Activity"
     end
+
+    trait :advisory_council_issue do
+      notable_type "Nhri::AdvisoryCouncil::AdvisoryCouncilIssue"
+    end
   end
 end

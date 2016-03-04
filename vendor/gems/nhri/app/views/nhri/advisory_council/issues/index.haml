@@ -1,1 +1,26 @@
-%h1=t('.heading')
+%h1= t('.heading')
+.btn.btn-success.btn-sm.add_article{:style => "margin-bottom:12px; color:white;", :onclick => "collection.new_article()"}
+  %i.fa.fa-plus.fa-lg{:style => "color:white"}
+  %span= t('.add_article')
+
+#collection_container
+
+= render :partial => 'shared/collection_filter_controls', :locals => {:collection => :advisory_council_issues, :search_heading => t('.search_heading')}
+= render :partial => 'shared/collection', :locals => {:item => :advisory_council_issue, :i18n_key => "nhri.advisory_council_issues.index"}
+= render :partial => 'reminders/reminder' # it's in the main app
+= render :partial => 'notes/note' # it's in the main app
+
+:javascript
+  collection_items = #{@advisory_council_issues.to_json}
+  item_name = "advisory_council_issue"
+  areas = #{@areas.to_json}
+  subareas = #{@subareas.to_json}
+  new_collection_item = #{@advisory_council_issue.to_json}
+  create_collection_item_url = "#{@advisory_council_issue.create_url}"
+  maximum_filesize = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.maximum_filesize * 1000000}
+  permitted_filetypes = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.permitted_filetypes }
+  planned_results = null //variables need to be defined in shared js
+  performance_indicators = null //variables need to be defined in shared js
+
+= javascript_include_tag "issues"
+

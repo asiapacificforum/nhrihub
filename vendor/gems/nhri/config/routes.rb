@@ -24,6 +24,10 @@ Rails.application.routes.draw do
           resource  :filesize, :only => :update
           resources :filetypes, :param => :ext, :only => [:create, :destroy]
         end
+        resources :advisory_council_issues do
+          resources :reminders, :controller => 'advisory_council_issue/reminders'
+          resources :notes, :controller => 'advisory_council_issue/notes'
+        end
       end
       resources :nhr_indicators
       resources :hr_protection

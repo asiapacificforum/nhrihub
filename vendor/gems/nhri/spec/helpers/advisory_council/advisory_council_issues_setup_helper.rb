@@ -2,22 +2,14 @@ require 'rspec/core/shared_context'
 
 module AdvisoryCouncilIssueSetupHelper
   extend RSpec::Core::SharedContext
-  def setup_database(type)
+  def setup_database
     setup_positivity_ratings
     setup_areas
     setup_violation_severities
-    if type == :advisory_council_issue_with_file
-      FactoryGirl.create(:advisory_council_issue,
-                         :hr_area,
-                         :file,
-                         :positivity_rating => PositivityRating.first,
-                         :reminders=>[] )
-    else
-      FactoryGirl.create(:advisory_council_issue,
-                         :hr_area,
-                         :positivity_rating => PositivityRating.first,
-                         :reminders=>[] )
-    end
+    FactoryGirl.create(:advisory_council_issue,
+                       :hr_area,
+                       :positivity_rating => PositivityRating.first,
+                       :reminders=>[] )
   end
 
   def add_a_second_article
@@ -28,9 +20,9 @@ module AdvisoryCouncilIssueSetupHelper
   end
 
   def add_reminder
-    ma = MediaAppearance.first
-    ma.reminders << FactoryGirl.create(:reminder, :reminder_type => 'weekly', :text => "don't forget the fruit gums mum", :users => [User.first])
-    ma.save
+    issue = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first
+    issue.reminders << FactoryGirl.create(:reminder, :reminder_type => 'weekly', :text => "don't forget the fruit gums mum", :users => [User.first])
+    issue.save
   end
 
   def setup_articles
@@ -68,7 +60,7 @@ module AdvisoryCouncilIssueSetupHelper
   end
 
   def setup_file_constraints
-    SiteConfig['nhri.advisory_council_issues.filetypes'] = ['pdf']
-    SiteConfig['nhri.advisory_council_issues.filesize'] = 3
+    SiteConfig['nhri.advisory_council_issue.filetypes'] = ['pdf']
+    SiteConfig['nhri.advisory_council_issue.filesize'] = 3
   end
 end
