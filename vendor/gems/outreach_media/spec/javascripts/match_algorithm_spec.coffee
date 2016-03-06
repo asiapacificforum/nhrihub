@@ -1,15 +1,15 @@
 test = (min,max,val)->
-  collection.findAllComponents('ma')[0]._between(min,max,val)
+  collection.findAllComponents('collectionItem')[0]._between(min,max,val)
 media_appearance_area_matches = ->
-  _(collection.findAllComponents('ma')).map (ma)-> ma._matches_area()
+  _(collection.findAllComponents('collectionItem')).map (ma)-> ma._matches_area()
 media_appearance_subarea_matches = ->
-  _(collection.findAllComponents('ma')).map (ma)-> ma._matches_subarea()
+  _(collection.findAllComponents('collectionItem')).map (ma)-> ma._matches_subarea()
 media_appearance_area_subarea_matches = ->
-  _(collection.findAllComponents('ma')).map (ma)-> ma._matches_area_subarea()
+  _(collection.findAllComponents('collectionItem')).map (ma)-> ma._matches_area_subarea()
 media_appearance_affected_people_count_matches = ->
-  _(collection.findAllComponents('ma')).map (ma)-> ma._matches_people_affected()
+  _(collection.findAllComponents('collectionItem')).map (ma)-> ma._matches_people_affected()
 media_appearance_violation_severity_matches = ->
-  _(collection.findAllComponents('ma')).map (ma)-> ma._matches_violation_severity()
+  _(collection.findAllComponents('collectionItem')).map (ma)-> ma._matches_violation_severity()
 
 log = (str)->
   re = new RegExp('phantomjs','gi')
@@ -18,11 +18,13 @@ log = (str)->
 
 describe "within range evaluation", ->
   before (done)->
-    window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
+    window.Collection = {}
+    window.collection_items = MagicLamp.loadJSON('collection_items')
+    window.item_name = "media_appearance"
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
-    window.new_media_appearance = MagicLamp.loadJSON('new_media_appearance')
-    window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
+    window.new_collection_item = MagicLamp.loadJSON('new_collection_item')
+    window.create_collection_item_url = MagicLamp.loadRaw('create_collection_item_url')
     window.maximum_filesize = MagicLamp.loadJSON('maximum_filesize')
     window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
     window.planned_results = []
@@ -31,7 +33,7 @@ describe "within range evaluation", ->
     $.getScript("/assets/media.js").
       done( -> 
         log "(within range evaluation) javascript was loaded"
-        done()). # the media_appearances.js app , start_page(), define_media
+        done()). # the collection_items.js app , start_page(), define_media
       fail( (jqxhr, settings, exception) ->
         log "Triggered ajaxError handler"
         log settings
@@ -106,11 +108,12 @@ describe "within range evaluation", ->
 
 describe "area and subarea matching algorithm", ->
   before (done)->
-    window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
+    window.Collection = {}
+    window.collection_items = MagicLamp.loadJSON('collection_items')
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
-    window.new_media_appearance = MagicLamp.loadJSON('new_media_appearance')
-    window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
+    window.new_collection_item = MagicLamp.loadJSON('new_collection_item')
+    window.create_collection_item_url = MagicLamp.loadRaw('create_collection_item_url')
     window.maximum_filesize = MagicLamp.loadJSON('maximum_filesize')
     window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
     window.planned_results = []
@@ -119,136 +122,136 @@ describe "area and subarea matching algorithm", ->
     $.getScript("/assets/media.js").
       done( -> 
         log "(area and subarea matching algorithm) javascript was loaded"
-        done()). # the media_appearances.js app , start_page(), define_media
+        done()). # the collection_items.js app , start_page(), define_media
       fail( (jqxhr, settings, exception) ->
         log "Triggered ajaxError handler"
         log settings
         log exception)
 
-#example:    media.set('media_appearances',[{"media_areas":[{"area_id":1,"subarea_ids":[1]},{"area_id":2,"subarea_ids":[8,9,10]}]}])
+#example:    collection.set('collection_items',[{"media_areas":[{"area_id":1,"subarea_ids":[1]},{"area_id":2,"subarea_ids":[8,9,10]}]}])
   describe "when sort criteria rule is 'all'", ->
     describe "match criteria for areas", ->
       it "should match when all area criteria are met", ->
-        media.reset({'media_appearances':[{"area_ids":[1,2]}]})
-        media.set({'filter_criteria.areas':[1,2], 'filter_criteria.rule':'all'})
+        collection.reset({'collection_items':[{"area_ids":[1,2]}]})
+        collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.rule':'all'})
         expect(media_appearance_area_matches()).to.eql [true]
 
       it "should fail when not all area criteria are met", ->
-        media.reset({'media_appearances':[{"area_ids":[1]}]})
-        media.set({'filter_criteria.areas':[1,2], 'filter_criteria.rule':'all'})
+        collection.reset({'collection_items':[{"area_ids":[1]}]})
+        collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.rule':'all'})
         expect(media_appearance_area_matches()).to.eql [false]
 
     describe "match criteria for subareas", ->
       it "should succeed when all subarea criteria are met", ->
-        media.reset({'media_appearances':[{"subarea_ids":[1,10], "media_areas":[{"subarea_ids":[1]},{"subarea_ids":[10]}]}]})
-        media.set({'filter_criteria.subareas':[1,10], 'filter_criteria.rule':'all'})
+        collection.reset({'collection_items':[{"subarea_ids":[1,10], "media_areas":[{"subarea_ids":[1]},{"subarea_ids":[10]}]}]})
+        collection.set({'filter_criteria.subareas':[1,10], 'filter_criteria.rule':'all'})
         expect(media_appearance_subarea_matches()).to.eql [true]
 
       it "should fail when not all subarea criteria are met", ->
-        media.reset({'media_appearances':[{"subarea_ids":[1], "media_areas":[{"subarea_ids":[1]}]}]})
-        media.set({'filter_criteria.subareas':[1,10], 'filter_criteria.rule':'all'})
+        collection.reset({'collection_items':[{"subarea_ids":[1], "media_areas":[{"subarea_ids":[1]}]}]})
+        collection.set({'filter_criteria.subareas':[1,10], 'filter_criteria.rule':'all'})
         expect(media_appearance_subarea_matches()).to.eql [false] # here
 
     describe "match criteria for both areas and subareas", ->
       it "should succeed when area criteria are met, and subarea criteria is empty", ->
-        media.reset({'media_appearances':[{'area_ids' : [1,2], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]}]})
-        media.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[], 'filter_criteria.rule':'all'})
+        collection.reset({'collection_items':[{'area_ids' : [1,2], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]}]})
+        collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[], 'filter_criteria.rule':'all'})
         expect(media_appearance_area_subarea_matches()).to.eql [true]
 
       it "should fail when area criteria are not met, and subarea criteria are met", ->
-        media.reset({'media_appearances':[{"area_ids":[1], "media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
-        media.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[1], 'filter_criteria.rule':'all'})
+        collection.reset({'collection_items':[{"area_ids":[1], "media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
+        collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[1], 'filter_criteria.rule':'all'})
         expect(media_appearance_area_subarea_matches()).to.eql [false]
 
       it "should fail when area criteria are met, and subarea criteria are not met", ->
-        media.reset({'media_appearances':[{"area_ids":[1], "subarea_ids":[1], "media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
-        media.set({'filter_criteria.areas':[1], 'filter_criteria.subareas':[2], 'filter_criteria.rule':'all'})
+        collection.reset({'collection_items':[{"area_ids":[1], "subarea_ids":[1], "media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
+        collection.set({'filter_criteria.areas':[1], 'filter_criteria.subareas':[2], 'filter_criteria.rule':'all'})
         expect(media_appearance_area_subarea_matches()).to.eql [false]
 
   describe "when sort criteria rule is 'any'", ->
     describe "match criteria for areas", ->
       it "should succeed when any of the sort criteria areas is matched", ->
-        media.reset({'media_appearances':[ {"area_ids":[2], "media_areas":[{"area_id":2}]}]})
-        media.set({'filter_criteria.areas':[1,2], 'filter_criteria.rule':'any'})
+        collection.reset({'collection_items':[ {"area_ids":[2], "media_areas":[{"area_id":2}]}]})
+        collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.rule':'any'})
         expect(media_appearance_area_matches()).to.eql [true]
 
       it "should succeed when any of the sort criteria areas is matched, when subarea criteria are not specified", ->
-        media.reset({'media_appearances':[{"area_ids":[1], "media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
-        media.set({'filter_criteria.areas':[1], 'filter_criteria.rule':'any'})
+        collection.reset({'collection_items':[{"area_ids":[1], "media_areas":[{"area_id":1, "subarea_ids":[1]}]}]})
+        collection.set({'filter_criteria.areas':[1], 'filter_criteria.rule':'any'})
         expect(media_appearance_area_matches()).to.eql [true]
 
       it "should fail when none of the sort criteria areas is matched, when subarea criteria are not specified", ->
-        media.reset({'media_appearances':[ {"area_ids":[2], "subarea_ids":[8], "media_areas":[{"area_id":2, "subarea_ids":[8]}]}]})
-        media.set({'filter_criteria.areas':[1], 'filter_criteria.rule':'any'})
+        collection.reset({'collection_items':[ {"area_ids":[2], "subarea_ids":[8], "media_areas":[{"area_id":2, "subarea_ids":[8]}]}]})
+        collection.set({'filter_criteria.areas':[1], 'filter_criteria.rule':'any'})
         expect(media_appearance_area_matches()).to.eql [false]
 
       it "should succeed when any of the sort criteria areas or any of the sort criteria subareas is matched", ->
-        media.reset({'media_appearances':[{"area_ids":[1,2], "subarea_ids":[1,8], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
+        collection.reset({'collection_items':[{"area_ids":[1,2], "subarea_ids":[1,8], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
                                           {"area_ids":[1],   "subarea_ids":[1],   "media_areas":[{"area_id":1, "subarea_ids":[1]}]}
                                           {"area_ids":[2],   "subarea_ids":[8],   "media_areas":[{"area_id":2, "subarea_ids":[8]}]}
                                           {"area_ids":[1],   "subarea_ids":[],    "media_areas":[{"area_id":1                   }]}
                                           {"area_ids":[2],   "subarea_ids":[],    "media_areas":[{"area_id":2                   }]}
                                          ]})
-        media.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[1], 'filter_criteria.rule':'any'})
+        collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[1], 'filter_criteria.rule':'any'})
         expect(media_appearance_area_matches()).to.eql [true,true,true,true,true]
 
       it "should succeed when areas attributes are empty", ->
-        media.reset({'media_appearances':[ {"area_ids":[], "media_areas":[]}]})
-        media.set({'filter_criteria.areas':[1], 'filter_criteria.rule':'any'})
+        collection.reset({'collection_items':[ {"area_ids":[], "media_areas":[]}]})
+        collection.set({'filter_criteria.areas':[1], 'filter_criteria.rule':'any'})
         expect(media_appearance_area_matches()).to.eql [true]
 
     describe "match criteria for subareas", ->
       it "should include media appearances matching any sort criteria subareas", ->
-        media.reset({'media_appearances':[ {"subarea_ids":[1], "media_areas":[{"subarea_ids":[1]}]}]})
-        media.set({'filter_criteria.subareas':[1,10], 'filter_criteria.rule':'any'})
+        collection.reset({'collection_items':[ {"subarea_ids":[1], "media_areas":[{"subarea_ids":[1]}]}]})
+        collection.set({'filter_criteria.subareas':[1,10], 'filter_criteria.rule':'any'})
         expect(media_appearance_subarea_matches()).to.eql [true]
 
     describe "match criteria for areas and subareas", ->
       it "should succeed when any of the sort criteria areas or subareas is matched", ->
-        media.reset({'media_appearances':[{"area_ids":[1,2], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
+        collection.reset({'collection_items':[{"area_ids":[1,2], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
                                           {"area_ids":[1],   "media_areas":[{"area_id":1, "subarea_ids":[1]}]}
                                           {"area_ids":[2],   "media_areas":[{"area_id":2, "subarea_ids":[8]}]}
                                           {"area_ids":[1],   "media_areas":[{"area_id":1                   }]}
                                           {"area_ids":[2],   "media_areas":[{"area_id":2                   }]}
                                          ]})
-        media.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[1], 'filter_criteria.rule':'any'})
+        collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[1], 'filter_criteria.rule':'any'})
         expect(media_appearance_area_subarea_matches()).to.eql [true,true,true,true,true]
 
       it "should fail when filter_criteria areas and subareas are both empty", ->
-        media.reset({'media_appearances':[{"area_ids":[1,2], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
+        collection.reset({'collection_items':[{"area_ids":[1,2], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
                                           {"area_ids":[1],   "media_areas":[{"area_id":1, "subarea_ids":[1]}]}
                                           {"area_ids":[2],   "media_areas":[{"area_id":2, "subarea_ids":[8]}]}
                                           {"area_ids":[1],   "media_areas":[{"area_id":1                   }]}
                                           {"area_ids":[2],   "media_areas":[{"area_id":2                   }]}
                                          ]})
-        media.set({'filter_criteria.areas':[], 'filter_criteria.subareas':[], 'filter_criteria.rule':'any'})
+        collection.set({'filter_criteria.areas':[], 'filter_criteria.subareas':[], 'filter_criteria.rule':'any'})
         expect(media_appearance_area_subarea_matches()).to.eql [false,false,false,false,false]
 
       it "should fail when sort criteria areas is not matched", ->
-        media.reset({'media_appearances':[{"area_ids":[1], "media_areas":[{"area_id":1}]}]})
-        media.set({'filter_criteria.areas':[2], 'filter_criteria.subareas':[], 'filter_criteria.rule':'any'})
+        collection.reset({'collection_items':[{"area_ids":[1], "media_areas":[{"area_id":1}]}]})
+        collection.set({'filter_criteria.areas':[2], 'filter_criteria.subareas':[], 'filter_criteria.rule':'any'})
         expect(media_appearance_area_subarea_matches()).to.eql [false]
 
   describe "matching of human rights-specific parameters", ->
     describe "when instance is not human rights violation", ->
       it "should ignore any value in the people affected criteria and interpret it as zero", ->
-        media.set({'media_appearances': [{'title':'foo','media_appearance_areas':[{'area_id':1, 'subarea_ids':[2]}],'metrics':{'affected_people_count':{'value':23}}}]})
-        media.set({'filter_criteria.pa_min':0, 'filter_criteria.pa_max':30})
+        collection.set({'collection_items': [{'title':'foo','media_appearance_areas':[{'area_id':1, 'subarea_ids':[2]}],'metrics':{'affected_people_count':{'value':23}}}]})
+        collection.set({'filter_criteria.pa_min':0, 'filter_criteria.pa_max':30})
         expect(media_appearance_affected_people_count_matches()).to.eql [true]
-        media.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':30})
+        collection.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':30})
         expect(media_appearance_affected_people_count_matches()).to.eql [false]
 
     describe "when instance is human rights violation", ->
       describe "and affected_people_count parameter value falls outside thresholds", ->
         it "should exclude the instance", ->
-          media.set({'media_appearances': [{'title':'bar','media_appearance_areas':[{'area_id':1, 'subarea_ids':[1]}],'metrics':{'affected_people_count':{'value':23}}}]})
-          media.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':20})
+          collection.set({'collection_items': [{'title':'bar','media_appearance_areas':[{'area_id':1, 'subarea_ids':[1]}],'metrics':{'affected_people_count':{'value':23}}}]})
+          collection.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':20})
           expect(media_appearance_affected_people_count_matches()).to.eql [false]
 
       describe "and affected_people_count parameter value is null", ->
         it "should interpret the null value as zero", ->
-          media.set({'media_appearances': [{'title':'baz', 'media_appearance_areas':[{'area_id':1, 'subarea_ids':[1]}], 'metrics':{'affected_people_count':{'value':null}}}]})
-          media.set({'filter_criteria.pa_min':0, 'filter_criteria.pa_max':20})
+          collection.set({'collection_items': [{'title':'baz', 'media_appearance_areas':[{'area_id':1, 'subarea_ids':[1]}], 'metrics':{'affected_people_count':{'value':null}}}]})
+          collection.set({'filter_criteria.pa_min':0, 'filter_criteria.pa_max':20})
           expect(media_appearance_affected_people_count_matches()).to.eql [true]
-          media.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':20})
+          collection.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':20})
           expect(media_appearance_affected_people_count_matches()).to.eql [false]

@@ -86,22 +86,22 @@ MediaPage = ->
     $(".filter_field.pa_max")
 
 filter_criteria =
-  title : -> media.get('filter_criteria.title')
-  areas : -> media.get('filter_criteria.areas')
-  subareas : -> media.get('filter_criteria.subareas')
-  from : -> media.get('filter_criteria.from').getTime()
-  to : -> media.get('filter_criteria.to').getTime()
-  vc_min : -> media.get('filter_criteria.vc_min')
-  vc_max : -> media.get('filter_criteria.vc_max')
-  pr_min : -> media.get('filter_criteria.pr_min')
-  pr_max : -> media.get('filter_criteria.pr_max')
-  vs_min : -> media.get('filter_criteria.vs_min')
-  vs_max : -> media.get('filter_criteria.vs_max')
-  pa_min : -> media.get('filter_criteria.pa_min')
-  pa_max : -> media.get('filter_criteria.pa_max')
+  title : -> collection.get('filter_criteria.title')
+  areas : -> collection.get('filter_criteria.areas')
+  subareas : -> collection.get('filter_criteria.subareas')
+  from : -> collection.get('filter_criteria.from').getTime()
+  to : -> collection.get('filter_criteria.to').getTime()
+  vc_min : -> collection.get('filter_criteria.vc_min')
+  vc_max : -> collection.get('filter_criteria.vc_max')
+  pr_min : -> collection.get('filter_criteria.pr_min')
+  pr_max : -> collection.get('filter_criteria.pr_max')
+  vs_min : -> collection.get('filter_criteria.vs_min')
+  vs_max : -> collection.get('filter_criteria.vs_max')
+  pa_min : -> collection.get('filter_criteria.pa_min')
+  pa_max : -> collection.get('filter_criteria.pa_max')
   reset_areas_subareas : ->
-    media.set('filter_criteria.areas',[])
-    media.set('filter_criteria.subareas',[])
+    collection.set('filter_criteria.areas',[])
+    collection.set('filter_criteria.subareas',[])
 
 re = new RegExp('phantomjs','gi')
 log = (str)->
@@ -110,11 +110,13 @@ log = (str)->
 
 describe 'media filter', ->
   before (done)->
-    window.media_appearances = MagicLamp.loadJSON('media_appearance_data')
+    window.Collection = {}
+    window.collection_items = MagicLamp.loadJSON('collection_items')
+    window.item_name = "media_appearance"
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
-    window.new_media_appearance = MagicLamp.loadJSON('new_media_appearance')
-    window.create_media_appearance_url = MagicLamp.loadRaw('create_media_appearance_url')
+    window.new_collection_item = MagicLamp.loadJSON('new_collection_item')
+    window.create_collection_item_url = MagicLamp.loadRaw('create_collection_item_url')
     window.maximum_filesize = MagicLamp.loadJSON('maximum_filesize')
     window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
     window.planned_results = []
@@ -131,7 +133,7 @@ describe 'media filter', ->
         log exception)
 
   beforeEach ->
-    media.set_defaults()
+    collection.set_defaults()
 
   it 'loads test fixtures and data', ->
     expect($("h1",'.magic-lamp').text()).to.equal "Media Archive"
@@ -354,13 +356,13 @@ describe 'media filter', ->
                                             subarea_ids : [1]})
 
 
-    media.set({'media_appearances': [ma1,ma2,ma3]})
-    media.populate_min_max_fields()
+    collection.set({'collection_items': [ma1,ma2,ma3]})
+    collection.populate_min_max_fields()
     expect($('.media_appearance:visible').length).to.equal 3
-    expect(media.get('filter_criteria.pa_min')).to.equal 0 # due to the new_media_appearance
-    expect(media.get('filter_criteria.pa_max')).to.equal 23
-    collection.findAllComponents('ma')[0].set('metrics.affected_people_count.value',30)
+    expect(collection.get('filter_criteria.pa_min')).to.equal 0 # due to the new_media_appearance
+    expect(collection.get('filter_criteria.pa_max')).to.equal 23
+    collection.findAllComponents('collectionItem')[0].set('metrics.affected_people_count.value',30)
     expect($('.media_appearance:visible').length).to.equal 3
-    collection.findAllComponents('ma')[1].set('editing',true)
-    collection.findAllComponents('ma')[1].set('metrics.affected_people_count.value',40)
+    collection.findAllComponents('collectionItem')[1].set('editing',true)
+    collection.findAllComponents('collectionItem')[1].set('metrics.affected_people_count.value',40)
     expect($('.media_appearance:visible').length).to.equal 3

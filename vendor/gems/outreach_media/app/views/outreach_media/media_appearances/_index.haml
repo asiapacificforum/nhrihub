@@ -1,8 +1,11 @@
 %h1= t('.heading')
+.btn.btn-success.btn-sm.add_article{:style => "margin-bottom:12px; color:white;", :onclick => "collection.new_article()"}
+  %i.fa.fa-plus.fa-lg{:style => "color:white"}
+  %span= t('.add_article')
 
-#media_appearances
+#collection_container
 
-= render :partial => 'outreach_media/media_appearances/media_appearance_templates'
-= render :partial => 'outreach_media/shared/common_templates'
+= render :partial => 'shared/collection_filter_controls', :locals => {:collection => :media_appearances, :search_heading => t('.search_heading')}
+= render :partial => 'shared/collection', :locals => {:item => :media_appearance, :i18n_key => "outreach_media.media_appearances.index"}
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note' # it's in the main app

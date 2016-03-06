@@ -14,10 +14,10 @@ FactoryGirl.define do
     audience_type_id { AudienceType.pluck(:id).sample }
     event_date { Date.today.advance(:days => -rand(2000)) }
     description { Faker::Lorem.sentences(2).join(' ') }
+    impact_rating_id { ImpactRating.pluck(:id).sample }
 
     after(:create) do |oe|
       oe.performance_indicator_ids = PerformanceIndicator.pluck(:id).sample(rand(2))
-      oe.impact_rating_id = ImpactRating.pluck(:id).sample
       oe.save
       FactoryGirl.create(:outreach_event_document, :outreach_event_id => oe.id)
     end
@@ -39,11 +39,11 @@ FactoryGirl.define do
     end
 
     trait :police_audience_type do
-      audience_type AudienceType.where(:long_type => 'Police').first
+      audience_type_id {AudienceType.where(:long_type => 'Police').first.id}
     end
 
     trait :schools_audience_type do
-      audience_type AudienceType.where(:long_type => 'Schools').first
+      audience_type_id {AudienceType.where(:long_type => 'Schools').first.id}
     end
 
     trait :no_f_in_title do
@@ -58,7 +58,7 @@ FactoryGirl.define do
       after(:build) do |ma|
         hr_area = Area.where(:name => "Human Rights").first
         ma.areas << hr_area
-        subareas = Subarea.where(:area_id => hr_area.id).where.not(:name => "Violation")
+        subareas = Subarea.where(:area_id => hr_area.id).where.not(:name => ["Violation","CRC"])
         ma.subareas = subareas.sample(rand(6))
       end
     end
@@ -92,11 +92,11 @@ FactoryGirl.define do
     end
 
     trait :ir_min do
-      impact_rating ImpactRating.first
+      impact_rating_id {ImpactRating.first.id}
     end
 
     trait :ir_not_min do
-      impact_rating ImpactRating.last
+      impact_rating_id {ImpactRating.last.id}
     end
 
     trait :hr_violation_subarea do
