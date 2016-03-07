@@ -2,12 +2,12 @@
   .col-md-1{'data-toggle'=>:edit}
     .no_edit.in
       {{#if has_link }}
-      %i.fa.fa-globe{'on-click' => 'fetch_link()'}
+      %i.fa.fa-globe{'on-click' => 'fetch_link()', 'data-toggle'=>'tooltip', 'title'=>'{{article_link}}'}
       {{/if}}
     .edit
   .col-md-1{'data-toggle'=>:edit}
     .no_edit.in
       {{#if has_scanned_doc }}
-      %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+      %i.fa.fa-cloud-download{'on-click' => 'download_attachment()', 'data-toggle'=>'tooltip', 'title'=>'{{original_filename}}'}
       {{/if}}
     .edit
