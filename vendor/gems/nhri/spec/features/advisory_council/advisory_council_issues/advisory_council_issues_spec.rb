@@ -259,8 +259,7 @@ feature "when there are existing articles", :js => true do
       fill_in('advisory_council_issue_article_link', :with => "http://www.nytimes.com")
       sleep(0.2)
       expect(page).not_to have_selector('#collection_item_attachment_error', :text => 'Either file or link, not both')
-      edit_save.click
-      sleep(0.4)
+      expect{edit_save.click; sleep(0.4) }.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
       expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.article_link).to eq "http://www.nytimes.com"
       expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_filename).to eq previous_file.original_filename

@@ -5,6 +5,16 @@
   {{> new_collection_item_template }}
   {{/if}}
 
+%script#attachments_icons{:type => 'template/ractive'}
+  .col-md-1{'data-toggle'=>:edit}
+    .no_edit.in
+      {{#if has_link }}
+      %i.fa.fa-globe{'on-click' => 'fetch_link()'}
+      {{elseif has_scanned_doc }}
+      %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+      {{/if}}
+    .edit
+
 %script#show_collection_item_template{:type => 'template/ractive'}
   .row.well.well-sm.editable_container{:class=> "#{item}", :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
@@ -35,14 +45,7 @@
               .no_edit.in
                 %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
               .edit
-            .col-md-1{'data-toggle'=>:edit}
-              .no_edit.in
-                {{#if has_link }}
-                %i.fa.fa-globe{'on-click' => 'fetch_link()'}
-                {{elseif has_scanned_doc }}
-                %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
-                {{/if}}
-              .edit
+            {{>attachments_icons}}
             .col-md-1.icon{ 'data-toggle' => 'edit'}
               .fade.edit
                 %i.fa.fa-remove{:id => "#{item}_editable{{id}}_edit_cancel"}
