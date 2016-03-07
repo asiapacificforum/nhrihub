@@ -9,7 +9,6 @@ class CreateAdvisoryCouncilIssues < ActiveRecord::Migration
       t.string   "title"
       t.integer  "affected_people_count"
       t.float    "violation_coefficient"
-      t.integer  "positivity_rating_id"
       t.integer  "violation_severity_id"
       t.datetime "lastModifiedDate"
       t.text   "article_link"

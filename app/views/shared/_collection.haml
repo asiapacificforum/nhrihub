@@ -84,6 +84,7 @@
               <file/>
               {{/original_filename}}
       .collapse.expanded_info{:class => "collapse{{id}}"}
+        {{> reported_by}}
         <performanceindicatorselect />
         .panel.panel-default
           .panel-heading
@@ -187,15 +188,18 @@
       {{/subareas }}
       {{/areas }}
     .col-md-2{:style => "width:50%; display:flex; flex-direction:column;"}
-      .form-group.hr_metrics#positivity_rating
-        %label.control-label.col-md-2{:for => 'positivity_rating', :style => "width:40%"}= t('.positivity')
-        =select_tag "#{item}[positivity_rating_id]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%", :value => "{{positivity_rating_id}}"
+      {{>positivity_rating_input}}
       .form-group.hr_metrics#violation_severity{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
         %label.control-label.col-md-2{:for => 'violation_severity', :style => "width:40%"}= t('.violation_severity')
         =select_tag "#{item}[violation_severity_id]", violation_severity_options, :prompt => t('.select_vs'), :class =>"form-control col-md-2", :id => "violation_severity",  :style => "width:50%", :value => "{{violation_severity_id}}"
       .form-group.hr_metrics#people_affected{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
         %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.people_affected')
         %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "#{item}[affected_people_count]", :style => "width:15%; padding-left:6px;", :value => "{{affected_people_count}}"}
+
+%script#positivity_rating_input{:type => 'template/ractive'}
+  .form-group.hr_metrics#positivity_rating
+    %label.control-label.col-md-2{:for => 'positivity_rating', :style => "width:40%"}= t('.positivity')
+    =select_tag "#{item}[positivity_rating_id]", positivity_rating_options, :prompt => t('.select_pr'), :class =>"form-control col-md-2", :id => "positivity_rating",  :style => "width:50%", :value => "{{positivity_rating_id}}"
 
 %script#area_template{:type=> 'template/ractive'}
   %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
@@ -324,7 +328,7 @@
 
 %script#collection{:type => 'template/ractive'}
   {{#collection_items}}
-  <collectionItem area_ids='{{area_ids}}' areas='{{areas}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' file_id='{{file_id}}' filesize='{{filesize}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' collection_item_areas='{{collection_item_areas}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' performance_indicators='{{performance_indicators}}' planned_results='{{planned_results}}' positivity_rating_id='{{positivity_rating_id}}' positivity_rating_rank_text='{{positivity_rating_rank_text}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' violation_coefficient='{{violation_coefficient}}' violation_severity_id='{{violation_severity_id}}' violation_severity_rank_text='{{violation_severity_rank_text}}' />
+  <collectionItem initiator='{{initiator}}' area_ids='{{area_ids}}' areas='{{areas}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' file_id='{{file_id}}' filesize='{{filesize}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' collection_item_areas='{{collection_item_areas}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' performance_indicators='{{performance_indicators}}' planned_results='{{planned_results}}' positivity_rating_id='{{positivity_rating_id}}' positivity_rating_rank_text='{{positivity_rating_rank_text}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' violation_coefficient='{{violation_coefficient}}' violation_severity_id='{{violation_severity_id}}' violation_severity_rank_text='{{violation_severity_rank_text}}' />
   {{/collection_items}}
 
 %script#item_areas{:type=>'template/ractive'}

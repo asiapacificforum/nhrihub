@@ -347,8 +347,12 @@ $ ->
     remove_errors : ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
+    _attrs : ->
+      attrs = ['file', 'title', 'affected_people_count', 'violation_severity_id', 'article_link', 'lastModifiedDate']
+      attrs.push('positivity_rating_id') if item_name == "media_appearance"
+      attrs
     create_instance_attributes: ->
-      attrs = _(@get()).pick('file', 'title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id','article_link')
+      attrs = _(@get()).pick(@_attrs())
       if _.isEmpty(@get('performance_indicator_ids'))
         attrs.performance_indicator_ids = [""]
       else
@@ -366,7 +370,7 @@ $ ->
       file = @get('fileupload').files[0]
       @set
         lastModifiedDate : file.lastModifiedDate
-      attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id', 'lastModifiedDate')
+      attrs = _(@get()).pick(@_attrs())
       name_value = _(attrs).keys().map (k)->{name:"#{item_name}["+k+"]", value:attrs[k]}
       if _.isEmpty(@get('area_ids'))
         aids = [{name : "#{item_name}[area_ids][]", value: ""}]
@@ -421,6 +425,7 @@ $ ->
     create_collection_item_url: create_collection_item_url
     planned_results : planned_results
     performance_indicators : performance_indicators
+    item_name : item_name
     filter_criteria :
       title : ""
       from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation

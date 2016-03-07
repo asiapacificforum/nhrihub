@@ -4,8 +4,6 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
   attachment :file
 
   belongs_to :violation_severity
-  belongs_to :positivity_rating
-  delegate :text, :rank, :rank_text, :to => :positivity_rating, :prefix => true, :allow_nil => true
   delegate :text, :rank, :rank_text, :to => :violation_severity, :prefix => true, :allow_nil => true
   belongs_to :user
   has_many :reminders, :as => :remindable, :dependent => :delete_all
@@ -24,10 +22,10 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
                        :collection_item_areas,
                        :area_ids,
                        :subarea_ids,
-                       :positivity_rating_rank_text,
                        :reminders,
                        :notes,
                        :url,
+                       :initiator,
                        :create_reminder_url,
                        :create_note_url,
                        :violation_severity_rank_text ]})
@@ -50,6 +48,10 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
       self.original_type = file.content_type
     end
     super
+  end
+
+  def initiator
+    user.first_last_name if user
   end
 
   def url

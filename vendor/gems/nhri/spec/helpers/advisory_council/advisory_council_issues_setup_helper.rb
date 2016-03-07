@@ -3,25 +3,21 @@ require 'rspec/core/shared_context'
 module AdvisoryCouncilIssueSetupHelper
   extend RSpec::Core::SharedContext
   def setup_database(type = :advisory_council_issue_with_file)
-    setup_positivity_ratings
     setup_areas
     setup_violation_severities
     if type == :advisory_council_issue_with_file
       FactoryGirl.create(:advisory_council_issue,
                          :hr_area,
                          :file,
-                         :positivity_rating => PositivityRating.first,
                          :reminders=>[] )
     elsif type == :advisory_council_issue_with_link
       FactoryGirl.create(:advisory_council_issue,
                          :hr_area,
                          :link,
-                         :positivity_rating => PositivityRating.first,
                          :reminders=>[] )
     else
       FactoryGirl.create(:advisory_council_issue,
                          :hr_area,
-                         :positivity_rating => PositivityRating.first,
                          :reminders=>[] )
     end
   end
@@ -29,7 +25,6 @@ module AdvisoryCouncilIssueSetupHelper
   def add_a_second_article
     FactoryGirl.create(:advisory_council_issue,
                        :hr_area,
-                       :positivity_rating => PositivityRating.first,
                        :reminders=>[] )
   end
 
@@ -41,11 +36,6 @@ module AdvisoryCouncilIssueSetupHelper
 
   def setup_articles
     FactoryGirl.create(:advisory_council_issue)
-  end
-
-  def setup_positivity_ratings
-    PositivityRating.delete_all
-    PositivityRating::DefaultValues.each { |pr| PositivityRating.create(:rank => pr.rank) }
   end
 
   def setup_violation_severities

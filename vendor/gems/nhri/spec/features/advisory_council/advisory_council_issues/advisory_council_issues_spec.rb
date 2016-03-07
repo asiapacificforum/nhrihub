@@ -11,11 +11,9 @@ feature "show advisory council issue archive", :js => true do
   include AdvisoryCouncilIssueSetupHelper
 
   before do
-    setup_positivity_ratings
     setup_areas
     FactoryGirl.create(:advisory_council_issue,
                        :hr_area,
-                       :positivity_rating => PositivityRating.first,
                        :reminders=>[FactoryGirl.create(:reminder, :advisory_council_issue)] )
     resize_browser_window
     visit nhri_advisory_council_issues_path(:en)
@@ -33,7 +31,6 @@ feature "create a new article", :js => true do
   include AdvisoryCouncilIssueSetupHelper
 
   before do
-    setup_positivity_ratings
     setup_areas
     setup_violation_severities
     setup_file_constraints
@@ -57,7 +54,6 @@ feature "create a new article", :js => true do
     check("Good Governance")
     check("CRC")
     fill_in('people_affected', :with => " 100000 ")
-    select('3: Has no bearing on the office', :from => 'Positivity rating')
     select('4: Serious', :from => 'Violation severity')
     fill_in('advisory_council_issue_article_link', :with => "http://www.nytimes.com")
     expect{page.execute_script("scrollTo(0,0)"); edit_save.click; sleep(0.5)}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(0).to(1)
@@ -70,7 +66,6 @@ feature "create a new article", :js => true do
     expect(areas).to include "Human Rights"
     expect(areas).to include "Good Governance"
     expect(subareas).to include "CRC"
-    expect(positivity_rating).to eq "3: Has no bearing on the office"
     expect(violation_severity).to eq "4: Serious"
     expect(people_affected.gsub(/,/,'')).to eq "100000" # b/c phantomjs does not have a toLocaleString() method
   end
@@ -118,7 +113,6 @@ feature "attempt to save with errors", :js => true do
   include AdvisoryCouncilIssueSetupHelper
 
   before do
-    setup_positivity_ratings
     setup_areas
     setup_violation_severities
     setup_file_constraints
@@ -213,7 +207,6 @@ feature "when there are existing articles", :js => true do
       check("Good Governance")
       check("CRC")
       fill_in('people_affected', :with => " 100000 ")
-      select('3: Has no bearing on the office', :from => 'Positivity rating')
       select('4: Serious', :from => 'Violation severity')
       expect{page.execute_script("scrollTo(0,0)"); edit_save.click; sleep(0.4)}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.title}
       expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.area_ids).to eql [2]
@@ -312,7 +305,6 @@ feature "when there are existing articles", :js => true do
       check("Good Governance")
       check("CRC")
       fill_in('people_affected', :with => " 100000 ")
-      select('3: Has no bearing on the office', :from => 'Positivity rating')
       select('4: Serious', :from => 'Violation severity')
       expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click; sleep(0.4)}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.title}
       expect(page.all("#advisory_council_issues .advisory_council_issue .basic_info .title").first.text).to eq original_advisory_council_issue.title

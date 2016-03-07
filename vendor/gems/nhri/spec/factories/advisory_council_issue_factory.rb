@@ -3,7 +3,6 @@ FactoryGirl.define do
     title {Faker::Lorem.sentence(5)}
     #affected_people_count
     #violation_coefficient
-    #positivity_rating_id
     #violation_severity_id
     #lastModifiedDate
 
@@ -21,7 +20,6 @@ FactoryGirl.define do
 
     after(:build) do |advisory_council_issue|
       advisory_council_issue.user_id = User.pluck(:id).sample
-      advisory_council_issue.positivity_rating_id = PositivityRating.pluck(:id).sample
       if advisory_council_issue.file_id
         path = Rails.env.production? ?
           Rails.root.join('..','..','shared') :

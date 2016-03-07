@@ -44,6 +44,8 @@ en:
           clear : "Clear filter"
           weblink : "Enter web link"
           choose_file : "Choose file"
+        advisory_council_specifics:
+          initiator: "Reported by"
     advisory_council_issues:
       index:
         item_error_message : "A file or link must be included"

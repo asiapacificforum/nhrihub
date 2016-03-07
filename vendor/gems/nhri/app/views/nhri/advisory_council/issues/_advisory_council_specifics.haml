@@ -11,3 +11,11 @@
       %i.fa.fa-cloud-download{'on-click' => 'download_attachment()', 'data-toggle'=>'tooltip', 'title'=>'{{original_filename}}'}
       {{/if}}
     .edit
+
+%script#reported_by{:type => 'template/ractive'}
+  .row
+    .col-md-2{:style => 'width:188px;'}= t('.initiator')
+    .col-md-2{:style => 'padding-left:0px;'} {{initiator}}
+
+%script#positivity_rating_input{:type => 'template/ractive'}
+  // empty, positivity rating not supported for advisory council issues

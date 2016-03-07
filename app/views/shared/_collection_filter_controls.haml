@@ -45,7 +45,9 @@
       .col-md-2= t('.people_affected')
       .col-md-2= t('.severity')
       .col-md-2= t('.coefficient')
+      {{#if item_name == 'media_appearance'}}
       .col-md-2= t('.positivity')
+      {{/if}}
     .row.labels
       .col-md-1= t('.min')
       .col-md-1= t('.max')
@@ -53,8 +55,10 @@
       .col-md-1= t('.max')
       .col-md-1= t('.min')
       .col-md-1= t('.max')
+      {{#if item_name == 'media_appearance'}}
       .col-md-1= t('.min')
       .col-md-1= t('.max')
+      {{/if}}
     .row
       .col-md-1.filter_field.pa_min
         %input{:style=>"width:80px", :value => '{{filter_criteria.pa_min}}'}
@@ -74,12 +78,14 @@
       .col-md-1.filter_field.vc_max
         %input{:style=>"width:50px", :value => '{{filter_criteria.vc_max}}'}
         %span.error_message= t('defaults.invalid')
+      {{#if item_name == 'media_appearance'}}
       .col-md-1.filter_field.pr_min
         %input{:style=>"width:50px", :value => '{{filter_criteria.pr_min}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pr_max
         %input{:style=>"width:50px", :value => '{{filter_criteria.pr_max}}'}
         %span.error_message= t('defaults.invalid')
+      {{/if}}
   %div{:id => "#{collection}"}
     {{>collection}}
 
