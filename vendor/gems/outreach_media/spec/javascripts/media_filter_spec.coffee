@@ -1,3 +1,35 @@
+AdvisoryCouncilIssuePage = ->
+  new_advisory_council_issue : ->
+    aci =
+        id: null
+        file_id: null
+        filesize: null
+        original_filename: null
+        original_type: null
+        user_id: null
+        url: null
+        title: null
+        positivity_rating_id: null
+        violation_severity_id: null
+        lastModifiedDate: null
+        article_link: null
+        date: null
+        positivity_rating: null
+        violation_severity: null
+        violation_coefficient: null
+        affected_people_count: null
+        has_link: false
+        has_scanned_doc: false
+        media_areas: []
+        area_ids: []
+        subarea_ids: []
+        reminders: []
+        notes: []
+        create_reminder_url: null
+        create_note_url: null
+
+    _.extend({},aci)
+
 MediaPage = ->
   new_media_appearance : ->
     ma =
@@ -366,3 +398,294 @@ describe 'media filter', ->
     collection.findAllComponents('collectionItem')[1].set('editing',true)
     collection.findAllComponents('collectionItem')[1].set('metrics.affected_people_count.value',40)
     expect($('.media_appearance:visible').length).to.equal 3
+
+
+describe 'media_appearance attachment validation', ->
+  before (done)->
+    window.Collection = {}
+    window.collection_items = MagicLamp.loadJSON('collection_items')
+    window.item_name = "media_appearance"
+    window.areas = MagicLamp.loadJSON('areas_data')
+    window.subareas = MagicLamp.loadJSON('subareas_data')
+    window.new_collection_item = MagicLamp.loadJSON('new_collection_item')
+    window.create_collection_item_url = MagicLamp.loadRaw('create_collection_item_url')
+    window.maximum_filesize = MagicLamp.loadJSON('maximum_filesize')
+    window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
+    window.planned_results = []
+    window.performance_indicators = []
+    MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
+    @page = new MediaPage()
+    $.getScript("/assets/media.js").
+      done( ->
+        log "(Media page) javascript was loaded"
+        done()). # the media_appearances.js app , start_page(), define_media
+      fail( (jqxhr, settings, exception) ->
+        log "Triggered ajaxError handler"
+        log settings
+        log exception)
+
+  beforeEach ->
+    collection.set_defaults()
+
+  it 'loads test fixtures and data', ->
+    expect($("h1",'.magic-lamp').text()).to.equal "Media Archive"
+    expect($(".media_appearance", '.magic-lamp').length).to.equal 8
+    expect(typeof(simulant)).to.not.equal("undefined")
+
+  it 'validates unpersisted media_appearance with valid attachment and no link', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : null, # unpersisted!
+                                            title: "bar",
+                                            original_filename : "some_file_name.pdf",
+                                            fileupload : {files:[{size:5000,name:"filename.pdf"}]},
+                                           })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+
+  it 'validates persisted media_appearance with no attachment, an origina_filename, and no link', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : 44, # persisted!
+                                            title: "bar",
+                                            original_filename : "some_file_name.pdf"
+                                           })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+
+  it 'validates unpersisted media_appearance with link and no attachment', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : null, # unpersisted!
+                                            title: "bar",
+                                            article_link : "www.foo.bar",
+                                           })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+
+  it 'validates persisted media_appearance with link and no attachment', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : 44, # persisted!
+                                            title: "bar",
+                                            article_link : "www.foo.bar",
+                                           })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+
+  it 'does not validate unpersisted media_appearance with both link and attachment', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : null, # unpersisted!
+                                            title: "bar",
+                                            article_link : "www.foo.bar",
+                                            original_filename : "some_file_name.pdf",
+                                            fileupload : {files:[{size:5000,name:"filename.pdf"}]},
+                                           })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal false
+    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal true
+
+  it 'does not validate persisted media_appearance with both link and attachment', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : 44, # persisted!
+                                            title: "bar",
+                                            article_link : "www.foo.bar",
+                                            original_filename : "some_file_name.pdf",
+                                            fileupload : {files:[{size:5000,name:"filename.pdf"}]},
+                                           })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal false
+    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal true
+
+  it 'does not validate persisted media_appearance with a link and no attachment but with an original_filename', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : 44, # persisted!
+                                            title: "bar",
+                                            article_link : "www.foo.bar",
+                                            original_filename : "some_file_name.pdf" })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal false
+    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal true
+
+  it 'does not validate unpersisted media_appearance with no link and no attachment', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : null, # unpersisted!
+                                            title: "bar"
+                                           })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal false
+    expect(collection.findComponent('collectionItem').get('collection_item_error')).to.equal true
+
+  it 'does not validate persisted media_appearance with no link and no attachment', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : 44, # persisted!
+                                            title: "bar"
+                                           })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal false
+    expect(collection.findComponent('collectionItem').get('collection_item_error')).to.equal true
+
+  it 'does not validate attachment which is too big', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : null, # unpersisted!
+                                            title: "bar",
+                                            original_filename : "some_file_name.pdf",
+                                            fileupload : {files:[{size:50000000,name:"filename.pdf"}]},
+                                           })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal false
+    expect(collection.findComponent('collectionItem').get('filesize_error')).to.equal true
+
+  it 'does not validate attachment of an unpermitted type', ->
+    media_appearance = _.extend(@page.new_media_appearance(), {
+                                            id : null, # unpersisted!
+                                            title: "bar",
+                                            original_filename : "some_file_name.pdf",
+                                            fileupload : {files:[{size:500000,name:"filename.xyz"}]},
+                                           })
+    collection.set({'collection_items': [media_appearance]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal false
+    expect(collection.findComponent('collectionItem').get('filetype_error')).to.equal true
+
+describe 'advisory_council_issue attachment validation', ->
+  before (done)->
+    window.Collection = {}
+    #window.collection_items = MagicLamp.loadJSON('advisory_council_issues')
+    window.collection_items = []
+    window.item_name = "advisory_council_issue"
+    #window.areas = MagicLamp.loadJSON('areas_data')
+    window.areas = []
+    #window.subareas = MagicLamp.loadJSON('subareas_data')
+    #window.new_collection_item = MagicLamp.loadJSON('new_advisory_council_issue_collection_item')
+    #window.create_collection_item_url = MagicLamp.loadRaw('create_advisory_council_issue_collection_item_url')
+    window.create_collection_item_url = ""
+    window.maximum_filesize = MagicLamp.loadJSON('maximum_filesize')
+    window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
+    window.planned_results = []
+    window.performance_indicators = []
+    MagicLamp.load("advisory_council_issues_page") # that's the _index partial being loaded
+    @page = new AdvisoryCouncilIssuePage()
+    $.getScript("/assets/issues.js").
+      done( ->
+        log "(Advisory council issues) javascript was loaded"
+        done()). # the media_appearances.js app , start_page(), define_media
+      fail( (jqxhr, settings, exception) ->
+        log "Triggered ajaxError handler"
+        log settings
+        log exception)
+
+  beforeEach ->
+    collection.set_defaults()
+
+  it 'loads test fixtures and data', ->
+    expect($("h1",'.magic-lamp').text()).to.equal "Issues"
+    expect(typeof(simulant)).to.not.equal("undefined")
+
+  it 'validates unpersisted advisory_council_issue with valid attachment and no link', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : null, # unpersisted!
+                                            title: "bar",
+                                            original_filename : "some_file_name.pdf",
+                                            fileupload : {files:[{size:5000,name:"filename.pdf"}]},
+                                           })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+
+  it 'validates persisted advisory_council_issue with no attachment, an origina_filename, and no link', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : 44, # persisted!
+                                            title: "bar",
+                                            original_filename : "some_file_name.pdf"
+                                           })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+
+  it 'validates unpersisted advisory_council_issue with link and no attachment', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : null, # unpersisted!
+                                            title: "bar",
+                                            article_link : "www.foo.bar",
+                                           })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+
+  it 'validates persisted advisory_council_issue with link and no attachment', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : 44, # persisted!
+                                            title: "bar",
+                                            article_link : "www.foo.bar",
+                                           })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+
+  it 'validates unpersisted advisory_council_issue with both link and attachment', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : null, # unpersisted!
+                                            title: "bar",
+                                            article_link : "www.foo.bar",
+                                            original_filename : "some_file_name.pdf",
+                                            fileupload : {files:[{size:5000,name:"filename.pdf"}]},
+                                           })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal false
+
+  it 'validates persisted advisory_council_issue with both link and attachment', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : 44, # persisted!
+                                            title: "bar",
+                                            article_link : "www.foo.bar",
+                                            original_filename : "some_file_name.pdf",
+                                            fileupload : {files:[{size:5000,name:"filename.pdf"}]},
+                                           })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal false
+
+  it 'validates persisted advisory_council_issue with a link and no attachment but with an original_filename', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : 44, # persisted!
+                                            title: "bar",
+                                            article_link : "www.foo.bar",
+                                            original_filename : "some_file_name.pdf" })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal false
+
+  # problem test
+  it 'validates unpersisted advisory_council_issue with no link and no attachment', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : null, # unpersisted!
+                                            title: "bar"
+                                           })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+    expect(collection.findComponent('collectionItem').get('collection_item_error')).to.equal false
+
+  # problem test
+  it 'validates persisted advisory_council_issue with no link and no attachment', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : 44, # persisted!
+                                            title: "bar"
+                                           })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal true
+    expect(collection.findComponent('collectionItem').get('collection_item_error')).to.equal false
+
+  it 'does not validate attachment which is too big', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : null, # unpersisted!
+                                            title: "bar",
+                                            original_filename : "some_file_name.pdf",
+                                            fileupload : {files:[{size:50000000,name:"filename.pdf"}]},
+                                           })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal false
+    expect(collection.findComponent('collectionItem').get('filesize_error')).to.equal true
+
+  it 'does not validate attachment of an unpermitted type', ->
+    advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
+                                            id : null, # unpersisted!
+                                            title: "bar",
+                                            original_filename : "some_file_name.pdf",
+                                            fileupload : {files:[{size:500000,name:"filename.xyz"}]},
+                                           })
+    collection.set({'collection_items': [advisory_council_issue]})
+    expect(collection.findComponent('collectionItem').validate()).to.equal false
+    expect(collection.findComponent('collectionItem').get('filetype_error')).to.equal true

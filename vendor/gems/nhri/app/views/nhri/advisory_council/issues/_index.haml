@@ -1,0 +1,39 @@
+%h1= t('.heading')
+.btn.btn-success.btn-sm.add_article{:style => "margin-bottom:12px; color:white;", :onclick => "collection.new_article()"}
+  %i.fa.fa-plus.fa-lg{:style => "color:white"}
+  %span= t('.add_article')
+
+#collection_container
+
+= render :partial => 'shared/collection_filter_controls', :locals => {:collection => :advisory_council_issues, :search_heading => t('.search_heading')}
+= render :partial => 'shared/collection', :locals => {:item => :advisory_council_issue, :i18n_key => "nhri.advisory_council_issues.index"}
+= render :partial => 'reminders/reminder' # it's in the main app
+= render :partial => 'notes/note' # it's in the main app
+
+:javascript
+  var collection_items = []
+  var item_name = "advisory_council_issue"
+  var areas = #{@areas.to_json}
+  var subareas = #{@subareas.to_json}
+  var new_collection_item = #{@advisory_council_issue.to_json}
+  var create_collection_item_url = ""
+  var maximum_filesize = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.maximum_filesize * 1000000}
+  var permitted_filetypes = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.permitted_filetypes }
+  var planned_results = null //variables need to be defined in shared js
+  var performance_indicators = null //variables need to be defined in shared js
+  var Collection = {}
+
+= javascript_include_tag "issues"
+
+:coffeescript
+  $ ->
+    # attachments and links are optional for advisory_council_issues
+    Collection.CollectionItem.prototype._validate_single_attachment = ->
+      # don't care if there are two attachments (file & link) so declare it as valid
+      true
+    Collection.CollectionItem.prototype._validate_any_attachment = ->
+      @set('collection_item_error', !@_validate_file())
+      !@get('collectiom_item_error')
+    Collection.CollectionItem.prototype._validate_file = ->
+      unless _.isEmpty(@get('fileupload'))
+        !_.isNull(@get('original_filename')) && @validate_file_constraints()
