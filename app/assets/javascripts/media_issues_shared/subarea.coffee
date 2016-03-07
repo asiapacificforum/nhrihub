@@ -1,4 +1,4 @@
-class @Subarea
+class Collection.Subarea
   constructor : (attrs)->
     @id = attrs.id
     @name = attrs.name
@@ -7,7 +7,7 @@ class @Subarea
 
   @all : ->
     _(subareas).map (sa)->
-      new Subarea(sa)
+      new Collection.Subarea(sa)
 
   @find : (id)->
     _(@all()).detect (a)-> a.id == id

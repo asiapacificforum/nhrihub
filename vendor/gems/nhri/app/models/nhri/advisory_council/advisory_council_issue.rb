@@ -35,6 +35,23 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
 
   alias_method :collection_item_areas, :issue_areas
 
+  # value comes in from shared js and is ignored
+  attr_writer :performance_indicator_ids
+
+  def file=(file)
+    if file == "_remove"
+      self.remove_file = true
+      self.original_filename = nil
+      self.filesize = nil
+      self.original_type = nil
+    else
+      self.original_filename = file.original_filename
+      self.filesize = file.size
+      self.original_type = file.content_type
+    end
+    super
+  end
+
   def url
     Rails.application.routes.url_helpers.nhri_advisory_council_issue_path(:en,id) if persisted?
   end
@@ -52,7 +69,7 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
   end
 
   def has_link
-    false
+    !article_link.blank?
   end
 
   def has_scanned_doc

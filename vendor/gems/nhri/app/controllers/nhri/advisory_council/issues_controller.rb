@@ -37,14 +37,7 @@ class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
 
   private
   def issue_params
-    if params[:advisory_council_issue][:file]
-      params["advisory_council_issue"]["original_filename"] = params[:advisory_council_issue][:file].original_filename
-      params["advisory_council_issue"]["filesize"] = params[:advisory_council_issue][:file].size
-      params["advisory_council_issue"]["original_type"] = params[:advisory_council_issue][:file].content_type
-    end
     params["advisory_council_issue"]["user_id"] = current_user.id
-    params["advisory_council_issue"].delete("article_link") # n/a, from shared js
-    params["advisory_council_issue"].delete("performance_indicator_ids") # n/a, from shared js
     params.
       require(:advisory_council_issue).
       permit(:title,
@@ -58,6 +51,8 @@ class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
              :original_type,
              :lastModifiedDate,
              :user_id,
+             :article_link,
+             :performance_indicator_ids => [],
              :area_ids => [],
              :subarea_ids => [])
   end

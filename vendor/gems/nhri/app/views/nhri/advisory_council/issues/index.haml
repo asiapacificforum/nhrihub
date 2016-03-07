@@ -11,16 +11,29 @@
 = render :partial => 'notes/note' # it's in the main app
 
 :javascript
-  collection_items = #{@advisory_council_issues.to_json}
-  item_name = "advisory_council_issue"
-  areas = #{@areas.to_json}
-  subareas = #{@subareas.to_json}
-  new_collection_item = #{@advisory_council_issue.to_json}
-  create_collection_item_url = "#{@advisory_council_issue.create_url}"
-  maximum_filesize = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.maximum_filesize * 1000000}
-  permitted_filetypes = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.permitted_filetypes }
-  planned_results = null //variables need to be defined in shared js
-  performance_indicators = null //variables need to be defined in shared js
+  var collection_items = #{@advisory_council_issues.to_json}
+  var item_name = "advisory_council_issue"
+  var areas = #{@areas.to_json}
+  var subareas = #{@subareas.to_json}
+  var new_collection_item = #{@advisory_council_issue.to_json}
+  var create_collection_item_url = "#{@advisory_council_issue.create_url}"
+  var maximum_filesize = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.maximum_filesize * 1000000}
+  var permitted_filetypes = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.permitted_filetypes }
+  var planned_results = null //variables need to be defined in shared js
+  var performance_indicators = null //variables need to be defined in shared js
+  var Collection = {}
 
 = javascript_include_tag "issues"
 
+:coffeescript
+  $ ->
+    # attachments and links are optional for advisory_council_issues
+    Collection.CollectionItem.prototype._validate_single_attachment = ->
+      # don't care if there are two attachments (file & link) so declare it as valid
+      true
+    Collection.CollectionItem.prototype._validate_any_attachment = ->
+      @set('collection_item_error', !@_validate_file())
+      !@get('collectiom_item_error')
+    Collection.CollectionItem.prototype._validate_file = ->
+      unless _.isEmpty(@get('fileupload'))
+        !_.isNull(@get('original_filename')) && @validate_file_constraints()

@@ -1,5 +1,5 @@
 $ ->
-  EditInPlace = (node,id)->
+  Collection.EditInPlace = (node,id)->
     ractive = @
     @edit = new InpageEdit
       on : node
@@ -19,26 +19,26 @@ $ ->
 
   Ractive.DEBUG = false
 
-  Ractive.decorators.inpage_edit = EditInPlace
+  Ractive.decorators.inpage_edit = Collection.EditInPlace
 
-  CollectionItemSubarea = Ractive.extend
+  Collection.CollectionItemSubarea = Ractive.extend
     template : '#collection_item_subarea_template'
     computed :
       name : ->
         _(subareas).findWhere({id : @get('id')}).name
 
-  CollectionItemArea = Ractive.extend
+  Collection.CollectionItemArea = Ractive.extend
     template : '#collection_item_area_template'
     computed :
       name : ->
         _(areas).findWhere({id : @get('area_id')}).name
     components :
-      collectionitemsubarea : CollectionItemSubarea
+      collectionitemsubarea : Collection.CollectionItemSubarea
 
-  Metric = Ractive.extend
+  Collection.Metric = Ractive.extend
     template : '#metric_template'
 
-  SubareaFilter = Ractive.extend
+  Collection.SubareaFilter = Ractive.extend
     template : '#subarea_template'
     oninit : ->
       @select()
@@ -56,10 +56,10 @@ $ ->
       @root.remove_subarea_filter(@get('id'))
       @set('subarea_selected',false)
 
-  AreaFilter = Ractive.extend
+  Collection.AreaFilter = Ractive.extend
     template : '#area_template'
     components :
-      subarea : SubareaFilter
+      subarea : Collection.SubareaFilter
     oninit : ->
       @select()
     toggle : ->
@@ -79,21 +79,21 @@ $ ->
       @set('area_selected',false)
 
   # not currently used, until Ractive 0.8.0 is reliable
-  SubareaSelect = Ractive.extend
+  Collection.SubareaSelect = Ractive.extend
     template : "#subarea_select_template"
     show_metrics : (id)->
-      if (Subarea.find(id).extended_name == "Human Rights Violation") && @get('checked')
+      if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && @get('checked')
         $('.hr_metrics').show(300)
-      else if (Subarea.find(id).extended_name == "Human Rights Violation") && !@get('checked')
+      else if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && !@get('checked')
         $('.hr_metrics').hide(300)
 
   # not currently used, until Ractive 0.8.0 is reliable
-  AreaSelect = Ractive.extend
+  Collection.AreaSelect = Ractive.extend
     template : "#area_select_template"
     components :
-      'subarea-select' : SubareaSelect
+      'subarea-select' : Collection.SubareaSelect
 
-  FileUpload = (node)->
+  Collection.FileUpload = (node)->
     $(node).fileupload
       dataType: 'json'
       type: 'post'
@@ -121,19 +121,19 @@ $ ->
     teardown : ->
       #noop for now
 
-  Ractive.decorators.file_upload = FileUpload
+  Ractive.decorators.file_upload = Collection.FileUpload
 
-  File = Ractive.extend
+  Collection.File = Ractive.extend
     template : "#selected_file_template"
     deselect_file : ->
       @parent.deselect_file()
 
-  CollectionItem = Ractive.extend
+  Collection.CollectionItem = Ractive.extend
     template : '#collection_item_template'
     components :
-      collectionItemArea : CollectionItemArea
-      metric : Metric
-      file : File
+      collectionItemArea : Collection.CollectionItemArea
+      metric : Collection.Metric
+      file : Collection.File
       # due to a ractive bug, checkboxes don't work in components,
       # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
       # so this component is not used, until the bug is fixed
@@ -156,7 +156,7 @@ $ ->
       model_name : ->
         item_name
       hr_violation : ->
-        id = Subarea.hr_violation().id
+        id = Collection.Subarea.hr_violation().id
         _(@get('subarea_ids')).indexOf(id) != -1
       formatted_metrics : ->
         metrics = $.extend(true,{},@get('metrics'))
@@ -348,7 +348,7 @@ $ ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
     create_instance_attributes: ->
-      attrs = _(@get()).pick('title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id','article_link')
+      attrs = _(@get()).pick('file', 'title', 'affected_people_count', 'violation_severity_id', 'positivity_rating_id','article_link')
       if _.isEmpty(@get('performance_indicator_ids'))
         attrs.performance_indicator_ids = [""]
       else
@@ -394,6 +394,7 @@ $ ->
       file_input.replaceWith(file_input.clone()) # the actual file input field
       @set('fileupload',null) # remove all traces!
       @set('original_filename',null) # remove all traces!
+      @set('file','_remove')
       @validate()
     update_persist : (success, error, context) ->
       if _.isEmpty(@get('fileupload')) # handle the update directly
@@ -488,8 +489,8 @@ $ ->
         return val if val > max
         max
     components :
-      collectionItem : CollectionItem
-      area : AreaFilter
+      collectionItem : Collection.CollectionItem
+      area : Collection.AreaFilter
     populate_min_max_fields : ->
       @set('filter_criteria.from',@get('earliest'))  unless _.isUndefined(@get('earliest'))
       @set('filter_criteria.to',@get('most_recent')) unless _.isUndefined(@get('most_recent'))

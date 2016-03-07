@@ -139,17 +139,8 @@ feature "attempt to save with errors", :js => true do
   feature "neither link nor file is included" do
     before do
       fill_in("advisory_council_issue_title", :with => "My new article title")
-      expect{edit_save.click; sleep(0.4)}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
-      expect(page).to have_selector('#collection_item_error', :text => "A file or link must be included")
-    end
-
-    scenario "remove error by adding a file" do
-      page.attach_file("advisory_council_issue_file", upload_document, :visible => false)
-      expect(page).not_to have_selector('#collection_item_error', :text => "A file or link must be included")
-    end
-
-    scenario "remove error by adding a link" do
-      fill_in("advisory_council_issue_article_link", :with => "h")
+      # unlike media_appearance, advisory_council_issue may not have a link or file
+      expect{edit_save.click; sleep(0.4)}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.by(1)
       expect(page).not_to have_selector('#collection_item_error', :text => "A file or link must be included")
     end
   end
@@ -159,19 +150,19 @@ feature "attempt to save with errors", :js => true do
       fill_in("advisory_council_issue_title", :with => "My new article title")
       page.attach_file("advisory_council_issue_file", upload_document, :visible => false)
       fill_in("advisory_council_issue_article_link", :with => "h")
-      expect{edit_save.click; sleep(0.4)}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
-      expect(page).to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
+      expect{edit_save.click; sleep(0.4)}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.by(1)
+      expect(page).not_to have_selector('#collection_item_attachment_error')
     end
 
-    scenario "remove error by removing file" do
-      clear_file_attachment
-      expect(page).not_to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
-    end
+    #scenario "remove error by removing file" do
+      #clear_file_attachment
+      #expect(page).not_to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
+    #end
 
-    scenario "remove error by deleting link" do
-      delete_article_link_field
-      expect(page).not_to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
-    end
+    #scenario "remove error by deleting link" do
+      #delete_article_link_field
+      #expect(page).not_to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
+    #end
   end
 
   scenario "upload an unpermitted file type and cancel" do
@@ -245,6 +236,38 @@ feature "when there are existing articles", :js => true do
       expect(File.exists?(File.join('tmp','uploads','store',new_file_id))).to eq true
     end
 
+    scenario "edit a file article and change to link" do
+      edit_article[0].click
+      previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
+      expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
+      clear_file_attachment
+      fill_in('advisory_council_issue_article_link', :with => "http://www.nytimes.com")
+      edit_save.click
+      sleep(0.4)
+      expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq false
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.article_link).to eq "http://www.nytimes.com"
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_filename).to be_nil
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.filesize).to be_nil
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_type).to be_nil
+    end
+
+    scenario "edit a file article and add a link" do
+      edit_article[0].click
+      previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
+      previous_file = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first
+      expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
+      fill_in('advisory_council_issue_article_link', :with => "http://www.nytimes.com")
+      sleep(0.2)
+      expect(page).not_to have_selector('#collection_item_attachment_error', :text => 'Either file or link, not both')
+      edit_save.click
+      sleep(0.4)
+      expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.article_link).to eq "http://www.nytimes.com"
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_filename).to eq previous_file.original_filename
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.filesize).to eq previous_file.filesize
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_type).to eq previous_file.original_type
+    end
+
     scenario "edit an article and add title error" do
       edit_article[0].click
       fill_in("advisory_council_issue_title", :with => "")
@@ -260,7 +283,7 @@ feature "when there are existing articles", :js => true do
       page.attach_file("advisory_council_issue_file", upload_image, :visible => false)
       expect(page).to have_css('#filetype_error', :text => "File type not allowed")
       clear_file_attachment
-      expect(page).to have_selector('#collection_item_error', :text => "A file or link must be included")
+      expect(page).not_to have_selector('#collection_item_error', :text => "A file or link must be included")
       edit_cancel.click
       sleep(0.2)
       edit_article[0].click
@@ -299,7 +322,7 @@ feature "when there are existing articles", :js => true do
       expect(areas).not_to include "Good Governance"
     end
 
-    scenario "title is blank, error propagates" do # b/c there was a bug!
+    scenario "title is blank, error should not propagate" do # b/c there was a bug!
       add_article_button.click
       sleep(0.8)
       expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
@@ -308,6 +331,25 @@ feature "when there are existing articles", :js => true do
       page.find(".advisory_council_issue i#edit_cancel").click
       edit_article[0].click
       expect(page).not_to have_selector("#title_error", :visible => true)
+    end
+  end
+
+  feature "and existing article has link attachment" do
+    before do
+      setup_database(:advisory_council_issue_with_link)
+      setup_file_constraints
+      visit  nhri_advisory_council_issues_path(:en) # again, b/c setup changed
+    end
+
+    scenario "edit a link article and add a file" do
+      edit_article[0].click
+      page.attach_file("advisory_council_issue_file", upload_document, :visible => false)
+      edit_save.click
+      sleep(0.4)
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.article_link).not_to be_blank
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_filename).to eq "first_upload_file.pdf"
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.filesize).to be > 0
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_type).to eq "application/pdf"
     end
   end
 end
@@ -364,6 +406,20 @@ feature "view attachments", :js => true do
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
     else
       expect(1).to eq 1 # download not supported by selenium driver
+    end
+  end
+
+  scenario "visit link" do
+    if page.driver.is_a?(Capybara::Poltergeist::Driver)
+      # b/c triggering a reload of another page triggers a phantomjs bug/error
+      expect(1).to eq 1
+    else
+      setup_database(:advisory_council_issue_with_link)
+      visit nhri_advisory_council_issues_path(:en)
+      click_the_link_icon
+      sleep(0.5)
+      page.switch_to_window(page.windows[1])
+      expect( page.evaluate_script('window.location.href')).to include first_article_link
     end
   end
 end

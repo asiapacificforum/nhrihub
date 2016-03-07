@@ -1,15 +1,23 @@
 FactoryGirl.define do
   factory :advisory_council_issue, :class => Nhri::AdvisoryCouncil::AdvisoryCouncilIssue do
     title {Faker::Lorem.sentence(5)}
-    file_id             { SecureRandom.hex(30) }
-    filesize            { 10000 + (30000*rand).to_i }
-    original_filename   { "#{Faker::Lorem.words(2).join("_")}.pdf" }
-    original_type       "application/pdf"
     #affected_people_count
     #violation_coefficient
     #positivity_rating_id
     #violation_severity_id
     #lastModifiedDate
+
+    trait :link do
+      #article_link { Faker::Internet.url }
+      article_link { "http://www.nytimes.com" } # so we can actually test it!
+    end
+
+    trait :file do
+      file_id             { SecureRandom.hex(30) }
+      filesize            { 10000 + (30000*rand).to_i }
+      original_filename   { "#{Faker::Lorem.words(2).join("_")}.pdf" }
+      original_type       "application/pdf"
+    end
 
     after(:build) do |advisory_council_issue|
       advisory_council_issue.user_id = User.pluck(:id).sample

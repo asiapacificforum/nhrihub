@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20160301185412) do
     t.integer  "positivity_rating_id"
     t.integer  "violation_severity_id"
     t.datetime "lastModifiedDate"
+    t.text     "article_link"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

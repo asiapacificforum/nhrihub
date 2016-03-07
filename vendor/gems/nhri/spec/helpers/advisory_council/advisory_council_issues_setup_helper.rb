@@ -2,14 +2,28 @@ require 'rspec/core/shared_context'
 
 module AdvisoryCouncilIssueSetupHelper
   extend RSpec::Core::SharedContext
-  def setup_database
+  def setup_database(type = :advisory_council_issue_with_file)
     setup_positivity_ratings
     setup_areas
     setup_violation_severities
-    FactoryGirl.create(:advisory_council_issue,
-                       :hr_area,
-                       :positivity_rating => PositivityRating.first,
-                       :reminders=>[] )
+    if type == :advisory_council_issue_with_file
+      FactoryGirl.create(:advisory_council_issue,
+                         :hr_area,
+                         :file,
+                         :positivity_rating => PositivityRating.first,
+                         :reminders=>[] )
+    elsif type == :advisory_council_issue_with_link
+      FactoryGirl.create(:advisory_council_issue,
+                         :hr_area,
+                         :link,
+                         :positivity_rating => PositivityRating.first,
+                         :reminders=>[] )
+    else
+      FactoryGirl.create(:advisory_council_issue,
+                         :hr_area,
+                         :positivity_rating => PositivityRating.first,
+                         :reminders=>[] )
+    end
   end
 
   def add_a_second_article

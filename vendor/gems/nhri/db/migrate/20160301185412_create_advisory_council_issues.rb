@@ -12,6 +12,7 @@ class CreateAdvisoryCouncilIssues < ActiveRecord::Migration
       t.integer  "positivity_rating_id"
       t.integer  "violation_severity_id"
       t.datetime "lastModifiedDate"
+      t.text   "article_link"
       t.datetime "created_at"
       t.datetime "updated_at"
     end

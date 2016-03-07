@@ -13,8 +13,11 @@ class Note < ActiveRecord::Base
   end
 
   def url
-    #Rails.application.routes.url_helpers.corporate_services_activity_note_path(:en,notable_id,id)
-    polymorphic_path([notable.namespace,notable,self], :locale => :en)
+    if notable.namespace
+      polymorphic_path([notable.namespace,notable,self], :locale => :en)
+    else
+      polymorphic_path([notable,self], :locale => :en)
+    end
   end
 
   def updated_on

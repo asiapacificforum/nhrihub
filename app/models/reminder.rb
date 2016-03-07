@@ -36,9 +36,9 @@ class Reminder < ActiveRecord::Base
 
   def url
     if remindable.namespace
-      polymorphic_path([remindable,self], :locale => :en)
-    else
       polymorphic_path([remindable.namespace,remindable,self], :locale => :en)
+    else
+      polymorphic_path([remindable,self], :locale => :en)
     end
   end
 
