@@ -13,6 +13,8 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
   has_many :issue_subareas, :dependent => :destroy
   has_many :subareas, :through => :issue_subareas
 
+  default_scope {order(:created_at => :desc)}
+
   def as_json(options={})
     super({:except => [:updated_at,
                        :created_at],
