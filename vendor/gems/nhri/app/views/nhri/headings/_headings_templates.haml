@@ -1,0 +1,38 @@
+%script#heading_template{:type => 'template/ractive'}
+  {{#if persisted}}
+  {{>show_heading_template}}
+  {{else}}
+  {{>new_heading_template}}
+  {{/if}}
+
+%script#show_heading_template{:type => 'template/ractive'}
+  .row.heading.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"heading_editable{{id}}"}
+    .col-md-5.title.form-group{'data-attribute' => :title, 'data-toggle' => :edit, :'data-name' => 'title'}
+      .fade.edit
+        %input#heading_title{'value' => "{{title}}", :style=>"width:500px;"}
+        %span.help-block.error#title_error{:class=>"{{#title_error}}has-error{{/}}"}=t('.blank_title_error')
+      .fade.no_edit.editable.in
+        %span {{ title }}
+    .col-md-1
+      .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
+        .fade.edit
+          %i.fa.fa-remove.fa-lg{:id => "heading_editable{{id}}_edit_cancel",:style => "position:relative; left:40px;"}
+    .col-md-1
+      .icon{:'data-toggle' => 'edit'}
+        .fade.edit
+          %i.fa.fa-check.fa-lg{:id => "heading_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+        .fade.no_edit.in
+          %i.fa.fa-pencil-square-o.fa-lg{:id => "heading_editable{{id}}_edit_start", :style => "position:relative; left:-5px;"}
+    .col-md-1
+      .icon.delete_heading{'on-click'=>'delete_this()'}
+        %i.fa.fa-trash-o.fa-lg
+
+%script#new_heading_template{:type => 'template/ractive'}
+  %div{:style=> 'display:flex; flex-direction:row;'}
+    .form-group{:class => "{{#title_error}}has-error{{/}}"}
+      %input#heading_title.form-control{:type => :text, :value => "{{title}}"}
+      %span.help-block.error#title_error=t('.blank_title_error')
+    .icon{:style => 'height:20px; padding-left:20px;'}
+      %i.fa.fa-remove.fa-lg#heading_cancel{'on-click' => 'cancel_new_heading()', :style => "position:relative; left:15px;"}
+    .icon{:style => 'padding-left:48px;'}
+      %i.fa.fa-check.fa-lg#heading_save{'on-click' => 'save_heading()'}

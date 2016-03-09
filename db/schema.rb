@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160301185412) do
+ActiveRecord::Schema.define(version: 20160308041416) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,6 +118,10 @@ ActiveRecord::Schema.define(version: 20160301185412) do
     t.integer  "archive_doc_count",            default: 0
   end
 
+  create_table "headings", force: :cascade do |t|
+    t.string "title"
+  end
+
   create_table "icc_reference_documents", force: :cascade do |t|
     t.string   "source_url"
     t.string   "title"
@@ -134,6 +138,14 @@ ActiveRecord::Schema.define(version: 20160301185412) do
     t.integer  "rank"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "indicators", force: :cascade do |t|
+    t.string  "title"
+    t.integer "offence_id"
+    t.string  "nature"
+    t.string  "monitor_text"
+    t.string  "numerical_monitor_method"
   end
 
   create_table "internal_documents", force: :cascade do |t|
@@ -205,6 +217,12 @@ ActiveRecord::Schema.define(version: 20160301185412) do
     t.datetime "updated_at"
   end
 
+  create_table "monitors", force: :cascade do |t|
+    t.integer "indicator_id"
+    t.date    "date"
+    t.string  "description"
+  end
+
   create_table "notes", force: :cascade do |t|
     t.text     "text"
     t.integer  "notable_id"
@@ -213,6 +231,11 @@ ActiveRecord::Schema.define(version: 20160301185412) do
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.string   "notable_type"
+  end
+
+  create_table "offences", force: :cascade do |t|
+    t.string  "description"
+    t.integer "heading_id"
   end
 
   create_table "organizations", force: :cascade do |t|

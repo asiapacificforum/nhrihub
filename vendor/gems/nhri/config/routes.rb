@@ -6,7 +6,12 @@ Rails.application.routes.draw do
         resource  :filesize, :only => :update
         resources :filetypes, :param => :ext, :only => [:create, :destroy]
       end
-      resources :hr_education
+      namespace :protect_promo do
+        resources :internal_documents
+        resources :projects
+      end
+      resources :complaints
+      resources :headings
       namespace :advisory_council do
         resources :terms_of_references
         resources :members

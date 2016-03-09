@@ -4,7 +4,7 @@
 # end
 namespace :nhri do
   desc "populate all nhri modules"
-  task :populate => [:populate_tor, :populate_mem, :populate_min, :populate_iss]
+  task :populate => [:populate_tor, :populate_mem, :populate_min, :populate_iss, :populate_ind]
 
   desc "populates terms of reference"
   task :populate_tor => :environment do
@@ -36,6 +36,17 @@ namespace :nhri do
 
     20.times do
       ma = FactoryGirl.create(:advisory_council_issue, :with_reminders, :with_notes, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
+    end
+  end
+
+  desc "populates indicators and related tables"
+  task :populate_ind => [:populate_head]
+
+  desc "populates headings"
+  task :populate_head => :environment do
+    Nhri::Indicator::Heading.delete_all
+    10.times do
+      FactoryGirl.create(:heading)
     end
   end
 

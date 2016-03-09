@@ -1,0 +1,15 @@
+%h1=t('.heading')
+
+.btn.btn-success.btn-sm#add_heading{:style => "margin-bottom:12px; color:white;", :onclick => "headings.new_heading()"}
+  %i.fa.fa-plus.fa-lg{:style => "color:white"}
+  %span= t('.add_heading')
+
+#headings_container
+
+:javascript
+  var headings = #{@headings.to_json}
+  var create_heading_url = "#{Nhri::Indicator::Heading.create_url}"
+
+= render :partial => 'headings_templates'
+
+= javascript_include_tag 'headings'
