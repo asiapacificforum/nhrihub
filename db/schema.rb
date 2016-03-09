@@ -143,6 +143,7 @@ ActiveRecord::Schema.define(version: 20160308041416) do
   create_table "indicators", force: :cascade do |t|
     t.string  "title"
     t.integer "offence_id"
+    t.integer "heading_id"
     t.string  "nature"
     t.string  "monitor_text"
     t.string  "numerical_monitor_method"

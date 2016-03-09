@@ -6,3 +6,9 @@ en:
         add_heading: "Add heading"
       headings_templates:
         blank_title_error: "Title can't be blank."
+      show:
+        offence: "Offence"
+        nature: "Nature"
+        struct: "Structural"
+        proc: "Process"
+        out: "Outcomes"

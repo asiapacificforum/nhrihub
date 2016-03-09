@@ -23,6 +23,10 @@ class Nhri::HeadingsController < ApplicationController
     end
   end
 
+  def show
+    @heading = Nhri::Indicator::Heading.includes(:offences, :indicators).find(params[:id])
+  end
+
   private
   def heading_params
     params.require(:heading).permit(:title)

@@ -12,6 +12,7 @@ class AddNhriIndicatorTables < ActiveRecord::Migration
     create_table :indicators do |t|
       t.string :title
       t.integer :offence_id
+      t.integer :heading_id
       t.string :nature
       t.string :monitor_text
       t.string :numerical_monitor_method
@@ -22,5 +23,6 @@ class AddNhriIndicatorTables < ActiveRecord::Migration
       t.date :date
       t.string :description
     end
+
   end
 end

@@ -40,14 +40,48 @@ namespace :nhri do
   end
 
   desc "populates indicators and related tables"
-  task :populate_ind => [:populate_head]
+  task :populate_ind_etc => [:populate_head, :populate_off, :populate_ind]
 
   desc "populates headings"
   task :populate_head => :environment do
     Nhri::Indicator::Heading.delete_all
-    10.times do
+    i = 0
+    6.times do
+      i+=1
       FactoryGirl.create(:heading)
     end
+    puts "h #{i}"
   end
 
+  desc "populates offences"
+  task :populate_off => :environment do
+    Nhri::Indicator::Offence.delete_all
+    i = 0
+    Nhri::Indicator::Heading.pluck(:id).each do |h_id|
+      5.times do
+        i+=1
+        FactoryGirl.create(:offence, :heading_id => h_id)
+      end
+    end
+    puts "o #{i}"
+  end
+
+  desc "populates indicators"
+  task :populate_ind => :environment do
+    Nhri::Indicator::Indicator.delete_all
+    i = 0
+    Nhri::Indicator::Heading.all.each do |heading|
+      ["Structural", "Process", "Outcomes"].each do |nature|
+        FactoryGirl.create(:indicator, :nature => nature, :offence_id => nil, :heading_id => heading.id)
+        i+=1
+        heading.offences.pluck(:id).each do |o_id|
+          3.times do
+            i+=1
+            FactoryGirl.create(:indicator, :nature => nature, :offence_id => o_id, :heading_id => heading.id)
+          end
+        end
+      end
+    end
+    puts "i #{i}"
+  end
 end

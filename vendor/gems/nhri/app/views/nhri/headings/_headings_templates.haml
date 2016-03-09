@@ -12,7 +12,8 @@
         %input#heading_title{'value' => "{{title}}", :style=>"width:500px;"}
         %span.help-block.error#title_error{:class=>"{{#title_error}}has-error{{/}}"}=t('.blank_title_error')
       .fade.no_edit.editable.in
-        %span {{ title }}
+        %span
+          %a{:href => '{{url}}'} {{ title }}
     .col-md-1
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
         .fade.edit

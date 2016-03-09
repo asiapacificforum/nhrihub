@@ -1,4 +1,7 @@
 class Nhri::Indicator::Heading < ActiveRecord::Base
+  has_many :offences
+  has_many :indicators
+
   def self.create_url
     Rails.application.routes.url_helpers.nhri_headings_path(:en)
   end
