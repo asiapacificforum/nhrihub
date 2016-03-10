@@ -72,7 +72,9 @@ namespace :nhri do
     i = 0
     Nhri::Indicator::Heading.all.each do |heading|
       ["Structural", "Process", "Outcomes"].each do |nature|
-        FactoryGirl.create(:indicator, :nature => nature, :offence_id => nil, :heading_id => heading.id)
+        rand(4).times do
+          FactoryGirl.create(:indicator, :nature => nature, :offence_id => nil, :heading_id => heading.id)
+        end
         i+=1
         heading.offences.pluck(:id).each do |o_id|
           3.times do

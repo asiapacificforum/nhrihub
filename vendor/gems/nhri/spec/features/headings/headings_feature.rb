@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
-require_relative '../helpers/headings_spec_helper'
+require_relative '../../helpers/headings/headings_spec_helper'
 
 
 feature "show icc index page", :js => true do

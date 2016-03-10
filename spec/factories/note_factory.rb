@@ -19,5 +19,9 @@ FactoryGirl.define do
     trait :advisory_council_issue do
       notable_type "Nhri::AdvisoryCouncil::AdvisoryCouncilIssue"
     end
+
+    trait :indicator do
+      notable_type "Nhri::Indicator:Indicator"
+    end
   end
 end

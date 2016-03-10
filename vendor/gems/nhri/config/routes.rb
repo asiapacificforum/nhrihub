@@ -35,6 +35,12 @@ Rails.application.routes.draw do
         end
       end
       resources :indicators, :controller => 'indicator/indicators'
+      namespace :indicator do
+        resources :indicators do
+          resources :reminders, :controller => "indicators/reminders"
+          resources :notes, :controller => "indicators/notes"
+        end
+      end
       resources :hr_protection
       resources :icc
       resources :icc_reference_documents do

@@ -3,14 +3,12 @@
     %div= t(".#{nature}")
   .col-md-11
     .row
-      - @heading.indicators.all_offences.send(nature).each do |i|
-        .col-md-12{:style => "text-align:center"}
-          %div{:style => "display:inline-block;"}
-            %ul{:style => "padding-left:10px"}
-              %li= link_to i.title, nhri_indicator_path(i.id)
+      .col-md-12{:style => "padding-left: 30%;"}
+        %div{:style => "display:inline-block;"}
+          %ul{:style => "padding-left:10px"}
+            = render :partial => 'indicator', :collection => @heading.indicators.all_offences.send(nature), :as => :indicator
     .row.row-eq-height
       - @heading.offences.each do |o|
         .col-md-2{:style => "width:#{100/@heading.offences.length}%"}
           %ul{:style => "padding-left:10px"}
-            - o.indicators.send(nature).each do |i|
-              %li= link_to i.title, nhri_indicator_path(i.id)
+            = render :partial => 'indicator', :collection => o.indicators.send(nature), :as => :indicator

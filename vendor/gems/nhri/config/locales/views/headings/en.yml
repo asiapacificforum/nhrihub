@@ -7,7 +7,7 @@ en:
       headings_templates:
         blank_title_error: "Title can't be blank."
       show:
-        indicators_heading: "Indicators under the heading: %{title}"
+        indicators_heading: "Indicators for: %{title}"
         offence: "Offence"
         nature: "Nature"
       indicator_nature:

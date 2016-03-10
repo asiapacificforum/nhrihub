@@ -26,3 +26,32 @@
       $('#low-left').css('top', ll_vert_pos+'px').css('right',ll_right_pos+'px').show()
       $('#high-right').css('bottom',height/2+'px').css('left',hr_left_pos+'px').show()
     position_labels()
+
+%script#indicator_template{:type => 'template/ractive'}
+  {{title}}
+  %div{:style => "display:flex; flex-direction:row;"}
+    .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:40px;"}
+    %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:40px;"}
+    <reminders />
+    <notes />
+
+= render :partial => 'reminders/reminder' # it's in the main app
+= render :partial => 'notes/note' # it's in the main app
+
+:coffeescript
+  $ ->
+    _($('.indicator')).each (i)->
+      new Ractive
+        el : i
+        template : '#indicator_template'
+        data :
+          $(i).data('object')
+        computed :
+          reminders_count : ->
+            @get('reminders').length
+          notes_count : ->
+            @get('notes').length
+        show_reminders_panel : ->
+          $(@find('#reminders_modal')).modal('show')
+        show_notes_panel : ->
+          $(@find('#notes_modal')).modal('show')
