@@ -1,48 +1,9 @@
-%h1= @heading.title
+= stylesheet_link_tag 'nhri/headings'
+%h1{:style => "padding-bottom:24px"}= t('.indicators_heading', :title => @heading.title)
 
-:sass
-  #indicators #corner
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 10 10'> <path d='M0 0 L10 10 ' fill='none' stroke='grey' stroke-width='0.2' /></svg>")
-    background-repeat:no-repeat
-    background-position:center center
-    background-size: 100% 100%, auto
-    #low-left
-      position: absolute
-      top : 0px
-      right : 51px
-      display : none
-    #high-right
-      position: absolute
-      bottom : 0px
-      left : 44px
-      display : none
-
-  #indicators
-    .row-eq-height
-      // make the colums equal height
-      display: flex
-      min-height: 50px
-
-  // border control
-  #indicators
-    >.row-eq-height
-      >[class*='col-md']
-        border-top: solid grey 2px
-        border-right: solid grey 2px
-        >.row
-          >[class*='col-md']:not(:last-of-type)
-            border-right: solid grey 2px
-        >.row:not(:first-of-type)
-          >[class*='col-md']
-            border-top: solid grey 2px
-      >[class*='col-md']:first-of-type
-        border-left: solid grey 2px
-    >.row-eq-height:last-of-type
-      >[class*='col-md']
-        border-bottom: solid grey 2px
 
 #indicators
-  .row.row-eq-height
+  .row.row-eq-height.grid_headings
     .col-md-1#corner{:style =>"width:104px;"}
       #high-right= t('.offence')
       #low-left= t('.nature')
@@ -50,45 +11,12 @@
       .row.row-eq-height
         - @heading.offences.each do |o|
           .col-md-2{:style => "width:#{100/@heading.offences.length}%"}= o.description
-  .row.row-eq-height
-    .col-md-1{:style => "display:flex; align-items:center; width:104px;"}
-      %div= t('.struct')
-    .col-md-11
-      .row
-        - @heading.indicators.structural.all_offences.each do |i|
-          .col-md-12{:style=>'text-align:center'}= i.title
-      .row.row-eq-height
-        - @heading.offences.each do |o|
-          .col-md-2{:style => "width:#{100/@heading.offences.length}%"}
-            - o.indicators.structural.each do |i|
-              %p= i.title
-  .row.row-eq-height
-    .col-md-1{:style => "display:flex; align-items:center; width:104px;"}
-      %div= t('.proc')
-    .col-md-11
-      .row
-        - @heading.indicators.process.all_offences.each do |i|
-          .col-md-12{:style=>'text-align:center'}= i.title
-      .row.row-eq-height
-        - @heading.offences.each do |o|
-          .col-md-2{:style => "width:#{100/@heading.offences.length}%"}
-            - o.indicators.process.each do |i|
-              %p= i.title
-  .row.row-eq-height
-    .col-md-1{:style => "display:flex; align-items:center; width:104px;"}
-      %div= t('.out')
-    .col-md-11
-      .row
-        - @heading.indicators.outcomes.all_offences.each do |i|
-          .col-md-12{:style=>'text-align:center'}= i.title
-      .row.row-eq-height
-        - @heading.offences.each do |o|
-          .col-md-2{:style => "width:#{100/@heading.offences.length}%"}
-            - o.indicators.outcomes.each do |i|
-              %p= i.title
+  - ["structural", "process", "outcomes"].each do |nature|
+    = render :partial => "indicator_nature", :locals => {:nature => nature}
 
 :coffeescript
   $ ->
+  # position the labels in the corner box, it depends on column height
     window.position_labels = ->
       height = $('.row-eq-height').height()
       width = $('#corner').width()

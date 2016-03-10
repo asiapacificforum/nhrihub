@@ -7,8 +7,26 @@ en:
       headings_templates:
         blank_title_error: "Title can't be blank."
       show:
+        indicators_heading: "Indicators under the heading: %{title}"
         offence: "Offence"
         nature: "Nature"
-        struct: "Structural"
-        proc: "Process"
-        out: "Outcomes"
+      indicator_nature:
+        structural: "Structural"
+        process: "Process"
+        outcomes: "Outcomes"
+    indicator:
+      indicators:
+        show:
+          heading: "%{nature} Indicator: %{title}"
+          heading_sub1: "Heading: %{title}"
+          heading_sub2: "Offence: %{description}"
+          indicator: "Indicator"
+          offence: "Offence"
+          nature: "Nature"
+          monitoring: "Monitoring"
+          notes: "Notes"
+          reminders: "Reminders"
+          add_entry: "Add entry"
+          add_note: "Add note"
+          add_reminder: "Add reminder"
+

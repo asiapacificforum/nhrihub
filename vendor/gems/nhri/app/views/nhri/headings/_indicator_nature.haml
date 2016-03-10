@@ -1,0 +1,16 @@
+.row.row-eq-height
+  .col-md-1.grid_headings{:style => "display:flex; align-items:center; width:104px;"}
+    %div= t(".#{nature}")
+  .col-md-11
+    .row
+      - @heading.indicators.all_offences.send(nature).each do |i|
+        .col-md-12{:style => "text-align:center"}
+          %div{:style => "display:inline-block;"}
+            %ul{:style => "padding-left:10px"}
+              %li= link_to i.title, nhri_indicator_path(i.id)
+    .row.row-eq-height
+      - @heading.offences.each do |o|
+        .col-md-2{:style => "width:#{100/@heading.offences.length}%"}
+          %ul{:style => "padding-left:10px"}
+            - o.indicators.send(nature).each do |i|
+              %li= link_to i.title, nhri_indicator_path(i.id)

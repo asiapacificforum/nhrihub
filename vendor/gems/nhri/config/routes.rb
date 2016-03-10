@@ -34,7 +34,7 @@ Rails.application.routes.draw do
           resources :notes, :controller => 'advisory_council_issue/notes'
         end
       end
-      resources :nhr_indicators
+      resources :indicators, :controller => 'indicator/indicators'
       resources :hr_protection
       resources :icc
       resources :icc_reference_documents do
