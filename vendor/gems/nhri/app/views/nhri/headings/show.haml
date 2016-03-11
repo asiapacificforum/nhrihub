@@ -30,13 +30,16 @@
 %script#indicator_template{:type => 'template/ractive'}
   {{title}}
   %div{:style => "display:flex; flex-direction:row;"}
+    %i.fa.fa-eye.show_monitor.counter{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => "position:relative; top:4px; margin-left:40px;"}
     .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:40px;"}
     %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:40px;"}
     <reminders />
     <notes />
+    <monitors />
 
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note' # it's in the main app
+= render :partial => 'monitor'
 
 :coffeescript
   $ ->
@@ -47,6 +50,8 @@
         data :
           $(i).data('object')
         computed :
+          monitors_count : ->
+            @get('monitors').length
           reminders_count : ->
             @get('reminders').length
           notes_count : ->
@@ -55,3 +60,5 @@
           $(@find('#reminders_modal')).modal('show')
         show_notes_panel : ->
           $(@find('#notes_modal')).modal('show')
+        show_monitors_panel : ->
+          $(@find('#monitors_modal')).modal('show')

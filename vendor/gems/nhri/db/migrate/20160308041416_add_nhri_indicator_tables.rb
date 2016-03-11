@@ -14,14 +14,16 @@ class AddNhriIndicatorTables < ActiveRecord::Migration
       t.integer :offence_id
       t.integer :heading_id
       t.string :nature
-      t.string :monitor_text
-      t.string :numerical_monitor_method
+      t.string :monitor_format
+      t.string :numerical_monitor_description
     end
 
     create_table :monitors do |t|
       t.integer :indicator_id
       t.date :date
       t.string :description
+      t.integer :value
+      t.string :format
     end
 
   end

@@ -145,8 +145,8 @@ ActiveRecord::Schema.define(version: 20160308041416) do
     t.integer "offence_id"
     t.integer "heading_id"
     t.string  "nature"
-    t.string  "monitor_text"
-    t.string  "numerical_monitor_method"
+    t.string  "monitor_format"
+    t.string  "numerical_monitor_description"
   end
 
   create_table "internal_documents", force: :cascade do |t|
@@ -222,6 +222,8 @@ ActiveRecord::Schema.define(version: 20160308041416) do
     t.integer "indicator_id"
     t.date    "date"
     t.string  "description"
+    t.integer "value"
+    t.string  "format"
   end
 
   create_table "notes", force: :cascade do |t|

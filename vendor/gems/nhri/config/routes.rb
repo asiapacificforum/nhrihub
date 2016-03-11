@@ -39,6 +39,7 @@ Rails.application.routes.draw do
         resources :indicators do
           resources :reminders, :controller => "indicators/reminders"
           resources :notes, :controller => "indicators/notes"
+          resources :monitors, :controller => "indicators/monitors"
         end
       end
       resources :hr_protection

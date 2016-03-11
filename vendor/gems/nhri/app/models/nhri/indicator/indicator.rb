@@ -3,6 +3,7 @@ class Nhri::Indicator::Indicator < ActiveRecord::Base
   belongs_to :heading
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
+  has_many :monitors, :dependent => :destroy
 
   scope :structural, ->{ where(:nature => "Structural") }
   scope :process, ->{ where(:nature => "Process") }
@@ -13,16 +14,14 @@ class Nhri::Indicator::Indicator < ActiveRecord::Base
     super(:except => [:created_at, :updated_at],
           :methods => [:notes,
                        :reminders,
+                       :monitors,
                        :create_reminder_url,
+                       :create_monitor_url,
                        :create_note_url])
   end
 
-  def notes_count
-    notes.count
-  end
-
-  def reminders_count
-    reminders.count
+  def create_monitor_url
+    Rails.application.routes.url_helpers.nhri_indicator_indicator_monitors_path(:en,id) if persisted?
   end
 
   def create_reminder_url
