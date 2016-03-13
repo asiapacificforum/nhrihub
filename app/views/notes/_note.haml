@@ -158,8 +158,12 @@
         else # user types into input or changes select
           @set(field+"_error",false)
 
-    Notes = Ractive.extend
+    #Notes = Ractive.extend
+    window.notes = new Ractive
+      el: '#note'
       template : "#notes_template"
+      data :
+        notes : []
       new_note : ->
         unless @_new_note_is_active()
           @push('notes',{id:null, type:null, frequency:null, text:'', notable_id:@get('id')})
@@ -185,4 +189,4 @@
 
     Ractive.decorators.popover = Popover
     Ractive.components.note = Note
-    Ractive.components.notes = Notes
+    #Ractive.components.notes = Notes

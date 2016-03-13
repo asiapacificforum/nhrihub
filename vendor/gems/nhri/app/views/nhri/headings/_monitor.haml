@@ -172,8 +172,12 @@
       set_date_from_datepicker : (selectedDate)->
         @set('date',$.datepicker.parseDate("yy, M d",selectedDate))
 
-    Monitors = Ractive.extend
+    #Monitors = Ractive.extend
+    window.monitors = new Ractive
+      el: '#monitor'
       template : "#monitors_template"
+      data :
+        monitors : []
       new_monitor : ->
         unless @_new_monitor_is_active()
           @push('monitors',{id:null, date: new Date, description:'', indicator_id:@get('id')})
@@ -215,4 +219,4 @@
     Ractive.decorators.datepicker = Datepicker
     Ractive.decorators.popover = Popover
     Ractive.components.monitor = Monitor
-    Ractive.components.monitors = Monitors
+    #Ractive.components.monitors = Monitors

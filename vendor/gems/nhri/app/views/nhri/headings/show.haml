@@ -1,6 +1,8 @@
 = stylesheet_link_tag 'nhri/headings'
 %h1{:style => "padding-bottom:24px"}= t('.indicators_heading', :title => @heading.title)
 #reminder
+#note
+#monitor
 
 #indicators
   .row.row-eq-height.grid_headings
@@ -62,15 +64,29 @@
           create_reminder_url : ->
             "#{nhri_indicator_indicator_reminders_path('indicator_id')}".
               replace(/indicator_id/,@get('id'))
+          create_note_url : ->
+            "#{nhri_indicator_indicator_notes_path('indicator_id')}".
+              replace(/indicator_id/,@get('id'))
+          create_monitor_url : ->
+            "#{nhri_indicator_indicator_monitors_path('indicator_id')}".
+              replace(/indicator_id/,@get('id'))
         show_reminders_panel : ->
           reminders.set
             reminders: @get('reminders')
             create_reminder_url : @get('create_reminder_url')
           $('#reminders_modal').modal('show')
         show_notes_panel : ->
-          $(@find('#notes_modal')).modal('show')
+          #$(@find('#notes_modal')).modal('show')
+          notes.set
+            notes : @get('notes')
+            create_note_url : @get('create_note_url')
+          $('#notes_modal').modal('show')
         show_monitors_panel : ->
-          $(@find('#monitors_modal')).modal('show')
+          #$(@find('#monitors_modal')).modal('show')
+          monitors.set
+            monitors : @get('monitors')
+            create_monitor_url : @get('create_monitor_url')
+          $('#monitors_modal').modal('show')
         delete_indicator : (event,obj)->
           data = [{name:'_method', value: 'delete'}]
           url = @get('url')
