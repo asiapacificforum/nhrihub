@@ -6,9 +6,9 @@
       .col-md-12{:style => "padding-left: 30%;"}
         %div{:style => "display:inline-block;"}
           %ul{:style => "padding-left:10px"}
-            = render :partial => 'indicator', :collection => @heading.indicators.all_offences.send(nature), :as => :indicator
+            = render :partial => 'indicator', :collection => @heading.send("all_offence_#{nature}_indicators"), :as => :indicator
     .row.row-eq-height
       - @heading.offences.each do |o|
         .col-md-2{:style => "width:#{100/@heading.offences.length}%"}
           %ul{:style => "padding-left:10px"}
-            = render :partial => 'indicator', :collection => o.indicators.send(nature), :as => :indicator
+            = render :partial => 'indicator', :collection => o.send(nature+"_indicators"), :as => :indicator

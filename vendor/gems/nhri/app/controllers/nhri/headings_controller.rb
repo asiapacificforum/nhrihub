@@ -24,7 +24,31 @@ class Nhri::HeadingsController < ApplicationController
   end
 
   def show
-    @heading = Nhri::Indicator::Heading.includes(:offences, :indicators).find(params[:id])
+    @heading = Nhri::Indicator::Heading.includes(:offences => [:structural_indicators =>
+                                                                 [:reminders => :users,
+                                                                  :notes => [:author, :editor],
+                                                                  :monitors => [:author]],
+                                                               :process_indicators =>
+                                                                 [:reminders => :users,
+                                                                  :notes => [:author, :editor],
+                                                                  :monitors => [:author]],
+                                                               :outcomes_indicators =>
+                                                                 [:reminders => :users,
+                                                                  :notes => [:author, :editor],
+                                                                  :monitors => [:author]]],
+                                                 :all_offence_structural_indicators =>
+                                                               [:reminders => :users,
+                                                                :notes => [:author, :editor],
+                                                                :monitors => [:author]],
+                                                 :all_offence_process_indicators =>
+                                                               [:reminders => :users,
+                                                                :notes => [:author, :editor],
+                                                                :monitors => [:author]],
+                                                 :all_offence_outcomes_indicators =>
+                                                               [:reminders => :users,
+                                                                :notes => [:author, :editor],
+                                                                :monitors => [:author]]
+                                                ).find(params[:id])
   end
 
   private
