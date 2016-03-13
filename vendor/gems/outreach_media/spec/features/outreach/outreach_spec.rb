@@ -55,7 +55,7 @@ feature "create a new outreach event", :js => true do
     # AREA
     check("Human Rights")
     #SUBAREA
-    check("outreach_event_subarea_ids_1")
+    check("outreach_event_subarea_ids_1") # violation
     expect(page).to have_selector("input#people_affected", :visible => true)
     #AREA
     check("Good Governance")
@@ -71,6 +71,8 @@ feature "create a new outreach event", :js => true do
     fill_in('participant_count', :with => "988")
     #DESCRIPTION
     fill_in('description', :with => "Briefing on progress to date and plans for the immediate and long-term future")
+    #IMPACT RATING
+    select( "No improved audience understanding", :from => :impact_rating)
     #FILE!!!
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     select_performance_indicators.click
@@ -91,6 +93,7 @@ feature "create a new outreach event", :js => true do
     expect(oe.audience_type.text).to eq "Police"
     expect(oe.audience_name).to eq "City of Monrovia PD"
     expect(oe.description).to match /Briefing/
+    expect(oe.impact_rating_id).to eq ImpactRating.where(:rank => 1).first.id
     sleep(0.4)
     expect(page).to have_selector("#outreach_event_list .outreach_event", :count => 1)
     expect(page.find("#outreach_events .outreach_event .basic_info .title").text).to eq "My new outreach event title"
@@ -103,6 +106,7 @@ feature "create a new outreach event", :js => true do
     expect(audience_name).to eq "City of Monrovia PD"
     expect(description).to match /Briefing/
     expect(date).to eq "2014, Aug 19"
+    expect(impact_rating).to eq "1: No improved audience understanding"
     # now edit and upload another file
     edit_outreach_event[0].click
     page.attach_file("outreach_event_file", upload_document, :visible => false)
@@ -263,6 +267,7 @@ feature "when there are existing outreach events", :js => true do
       check("Good Governance")
       check("CRC")
       fill_in('people_affected', :with => " 100000 ")
+      select( "Universal improved understanding", :from => :impact_rating)
       expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.first.title}
       expect(OutreachEvent.first.area_ids).to eql [2]
       sleep(0.4)
@@ -270,6 +275,7 @@ feature "when there are existing outreach events", :js => true do
       expect(areas).not_to include "Human Rights"
       expect(areas).to include "Good Governance"
       expect(date).to eq "2015, Mar 15"
+      expect(impact_rating).to eq "5: Universal improved understanding"
     end
 
     scenario "edit an outreach event and add title error" do

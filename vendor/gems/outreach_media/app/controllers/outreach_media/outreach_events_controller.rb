@@ -60,6 +60,7 @@ class OutreachMedia::OutreachEventsController < ApplicationController
              :date,
              :participant_count,
              :audience_type_id,
+             :impact_rating_id,
              :outreach_event_documents =>[:file],
              :performance_indicator_ids => [],
              :area_ids => [],

@@ -1,4 +1,6 @@
 $ ->
+  class Subarea extends Collection.Subarea
+
   EditInPlace = (node,id)->
     ractive = @
     @edit = new InpageEdit
@@ -103,8 +105,8 @@ $ ->
       dateFormat: "yy, M d"
       onClose: (selectedDate) ->
         unless selectedDate == ""
-          outreach_event = Ractive.getNodeInfo(node).ractive
-          outreach_event.set_event_date_from_datepicker(selectedDate)
+          object = Ractive.getNodeInfo(node).ractive
+          object.set_date_from_datepicker(selectedDate)
     teardown : ->
       $(node).datepicker('destroy')
 
@@ -345,7 +347,7 @@ $ ->
       impact_rating_text : ->
         impact_rating = _(impact_ratings).find (ir)=>
           ir.id == @get('impact_rating_id')
-        impact_rating.rank + ":" + impact_rating.text
+        impact_rating.rank_text
       audience_type_text : ->
         audience_type = _(audience_types).find (ar)=>
           ar.id == @get('audience_type_id')
@@ -433,7 +435,7 @@ $ ->
       @restore()
     create_instance_attributes: ->
       attrs = _.chain(@get()).
-        pick('title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
+        pick('impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
         omit((value, key, object)-> _.isNull(value) ).
         value()
       if _.isEmpty(@get('performance_indicator_ids'))
@@ -451,7 +453,7 @@ $ ->
       {outreach_event : attrs }
     formData : ->
       name_value = _.chain(@get()).
-        pick('title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
+        pick('impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
         omit((value, key, object)-> _.isNull(value)).
         pairs().
         map((kv)->{name:"outreach_event["+kv[0]+"]", value:kv[1]}).
@@ -497,13 +499,23 @@ $ ->
         $('.fileupload').fileupload('send',{files : _(files).compact()})
     fetch_link : ->
       window.location = @get('article_link')
-    set_event_date_from_datepicker : (selectedDate)->
+    set_date_from_datepicker : (selectedDate)->
       @set('date',$.datepicker.parseDate("yy, M d",selectedDate))
     choose_file : ->
       # attention future coder: can't use @find('#outreach_event_file') here as
       # jquery fileupload replaces the element. This doesn't behave well with ractive
       # which seems to cache the original element?
       $('#outreach_event_file').click()
+  # show_metrics : (id)->
+  #   if (Subarea.find(id).extended_name == "Human Rights Violation") && @get('checked')
+  #     $('.hr_metrics').show(300)
+  #   else if (Subarea.find(id).extended_name == "Human Rights Violation") && !@get('checked')
+  #     $('.hr_metrics').hide(300)
+    show_metrics : (ev, id)->
+      if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && ev.target.checked
+        $('.hr_metrics').show(300)
+      else if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && !ev.target.checked
+        $('.hr_metrics').hide(300)
 
   window.outreach_page_data = -> # an initialization data set so that tests can reset between
     expanded : false

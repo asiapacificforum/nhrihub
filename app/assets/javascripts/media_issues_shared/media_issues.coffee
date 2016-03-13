@@ -417,6 +417,11 @@ $ ->
     fetch_link : ->
       redirectWindow = window.open(@get('article_link'), '_blank')
       redirectWindow.location
+    show_metrics : (ev, id)->
+      if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && ev.target.checked
+        $('.hr_metrics').show(300)
+      else if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && !ev.target.checked
+        $('.hr_metrics').hide(300)
 
   window.collection_items_data = -> # an initialization data set so that tests can reset between
     expanded : false

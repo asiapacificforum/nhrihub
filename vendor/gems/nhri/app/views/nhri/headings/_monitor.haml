@@ -8,9 +8,9 @@
   #monitors{:style => "margin-bottom:80px;"}
     .row
       %h5.col-md-1{:style => "width:15%;"}= t('.date')
-      %h5.col-md-1{:style => "width:70%;"}= t('.text')
+      %h5.col-md-1{:style => "width:70%;"}= t('.description')
     {{#monitors}}
-    <monitor date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' text='{{text}}'/>
+    <monitor date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' description='{{description}}'/>
     {{/monitors}}
   </modal-body>
   </modal-custom>
@@ -23,28 +23,31 @@
   {{/if}}
 
 %script#new_monitor_template{:type => 'text/ractive'}
-  .form-horizontal#new_monitor
-    .form-group#text{:class => '{{#text_error}}has-error{{/}}'}
-      %label.control-label.topaligned.col-sm-2= t('.text')
-      .col-sm-10
-        =text_area :monitor, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
-        %span.help-block= t('.monitor_text_error_message')
-    .form-group
-      .col-sm-10.col-sm-offset-2
-        <i class="fa fa-remove fa-lg" id="cancel_monitor" style="padding-left:30px" on-click="cancel_monitor()" data-toggle="tooltip" data-placement="bottom" title="cancel"/>
-        <i class="fa fa-check fa-lg" id="save_monitor" style="padding-left:60px" on-click="save_monitor()" data-toggle="tooltip" data-placement="bottom" title="save"/>
+  .row#new_monitor
+    .col-md-2
+      = text_field :monitor, :date, :class => 'form-control', :value => '{{formatted_date}}', :decorator => 'datepicker'
+    .col-md-6
+      .form-horizontal
+        .row
+          .col-md-12.form-group#description{:class => '{{#description_error}}has-error{{/}}'}
+            =text_area :monitor, :description, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{description}}', 'on-keydown'=>"remove_errors('description')"
+            %span.help-block= t('.monitor_description_error_message')
+        .row
+          .col-md-12.form-group
+            <i class="fa fa-remove fa-lg" id="cancel_monitor" style="padding-left:30px" on-click="cancel_monitor()" data-toggle="tooltip" data-placement="bottom" title="cancel"/>
+            <i class="fa fa-check fa-lg" id="save_monitor" style="padding-left:60px" on-click="save_monitor()" data-toggle="tooltip" data-placement="bottom" title="save"/>
 
 %script#show_monitor_template{:type => 'text/ractive'}
   .monitor.row.editable_container{:id => "monitor_editable{{id}}", :decorator => 'monitor_edit:{{id}}'}
     .col-md-1.date.form-group{:style => "width:15%"}
-      %span {{ date }}
-    .col-md-6.text.form-group{:class => '{{#text_error}}has-error{{/}}', :style => "width:65%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'text'}
+      %span {{ formatted_date }}
+    .col-md-6.description.form-group{:class => '{{#description_error}}has-error{{/}}', :style => "width:65%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'description'}
       %div
         .fade.no_edit.in
-          %span {{text}}
+          %span {{description}}
         .fade.edit{:style => "height:140px;"}
-          %textarea#monitor_text.form-control{:name => 'monitor[text]', :cols=>78, :rows=>4, :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"}
-          %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.monitor_text_error_message')
+          %textarea#monitor_description.form-control{:name => 'monitor[description]', :cols=>78, :rows=>4, :value => '{{description}}', 'on-keydown'=>"remove_errors('description')"}
+          %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.monitor_description_error_message')
     .col-md-1.icon.monitor_info{:style => "width:5%"}
       %i.fa.fa-info-circle.fa-lg{:decorator => 'popover'}
     .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px; width:5%", 'data-toggle' => 'edit'}
@@ -109,6 +112,15 @@
       computed :
         persisted : ->
           !isNaN(parseInt(@get('id')))
+        formatted_date :
+          get: ->
+            console.log "get: "+@get('date')
+            console.log "formatted: "+$.datepicker.formatDate("M d, yy", new Date(@get('date')) )
+            $.datepicker.formatDate("M d, yy", new Date(@get('date')) )
+          set: (val)-> 
+            console.log "set, val: "+val
+            console.log "set, result: "+$.datepicker.parseDate( "M d, yy", val)
+            @set('date', $.datepicker.parseDate( "M d, yy", val))
       save_monitor : ->
         url = @parent.get('create_monitor_url')
         data = $(@find('#new_monitor')).find(':input').serializeArray()
@@ -136,7 +148,7 @@
       update_monitor : (resp, statusText, jqxhr)->
         @parent.set(resp)
       validate : ->
-        @_validate('text')
+        @_validate('description')
       _validate : (field)->
         if _.isString(@get(field))
           @set(field, @get(field).trim())
@@ -157,12 +169,14 @@
           _(error_attrs).each (a)=> @set(a,false)
         else # user types into input or changes select
           @set(field+"_error",false)
+      set_date_from_datepicker : (selectedDate)->
+        @set('date',$.datepicker.parseDate("yy, M d",selectedDate))
 
     Monitors = Ractive.extend
       template : "#monitors_template"
       new_monitor : ->
         unless @_new_monitor_is_active()
-          @push('monitors',{id:null, type:null, frequency:null, text:'', notable_id:@get('id')})
+          @push('monitors',{id:null, date: new Date, description:'', indicator_id:@get('id')})
       _new_monitor_is_active : ->
         monitors = @findAllComponents('monitor')
         (monitors.length > 0) && _.isNull( monitors[monitors.length - 1].get('id'))
@@ -183,6 +197,22 @@
       teardown: ->
         $(node).off('mouseenter')
 
+    Datepicker = (node)->
+      $(node).datepicker
+        maxDate: null
+        defaultDate: new Date()
+        changeMonth: true
+        changeYear: true
+        numberOfMonths: 1
+        dateFormat: "yy, M d"
+        onClose: (selectedDate) ->
+          unless selectedDate == ""
+            object = Ractive.getNodeInfo(node).ractive
+            object.set_date_from_datepicker(selectedDate)
+      teardown : ->
+        $(node).datepicker('destroy')
+
+    Ractive.decorators.datepicker = Datepicker
     Ractive.decorators.popover = Popover
     Ractive.components.monitor = Monitor
     Ractive.components.monitors = Monitors

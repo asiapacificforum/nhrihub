@@ -11,8 +11,13 @@ fr:
       nhri: "NHRI"
       hre: "L'éducation aux droits de l'homme"
       adv_council: "Conseil consultatif"
+      headings: "Indicateurs nationaux des droits de l'homme"
       nhr_indicators: "Indicateurs nationales des droits de l'homme"
       hr_prot: "Protection des droits humains"
+      pro:
+        pro: "Protection des droits de l'homme et de la promotion"
+        doc: 'Les documents internes'
+        proj: 'Des projets'
       icc:
         icc: 'ICC'
         int: "Documents internes ICC"

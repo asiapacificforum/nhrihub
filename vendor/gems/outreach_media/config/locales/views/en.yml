@@ -85,6 +85,8 @@ en:
         start: "Start upload"
         cancel: "Cancel upload"
         files: "Files"
+        impact_rating: "Impact rating"
+        select_ir: "Select impact rating"
 
     shared:
       common_templates:

@@ -277,26 +277,29 @@
       {{#subareas }}
       .checkbox.subarea
         %label
-          %input{:type=>:checkbox, :id => 'outreach_event_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
+          %input{:type=>:checkbox, 'on-change' => 'show_metrics(event.original,id)', :id => 'outreach_event_subarea_ids_{{id}}', :name => '{{subarea_ids}}', :value => '{{id}}'}
           {{ name }}
       {{/subareas }}
       {{/areas }}
     .col-md-2{:style => "width:50%"}
-      .form-group.hr_metrics.row#audience_type
+      .form-group.row#audience_type
         %label.control-label.col-md-2{:for => 'audience_type', :style => "width:40%"}= t('.audience_type')
         =select_tag "outreach_event[audience_type_id]", audience_type_options, :prompt => t('.select_at'), :class =>"form-control col-md-2", :id => "audience_type",  :style => "width:50%", :value => "{{audience_type_id}}"
-      .form-group.hr_metrics.row#audience_name
+      .form-group.row#audience_name
         %label.control-label.col-md-2{:for => 'outreach_event_audience_name', :style=>'width:40%'}= t('activerecord.attributes.outreach_event.audience_name')
         %input.form-control#audience_name.col-md-2{:type => :text, :name => "outreach_event[audience_name]", :value => "{{audience_name}}", :style => "width:50%"}
-      .form-group.hr_metrics.row#participant_count
+      .form-group.row#participant_count
         %label.control-label.col-md-2{:for => 'outreach_event_participant_count', :style=>'width:40%'}= t('activerecord.attributes.outreach_event.participant_count')
         %input.form-control#participant_count.col-md-2{:type => :text, :name => "outreach_event[participant_count]", :value => "{{participant_count}}", :style => "width:50%"}
-      .form-group.hr_metrics.row#description
+      .form-group.row#description
         %label.control-label.col-md-2{:for => 'outreach_event_description', :style=>'width:40%'}= t('activerecord.attributes.outreach_event.description')
         %textarea.form-control#description.col-md-2{:name => "outreach_event[description]", :value => "{{description}}", :style => "width:50%"}
       .form-group.hr_metrics.row#people_affected{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
         %label.control-label.col-md-2{:for => 'people_affected', :style => "width:40%"}= t('.num_people')
         %input.form-control#people_affected.col-md-2{:placeholder => t('.enter_num_val'), :name => "outreach_event[affected_people_count]", :style => "width:15%", :value => "{{affected_people_count}}"}
+      .form-group.row#impact_rating
+        %label.control-label.col-md-2{:for => 'impact_rating', :style => "width:40%"}= t('.impact_rating')
+        =select_tag "outreach_event[impact_rating_id]", impact_rating_options, :prompt => t('.select_ir'), :class =>"form-control col-md-2", :id => "impact_rating",  :style => "width:50%", :value => "{{impact_rating_id}}"
 
 %script#audience_type_template{:type => 'text/ractive'}
   %li{:class => 'audience_type {{#if audience_type_selected}}selected{{/if}}'}

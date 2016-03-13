@@ -17,8 +17,8 @@ en:
       monitor:
         monitors: "Monitors"
         date: "Date"
-        text: "Text"
-        monitor_text_error_message: "Text cannot be blank"
+        description: "Description"
+        monitor_description_error_message: "Description cannot be blank"
         created_on: "Created on"
         author: "Author"
         updated_on: "Updated on"

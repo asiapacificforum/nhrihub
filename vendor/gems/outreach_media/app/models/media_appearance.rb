@@ -29,24 +29,6 @@ class MediaAppearance < ActiveRecord::Base
     end
   end
 
-  def file=(file)
-    self.original_filename = file.original_filename
-    self.filesize = file.size
-    self.original_type = file.content_type
-    self.article_link = nil
-    super
-  end
-
-  def article_link=(link)
-    if !link.blank?
-      self.original_filename = nil
-      self.filesize = nil
-      self.original_type = nil
-      self.remove_file = true
-    end
-    super
-  end
-
   def is_hr_violation?
     subarea_ids.include? Subarea.hr_violation_id
   end

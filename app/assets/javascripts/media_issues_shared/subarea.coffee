@@ -17,3 +17,4 @@ class Collection.Subarea
 
   @hr_violation : ->
     @find_by_extended_name("Human Rights Violation")
+

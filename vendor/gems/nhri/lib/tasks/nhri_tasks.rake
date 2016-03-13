@@ -4,7 +4,7 @@
 # end
 namespace :nhri do
   desc "populate all nhri modules"
-  task :populate => [:populate_tor, :populate_mem, :populate_min, :populate_iss, :populate_ind]
+  task :populate => [:populate_tor, :populate_mem, :populate_min, :populate_iss, :populate_ind_etc]
 
   desc "populates terms of reference"
   task :populate_tor => :environment do
@@ -45,45 +45,41 @@ namespace :nhri do
   desc "populates headings"
   task :populate_head => :environment do
     Nhri::Indicator::Heading.delete_all
-    i = 0
     6.times do
-      i+=1
       FactoryGirl.create(:heading)
     end
-    puts "h #{i}"
   end
 
   desc "populates offences"
   task :populate_off => :environment do
     Nhri::Indicator::Offence.delete_all
-    i = 0
     Nhri::Indicator::Heading.pluck(:id).each do |h_id|
       5.times do
-        i+=1
         FactoryGirl.create(:offence, :heading_id => h_id)
       end
     end
-    puts "o #{i}"
   end
 
   desc "populates indicators"
   task :populate_ind => :environment do
     Nhri::Indicator::Indicator.delete_all
-    i = 0
     Nhri::Indicator::Heading.all.each do |heading|
       ["Structural", "Process", "Outcomes"].each do |nature|
         rand(4).times do
-          FactoryGirl.create(:indicator, :nature => nature, :offence_id => nil, :heading_id => heading.id)
+          notes = rand(3).times.collect{|i| FactoryGirl.build(:note)}
+          reminders = rand(3).times.collect{|i| FactoryGirl.build(:reminder)}
+          monitors = rand(3).times.collect{|i| FactoryGirl.build(:monitor)}
+          FactoryGirl.create(:indicator, :nature => nature, :offence_id => nil, :heading_id => heading.id, :notes => notes, :reminders => reminders, :monitors => monitors)
         end
-        i+=1
         heading.offences.pluck(:id).each do |o_id|
           3.times do
-            i+=1
-            FactoryGirl.create(:indicator, :nature => nature, :offence_id => o_id, :heading_id => heading.id)
+            notes = rand(3).times.collect{|i| FactoryGirl.build(:note)}
+            reminders = rand(3).times.collect{|i| FactoryGirl.build(:reminder)}
+            monitors = rand(3).times.collect{|i| FactoryGirl.build(:monitor)}
+            FactoryGirl.create(:indicator, :nature => nature, :offence_id => o_id, :heading_id => heading.id, :notes => notes, :reminders => reminders, :monitors => monitors)
           end
         end
       end
     end
-    puts "i #{i}"
   end
 end

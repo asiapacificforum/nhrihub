@@ -220,6 +220,7 @@ ActiveRecord::Schema.define(version: 20160308041416) do
 
   create_table "monitors", force: :cascade do |t|
     t.integer "indicator_id"
+    t.integer "author_id"
     t.date    "date"
     t.string  "description"
     t.integer "value"

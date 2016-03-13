@@ -339,7 +339,7 @@ feature "when there are existing articles", :js => true do
       visit outreach_media_media_appearances_path(:en) # again, b/c setup changed
     end
 
-    scenario "edit a file article and change to file" do
+    scenario "edit a link article and change to file" do
       edit_article[0].click
       page.attach_file("media_appearance_file", upload_document, :visible => false)
       edit_save.click

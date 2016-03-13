@@ -18,12 +18,12 @@ module IndicatorMonitorSpecHelpers
     page.all(".monitor #delete_monitor")
   end
 
-  def monitor_text_error
-    page.all("#new_monitor #text span.help-block")
+  def monitor_description_error
+    page.all("#new_monitor #description span.help-block")
   end
 
-  def edit_monitor_text_error
-    page.all(".monitor .text span.help-block")
+  def edit_monitor_description_error
+    page.all(".monitor .description span.help-block")
   end
 
   def hover_over_info_icon
@@ -56,8 +56,8 @@ module IndicatorMonitorSpecHelpers
     page.find('#save_monitor')
   end
 
-  def monitor_text
-    page.all('.row.monitor .text')
+  def monitor_description
+    page.all('.row.monitor .description')
   end
 
   def monitor_date

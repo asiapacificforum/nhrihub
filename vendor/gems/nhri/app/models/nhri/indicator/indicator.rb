@@ -12,12 +12,17 @@ class Nhri::Indicator::Indicator < ActiveRecord::Base
 
   def as_json(options={})
     super(:except => [:created_at, :updated_at],
-          :methods => [:notes,
+          :methods => [:url,
+                       :notes,
                        :reminders,
                        :monitors,
                        :create_reminder_url,
                        :create_monitor_url,
                        :create_note_url])
+  end
+
+  def url
+    Rails.application.routes.url_helpers.nhri_indicator_path(:en,id) if persisted?
   end
 
   def create_monitor_url

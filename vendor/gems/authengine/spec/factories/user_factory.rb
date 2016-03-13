@@ -9,7 +9,11 @@ FactoryGirl.define do
     firstName {Faker::Name.first_name}
     lastName {Faker::Name.last_name}
 
-    association :organization, strategy: :create
+    if Organization.count > 20 # arbitrary number, but some threshold here prevents organization name collisions
+      organization_id { Organization.pluck(:id).sample }
+    else
+      association :organization, strategy: :create
+    end
 
     trait :admin do
       after(:build) do |u|

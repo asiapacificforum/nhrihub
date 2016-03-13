@@ -1,1 +1,9 @@
-Rails.application.config.assets.precompile += %w( nhri/reference_documents.js nhri/terms_of_reference.js nhri/minutes.js issues.js headings.js nhri/headings.css)
+assets = [ 'nhri/reference_documents.js',
+           'nhri/terms_of_reference.js',
+           'nhri/minutes.js',
+           'issues.js',
+           'headings.js',
+           'nhri/headings.css',
+           'jquery_datepicker.js']
+
+Rails.application.config.assets.precompile += assets

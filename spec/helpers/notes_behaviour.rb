@@ -16,6 +16,17 @@ RSpec.shared_examples "notes" do
       expect(last_edited).to eq Date.today.to_s(:short)
     end
 
+    scenario "start adding a note, close modal panel, and then restart" do
+      add_note.click
+      sleep(0.2)
+      expect(page).to have_selector("#new_note #note_text")
+      fill_in(:note_text, :with => "nota bene")
+      close_modal.click()
+      open_notes_modal
+      sleep(0.3)
+      expect(page).not_to have_selector("#new_note #note_text")
+    end
+
     scenario "try to save note with blank text field" do
       add_note.click
       # skip setting the text

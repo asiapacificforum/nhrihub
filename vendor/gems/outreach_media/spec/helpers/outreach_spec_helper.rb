@@ -181,4 +181,8 @@ module OutreachSpecHelper
     sleep(0.1)
     page.all("li.performance_indicator").first.click
   end
+
+  def impact_rating
+    page.find('.metric#impact_rating .value').text
+  end
 end

@@ -30,9 +30,10 @@
 %script#indicator_template{:type => 'template/ractive'}
   {{title}}
   %div{:style => "display:flex; flex-direction:row;"}
-    %i.fa.fa-eye.show_monitor.counter{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => "position:relative; top:4px; margin-left:40px;"}
-    .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:40px;"}
-    %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:40px;"}
+    %i.fa.fa-trash-o.fa-lg.delete_indicator{'on-click' => 'delete_indicator(event,this)', :style => "position:relative; top:4px;"}
+    %i.fa.fa-eye.show_monitors.counter{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
+    .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:30px;"}
+    %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
     <reminders />
     <notes />
     <monitors />
@@ -40,11 +41,13 @@
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note' # it's in the main app
 = render :partial => 'monitor'
+= javascript_include_tag 'jquery_datepicker'
 
 :coffeescript
   $ ->
     _($('.indicator')).each (i)->
-      new Ractive
+      id = $(i).data('object').id || 'new'
+      window["indicator"+id] = new Ractive
         el : i
         template : '#indicator_template'
         data :
@@ -62,3 +65,14 @@
           $(@find('#notes_modal')).modal('show')
         show_monitors_panel : ->
           $(@find('#monitors_modal')).modal('show')
+        delete_indicator : (event,obj)->
+          data = [{name:'_method', value: 'delete'}]
+          url = @get('url')
+          $.ajax
+            method: 'post'
+            url: url
+            data: data
+            success: @delete_callback
+            context: @
+        delete_callback : ->
+          console.log "it is did"

@@ -6,6 +6,14 @@ module NotesSpecCommonHelpers
     page.all('.note i.fa').detect{|el| el['id'] && el['id'].match(/note_editable\d*_edit_save/)}
   end
 
+  def open_notes_modal
+    page.all('.show_notes')[0].click
+  end
+
+  def close_modal
+    page.find('button.close')
+  end
+
   def cancel_edit
     page.all('.note i.fa').detect{|el| el['id'] && el['id'].match(/note_editable\d*_edit_cancel/)}
   end
