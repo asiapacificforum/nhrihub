@@ -1,6 +1,6 @@
 = stylesheet_link_tag 'nhri/headings'
 %h1{:style => "padding-bottom:24px"}= t('.indicators_heading', :title => @heading.title)
-
+#reminder
 
 #indicators
   .row.row-eq-height.grid_headings
@@ -34,7 +34,7 @@
     %i.fa.fa-eye.show_monitors.counter{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
     .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:30px;"}
     %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
-    <reminders />
+    -#<reminders />
     <notes />
     <monitors />
 
@@ -59,8 +59,15 @@
             @get('reminders').length
           notes_count : ->
             @get('notes').length
+          create_reminder_url : ->
+            "#{nhri_indicator_indicator_reminders_path(:en,'indicator_id')}".
+              replace(/indicator_id/,@get('id'))
         show_reminders_panel : ->
-          $(@find('#reminders_modal')).modal('show')
+          #$(@find('#reminders_modal')).modal('show')
+          reminders.set
+            reminders: @get('reminders')
+            create_reminder_url : @get('create_reminder_url')
+          $('#reminders_modal').modal('show')
         show_notes_panel : ->
           $(@find('#notes_modal')).modal('show')
         show_monitors_panel : ->

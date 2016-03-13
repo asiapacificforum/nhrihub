@@ -138,8 +138,12 @@
     Recipient = Ractive.extend
       template : '#recipient_template'
 
-    Reminders = Ractive.extend
+    #Reminders = Ractive.extend
+    window.reminders = new Ractive
+      el: "#reminder"
       template : "#reminders_template"
+      data : 
+        reminders : []
       new_reminder : ->
         unless @_new_reminder_is_active()
           @push('reminders',{id:null, type:null, frequency:null, text:'', remindable_id:@get('id')})
@@ -205,6 +209,6 @@
         else # user types into input or changes select
           @set(field+"_error",false)
 
-    Ractive.components.reminders = Reminders
+    #Ractive.components.reminders = Reminders
     Ractive.components.reminder = Reminder
     Ractive.components.recipient = Recipient
