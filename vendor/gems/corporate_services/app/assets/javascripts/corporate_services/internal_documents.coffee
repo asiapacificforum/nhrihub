@@ -24,7 +24,6 @@ $ ->
     downloadTemplateId: '#template-download'
     uploadTemplateContainerId: '#uploads'
     fileInput: '#primary_fileinput'
-    #replaceFileInput: false # this doesn't seem to cause any problem, and it solves problems caused by replacing the file input!
     replaceFileInput: true
     url : 'internal_documents.json',
     paramName : 'internal_document[file]',
@@ -77,30 +76,6 @@ $ ->
             data.context.addClass('in')
             new_upload.validate_file_constraints()
           )
-      #data.context.find('.start').prop 'disabled', false
-      #data.context.removeClass('processing')
-      #data.process(->
-        ## e.g. validation
-        #$this.fileupload 'process', data
-      #).always(->
-        #data.context.each((index) ->
-          #$(this).find('.size').text that._formatFileSize(data.size)
-          #return
-        #).removeClass 'processing'
-        #return
-      #).done(->
-        #data.context.find('.start').prop 'disabled', false
-        #return
-      #).fail ->
-        # e.g. validation fail
-        #if data.files.error
-          #data.context.each (index) ->
-            #error = data.files[index].error
-            #if error
-              #$(this).find('.error').text error
-              #$(this).find('.start').prop 'disabled', true
-            #return
-        #return
       return
 
   ArchiveFileUpload = (node, id, type)->
@@ -129,35 +104,11 @@ $ ->
               data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
               #form_data = _.clone((->new_upload.get('formData'))())
               $this.fileupload('option', 'formData', ->new_upload.get('formData')) # pass formData from ractive instance to jquery fileupload
-              # using the jquery.fileupload animation, based on the .fade class,
-              #that._transition(data.context) # make the DOM node appear on the page by toggling the 'in' class
               data.context.addClass('in') # use bootstrap's fade animation
               new_upload.validate_file_constraints()
             )
         data.context.find('.start').prop 'disabled', false
         data.context.removeClass('processing')
-        #data.process(->
-          ## e.g. validation
-          #$this.fileupload 'process', data
-        #).always(->
-          #data.context.each((index) ->
-            #$(this).find('.size').text that._formatFileSize(data.size)
-            #return
-          #).removeClass 'processing'
-          #return
-        #).done(->
-          #data.context.find('.start').prop 'disabled', false
-          #return
-        #).fail ->
-          ## e.g. validation fail
-          #if data.files.error
-            #data.context.each (index) ->
-              #error = data.files[index].error
-              #if error
-                #$(this).find('.error').text error
-                #$(this).find('.start').prop 'disabled', true
-              #return
-          #return
         return
     $(node).fileupload _.extend({}, fileupload_options, archive_options)
     teardown : ->
@@ -226,8 +177,8 @@ $ ->
     teardown : ->
       $(node).off 'click'
 
-  Ractive.decorators.archive_fileupload = ArchiveFileUpload # for the archive file upload
-  Ractive.decorators.primary_fileupload = PrimaryFileUpload # for the archive file upload
+  Ractive.decorators.archive_fileupload = ArchiveFileUpload
+  Ractive.decorators.primary_fileupload = PrimaryFileUpload
   Ractive.decorators.inpage_edit = EditInPlace
   Ractive.decorators.doc_deleter = DocDeleter
   Ractive.decorators.popover = Popover
@@ -313,9 +264,6 @@ $ ->
       @set('icc_revision_to_non_icc_primary_error',error)
       error
     submit : ->
-      #console.log  @duplicate_icc_primary_file() #true
-      #console.log  @icc_revision_to_non_icc_primary() # false
-      #console.log  @validate_file_constraints() # true
       unless @duplicate_icc_primary_file() || @icc_revision_to_non_icc_primary() || !@validate_file_constraints()
         @get('fileupload').formData = @get('formData')
         @get('fileupload').submit()

@@ -32,8 +32,8 @@ Capybara.register_driver :poltergeist do |app|
   Capybara::Poltergeist::Driver.new(:window_size => [1524,768])
 end
 #comment this line out to use the default javascript server firefox
-Capybara.javascript_driver = :poltergeist
-#Capybara.javascript_driver = :selenium
+#Capybara.javascript_driver = :poltergeist
+Capybara.javascript_driver = :selenium
 #Capybara.javascript_driver = :chrome
 
 #require 'simplecov'

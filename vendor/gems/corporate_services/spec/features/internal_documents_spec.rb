@@ -290,7 +290,9 @@ feature "internal document management", :js => true do
     page.find('#internal_document_revision').set("3.5")
     expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.by(1)
     expect(page.all('.template-download').count).to eq 1
+    debugger
     click_the_edit_icon(page)
+    debugger
     page.find('.template-download input.title').set("changed my mind title")
     page.find('.template-download input.revision').set("9.9")
     expect{ click_edit_save_icon(page); sleep(0.5)}.not_to change{InternalDocument.count}
