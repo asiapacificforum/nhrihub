@@ -36,9 +36,6 @@
     %i.fa.fa-eye.show_monitors.counter{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
     .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:30px;"}
     %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
-    -#<reminders />
-    <notes />
-    <monitors />
 
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note' # it's in the main app
@@ -76,13 +73,11 @@
             create_reminder_url : @get('create_reminder_url')
           $('#reminders_modal').modal('show')
         show_notes_panel : ->
-          #$(@find('#notes_modal')).modal('show')
           notes.set
             notes : @get('notes')
             create_note_url : @get('create_note_url')
           $('#notes_modal').modal('show')
         show_monitors_panel : ->
-          #$(@find('#monitors_modal')).modal('show')
           monitors.set
             monitors : @get('monitors')
             create_monitor_url : @get('create_monitor_url')

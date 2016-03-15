@@ -81,7 +81,7 @@
   %p.recipient{:style => "margin-bottom: 0px;"} {{ first_last_name }}
 
 %script#reminders_template{:type => 'ractive/template'}
-  <modal-custom id="reminders_modal" type="xl">
+  <modal-custom id="reminders_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
   <modal-header>
   <h4>#{t('.reminders')}<modal-close/></h4>
   </modal-header>
@@ -149,7 +149,9 @@
       _new_reminder_is_active : ->
         reminders = @findAllComponents('reminder')
         (reminders.length > 0) && _.isNull( reminders[reminders.length - 1].get('id'))
-      onrender : ->
+      onModalClose : ->
+        if @_new_reminder_is_active()
+          @pop('reminders')
 
     Reminder = Ractive.extend
       template : '#reminder_template'

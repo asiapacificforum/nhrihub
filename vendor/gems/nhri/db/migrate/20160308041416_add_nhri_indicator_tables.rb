@@ -21,7 +21,7 @@ class AddNhriIndicatorTables < ActiveRecord::Migration
     create_table :monitors do |t|
       t.integer :indicator_id
       t.integer :author_id
-      t.date :date
+      t.datetime :date
       t.string :description
       t.integer :value
       t.string :format

@@ -84,7 +84,7 @@ $ ->
       $(node).off('mouseenter')
 
   EditInPlace = (node,id)->
-    edit = new InpageEdit
+    @edit = new InpageEdit
       object : @
       on : node
       success : (response, statusText, jqxhr)->
@@ -94,8 +94,8 @@ $ ->
          advisory_council_minutes_document_uploader.sort()
       error : ->
         console.log "Changes were not saved, for some reason"
-    teardown : ->
-      edit.off()
+    teardown : =>
+      @edit.off()
 
   Datepicker = (node)->
     $(node).datepicker

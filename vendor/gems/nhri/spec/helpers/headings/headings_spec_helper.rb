@@ -20,15 +20,21 @@ module HeadingsSpecHelper
   end
 
   def setup_database
-    FactoryGirl.create(:heading, :title => "My really cool heading")
+    3.times do |i|
+      FactoryGirl.create(:heading, :title => "My really cool heading #{i}")
+    end
   end
 
   def delete_heading
-    page.find('.delete_heading')
+    page.all('.delete_heading')[0]
   end
 
-  def edit_heading
-    page.find('i.fa.fa-pencil-square-o.fa-lg')
+  def edit_first_heading
+    page.all('i.fa.fa-pencil-square-o.fa-lg')[0]
+  end
+
+  def edit_second_heading
+    page.all('i.fa.fa-pencil-square-o.fa-lg')[1]
   end
 
   def edit_cancel

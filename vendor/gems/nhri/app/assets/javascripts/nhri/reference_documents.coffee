@@ -96,18 +96,18 @@ $ ->
       $(node).fileupload _.extend({}, fileupload_options)
 
   EditInPlace = (node,id)->
-    edit = new InpageEdit
-      object : @
+    @edit = new InpageEdit
       on : node
       focus_element : 'input.title'
+      object : @
       success : (response, statusText, jqxhr)->
          ractive = @.options.object
          @.show() # before updating b/c we'll lose the handle
          ractive.set(response)
       error : ->
         console.log "Changes were not saved, for some reason"
-    teardown : ->
-      edit.off()
+    teardown : =>
+      @edit.off()
 
   Popover = (node)->
     $(node).popover
@@ -212,7 +212,10 @@ $ ->
     add_file : (file)->
       @set(file)
     show_reminders_panel : ->
-      $(@find('#reminders_modal')).modal('show')
+      reminders.set
+        reminders: @get('reminders')
+        create_reminder_url : @get('create_reminder_url')
+      $('#reminders_modal').modal('show')
 
   Docs = Ractive.extend
     template: '#files'

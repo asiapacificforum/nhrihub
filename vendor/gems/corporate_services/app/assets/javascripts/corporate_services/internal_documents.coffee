@@ -180,7 +180,7 @@ $ ->
       $(node).fileupload _.extend({}, fileupload_options)
 
   EditInPlace = (node,id)->
-    edit = new InpageEdit
+    @edit = new InpageEdit
       object : @
       on : node
       focus_element : 'input.title'
@@ -193,8 +193,8 @@ $ ->
            ractive.set(response)
       error : ->
         console.log "Changes were not saved, for some reason"
-    teardown : ->
-      edit.off()
+    teardown : =>
+      @edit.off()
 
   Popover = (node)->
     $(node).popover

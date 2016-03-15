@@ -114,12 +114,12 @@
           !isNaN(parseInt(@get('id')))
         formatted_date :
           get: ->
-            console.log "get: "+@get('date')
-            console.log "formatted: "+$.datepicker.formatDate("M d, yy", new Date(@get('date')) )
+            #console.log "get: "+@get('date')
+            #console.log "formatted: "+$.datepicker.formatDate("M d, yy", new Date(@get('date')) )
             $.datepicker.formatDate("M d, yy", new Date(@get('date')) )
           set: (val)-> 
-            console.log "set, val: "+val
-            console.log "set, result: "+$.datepicker.parseDate( "M d, yy", val)
+            #console.log "set, val: "+val
+            #console.log "set, result: "+$.datepicker.parseDate( "M d, yy", val)
             @set('date', $.datepicker.parseDate( "M d, yy", val))
       save_monitor : ->
         url = @parent.get('create_monitor_url')
@@ -172,7 +172,6 @@
       set_date_from_datepicker : (selectedDate)->
         @set('date',$.datepicker.parseDate("yy, M d",selectedDate))
 
-    #Monitors = Ractive.extend
     window.monitors = new Ractive
       el: '#monitor'
       template : "#monitors_template"
@@ -184,6 +183,9 @@
       _new_monitor_is_active : ->
         monitors = @findAllComponents('monitor')
         (monitors.length > 0) && _.isNull( monitors[monitors.length - 1].get('id'))
+      onModalClose : ->
+        if @_new_monitor_is_active()
+          @pop('monitors')
 
     Popover = (node)->
       $(node).popover
@@ -219,4 +221,3 @@
     Ractive.decorators.datepicker = Datepicker
     Ractive.decorators.popover = Popover
     Ractive.components.monitor = Monitor
-    #Ractive.components.monitors = Monitors

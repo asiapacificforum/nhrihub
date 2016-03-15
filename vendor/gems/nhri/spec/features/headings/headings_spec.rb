@@ -64,28 +64,34 @@ feature "index page behaviour with existing headings", :js => true do
   end
 
   it "can delete a heading" do
-    expect{delete_heading.click; sleep(0.3)}.to change{Nhri::Indicator::Heading.count}.by(-1)
-    expect(page).not_to have_selector('#headings_container .heading')
+    expect{delete_heading.click; sleep(0.3)}.to change{Nhri::Indicator::Heading.count}.by(-1).
+                                             and change{page.all('#headings_container .heading').count}.by(-1)
   end
 
   it "can edit the title of a heading" do
-    edit_heading.click
+    edit_first_heading.click
     page.find('#heading_title').set("I changed my mind")
     expect{edit_save.click; sleep(0.3)}.to change{Nhri::Indicator::Heading.first.title}.to("I changed my mind")
     expect(page).to have_selector('#headings_container .heading .title', :text => "I changed my mind")
   end
 
   it "does not validate if heading title is edited to invalid value" do
-    edit_heading.click
+    edit_first_heading.click
     page.find('#heading_title').set("  ")
     expect{edit_save.click; sleep(0.3)}.not_to change{Nhri::Indicator::Heading.first.title}
     expect(page).to have_selector('#title_error', :text => "Title can't be blank.")
   end
 
   it "restores previous value if editing is started and cancelled" do
-    edit_heading.click
+    edit_first_heading.click
     page.find('#heading_title').set("I changed my mind")
     edit_cancel.click
     expect(page).to have_selector('#headings_container .heading .title', :text => "My really cool heading")
+  end
+
+  it "permits only one heading to be edited at any time" do
+    edit_first_heading.click
+    edit_second_heading.click
+    expect(page.all('input#heading_title').count).to eq 1
   end
 end

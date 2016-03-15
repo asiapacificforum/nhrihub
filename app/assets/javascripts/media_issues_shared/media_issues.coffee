@@ -254,9 +254,15 @@ $ ->
       @set('expanded',false)
       $(@find('.collapse')).collapse('hide')
     show_reminders_panel : ->
-      $(@find('#reminders_modal')).modal('show')
+      reminders.set
+        reminders: @get('reminders')
+        create_reminder_url : @get('create_reminder_url')
+      $('#reminders_modal').modal('show')
     show_notes_panel : ->
-      $(@find('#notes_modal')).modal('show')
+      notes.set
+        notes : @get('notes')
+        create_note_url : @get('create_note_url')
+      $('#notes_modal').modal('show')
     remove_title_errors : ->
       @set('title_error',false)
     cancel : ->

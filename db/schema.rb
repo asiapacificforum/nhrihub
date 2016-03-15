@@ -219,12 +219,12 @@ ActiveRecord::Schema.define(version: 20160308041416) do
   end
 
   create_table "monitors", force: :cascade do |t|
-    t.integer "indicator_id"
-    t.integer "author_id"
-    t.date    "date"
-    t.string  "description"
-    t.integer "value"
-    t.string  "format"
+    t.integer  "indicator_id"
+    t.integer  "author_id"
+    t.datetime "date"
+    t.string   "description"
+    t.integer  "value"
+    t.string   "format"
   end
 
   create_table "notes", force: :cascade do |t|

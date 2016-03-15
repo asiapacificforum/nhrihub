@@ -21,6 +21,9 @@
 #
 #  requirements:
 #    Needs an element with selector '.editable_container' with data attribute for save_url
+
+#= require 'user_input_manager'
+
 class @InpageEditElement
   constructor : (@el,@object,@attribute) ->
 
