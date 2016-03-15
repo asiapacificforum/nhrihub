@@ -131,7 +131,7 @@ $ ->
       $(node).fileupload _.extend({}, fileupload_options)
 
   EditInPlace = (node,id)->
-    @edit = new InpageEdit
+    edit = new InpageEdit
       object : @
       on : node
       focus_element : 'input.title'
@@ -145,7 +145,7 @@ $ ->
       error : ->
         console.log "Changes were not saved, for some reason"
     teardown : =>
-      @edit.off()
+      edit.off()
 
   Popover = (node)->
     $(node).popover
