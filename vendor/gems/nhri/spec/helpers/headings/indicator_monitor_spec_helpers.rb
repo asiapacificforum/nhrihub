@@ -2,6 +2,11 @@ require 'rspec/core/shared_context'
 
 module IndicatorMonitorSpecHelpers
   extend RSpec::Core::SharedContext
+  def close_monitors_modal
+    page.find('#monitors_modal button.close').click
+    sleep(0.2) # css transition
+  end
+
   def save_edit
     page.all('.monitor i.fa').detect{|el| el['id'] && el['id'].match(/monitor_editable\d*_edit_save/)}
   end

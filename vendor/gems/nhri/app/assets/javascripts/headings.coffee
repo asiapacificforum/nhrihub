@@ -2,18 +2,19 @@ $ ->
   Ractive.DEBUG = false
 
   EditInPlace = (node,id)->
-    @edit = new InpageEdit
+    ractive = @
+    ractive.edit = new InpageEdit
       object : @
       on : node
-      focus_element : 'input.title'
+      focus_element : 'input#heading_title'
       success : (response, statusText, jqxhr)->
          ractive = @options.object
          @show() # before updating b/c we'll lose the handle
          ractive.set(response)
       error : ->
         console.log "Changes were not saved, for some reason"
-    teardown : =>
-      @edit.off()
+    teardown : ->
+      ractive.edit.off()
 
   Ractive.decorators.inpage_edit = EditInPlace
 

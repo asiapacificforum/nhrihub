@@ -9,11 +9,14 @@ feature "monitors behaviour", :js => true do
   include IndicatorMonitorSpecHelpers
   include IndicatorsMonitorSpecSetupHelpers
 
-  scenario "add monitor" do
+  scenario "add monitor with percentage format" do
     add_monitor.click
     sleep(0.2)
     expect(page).to have_selector("#new_monitor #monitor_description")
     fill_in(:monitor_description, :with => "nota bene")
+    select("percentage", :from => :monitor_format)
+    fill_in(:monitor_value, :with => 45)
+    set_date_to("August 19, 2015")
     save_monitor.click
     sleep(0.2)
     expect(Nhri::Indicator::Monitor.count).to eq 3
@@ -23,6 +26,55 @@ feature "monitors behaviour", :js => true do
     expect(author).to eq User.first.first_last_name
     expect(editor).to eq User.first.first_last_name
     expect(last_edited).to eq Date.today.to_s(:short)
+  end
+
+  scenario "add monitor with integer format" do
+    add_monitor.click
+    sleep(0.2)
+    expect(page).to have_selector("#new_monitor #monitor_description")
+    fill_in(:monitor_description, :with => "nota bene")
+    select("percentage", :from => :monitor_format)
+    fill_in(:monitor_value, :with => 45)
+    set_date_to("August 19, 2015")
+    save_monitor.click
+    sleep(0.2)
+    expect(Nhri::Indicator::Monitor.count).to eq 3
+    expect(monitor_description.last.text).to eq "nota bene"
+    expect(monitor_date.last.text).to eq Date.today.to_s(:short)
+    hover_over_info_icon
+    expect(author).to eq User.first.first_last_name
+    expect(editor).to eq User.first.first_last_name
+    expect(last_edited).to eq Date.today.to_s(:short)
+  end
+
+  scenario "add monitor with description format" do
+    add_monitor.click
+    sleep(0.2)
+    expect(page).to have_selector("#new_monitor #monitor_description")
+    fill_in(:monitor_description, :with => "nota bene")
+    select("percentage", :from => :monitor_format)
+    fill_in(:monitor_value, :with => 45)
+    set_date_to("August 19, 2015")
+    save_monitor.click
+    sleep(0.2)
+    expect(Nhri::Indicator::Monitor.count).to eq 3
+    expect(monitor_description.last.text).to eq "nota bene"
+    expect(monitor_date.last.text).to eq Date.today.to_s(:short)
+    hover_over_info_icon
+    expect(author).to eq User.first.first_last_name
+    expect(editor).to eq User.first.first_last_name
+    expect(last_edited).to eq Date.today.to_s(:short)
+  end
+
+  scenario "closing the monitor modal also closes the add monitor fields" do
+    add_monitor.click
+    close_monitors_modal
+    show_monitors.click
+    sleep(0.3) # css transition
+    expect(page).not_to have_selector("#new_monitor #monitor_description")
+  end
+
+  scenario "closing the monitor modal also closes the edit monitor fields" do
   end
 
   scenario "try to save monitor with blank description field" do

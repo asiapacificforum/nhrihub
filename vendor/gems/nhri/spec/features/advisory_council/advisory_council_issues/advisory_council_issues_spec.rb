@@ -55,7 +55,7 @@ feature "create a new article", :js => true do
     check("CRC")
     fill_in('people_affected', :with => " 100000 ")
     select('4: Serious', :from => 'Violation severity')
-    fill_in('advisory_council_issue_article_link', :with => "http://www.nytimes.com")
+    fill_in('advisory_council_issue_article_link', :with => "http://www.example.com")
     expect{page.execute_script("scrollTo(0,0)"); edit_save.click; sleep(0.5)}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(0).to(1)
     ma = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first
     expect(ma.affected_people_count).to eq 100000 # b/c this attribute now returns a hash!
@@ -86,14 +86,14 @@ feature "create a new article", :js => true do
   scenario "repeated adds" do # b/c there was a bug!
     fill_in("advisory_council_issue_title", :with => "My new article title")
     expect(chars_remaining).to eq "You have 80 characters left"
-    fill_in('advisory_council_issue_article_link', :with => "http://www.nytimes.com")
+    fill_in('advisory_council_issue_article_link', :with => "http://www.example.com")
     expect{edit_save.click; sleep(0.4)}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(0).to(1)
     sleep(0.4)
     expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 1)
     expect(page.all("#advisory_council_issues .advisory_council_issue .basic_info .title").first.text).to eq "My new article title"
     add_article_button.click
     fill_in("advisory_council_issue_title", :with => "My second new article title")
-    fill_in('advisory_council_issue_article_link', :with => "http://www.nytimes.com")
+    fill_in('advisory_council_issue_article_link', :with => "http://www.example.com")
     expect{edit_save.click; sleep(0.4)}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(1).to(2)
     sleep(0.4)
     expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 2)
@@ -234,11 +234,11 @@ feature "when there are existing articles", :js => true do
       previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
       clear_file_attachment
-      fill_in('advisory_council_issue_article_link', :with => "http://www.nytimes.com")
+      fill_in('advisory_council_issue_article_link', :with => "http://www.example.com")
       edit_save.click
       sleep(0.4)
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq false
-      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.article_link).to eq "http://www.nytimes.com"
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.article_link).to eq "http://www.example.com"
       expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_filename).to be_nil
       expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.filesize).to be_nil
       expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_type).to be_nil
@@ -249,12 +249,12 @@ feature "when there are existing articles", :js => true do
       previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       previous_file = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
-      fill_in('advisory_council_issue_article_link', :with => "http://www.nytimes.com")
+      fill_in('advisory_council_issue_article_link', :with => "http://www.example.com")
       sleep(0.2)
       expect(page).not_to have_selector('#collection_item_attachment_error', :text => 'Either file or link, not both')
       expect{edit_save.click; sleep(0.4) }.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
-      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.article_link).to eq "http://www.nytimes.com"
+      expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.article_link).to eq "http://www.example.com"
       expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_filename).to eq previous_file.original_filename
       expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.filesize).to eq previous_file.filesize
       expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.original_type).to eq previous_file.original_type

@@ -26,7 +26,7 @@ feature "internal document management", :js => true do
     expect(page.find('div.title .no_edit').text).to eq "my important document"
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#icc_reference_document_title").set("some file name")
-    page.find("#icc_reference_document_source_url").set("http://www.nytimes.com")
+    page.find("#icc_reference_document_source_url").set("http://www.example.com")
     expect{upload_files_link.click; sleep(0.5)}.to change{IccReferenceDocument.count}.from(1).to(2)
     expect(page).to have_css(".files .template-download", :count => 2)
     doc = IccReferenceDocument.last
@@ -217,7 +217,7 @@ feature "open document from source_url", :js => true do
   include IccReferenceDocumentDefaultSettings
 
   before do
-    @doc = FactoryGirl.create(:icc_reference_document, :title => "my important document", :source_url => "http://www.nytimes.com")
+    @doc = FactoryGirl.create(:icc_reference_document, :title => "my important document", :source_url => "http://www.example.com")
     visit nhri_icc_reference_documents_path('en')
   end
 

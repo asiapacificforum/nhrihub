@@ -58,7 +58,7 @@ feature "create a new article", :js => true do
     fill_in('people_affected', :with => " 100000 ")
     select('3: Has no bearing on the office', :from => 'Positivity rating')
     select('4: Serious', :from => 'Violation severity')
-    fill_in('media_appearance_article_link', :with => "http://www.nytimes.com")
+    fill_in('media_appearance_article_link', :with => "http://www.example.com")
     select_performance_indicators.click
     select_first_planned_result
     select_first_outcome
@@ -98,14 +98,14 @@ feature "create a new article", :js => true do
   scenario "repeated adds" do # b/c there was a bug!
     fill_in("media_appearance_title", :with => "My new article title")
     expect(chars_remaining).to eq "You have 80 characters left"
-    fill_in('media_appearance_article_link', :with => "http://www.nytimes.com")
+    fill_in('media_appearance_article_link', :with => "http://www.example.com")
     expect{edit_save.click; sleep(0.4)}.to change{MediaAppearance.count}.from(0).to(1)
     sleep(0.4)
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 1)
     expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq "My new article title"
     add_article_button.click
     fill_in("media_appearance_title", :with => "My second new article title")
-    fill_in('media_appearance_article_link', :with => "http://www.nytimes.com")
+    fill_in('media_appearance_article_link', :with => "http://www.example.com")
     expect{edit_save.click; sleep(0.4)}.to change{MediaAppearance.count}.from(1).to(2)
     sleep(0.4)
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 2)
@@ -257,11 +257,11 @@ feature "when there are existing articles", :js => true do
       previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
       clear_file_attachment
-      fill_in('media_appearance_article_link', :with => "http://www.nytimes.com")
+      fill_in('media_appearance_article_link', :with => "http://www.example.com")
       edit_save.click
       sleep(0.4)
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq false
-      expect(MediaAppearance.first.article_link).to eq "http://www.nytimes.com"
+      expect(MediaAppearance.first.article_link).to eq "http://www.example.com"
       expect(MediaAppearance.first.original_filename).to be_nil
       expect(MediaAppearance.first.filesize).to be_nil
       expect(MediaAppearance.first.original_type).to be_nil

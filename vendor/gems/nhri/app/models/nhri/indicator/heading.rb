@@ -14,7 +14,10 @@ class Nhri::Indicator::Heading < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super(:except  => [:created_at, :updated_at],
-          :methods => [:url])
+    default_options = {:except  => [:created_at, :updated_at],
+                       :methods => [:url]}
+
+    options = default_options if options.blank?
+    super(options)
   end
 end
