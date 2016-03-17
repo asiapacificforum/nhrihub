@@ -7,7 +7,7 @@
 #headings_container
 
 :javascript
-  var headings = #{@headings.to_json}
+  var headings = #{@headings.to_json(:only =>[:title], :methods => [:url])}
   var create_heading_url = "#{Nhri::Indicator::Heading.create_url}"
 
 = render :partial => 'headings_templates'

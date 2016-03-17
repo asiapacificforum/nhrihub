@@ -28,29 +28,29 @@ class Nhri::HeadingsController < ApplicationController
     # is much cleaner, even though the data is carried in the dom... a code smell!
     # could just carry the id pointer in the dom and point to a json structure?
     @heading = Nhri::Indicator::Heading.includes(:offences => [:structural_indicators =>
-                                                                 [:reminders => :users,
-                                                                  :notes => [:author, :editor],
-                                                                  :monitors => [:author]],
+                                                                 [:reminders => [:users, :remindable],
+                                                                  :notes => [:author, :editor, :notable],
+                                                                  :monitors => [:author, :indicator]],
                                                                :process_indicators =>
-                                                                 [:reminders => :users,
-                                                                  :notes => [:author, :editor],
-                                                                  :monitors => [:author]],
+                                                                 [:reminders => [:users, :remindable],
+                                                                  :notes => [:author, :editor, :notable],
+                                                                  :monitors => [:author, :indicator]],
                                                                :outcomes_indicators =>
-                                                                 [:reminders => :users,
-                                                                  :notes => [:author, :editor],
-                                                                  :monitors => [:author]]],
+                                                                 [:reminders => [:users, :remindable],
+                                                                  :notes => [:author, :editor, :notable],
+                                                                  :monitors => [:author, :indicator]]],
                                                  :all_offence_structural_indicators =>
-                                                               [:reminders => :users,
-                                                                :notes => [:author, :editor],
-                                                                :monitors => [:author]],
+                                                               [:reminders => [:users, :remindable],
+                                                                :notes => [:author, :editor, :notable],
+                                                                :monitors => [:author, :indicator]],
                                                  :all_offence_process_indicators =>
-                                                               [:reminders => :users,
-                                                                :notes => [:author, :editor],
-                                                                :monitors => [:author]],
+                                                               [:reminders => [:users, :remindable],
+                                                                :notes => [:author, :editor, :notable],
+                                                                :monitors => [:author, :indicator]],
                                                  :all_offence_outcomes_indicators =>
-                                                               [:reminders => :users,
-                                                                :notes => [:author, :editor],
-                                                                :monitors => [:author]]
+                                                               [:reminders => [:users, :remindable],
+                                                                :notes => [:author, :editor, :notable],
+                                                                :monitors => [:author, :indicator]]
                                                 ).find(params[:id])
     # @heading = Nhri::Indicator::Heading.find(params[:id])
     # @offences = @heading.offences

@@ -3,21 +3,158 @@
 #reminder
 #note
 #monitor
+#heading
 
-#indicators
-  .row.row-eq-height.grid_headings
-    .col-md-1#corner{:style =>"width:104px;"}
-      #high-right= t('.offence')
-      #low-left= t('.nature')
+%script#heading_template{:type => 'ractive/template'}
+  #indicators
+    .row.row-eq-height.grid_headings
+      .col-md-1#corner{:style =>"width:104px;"}
+        #high-right= t('.offence')
+        #low-left= t('.nature')
+      .col-md-11
+        .row.row-eq-height
+          <offences offences='{{offences}}' />
+    <natures natures='{{natures}}' all_offence_structural_indicators='{{all_offence_structural_indicators}}' all_offence_process_indicators='{{all_offence_process_indicators}}' all_offence_outcomes_indicators='{{all_offence_outcomes_indicators}}'/>
+  // - ["structural", "process", "outcomes"].each do |nature|
+  //   = render :partial => "indicator_nature", :locals => {:nature => nature}
+
+%script#indicator_template{:type => 'ractive/template'}
+  %li.indicator
+    {{title}}
+    %div{:style => "display:flex; flex-direction:row;"}
+      %i.fa.fa-trash-o.fa-lg.delete_indicator{'on-click' => 'delete_indicator(event,this)', :style => "position:relative; top:4px;"}
+      %i.fa.fa-eye.show_monitors.counter{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
+      .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:30px;"}
+      %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
+
+%script#natures_template{:type => 'ractive/template'}
+  {{#natures}}
+  <nature name='{{name}}' text='{{text}}' all_offence_structural_indicators='{{all_offence_structural_indicators}}' all_offence_process_indicators='{{all_offence_process_indicators}}' all_offence_outcomes_indicators='{{all_offence_outcomes_indicators}}'/>
+  {{/natures}}
+
+%script#nature_template{:type => 'ractive/template'}
+  .row.row-eq-height
+    .col-md-1.grid_headings{:style => "display:flex; align-items:center; width:104px;"}
+      %div {{text}}
     .col-md-11
+      .row
+        .col-md-12{:style => "padding-left: 30%;"}
+          %div{:style => "display:inline-block;"}
+            %ul{:style => "padding-left:10px"}
+              {{#all_offence_indicators}}
+              <indicator url='{{url}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' monitors='{{monitors}}' title='{{title}}' />
+              {{/all_offence_indicators}}
       .row.row-eq-height
-        - @heading.offences.each do |o|
-          .col-md-2{:style => "width:#{100/@heading.offences.length}%"}= o.description
-  - ["structural", "process", "outcomes"].each do |nature|
-    = render :partial => "indicator_nature", :locals => {:nature => nature}
+        {{#offences}}
+        .col-md-2{:style => "width:{{100/offences.length}}%"}
+          %ul{:style => "padding-left:10px"}
+            {{#this[name+'_indicators']}}
+            <indicator url='{{url}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' monitors='{{monitors}}' title='{{title}}' />
+            {{/this[name+'_indicators']}}
+        {{/offences}}
+
+%script#indicator{:type => 'template/ractive'}
+  %li.indicator
+    {{title}}
+    %div{:style => "display:flex; flex-direction:row;"}
+      %i.fa.fa-trash-o.fa-lg.delete_indicator{'on-click' => 'delete_indicator(event,this)', :style => "position:relative; top:4px;"}
+      %i.fa.fa-eye.show_monitors.counter{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
+      .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:30px;"}
+      %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
+
+= render :partial => 'reminders/reminder' # it's in the main app
+= render :partial => 'notes/note' # it's in the main app
+= render :partial => 'monitor'
+= javascript_include_tag 'jquery_datepicker'
 
 :coffeescript
+  window.heading_data = #{@heading.to_json}
   $ ->
+    Offence = Ractive.extend
+      template : "<div class='col-md-2' style='width:{{column_width}}%'> {{description}} </div>"
+      computed :
+        column_width : ->
+          l = @parent.get('offences').length
+          100/l
+
+    Offences = Ractive.extend
+      template : "{{#offences}} <offence description='{{description}}' /> {{/offences}}"
+      components :
+        offence : Offence
+
+    Indicator = Ractive.extend
+      template : "#indicator_template"
+      computed :
+        monitors_count : ->
+          @get('monitors').length
+        reminders_count : ->
+          @get('reminders').length
+        notes_count : ->
+          @get('notes').length
+        create_reminder_url : ->
+          "#{nhri_indicator_indicator_reminders_path('indicator_id')}".
+            replace(/indicator_id/,@get('id'))
+        create_note_url : ->
+          "#{nhri_indicator_indicator_notes_path('indicator_id')}".
+            replace(/indicator_id/,@get('id'))
+        create_monitor_url : ->
+          "#{nhri_indicator_indicator_monitors_path('indicator_id')}".
+            replace(/indicator_id/,@get('id'))
+      show_reminders_panel : ->
+        reminders.set
+          reminders: @get('reminders')
+          create_reminder_url : @get('create_reminder_url')
+        $('#reminders_modal').modal('show')
+      show_notes_panel : ->
+        notes.set
+          notes : @get('notes')
+          create_note_url : @get('create_note_url')
+        $('#notes_modal').modal('show')
+      show_monitors_panel : ->
+        monitors.set
+          monitors : @get('monitors')
+          create_monitor_url : @get('create_monitor_url')
+        $('#monitors_modal').modal('show')
+      delete_indicator : (event,obj)->
+        data = [{name:'_method', value: 'delete'}]
+        url = @get('url')
+        $.ajax
+          method: 'post'
+          url: url
+          data: data
+          success: @delete_callback
+          context: @
+      delete_callback : ->
+        $(@el).remove()
+
+    Nature = Ractive.extend
+      template : "#nature_template"
+      computed :
+        collection_name : ->
+          "all_offence_"+@get('name')+"_indicators"
+        all_offence_indicators : ->
+          @get(@get('collection_name'))
+      components :
+        indicator : Indicator
+
+    Natures = Ractive.extend
+      template : "#natures_template"
+      components :
+        nature : Nature
+
+    window.heading = new Ractive
+      el: "#heading"
+      template : "#heading_template"
+      data:
+        offences : heading_data.offences
+        natures : [{name:'structural',text:"#{t('.structural')}"},{name:'process',text:"#{t('.process')}"},{name:'outcomes',text:"#{t('.outcomes')}"}]
+        all_offence_structural_indicators : heading_data.all_offence_structural_indicators
+        all_offence_process_indicators : heading_data.all_offence_process_indicators
+        all_offence_outcomes_indicators : heading_data.all_offence_outcomes_indicators
+      components :
+        offences : Offences
+        natures : Natures
+
   # position the labels in the corner box, it depends on column height
     window.position_labels = ->
       height = $('.row-eq-height').height()
@@ -28,68 +165,3 @@
       $('#low-left').css('top', ll_vert_pos+'px').css('right',ll_right_pos+'px').show()
       $('#high-right').css('bottom',height/2+'px').css('left',hr_left_pos+'px').show()
     position_labels()
-
-%script#indicator_template{:type => 'template/ractive'}
-  {{title}}
-  %div{:style => "display:flex; flex-direction:row;"}
-    %i.fa.fa-trash-o.fa-lg.delete_indicator{'on-click' => 'delete_indicator(event,this)', :style => "position:relative; top:4px;"}
-    %i.fa.fa-eye.show_monitors.counter{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
-    .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:30px;"}
-    %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
-
-= render :partial => 'reminders/reminder' # it's in the main app
-= render :partial => 'notes/note' # it's in the main app
-= render :partial => 'monitor'
-= javascript_include_tag 'jquery_datepicker'
-
-:coffeescript
-  $ ->
-    _($('.indicator')).each (i)->
-      id = $(i).data('object').id || 'new'
-      window["indicator"+id] = new Ractive
-        el : i
-        template : '#indicator_template'
-        data :
-          $(i).data('object')
-        computed :
-          monitors_count : ->
-            @get('monitors').length
-          reminders_count : ->
-            @get('reminders').length
-          notes_count : ->
-            @get('notes').length
-          create_reminder_url : ->
-            "#{nhri_indicator_indicator_reminders_path('indicator_id')}".
-              replace(/indicator_id/,@get('id'))
-          create_note_url : ->
-            "#{nhri_indicator_indicator_notes_path('indicator_id')}".
-              replace(/indicator_id/,@get('id'))
-          create_monitor_url : ->
-            "#{nhri_indicator_indicator_monitors_path('indicator_id')}".
-              replace(/indicator_id/,@get('id'))
-        show_reminders_panel : ->
-          reminders.set
-            reminders: @get('reminders')
-            create_reminder_url : @get('create_reminder_url')
-          $('#reminders_modal').modal('show')
-        show_notes_panel : ->
-          notes.set
-            notes : @get('notes')
-            create_note_url : @get('create_note_url')
-          $('#notes_modal').modal('show')
-        show_monitors_panel : ->
-          monitors.set
-            monitors : @get('monitors')
-            create_monitor_url : @get('create_monitor_url')
-          $('#monitors_modal').modal('show')
-        delete_indicator : (event,obj)->
-          data = [{name:'_method', value: 'delete'}]
-          url = @get('url')
-          $.ajax
-            method: 'post'
-            url: url
-            data: data
-            success: @delete_callback
-            context: @
-        delete_callback : ->
-          $(@el).remove()

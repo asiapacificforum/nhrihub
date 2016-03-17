@@ -1,5 +1,5 @@
 %script#monitors_template{:type => 'ractive/template'}
-  <modal-custom id="monitors_modal" type="xl">
+  <modal-custom id="monitors_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
   <modal-header>
   <h4>#{t('.monitors')}<modal-close/></h4>
   </modal-header>

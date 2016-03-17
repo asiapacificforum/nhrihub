@@ -14,8 +14,11 @@ class Nhri::Indicator::Heading < ActiveRecord::Base
   end
 
   def as_json(options={})
-    default_options = {:except  => [:created_at, :updated_at],
-                       :methods => [:url]}
+    default_options = {:except => [:created_at, :updated_at],
+                       :methods => [:offences,
+                                    :all_offence_structural_indicators,
+                                    :all_offence_process_indicators,
+                                    :all_offence_outcomes_indicators] }
 
     options = default_options if options.blank?
     super(options)
