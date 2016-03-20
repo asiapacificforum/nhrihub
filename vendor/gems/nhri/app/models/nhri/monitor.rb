@@ -1,4 +1,4 @@
-class Nhri::Indicator::Monitor < ActiveRecord::Base
+class Nhri::Monitor < ActiveRecord::Base
   belongs_to :indicator
   belongs_to :author, :class_name => "User", :foreign_key => :author_id
 
@@ -7,7 +7,7 @@ class Nhri::Indicator::Monitor < ActiveRecord::Base
   end
 
   def url
-    Rails.application.routes.url_helpers.nhri_indicator_indicator_monitor_path(:en,indicator_id,id) if persisted?
+    Rails.application.routes.url_helpers.nhri_heading_indicator_monitor_path(:en,indicator.heading_id,indicator_id,id) if persisted?
   end
 
   def val

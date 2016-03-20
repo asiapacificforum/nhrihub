@@ -1,5 +1,13 @@
 require "rspec/core/rake_task"
 
+desc "run all model specs"
+task :models => :spec
+RSpec::Core::RakeTask.module_eval do
+  def pattern
+    [File.join( '**', 'spec', 'models', '**', '*_spec.rb' ).to_s]
+  end
+end
+
 RSpec::Core::RakeTask.new(:spec)
 
 task :default => :spec

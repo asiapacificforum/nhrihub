@@ -6,7 +6,7 @@ module NotesSpecHelpers
   include NotesSpecCommonHelpers
   def setup_note
     FactoryGirl.create(:note,
-                       :notable_type => "Nhri::Indicator::Indicator",
-                       :notable_id => Nhri::Indicator::Indicator.first.id)
+                       :notable_type => "Nhri::Indicator",
+                       :notable_id => Nhri::Indicator.first.id)
   end
 end

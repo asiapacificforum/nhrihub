@@ -34,6 +34,22 @@ describe "behaviour when internal_documents are deleted" do
   end
 end
 
+describe "behaviour when accreditation_documents are deleted" do
+  before do
+    @first_doc = FactoryGirl.create(:accreditation_required_document, :revision_major => 3, :revision_minor => 3)
+    @group = @first_doc.document_group
+    @second_doc = FactoryGirl.create(:accreditation_required_document, :title => @first_doc.title, :document_group_id => @group.id, :revision_major => 3, :revision_minor => 2)
+  end
+
+  it "should not be deleted when last doc is deleted" do
+    expect(@group.primary).to eq @first_doc
+    expect{@first_doc.destroy}.to change{@group.internal_documents.count}.from(2).to(1)
+    expect(@group.primary).to eq @second_doc
+    @second_doc.destroy
+    expect(DocumentGroup.exists?(@group.id)).to eq true
+  end
+end
+
 describe "default scope" do
   before do
     @id1 = FactoryGirl.create(:internal_document, :null_revision)

@@ -1,16 +1,16 @@
-class Nhri::Indicator::Indicators::MonitorsController < ApplicationController
+class Nhri::Heading::Indicator::MonitorsController < ApplicationController
   def create
-    monitor = Nhri::Indicator::Monitor.new(monitor_params)
+    monitor = Nhri::Monitor.new(monitor_params)
     monitor.author = current_user
     if monitor.save
-      render :json => Nhri::Indicator::Monitor.where(:indicator_id => monitor.indicator_id), :status => 200
+      render :json => Nhri::Monitor.where(:indicator_id => monitor.indicator_id), :status => 200
     else
       render :nothing => true, :status => 500
     end
   end
 
   def update
-    monitor = Nhri::Indicator::Monitor.find(params[:id])
+    monitor = Nhri::Monitor.find(params[:id])
     if monitor.update_attributes(monitor_params)
       render :json => monitor, :status => 200
     else
@@ -19,7 +19,7 @@ class Nhri::Indicator::Indicators::MonitorsController < ApplicationController
   end
 
   def destroy
-    monitor = Nhri::Indicator::Monitor.find(params[:id])
+    monitor = Nhri::Monitor.find(params[:id])
     indicator = monitor.indicator
     if monitor.destroy
       render :json => indicator.reload, :status => 200

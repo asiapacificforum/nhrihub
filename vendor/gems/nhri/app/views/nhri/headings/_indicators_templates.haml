@@ -1,0 +1,54 @@
+%script#heading_template{:type => 'ractive/template'}
+  #indicators
+    .row.row-eq-height.grid_headings
+      .col-md-1#corner{:style =>"width:104px;"}
+        #high-right= t('.offence')
+        #low-left= t('.nature')
+      .col-md-11
+        .row.row-eq-height
+          <offences offences='{{offences}}' />
+    <natures natures='{{natures}}' all_offence_structural_indicators='{{all_offence_structural_indicators}}' all_offence_process_indicators='{{all_offence_process_indicators}}' all_offence_outcomes_indicators='{{all_offence_outcomes_indicators}}'/>
+
+%script#indicator_template{:type => 'ractive/template'}
+  %li.indicator
+    {{title}}
+    %div{:style => "display:flex; flex-direction:row;"}
+      %i.fa.fa-pencil-square-o.fa-lg.edit_indicator{'on-click'=>'edit_indicator()', :style=>'top:5px; position:relative;'}
+      %i.fa.fa-eye.show_monitors.counter{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => "position:relative; top:4px; margin-left:28px;"}
+      .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:30px;"}
+      %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
+      %i.fa.fa-trash-o.fa-lg.delete_indicator{'on-click' => 'delete_indicator(event,this)', :style => "position:relative; top:4px; left:28px;"}
+
+%script#natures_template{:type => 'ractive/template'}
+  {{#natures}}
+  <nature name='{{name}}' text='{{text}}' all_offence_structural_indicators='{{all_offence_structural_indicators}}' all_offence_process_indicators='{{all_offence_process_indicators}}' all_offence_outcomes_indicators='{{all_offence_outcomes_indicators}}'/>
+  {{/natures}}
+
+%script#nature_template{:type => 'ractive/template'}
+  .row.row-eq-height
+    .col-md-1.grid_headings{:style => "display:flex; align-items:center; width:104px;"}
+      %div {{text}}
+    .col-md-11
+      .row
+        <natureAllOffences nature='{{name}}' all_offence_indicators='{{all_offence_indicators}}' />
+      .row.row-eq-height
+        {{#offences}}
+        <natureOffence nature='{{name}}' offence_id='{{id}}' structural_indicators='{{structural_indicators}}' process_indicators='{{process_indicators}}' outcomes_indicators='{{outcomes_indicators}}' />
+        {{/offences}}
+
+%script#nature_all_offences_template{:type => 'ractive/template'}
+  .col-md-12{:style => "padding-left: 30%;"}
+    %i.fa.fa-plus.fa-sm.new_indicator{'on-click'=>'new_indicator()', :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_indicator')}
+    %div{:style => "display:inline-block;"}
+      %ul{:style => "padding-left:10px"}
+        {{#all_offence_indicators}}
+        <indicator monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' create_monitor_url='{{create_monitor_url}}' url='{{url}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' monitors='{{monitors}}' title='{{title}}' />
+        {{/all_offence_indicators}}
+
+%script#nature_offence_template{:type => 'ractive/template'}
+  .col-md-2{:style => "width:{{100/offences.length}}%"}
+    %i.fa.fa-plus.fa-sm.new_planned_result{ 'on-click'=>'new_indicator()', :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add indicator"}
+    %ul{:style => "padding-left:10px"}
+      {{#this[name+'_indicators']}}
+      <indicator monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' create_monitor_url='{{create_monitor_url}}' url='{{url}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' monitors='{{monitors}}' title='{{title}}' />
+      {{/this[name+'_indicators']}}

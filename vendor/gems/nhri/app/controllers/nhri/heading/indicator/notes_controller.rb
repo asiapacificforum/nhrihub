@@ -1,6 +1,6 @@
 require 'notes_controller'
 
-class Nhri::Indicator::Indicators::NotesController < NotesController
+class Nhri::Heading::Indicator::NotesController < NotesController
   def create
     super
   end
@@ -16,7 +16,7 @@ class Nhri::Indicator::Indicators::NotesController < NotesController
   private
   def note_params
     params[:note][:notable_id] = params[:indicator_id]
-    params[:note][:notable_type] = 'Nhri::Indicator::Indicator'
+    params[:note][:notable_type] = 'Nhri::Indicator'
     super
   end
 end

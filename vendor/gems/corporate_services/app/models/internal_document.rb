@@ -36,7 +36,7 @@ class InternalDocument < ActiveRecord::Base
 
   after_destroy do |doc|
     # if it's the last document in the group, delete the group too
-    if doc.document_group.reload.empty?
+    if doc.document_group && doc.document_group.reload.empty?
       doc.document_group.destroy unless doc.document_group.is_a?(AccreditationDocumentGroup)
     end
   end

@@ -8,7 +8,7 @@ namespace :nhri do
 
   desc "populates terms of reference"
   task :populate_tor => :environment do
-    Nhri::AdvisoryCouncil::TermsOfReferenceVersion.delete_all
+    Nhri::AdvisoryCouncil::TermsOfReferenceVersion.destroy_all
     3.times do |i|
       FactoryGirl.create(:terms_of_reference_version, :revision_major => i+1, :revision_minor => 0)
     end
@@ -16,7 +16,7 @@ namespace :nhri do
 
   desc "populates advisory council members list"
   task :populate_mem => :environment do
-    AdvisoryCouncilMember.delete_all
+    AdvisoryCouncilMember.destroy_all
     3.times do
       FactoryGirl.create(:advisory_council_member)
     end
@@ -24,7 +24,7 @@ namespace :nhri do
 
   desc "populates advisory council minutes list"
   task :populate_min => :environment do
-    Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.delete_all
+    Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.destroy_all
     3.times do
       FactoryGirl.create(:advisory_council_minutes)
     end
@@ -32,7 +32,7 @@ namespace :nhri do
 
   desc "populates advisory council issues"
   task :populate_iss => :environment do
-    Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.delete_all
+    Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.destroy_all
 
     20.times do
       ma = FactoryGirl.create(:advisory_council_issue, :with_reminders, :with_notes, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
@@ -44,7 +44,7 @@ namespace :nhri do
 
   desc "populates headings"
   task :populate_head => :environment do
-    Nhri::Indicator::Heading.delete_all
+    Nhri::Heading.destroy_all
     6.times do
       FactoryGirl.create(:heading)
     end
@@ -52,8 +52,8 @@ namespace :nhri do
 
   desc "populates offences"
   task :populate_off => :environment do
-    Nhri::Indicator::Offence.delete_all
-    Nhri::Indicator::Heading.pluck(:id).each do |h_id|
+    Nhri::Offence.destroy_all
+    Nhri::Heading.pluck(:id).each do |h_id|
       5.times do
         FactoryGirl.create(:offence, :heading_id => h_id)
       end
@@ -62,8 +62,8 @@ namespace :nhri do
 
   desc "populates indicators"
   task :populate_ind => :environment do
-    Nhri::Indicator::Indicator.delete_all
-    Nhri::Indicator::Heading.all.each do |heading|
+    Nhri::Indicator.destroy_all
+    Nhri::Heading.all.each do |heading|
       ["Structural", "Process", "Outcomes"].each do |nature|
         rand(4).times do
           notes = rand(3).times.collect{|i| FactoryGirl.build(:note)}

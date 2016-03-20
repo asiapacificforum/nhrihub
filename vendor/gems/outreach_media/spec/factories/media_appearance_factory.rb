@@ -1,4 +1,3 @@
-
 FactoryGirl.define do
   factory :media_appearance do
     title {Faker::Lorem.sentence(5)}
@@ -70,6 +69,7 @@ FactoryGirl.define do
         rand(3).times do
           FactoryGirl.create(:note, :media_appearance, :notable_id => oe.id)
         end
+        puts "total: #{Note.count} nil_author: #{Note.where(:author_id => nil).count}"
       end
     end
 

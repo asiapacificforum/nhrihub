@@ -11,7 +11,14 @@ Rails.application.routes.draw do
         resources :projects
       end
       resources :complaints
-      resources :headings
+      resources :headings do
+        resources :indicators, :controller => 'heading/indicators'
+        resources :indicators do
+          resources :reminders, :controller => 'heading/indicator/reminders'
+          resources :notes, :controller => 'heading/indicator/notes'
+          resources :monitors, :controller => 'heading/indicator/monitors'
+        end
+      end
       namespace :advisory_council do
         resources :terms_of_references
         resources :members
@@ -35,13 +42,6 @@ Rails.application.routes.draw do
         end
       end
       resources :indicators, :controller => 'indicator/indicators'
-      namespace :indicator do
-        resources :indicators do
-          resources :reminders, :controller => "indicators/reminders"
-          resources :notes, :controller => "indicators/notes"
-          resources :monitors, :controller => "indicators/monitors"
-        end
-      end
       resources :hr_protection
       resources :icc
       resources :icc_reference_documents do

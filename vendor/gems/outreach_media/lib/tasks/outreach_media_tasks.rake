@@ -5,32 +5,32 @@ good_governance_subareas = ["Violation", "Office report", "Office consultations"
 namespace :outreach_media do
   desc "populate violation severity table"
   task :populate_vs => :environment do
-    ViolationSeverity.delete_all
+    ViolationSeverity.destroy_all
     ViolationSeverity::DefaultValues.each { |vs| ViolationSeverity.create(:rank=>vs.rank) }
   end
 
   desc "populate positivity ratings"
   task :populate_pr => :environment do
-    PositivityRating.delete_all
+    PositivityRating.destroy_all
     PositivityRating::DefaultValues.each { |pr| PositivityRating.create(:rank => pr.rank) }
   end
 
   desc "populate impact ratings"
   task :populate_ir => :environment do
-    ImpactRating.delete_all
+    ImpactRating.destroy_all
     ImpactRating::DefaultValues.each { |ir| ImpactRating.create(ir.marshal_dump) }
   end
 
   desc "populate audience types"
   task :populate_at => :environment do
-    AudienceType.delete_all
+    AudienceType.destroy_all
     AudienceType::DefaultValues.each { |at| AudienceType.create(at.marshal_dump) }
   end
 
   desc "populates areas and subareas"
   task :populate_areas => :environment do
-    Area.delete_all
-    Subarea.delete_all
+    Area.destroy_all
+    Subarea.destroy_all
     areas.each do |a|
       Area.create(:name => a) unless Area.where(:name => a).exists?
     end
@@ -48,7 +48,7 @@ namespace :outreach_media do
 
   desc "populates media appearances with examples"
   task :populate_media => :environment do
-    MediaAppearance.delete_all
+    MediaAppearance.destroy_all
 
     20.times do
       ma = FactoryGirl.create(:media_appearance, :with_reminders, :with_notes, [:file, :link].sample, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
@@ -59,7 +59,7 @@ namespace :outreach_media do
 
   desc "populates outreach events with examples"
   task :populate_outreach => :environment do
-    OutreachEvent.delete_all
+    OutreachEvent.destroy_all
 
     20.times do
       oe = FactoryGirl.create(:outreach_event, :with_reminders, :with_notes, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)

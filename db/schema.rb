@@ -146,7 +146,7 @@ ActiveRecord::Schema.define(version: 20160308041416) do
     t.integer "heading_id"
     t.string  "nature"
     t.string  "monitor_format"
-    t.string  "numerical_monitor_description"
+    t.string  "numeric_monitor_explanation"
   end
 
   create_table "internal_documents", force: :cascade do |t|

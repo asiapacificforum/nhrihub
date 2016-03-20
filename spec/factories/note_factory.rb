@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :note do
     text { Faker::Lorem.sentence(10) }
-    association :author, :factory => :user
-    association :editor, :factory => :user
+    author_id { if User.count > 100 then User.pluck(:id).sample else FactoryGirl.create(:user).id end }
+    editor_id { if User.count > 100 then User.pluck(:id).sample else FactoryGirl.create(:user).id end }
 
     trait :media_appearance do
       notable_type "MediaAppearance"
@@ -21,7 +21,7 @@ FactoryGirl.define do
     end
 
     trait :indicator do
-      notable_type "Nhri::Indicator:Indicator"
+      notable_type "Nhri::Heading:Indicator"
     end
   end
 end

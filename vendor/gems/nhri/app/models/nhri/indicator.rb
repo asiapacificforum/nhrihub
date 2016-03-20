@@ -1,4 +1,4 @@
-class Nhri::Indicator::Indicator < ActiveRecord::Base
+class Nhri::Indicator < ActiveRecord::Base
   belongs_to :offence
   belongs_to :heading
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
@@ -22,23 +22,23 @@ class Nhri::Indicator::Indicator < ActiveRecord::Base
   end
 
   def url
-    Rails.application.routes.url_helpers.nhri_indicator_path(:en,id) if persisted?
+    Rails.application.routes.url_helpers.nhri_heading_indicator_path(:en,heading_id,id) if persisted?
   end
 
   def create_monitor_url
-    Rails.application.routes.url_helpers.nhri_indicator_indicator_monitors_path(:en,id) if persisted?
+    Rails.application.routes.url_helpers.nhri_heading_indicator_monitors_path(:en,heading_id,id) if persisted?
   end
 
   def create_reminder_url
-    Rails.application.routes.url_helpers.nhri_indicator_indicator_reminders_path(:en,id) if persisted?
+    Rails.application.routes.url_helpers.nhri_heading_indicator_reminders_path(:en,heading_id,id) if persisted?
   end
 
   def create_note_url
-    Rails.application.routes.url_helpers.nhri_indicator_indicator_notes_path(:en,id) if persisted?
+    Rails.application.routes.url_helpers.nhri_heading_indicator_notes_path(:en,heading_id,id) if persisted?
   end
 
-  def namespace
-    nil
+  def polymorphic_path
+    OpenStruct.new(:prefix => 'nhri_heading_indicator', :keys => {:heading_id => heading_id, :indicator_id => id})
   end
 
 end

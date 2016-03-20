@@ -1,0 +1,107 @@
+%script#new_indicator_template{:type => "template/ractive"}
+  #new_indicator_modal.modal.fade{"aria-hidden" => "true", "data-backdrop" => "true", "data-keyboard" => "true", :role => "dialog", :tabindex => "-1"}
+    .modal-dialog.modal-xl
+      .modal-content
+        .modal-header
+          %h4
+            = t('.new_indicator')
+            %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+              %span{"aria-hidden" => "true"} ×
+        .modal-body
+          %form.form-horizontal
+            .form-group{:class => '{{#title_error}}has-error{{/}}'}
+              %label.col-sm-3.control-label= t('.title')
+              .col-sm-5
+                =text_area(:indicator, :title, :id => :indicator_title, :placeholder => t('.enter_title'), :class => 'form-control', :value=>'{{title}}', 'on-keydown'=>'remove_title_error()')
+                %span.help-block#title_error= t('.title_error_message')
+            .form-group{:class => '{{#monitor_format_error}}has-error{{/}}'}
+              %label.col-sm-3.control-label= t('.monitor')
+              .col-sm-5
+                =select_tag(:indicator_monitor_format, monitor_format_options, :include_blank => t('.select_format'), :value => '{{monitor_format}}', :id => :indicator_monitor_format, :class => 'form-control', 'on-change'=>'validate_monitor_format()')
+                %span.help-block#monitor_format_error= t('.monitor_format_error_message')
+            .form-group#explanation{:class => '{{#numeric_monitor_explanation_error}}has-error{{/}}', :style => 'display:{{#numeric_monitor_format}}block{{else}}none{{/}}'}
+              %label.col-sm-3.control-label= t('.explanation')
+              .col-sm-5
+                =text_field(:indicator, :numeric_monitor_explanation, :id => :indicator_numeric_monitor_explanation, :placeholder => t('.enter_explanation'), :class => 'form-control', :value => '{{numeric_monitor_explanation}}', 'on-keydown'=>'remove_numeric_monitor_explanation_error()')
+                %span.help-block#numeric_monitor_explanation_error= t('.numeric_monitor_explanation_error_message')
+            .row
+              .col-sm-5.col-sm-offset-3
+                .btn.btn-success.btn-sm#save_indicator{:style => "margin-bottom:12px; color:white;", 'on-click' => "save_indicator()"}
+                  %span= t('.save')
+
+:coffeescript
+  $ ->
+    window.new_indicator = new Ractive
+      el : "#new_indicator"
+      template : "#new_indicator_template"
+      data :
+        create_indicator_url : "#{nhri_heading_indicators_path(@heading.id)}"
+        heading_id : "#{@heading.id}"
+      computed :
+        numeric_monitor_format : ->
+          @get('monitor_format') == 'numeric'
+        persisted : ->
+          !_.isNull(@get('id'))
+        save_method : ->
+          if @get('persisted')
+            'put'
+          else
+            'post'
+        save_url : ->
+          if @get('persisted')
+            @get('url')
+          else
+            @get('create_indicator_url')
+        save_callback : ->
+          if @get('persisted')
+            @update_callback
+          else
+            @create_callback
+      validate_monitor_format : ->
+        @set('monitor_format_error', _.isEmpty(@get('monitor_format')))
+        !@get('monitor_format_error')
+      persist_instance_attributes : ->
+        # it's done at the last point before saving so a user can change their mind
+        # and not lose the previous value
+        @set('numeric_monitor_explanation',null) unless @get('numeric_monitor_format')
+        indicator=_(@get()).pick('numeric_monitor_explanation', 'offence_id', 'title', 'nature', 'monitor_format', 'heading_id')
+        {indicator: indicator}
+      save_indicator : ->
+        if @validate()
+          $.ajax
+            type : @get('save_method')
+            url : @get('save_url')
+            data : @persist_instance_attributes()
+            success : @get('save_callback')
+            context : @
+      validate : ->
+        vt = @validate_title()
+        vmf = @validate_monitor_format()
+        vnme = @validate_numeric_monitor_explanation()
+        vt && vmf && vnme
+      validate_title : ->
+        @set('title_error',_.isEmpty(@get('title')))
+        !@get('title_error')
+      validate_monitor_format : ->
+        @set('monitor_format_error', _.isEmpty(@get('monitor_format')))
+        !@get('monitor_format_error')
+      validate_numeric_monitor_explanation : ->
+        invalid = (@get('monitor_format') == 'numeric') && _.isEmpty(@get('numeric_monitor_explanation'))
+        @set('numeric_monitor_explanation_error',invalid)
+        !@get('numeric_monitor_explanation_error')
+      remove_numeric_monitor_explanation_error : ->
+        @set('numeric_monitor_explanation_error',false)
+      remove_title_error : ->
+        @set('title_error',false)
+      create_callback : (response, status, jqxhr)->
+        @_restore_defaults()
+        heading.add_indicator(response)
+        $('#new_indicator_modal').modal('hide')
+      update_callback : (response, status, jqxhr)->
+        @get('source').set(response)
+        @_restore_defaults()
+        $('#new_indicator_modal').modal('hide')
+      _restore_defaults : ->
+        retained_attrs = _(@get()).pick('create_indicator_url', 'heading_id')
+        retained_attrs['monitor_format'] = ""
+        @reset(retained_attrs)

@@ -21,7 +21,7 @@ FactoryGirl.define do
     end
 
     trait :indicator do
-      remindable_type "Nhri::Indicator:Indicator"
+      remindable_type "Nhri::Heading:Indicator"
     end
   end
 end

@@ -19,8 +19,8 @@ feature "show icc index page", :js => true do
   it "can add new headings" do
     add_heading.click
     fill_in('heading_title', :with => "Some new heading text")
-    expect{save_heading.click; sleep(0.3)}.to change{Nhri::Indicator::Heading.count}.by(1)
-    expect(Nhri::Indicator::Heading.first.title).to eq "Some new heading text"
+    expect{save_heading.click; sleep(0.3)}.to change{Nhri::Heading.count}.by(1)
+    expect(Nhri::Heading.first.title).to eq "Some new heading text"
     expect(page).to have_selector('#headings_container .heading', :count => 1)
     expect(page).to have_selector('#headings_container .heading .title', :text => "Some new heading text")
   end
@@ -38,7 +38,7 @@ feature "show icc index page", :js => true do
     add_heading.click
     expect(page).not_to have_selector('#title_error', :text => "Title can't be blank.")
     fill_in('heading_title', :with => "   ")
-    expect{save_heading.click; sleep(0.3)}.not_to change{Nhri::Indicator::Heading.count}
+    expect{save_heading.click; sleep(0.3)}.not_to change{Nhri::Heading.count}
     expect(page).to have_selector('#title_error', :text => "Title can't be blank.")
     expect(page).to have_selector('#heading_save')
     cancel_add.click
@@ -64,21 +64,21 @@ feature "index page behaviour with existing headings", :js => true do
   end
 
   it "can delete a heading" do
-    expect{delete_heading.click; sleep(0.3)}.to change{Nhri::Indicator::Heading.count}.by(-1).
+    expect{delete_heading.click; sleep(0.3)}.to change{Nhri::Heading.count}.by(-1).
                                              and change{page.all('#headings_container .heading').count}.by(-1)
   end
 
   it "can edit the title of a heading" do
     edit_first_heading.click
     page.find('#heading_title').set("I changed my mind")
-    expect{edit_save.click; sleep(0.3)}.to change{Nhri::Indicator::Heading.first.title}.to("I changed my mind")
+    expect{edit_save.click; sleep(0.3)}.to change{Nhri::Heading.first.title}.to("I changed my mind")
     expect(page).to have_selector('#headings_container .heading .title', :text => "I changed my mind")
   end
 
   it "does not validate if heading title is edited to invalid value" do
     edit_first_heading.click
     page.find('#heading_title').set("  ")
-    expect{edit_save.click; sleep(0.3)}.not_to change{Nhri::Indicator::Heading.first.title}
+    expect{edit_save.click; sleep(0.3)}.not_to change{Nhri::Heading.first.title}
     expect(page).to have_selector('#title_error', :text => "Title can't be blank.")
   end
 

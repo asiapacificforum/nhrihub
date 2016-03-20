@@ -15,7 +15,7 @@ class AddNhriIndicatorTables < ActiveRecord::Migration
       t.integer :heading_id
       t.string :nature
       t.string :monitor_format
-      t.string :numerical_monitor_description
+      t.string :numeric_monitor_explanation
     end
 
     create_table :monitors do |t|

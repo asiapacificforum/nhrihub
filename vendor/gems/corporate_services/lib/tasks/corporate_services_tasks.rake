@@ -30,9 +30,9 @@ namespace :corporate_services do
 
   desc "re-initialize database with internal documents: 5 primary, 10 archive"
   task :populate_id => :environment do
-    DocumentGroup.delete_all
-    InternalDocument.delete_all
-    Organization.delete_all
+    DocumentGroup.destroy_all
+    InternalDocument.destroy_all
+    Organization.destroy_all
 
     5.times do
       current_doc_rev = first_doc_rev = (rand(49)+50).to_f/10
@@ -55,11 +55,11 @@ namespace :corporate_services do
 
   desc "re-initialize strategic priorities"
   task :populate_sp => :environment do
-    StrategicPriority.delete_all
-    PlannedResult.delete_all
-    Outcome.delete_all
-    Activity.delete_all
-    PerformanceIndicator.delete_all
+    StrategicPriority.destroy_all
+    PlannedResult.destroy_all
+    Outcome.destroy_all
+    Activity.destroy_all
+    PerformanceIndicator.destroy_all
 
     2.times do |i|
       sp = FactoryGirl.create(:strategic_priority, :priority_level => i+1)
