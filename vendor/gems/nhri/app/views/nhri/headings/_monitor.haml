@@ -16,6 +16,15 @@
       %td= t('.author')
       %td#author {{ author_name }}
 
+%script#textMonitorDetailsContent{:type => 'text/ractive'}
+  %table#details{:style => 'width:200px'}
+    %tr
+      %td= t('.created_on')
+      %td#created_on {{ date }}
+    %tr
+      %td= t('.author')
+      %td#author {{ author_name }}
+
 %div#popover_template{:style=>"display: none"}
   .popover.fileDetails{:role=>"tooltip"}
     .arrow

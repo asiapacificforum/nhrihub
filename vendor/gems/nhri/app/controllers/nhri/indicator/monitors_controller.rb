@@ -31,15 +31,14 @@ class Nhri::Indicator::MonitorsController < ApplicationController
   private
   def monitor_params
     params[:monitor][:indicator_id] = params[:indicator_id]
-    case @model.to_s
-    when 'Nhri::NumericMonitor'
-      params.require(:monitor).permit(:value, :date, :indicator_id)
-    else
-      raise "unknown model error"
-    end
+    params.require(:monitor).permit(*permitted_attributes)
   end
 
   def model
-    @model ||= ("Nhri::"+params[:monitor].delete(:type)).constantize
+    (@model ||= "Nhri::"+params[:monitor].delete(:type)).constantize
+  end
+
+  def permitted_attributes
+    (model.to_s+"::PermittedAttributes").constantize
   end
 end

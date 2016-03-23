@@ -32,8 +32,7 @@ en:
         date: "Date"
         value : "Value"
       text_modal:
-        monitors: "Monitors"
-        monitor: "Monitor"
+        monitors: "Monitors: text format"
         monitor_description_error_message: "Description cannot be blank"
         tooltip:
           add_monitor: "add monitor entry"

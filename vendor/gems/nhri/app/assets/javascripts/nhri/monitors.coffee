@@ -143,6 +143,8 @@ $ ->
         data = indicator.get()
         if data.monitor_format == "numeric"
           template = "#numericMonitorDetailsContent"
+        else if data.monitor_format == "text"
+          template = "#textMonitorDetailsContent"
         else
           template = "#detailsContent"
         ractive = new Ractive

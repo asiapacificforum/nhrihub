@@ -1,4 +1,5 @@
 class Nhri::NumericMonitor < ActiveRecord::Base
+  PermittedAttributes = [:value, :date, :indicator_id]
   belongs_to :indicator
   belongs_to :author, :class_name => "User", :foreign_key => :author_id
 

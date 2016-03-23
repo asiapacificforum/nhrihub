@@ -10,7 +10,7 @@
       %h5.col-md-1{:style => "width:15%;"}= t('.date')
       %h5.col-md-1{:style => "width:70%;"}= t('.description')
     {{#file_monitors}}
-    <fileMonitor id='{{id}}' date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' description='{{description}}'/>
+    <fileMonitor monitor_format='{{monitor_format}}' id='{{id}}' date='{{date}}' author_name='{{author.first_last_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' description='{{description}}'/>
     {{/file_monitors}}
   </modal-body>
   </modal-custom>
