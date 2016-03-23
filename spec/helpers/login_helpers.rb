@@ -5,6 +5,7 @@ module RegisteredUserHelper
   extend RSpec::Core::SharedContext
   before do
     admin = create_user('admin')
+    @user = admin
     assign_permissions(admin, 'admin', admin_roles)
     staff = create_user('staff')
     assign_permissions(staff, 'staff', staff_roles)

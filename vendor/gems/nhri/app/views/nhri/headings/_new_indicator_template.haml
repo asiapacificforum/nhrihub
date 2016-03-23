@@ -4,7 +4,11 @@
       .modal-content
         .modal-header
           %h4
+            {{#if persisted}}
+            = t('.edit_indicator')
+            {{else}}
             = t('.new_indicator')
+            {{/if}}
             %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
               %span{"aria-hidden" => "true"} ×
         .modal-body

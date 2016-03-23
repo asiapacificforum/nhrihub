@@ -24,31 +24,18 @@ class Nhri::HeadingsController < ApplicationController
   end
 
   def show
-    @heading = Nhri::Heading.includes(:offences => [:structural_indicators =>
-                                                                 [:reminders => [:users, :remindable],
-                                                                  :notes => [:author, :editor, :notable],
-                                                                  :monitors => [:author, :indicator]],
-                                                               :process_indicators =>
-                                                                 [:reminders => [:users, :remindable],
-                                                                  :notes => [:author, :editor, :notable],
-                                                                  :monitors => [:author, :indicator]],
-                                                               :outcomes_indicators =>
-                                                                 [:reminders => [:users, :remindable],
-                                                                  :notes => [:author, :editor, :notable],
-                                                                  :monitors => [:author, :indicator]]],
-                                                 :all_offence_structural_indicators =>
-                                                               [:reminders => [:users, :remindable],
-                                                                :notes => [:author, :editor, :notable],
-                                                                :monitors => [:author, :indicator]],
-                                                 :all_offence_process_indicators =>
-                                                               [:reminders => [:users, :remindable],
-                                                                :notes => [:author, :editor, :notable],
-                                                                :monitors => [:author, :indicator]],
-                                                 :all_offence_outcomes_indicators =>
-                                                               [:reminders => [:users, :remindable],
-                                                                :notes => [:author, :editor, :notable],
-                                                                :monitors => [:author, :indicator]]
-                                                ).find(params[:id])
+    indicator_associations = [:reminders => [:users, :remindable],
+                              :notes => [:author, :editor, :notable],
+                              :file_monitors => [:author, :indicator],
+                              :text_monitors => [:author, :indicator],
+                              :numeric_monitors => [:author, :indicator]]
+    @heading = Nhri::Heading.includes(:offences => [:structural_indicators => indicator_associations,
+                                                    :process_indicators => indicator_associations,
+                                                    :outcomes_indicators => indicator_associations],
+                                      :all_offence_structural_indicators =>indicator_associations,
+                                      :all_offence_process_indicators =>indicator_associations,
+                                      :all_offence_outcomes_indicators =>indicator_associations
+                                      ).find(params[:id])
   end
 
   private

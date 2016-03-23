@@ -1,6 +1,6 @@
 require 'reminders_controller'
 
-class Nhri::Heading::Indicator::RemindersController < RemindersController
+class Nhri::Indicator::RemindersController < RemindersController
   # methods must be included here in order to control permissions
   def create
     super

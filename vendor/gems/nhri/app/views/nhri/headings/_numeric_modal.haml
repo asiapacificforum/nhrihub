@@ -1,0 +1,47 @@
+%script#numeric_modal{:type => 'ractive/template'}
+  <modal-custom id="numeric_monitors_modal" type="md" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
+  <modal-header>
+  <h4>#{t('.monitor')}: {{numeric_monitor_explanation}}<modal-close/></h4>
+  </modal-header>
+  <modal-body>
+  <i class="fa fa-plus fa-sm" id="add_monitor" on-click='new_monitor()' data-toggle="tooltip" data-placement="bottom" title="#{t('.tooltip.add_monitor')}"/>
+  #monitors{:style => "margin-bottom:80px;"}
+    .row
+      %h5.col-md-3= t('.date')
+      %h5.col-md-3= t('.value')
+    {{#numeric_monitors}}
+    <numericMonitor id='{{id}}' monitor_format='{{monitor_format}}' date='{{formatted_date}}' author_name='{{author.first_last_name}}' value='{{value}}'/>
+    {{/numeric_monitors}}
+  </modal-body>
+  </modal-custom>
+
+%script#numeric_monitor_template{:type => 'text/ractive'}
+  {{#if !persisted }}
+  {{> new_numeric_monitor_template }}
+  {{else}}
+  {{> show_numeric_monitor_template }}
+  {{/if}}
+
+%script#new_numeric_monitor_template{:type => 'text/ractive'}
+  .row#new_monitor.form-horizontal
+    .col-md-3
+      = text_field :monitor, :date, :class => 'form-control', :value => '{{formatted_date}}', :decorator => 'datepicker'
+    .col-md-5
+      .form-group#value{:class => '{{#value_error}}has-error{{/}}'}
+        =text_field :monitor, :value, :style => "width:50%;", :class => 'form-control', :value => '{{value}}', 'on-keydown'=>"remove_errors('value')"
+        %span.help-block= t('.monitor_value_error_message')
+    .col-md-2{:style => "text-align:center;"}
+      <i class="fa fa-remove fa-lg" id="cancel_monitor" on-click="cancel_monitor()" data-toggle="tooltip" data-placement="bottom" title="cancel"/>
+    .col-md-2{:style => "text-align:center;"}
+      <i class="fa fa-check fa-lg" id="save_monitor" on-click="save_monitor()" data-toggle="tooltip" data-placement="bottom" title="save"/>
+
+%script#show_numeric_monitor_template{:type => 'text/ractive'}
+  .monitor.row
+    .col-md-3.date{:style => "margin-bottom:15px;"}
+      %span {{ formatted_date }}
+    .col-md-5.value{:style => "margin-bottom:15px;"}
+      %span {{value}}
+    .col-md-2.icon.monitor_info{:style => "text-align:center;"}
+      %i.fa.fa-info-circle.fa-lg{:decorator => 'popover'}
+    .col-md-2{:style => "text-align:center; font-size:14px;"}
+      %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => 'delete_monitor(event,this)', :style => "position:relative; top:-2px;"}

@@ -15,20 +15,16 @@ $ ->
     template : "#indicator_template"
     computed :
       monitors_count : ->
-        @get('monitors').length
+        if @get('monitor_format') == "numeric"
+          @get('numeric_monitors').length
+        else if @get('monitor_format') == "text"
+          @get('text_monitors').length
+        else
+          @get('file_monitors').length
       reminders_count : ->
         @get('reminders').length
       notes_count : ->
         @get('notes').length
-      #create_reminder_url : ->
-      #  "#{nhri_indicator_indicator_reminders_path('indicator_id')}".
-      #    replace(/indicator_id/,@get('id'))
-      #create_note_url : ->
-      #  "#{nhri_indicator_indicator_notes_path('indicator_id')}".
-      #    replace(/indicator_id/,@get('id'))
-      #create_monitor_url : ->
-      #  "#{nhri_indicator_indicator_monitors_path('indicator_id')}".
-      #    replace(/indicator_id/,@get('id'))
     show_reminders_panel : ->
       reminders.set
         reminders: @get('reminders')
@@ -40,10 +36,17 @@ $ ->
         create_note_url : @get('create_note_url')
       $('#notes_modal').modal('show')
     show_monitors_panel : ->
+      type = @get('monitor_format')
       monitors.set
-        monitors : @get('monitors')
+        file_monitors : @get('file_monitors')
+        numeric_monitors : @get('numeric_monitors')
+        text_monitors : @get('text_monitors')
         create_monitor_url : @get('create_monitor_url')
-      $('#monitors_modal').modal('show')
+        numeric_monitor_explanation : @get('numeric_monitor_explanation')
+        monitor_format : @get('monitor_format')
+        indicator_id : @get('id')
+        source : @
+      $("##{type}_monitors_modal").modal('show')
     delete_indicator : (event,obj)->
       data = [{name:'_method', value: 'delete'}]
       url = @get('url')

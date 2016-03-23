@@ -3,7 +3,9 @@ class Nhri::Indicator < ActiveRecord::Base
   belongs_to :heading
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
-  has_many :monitors, :dependent => :destroy
+  has_many :numeric_monitors, :dependent => :destroy
+  has_many :text_monitors, :dependent => :destroy
+  has_many :file_monitors, :dependent => :destroy
 
   scope :structural, ->{ where(:nature => "Structural") }
   scope :process, ->{ where(:nature => "Process") }
@@ -15,30 +17,40 @@ class Nhri::Indicator < ActiveRecord::Base
           :methods => [:url,
                        :notes,
                        :reminders,
-                       :monitors,
                        :create_reminder_url,
                        :create_monitor_url,
-                       :create_note_url])
+                       :create_note_url]+monitors)
+  end
+
+  def monitors
+    case monitor_format
+    when "numeric"
+      [:numeric_monitors]
+    when "text"
+      [:text_monitors]
+    else
+      [:file_monitors]
+    end
   end
 
   def url
-    Rails.application.routes.url_helpers.nhri_heading_indicator_path(:en,heading_id,id) if persisted?
+    Rails.application.routes.url_helpers.nhri_indicator_path(:en,id) if persisted?
   end
 
   def create_monitor_url
-    Rails.application.routes.url_helpers.nhri_heading_indicator_monitors_path(:en,heading_id,id) if persisted?
+    Rails.application.routes.url_helpers.nhri_indicator_monitors_path(:en,id) if persisted?
   end
 
   def create_reminder_url
-    Rails.application.routes.url_helpers.nhri_heading_indicator_reminders_path(:en,heading_id,id) if persisted?
+    Rails.application.routes.url_helpers.nhri_indicator_reminders_path(:en,id) if persisted?
   end
 
   def create_note_url
-    Rails.application.routes.url_helpers.nhri_heading_indicator_notes_path(:en,heading_id,id) if persisted?
+    Rails.application.routes.url_helpers.nhri_indicator_notes_path(:en,id) if persisted?
   end
 
   def polymorphic_path
-    OpenStruct.new(:prefix => 'nhri_heading_indicator', :keys => {:heading_id => heading_id, :indicator_id => id})
+    OpenStruct.new(:prefix => 'nhri_indicator', :keys => {:indicator_id => id})
   end
 
 end

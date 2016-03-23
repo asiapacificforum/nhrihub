@@ -1,6 +1,6 @@
 require 'notes_controller'
 
-class Nhri::Heading::Indicator::NotesController < NotesController
+class Nhri::Indicator::NotesController < NotesController
   def create
     super
   end

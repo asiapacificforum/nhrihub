@@ -11,13 +11,13 @@ Rails.application.routes.draw do
         resources :projects
       end
       resources :complaints
+      resources :indicators do
+        resources :reminders, :controller => 'indicator/reminders'
+        resources :notes, :controller => 'indicator/notes'
+        resources :monitors, :controller => 'indicator/monitors'
+      end
       resources :headings do
         resources :indicators, :controller => 'heading/indicators'
-        resources :indicators do
-          resources :reminders, :controller => 'heading/indicator/reminders'
-          resources :notes, :controller => 'heading/indicator/notes'
-          resources :monitors, :controller => 'heading/indicator/monitors'
-        end
       end
       namespace :advisory_council do
         resources :terms_of_references

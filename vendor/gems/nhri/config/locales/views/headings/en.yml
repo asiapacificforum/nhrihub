@@ -18,19 +18,38 @@ en:
         nature: "Nature"
         add_indicator: "add indicator"
       monitor:
-        monitors: "Monitors"
-        date: "Date"
-        description: "Description"
-        monitor_description_error_message: "Description cannot be blank"
+        value : "Value"
         created_on: "Created on"
         author: "Author"
         updated_on: "Updated on"
         updated_by: "Updated by"
         details: "Details"
+      numeric_modal:
+        monitor_value_error_message : "Value cannot be blank"
+        monitor: "Monitor"
         tooltip:
           add_monitor: "add monitor entry"
+        date: "Date"
+        value : "Value"
+      text_modal:
+        monitors: "Monitors"
+        monitor: "Monitor"
+        monitor_description_error_message: "Description cannot be blank"
+        tooltip:
+          add_monitor: "add monitor entry"
+        date: "Date"
+        description: "Description"
+      file_modal:
+        monitors: "Monitors"
+        monitor: "Monitor"
+        monitor_description_error_message: "Description cannot be blank"
+        tooltip:
+          add_monitor: "add monitor entry"
+        date: "Date"
+        description: "Description"
       new_indicator_template:
         new_indicator: "New indicator"
+        edit_indicator: "Edit indicator"
         offence: "Offence"
         title: "Title"
         nature: "Nature"

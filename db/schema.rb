@@ -118,8 +118,21 @@ ActiveRecord::Schema.define(version: 20160308041416) do
     t.integer  "archive_doc_count",            default: 0
   end
 
+  create_table "file_monitors", force: :cascade do |t|
+    t.integer  "indicator_id"
+    t.integer  "author_id"
+    t.string   "file_id",           limit: 255
+    t.integer  "filesize"
+    t.string   "original_filename", limit: 255
+    t.string   "original_type",     limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "headings", force: :cascade do |t|
-    t.string "title"
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "icc_reference_documents", force: :cascade do |t|
@@ -141,12 +154,14 @@ ActiveRecord::Schema.define(version: 20160308041416) do
   end
 
   create_table "indicators", force: :cascade do |t|
-    t.string  "title"
-    t.integer "offence_id"
-    t.integer "heading_id"
-    t.string  "nature"
-    t.string  "monitor_format"
-    t.string  "numeric_monitor_explanation"
+    t.string   "title"
+    t.integer  "offence_id"
+    t.integer  "heading_id"
+    t.string   "nature"
+    t.string   "monitor_format"
+    t.string   "numeric_monitor_explanation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "internal_documents", force: :cascade do |t|
@@ -218,15 +233,6 @@ ActiveRecord::Schema.define(version: 20160308041416) do
     t.datetime "updated_at"
   end
 
-  create_table "monitors", force: :cascade do |t|
-    t.integer  "indicator_id"
-    t.integer  "author_id"
-    t.datetime "date"
-    t.string   "description"
-    t.integer  "value"
-    t.string   "format"
-  end
-
   create_table "notes", force: :cascade do |t|
     t.text     "text"
     t.integer  "notable_id"
@@ -237,9 +243,20 @@ ActiveRecord::Schema.define(version: 20160308041416) do
     t.string   "notable_type"
   end
 
+  create_table "numeric_monitors", force: :cascade do |t|
+    t.integer  "indicator_id"
+    t.integer  "author_id"
+    t.datetime "date"
+    t.integer  "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "offences", force: :cascade do |t|
-    t.string  "description"
-    t.integer "heading_id"
+    t.string   "description"
+    t.integer  "heading_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -393,6 +410,15 @@ ActiveRecord::Schema.define(version: 20160308041416) do
     t.text     "name"
     t.text     "full_name"
     t.integer  "area_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "text_monitors", force: :cascade do |t|
+    t.integer  "indicator_id"
+    t.integer  "author_id"
+    t.datetime "date"
+    t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

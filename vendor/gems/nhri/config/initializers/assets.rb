@@ -5,6 +5,7 @@ assets = [ 'nhri/reference_documents.js',
            'headings.js',
            'nhri/headings.css',
            'jquery_datepicker.js',
-           'nhri/indicators.js']
+           'nhri/indicators.js',
+           'nhri/monitors.js']
 
 Rails.application.config.assets.precompile += assets
