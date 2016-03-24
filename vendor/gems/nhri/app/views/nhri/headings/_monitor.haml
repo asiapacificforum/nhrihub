@@ -1,6 +1,8 @@
 %script#monitors_template{:type => 'ractive/template'}
-  {{>numeric_modal}}
   {{>text_modal}}
+  {{>numeric_modal}}
+
+%script#file_monitor_template{:type => 'ractive/template'}
   {{>file_modal}}
 
 = render :partial => 'numeric_modal'
@@ -24,6 +26,25 @@
     %tr
       %td= t('.author')
       %td#author {{ author_name }}
+
+%script#fileMonitorDetailsContent{:type => 'text/ractive'}
+  - scope = 'activerecord.attributes.file_monitor'
+  %table#details{:style => 'width:500px'}
+    %tr
+      %td= t('original_filename', :scope => scope)
+      %td#name {{ original_filename }}
+    %tr
+      %td= t('filesize', :scope => scope)
+      %td#filesize {{ formatted_filesize }}
+    %tr
+      %td= t('lastModified', :scope => scope)
+      %td#lastModified {{ formatted_modification_date }}
+    %tr
+      %td= t('uploadedOn', :scope => scope)
+      %td#uploadedOn {{ formatted_creation_date }}
+    %tr
+      %td= t('uploadedBy', :scope => scope)
+      %td#author {{ author.first_last_name }}
 
 %div#popover_template{:style=>"display: none"}
   .popover.fileDetails{:role=>"tooltip"}

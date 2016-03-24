@@ -3,7 +3,7 @@ class Nhri::NumericMonitor < ActiveRecord::Base
   belongs_to :indicator
   belongs_to :author, :class_name => "User", :foreign_key => :author_id
 
-  default_scope ->{ order(:date => :asc) }
+  default_scope ->{ order(:date => :asc, :created_at => :asc) }
 
   def as_json(options={})
     super(:except => [:updated_at, :created_at], :methods => [:url, :val, :author, :formatted_date])

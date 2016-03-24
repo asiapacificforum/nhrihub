@@ -16,7 +16,7 @@ FactoryGirl.define do
     filesize            { 10000 + (30000*rand).to_i }
     original_filename   { "#{Faker::Lorem.words(2).join("_")}.pdf" }
     original_type       "application/msword"
-    author_id { User.pluck(:id).sample }
+    user_id { User.pluck(:id).sample }
 
     after(:build) { |doc| FileUtils.touch Rails.root.join('tmp','uploads','store',doc.file_id)  }
   end

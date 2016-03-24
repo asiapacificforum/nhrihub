@@ -39,13 +39,12 @@ en:
         date: "Date"
         description: "Description"
       file_modal:
-        monitors: "Monitors"
-        monitor: "Monitor"
-        monitor_description_error_message: "Description cannot be blank"
-        tooltip:
-          add_monitor: "add monitor entry"
-        date: "Date"
-        description: "Description"
+        monitor: "Monitor: File"
+        title: "Title"
+        choose_file: "Choose file"
+        too_large: "File is too large"
+        unpermitted_type: "Unpermitted file type"
+        save: "Upload file"
       new_indicator_template:
         new_indicator: "New indicator"
         edit_indicator: "Edit indicator"

@@ -66,6 +66,7 @@ group :development, :test, :jstest do
   gem 'magic_lamp'
   gem 'launchy'
   gem 'byebug'
+  gem 'js-routes'
 end
 gem 'bootstrap-sass'
 gem 'simple-navigation-bootstrap'

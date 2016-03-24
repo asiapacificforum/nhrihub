@@ -3,6 +3,14 @@ require 'rspec/core/shared_context'
 module IndicatorNumericMonitorSpecHelpers
   extend RSpec::Core::SharedContext
 
+  def monitor_description_error
+    page.all("#new_monitor #description span.help-block")
+  end
+
+  def number_of_numeric_monitors
+    page.all('#monitors .monitor').count
+  end
+
   def cancel_add
     page.find('#cancel_monitor').click
     sleep(0.1)

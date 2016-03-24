@@ -3,6 +3,7 @@
 #reminder
 #note
 #monitor
+#file_monitor
 #new_indicator
 #heading
 
@@ -20,3 +21,5 @@
 :coffeescript
   window.heading_data = #{@heading.to_json}
   window.natures = [{name:'structural',text:"#{t('.structural')}"},{name:'process',text:"#{t('.process')}"},{name:'outcomes',text:"#{t('.outcomes')}"}]
+  window.permitted_filetypes = []
+  window.maximum_filesize = 5

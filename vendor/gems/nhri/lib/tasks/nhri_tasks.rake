@@ -90,14 +90,14 @@ namespace :nhri do
                                :reminders => reminders,
                                :numeric_monitors => monitors)
           else
-            monitors = rand(3).times.collect{|i| FactoryGirl.build(:file_monitor)}
+            monitor = FactoryGirl.build(:file_monitor)
             FactoryGirl.create(:indicator,
                                :nature => nature,
                                :offence_id => nil,
                                :heading_id => heading.id,
                                :notes => notes,
                                :reminders => reminders,
-                               :file_monitors => monitors)
+                               :file_monitor => monitor)
           end #/case
         end #/rand(4) loop
         heading.offences.pluck(:id).each do |o_id|
@@ -126,14 +126,14 @@ namespace :nhri do
                                  :reminders => reminders,
                                  :numeric_monitors => monitors)
             else
-              monitors = rand(3).times.collect{|i| FactoryGirl.build(:file_monitor)}
+              monitor = FactoryGirl.build(:file_monitor)
               FactoryGirl.create(:indicator,
                                  :nature => nature,
                                  :offence_id => o_id,
                                  :heading_id => heading.id,
                                  :notes => notes,
                                  :reminders => reminders,
-                                 :file_monitors => monitors)
+                                 :file_monitor => monitor)
             end #/case
           end #/3.times
         end #o_id loop

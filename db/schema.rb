@@ -120,7 +120,8 @@ ActiveRecord::Schema.define(version: 20160308041416) do
 
   create_table "file_monitors", force: :cascade do |t|
     t.integer  "indicator_id"
-    t.integer  "author_id"
+    t.integer  "user_id"
+    t.datetime "lastModifiedDate"
     t.string   "file_id",           limit: 255
     t.integer  "filesize"
     t.string   "original_filename", limit: 255

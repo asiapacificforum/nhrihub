@@ -1,0 +1,9 @@
+en:
+  activerecord:
+    attributes:
+      file_monitor:
+        original_filename: "Original file name"
+        filesize: "File size"
+        uploadedOn: "Uploaded on"
+        uploadedBy: "Uploaded by"
+        lastModified: "Modified on"
