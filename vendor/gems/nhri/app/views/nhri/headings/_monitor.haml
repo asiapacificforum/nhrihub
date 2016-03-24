@@ -1,6 +1,8 @@
 %script#monitors_template{:type => 'ractive/template'}
-  {{>numeric_modal}}
   {{>text_modal}}
+  {{>numeric_modal}}
+
+%script#file_monitor_template{:type => 'ractive/template'}
   {{>file_modal}}
 
 = render :partial => 'numeric_modal'
@@ -17,6 +19,15 @@
       %td#author {{ author_name }}
 
 %script#textMonitorDetailsContent{:type => 'text/ractive'}
+  %table#details{:style => 'width:200px'}
+    %tr
+      %td= t('.created_on')
+      %td#created_on {{ date }}
+    %tr
+      %td= t('.author')
+      %td#author {{ author_name }}
+
+%script#fileMonitorDetailsContent{:type => 'text/ractive'}
   %table#details{:style => 'width:200px'}
     %tr
       %td= t('.created_on')

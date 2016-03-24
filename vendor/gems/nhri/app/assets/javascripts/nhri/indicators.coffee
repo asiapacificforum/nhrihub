@@ -11,8 +11,52 @@ $ ->
     components :
       offence : Offence
 
+  FileUpload = (node)->
+    $(node).fileupload
+      dataType: 'json'
+      type: 'post'
+      add: (e, data) -> # data includes a files property containing added files and also a submit property
+        upload_widget = $(@).data('blueimp-fileupload')
+        ractive = data.ractive = Ractive.
+          getNodeInfo(upload_widget.element[0]).
+          ractive
+        data.context = upload_widget.element.closest(".monitor")
+        ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+        ractive.set('original_filename', data.files[0].name)
+        ractive.validate_file_constraints()
+        ractive._validate_attachment()
+        return
+      done: (e, data) ->
+        data.ractive.update_collection_item(data.jqXHR.responseJSON)
+        return
+      formData : ->
+        @ractive.formData()
+      uploadTemplateId: '#upload_template'
+      uploadTemplateContainerId: '#selected_file_container'
+      downloadTemplateId: '#download_file_template'
+      permittedFiletypes: permitted_filetypes
+      maxFileSize: parseInt(maximum_filesize)
+    teardown : ->
+      #noop for now
+
+  Ractive.decorators.file_upload = FileUpload
+
+  # window.file_monitor = new Ractive
+  FileMonitor = Ractive.extend
+    template : "#file_monitor_template"
+    onModalClose : ->
+      console.log "closing"
+    validate_file_constraints: ->
+      true
+    _validate_attachment : ->
+      true
+    save_file : ->
+      console.log "saving in FileMonitor"
+
   Indicator = Ractive.extend
     template : "#indicator_template"
+    components :
+      fileMonitor : FileMonitor
     computed :
       monitors_count : ->
         if @get('monitor_format') == "numeric"
@@ -37,16 +81,20 @@ $ ->
       $('#notes_modal').modal('show')
     show_monitors_panel : ->
       type = @get('monitor_format')
-      monitors.set
-        file_monitors : @get('file_monitors')
-        numeric_monitors : @get('numeric_monitors')
-        text_monitors : @get('text_monitors')
-        create_monitor_url : @get('create_monitor_url')
-        numeric_monitor_explanation : @get('numeric_monitor_explanation')
-        monitor_format : @get('monitor_format')
-        indicator_id : @get('id')
-        source : @
-      $("##{type}_monitors_modal").modal('show')
+      if type == 'file'
+        #file_monitor.set
+          #file_monitor : @get('file_monitor')
+        $('#file_monitor_modal').modal('show')
+      else
+        monitors.set
+          numeric_monitors : @get('numeric_monitors')
+          text_monitors : @get('text_monitors')
+          create_monitor_url : @get('create_monitor_url')
+          numeric_monitor_explanation : @get('numeric_monitor_explanation')
+          monitor_format : @get('monitor_format')
+          indicator_id : @get('id')
+          source : @
+        $("##{type}_monitors_modal").modal('show')
     delete_indicator : (event,obj)->
       data = [{name:'_method', value: 'delete'}]
       url = @get('url')

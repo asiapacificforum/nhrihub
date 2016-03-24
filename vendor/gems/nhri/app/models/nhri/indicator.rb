@@ -5,7 +5,7 @@ class Nhri::Indicator < ActiveRecord::Base
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
   has_many :numeric_monitors, :dependent => :destroy
   has_many :text_monitors, :dependent => :destroy
-  has_many :file_monitors, :dependent => :destroy
+  has_one :file_monitor, :dependent => :destroy
 
   scope :structural, ->{ where(:nature => "Structural") }
   scope :process, ->{ where(:nature => "Process") }
@@ -29,7 +29,7 @@ class Nhri::Indicator < ActiveRecord::Base
     when "text"
       [:text_monitors]
     else
-      [:file_monitors]
+      [:file_monitor]
     end
   end
 

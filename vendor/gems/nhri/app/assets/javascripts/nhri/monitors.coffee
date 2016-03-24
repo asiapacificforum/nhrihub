@@ -104,13 +104,13 @@ $ ->
         true
   , Monitor
 
-  FileMonitor = Ractive.extend
-    template : '#file_monitor_template'
-    computed :
-      type : -> "FileMonitor"
-      params : ->
-        ["indicator_id","author_id","file_id","filesize","original_filename","original_type"]
-  , Monitor
+  # FileMonitor = Ractive.extend
+  #   template : '#file_monitor_template'
+  #   computed :
+  #     type : -> "FileMonitor"
+  #     params : ->
+  #       ["indicator_id","author_id","file_id","filesize","original_filename","original_type"]
+  # , Monitor
 
   window.monitors = new Ractive
     el: '#monitor'
@@ -132,6 +132,8 @@ $ ->
       collection = "#{@get('monitor_format')}_monitors"
       @set(collection,monitors)
       @get('source').set(collection,monitors)
+
+
 
   Popover = (node)->
     indicator = @
@@ -175,4 +177,4 @@ $ ->
   Ractive.decorators.popover = Popover
   Ractive.components.numericMonitor = NumericMonitor
   Ractive.components.textMonitor = TextMonitor
-  Ractive.components.fileMonitor = FileMonitor
+  # Ractive.components.fileMonitor = FileMonitor

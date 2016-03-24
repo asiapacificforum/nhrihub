@@ -18,6 +18,7 @@
       .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:30px;"}
       %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
       %i.fa.fa-trash-o.fa-lg.delete_indicator{'on-click' => 'delete_indicator(event,this)', :style => "position:relative; top:4px; left:28px;"}
+  <fileMonitor />
 
 %script#natures_template{:type => 'ractive/template'}
   {{#natures}}

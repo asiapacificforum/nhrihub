@@ -26,7 +26,7 @@ class Nhri::HeadingsController < ApplicationController
   def show
     indicator_associations = [:reminders => [:users, :remindable],
                               :notes => [:author, :editor, :notable],
-                              :file_monitors => [:author, :indicator],
+                              :file_monitor => [:author, :indicator],
                               :text_monitors => [:author, :indicator],
                               :numeric_monitors => [:author, :indicator]]
     @heading = Nhri::Heading.includes(:offences => [:structural_indicators => indicator_associations,
