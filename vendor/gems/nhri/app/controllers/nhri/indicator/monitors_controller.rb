@@ -3,7 +3,7 @@ class Nhri::Indicator::MonitorsController < ApplicationController
     monitor = model.new(monitor_params)
     monitor.author = current_user
     if monitor.save
-      render :json => model.where(:indicator_id => monitor.indicator_id), :status => 200
+      render :json => monitor.indicator.monitors, :status => 200
     else
       render :nothing => true, :status => 500
     end
@@ -20,9 +20,8 @@ class Nhri::Indicator::MonitorsController < ApplicationController
 
   def destroy
     monitor = model.find(params[:id])
-    indicator = monitor.indicator
     if monitor.destroy
-      render :json => indicator.reload, :status => 200
+      render :json => monitor.indicator.monitors, :status => 200
     else
       render :nothing => true, :status => 500
     end

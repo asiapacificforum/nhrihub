@@ -3,17 +3,21 @@ require 'rspec/core/shared_context'
 module IndicatorFileMonitorSpecHelpers
   extend RSpec::Core::SharedContext
 
+  def file_size
+    page.find('#filesize').text
+  end
+
   def cancel_add
     page.find('#cancel_monitor').click
     sleep(0.1)
   end
 
-  def set_date_to(date_string)
-    page.execute_script("var l = monitors.get('text_monitors').length; monitors.findAllComponents('textMonitor')[l-1].set('date', new Date(Date.parse('#{date_string}')))")
+  def click_the_download_icon
+    page.find('.download').click
   end
 
   def close_monitors_modal
-    page.find('#text_monitors_modal button.close').click
+    page.find('#file_monitor_modal button.close').click
     sleep(0.2) # css transition
   end
 
@@ -26,7 +30,7 @@ module IndicatorFileMonitorSpecHelpers
   end
 
   def hover_over_info_icon
-    page.execute_script("$('div.icon.monitor_info i').last().trigger('mouseenter')")
+    page.execute_script("$('i#show_details').trigger('mouseenter')")
     sleep(0.2)
   end
 

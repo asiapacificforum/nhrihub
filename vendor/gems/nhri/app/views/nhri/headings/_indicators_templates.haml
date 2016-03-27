@@ -43,7 +43,7 @@
     %div{:style => "display:inline-block;"}
       %ul{:style => "padding-left:10px"}
         {{#all_offence_indicators}}
-        <indicator monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' create_monitor_url='{{create_monitor_url}}' url='{{url}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' numeric_monitors='{{numeric_monitors}}' text_monitors='{{text_monitors}}' file_monitors='{{file_monitors}}' title='{{title}}' />
+        <indicator monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' create_monitor_url='{{create_monitor_url}}' url='{{url}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' numeric_monitors='{{numeric_monitors}}' text_monitors='{{text_monitors}}' file_monitor='{{file_monitor}}' title='{{title}}' />
         {{/all_offence_indicators}}
 
 %script#nature_offence_template{:type => 'ractive/template'}
@@ -51,5 +51,5 @@
     %i.fa.fa-plus.fa-sm.new_planned_result{ 'on-click'=>'new_indicator()', :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add indicator"}
     %ul{:style => "padding-left:10px"}
       {{#this[name+'_indicators']}}
-      <indicator monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' create_monitor_url='{{create_monitor_url}}' url='{{url}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' numeric_monitors='{{numeric_monitors}}' text_monitors='{{text_monitors}}' file_monitors='{{file_monitors}}' title='{{title}}' />
+      <indicator monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' create_monitor_url='{{create_monitor_url}}' url='{{url}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' numeric_monitors='{{numeric_monitors}}' text_monitors='{{text_monitors}}' file_monitor='{{file_monitor}}' title='{{title}}' />
       {{/this[name+'_indicators']}}

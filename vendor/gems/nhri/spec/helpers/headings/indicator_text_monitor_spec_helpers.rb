@@ -3,6 +3,10 @@ require 'rspec/core/shared_context'
 module IndicatorTextMonitorSpecHelpers
   extend RSpec::Core::SharedContext
 
+  def number_of_text_monitors
+    page.all('#monitors .monitor').count
+  end
+
   def cancel_add
     page.find('#cancel_monitor').click
     sleep(0.1)

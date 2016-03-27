@@ -23,3 +23,5 @@
 //= require ractive-bootstrap
 // TODO this hack (below) is not required, it's b/c I made a mistake, see my jquery pullrequest
 //= require jquery_json_parse_hack
+//= require js-routes
+//= require locale

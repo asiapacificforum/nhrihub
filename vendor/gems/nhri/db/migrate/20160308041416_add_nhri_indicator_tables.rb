@@ -39,7 +39,8 @@ class AddNhriIndicatorTables < ActiveRecord::Migration
 
     create_table :file_monitors do |t|
       t.integer :indicator_id
-      t.integer :author_id
+      t.integer :user_id
+      t.datetime "lastModifiedDate"
       t.string   "file_id",               limit: 255
       t.integer  "filesize"
       t.string   "original_filename",     limit: 255

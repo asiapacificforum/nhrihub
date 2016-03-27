@@ -15,6 +15,7 @@ Rails.application.routes.draw do
         resources :reminders, :controller => 'indicator/reminders'
         resources :notes, :controller => 'indicator/notes'
         resources :monitors, :controller => 'indicator/monitors'
+        resources :file_monitors, :controller => 'indicator/file_monitors'
       end
       resources :headings do
         resources :indicators, :controller => 'heading/indicators'

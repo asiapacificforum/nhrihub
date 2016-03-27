@@ -1,15 +1,20 @@
 class Nhri::FileMonitor < ActiveRecord::Base
-  PermittedAttributes = []
+  include DocumentApi
+  PermittedAttributes = [:indicator_id, :file, :original_filename, :original_type, :filesize]
   belongs_to :indicator
-  belongs_to :author, :class_name => "User", :foreign_key => :author_id
+  belongs_to :user
+
+  alias_method :author, :user
+
+  attachment :file
 
   default_scope ->{ order(:created_at => :asc) }
 
   def as_json(options={})
-    super(:except => [:updated_at, :created_at], :methods => [:url, :val, :author])
+    super(:except => [:updated_at, :created_at], :methods => [:author,
+                                                              :formatted_modification_date, # from DocumentApi
+                                                              :formatted_creation_date, # ditto
+                                                              :formatted_filesize ]) # ditto
   end
 
-  def url
-    Rails.application.routes.url_helpers.nhri_indicator_monitor_path(:en,indicator.heading_id,indicator_id,id) if persisted?
-  end
 end

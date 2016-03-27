@@ -20,14 +20,16 @@ $ ->
         ractive = data.ractive = Ractive.
           getNodeInfo(upload_widget.element[0]).
           ractive
+        # ractive is the file_monitor ractive instance
         data.context = upload_widget.element.closest(".monitor")
         ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-        ractive.set('original_filename', data.files[0].name)
+        #ractive.set('original_filename', data.files[0].name)
+        ractive.findComponent("selectedFile").set( _.extend({},data.files[0]) )
         ractive.validate_file_constraints()
         ractive._validate_attachment()
         return
       done: (e, data) ->
-        data.ractive.update_collection_item(data.jqXHR.responseJSON)
+        data.ractive.update_file(data.jqXHR.responseJSON)
         return
       formData : ->
         @ractive.formData()
@@ -41,17 +43,70 @@ $ ->
 
   Ractive.decorators.file_upload = FileUpload
 
-  # window.file_monitor = new Ractive
-  FileMonitor = Ractive.extend
+  SelectedFile = Ractive.extend
+    template : "<span id='selected_file'>{{name}}</span>"
+
+  MonitorPopover = (node)->
+    indicator = @
+    $(node).popover
+      html : true,
+      title : ->
+        $('#detailsTitle').html()
+      content : ->
+        data = indicator.get()
+        if data.monitor_format == "numeric"
+          template = "#numericMonitorDetailsContent"
+        else if data.monitor_format == "text"
+          template = "#textMonitorDetailsContent"
+        else
+          template = "#fileMonitorDetailsContent"
+        ractive = new Ractive
+          template : template
+          data : data
+        ractive.toHTML()
+      template : $('#popover_template').html()
+      trigger: 'hover'
+    teardown: ->
+      $(node).off('mouseenter')
+
+  window.file_monitor = new Ractive
+    el: "#file_monitor"
     template : "#file_monitor_template"
+    computed :
+      url : ->
+        if @get('persisted')
+          Routes.nhri_indicator_file_monitor_path('en', @get('indicator_id'), @get('id'))
+        else
+          Routes.nhri_indicator_file_monitors_path('en', @get('indicator_id'))
+      persisted : ->
+        !_.isUndefined @get('id')
+      save_method : ->
+        if @get('persisted')
+          'put'
+        else
+          'post'
+    decorators :
+      popover : MonitorPopover
+    components :
+      selectedFile : SelectedFile
+    formData : ->
+      'monitor[original_filename]' : @findComponent('selectedFile').get('name')
+      'monitor[original_type]' : @findComponent('selectedFile').get('type')
+      'monitor[filesize]' : @findComponent('selectedFile').get('size')
     onModalClose : ->
-      console.log "closing"
+      @findComponent('selectedFile').reset()
     validate_file_constraints: ->
       true
     _validate_attachment : ->
       true
     save_file : ->
-      console.log "saving in FileMonitor"
+      $('.fileupload').fileupload('option',{method : @get('save_method'), url:@get('url'), formData:@formData()})
+      @get('fileupload').submit()
+    update_file : (response)->
+      @findComponent('selectedFile').reset()
+      @set(response)
+    download_file : ->
+      window.location = @get('url')
 
   Indicator = Ractive.extend
     template : "#indicator_template"
@@ -63,8 +118,10 @@ $ ->
           @get('numeric_monitors').length
         else if @get('monitor_format') == "text"
           @get('text_monitors').length
+        else if _.isNumber @get('file_monitor.id')
+          1
         else
-          @get('file_monitors').length
+          0
       reminders_count : ->
         @get('reminders').length
       notes_count : ->
@@ -72,24 +129,25 @@ $ ->
     show_reminders_panel : ->
       reminders.set
         reminders: @get('reminders')
-        create_reminder_url : @get('create_reminder_url')
+        create_reminder_url : Routes.nhri_indicator_reminders_path(current_locale,@get('id'))
       $('#reminders_modal').modal('show')
     show_notes_panel : ->
       notes.set
         notes : @get('notes')
-        create_note_url : @get('create_note_url')
+        create_note_url : Routes.nhri_indicator_notes_path(current_locale,@get('id'))
       $('#notes_modal').modal('show')
     show_monitors_panel : ->
       type = @get('monitor_format')
       if type == 'file'
-        #file_monitor.set
-          #file_monitor : @get('file_monitor')
+        if _.isNull(@get('file_monitor'))
+          file_monitor.reset({indicator_id : @get('id')})
+        else
+          file_monitor.set(@get('file_monitor'))
         $('#file_monitor_modal').modal('show')
       else
         monitors.set
           numeric_monitors : @get('numeric_monitors')
           text_monitors : @get('text_monitors')
-          create_monitor_url : @get('create_monitor_url')
           numeric_monitor_explanation : @get('numeric_monitor_explanation')
           monitor_format : @get('monitor_format')
           indicator_id : @get('id')
@@ -97,7 +155,7 @@ $ ->
         $("##{type}_monitors_modal").modal('show')
     delete_indicator : (event,obj)->
       data = [{name:'_method', value: 'delete'}]
-      url = @get('url')
+      url = Routes.nhri_indicator_path(current_locale,@get('id'))
       $.ajax
         method: 'post'
         url: url

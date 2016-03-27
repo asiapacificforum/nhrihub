@@ -14,15 +14,11 @@ class Nhri::Indicator < ActiveRecord::Base
 
   def as_json(options={})
     super(:except => [:created_at, :updated_at],
-          :methods => [:url,
-                       :notes,
-                       :reminders,
-                       :create_reminder_url,
-                       :create_monitor_url,
-                       :create_note_url]+monitors)
+          :methods => [:notes,
+                       :reminders]+monitor_methods)
   end
 
-  def monitors
+  def monitor_methods
     case monitor_format
     when "numeric"
       [:numeric_monitors]
@@ -33,20 +29,15 @@ class Nhri::Indicator < ActiveRecord::Base
     end
   end
 
-  def url
-    Rails.application.routes.url_helpers.nhri_indicator_path(:en,id) if persisted?
-  end
-
-  def create_monitor_url
-    Rails.application.routes.url_helpers.nhri_indicator_monitors_path(:en,id) if persisted?
-  end
-
-  def create_reminder_url
-    Rails.application.routes.url_helpers.nhri_indicator_reminders_path(:en,id) if persisted?
-  end
-
-  def create_note_url
-    Rails.application.routes.url_helpers.nhri_indicator_notes_path(:en,id) if persisted?
+  def monitors
+    case monitor_format
+    when "numeric"
+      numeric_monitors
+    when "text"
+      text_monitors
+    else
+      file_monitor
+    end
   end
 
   def polymorphic_path

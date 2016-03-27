@@ -19,6 +19,7 @@ $ ->
 
   Ractive.DEBUG = false
 
+  # applies to text and numeric monitors only, file_monitors have the FileMonitor ractive
   Monitor =
     computed :
       persisted : ->
@@ -29,7 +30,7 @@ $ ->
         set: (val)-> 
           @set('date', $.datepicker.parseDate( "M d, yy", val))
     save_monitor : ->
-      url = @parent.get('create_monitor_url')
+      url = Routes.nhri_indicator_monitors_path(current_locale,this.get('indicator_id'))
       data = {monitor : _.chain(@get()).pick(@get('params')).extend({type:@get('type')}).value() }
       if @validate(data)
         $.ajax
@@ -37,7 +38,7 @@ $ ->
           url : url
           data : data
           dataType : 'json'
-          success : @create_monitor
+          success : @update_monitor
           context : @
     cancel_monitor : ->
       @parent.pop(@parent.get('collection'))
@@ -53,9 +54,7 @@ $ ->
         dataType : 'json'
         context : @
         success : @update_monitor
-    update_monitor : (resp, statusText, jqxhr)->
-      @parent.set(resp)
-    create_monitor : (response, statusText, jqxhr)->
+    update_monitor : (response, statusText, jqxhr)->
       @parent.update_monitors(response)
     remove_errors : (field)->
       if _.isUndefined(field) # after edit, failed save, and cancel, remove all errors
@@ -104,14 +103,6 @@ $ ->
         true
   , Monitor
 
-  # FileMonitor = Ractive.extend
-  #   template : '#file_monitor_template'
-  #   computed :
-  #     type : -> "FileMonitor"
-  #     params : ->
-  #       ["indicator_id","author_id","file_id","filesize","original_filename","original_type"]
-  # , Monitor
-
   window.monitors = new Ractive
     el: '#monitor'
     template : "#monitors_template"
@@ -120,7 +111,7 @@ $ ->
         "#{@get('monitor_format')}_monitors"
     new_monitor : ->
       unless @_new_monitor_is_active()
-        @push(@get('collection'),{id:null, date: new Date, value:null, indicator_id:@get('id'), formatted_date : $.datepicker.formatDate("M d, yy", new Date())})
+        @push(@get('collection'),{id:null, date: new Date, value:null, indicator_id:@get('indicator_id'), formatted_date : $.datepicker.formatDate("M d, yy", new Date())})
     _new_monitor_is_active : ->
       monitors = @findAllComponents("#{@get('monitor_format')}Monitor")
       (monitors.length > 0) && _.isNull( monitors[monitors.length - 1].get('id'))
@@ -130,33 +121,8 @@ $ ->
         @pop(collection)
     update_monitors : (monitors) ->
       collection = "#{@get('monitor_format')}_monitors"
-      @set(collection,monitors)
-      @get('source').set(collection,monitors)
-
-
-
-  Popover = (node)->
-    indicator = @
-    $(node).popover
-      html : true,
-      title : ->
-        $('#detailsTitle').html()
-      content : ->
-        data = indicator.get()
-        if data.monitor_format == "numeric"
-          template = "#numericMonitorDetailsContent"
-        else if data.monitor_format == "text"
-          template = "#textMonitorDetailsContent"
-        else
-          template = "#detailsContent"
-        ractive = new Ractive
-          template : template
-          data : data
-        ractive.toHTML()
-      template : $('#popover_template').html()
-      trigger: 'hover'
-    teardown: ->
-      $(node).off('mouseenter')
+      @set(collection,monitors) # the monitors instance
+      @get('source').set(collection,monitors) # the indicator
 
   Datepicker = (node)->
     $(node).datepicker
@@ -174,7 +140,5 @@ $ ->
       $(node).datepicker('destroy')
 
   Ractive.decorators.datepicker = Datepicker
-  Ractive.decorators.popover = Popover
   Ractive.components.numericMonitor = NumericMonitor
   Ractive.components.textMonitor = TextMonitor
-  # Ractive.components.fileMonitor = FileMonitor

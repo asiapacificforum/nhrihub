@@ -1,11 +1,17 @@
 %script#file_modal{:type => 'ractive/template'}
-  <modal-custom id="file_monitor_modal" type="xl">
+  <modal-custom id="file_monitor_modal" type="xl" onclose="Ractive.getNodeInfo($('.template-upload')[0]).ractive.onModalClose()">
   <modal-header>
   <h4>#{t('.monitor')}<modal-close/></h4>
   </modal-header>
   <modal-body>
   .row.well.well-sm.form.template-upload{:style => 'background-image: none'}
     .col-md-12
+      .row
+        .col-md-2#filename {{ original_filename }}
+        .col-md-1
+          %i.fa.fa-info-circle.fa-lg#show_details{:decorator => :popover}
+        .col-md-1
+          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
       .row.fileupload{:decorator => 'file_upload'}
         .col-md-12
           .row.fileupload_progress
@@ -19,12 +25,12 @@
           .row
             .col-md-2#fileinput_button
               %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-              %input{:id => "file", :type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"[file]"}
+              %input#monitor_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"monitor[file]"}
             .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
-              {{original_filename}}
+              <selectedFile>
           .row
-            .col-md-2#submit_button
-              %span.btn.btn-success.btn-xs{'on-click' => "save_file()"}= t('.save')
+            .col-md-2
+              %span.btn.btn-success.btn-xs#save_monitor{'on-click' => "save_file()"}= t('.save')
   </modal-body>
   </modal-custom>
 

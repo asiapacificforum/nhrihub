@@ -8,9 +8,15 @@ module IndicatorsFileMonitorSpecSetupHelpers
     FactoryGirl.create(:offence)
     FactoryGirl.create(:indicator,
                        :monitor_format => 'file',
+<<<<<<< HEAD
                        :reminders=>[FactoryGirl.create(:reminder, :indicator)],
                        :notes => [FactoryGirl.create(:note, :indicator, :created_at => 3.days.ago.to_datetime),FactoryGirl.create(:note, :indicator, :created_at => 4.days.ago.to_datetime)],
                        :file_monitors => [FactoryGirl.create(:file_monitor, :created_at => 3.days.ago),FactoryGirl.create(:file_monitor, :created_at => 4.days.ago)])
+=======
+                       #:reminders=>[FactoryGirl.create(:reminder, :indicator)],
+                       #:notes => [FactoryGirl.create(:note, :indicator, :created_at => 3.days.ago.to_datetime),FactoryGirl.create(:note, :indicator, :created_at => 4.days.ago.to_datetime)],
+                       :file_monitor => FactoryGirl.create(:file_monitor, :created_at => 3.days.ago, :user => User.first))
+>>>>>>> file_monitor
     #resize_browser_window
     visit nhri_heading_path(:en, Nhri::Heading.first.id)
     show_monitors.click
