@@ -110,8 +110,6 @@ $ ->
 
   Indicator = Ractive.extend
     template : "#indicator_template"
-    components :
-      fileMonitor : FileMonitor
     computed :
       monitors_count : ->
         if @get('monitor_format') == "numeric"
