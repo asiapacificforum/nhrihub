@@ -27,7 +27,7 @@ $ ->
       @remove_errors()
     save_heading : ->
       data = {heading : {title : @get('title')}}
-      url = create_heading_url
+      url = Routes.nhri_headings_path(current_locale)
       if @validate()
         $.ajax
           method : 'post'

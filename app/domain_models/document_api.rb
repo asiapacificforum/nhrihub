@@ -4,7 +4,7 @@ module DocumentApi
 
   included do
     before_save do |doc|
-      unless doc.lastModifiedDate
+      if doc.respond_to?(:lastModifiedDate) && !doc.lastModifiedDate
         doc.lastModifiedDate = DateTime.now
       end
     end

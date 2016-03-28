@@ -105,7 +105,7 @@ feature "internal document management", :js => true do
     expect(page).to have_css('.fileDetails')
     expect(page.find('.popover-content .name' ).text).to         eq (@doc.original_filename)
     expect(page.find('.popover-content .size' ).text).to         match /\d+\.?\d+ KB/
-    expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.created_at.to_s)
+    expect(page.find('.popover-content .uploadedOn' ).text).to   eq (@doc.created_at.to_date.to_s)
     expect(page.find('.popover-content .uploadedBy' ).text).to   eq (@doc.uploaded_by.first_last_name)
     expect(page.find('.popover-content .source_url' ).text).to   eq (@doc.source_url)
     page.execute_script("$('div.icon.details').first().trigger('mouseout')")

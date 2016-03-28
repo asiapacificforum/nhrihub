@@ -11,6 +11,7 @@ Rails.application.routes.draw do
         resources :projects
       end
       resources :complaints
+      resources :indicators, :controller => 'heading/indicators'
       resources :indicators do
         resources :reminders, :controller => 'indicator/reminders'
         resources :notes, :controller => 'indicator/notes'
@@ -42,7 +43,6 @@ Rails.application.routes.draw do
           resources :notes, :controller => 'advisory_council_issue/notes'
         end
       end
-      resources :indicators, :controller => 'indicator/indicators'
       resources :hr_protection
       resources :icc
       resources :icc_reference_documents do

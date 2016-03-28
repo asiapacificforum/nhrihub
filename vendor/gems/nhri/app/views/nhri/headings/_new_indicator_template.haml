@@ -38,10 +38,12 @@
     window.new_indicator = new Ractive
       el : "#new_indicator"
       template : "#new_indicator_template"
-      data :
-        create_indicator_url : "#{nhri_heading_indicators_path(@heading.id)}"
-        heading_id : "#{@heading.id}"
       computed :
+        url : ->
+          if @get('persisted')
+            Routes.nhri_indicator_path(current_locale,@get('id'))
+          else
+            Routes.nhri_heading_indicators_path(current_locale,@get('heading_id'))
         numeric_monitor_format : ->
           @get('monitor_format') == 'numeric'
         persisted : ->
@@ -51,11 +53,6 @@
             'put'
           else
             'post'
-        save_url : ->
-          if @get('persisted')
-            @get('url')
-          else
-            @get('create_indicator_url')
         save_callback : ->
           if @get('persisted')
             @update_callback
@@ -74,7 +71,7 @@
         if @validate()
           $.ajax
             type : @get('save_method')
-            url : @get('save_url')
+            url : @get('url')
             data : @persist_instance_attributes()
             success : @get('save_callback')
             context : @

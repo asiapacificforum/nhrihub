@@ -9,8 +9,9 @@ feature "indicators behaviour", :js => true do
   include IndicatorsSpecSetupHelpers
 
   it "should delete indicators" do
+    expect(page).to have_selector("#indicators .indicator", :count => 2)
     expect{delete_indicator.click; sleep(0.3)}.to change{Nhri::Indicator.count}.by(-1)
-    expect(page).not_to have_selector("#indicators .indicator")
+    expect(page).to have_selector("#indicators .indicator", :count => 1)
   end
 
   it "should add valid indicator" do
@@ -70,7 +71,7 @@ feature "indicators behaviour", :js => true do
     select("Text", :from => "indicator_monitor_format")
     expect(page).not_to have_selector("#indicator_numeric_monitor_explanation")
     expect{save_indicator.click; sleep(0.2)}.not_to change{Nhri::Indicator.count}
-    indicator = Nhri::Indicator.last
+    indicator = Nhri::Indicator.first
     expect(indicator.monitor_format).to eq "text"
     expect(indicator.numeric_monitor_explanation).to be_blank
     expect(indicator.title).to eq "Changed title"

@@ -4,7 +4,7 @@ require 'navigation_helpers'
 require_relative '../../helpers/headings/headings_spec_helper'
 
 
-feature "show icc index page", :js => true do
+feature "show headings index page", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include HeadingsSpecHelper
 

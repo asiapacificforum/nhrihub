@@ -1,4 +1,9 @@
 class Nhri::Indicator < ActiveRecord::Base
+  # offence_id heading_id
+  #    nil        n       indicator belongs to a heading, and is associated with all offences
+  #     n         n       indicator belongs to a particular offence,
+  #                       heading_id included for routing after an indicator is created
+  #                       it is created in the context of an indicator
   belongs_to :offence
   belongs_to :heading
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy

@@ -75,9 +75,9 @@ $ ->
     computed :
       url : ->
         if @get('persisted')
-          Routes.nhri_indicator_file_monitor_path('en', @get('indicator_id'), @get('id'))
+          Routes.nhri_indicator_file_monitor_path(current_locale, @get('indicator_id'), @get('id'))
         else
-          Routes.nhri_indicator_file_monitors_path('en', @get('indicator_id'))
+          Routes.nhri_indicator_file_monitors_path(current_locale, @get('indicator_id'))
       persisted : ->
         !_.isUndefined @get('id')
       save_method : ->
@@ -153,7 +153,7 @@ $ ->
         $("##{type}_monitors_modal").modal('show')
     delete_indicator : (event,obj)->
       data = [{name:'_method', value: 'delete'}]
-      url = Routes.nhri_indicator_path(current_locale,@get('id'))
+      url = Routes.nhri_heading_indicator_path(current_locale,@get('heading_id'),@get('id'))
       $.ajax
         method: 'post'
         url: url
@@ -161,7 +161,7 @@ $ ->
         success: @delete_callback
         context: @
     delete_callback : ->
-      $(@el).remove()
+      @parent.remove_indicator(@get('id'))
     edit_indicator : ->
       new_indicator.set(@get())
       new_indicator.set('source',@)
@@ -176,25 +176,36 @@ $ ->
         title : ""
         nature : @get('nature')
         offence_id : @get('offence_id')
+        heading_id : @get('heading_id')
         monitor_format : ""
         id : null
-        url : null
       $('#new_indicator_modal').modal('show')
+    remove_indicator : (id)->
+      nature = @get('nature')
+      indicators = nature+'_indicators'
+      indicator_ids = _(@get(indicators)).map (i)-> i.id
+      index = indicator_ids.indexOf(id)
+      @splice(indicators,index,1)
 
   NatureAllOffences = Ractive.extend
     template : "#nature_all_offences_template"
     components :
       indicator : Indicator
     new_indicator : ->
-      $('#new_indicator_modal').modal('show')
       new_indicator.set
         title : ""
         nature : @get('nature')
         offence_id : null
+        heading_id : @get('heading_id')
         monitor_format : ""
         id : null
-        url : null
       $('#new_indicator_modal').modal('show')
+    remove_indicator : (id)->
+      nature = @get('nature')
+      indicators = 'all_offence_'+nature+'_indicators'
+      indicator_ids = _(@get(indicators)).map (i)-> i.id
+      index = indicator_ids.indexOf(id)
+      @splice(indicators,index,1)
 
   Nature = Ractive.extend
     template : "#nature_template"
@@ -216,6 +227,7 @@ $ ->
     el: "#heading"
     template : "#heading_template"
     data:
+      id : heading_data.id
       offences : heading_data.offences
       natures : natures
       all_offence_structural_indicators : heading_data.all_offence_structural_indicators
