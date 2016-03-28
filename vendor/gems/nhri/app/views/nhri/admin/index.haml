@@ -99,6 +99,28 @@
                :param_name => 'ext',
                :placeholder => 'e.g. ppt'}
 
+%h4
+  = t('.file_monitor')
+  \:
+  = t('.filesize_max')
+= render :partial => 'admin/document_filesize_configuration',
+         :locals => { :update_url => nhri_file_monitor_filesize_path ,
+                      :param => @file_monitors_filesize,
+                      :context => "file_monitor_filesize"}
+
+%h4
+  = t('.file_monitor')
+  \:
+  = t('.filetypes')
+= render :partial => 'admin/collection_configuration',
+  :locals => { :new_item => @file_monitors_filetype,
+               :create_url => nhri_file_monitor_filetypes_path,
+               :delete_url => nhri_file_monitor_filetype_path('id'),
+               :collection => @file_monitors_filetypes,
+               :item_name => 'file_monitor_filetype',
+               :param_name => 'ext',
+               :placeholder => 'e.g. xls'}
+
 :coffeescript
   $ ->
     _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }

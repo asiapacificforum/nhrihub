@@ -4,7 +4,7 @@ require_relative './advisory_council/terms_of_reference_admin_spec_helper'
 RSpec.shared_examples "file admin" do |parameter|
   include LoggedInEnAdminUserHelper # sets up logged in admin user
 
-  feature "icc reference document admin", :js => true do
+  feature "document admin", :js => true do
 
     scenario "no titles configured" do
       visit admin_page
@@ -21,7 +21,7 @@ RSpec.shared_examples "file admin" do |parameter|
     end
   end
 
-  feature "icc reference document filetype admin", :js => true do
+  feature "document filetype admin", :js => true do
 
     scenario "no filetypes configured" do
       visit admin_page

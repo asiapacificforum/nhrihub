@@ -20,6 +20,8 @@ en:
         add: "Add file type"
       advisory_council_issues_filetype:
         add: "Add file type"
+      file_monitor_filetype:
+        add: "Add file type"
     document_filesize_configuration:
       current_val: "Current value"
       change: "Change to"

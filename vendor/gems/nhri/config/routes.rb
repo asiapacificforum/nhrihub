@@ -21,6 +21,10 @@ Rails.application.routes.draw do
       resources :headings do
         resources :indicators, :controller => 'heading/indicators'
       end
+      namespace :file_monitor do
+        resource  :filesize, :only => :update
+        resources :filetypes, :param => :ext, :only => [:create, :destroy]
+      end
       namespace :advisory_council do
         resources :terms_of_references
         resources :members

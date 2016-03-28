@@ -6,3 +6,5 @@ SiteConfig.defaults['nhri.advisory_council_minutes.filetypes'] = []
 SiteConfig.defaults['nhri.advisory_council_minutes.filesize'] = 5
 SiteConfig.defaults['nhri.advisory_council_issue.filetypes'] = []
 SiteConfig.defaults['nhri.advisory_council_issue.filesize'] = 5
+SiteConfig.defaults['nhri.file_monitor.filetypes'] = []
+SiteConfig.defaults['nhri.file_monitor.filesize'] = 5
