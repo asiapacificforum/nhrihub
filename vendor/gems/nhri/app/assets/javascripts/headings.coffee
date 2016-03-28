@@ -39,6 +39,7 @@ $ ->
     create_callback : (response, status, jqxhr)->
       @set(response)
     cancel_new_heading : ->
+      UserInput.reset()
       @parent.remove(@)
     validate : ->
       @set('title_error',_.isEmpty(@get('title').trim()))
@@ -74,7 +75,7 @@ $ ->
     el : '#headings_container'
     template : "<headings headings='{{headings}}' />"
     data :
-      headings : headings
+      headings : headings_data
     new_heading : ->
       UserInput.claim_user_input_request(@,'cancel')
       @unshift('headings',{id: null, title : "", title_error: false})

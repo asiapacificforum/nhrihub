@@ -59,8 +59,17 @@ feature "index page behaviour with existing headings", :js => true do
   include HeadingsSpecHelper
 
   before do
-    setup_database
+    setup_database # 3 headings
     visit nhri_headings_path(:en)
+  end
+
+  it "leaves existing headings if adding is cancelled" do # b/c there was a bug!
+    expect(page.all('#headings_container .heading').count).to eq 3
+    add_heading.click
+    cancel_add.click
+    add_heading.click
+    cancel_add.click
+    expect(page.all('#headings_container .heading').count).to eq 3
   end
 
   it "can delete a heading" do

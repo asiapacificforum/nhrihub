@@ -2,7 +2,7 @@ en:
   nhri:
     headings:
       index:
-        heading: "National Human Rights Indicators"
+        heading: "National Human Rights Indicators: Headings"
         add_heading: "Add heading"
       headings_templates:
         blank_title_error: "Title can't be blank."
