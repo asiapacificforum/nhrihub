@@ -26,7 +26,6 @@ $ ->
         #ractive.set('original_filename', data.files[0].name)
         ractive.findComponent("selectedFile").set( _.extend({},data.files[0]) )
         ractive.validate_file_constraints()
-        ractive._validate_attachment()
         return
       done: (e, data) ->
         data.ractive.update_file(data.jqXHR.responseJSON)
@@ -44,7 +43,8 @@ $ ->
   Ractive.decorators.file_upload = FileUpload
 
   SelectedFile = Ractive.extend
-    template : "<span id='selected_file'>{{name}}</span>"
+    #template : "<span id='selected_file'>{{name}}</span>"
+    template : "#upload_template"
 
   MonitorPopover = (node)->
     indicator = @
@@ -95,13 +95,19 @@ $ ->
       'monitor[filesize]' : @findComponent('selectedFile').get('size')
     onModalClose : ->
       @findComponent('selectedFile').reset()
-    validate_file_constraints: ->
-      true
-    _validate_attachment : ->
-      true
+    validate_file_constraints : ->
+      file = @get('fileupload').files[0]
+      size = file.size
+      extension = file.name.split('.').pop()
+      @set('filetype_error', permitted_filetypes.indexOf(extension) == -1 )
+      @set('filesize_error', size > maximum_filesize )
+      @findComponent('selectedFile').set('filesize_error',@get('filesize_error'))
+      @findComponent('selectedFile').set('filetype_error',@get('filetype_error'))
+      !@get('filetype_error') && !@get('filesize_error')
     save_file : ->
-      $('.fileupload').fileupload('option',{method : @get('save_method'), url:@get('url'), formData:@formData()})
-      @get('fileupload').submit()
+      if @validate_file_constraints()
+        $('.fileupload').fileupload('option',{method : @get('save_method'), url:@get('url'), formData:@formData()})
+        @get('fileupload').submit()
     update_file : (response)->
       @findComponent('selectedFile').reset()
       @set(response)

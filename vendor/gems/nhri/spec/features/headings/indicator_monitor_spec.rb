@@ -169,6 +169,20 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
     expect(author).to eq @user.first_last_name
   end
 
+  scenario "update the file with unpermitted file type" do
+    page.attach_file("monitor_file", upload_image, :visible => false)
+    expect(page).to have_selector('#selected_file', :text => 'first_upload_image_file.png')
+    expect(page).to have_css('#filetype_error', :text => "Unpermitted file type")
+    expect{ save_monitor.click; sleep(0.3) }.not_to change{Nhri::FileMonitor.first.file_id}
+  end
+
+  scenario "update the file with file exceeding permitted file size" do
+    page.attach_file("monitor_file", big_upload_document, :visible => false)
+    expect(page).to have_selector('#selected_file', :text => 'big_upload_file.pdf')
+    expect(page).to have_css('#filesize_error', :text => "File is too large")
+    expect{ save_monitor.click; sleep(0.3) }.not_to change{Nhri::FileMonitor.first.file_id}
+  end
+
   scenario "closing the monitor modal resets the selected file" do
     page.attach_file("monitor_file", upload_document, :visible => false)
     expect(page).to have_selector('#selected_file', :text => 'first_upload_file.pdf')

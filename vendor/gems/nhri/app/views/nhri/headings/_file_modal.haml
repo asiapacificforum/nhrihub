@@ -58,8 +58,9 @@
     .col-md-1{:style => "text-align:center; font-size:14px; width:5%;"}
       %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => 'delete_monitor(event,this)', :style => "position:relative; left:-12px; top:-2px;"}
 
+  // jquery fileupload requires this id, it can't be renamed!
 %script#upload_template{:type => 'template/ractive'}
-  #selected_file {{ original_filename }}
+  #selected_file {{ name }}
   %div
     %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px', 'on-click'=>'deselect_file()'}
   .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
