@@ -2,10 +2,15 @@ en:
   nhri:
     headings:
       index:
-        heading: "National Human Rights Indicators: Headings"
+        heading: "Human Rights Indicators: Headings"
         add_heading: "Add heading"
       headings_templates:
         blank_title_error: "Title can't be blank."
+        blank_description_error: "Description can't be blank."
+        offences: "Offences"
+        show_offences : "show offences"
+        title: "Title"
+        add_offence: "add offence"
       show:
         title: "Indicators"
         indicators_heading: "Indicators for: %{title}"

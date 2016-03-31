@@ -32,3 +32,4 @@ config/locales/site_specific/*.yml
 coverage
 TODO
 Questions
+.ackrc

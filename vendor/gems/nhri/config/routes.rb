@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       end
       resources :headings do
         resources :indicators, :controller => 'heading/indicators'
+        resources :offences, :controller => 'heading/offences'
       end
       namespace :file_monitor do
         resource  :filesize, :only => :update

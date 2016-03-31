@@ -15,6 +15,11 @@
         %span
           %a{:href => '{{url}}'} {{ title }}
     .col-md-1
+      .icon{'data-toggle' => 'edit'}
+        .fade.edit
+        .fade.no_edit.in
+          %i.show_offences{:id => "{{#if expanded}}compact{{else}}expand{{/if}}", 'on-click'=>'toggle_offences()', 'data-toggle'=>'tooltip', 'title'=>t('.show_offences'), :style => "position:relative; top:3px;"}
+    .col-md-1
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
         .fade.edit
           %i.fa.fa-remove.fa-lg{:id => "heading_editable{{id}}_edit_cancel",:style => "position:relative; left:40px;"}
@@ -25,15 +30,103 @@
         .fade.no_edit.in
           %i.fa.fa-pencil-square-o.fa-lg{:id => "heading_editable{{id}}_edit_start", :style => "position:relative; left:-5px;"}
     .col-md-1
-      .icon.delete_heading{'on-click'=>'delete_this()'}
-        %i.fa.fa-trash-o.fa-lg
+      .icon{:'data-toggle' => 'edit'}
+        .fade.edit
+        .fade.no_edit.in
+          .delete_heading{'on-click'=>'delete_this()'}
+            %i.fa.fa-trash-o.fa-lg
+  .row.collapse{:id => "edit_offences{{id}}"}
+    .col-md-12
+      .row
+        .col-md-7
+          %label=t('.offences')
+        .col-md-1
+          %i.fa.fa-plus.fa-lg#add_offence{'on-click'=>'add_edit_offence()', 'data-toggle'=>'tooltip', 'title'=>t('.add_offence'), :style => "position:relative; top:-5px; left:-4px;"}
+      {{#offences}}
+      <editOffence description='{{description}}' id='{{id}}' />
+      {{/offences}}
+
+// when offences are being shown in the offences dropdown, they're editable
+%script#edit_offence_template{:type => 'ractive/template'}
+  {{#if persisted}}
+  {{>editable_offence_template}}
+  {{else}}
+  {{>new_edit_offence_template}}
+  {{/if}}
+
+// when offences are being shown in the offences dropdown, they're editable
+%script#editable_offence_template{:type => 'ractive/template'}
+  .row.offence.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"offence_editable{{id}}"}
+    .col-md-6.description.form-group{'data-attribute' => :description, 'data-toggle' => :edit, :'data-name' => 'description', :class=>"{{#description_error}}has-error{{/}}"}
+      .fade.edit
+        %input#offence_description{'value' => "{{description}}", :style=>"width:500px;", 'on-keydown'=>'remove_description_error()'}
+        %span.help-block.error#description_error=t('.blank_description_error')
+      .fade.no_edit.editable.in
+        %span {{description}}
+    .col-md-1
+      .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
+        .fade.edit
+          %i.fa.fa-remove.fa-lg{:id => "offence_editable{{id}}_edit_cancel",:style => "position:relative; left:40px;"}
+    .col-md-1
+      .icon{:'data-toggle' => 'edit'}
+        .fade.edit
+          %i.fa.fa-check.fa-lg{:id => "offence_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+        .fade.no_edit.in
+          %i.fa.fa-pencil-square-o.fa-lg{:id => "offence_editable{{id}}_edit_start", :style => "position:relative; left:-5px;"}
+    .col-md-1
+      .icon{:'data-toggle' => 'edit'}
+        .fade.edit
+        .fade.no_edit.in
+          .delete_offence{'on-click'=>'delete_offence()'}
+            %i.fa.fa-trash-o.fa-lg
 
 %script#new_heading_template{:type => 'template/ractive'}
-  %div{:style=> 'display:flex; flex-direction:row;'}
-    .form-group{:class => "{{#title_error}}has-error{{/}}"}
-      %input#heading_title.form-control{:type => :text, :value => "{{title}}"}
+  .row
+    .col-md-5.form-group{:class => "{{#title_error}}has-error{{/}}"}
+      %label{:for => 'heading_title'}=t('.title')
+      %input#heading_title.form-control{:type => :text, :value => "{{title}}", 'on-keydown'=>"remove_errors()"}
       %span.help-block.error#title_error=t('.blank_title_error')
-    .icon{:style => 'height:20px; padding-left:20px;'}
-      %i.fa.fa-remove.fa-lg#heading_cancel{'on-click' => 'cancel_new_heading()', :style => "position:relative; left:15px;"}
-    .icon{:style => 'padding-left:48px;'}
-      %i.fa.fa-check.fa-lg#heading_save{'on-click' => 'save_heading()'}
+    .col-md-1
+      .icon{:style => 'height:20px; padding-left:20px;'}
+        %i.fa.fa-remove.fa-lg#heading_cancel{'on-click' => 'cancel_new_heading()', :style => "position:relative; left:15px;"}
+    .col-md-1
+      .icon{:style => 'padding-left:48px;'}
+        %i.fa.fa-check.fa-lg#heading_save{'on-click' => 'save_heading()'}
+  .row
+    .col-md-5
+      %label=t('.offences')
+    .col-md-1
+      %i.fa.fa-plus.fa-lg#add_offence{'on-click'=>'add_offence()', 'data-toggle'=>'tooltip', 'title'=>t('.add_offence')}
+  {{#offences}}
+  <offence />
+  {{/offences}}
+
+// when offences are added while a new heading is being added
+%script#offence_template{:type => 'template/ractive'}
+  {{#if persisted}}
+  {{>show_offence_template}}
+  {{else}}
+  {{>new_offence_template}}
+  {{/if}}
+
+%script#show_offence_template{:type => 'template/ractive'}
+  {{ description }}
+
+// when offences are added while a new heading is being added
+%script#new_offence_template{:type => 'template/ractive'}
+  .row
+    .col-md-2
+      %input.offence_description{:type => :text, :value =>'{{ description }}'}
+    .col-md-2
+      %i.fa.fa-remove.fa-lg.deselect_offence{:style =>'padding-left:30px', 'on-click'=>'deselect_offence()'}
+
+// when offences are added individually
+%script#new_edit_offence_template{:type => 'template/ractive'}
+  .row
+    .col-md-5.form-group{:class=>"{{#description_error}}has-error{{/}}"}
+      %input#offence_description{:type => :text, :value =>'{{ description }}', 'on-keydown'=>"remove_errors()"}
+      %span.help-block.error#description_error=t('.blank_description_error')
+    .col-md-1
+      %i.fa.fa-remove.fa-lg#terminate_offence{'on-click'=>'terminate_offence()'}
+    .col-md-1
+      %i.fa.fa-check.fa-lg{'on-click'=>'save_offence()'}

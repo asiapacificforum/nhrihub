@@ -40,6 +40,7 @@ class Nhri::HeadingsController < ApplicationController
 
   private
   def heading_params
-    params.require(:heading).permit(:title)
+    params[:heading][:offences_attributes] = params[:heading][:offences_attributes].reject{|k,v| v[:description].blank? }
+    params.require(:heading).permit(:title, :offences_attributes => [:heading_id, :id, :description])
   end
 end
