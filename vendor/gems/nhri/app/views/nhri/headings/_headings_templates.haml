@@ -7,9 +7,9 @@
 
 %script#show_heading_template{:type => 'template/ractive'}
   .row.heading.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"heading_editable{{id}}"}
-    .col-md-5.title.form-group{'data-attribute' => :title, 'data-toggle' => :edit, :'data-name' => 'title'}
+    .col-md-6.title.form-group{'data-attribute' => :title, 'data-toggle' => :edit, :'data-name' => 'title', :style => "margin-bottom:0px; min-height:34px;"}
       .fade.edit
-        %input#heading_title{'value' => "{{title}}", :style=>"width:500px;"}
+        %input#heading_title.form-control{'value' => "{{title}}"}
         %span.help-block.error#title_error{:class=>"{{#title_error}}has-error{{/}}"}=t('.blank_title_error')
       .fade.no_edit.editable.in
         %span
@@ -22,13 +22,13 @@
     .col-md-1
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
         .fade.edit
-          %i.fa.fa-remove.fa-lg{:id => "heading_editable{{id}}_edit_cancel",:style => "position:relative; left:40px;"}
+          %i.fa.fa-remove.fa-lg{:id => "heading_editable{{id}}_edit_cancel"}
     .col-md-1
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
-          %i.fa.fa-check.fa-lg{:id => "heading_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+          %i.fa.fa-check.fa-lg{:id => "heading_editable{{id}}_edit_save"}
         .fade.no_edit.in
-          %i.fa.fa-pencil-square-o.fa-lg{:id => "heading_editable{{id}}_edit_start", :style => "position:relative; left:-5px;"}
+          %i.fa.fa-pencil-square-o.fa-lg{:id => "heading_editable{{id}}_edit_start"}
     .col-md-1
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
@@ -81,19 +81,19 @@
             %i.fa.fa-trash-o.fa-lg
 
 %script#new_heading_template{:type => 'template/ractive'}
-  .row
-    .col-md-5.form-group{:class => "{{#title_error}}has-error{{/}}"}
+  .row{:style => "background-color: #c7be9a"}
+    .col-md-6.form-group{:class => "{{#title_error}}has-error{{/}}"}
       %label{:for => 'heading_title'}=t('.title')
       %input#heading_title.form-control{:type => :text, :value => "{{title}}", 'on-keydown'=>"remove_errors()"}
       %span.help-block.error#title_error=t('.blank_title_error')
     .col-md-1
-      .icon{:style => 'height:20px; padding-left:20px;'}
-        %i.fa.fa-remove.fa-lg#heading_cancel{'on-click' => 'cancel_new_heading()', :style => "position:relative; left:15px;"}
+      .icon
+        %i.fa.fa-remove.fa-lg#heading_cancel{'on-click' => 'cancel_new_heading()'}
     .col-md-1
-      .icon{:style => 'padding-left:48px;'}
+      .icon
         %i.fa.fa-check.fa-lg#heading_save{'on-click' => 'save_heading()'}
-  .row
-    .col-md-5
+  .row{:style => "background-color: #c7be9a"}
+    .col-md-6
       %label=t('.offences')
     .col-md-1
       %i.fa.fa-plus.fa-lg#add_offence{'on-click'=>'add_offence()', 'data-toggle'=>'tooltip', 'title'=>t('.add_offence')}
@@ -110,15 +110,16 @@
   {{/if}}
 
 %script#show_offence_template{:type => 'template/ractive'}
-  {{ description }}
+  .row{:style => "background-color: #c7be9a"}
+    .col-md-6 {{ description }}
 
 // when offences are added while a new heading is being added
 %script#new_offence_template{:type => 'template/ractive'}
-  .row
+  .row{:style => "background-color: #c7be9a"}
+    .col-md-6.form-group
+      %input.form-control.offence_description{:type => :text, :value =>'{{ description }}'}
     .col-md-2
-      %input.offence_description{:type => :text, :value =>'{{ description }}'}
-    .col-md-2
-      %i.fa.fa-remove.fa-lg.deselect_offence{:style =>'padding-left:30px', 'on-click'=>'deselect_offence()'}
+      %i.fa.fa-remove.fa-lg.deselect_offence{:style =>'position:relative; top:6px;', 'on-click'=>'deselect_offence()'}
 
 // when offences are added individually
 %script#new_edit_offence_template{:type => 'template/ractive'}

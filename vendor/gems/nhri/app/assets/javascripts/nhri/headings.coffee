@@ -129,7 +129,8 @@ $ ->
     create_instance_attributes : -> # required for inpage_edit decorator
       {heading: {title : @get('title'), offences_attributes : @get('offences_attributes')}}
     add_offence : ->
-      #UserInput.claim_user_input_request(@,'remove')
+      # here we don't claim_user_input_request b/c
+      # we will allow adding heading and adding offence simultaneously
       @_add_offence_in('offence')
     add_edit_offence : ->
       UserInput.claim_user_input_request(@,'remove_edit_offence')
@@ -141,13 +142,11 @@ $ ->
       if valid_previous_offence
         @unshift('offences',{heading_id : @get('id'), id : null, description : '', description_error : false})
     remove : (guid)->
-      #UserInput.reset()
-      guids = _(@findAllComponents('offence')).pluck('_guid')
-      index = _(guids).indexOf(guid)
-      @splice('offences',index,1)
+      @_remove_offence_from('offence',guid)
     remove_edit_offence : (guid)->
-      #UserInput.reset()
-      guids = _(@findAllComponents('editOffence')).pluck('_guid')
+      @_remove_offence_from('editOffence',guid)
+    _remove_offence_from : (collection,guid)->
+      guids = _(@findAllComponents(collection)).pluck('_guid')
       index = _(guids).indexOf(guid)
       @splice('offences',index,1)
     toggle_offences : ->
@@ -163,7 +162,6 @@ $ ->
     remove : (heading)->
       index = _(@findAllComponents('heading')).indexOf(heading)
       @splice('headings',index,1)
-
 
   window.headings = new Ractive
     el : '#headings_container'
