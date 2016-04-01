@@ -48,8 +48,11 @@ en:
         title: "Title"
         choose_file: "Choose file"
         too_large: "File is too large"
+        blank_file_msg: "You must select a file"
         unpermitted_type: "Unpermitted file type"
         save: "Upload file"
+        file_name : "File name:"
+        download : "download"
       new_indicator_template:
         new_indicator: "New indicator"
         edit_indicator: "Edit indicator"

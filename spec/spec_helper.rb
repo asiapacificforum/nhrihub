@@ -136,6 +136,10 @@ RSpec.configure do |config| # rspec-expectations config goes here. You can use a
   Kernel.srand config.seed
 =end
 
+  config.backtrace_exclusion_patterns = [
+    /rspec-(core|expectations|matchers|mocks|rails)/
+  ]
+
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
     #Controller.update_table

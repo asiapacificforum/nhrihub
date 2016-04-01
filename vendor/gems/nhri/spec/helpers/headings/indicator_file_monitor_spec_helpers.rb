@@ -3,6 +3,10 @@ require 'rspec/core/shared_context'
 module IndicatorFileMonitorSpecHelpers
   extend RSpec::Core::SharedContext
 
+  def deselect_file
+    page.find('#deselect_file').click
+  end
+
   def file_size
     page.find('#filesize').text
   end

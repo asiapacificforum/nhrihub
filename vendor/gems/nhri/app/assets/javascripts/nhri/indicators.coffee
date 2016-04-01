@@ -45,6 +45,12 @@ $ ->
   SelectedFile = Ractive.extend
     #template : "<span id='selected_file'>{{name}}</span>"
     template : "#upload_template"
+    deselect_file : ->
+      @parent.remove_selected_file()
+      @reset()
+      @set('filetype_error', false)
+      @set('filesize_error', false)
+      @set('file_error', false)
 
   MonitorPopover = (node)->
     indicator = @
@@ -96,14 +102,21 @@ $ ->
     onModalClose : ->
       @findComponent('selectedFile').reset()
     validate_file_constraints : ->
-      file = @get('fileupload').files[0]
-      size = file.size
-      extension = file.name.split('.').pop()
-      @set('filetype_error', permitted_filetypes.indexOf(extension) == -1 )
-      @set('filesize_error', size > maximum_filesize )
-      @findComponent('selectedFile').set('filesize_error',@get('filesize_error'))
-      @findComponent('selectedFile').set('filetype_error',@get('filetype_error'))
-      !@get('filetype_error') && !@get('filesize_error')
+      if _.isUndefined(@get('fileupload')) || _.isEmpty(@get('fileupload').files)
+        @set('file_error',true)
+        @findComponent('selectedFile').set('file_error',true)
+        !@get('file_error')
+      else
+        @set('file_error',false)
+        @findComponent('selectedFile').set('file_error',false)
+        file = @get('fileupload').files[0]
+        size = file.size
+        extension = file.name.split('.').pop()
+        @set('filetype_error', permitted_filetypes.indexOf(extension) == -1 )
+        @set('filesize_error', size > maximum_filesize )
+        @findComponent('selectedFile').set('filesize_error',@get('filesize_error'))
+        @findComponent('selectedFile').set('filetype_error',@get('filetype_error'))
+        !@get('filetype_error') && !@get('filesize_error')
     save_file : ->
       if @validate_file_constraints()
         $('.fileupload').fileupload('option',{method : @get('save_method'), url:@get('url'), formData:@formData()})
@@ -113,6 +126,8 @@ $ ->
       @set(response)
     download_file : ->
       window.location = @get('url')
+    remove_selected_file : ->
+      @get('fileupload').files=[]
 
   Indicator = Ractive.extend
     template : "#indicator_template"
