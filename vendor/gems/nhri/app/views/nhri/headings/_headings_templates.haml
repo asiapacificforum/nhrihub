@@ -7,7 +7,7 @@
 
 %script#show_heading_template{:type => 'template/ractive'}
   .row.heading.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"heading_editable{{id}}"}
-    .col-md-6.title.form-group{'data-attribute' => :title, 'data-toggle' => :edit, :'data-name' => 'title', :style => "margin-bottom:0px; min-height:34px;"}
+    .col-md-8.title.form-group{'data-attribute' => :title, 'data-toggle' => :edit, :'data-name' => 'title', :style => "margin-bottom:0px; min-height:34px;"}
       .fade.edit
         %input#heading_title.form-control{'value' => "{{title}}"}
         %span.help-block.error#title_error{:class=>"{{#title_error}}has-error{{/}}"}=t('.blank_title_error')
@@ -38,12 +38,12 @@
   .row.collapse{:id => "edit_offences{{id}}"}
     .col-md-12
       .row
-        .col-md-7
+        .col-md-8
           %label=t('.offences')
         .col-md-1
           %i.fa.fa-plus.fa-lg#add_offence{'on-click'=>'add_edit_offence()', 'data-toggle'=>'tooltip', 'title'=>t('.add_offence'), :style => "position:relative; top:-5px; left:-4px;"}
       {{#offences}}
-      <editOffence description='{{description}}' id='{{id}}' />
+      <editOffence heading_id='{{heading_id}}' description='{{description}}' id='{{id}}' />
       {{/offences}}
 
 // when offences are being shown in the offences dropdown, they're editable
@@ -57,22 +57,22 @@
 // when offences are being shown in the offences dropdown, they're editable
 %script#editable_offence_template{:type => 'ractive/template'}
   .row.offence.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"offence_editable{{id}}"}
-    .col-md-6.description.form-group{'data-attribute' => :description, 'data-toggle' => :edit, :'data-name' => 'description', :class=>"{{#description_error}}has-error{{/}}"}
+    .col-md-9.description.form-group{'data-attribute' => :description, 'data-toggle' => :edit, :'data-name' => 'description', :class=>"{{#description_error}}has-error{{/}}"}
       .fade.edit
-        %input#offence_description{'value' => "{{description}}", :style=>"width:500px;", 'on-keydown'=>'remove_description_error()'}
+        %input#offence_description.form-control{'value' => "{{description}}", :style=>"width:500px;", 'on-keydown'=>'remove_description_error()'}
         %span.help-block.error#description_error=t('.blank_description_error')
       .fade.no_edit.editable.in
         %span {{description}}
     .col-md-1
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
         .fade.edit
-          %i.fa.fa-remove.fa-lg{:id => "offence_editable{{id}}_edit_cancel",:style => "position:relative; left:40px;"}
+          %i.fa.fa-remove.fa-lg{:id => "offence_editable{{id}}_edit_cancel"}
     .col-md-1
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
-          %i.fa.fa-check.fa-lg{:id => "offence_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+          %i.fa.fa-check.fa-lg{:id => "offence_editable{{id}}_edit_save"}
         .fade.no_edit.in
-          %i.fa.fa-pencil-square-o.fa-lg{:id => "offence_editable{{id}}_edit_start", :style => "position:relative; left:-5px;"}
+          %i.fa.fa-pencil-square-o.fa-lg{:id => "offence_editable{{id}}_edit_start"}
     .col-md-1
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
@@ -81,25 +81,26 @@
             %i.fa.fa-trash-o.fa-lg
 
 %script#new_heading_template{:type => 'template/ractive'}
-  .row{:style => "background-color: #c7be9a"}
-    .col-md-6.form-group{:class => "{{#title_error}}has-error{{/}}"}
-      %label{:for => 'heading_title'}=t('.title')
-      %input#heading_title.form-control{:type => :text, :value => "{{title}}", 'on-keydown'=>"remove_errors()"}
-      %span.help-block.error#title_error=t('.blank_title_error')
-    .col-md-1
-      .icon
-        %i.fa.fa-remove.fa-lg#heading_cancel{'on-click' => 'cancel_new_heading()'}
-    .col-md-1
-      .icon
-        %i.fa.fa-check.fa-lg#heading_save{'on-click' => 'save_heading()'}
-  .row{:style => "background-color: #c7be9a"}
-    .col-md-6
-      %label=t('.offences')
-    .col-md-1
-      %i.fa.fa-plus.fa-lg#add_offence{'on-click'=>'add_offence()', 'data-toggle'=>'tooltip', 'title'=>t('.add_offence')}
-  {{#offences}}
-  <offence />
-  {{/offences}}
+  #new_heading
+    .row{:style => "background-color: #c7be9a; margin-left:0px; margin-right:0px;"}
+      .col-md-8.form-group{:class => "{{#title_error}}has-error{{/}}"}
+        %label{:for => 'heading_title'}=t('.title')
+        %input#heading_title.form-control{:type => :text, :value => "{{title}}", 'on-keydown'=>"remove_errors()"}
+        %span.help-block.error#title_error=t('.blank_title_error')
+      .col-md-1
+        .icon
+          %i.fa.fa-remove.fa-lg#heading_cancel{'on-click' => 'cancel_new_heading()'}
+      .col-md-1
+        .icon
+          %i.fa.fa-check.fa-lg#heading_save{'on-click' => 'save_heading()'}
+    .row{:style => "background-color: #c7be9a; margin-left:0px; margin-right:0px;"}
+      .col-md-8
+        %label=t('.offences')
+      .col-md-1
+        %i.fa.fa-plus.fa-lg#add_offence{'on-click'=>'add_offence()', 'data-toggle'=>'tooltip', 'title'=>t('.add_offence')}
+    {{#offences}}
+    <offence />
+    {{/offences}}
 
 // when offences are added while a new heading is being added
 %script#offence_template{:type => 'template/ractive'}
@@ -111,12 +112,12 @@
 
 %script#show_offence_template{:type => 'template/ractive'}
   .row{:style => "background-color: #c7be9a"}
-    .col-md-6 {{ description }}
+    .col-md-8 {{ description }}
 
 // when offences are added while a new heading is being added
 %script#new_offence_template{:type => 'template/ractive'}
   .row{:style => "background-color: #c7be9a"}
-    .col-md-6.form-group
+    .col-md-8.form-group
       %input.form-control.offence_description{:type => :text, :value =>'{{ description }}'}
     .col-md-2
       %i.fa.fa-remove.fa-lg.deselect_offence{:style =>'position:relative; top:6px;', 'on-click'=>'deselect_offence()'}
@@ -124,7 +125,7 @@
 // when offences are added individually
 %script#new_edit_offence_template{:type => 'template/ractive'}
   .row
-    .col-md-5.form-group{:class=>"{{#description_error}}has-error{{/}}"}
+    .col-md-8.form-group{:class=>"{{#description_error}}has-error{{/}}"}
       %input#offence_description{:type => :text, :value =>'{{ description }}', 'on-keydown'=>"remove_errors()"}
       %span.help-block.error#description_error=t('.blank_description_error')
     .col-md-1
