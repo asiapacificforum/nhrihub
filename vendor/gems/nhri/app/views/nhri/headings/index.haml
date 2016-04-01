@@ -4,10 +4,11 @@
   %i.fa.fa-plus.fa-lg{:style => "color:white"}
   %span= t('.add_heading')
 
-#headings_container
+#headings_container{:style => "width:900px;"}
 
 :javascript
-  var headings_data = #{@headings.to_json(:only =>[:title, :id], :methods => [:offences])}
+  var headings_data = #{@headings.to_json(:only =>[:title, :id],
+                                          :include => {:offences=>{:only => [:heading_id, :id, :description]}})}
 
 = render :partial => 'headings_templates'
 
