@@ -101,6 +101,10 @@ $ ->
       'monitor[filesize]' : @findComponent('selectedFile').get('size')
     onModalClose : ->
       @findComponent('selectedFile').reset()
+      @set
+        'file_error' : false
+        'filesize_error' : false
+        'filetype_error' : false
     validate_file_constraints : ->
       if _.isUndefined(@get('fileupload')) || _.isEmpty(@get('fileupload').files)
         @set('file_error',true)
