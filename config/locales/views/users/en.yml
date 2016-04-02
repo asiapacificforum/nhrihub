@@ -24,13 +24,13 @@ en:
         no_prev: 'no previous login'
       # view
       new:
-        title: 'Create a new user account'
+        page_title: 'Create a new user account'
         heading: 'Create a new user account'
         role: 'Database access role'
       show:
         roles: 'Role(s)'
       edit:
-        title: 'Edit profile'
+        page_title: 'Edit profile'
         heading: 'Edit profile of %{name}'
       # controller
       create:

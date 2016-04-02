@@ -12,7 +12,7 @@ en:
         title: "Title"
         add_offence: "add offence"
       show:
-        title: "Indicators"
+        page_title: "Indicators"
         indicators_heading: "Indicators for: %{title}"
         structural: "Structural"
         process: "Process"

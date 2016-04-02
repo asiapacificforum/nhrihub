@@ -2,7 +2,7 @@ fr:
   admin:
     users:
       index:
-        title: 'Gestion de utilisateurs'
+        page_title: 'Gestion de utilisateurs'
         heading: 'Gestion de utilisateurs'
         firstname: 'Prénom'
         lastname: 'Nom de famille'
@@ -22,6 +22,6 @@ fr:
         delete_confirm: 'êtes-vous sûr que vous voulez effacer'
         no_prev: 'aucune connexion précédente'
       new:
-        title: 'Créer un nouveau compte utilisateur'
+        page_title: 'Créer un nouveau compte utilisateur'
         heading: 'Créer un nouveau compte utilisateur'
         role: "rôle d'accès de base de données"
