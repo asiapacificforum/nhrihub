@@ -8,12 +8,11 @@ fr:
       access: 'Gestion des rôles'
       logout: "Déconnecter"
       corporate_services: "Services Corporatifs"
+      outreach_media: 'Sensibilisation et médias'
       nhri: "NHRI"
-      hre: "L'éducation aux droits de l'homme"
       adv_council: "Conseil consultatif"
-      headings: "Indicateurs nationaux des droits de l'homme"
-      nhr_indicators: "Indicateurs des droits de l'homme"
-      hr_prot: "Protection des droits humains"
+      headings: "Indicateurs des droits de l'homme"
+      complaints: 'Plaintes'
       pro:
         pro: "Protection des droits de l'homme et de la promotion"
         doc: 'Les documents internes'
@@ -27,7 +26,11 @@ fr:
         memb: "Appartenance"
         min: "Procès-verbal"
         issues: "Problèmes"
-      gg: "Bonne gouvernance"
+      gg:
+        gg: "Bonne gouvernance"
+        docs: 'Documents'
+        complaints: 'Plaintes'
+        projects: 'Projets'
       outreach_media: "Sensibilisation et les médias"
       outreach: "Sensibilisation"
       media: "Médias"

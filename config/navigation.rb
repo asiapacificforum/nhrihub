@@ -12,14 +12,16 @@ SimpleNavigation::Configuration.run do |navigation|
         adv.item :issues, t('layout.nav.adv.issues'), nhri_advisory_council_issues_path
       end
       nhri.item :headings, t('layout.nav.headings'), nhri_headings_path
-      nhri.item :hr_prot, t('layout.nav.hr_prot'), nhri_hr_protection_index_path
+      nhri.item :hr_prot, t('layout.nav.complaints'), nhri_hr_protection_index_path
       nhri.item :icc, t('layout.nav.icc.icc'), :class => 'dropdown-submenu' do |icc|
         icc.item :icc_int, t('layout.nav.icc.int'), nhri_icc_index_path
         icc.item :icc_ref, t('layout.nav.icc.ref'), nhri_icc_reference_documents_path
       end
     end
-    primary.item :gg, t('layout.nav.gg') do |gg|
-      gg.item :action, '??',placeholder_path
+    primary.item :gg, t('layout.nav.gg.gg') do |gg|
+      gg.item :action, t('layout.nav.gg.docs'), good_governance_documents_path
+      gg.item :action, t('layout.nav.gg.complaints'), good_governance_complaints_path
+      gg.item :action, t('layout.nav.gg.projects'), good_governance_projects_path
     end
     primary.item :corporate_services, t('layout.nav.corporate_services') do |cs|
       cs.item :int_docs, t('layout.nav.int_docs'), corporate_services_internal_documents_path

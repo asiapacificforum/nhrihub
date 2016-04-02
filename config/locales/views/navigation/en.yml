@@ -12,7 +12,7 @@ en:
       nhri: 'NHRI'
       adv_council: 'Advisory council'
       headings: 'Human rights indicators'
-      hr_prot: 'Human rights protection'
+      complaints: 'Complaints'
       pro:
         pro: 'Human rights protection and promotion'
         doc: 'Internal documents'
@@ -26,7 +26,11 @@ en:
         memb: "Membership"
         min: "Minutes"
         issues: "Issues"
-      gg: 'Good Governance'
+      gg:
+        gg: 'Good Governance'
+        docs: 'Documents'
+        complaints: 'Complaints'
+        projects: 'Projects'
       outreach_media: 'Outreach and media'
       outreach: 'Outreach'
       media: 'Media'
