@@ -8,7 +8,14 @@ $heading2: #9C9689;
 $heading3: #948E82;
 // the select box is styled to look like an h1 heading
 .h1_select {
-  @extend h1;
+  //@extend h1; this no longer works, but the h1 attributes are specified explicitly instead
+  font-size : 26px;
+  color : #556f91;
+  margin-top:20px;
+  margin-bottom:10px;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
 }
 
 .strategic_priority_content .row.heading {
