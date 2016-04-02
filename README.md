@@ -115,9 +115,10 @@ with:
 This inserts the framework for a "modname" module as a Rails engine in the vendor/gems directory, and functionality may be added here as required.
 Modules should configure all the routes required for navigation within the module, in the module's own config/routes.rb file.
 A newly-generated module is connected into the application by
-1. Add it to the Gemfile
-2. Add links to the top-level navigation menu (config/navigation.rb)
-3. If it includes javascripts in its app/assets/javascript/modname/ directory, then //= require modname must be added to the app/javascripts/application.js of the main app.
+1. Complete the information in the engine's .gemspec file (required for bundler)
+2. Add it to the Gemfile and install with bundle
+3. Add links to the top-level navigation menu (config/navigation.rb)
+4. If it includes javascripts in its app/assets/javascript/modname/ directory, then //= require modname must be added to the app/javascripts/application.js of the main app.
 Included modules may be excluded simply by deleting them from the vendor/gems library and removing the links from
 the top-level navigation menu and removing it from the Gemfile.
 Database migrations pertaining to the module's resources should be added in the module's own db/migrate directory. They

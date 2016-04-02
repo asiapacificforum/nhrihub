@@ -90,3 +90,4 @@ gem "transpec"
 gem 'corporate_services', :path => 'vendor/gems/corporate_services'
 gem 'outreach_media', :path => 'vendor/gems/outreach_media'
 gem 'nhri', :path => 'vendor/gems/nhri'
+gem 'good_governance', :path => 'vendor/gems/good_governance'

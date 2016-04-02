@@ -47,6 +47,11 @@ PATH
     corporate_services (0.0.1)
 
 PATH
+  remote: vendor/gems/good_governance
+  specs:
+    good_governance (0.0.1)
+
+PATH
   remote: vendor/gems/nhri
   specs:
     nhri (0.0.1)
@@ -385,6 +390,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   faker
   font-awesome-sass
+  good_governance!
   haml
   haml-rails
   jbuilder (~> 2.0)
