@@ -1,5 +1,5 @@
-re = new RegExp('phantomjs','gi')
 log = (str)->
+  re = new RegExp('phantomjs','gi')
   unless re.test navigator.userAgent
     console.log str
 
@@ -44,6 +44,7 @@ describe 'Internal document', ->
     upload_file = internal_document_uploader.findAllComponents('uploadfile')[0]
     expect(upload_file.get('is_icc_doc')).to.equal true
     expect(upload_file.validate_icc_unique()).to.equal false
+    expect(upload_file.get('duplicate_icc_title_error')).to.equal true
     expect(upload_file.get('fileupload')).to.equal true
     expect(upload_file.duplicate_icc_primary_file()).to.equal true
 
@@ -52,23 +53,26 @@ describe 'Internal document', ->
     upload_file = internal_document_uploader.findAllComponents('uploadfile')[0]
     expect(upload_file.get('is_icc_doc')).to.equal true
     expect(upload_file.validate_icc_unique()).to.equal true
+    expect(upload_file.get('duplicate_icc_title_error')).to.equal false
     expect(upload_file.get('fileupload')).to.equal true
     expect(upload_file.duplicated_title_with_existing_file()).to.equal false
     expect(upload_file.duplicate_icc_primary_file()).to.equal false
 
-  it "flags as errored when two primary file uploads is attempted in the same upload with identical icc file titles", ->
+  it "flags as errored when two primary file uploads are attempted in the same upload with identical icc file titles", ->
     internal_document_uploader.unshift('upload_files',{title : "Enabling Legislation", fileupload : true, primary : true})
     internal_document_uploader.unshift('upload_files',{title : "Enabling Legislation", fileupload : true, primary : true})
 
     upload_file = internal_document_uploader.findAllComponents('uploadfile')[0]
     expect(upload_file.get('is_icc_doc')).to.equal true
     expect(upload_file.validate_pending_icc_unique(["enablinglegislation","enablinglegislation"])).to.equal false
+    expect(upload_file.get('duplicate_icc_title_error')).to.equal true
     expect(upload_file.get('fileupload')).to.equal true
     expect(upload_file.duplicated_title_in_this_upload()).to.equal true
 
     upload_file = internal_document_uploader.findAllComponents('uploadfile')[1]
     expect(upload_file.get('is_icc_doc')).to.equal true
     expect(upload_file.validate_pending_icc_unique(["enablinglegislation","enablinglegislation"])).to.equal false
+    expect(upload_file.get('duplicate_icc_title_error')).to.equal true
     expect(upload_file.get('fileupload')).to.equal true
     expect(upload_file.duplicated_title_in_this_upload()).to.equal true
 
@@ -79,12 +83,14 @@ describe 'Internal document', ->
     upload_file = internal_document_uploader.findAllComponents('uploadfile')[0]
     expect(upload_file.get('is_icc_doc')).to.equal true
     expect(upload_file.validate_pending_icc_unique(["enablinglegislation","annualreport"])).to.equal true
+    expect(upload_file.get('duplicate_icc_title_error')).to.equal false
     expect(upload_file.get('fileupload')).to.equal true
     expect(upload_file.duplicated_title_in_this_upload()).to.equal false
 
     upload_file = internal_document_uploader.findAllComponents('uploadfile')[1]
     expect(upload_file.get('is_icc_doc')).to.equal true
     expect(upload_file.validate_pending_icc_unique(["enablinglegislation","annualreport"])).to.equal true
+    expect(upload_file.get('duplicate_icc_title_error')).to.equal false
     expect(upload_file.get('fileupload')).to.equal true
     expect(upload_file.duplicated_title_in_this_upload()).to.equal false
 

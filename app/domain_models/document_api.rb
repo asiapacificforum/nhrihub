@@ -11,14 +11,14 @@ module DocumentApi
   end
 
   def formatted_modification_date
-    lastModifiedDate.to_date.to_s
+    lastModifiedDate.to_date.to_s if lastModifiedDate
   end
 
   def formatted_creation_date
-    created_at.to_date.to_s
+    created_at.to_date.to_s if persisted?
   end
 
   def formatted_filesize
-    ActiveSupport::NumberHelper.number_to_human_size(filesize)
+    ActiveSupport::NumberHelper.number_to_human_size(filesize) if filesize
   end
 end

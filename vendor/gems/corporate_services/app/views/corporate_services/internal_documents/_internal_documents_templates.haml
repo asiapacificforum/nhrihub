@@ -183,19 +183,19 @@
     .form-group
       %label.control-label.col-sm-3{:for =>"internal_document_title", :style => "left: -21px;"}= t('.doc_title')
       .col-sm-6
-        %select.form-control.accreditation_required_doc_title{:style => "height:28px; position: relative; top:3px;"}
+        %select.form-control#internal_document_title{'on-change'=>'validate_icc_title()', :value => '{{title}}', :style => "height:28px; position: relative; top:3px;"}
           %option{:value => 0}= t('.select_icc')
           {{#unassigned_titles}}
-          %option{:value=>'{{document_group_id}}'} {{title}}
+          %option{:value=>'{{title}}'} {{title}}
           {{/unassigned_titles}}
 
-  / The template to display files ready for upload
 
+/ The template to display files ready for upload
 %script#upload_template{:type => 'html/template'}
   .panel.panel-default.fade.template-upload{:intro => :fade}
     .panel-heading
       %table{:width => '100%'}
-        %tr
+        %tr{:style => "vertical-align:top;"}
           %td{:colspan => 2}
             %p.name {{ name }}
             .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
@@ -208,13 +208,13 @@
             .size
             .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
               .progress-bar.progress-bar-success{:style => "width:0%"}
-        %tr
+        %tr{:style => "vertical-align:top;"}
           %td.title
             {{> .context+"_title_selector" }}
-            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
-            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
-            %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
-            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}"}= t('.icc_revision_in_non_icc_primary_error_message')
+            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.title_error_message')
+            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
+            %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
+            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.icc_revision_in_non_icc_primary_error_message')
           %td.revision
             %label{:for => "internal_document_revision"}= t('.revision')
             %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}

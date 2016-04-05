@@ -86,10 +86,14 @@ Then point the browser to the teaspoon rack endpoint on that server:
   localhost:5000/en/teaspoon/testname
 where testname is the name of the test suite you wish to run. The following js test suites are included:
 * media
+* corporate
+* default (runs all other suites)
 
 #### Headless testing (faster, but testing is difficult, use this for regression testing)
 Requires phantomjs version 2.1.1 or later. From the application directory command line run
-    teaspoon --suite media
+    RAILS_ENV=jstest teaspoon --suite media
+or
+    RAILS_ENV=jstest rake teaspoon suite=default
 
 ## Deployment
 Development updates are pushed manually to a git repository, using the normal git push procedure.

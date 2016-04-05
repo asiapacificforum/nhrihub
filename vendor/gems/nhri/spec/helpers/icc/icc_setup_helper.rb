@@ -3,6 +3,11 @@ require 'rspec/core/shared_context'
 module IccSetupHelper
   extend RSpec::Core::SharedContext
   def setup_database
+   ["Budget", "Annual Report", "Organization Chart", "Enabling Legislation", "Statement of Compliance"].each do |title|
+     FactoryGirl.create(:accreditation_document_group, :title => title)
+   end
+
+
     current_doc_rev = first_doc_rev = (rand(49)+50).to_f/10
     doc = FactoryGirl.create(:accreditation_required_document,
                              :revision => first_doc_rev.to_s,
