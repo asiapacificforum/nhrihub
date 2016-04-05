@@ -1,2 +1,2 @@
-assets = ["corporate_services/strategic_plan.js", "corporate_services/internal_documents.js" ]
+assets = ["corporate_services/strategic_plan.js"]
 Rails.application.config.assets.precompile += assets

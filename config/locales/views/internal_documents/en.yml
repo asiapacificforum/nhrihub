@@ -1,0 +1,34 @@
+en:
+  corporate_services:
+    internal_documents:
+      index:
+        heading: "Internal Documents"
+        error: "Error"
+        flash:
+          no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
+      internal_documents_templates :
+        details: "File details"
+        title_error_message: "Title cannot be blank"
+        duplicate_title_error_message: "Duplicate"
+        icc_revision_in_non_icc_primary_error_message:  "ICC accreditation file title not allowed"
+        icc_title_error_message:  "ICC accreditation file title not allowed"
+        revision_error_message: "Invalid"
+        noFileTypes: "No permitted file types have been configured"
+        add: "Add files..."
+        start: "Start upload"
+        cancel: "Cancel upload"
+        doc_title: "Document title"
+        revision: "Revision"
+        information: "Information"
+        edit: "Edit"
+        download: "Download"
+        archive: "Archive"
+        add1: "Add file"
+        delete: "Delete"
+        start_one: "Start"
+        cancel_one: "Cancel"
+        revision: "Revision"
+        processing: "Processing..."
+        too_large : "File is too large"
+        unpermitted_type : "File type not allowed"
+        select_icc : "Select ICC document title"
