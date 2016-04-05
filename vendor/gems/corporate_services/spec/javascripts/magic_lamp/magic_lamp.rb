@@ -4,9 +4,9 @@ require_relative './seed_data/accreditation_document_group_seed'
 MagicLamp.define do
   # e.g. on page do this:  window.internal_document_data = MagicLamp.loadJSON('internal_document_data')
   fixture(:name => 'internal_document_data') do
-    InternalDocumentSeed.populate_test_data
     AccreditationDocumentGroupSeed.populate_test_data
-    {:files => DocumentGroup.all.map(&:primary),
+    InternalDocumentSeed.populate_test_data
+    {:files => DocumentGroup.non_empty.all.map(&:primary),
      :required_files_titles => AccreditationDocumentGroup.all.map(&:id_and_title) }
   end
 

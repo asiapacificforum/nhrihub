@@ -7,15 +7,14 @@ require "database_cleaner"
 
 MagicLamp.configure do |config|
 
-  DatabaseCleaner.strategy = :truncation
-  #DatabaseCleaner.strategy = :transaction
+  DatabaseCleaner[:active_record,:connection => :jstest].strategy = :truncation
 
   config.before_each do
-    DatabaseCleaner.start
+    DatabaseCleaner[:active_record,:connection => :jstest].start
   end
 
   config.after_each do
-    DatabaseCleaner.clean
+    DatabaseCleaner[:active_record,:connection => :jstest].clean
   end
 end
 

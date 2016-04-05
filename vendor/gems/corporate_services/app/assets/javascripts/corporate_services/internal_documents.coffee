@@ -25,7 +25,9 @@ $ ->
     uploadTemplateContainerId: '#uploads'
     fileInput: '#primary_fileinput'
     replaceFileInput: true
-    url : 'internal_documents.json',
+    #url : 'internal_documents.json',
+    #url : Routes.corporate_services_internal_documents_path(current_locale)
+    url : Routes.nhri_icc_index_path(current_locale)
     paramName : 'internal_document[file]',
     uploadTemplateId : '#upload_template' 
     uploadTemplate : Ractive.parse($('#upload_template').html())
@@ -227,20 +229,12 @@ $ ->
     validate_icc_unique : -> # returns false for duplicate files
       title_matches_a_primary_title = _(internal_document_uploader.get('stripped_titles')).indexOf(@get('stripped_title')) != -1
       primary_file = @get('primary')
-      if title_matches_a_primary_title && primary_file
-        @set('duplicate_icc_title_error',true)
-        false
-      else
-        @set('duplicate_icc_title_error',false)
-        true
+      @set('duplicate_icc_title_error', title_matches_a_primary_title && primary_file )
+      !@get('duplicate_icc_title_error')
     validate_pending_icc_unique : (titles)-> # returns true for valid
       identical_titles = _(titles).filter (title)=> title == @get('stripped_title')
-      if identical_titles.length != 1 # there should be exactly one
-        @set('duplicate_icc_title_error',true)
-        false
-      else
-        @set('duplicate_icc_title_error',false)
-        true
+      @set('duplicate_icc_title_error', identical_titles.length != 1 )# there should be exactly one
+      !@get('duplicate_icc_title_error')
     is_icc_doc : ->
       icc_doc = _(internal_document_uploader.get('required_files_titles')).
           find((doc)=> doc.title.replace(/\s/g,"").toLowerCase() == @get('stripped_title') )
@@ -263,8 +257,13 @@ $ ->
       error = non_icc_primary && icc_revision
       @set('icc_revision_to_non_icc_primary_error',error)
       error
+    validate_icc_title : ->
+      icc = context == 'icc'
+      blank_title = _.isEmpty(@get('title')) || (@get('title')=='0')
+      @set('title_error', icc && blank_title)
+      !@get('title_error')
     submit : ->
-      unless @duplicate_icc_primary_file() || @icc_revision_to_non_icc_primary() || !@validate_file_constraints()
+      unless @duplicate_icc_primary_file() || @icc_revision_to_non_icc_primary() || !@validate_file_constraints() || !@validate_icc_title()
         @get('fileupload').formData = @get('formData')
         @get('fileupload').submit()
 

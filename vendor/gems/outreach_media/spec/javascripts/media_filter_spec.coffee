@@ -135,9 +135,10 @@ filter_criteria =
     collection.set('filter_criteria.areas',[])
     collection.set('filter_criteria.subareas',[])
 
-re = new RegExp('phantomjs','gi')
 log = (str)->
-  unless re.test navigator.userAgent
+  re = new RegExp('phantomjs','gi')
+  ua = navigator.userAgent
+  unless re.test ua
     console.log str
 
 describe 'media filter', ->
