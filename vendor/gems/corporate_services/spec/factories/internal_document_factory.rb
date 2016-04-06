@@ -18,6 +18,10 @@ FactoryGirl.define do
       revision_major nil
       revision_minor nil
     end
+
+    trait :good_governance do
+      type "GoodGovernance::InternalDocument"
+    end
   end
 
   factory :accreditation_required_document, :parent => :internal_document, :class => AccreditationRequiredDoc do

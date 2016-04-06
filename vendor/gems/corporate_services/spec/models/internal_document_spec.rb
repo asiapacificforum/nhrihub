@@ -60,3 +60,40 @@ describe "automatic revision assigment" do
     end
   end
 end
+
+describe "when title is blank" do
+  it "assigns filename base as title" do
+    document = FactoryGirl.create(:internal_document, :title => '')
+    expect(document.title).to eq document.original_filename.split('.')[0]
+  end
+end
+
+describe "when accreditation required special filename is assigned to non-accreditation-required file" do
+  context "and the document was the primary document in its group" do
+    before do
+      @group = FactoryGirl.create(:accreditation_document_group, :title => "Budget")
+      @archive = FactoryGirl.create(:internal_document, :revision_major => nil, :revision_minor => nil)
+      @primary = FactoryGirl.create(:internal_document, :document_group_id => @archive.document_group_id, :revision_major => nil, :revision_minor => nil)
+      @group_id = @archive.document_group_id
+      @primary.update_attributes(:title => "Budget")
+    end
+
+    it "should assign the primary and all associated archive files to the accreditation required group" do
+      expect(@primary.reload.document_group_id).to eq @group.id
+      expect(@archive.reload.document_group_id).to eq @group.id
+    end
+
+    it "should convert primary and archive files to AccreditationRequiredDoc type" do
+      expect(@primary.reload.type).to eq "AccreditationRequiredDoc"
+      expect(@archive.reload.type).to eq "AccreditationRequiredDoc"
+    end
+
+    it "should assign accreditation required title to archive file" do
+      expect(@archive.reload.title).to eq "Budget"
+    end
+
+    it "should remove the (now empty) non-accreditation-required document group" do
+      expect{DocumentGroup.find(@group_id)}.to raise_error ActiveRecord::RecordNotFound
+    end
+  end
+end

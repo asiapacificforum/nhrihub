@@ -15,22 +15,35 @@ class InternalDocument < ActiveRecord::Base
   default_scope ->{ order(:revision_major, :revision_minor) }
 
   before_save do |doc|
-    if doc.title.blank?
-      doc.title = doc.original_filename.split('.')[0]
-    end
+    doc.assign_title
+    doc.convert_to_accreditation_required_type
+    doc.assign_to_group
+    doc.assign_revision
+  end
 
+  def assign_to_group
+    if self.document_group_id.blank? && !self.is_a?(AccreditationRequiredDoc)
+      self.document_group_id = DocumentGroup.create.id
+    end
+  end
+
+  def convert_to_accreditation_required_type
     # it's an InternalDocument that has been edited to an AccreditationRequiredDoc
     # or an AccreditationRequiredDoc being created
-    if AccreditationDocumentGroup.pluck(:title).include?(doc.title)
-      AccreditationRequiredDocCallbacks.new.before_save(doc)
-    else
-      if doc.document_group_id.blank? && !doc.is_a?(AccreditationRequiredDoc)
-        doc.document_group_id = DocumentGroup.create.id
-      end
+    if AccreditationDocumentGroup.pluck(:title).include?(self.title)
+      AccreditationRequiredDocCallbacks.new.before_save(self)
     end
+  end
 
-    if doc.revision_major.nil?
-      doc.revision = document_group.next_minor_revision
+  def assign_title
+    if self.title.blank?
+      self.title = self.original_filename.split('.')[0]
+    end
+  end
+
+  def assign_revision
+    if self.revision_major.nil?
+      self.revision = self.document_group.next_minor_revision
     end
   end
 
