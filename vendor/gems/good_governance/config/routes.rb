@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   scope ':locale'  do
     namespace :good_governance do
-      resources :documents
+      resources :internal_documents
       resources :complaints
       resources :projects
     end

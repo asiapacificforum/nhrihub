@@ -19,7 +19,7 @@ SimpleNavigation::Configuration.run do |navigation|
       end
     end
     primary.item :gg, t('layout.nav.gg.gg') do |gg|
-      gg.item :action, t('layout.nav.gg.docs'), good_governance_documents_path
+      gg.item :action, t('layout.nav.int_docs'), good_governance_internal_documents_path
       gg.item :action, t('layout.nav.gg.complaints'), good_governance_complaints_path
       gg.item :action, t('layout.nav.gg.projects'), good_governance_projects_path
     end
