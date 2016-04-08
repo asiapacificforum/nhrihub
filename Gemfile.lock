@@ -63,6 +63,11 @@ PATH
     outreach_media (0.0.1)
       rails (~> 4.2.0)
 
+PATH
+  remote: vendor/gems/siu
+  specs:
+    siu (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -414,6 +419,7 @@ DEPENDENCIES
   simple-navigation (~> 3.14.0)
   simple-navigation-bootstrap
   simplecov
+  siu!
   spring
   sshkit (~> 1.5)
   teaspoon

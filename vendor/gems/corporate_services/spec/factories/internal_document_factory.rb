@@ -30,6 +30,10 @@ FactoryGirl.define do
     factory :protection_promotion_internal_document, :class => Nhri::ProtectionPromotion::InternalDocument do
       type "Nhri::ProtectionPromotion::InternalDocument"
     end
+
+    factory :siu_internal_document, :class => Siu::InternalDocument do
+      type "Siu::InternalDocument"
+    end
   end
 
   factory :accreditation_required_document, :parent => :internal_document, :class => AccreditationRequiredDoc do

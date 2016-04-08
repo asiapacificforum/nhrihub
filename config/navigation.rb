@@ -32,7 +32,9 @@ SimpleNavigation::Configuration.run do |navigation|
       om.item :outreach, t('layout.nav.outreach'), outreach_media_outreach_events_path
       om.item :media, t('layout.nav.media'), outreach_media_media_appearances_path
     end
-    primary.item :spec_inv, t('layout.nav.spec_inv'), placeholder_path
+    primary.item :spec_inv, t('layout.nav.spec_inv') do |siu|
+      siu.item :int_docs, t('layout.nav.int_docs'), siu_internal_documents_path
+    end
     primary.item :reports, t('layout.nav.reports'), placeholder_path
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path
