@@ -1,0 +1,8 @@
+en:
+  nhri:
+    protection_promotion:
+      internal_documents:
+        index:
+          heading: "Protection and Promotion Internal Documents"
+          flash:
+            no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'

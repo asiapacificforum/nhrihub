@@ -2,8 +2,8 @@ SimpleNavigation::Configuration.run do |navigation|
   navigation.items do |primary|
     primary.item :nhri, t('layout.nav.nhri') do |nhri|
       nhri.item :pro, t('layout.nav.pro.pro'), :class => 'dropdown-submenu' do |pro|
-        pro.item :doc, t('layout.nav.pro.doc'), nhri_protect_promo_internal_documents_path
-        pro.item :proj, t('layout.nav.pro.proj'), nhri_protect_promo_projects_path
+        pro.item :doc, t('layout.nav.pro.doc'), nhri_protection_promotion_internal_documents_path
+        pro.item :proj, t('layout.nav.pro.proj'), nhri_protection_promotion_projects_path
       end
       nhri.item :adv_council, t('layout.nav.adv_council'), :class => 'dropdown-submenu' do |adv|
         adv.item :tor, t('layout.nav.adv.tor'), nhri_advisory_council_terms_of_references_path

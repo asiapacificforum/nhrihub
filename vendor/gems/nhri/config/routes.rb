@@ -6,7 +6,7 @@ Rails.application.routes.draw do
         resource  :filesize, :only => :update
         resources :filetypes, :param => :ext, :only => [:create, :destroy]
       end
-      namespace :protect_promo do
+      namespace :protection_promotion do
         resources :internal_documents
         resources :projects
       end
