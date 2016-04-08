@@ -128,5 +128,12 @@ the top-level navigation menu and removing it from the Gemfile.
 Database migrations pertaining to the module's resources should be added in the module's own db/migrate directory. They
 will be included and run with the main application's migrations.
 
+## Shared Models
+The root application includes models, controllers and views that appear in multiple modules, and may be included in new modules. They are:
+1. Reminders
+2. Notes
+3. Internal Documents
+Each of these shared elements has a feature test spec implemented as an rspec shared behaviour. So the behaviour can be tested when the shared model is incorporated into a module.
+
 ## License
 GPL V3, see LICENSE.txt

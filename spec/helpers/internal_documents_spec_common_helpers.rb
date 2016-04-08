@@ -1,7 +1,8 @@
 require 'rspec/core/shared_context'
 
-module InternalDocumentsSpecHelpers
+module InternalDocumentsSpecCommonHelpers
   extend RSpec::Core::SharedContext
+
   def attach_file(locator,file,index = nil)
     page.attach_file("primary_file", upload_document, :visible => false)
     if !index # when it's first time, we pass a non-nil argument like :first_time
@@ -13,37 +14,14 @@ module InternalDocumentsSpecHelpers
     end
   end
 
-  def populate_database
-    current_doc_rev = first_doc_rev = (rand(49)+50).to_f/10
-    doc = FactoryGirl.create(:corporate_services_internal_document,
-                             :revision => first_doc_rev.to_s,
-                             :title => Faker::Lorem.words(4).join(' '),
-                             :original_filename => Faker::Lorem.words(3).join('_')+'.doc')
-    dgid = doc.document_group_id
-    4.times do |i|
-      current_doc_rev -= 0.1
-      current_doc_rev = current_doc_rev.round(1)
-      FactoryGirl.create(:corporate_services_internal_document,
-                         :document_group_id => dgid,
-                         :revision => current_doc_rev.to_s,
-                         :title => Faker::Lorem.words(4).join(' '),
-                         :original_filename => Faker::Lorem.words(3).join('_')+'.doc')
-    end
+  def upload_files_link
+    page.find('.fileupload-buttonbar button.start')
   end
 
   def setup_accreditation_required_groups
     titles = ["Statement of Compliance", "Enabling Legislation", "Organization Chart", "Annual Report", "Budget"]
     titles.each do |title|
       AccreditationDocumentGroup.create(:title => title)
-    end
-  end
-
-  def setup_accreditation_required_docs
-    titles = ["Statement of Compliance", "Enabling Legislation", "Organization Chart", "Annual Report", "Budget"]
-    titles.each do |title|
-      2.times do
-        AccreditationRequiredDoc.create(:title => title)
-      end
     end
   end
 
@@ -72,13 +50,8 @@ module InternalDocumentsSpecHelpers
     page.find('.collapse', :text => 'Archive')
   end
 
-
   def primary_panel
     page.find('.template-download .panel-heading')
-  end
-
-  def click_the_archive_file_details_icon
-    page.all('.details').last.click
   end
 
   def click_the_archive_delete_icon
@@ -95,14 +68,7 @@ module InternalDocumentsSpecHelpers
 
   def click_the_archive_icon
     page.all('.template-download .fa-folder-o')[0].click
-    sleep(0.5)
-  end
-
-  def create_a_corporate_services_internal_document_in_the_same_group(**options)
-    revision_major, revision_minor = options.delete(:revision).to_s.split('.') if options && options[:revision]
-    group_id = @doc.document_group_id
-    options = options.merge({ :revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9), :document_group_id => group_id})
-    FactoryGirl.create(:corporate_services_internal_document, options)
+    sleep(0.2)
   end
 
   def click_the_download_icon
@@ -112,16 +78,6 @@ module InternalDocumentsSpecHelpers
   def click_the_edit_icon(context)
     context.all('.fa-pencil-square-o')[0].click
     sleep(0.1)
-  end
-
-  def create_a_corporate_services_internal_document(**options)
-    revision_major, revision_minor = options.delete(:revision).split('.') if options && options[:revision]
-    options = options.merge({:revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9)})
-    doc = FactoryGirl.create(:corporate_services_internal_document, options)
-  end
-
-  def add_document_link
-    page.find('.fileinput-button')
   end
 
   def upload_replace_files_link
