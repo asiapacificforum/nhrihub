@@ -25,9 +25,7 @@ $ ->
     uploadTemplateContainerId: '#uploads'
     fileInput: '#primary_fileinput'
     replaceFileInput: true
-    #url : 'internal_documents.json',
-    #url : Routes.corporate_services_internal_documents_path(current_locale)
-    url : Routes.nhri_icc_index_path(current_locale)
+    url : Routes.internal_documents_path(current_locale) # for #create action
     paramName : 'internal_document[file]',
     uploadTemplateId : '#upload_template' 
     uploadTemplate : Ractive.parse($('#upload_template').html())
@@ -57,13 +55,14 @@ $ ->
           lastModifiedDate: file.lastModifiedDate
           name : file.name
           size: file.size
-          type: file.type
+          original_type: file.type
           title: ""
           revision: ""
           document_group_id: ""
           fileupload: data
           primary : true
           context : context
+          type : window.model_name
         internal_document_uploader.
           unshift('upload_files', file_attrs).
           then(
@@ -93,12 +92,13 @@ $ ->
             lastModifiedDate: file.lastModifiedDate
             name : file.name
             size: file.size
-            type: file.type
+            original_type: file.type
             title: ""
             revision: ""
             fileupload : data
             document_group_id : document_group_id
             primary : false
+            type : window.model_name
           internal_document_uploader.
             unshift('upload_files', file_attrs).
             then(
@@ -195,10 +195,11 @@ $ ->
         [ {name : 'internal_document[title]', value : @get('title')}
           {name : 'internal_document[revision]', value : @get('revision')}
           {name : 'internal_document[filesize]', value : @get('size')}
-          {name : 'internal_document[original_type]', value : @get('type')}
+          {name : 'internal_document[original_type]', value : @get('original_type')}
           {name : 'internal_document[original_filename]', value : @get('name')}
           {name : 'internal_document[lastModifiedDate]', value : @get('lastModifiedDate')}
           {name : 'internal_document[document_group_id]', value : @get('document_group_id')}
+          {name : 'internal_document[type]', value : @get('type')}
         ]
       icc_doc : ->
         st = @get('stripped_title')
@@ -289,6 +290,7 @@ $ ->
     oninit : ->
       @remove_errors()
     computed :
+      url : -> Routes.internal_document_path(current_locale,@get('id'))
       file : -> false
       archive_file : -> true
       icc_doc : ->
@@ -329,6 +331,7 @@ $ ->
     oninit : ->
       @set('archive_upload_files',[])
     computed :
+      url : -> Routes.internal_document_path(current_locale,@get('id'))
       file : -> true
       archive_file : -> false
       stripped_title : ->

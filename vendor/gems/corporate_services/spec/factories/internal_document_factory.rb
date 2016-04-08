@@ -19,8 +19,12 @@ FactoryGirl.define do
       revision_minor nil
     end
 
-    trait :good_governance do
+    factory :good_governance_internal_document, :class => GoodGovernance::InternalDocument do
       type "GoodGovernance::InternalDocument"
+    end
+
+    factory :corporate_services_internal_document, :class => CorporateServices::InternalDocument do
+      type "CorporateServices::InternalDocument"
     end
   end
 

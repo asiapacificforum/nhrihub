@@ -58,7 +58,7 @@
         %p empty
         {{/}}
         {{#_(archive_files).sortBy(revision).reverse()}}
-        <archivedoc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' update_url='{{update_url}}' delete_url='{{delete_url}}' url='{{url}}' save_url='{{save_url}}' document_group_id='{{document_group_id}}' />
+        <archivedoc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' />
         {{/}}
 
 %script#popover_template{:type => "template/ractive"}
@@ -166,7 +166,7 @@
   %ul.error{:style => "display:none"}
     %li {{ message }}
 
-%script#internal_document_title_selector{:type => 'html/template'}
+%script#corporate_services_title_selector{:type => 'html/template'}
   %label{:for =>"internal_document_title"}= t('.doc_title')
   {{#if is_icc_doc}}
   %span#icc_doc_title{:style => "margin-left:26px"} {{ title }}
@@ -177,6 +177,9 @@
     %option{:value=>'{{title}}'}
     {{/required_files_titles}}
   {{/if}}
+
+%script#good_governance_title_selector{:type => 'template/ractive'}
+  {{> corporate_services_title_selector }}
 
 %script#icc_title_selector{:type => 'html/template'}
   .form-horizontal

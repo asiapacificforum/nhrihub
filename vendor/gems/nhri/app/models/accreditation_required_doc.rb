@@ -13,5 +13,11 @@ class AccreditationRequiredDoc < InternalDocument
       end
     end
   end
+
+  alias_method :document_group, :accreditation_document_group
+
+  #def self.document_group_class
+    #AccreditationDocumentGroup
+  #end
 end
 

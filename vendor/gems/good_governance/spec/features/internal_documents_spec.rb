@@ -16,14 +16,15 @@ feature "internal document management", :js => true do
   before do
     SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
     SiteConfig['corporate_services.internal_documents.filesize'] = 3
-    @doc = create_a_document(:revision => "3.0", :title => "my important document")
-    @archive_doc = create_a_document_in_the_same_group(:title => 'first archive document', :revision => '2.9')
+    setup_accreditation_required_groups
+    @doc = create_a_good_governance_document(:revision => "3.0", :title => "my important document")
+    @archive_doc = create_a_good_governance_document_in_the_same_group(:title => 'first archive document', :revision => '2.9')
     visit good_governance_internal_documents_path('en')
   end
 
   scenario "add a new document" do
-    expect(page_heading).to eq "Internal Documents"
-    expect(page_title).to eq "Internal Documents"
+    expect(page_heading).to eq "Good Governance Internal Documents"
+    expect(page_title).to eq "Good Governance Internal Documents"
     expect(page.find('td.title .no_edit').text).to eq "my important document"
     expect(page.find('td.revision .no_edit').text).to eq "3.0"
     page.attach_file("primary_file", upload_document, :visible => false)
@@ -49,7 +50,7 @@ feature "internal document management", :js => true do
   #end
 
   scenario "add a new document but omit document name" do
-    expect(page_heading).to eq "Internal Documents"
+    expect(page_heading).to eq "Good Governance Internal Documents"
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("")
     expect{upload_files_link.click; sleep(0.5)}.to change{GoodGovernance::InternalDocument.count}
@@ -57,7 +58,7 @@ feature "internal document management", :js => true do
   end
 
   scenario "start upload before any docs have been selected" do
-    expect(page_heading).to eq "Internal Documents"
+    expect(page_heading).to eq "Good Governance Internal Documents"
     upload_files_link.click
     expect(flash_message).to eq "You must first click \"Add files...\" and select file(s) to upload"
   end
@@ -213,7 +214,7 @@ feature "internal document management", :js => true do
   feature "add a new revision" do
     context "including user configured title" do
       before do
-        expect(page_heading).to eq "Internal Documents"
+        expect(page_heading).to eq "Good Governance Internal Documents"
         page.attach_file("replace_file", upload_document, :visible => false)
         page.find("#internal_document_title").set("some replacement file name")
         page.find('#internal_document_revision').set("3.5")
@@ -236,7 +237,7 @@ feature "internal document management", :js => true do
 
     context "omitting user configured title and revision" do
       before do
-        expect(page_heading).to eq "Internal Documents"
+        expect(page_heading).to eq "Good Governance Internal Documents"
         page.attach_file("replace_file", upload_document, :visible => false)
       end
 
@@ -283,7 +284,7 @@ feature "internal document management", :js => true do
   end
 
   scenario "upload a revision then edit the title and revision" do
-    expect(page_heading).to eq "Internal Documents"
+    expect(page_heading).to eq "Good Governance Internal Documents"
     page.attach_file("replace_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
@@ -297,7 +298,7 @@ feature "internal document management", :js => true do
   end
 
   scenario "upload a revision then edit the title and revision of the archive file" do
-    expect(page_heading).to eq "Internal Documents"
+    expect(page_heading).to eq "Good Governance Internal Documents"
     # upload the revision
     page.attach_file("replace_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
@@ -374,7 +375,7 @@ feature "internal document management", :js => true do
 
   describe "add multiple primary files" do
     before do
-      expect(page_heading).to eq "Internal Documents"
+      expect(page_heading).to eq "Good Governance Internal Documents"
       # first doc
       attach_file("primary_file", upload_document, :first_time)
       page.find("#internal_document_title").set("fancy file")
@@ -409,9 +410,9 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete primary file while archive files remain" do
-    create_a_document_in_the_same_group(:revision => "1.0") # now there are revs 3,2.9,1 in the db
+    create_a_good_governance_document_in_the_same_group(:revision => "1.0") # now there are revs 3,2.9,1 in the db
     visit good_governance_internal_documents_path('en')
-    expect(page_heading).to eq "Internal Documents"
+    expect(page_heading).to eq "Good Governance Internal Documents"
     click_the_archive_icon
     page.find('.panel-heading .delete').click # that's the primary file
     sleep(0.2) # ajax, javascript
@@ -433,9 +434,9 @@ feature "internal document management", :js => true do
   end
 
   scenario "view archives" do
-    create_a_document_in_the_same_group(:revision => "2.0")
+    create_a_good_governance_document_in_the_same_group(:revision => "2.0")
     visit good_governance_internal_documents_path('en')
-    expect(page_heading).to eq "Internal Documents"
+    expect(page_heading).to eq "Good Governance Internal Documents"
     click_the_archive_icon
     expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
     expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
@@ -454,8 +455,8 @@ feature "behaviour with multiple primary files on the page", :js => true do
   before do
     SiteConfig['corporate_services.internal_documents.filetypes'] = ['pdf']
     SiteConfig['corporate_services.internal_documents.filesize'] = 3
-    create_a_document(:revision => "3.0", :title => "my important document")
-    create_a_document(:revision => "3.0", :title => "another important document")
+    create_a_good_governance_document(:revision => "3.0", :title => "my important document")
+    create_a_good_governance_document(:revision => "3.0", :title => "another important document")
     visit good_governance_internal_documents_path('en')
     page.find('.template-download:nth-of-type(2) .internal_document #archive_fileinput').set(upload_document)
     page.all("#internal_document_title")[0].set("first replacement file name")
@@ -486,7 +487,7 @@ feature "internal document management when no filetypes have been configured", :
   include InternalDocumentDefaultSettings
 
   before do
-    create_a_document(:revision => "3.0", :title => "my important document")
+    create_a_good_governance_document(:revision => "3.0", :title => "my important document")
     visit good_governance_internal_documents_path('en')
   end
 
@@ -505,7 +506,7 @@ feature "internal document management", :js => true do
   include InternalDocumentDefaultSettings
 
   before do
-    toggle_navigation_dropdown("Corporate Services")
+    toggle_navigation_dropdown("Good Governance")
     select_dropdown_menu_item("Internal documents")
   end
 

@@ -9,6 +9,7 @@
   var permitted_filetypes = #{ InternalDocument.permitted_filetypes }
   var files = #{ @internal_documents.to_json }
   var files_list_error = "#{t('.flash.no_files_error')}"
+  var required_files_titles = #{@required_files_titles.to_json}
   var context = "gg"
 
 = javascript_include_tag "internal_documents"

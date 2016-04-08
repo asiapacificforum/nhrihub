@@ -1,14 +1,10 @@
 class InternalDocumentsController < ApplicationController
-  def index
-    @internal_document = InternalDocument.new
-    @internal_documents = DocumentGroup.non_empty.map(&:primary)
-    @required_files_titles = AccreditationDocumentGroup.all.map(&:id_and_title)
-  end
 
   def create
-    params["internal_document"]["original_filename"] = params[:internal_document][:file].original_filename
     params["internal_document"]["user_id"] = current_user.id
-    @internal_document = accreditation_type ? AccreditationRequiredDoc.create(doc_params) : InternalDocument.create(doc_params)
+    params[:internal_document][:type] = "AccreditationRequiredDoc" if accreditation_type
+    model = params[:internal_document][:type].constantize
+    @internal_document = model.create(doc_params)
     render :json => {:file => @internal_document, :required_files_titles => AccreditationDocumentGroup.all.map(&:id_and_title) }
   end
 
@@ -52,7 +48,8 @@ class InternalDocumentsController < ApplicationController
   def doc_params
     attrs = [:title, :revision, :file, :original_filename,
              :original_type, :lastModifiedDate, :filesize,
-             :document_group_id, :user_id]
+             :document_group_id, :user_id, :type]
+
     params.
       require(:internal_document).
       #permit(*attrs, :archive_files =>[*attrs])

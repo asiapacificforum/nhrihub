@@ -6,6 +6,7 @@ class AccreditationRequiredDocCallbacks
       AccreditationDocumentGroup.where(:title => doc.title).first ||
       AccreditationDocumentGroup.create(:title => doc.title)
     doc.document_group_id = accreditation_document_group.id
+    doc.becomes(AccreditationRequiredDoc)
   end
 
   private

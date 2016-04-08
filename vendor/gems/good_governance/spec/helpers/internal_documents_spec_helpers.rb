@@ -13,10 +13,16 @@ module InternalDocumentsSpecHelpers
     end
   end
 
+  def setup_accreditation_required_groups
+    titles = ["Statement of Compliance", "Enabling Legislation", "Organization Chart", "Annual Report", "Budget"]
+    titles.each do |title|
+      AccreditationDocumentGroup.create(:title => title)
+    end
+  end
+
   def populate_database
     current_doc_rev = first_doc_rev = (rand(49)+50).to_f/10
-    doc = FactoryGirl.create(:internal_document,
-                             :good_governance,
+    doc = FactoryGirl.create(:good_governance_internal_document,
                              :revision => first_doc_rev.to_s,
                              :title => Faker::Lorem.words(4).join(' '),
                              :original_filename => Faker::Lorem.words(3).join('_')+'.doc')
@@ -24,8 +30,7 @@ module InternalDocumentsSpecHelpers
     4.times do |i|
       current_doc_rev -= 0.1
       current_doc_rev = current_doc_rev.round(1)
-      FactoryGirl.create(:internal_document,
-                         :good_governance,
+      FactoryGirl.create(:good_governance_internal_document,
                          :document_group_id => dgid,
                          :revision => current_doc_rev.to_s,
                          :title => Faker::Lorem.words(4).join(' '),
@@ -84,11 +89,11 @@ module InternalDocumentsSpecHelpers
     sleep(0.2)
   end
 
-  def create_a_document_in_the_same_group(**options)
+  def create_a_good_governance_document_in_the_same_group(**options)
     revision_major, revision_minor = options.delete(:revision).to_s.split('.') if options && options[:revision]
     group_id = @doc.document_group_id
     options = options.merge({ :revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9), :document_group_id => group_id})
-    FactoryGirl.create(:internal_document, options)
+    FactoryGirl.create(:good_governance_internal_document, options)
   end
 
   def click_the_download_icon
@@ -100,10 +105,10 @@ module InternalDocumentsSpecHelpers
     sleep(0.1)
   end
 
-  def create_a_document(**options)
+  def create_a_good_governance_document(**options)
     revision_major, revision_minor = options.delete(:revision).split('.') if options && options[:revision]
     options = options.merge({:revision_major => revision_major || rand(9), :revision_minor => revision_minor || rand(9)})
-    doc = FactoryGirl.create(:internal_document, options)
+    doc = FactoryGirl.create(:good_governance_internal_document, options)
   end
 
   def add_document_link

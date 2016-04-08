@@ -14,16 +14,18 @@ class InternalDocument < ActiveRecord::Base
 
   default_scope ->{ order(:revision_major, :revision_minor) }
 
-  before_save do |doc|
-    doc.assign_title
-    doc.convert_to_accreditation_required_type
-    doc.assign_to_group
-    doc.assign_revision
-  end
+  before_save :assign_title
+  before_save :convert_to_accreditation_required_type
+  before_save :assign_to_group
+  before_save :assign_revision
+
+  #def self.document_group_class
+    #DocumentGroup
+  #end
 
   def assign_to_group
     if self.document_group_id.blank? && !self.is_a?(AccreditationRequiredDoc)
-      self.document_group_id = DocumentGroup.create.id
+      self.document_group_id = self.class.document_group_class.create.id
     end
   end
 
@@ -66,7 +68,6 @@ class InternalDocument < ActiveRecord::Base
     super(:except => [:created_at, :updated_at],
           :methods => [:revision,
                        :uploaded_by,
-                       :url,
                        :formatted_modification_date,
                        :formatted_creation_date,
                        :formatted_filesize,
@@ -74,11 +75,11 @@ class InternalDocument < ActiveRecord::Base
                        :archive_files] )
   end
 
-  def url
-    if persisted?
-      Rails.application.routes.url_helpers.corporate_services_internal_document_path(I18n.locale, self)
-    end
-  end
+  #def url
+    #if persisted?
+      #Rails.application.routes.url_helpers.corporate_services_internal_document_path(I18n.locale, self)
+    #end
+  #end
 
   def document_group_primary
     document_group && document_group.primary

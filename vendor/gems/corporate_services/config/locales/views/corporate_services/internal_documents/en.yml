@@ -1,7 +1,6 @@
 en:
   internal_documents:
     index:
-      heading: "Internal Documents"
       error: "Error"
       flash:
         no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
@@ -31,3 +30,7 @@ en:
       too_large : "File is too large"
       unpermitted_type : "File type not allowed"
       select_icc : "Select ICC document title"
+  corporate_services:
+    internal_documents:
+      index:
+        heading: "Corporate Services Internal Documents"

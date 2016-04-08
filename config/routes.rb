@@ -64,5 +64,6 @@ Rails.application.routes.draw do
     get 'home', :to => 'home#index'
     get 'admin', :to => 'admin#index'
     get 'placeholder', :to => 'placeholder#index'
+    resources :internal_documents
   end
 end

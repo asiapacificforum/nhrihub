@@ -2,6 +2,6 @@ en:
   good_governance:
     internal_documents:
       index:
-        heading: "Internal Documents"
+        heading: "Good Governance Internal Documents"
         flash:
           no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'

@@ -1,21 +1,10 @@
 class CorporateServices::InternalDocumentsController < InternalDocumentsController
   def index
-    super
-  end
-
-  def create
-    super
-  end
-
-  def destroy
-    super
-  end
-
-  def update
-    super
-  end
-
-  def show
-    super
+    @internal_document = CorporateServices::InternalDocument.new
+    @internal_documents = DocumentGroup.non_empty.map(&:primary) # all types of InternalDocument
+    @required_files_titles = AccreditationDocumentGroup.all.map(&:id_and_title)
+    @model_name = CorporateServices::InternalDocument.to_s
+    @i18n_key = @model_name.tableize.gsub(/\//,'.')
+    render 'internal_documents/index'
   end
 end
