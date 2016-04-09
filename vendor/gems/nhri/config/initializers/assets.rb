@@ -4,6 +4,7 @@ assets = [ 'nhri/reference_documents.js',
            'issues.js',
            'nhri/headings.js',
            'nhri/headings.css',
+           'nhri/indicators.css',
            'jquery_datepicker.js',
            'nhri/indicators.js',
            'nhri/monitors.js']

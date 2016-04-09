@@ -3,6 +3,10 @@ require 'rspec/core/shared_context'
 module IndicatorTextMonitorSpecHelpers
   extend RSpec::Core::SharedContext
 
+  def edit_monitor
+    page.all('#monitors .monitor i.fa-pencil-square-o')[0]
+  end
+
   def number_of_text_monitors
     page.all('#monitors .monitor').count
   end
@@ -45,6 +49,10 @@ module IndicatorTextMonitorSpecHelpers
 
   def add_monitor
     page.find('#add_monitor')
+  end
+
+  def edit_save_monitor
+    page.find('#monitor_editable2_edit_save')
   end
 
   def save_monitor

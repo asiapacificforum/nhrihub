@@ -148,6 +148,12 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
     expect(number_of_text_monitors).to eq Nhri::TextMonitor.count
   end
 
+  scenario "edit a monitor" do
+    edit_monitor.click
+    fill_in(:text_monitor_description, :with => "some new text")
+    expect{edit_save_monitor.click; sleep(0.5)}.to change{Nhri::TextMonitor.all.first.description}.to "some new text"
+  end
+
 end
 
 feature "monitors behaviour when indicator is configured to monitor with file format", :js => true do

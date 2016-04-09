@@ -19,7 +19,7 @@ $ ->
 
   Ractive.DEBUG = false
 
-  # applies to text and numeric monitors only, file_monitors have the FileMonitor ractive
+  # applies to text and numeric monitors only, file_monitors have the FileMonitor ractive component
   Monitor =
     computed :
       persisted : ->
@@ -29,9 +29,11 @@ $ ->
           $.datepicker.formatDate("M d, yy", new Date(@get('date')) )
         set: (val)-> 
           @set('date', $.datepicker.parseDate( "M d, yy", val))
+    create_instance_attributes : ->
+      {monitor : _.chain(@get()).pick(@get('params')).extend({type:@get('type')}).value() }
     save_monitor : ->
       url = Routes.nhri_indicator_monitors_path(current_locale,this.get('indicator_id'))
-      data = {monitor : _.chain(@get()).pick(@get('params')).extend({type:@get('type')}).value() }
+      data = @create_instance_attributes()
       if @validate(data)
         $.ajax
           type : 'post'
