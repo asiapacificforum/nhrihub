@@ -1,4 +1,4 @@
-class Nhri::Offence < ActiveRecord::Base
+class Nhri::HumanRightsAttribute < ActiveRecord::Base
   belongs_to :heading
   has_many :indicators
   has_many :structural_indicators, ->{ where("nature = 'Structural'") }, :class_name => 'Nhri::Indicator'

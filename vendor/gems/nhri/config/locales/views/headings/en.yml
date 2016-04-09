@@ -7,10 +7,10 @@ en:
       headings_templates:
         blank_title_error: "Title can't be blank."
         blank_description_error: "Description can't be blank."
-        offences: "Offences"
-        show_offences : "show offences"
+        attributes: "Attributes"
+        show_attributes : "show attributes"
         title: "Title"
-        add_offence: "add offence"
+        add_attribute: "add attribute"
       show:
         page_title: "Indicators"
         indicators_heading: "Indicators for: %{title}"
@@ -19,7 +19,7 @@ en:
         outcomes: "Outcomes"
         add_indicator: "Add indicator"
       indicators_templates:
-        offence: "Offence"
+        attribute: "Attribute"
         nature: "Nature"
         add_indicator: "add indicator"
       monitor:
@@ -56,11 +56,11 @@ en:
       new_indicator_template:
         new_indicator: "New indicator"
         edit_indicator: "Edit indicator"
-        offence: "Offence"
+        attribute: "Attribute"
         title: "Title"
         nature: "Nature"
         monitor: "Monitor format"
-        select_offence: "Select offence"
+        select_attribute: "Select attribute"
         text : "Text"
         numeric : "Numeric"
         file : "File"
@@ -72,7 +72,7 @@ en:
         enter_explanation: "Enter explanation text"
         process: "Process"
         outcomes: "Outcomes"
-        all_offences: "Falls under all offences"
+        all_attributes: "Falls under all attributes"
         save: "Save"
         title_error_message : "Title can't be blank"
         monitor_format_error_message : "You must select a monitor format"
@@ -81,10 +81,8 @@ en:
       indicators:
         show:
           heading: "%{nature} Indicator: %{title}"
-          heading_sub1: "Heading: %{title}"
-          heading_sub2: "Offence: %{description}"
           indicator: "Indicator"
-          offence: "Offence"
+          attribute: "Attribute"
           nature: "Nature"
           monitoring: "Monitoring"
           notes: "Notes"

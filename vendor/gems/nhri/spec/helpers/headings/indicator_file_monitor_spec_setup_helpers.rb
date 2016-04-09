@@ -5,7 +5,7 @@ module IndicatorsFileMonitorSpecSetupHelpers
 
   before do
     FactoryGirl.create(:heading)
-    FactoryGirl.create(:offence)
+    FactoryGirl.create(:human_rights_attribute)
     FactoryGirl.create(:indicator,
                        :monitor_format => 'file',
                        #:reminders=>[FactoryGirl.create(:reminder, :indicator)],

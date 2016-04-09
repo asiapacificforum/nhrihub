@@ -19,21 +19,21 @@ feature "show headings index page", :js => true do
   it "can add new headings" do
     add_heading.click
     fill_in('heading_title', :with => "Some new heading text")
-    add_offence.click
-    page.find('.offence_description').set('Offence text')
-    add_offence.click
-    page.all('.offence_description')[0].set('Second offence text')
+    add_attribute.click
+    page.find('.attribute_description').set('HumanRightsAttribute text')
+    add_attribute.click
+    page.all('.attribute_description')[0].set('Second attribute text')
     expect{save_heading.click; sleep(0.3)}.to change{Nhri::Heading.count}.by(1).
-                                           and change{Nhri::Offence.count}.by(2)
-    expect(Nhri::Heading.first.offences.count).to eq 2
+                                           and change{Nhri::HumanRightsAttribute.count}.by(2)
+    expect(Nhri::Heading.first.human_rights_attributes.count).to eq 2
     expect(Nhri::Heading.first.title).to eq "Some new heading text"
-    expect(Nhri::Heading.first.offences.map(&:description)).to include "Offence text"
-    expect(Nhri::Heading.first.offences.map(&:description)).to include "Second offence text"
+    expect(Nhri::Heading.first.human_rights_attributes.map(&:description)).to include "HumanRightsAttribute text"
+    expect(Nhri::Heading.first.human_rights_attributes.map(&:description)).to include "Second attribute text"
     expect(page).to have_selector('#headings_container .heading', :count => 1)
     expect(page).to have_selector('#headings_container .heading .title', :text => "Some new heading text")
   end
 
-  it "can add new headings with no offences" do
+  it "can add new headings with no human_rights_attributes" do
     add_heading.click
     fill_in('heading_title', :with => "Some new heading text")
     expect{save_heading.click; sleep(0.3)}.to change{Nhri::Heading.count}.by(1)
@@ -60,37 +60,37 @@ feature "show headings index page", :js => true do
                                              and change{page.all('#headings_container .heading').count}.by(-1)
   end
 
-  it "does not persist empty offences" do
+  it "does not persist empty human_rights_attributes" do
     add_heading.click
     fill_in('heading_title', :with => "Some new heading text")
-    add_offence.click
+    add_attribute.click
     expect{save_heading.click; sleep(0.3)}.to change{Nhri::Heading.count}.by(1).
-                                           and change{Nhri::Offence.count}.by(0)
+                                           and change{Nhri::HumanRightsAttribute.count}.by(0)
   end
 
-  it "while adding a heading it can only populate one offence at a time" do
+  it "while adding a heading it can only populate one attribute at a time" do
     add_heading.click
     fill_in('heading_title', :with => "Some new heading text")
-    add_offence.click
-    add_offence.click
-    expect(page).to have_selector('.offence_description', :count => 1)
-    page.find('.offence_description').set('Offence text')
-    add_offence.click
-    expect(page).to have_selector('.offence_description', :count => 2)
-    deselect_first_offence
-    expect(page).to have_selector('.offence_description', :count => 1)
+    add_attribute.click
+    add_attribute.click
+    expect(page).to have_selector('.attribute_description', :count => 1)
+    page.find('.attribute_description').set('HumanRightsAttribute text')
+    add_attribute.click
+    expect(page).to have_selector('.attribute_description', :count => 2)
+    deselect_first_attribute
+    expect(page).to have_selector('.attribute_description', :count => 1)
   end
 
-  it "can cancel the adding of new headings and the entered title and offences are reset" do
+  it "can cancel the adding of new headings and the entered title and human_rights_attributes are reset" do
     add_heading.click
     fill_in('heading_title', :with => "Some new heading text")
-    add_offence.click
-    page.find('.offence_description').set('Offence text')
+    add_attribute.click
+    page.find('.attribute_description').set('HumanRightsAttribute text')
     cancel_add.click
     expect(page).not_to have_selector('#heading_save')
     add_heading.click
     expect(page.find('#heading_title').value).to be_blank
-    expect(page).not_to have_selector('.offence_description')
+    expect(page).not_to have_selector('.attribute_description')
   end
 
   it "does not validate a blank or whitespace title" do
@@ -164,96 +164,96 @@ feature "index page behaviour with existing headings", :js => true do
   end
 end
 
-feature "offences behaviour on headings index page", :js => true do
+feature "attributes behaviour on headings index page", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include HeadingsSpecHelper
 
   before do
     setup_database # 3 headings
     visit nhri_headings_path(:en)
-    open_first_offences_dropdown
+    open_first_attributes_dropdown
   end
 
-  it "can add offences" do
-    add_offence.click
-    page.find('#offence_description').set('Offence text')
-    expect{edit_save.click; sleep(0.3)}.to change{Nhri::Offence.count}.by 1
-    expect(page.all('.offence .description .no_edit span').first.text).to eq "Offence text"
+  it "can add attributes" do
+    add_attribute.click
+    page.find('#attribute_description').set('HumanRightsAttribute text')
+    expect{edit_save.click; sleep(0.3)}.to change{Nhri::HumanRightsAttribute.count}.by 1
+    expect(page.all('.attribute .description .no_edit span').first.text).to eq "HumanRightsAttribute text"
   end
 
-  it "restores new offence form to blank if adding offence is terminated after description was added" do
-    add_offence.click
-    page.find('#offence_description').set('Offence text')
-    terminate_adding_offence
-    expect(page).not_to have_selector('#offence_description')
-    add_offence.click
-    expect(page.find('#offence_description').value).to be_blank
+  it "restores new attribute form to blank if adding attribute is terminated after description was added" do
+    add_attribute.click
+    page.find('#attribute_description').set('HumanRightsAttribute text')
+    terminate_adding_attribute
+    expect(page).not_to have_selector('#attribute_description')
+    add_attribute.click
+    expect(page.find('#attribute_description').value).to be_blank
   end
 
-  it "can only add one offence at a time" do
-    add_offence.click
-    expect(page).to have_selector('input#offence_description', :count => 1)
-    add_offence.click
-    expect(page).to have_selector('input#offence_description', :count => 1)
+  it "can only add one attribute at a time" do
+    add_attribute.click
+    expect(page).to have_selector('input#attribute_description', :count => 1)
+    add_attribute.click
+    expect(page).to have_selector('input#attribute_description', :count => 1)
   end
 
-  it "shows an error and does not persist the offence when saving with blank description" do
-    add_offence.click
-    expect{edit_save.click; sleep(0.3)}.not_to change{Nhri::Offence.count}
+  it "shows an error and does not persist the attribute when saving with blank description" do
+    add_attribute.click
+    expect{edit_save.click; sleep(0.3)}.not_to change{Nhri::HumanRightsAttribute.count}
     expect(page).to have_selector('#description_error', :text => "Description can't be blank")
-    page.find('#offence_description').set('Offence text')
+    page.find('#attribute_description').set('HumanRightsAttribute text')
     expect(page).not_to have_selector('#description_error', :text => "Description can't be blank")
   end
 
-  it "can delete offences" do
-    expect{delete_first_offence.click; sleep(0.2)}.to change{Nhri::Offence.count}.by(-1).
-                                                   and change{page.all('.offence').count}.by(-1)
+  it "can delete attributes" do
+    expect{delete_first_attribute.click; sleep(0.2)}.to change{Nhri::HumanRightsAttribute.count}.by(-1).
+                                                   and change{page.all('.attribute').count}.by(-1)
   end
 
-  it "can edit offences" do
-    edit_first_offence.click
-    fill_in('offence_description', :with=>'Changed my mind')
-    expect{edit_save_offence.click; sleep(0.2)}.to change{Nhri::Offence.first.description}.to "Changed my mind"
-    expect(page).to have_selector('.offence .description .no_edit span', :text => "Changed my mind")
+  it "can edit attributes" do
+    edit_first_attribute.click
+    fill_in('attribute_description', :with=>'Changed my mind')
+    expect{edit_save_attribute.click; sleep(0.2)}.to change{Nhri::HumanRightsAttribute.first.description}.to "Changed my mind"
+    expect(page).to have_selector('.attribute .description .no_edit span', :text => "Changed my mind")
   end
 
-  it "restores previous value if editing offences is cancelled" do
-    original_description = page.find('.offence .description .no_edit span').text
-    edit_first_offence.click
-    fill_in('offence_description', :with=>'Changed my mind')
+  it "restores previous value if editing attributes is cancelled" do
+    original_description = page.find('.attribute .description .no_edit span').text
+    edit_first_attribute.click
+    fill_in('attribute_description', :with=>'Changed my mind')
     edit_cancel.click
-    expect(page).to have_selector('.offence .description .no_edit span', :text => original_description)
+    expect(page).to have_selector('.attribute .description .no_edit span', :text => original_description)
   end
 
-  it "adds an error and does not persist offences edited to blank description" do
-    edit_first_offence.click
-    fill_in('offence_description', :with=>'')
-    expect{edit_save_offence.click; sleep(0.2)}.not_to change{Nhri::Offence.first.description}
+  it "adds an error and does not persist attributes edited to blank description" do
+    edit_first_attribute.click
+    fill_in('attribute_description', :with=>'')
+    expect{edit_save_attribute.click; sleep(0.2)}.not_to change{Nhri::HumanRightsAttribute.first.description}
     expect(page).to have_selector('#description_error', :text => "Description can't be blank")
-    fill_in('offence_description', :with=>'boo')
+    fill_in('attribute_description', :with=>'boo')
     expect(page).not_to have_selector('#description_error', :text => "Description can't be blank")
   end
 
-  it "restores previous value and terminates editing if offences dropdown is closed" do
-    original_description = page.find('.offence .description .no_edit span').text
-    edit_first_offence.click
-    fill_in('offence_description', :with=>'Changed my mind')
-    close_first_offences_dropdown
+  it "restores previous value and terminates editing if attributes dropdown is closed" do
+    original_description = page.find('.attribute .description .no_edit span').text
+    edit_first_attribute.click
+    fill_in('attribute_description', :with=>'Changed my mind')
+    close_first_attributes_dropdown
     sleep(0.3) # css transition
-    open_first_offences_dropdown
-    expect(page).to have_selector('.offence .description .no_edit span', :text => original_description)
+    open_first_attributes_dropdown
+    expect(page).to have_selector('.attribute .description .no_edit span', :text => original_description)
   end
 
-  it "terminates adding offence when user selects edit offence" do
-    add_offence.click
-    edit_first_offence.click
-    expect(page).to have_selector('input#offence_description', :count => 1)
+  it "terminates adding attribute when user selects edit attribute" do
+    add_attribute.click
+    edit_first_attribute.click
+    expect(page).to have_selector('input#attribute_description', :count => 1)
   end
 
-  it "terminates editing offence when user selects add offence" do
-    edit_first_offence.click
-    add_offence.click
-    expect(page).to have_selector('input#offence_description', :count => 1)
+  it "terminates editing attribute when user selects add attribute" do
+    edit_first_attribute.click
+    add_attribute.click
+    expect(page).to have_selector('input#attribute_description', :count => 1)
   end
 
 end

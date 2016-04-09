@@ -5,7 +5,7 @@ module IndicatorsTextMonitorSpecSetupHelpers
 
   before do
     FactoryGirl.create(:heading)
-    FactoryGirl.create(:offence)
+    FactoryGirl.create(:human_rights_attribute)
     FactoryGirl.create(:indicator,
                        :monitor_format => 'text',
                        :reminders=>[FactoryGirl.create(:reminder, :indicator)],

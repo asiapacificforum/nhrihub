@@ -5,7 +5,7 @@ module IndicatorsContextNotesSpecHelpers
 
   before do
     FactoryGirl.create(:heading)
-    FactoryGirl.create(:offence)
+    FactoryGirl.create(:human_rights_attribute)
     FactoryGirl.create(:indicator,
                        :reminders=>[FactoryGirl.create(:reminder, :indicator)],
                        :notes => [FactoryGirl.create(:note, :indicator, :created_at => 3.days.ago.to_datetime),FactoryGirl.create(:note, :indicator, :created_at => 4.days.ago.to_datetime)])

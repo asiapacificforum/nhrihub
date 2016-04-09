@@ -3,34 +3,34 @@ require 'rspec/core/shared_context'
 module HeadingsSpecHelper
   extend RSpec::Core::SharedContext
 
-  def edit_first_offence
-    page.all('.offence i.fa.fa-pencil-square-o.fa-lg')[0]
+  def edit_first_attribute
+    page.all('.attribute i.fa.fa-pencil-square-o.fa-lg')[0]
   end
 
-  def delete_first_offence
-    page.all('.offence i.fa-trash-o').first
+  def delete_first_attribute
+    page.all('.attribute i.fa-trash-o').first
   end
 
-  def terminate_adding_offence
-    page.find('#terminate_offence').click
+  def terminate_adding_attribute
+    page.find('#terminate_attribute').click
   end
 
-  def open_first_offences_dropdown
-    page.all('.show_offences').first.click
+  def open_first_attributes_dropdown
+    page.all('.show_attributes').first.click
     sleep(0.2) # css transition
   end
 
-  def close_first_offences_dropdown
-    page.all('.show_offences').first.click
+  def close_first_attributes_dropdown
+    page.all('.show_attributes').first.click
     sleep(0.2) # css transition
   end
 
-  def deselect_first_offence
-    page.all('.deselect_offence')[0].click
+  def deselect_first_attribute
+    page.all('.deselect_attribute')[0].click
   end
 
-  def add_offence
-    page.find('#add_offence')
+  def add_attribute
+    page.find('#add_attribute')
   end
 
   def cancel_add
@@ -49,13 +49,13 @@ module HeadingsSpecHelper
     page.find('i.fa.fa-check.fa-lg')
   end
 
-  def edit_save_offence
-    page.find('.offence i.fa.fa-check.fa-lg')
+  def edit_save_attribute
+    page.find('.attribute i.fa.fa-check.fa-lg')
   end
 
   def setup_database
     3.times do |i|
-      FactoryGirl.create(:heading, :with_offences, :title => "My really cool heading #{i}")
+      FactoryGirl.create(:heading, :with_human_rights_attributes, :title => "My really cool heading #{i}")
     end
   end
 

@@ -50,12 +50,12 @@ namespace :nhri do
     end
   end
 
-  desc "populates offences"
+  desc "populates human_rights_attributes"
   task :populate_off => :environment do
-    Nhri::Offence.destroy_all
+    Nhri::HumanRightsAttribute.destroy_all
     Nhri::Heading.pluck(:id).each do |h_id|
       5.times do
-        FactoryGirl.create(:offence, :heading_id => h_id)
+        FactoryGirl.create(:human_rights_attribute, :heading_id => h_id)
       end
     end
   end
@@ -74,7 +74,7 @@ namespace :nhri do
             monitors = rand(3).times.collect{|i| FactoryGirl.build(:text_monitor)}
             FactoryGirl.create(:indicator,
                                :nature => nature,
-                               :offence_id => nil,
+                               :human_rights_attribute_id => nil,
                                :heading_id => heading.id,
                                :notes => notes,
                                :reminders => reminders,
@@ -83,7 +83,7 @@ namespace :nhri do
             monitors = rand(3).times.collect{|i| FactoryGirl.build(:numeric_monitor)}
             FactoryGirl.create(:indicator,
                                :nature => nature,
-                               :offence_id => nil,
+                               :human_rights_attribute_id => nil,
                                :heading_id => heading.id,
                                :numeric_monitor_explanation => Faker::Lorem.words(7).join(' '),
                                :notes => notes,
@@ -93,14 +93,14 @@ namespace :nhri do
             monitor = FactoryGirl.build(:file_monitor)
             FactoryGirl.create(:indicator,
                                :nature => nature,
-                               :offence_id => nil,
+                               :human_rights_attribute_id => nil,
                                :heading_id => heading.id,
                                :notes => notes,
                                :reminders => reminders,
                                :file_monitor => monitor)
           end #/case
         end #/rand(4) loop
-        heading.offences.pluck(:id).each do |o_id|
+        heading.human_rights_attributes.pluck(:id).each do |o_id|
           3.times do
             notes = rand(3).times.collect{|i| FactoryGirl.build(:note)}
             reminders = rand(3).times.collect{|i| FactoryGirl.build(:reminder)}
@@ -110,7 +110,7 @@ namespace :nhri do
               monitors = rand(3).times.collect{|i| FactoryGirl.build(:text_monitor)}
               FactoryGirl.create(:indicator,
                                  :nature => nature,
-                                 :offence_id => o_id,
+                                 :human_rights_attribute_id => o_id,
                                  :heading_id => heading.id,
                                  :notes => notes,
                                  :reminders => reminders,
@@ -119,7 +119,7 @@ namespace :nhri do
               monitors = rand(3).times.collect{|i| FactoryGirl.build(:numeric_monitor)}
               FactoryGirl.create(:indicator,
                                  :nature => nature,
-                                 :offence_id => o_id,
+                                 :human_rights_attribute_id => o_id,
                                  :heading_id => heading.id,
                                  :numeric_monitor_explanation => Faker::Lorem.words(7).join(' '),
                                  :notes => notes,
@@ -129,7 +129,7 @@ namespace :nhri do
               monitor = FactoryGirl.build(:file_monitor)
               FactoryGirl.create(:indicator,
                                  :nature => nature,
-                                 :offence_id => o_id,
+                                 :human_rights_attribute_id => o_id,
                                  :heading_id => heading.id,
                                  :notes => notes,
                                  :reminders => reminders,

@@ -1,10 +1,10 @@
 class Nhri::Indicator < ActiveRecord::Base
-  # offence_id heading_id
-  #    nil        n       indicator belongs to a heading, and is associated with all offences
-  #     n         n       indicator belongs to a particular offence,
-  #                       heading_id included for routing after an indicator is created
-  #                       it is created in the context of an indicator
-  belongs_to :offence
+  # human_rights_attribute_id heading_id
+  #    nil                       n       indicator belongs to a heading, and is associated with all attributes
+  #     n                        n       indicator belongs to a particular attribute,
+  #                                      heading_id included for routing after an indicator is created
+  #                                      it is created in the context of an indicator
+  belongs_to :human_rights_attribute
   belongs_to :heading
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
@@ -15,7 +15,7 @@ class Nhri::Indicator < ActiveRecord::Base
   scope :structural, ->{ where(:nature => "Structural") }
   scope :process, ->{ where(:nature => "Process") }
   scope :outcomes, ->{ where(:nature => "Outcomes") }
-  scope :all_offences, ->{ where(:offence_id => nil) }
+  scope :all_attributes, ->{ where(:human_rights_attribute_id => nil) }
 
   def as_json(options={})
     super(:except => [:created_at, :updated_at],

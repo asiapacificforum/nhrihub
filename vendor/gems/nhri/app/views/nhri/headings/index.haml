@@ -1,3 +1,4 @@
+= stylesheet_link_tag 'nhri/headings'
 %h1=t('.heading')
 
 .btn.btn-success.btn-sm#add_heading{:style => "margin-bottom:12px; color:white;", :onclick => "headings.new_heading()"}
@@ -8,7 +9,7 @@
 
 :javascript
   var headings_data = #{@headings.to_json(:only =>[:title, :id],
-                                          :include => {:offences=>{:only => [:heading_id, :id, :description]}})}
+                                          :include => {:human_rights_attributes=>{:only => [:heading_id, :id, :description]}})}
 
 = render :partial => 'headings_templates'
 

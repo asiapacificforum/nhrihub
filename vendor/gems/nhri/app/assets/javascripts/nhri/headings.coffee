@@ -20,39 +20,39 @@ $ ->
 
   Ractive.decorators.inpage_edit = EditInPlace
 
-  Offence = Ractive.extend
-    template : "#offence_template"
+  HumanRightsAttribute = Ractive.extend
+    template : "#attribute_template"
     validate : ->
       @set('description', @get('description').trim())
       @set('description_error', _.isEmpty(@get('description')))
       !@get('description_error')
-    deselect_offence : ->
+    deselect_attribute : ->
       @parent.remove(@_guid)
 
-  EditOffence = Ractive.extend
-    template : "#edit_offence_template"
+  EditHumanRightsAttribute = Ractive.extend
+    template : "#edit_attribute_template"
     computed :
       persisted : ->
         !_.isNull @get('id')
       url : ->
-        Routes.nhri_heading_offence_path(current_locale, @get('heading_id'), @get('id'))
+        Routes.nhri_heading_human_rights_attribute_path(current_locale, @get('heading_id'), @get('id'))
     validate : ->
       @set('description', @get('description').trim())
       @set('description_error', _.isEmpty(@get('description')))
       !@get('description_error')
-    terminate_offence : ->
-      @parent.remove_edit_offence(@_guid)
-    save_offence : ->
+    terminate_attribute : ->
+      @parent.remove_edit_attribute(@_guid)
+    save_attribute : ->
       if @validate()
-        url = Routes.nhri_heading_offences_path(current_locale, @get('heading_id'))
-        data = {offence : {description : @get('description')}}
+        url = Routes.nhri_heading_human_rights_attributes_path(current_locale, @get('heading_id'))
+        data = {human_rights_attribute : {description : @get('description')}}
         $.ajax
           method : 'post'
           url : url
           data : data
-          success : @create_offence_callback
+          success : @create_attribute_callback
           context : @
-    create_offence_callback : (response, status, jqxhr)->
+    create_attribute_callback : (response, status, jqxhr)->
       @set(response)
     validate : ->
       @set('description', @get('description').trim())
@@ -60,7 +60,7 @@ $ ->
       !@get('description_error')
     remove_errors : ->
       @set('description_error', false)
-    delete_offence : ->
+    delete_attribute : ->
       data = {_method : 'delete'}
       $.ajax
         method : 'post'
@@ -69,9 +69,9 @@ $ ->
         success : @delete_callback
         context : @
     delete_callback : ->
-      @parent.remove_edit_offence(@_guid)
+      @parent.remove_edit_attribute(@_guid)
     create_instance_attributes : ->
-      {offence : {description : @get('description')}}
+      {human_rights_attribute : {description : @get('description')}}
     remove_description_error : ->
       @set('description_error', false)
 
@@ -82,19 +82,19 @@ $ ->
         !_.isNull @get('id')
       url : ->
         Routes.nhri_heading_path(current_locale,@get('id'))
-      offences_attributes : ->
-        if _.isEmpty(@get('offences'))
+      human_rights_attributes_attributes : ->
+        if _.isEmpty(@get('human_rights_attributes'))
           [{description: ""}] # hack to workaround jQuery not sending empty arrays
         else
-          _(@get('offences')).map (o)-> _(o).pick('id','description')
+          _(@get('human_rights_attributes')).map (o)-> _(o).pick('id','description')
     components :
-      offence : Offence
-      editOffence : EditOffence
+      attribute : HumanRightsAttribute
+      editHumanRightsAttribute : EditHumanRightsAttribute
     on_init : ->
       @remove_errors()
       @set('expanded',false)
     save_heading : ->
-      data = {heading : {title : @get('title'), offences_attributes : @get('offences_attributes')}}
+      data = {heading : {title : @get('title'), human_rights_attributes_attributes : @get('human_rights_attributes_attributes')}}
       url = Routes.nhri_headings_path(current_locale)
       if @validate()
         $.ajax
@@ -127,33 +127,33 @@ $ ->
     remove_errors : ->
       @set('title_error',false)
     create_instance_attributes : -> # required for inpage_edit decorator
-      {heading: {title : @get('title'), offences_attributes : @get('offences_attributes')}}
-    add_offence : ->
+      {heading: {title : @get('title'), human_rights_attributes_attributes : @get('human_rights_attributes_attributes')}}
+    add_attribute : ->
       # here we don't claim_user_input_request b/c
-      # we will allow adding heading and adding offence simultaneously
-      @_add_offence_in('offence')
-    add_edit_offence : ->
-      UserInput.claim_user_input_request(@,'remove_edit_offence')
-      @_add_offence_in('editOffence')
-    _add_offence_in : (collection)->
-      offences = @findAllComponents(collection)
-      first_offence = offences.length == 0
-      valid_previous_offence = first_offence || !(_.isNull(offences[0].get('id')) && !offences[0].validate())
-      if valid_previous_offence
-        @unshift('offences',{heading_id : @get('id'), id : null, description : '', description_error : false})
+      # we will allow adding heading and adding attribute simultaneously
+      @_add_attribute_in('attribute')
+    add_edit_attribute : ->
+      UserInput.claim_user_input_request(@,'remove_edit_attribute')
+      @_add_attribute_in('editHumanRightsAttribute')
+    _add_attribute_in : (collection)->
+      attributes = @findAllComponents(collection)
+      first_attribute = attributes.length == 0
+      valid_previous_attribute = first_attribute || !(_.isNull(attributes[0].get('id')) && !attributes[0].validate())
+      if valid_previous_attribute
+        @unshift('human_rights_attributes',{heading_id : @get('id'), id : null, description : '', description_error : false})
     remove : (guid)->
-      @_remove_offence_from('offence',guid)
-    remove_edit_offence : (guid)->
-      @_remove_offence_from('editOffence',guid)
-    _remove_offence_from : (collection,guid)->
+      @_remove_attribute_from('attribute',guid)
+    remove_edit_attribute : (guid)->
+      @_remove_attribute_from('editHumanRightsAttribute',guid)
+    _remove_attribute_from : (collection,guid)->
       guids = _(@findAllComponents(collection)).pluck('_guid')
       index = _(guids).indexOf(guid)
-      @splice('offences',index,1)
-    toggle_offences : ->
+      @splice('human_rights_attributes',index,1)
+    toggle_attributes : ->
       UserInput.terminate_user_input_request()
       UserInput.reset()
       @set('expanded',!@get('expanded'))
-      $("#edit_offences#{@get('id')}").collapse('toggle')
+      $("#edit_attributes#{@get('id')}").collapse('toggle')
 
   Headings = Ractive.extend
     template : "{{#headings}}<heading id='{{id}}' title='{{title}}' />{{/headings}}"
@@ -170,7 +170,7 @@ $ ->
       headings : headings_data
     new_heading : ->
       UserInput.claim_user_input_request(@,'cancel')
-      @unshift('headings',{id: null, title : "", title_error: false, offences: []})
+      @unshift('headings',{id: null, title : "", title_error: false, human_rights_attributes: []})
     components :
       headings : Headings
     cancel : ->

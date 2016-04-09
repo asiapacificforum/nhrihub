@@ -2,7 +2,7 @@ class Nhri::Heading::IndicatorsController < ApplicationController
   def show
     @indicator = Nhri::Indicator.find(params[:id])
     @heading = @indicator.heading
-    @offence = @indicator.offence ? @indicator.offence.description : "all"
+    @attribute = @indicator.attribute ? @indicator.attribute.description : "all"
   end
 
   def destroy
@@ -34,6 +34,6 @@ class Nhri::Heading::IndicatorsController < ApplicationController
 
   private
   def indicator_params
-    params.require(:indicator).permit(:numeric_monitor_explanation, :offence_id, :title, :nature, :monitor_format, :heading_id)
+    params.require(:indicator).permit(:numeric_monitor_explanation, :attribute_id, :title, :nature, :monitor_format, :heading_id)
   end
 end

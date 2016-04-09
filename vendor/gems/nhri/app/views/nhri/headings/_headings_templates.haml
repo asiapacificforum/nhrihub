@@ -18,7 +18,7 @@
       .icon{'data-toggle' => 'edit'}
         .fade.edit
         .fade.no_edit.in
-          %i.show_offences{:id => "{{#if expanded}}compact{{else}}expand{{/if}}", 'on-click'=>'toggle_offences()', 'data-toggle'=>'tooltip', 'title'=>t('.show_offences'), :style => "position:relative; top:3px;"}
+          %i.show_attributes{:id => "{{#if expanded}}compact{{else}}expand{{/if}}", 'on-click'=>'toggle_attributes()', 'data-toggle'=>'tooltip', 'title'=>t('.show_attributes'), :style => "position:relative; top:3px;"}
     .col-md-1
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
         .fade.edit
@@ -35,49 +35,49 @@
         .fade.no_edit.in
           .delete_heading{'on-click'=>'delete_this()'}
             %i.fa.fa-trash-o.fa-lg
-  .row.collapse{:id => "edit_offences{{id}}"}
+  .row.collapse{:id => "edit_attributes{{id}}"}
     .col-md-12
       .row
         .col-md-8
-          %label=t('.offences')
+          %label=t('.attributes')
         .col-md-1
-          %i.fa.fa-plus.fa-lg#add_offence{'on-click'=>'add_edit_offence()', 'data-toggle'=>'tooltip', 'title'=>t('.add_offence'), :style => "position:relative; top:-5px; left:-4px;"}
-      {{#offences}}
-      <editOffence heading_id='{{heading_id}}' description='{{description}}' id='{{id}}' />
-      {{/offences}}
+          %i.fa.fa-plus.fa-lg#add_attribute{'on-click'=>'add_edit_attribute()', 'data-toggle'=>'tooltip', 'title'=>t('.add_attribute'), :style => "position:relative; top:-5px; left:-4px;"}
+      {{#human_rights_attributes}}
+      <editHumanRightsAttribute heading_id='{{heading_id}}' description='{{description}}' id='{{id}}' />
+      {{/human_rights_attributes}}
 
-// when offences are being shown in the offences dropdown, they're editable
-%script#edit_offence_template{:type => 'ractive/template'}
+// when attributes are being shown in the attributes dropdown, they're editable
+%script#edit_attribute_template{:type => 'ractive/template'}
   {{#if persisted}}
-  {{>editable_offence_template}}
+  {{>editable_attribute_template}}
   {{else}}
-  {{>new_edit_offence_template}}
+  {{>new_edit_attribute_template}}
   {{/if}}
 
-// when offences are being shown in the offences dropdown, they're editable
-%script#editable_offence_template{:type => 'ractive/template'}
-  .row.offence.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"offence_editable{{id}}"}
+// when attributes are being shown in the attributes dropdown, they're editable
+%script#editable_attribute_template{:type => 'ractive/template'}
+  .row.attribute.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"attribute_editable{{id}}"}
     .col-md-9.description.form-group{'data-attribute' => :description, 'data-toggle' => :edit, :'data-name' => 'description', :class=>"{{#description_error}}has-error{{/}}"}
       .fade.edit
-        %input#offence_description.form-control{'value' => "{{description}}", :style=>"width:500px;", 'on-keydown'=>'remove_description_error()'}
+        %input#attribute_description.form-control{'value' => "{{description}}", :style=>"width:500px;", 'on-keydown'=>'remove_description_error()'}
         %span.help-block.error#description_error=t('.blank_description_error')
       .fade.no_edit.editable.in
         %span {{description}}
     .col-md-1
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
         .fade.edit
-          %i.fa.fa-remove.fa-lg{:id => "offence_editable{{id}}_edit_cancel"}
+          %i.fa.fa-remove.fa-lg{:id => "attribute_editable{{id}}_edit_cancel"}
     .col-md-1
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
-          %i.fa.fa-check.fa-lg{:id => "offence_editable{{id}}_edit_save"}
+          %i.fa.fa-check.fa-lg{:id => "attribute_editable{{id}}_edit_save"}
         .fade.no_edit.in
-          %i.fa.fa-pencil-square-o.fa-lg{:id => "offence_editable{{id}}_edit_start"}
+          %i.fa.fa-pencil-square-o.fa-lg{:id => "attribute_editable{{id}}_edit_start"}
     .col-md-1
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
         .fade.no_edit.in
-          .delete_offence{'on-click'=>'delete_offence()'}
+          .delete_attribute{'on-click'=>'delete_attribute()'}
             %i.fa.fa-trash-o.fa-lg
 
 %script#new_heading_template{:type => 'template/ractive'}
@@ -95,40 +95,40 @@
           %i.fa.fa-check.fa-lg#heading_save{'on-click' => 'save_heading()'}
     .row{:style => "background-color: #c7be9a; margin-left:0px; margin-right:0px;"}
       .col-md-8
-        %label=t('.offences')
+        %label=t('.attributes')
       .col-md-1
-        %i.fa.fa-plus.fa-lg#add_offence{'on-click'=>'add_offence()', 'data-toggle'=>'tooltip', 'title'=>t('.add_offence')}
-    {{#offences}}
-    <offence />
-    {{/offences}}
+        %i.fa.fa-plus.fa-lg#add_attribute{'on-click'=>'add_attribute()', 'data-toggle'=>'tooltip', 'title'=>t('.add_attribute')}
+    {{#human_rights_attributes}}
+    <attribute />
+    {{/human_rights_attributes}}
 
-// when offences are added while a new heading is being added
-%script#offence_template{:type => 'template/ractive'}
+// when attributes are added while a new heading is being added
+%script#attribute_template{:type => 'template/ractive'}
   {{#if persisted}}
-  {{>show_offence_template}}
+  {{>show_attribute_template}}
   {{else}}
-  {{>new_offence_template}}
+  {{>new_attribute_template}}
   {{/if}}
 
-%script#show_offence_template{:type => 'template/ractive'}
+%script#show_attribute_template{:type => 'template/ractive'}
   .row{:style => "background-color: #c7be9a"}
     .col-md-8 {{ description }}
 
-// when offences are added while a new heading is being added
-%script#new_offence_template{:type => 'template/ractive'}
-  .row{:style => "background-color: #c7be9a"}
+// when attributes are added while a new heading is being added
+%script#new_attribute_template{:type => 'template/ractive'}
+  .row{:style => "background-color: #c7be9a; margin-left:0px; margin-right:0px;"}
     .col-md-8.form-group
-      %input.form-control.offence_description{:type => :text, :value =>'{{ description }}'}
+      %input.form-control.attribute_description{:type => :text, :value =>'{{ description }}'}
     .col-md-2
-      %i.fa.fa-remove.fa-lg.deselect_offence{:style =>'position:relative; top:6px;', 'on-click'=>'deselect_offence()'}
+      %i.fa.fa-remove.fa-lg.deselect_attribute{:style =>'position:relative; top:6px;', 'on-click'=>'deselect_attribute()'}
 
-// when offences are added individually
-%script#new_edit_offence_template{:type => 'template/ractive'}
+// when attributes are added individually
+%script#new_edit_attribute_template{:type => 'template/ractive'}
   .row
     .col-md-8.form-group{:class=>"{{#description_error}}has-error{{/}}"}
-      %input#offence_description{:type => :text, :value =>'{{ description }}', 'on-keydown'=>"remove_errors()"}
+      %input#attribute_description{:type => :text, :value =>'{{ description }}', 'on-keydown'=>"remove_errors()"}
       %span.help-block.error#description_error=t('.blank_description_error')
     .col-md-1
-      %i.fa.fa-remove.fa-lg#terminate_offence{'on-click'=>'terminate_offence()'}
+      %i.fa.fa-remove.fa-lg#terminate_attribute{'on-click'=>'terminate_attribute()'}
     .col-md-1
-      %i.fa.fa-check.fa-lg{'on-click'=>'save_offence()'}
+      %i.fa.fa-check.fa-lg{'on-click'=>'save_attribute()'}

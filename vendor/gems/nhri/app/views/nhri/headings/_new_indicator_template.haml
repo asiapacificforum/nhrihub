@@ -65,7 +65,7 @@
         # it's done at the last point before saving so a user can change their mind
         # and not lose the previous value
         @set('numeric_monitor_explanation',null) unless @get('numeric_monitor_format')
-        indicator=_(@get()).pick('numeric_monitor_explanation', 'offence_id', 'title', 'nature', 'monitor_format', 'heading_id')
+        indicator=_(@get()).pick('numeric_monitor_explanation', 'attribute_id', 'title', 'nature', 'monitor_format', 'heading_id')
         {indicator: indicator}
       save_indicator : ->
         if @validate()

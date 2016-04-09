@@ -1,15 +1,15 @@
 $ ->
-  Offence = Ractive.extend
+  Attribute = Ractive.extend
     template : "<div class='col-md-2' style='width:{{column_width}}%'> {{description}} </div>"
     computed :
       column_width : ->
-        l = @parent.get('offences').length
+        l = @parent.get('human_rights_attributes').length
         100/l
 
-  Offences = Ractive.extend
-    template : "{{#offences}} <offence description='{{description}}' /> {{/offences}}"
+  Attributes = Ractive.extend
+    template : "{{#human_rights_attributes}} <attribute description='{{description}}' /> {{/human_rights_attributes}}"
     components :
-      offence : Offence
+      attribute : Attribute
 
   FileUpload = (node)->
     $(node).fileupload
@@ -192,15 +192,15 @@ $ ->
       new_indicator.set('source',@)
       $('#new_indicator_modal').modal('show')
 
-  NatureOffence = Ractive.extend
-    template : "#nature_offence_template"
+  NatureHumanRightsAttribute = Ractive.extend
+    template : "#nature_attribute_template"
     components :
       indicator : Indicator
     new_indicator : ->
       new_indicator.set
         title : ""
         nature : @get('nature')
-        offence_id : @get('offence_id')
+        human_rights_attribute_id : @get('human_rights_attribute_id')
         heading_id : @get('heading_id')
         monitor_format : ""
         id : null
@@ -212,22 +212,22 @@ $ ->
       index = indicator_ids.indexOf(id)
       @splice(indicators,index,1)
 
-  NatureAllOffences = Ractive.extend
-    template : "#nature_all_offences_template"
+  NatureAllHumanRightsAttributes = Ractive.extend
+    template : "#nature_all_attributes_template"
     components :
       indicator : Indicator
     new_indicator : ->
       new_indicator.set
         title : ""
         nature : @get('nature')
-        offence_id : null
+        human_rights_attribute_id : null
         heading_id : @get('heading_id')
         monitor_format : ""
         id : null
       $('#new_indicator_modal').modal('show')
     remove_indicator : (id)->
       nature = @get('nature')
-      indicators = 'all_offence_'+nature+'_indicators'
+      indicators = 'all_human_rights_attribute_'+nature+'_indicators'
       indicator_ids = _(@get(indicators)).map (i)-> i.id
       index = indicator_ids.indexOf(id)
       @splice(indicators,index,1)
@@ -236,12 +236,12 @@ $ ->
     template : "#nature_template"
     computed :
       collection_name : ->
-        "all_offence_"+@get('name')+"_indicators"
-      all_offence_indicators : ->
+        "all_attribute_"+@get('name')+"_indicators"
+      all_attribute_indicators : ->
         @get(@get('collection_name'))
     components :
-      natureOffence : NatureOffence
-      natureAllOffences : NatureAllOffences
+      natureHumanRightsAttribute : NatureHumanRightsAttribute
+      natureAllHumanRightsAttributes : NatureAllHumanRightsAttributes
 
   Natures = Ractive.extend
     template : "#natures_template"
@@ -253,21 +253,21 @@ $ ->
     template : "#heading_template"
     data:
       id : heading_data.id
-      offences : heading_data.offences
+      human_rights_attributes : heading_data.human_rights_attributes
       natures : natures
-      all_offence_structural_indicators : heading_data.all_offence_structural_indicators
-      all_offence_process_indicators : heading_data.all_offence_process_indicators
-      all_offence_outcomes_indicators : heading_data.all_offence_outcomes_indicators
+      all_attribute_structural_indicators : heading_data.all_attribute_structural_indicators
+      all_attribute_process_indicators : heading_data.all_attribute_process_indicators
+      all_attribute_outcomes_indicators : heading_data.all_attribute_outcomes_indicators
     components :
-      offences : Offences
+      attributes : Attributes
       natures : Natures
     add_indicator : (indicator)->
       nature = indicator.nature
-      if _.isNull(indicator.offence_id)
-        @push("all_offence_#{nature}_indicators",indicator)
+      if _.isNull(indicator.human_rights_attribute_id)
+        @push("all_attribute_#{nature}_indicators",indicator)
       else
-        offence_index = _(@get('offences').map (o)->o.id).indexOf(indicator.offence_id)
-        @push("offences.#{offence_index}.#{nature}_indicators",indicator)
+        attribute_index = _(@get('human_rights_attributes').map (o)->o.id).indexOf(indicator.human_rights_attribute_id)
+        @push("human_rights_attributes.#{attribute_index}.#{nature}_indicators",indicator)
 
 # position the labels in the corner box, it depends on column height
   window.position_labels = ->

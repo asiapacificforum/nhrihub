@@ -4,11 +4,11 @@ module IndicatorsSpecSetupHelpers
   extend RSpec::Core::SharedContext
   before do
     heading = FactoryGirl.create(:heading)
-    offence = FactoryGirl.create(:offence, :description => "First offence")
+    attribute = FactoryGirl.create(:human_rights_attribute, :description => "First attribute")
     2.times do
       FactoryGirl.create(:indicator,
                          :monitor_format => 'numeric',
-                         :offence_id => offence.id,
+                         :human_rights_attribute_id => attribute.id,
                          :nature => 'Structural',
                          :heading_id => heading.id,
                          :numeric_monitor_explanation => 'percentage of dogs that like cats',

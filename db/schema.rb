@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160408210221) do
+ActiveRecord::Schema.define(version: 20160408234207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,6 +136,13 @@ ActiveRecord::Schema.define(version: 20160408210221) do
     t.datetime "updated_at"
   end
 
+  create_table "human_rights_attributes", force: :cascade do |t|
+    t.string   "description"
+    t.integer  "heading_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "icc_reference_documents", force: :cascade do |t|
     t.string   "source_url"
     t.string   "title"
@@ -156,7 +163,7 @@ ActiveRecord::Schema.define(version: 20160408210221) do
 
   create_table "indicators", force: :cascade do |t|
     t.string   "title"
-    t.integer  "offence_id"
+    t.integer  "human_rights_attribute_id"
     t.integer  "heading_id"
     t.string   "nature"
     t.string   "monitor_format"
@@ -249,13 +256,6 @@ ActiveRecord::Schema.define(version: 20160408210221) do
     t.integer  "author_id"
     t.datetime "date"
     t.integer  "value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "offences", force: :cascade do |t|
-    t.string   "description"
-    t.integer  "heading_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -5,7 +5,7 @@ module IndicatorsNumericMonitorSpecSetupHelpers
 
   before do
     FactoryGirl.create(:heading)
-    FactoryGirl.create(:offence)
+    FactoryGirl.create(:human_rights_attribute)
     FactoryGirl.create(:indicator,
                        :monitor_format => 'numeric',
                        :numeric_monitor_explanation => "Numeric monitor explanation text",

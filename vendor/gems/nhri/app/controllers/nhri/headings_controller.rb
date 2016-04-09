@@ -29,18 +29,19 @@ class Nhri::HeadingsController < ApplicationController
                               :file_monitor => [:user, :indicator],
                               :text_monitors => [:author, :indicator],
                               :numeric_monitors => [:author, :indicator]]
-    @heading = Nhri::Heading.includes(:offences => [:structural_indicators => indicator_associations,
+    @heading = Nhri::Heading.includes(:human_rights_attributes =>
+                                                   [:structural_indicators => indicator_associations,
                                                     :process_indicators => indicator_associations,
                                                     :outcomes_indicators => indicator_associations],
-                                      :all_offence_structural_indicators =>indicator_associations,
-                                      :all_offence_process_indicators =>indicator_associations,
-                                      :all_offence_outcomes_indicators =>indicator_associations
+                                      :all_attribute_structural_indicators =>indicator_associations,
+                                      :all_attribute_process_indicators =>indicator_associations,
+                                      :all_attribute_outcomes_indicators =>indicator_associations
                                       ).find(params[:id])
   end
 
   private
   def heading_params
-    params[:heading][:offences_attributes] = params[:heading][:offences_attributes].reject{|k,v| v[:description].blank? }
-    params.require(:heading).permit(:title, :offences_attributes => [:heading_id, :id, :description])
+    params[:heading][:human_rights_attributes_attributes] = params[:heading][:human_rights_attributes_attributes].reject{|k,v| v[:description].blank? }
+    params.require(:heading).permit(:title, :human_rights_attributes_attributes => [:heading_id, :id, :description])
   end
 end

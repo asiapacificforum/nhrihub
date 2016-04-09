@@ -20,7 +20,7 @@ Rails.application.routes.draw do
       end
       resources :headings do
         resources :indicators, :controller => 'heading/indicators'
-        resources :offences, :controller => 'heading/offences'
+        resources :human_rights_attributes, :controller => 'heading/human_rights_attributes'
       end
       namespace :file_monitor do
         resource  :filesize, :only => :update

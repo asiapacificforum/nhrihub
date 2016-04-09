@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :indicator, :class => Nhri::Indicator do
     title {Faker::Lorem.sentence}
-    offence_id {(Nhri::Offence.pluck(:id)+[nil]).sample}
+    human_rights_attribute_id {(Nhri::HumanRightsAttribute.pluck(:id)+[nil]).sample}
     heading_id {(Nhri::Heading.pluck(:id).sample)}
     nature {["Structural","Process","Outcomes"].sample}
     monitor_format { ["text", "numeric", "file"].sample }
