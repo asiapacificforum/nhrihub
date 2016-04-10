@@ -25,7 +25,6 @@ SimpleNavigation::Configuration.run do |navigation|
     end
     primary.item :corporate_services, t('layout.nav.corporate_services') do |cs|
       cs.item :int_docs, t('layout.nav.int_docs'), corporate_services_internal_documents_path
-      cs.item :perf_rev, t('layout.nav.perf_rev'), corporate_services_performance_reviews_path
       cs.item :strat_plan, t('layout.nav.strat_plan'), corporate_services_strategic_plan_path("current")
     end
     primary.item :outreach_media, t('layout.nav.outreach_media') do |om|

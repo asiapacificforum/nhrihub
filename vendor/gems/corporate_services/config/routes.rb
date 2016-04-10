@@ -9,7 +9,6 @@ Rails.application.routes.draw do
         resource :start_date, :only => :update
       end
       resources :internal_documents
-      resources :performance_reviews
       resources :strategic_plans do
         resources :strategic_priorities, :controller => 'strategic_plans/strategic_priorities'
       end
