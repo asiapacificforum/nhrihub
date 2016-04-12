@@ -14,10 +14,12 @@ class InternalDocument < ActiveRecord::Base
 
   default_scope ->{ order(:revision_major, :revision_minor) }
 
-  before_save :assign_title
-  before_save :convert_to_accreditation_required_type
-  before_save :assign_to_group
-  before_save :assign_revision
+  before_save do |doc|
+    doc.assign_title
+    doc.convert_to_accreditation_required_type
+    doc.assign_to_group
+    doc.assign_revision
+  end
 
   #def self.document_group_class
     #DocumentGroup
