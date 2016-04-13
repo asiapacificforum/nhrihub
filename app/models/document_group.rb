@@ -1,5 +1,5 @@
 class DocumentGroup < ActiveRecord::Base
-  has_many :internal_documents
+  has_many :internal_documents, :dependent => :destroy
 
   default_scope { order("created_at desc") }
 

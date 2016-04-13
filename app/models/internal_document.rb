@@ -21,9 +21,9 @@ class InternalDocument < ActiveRecord::Base
     doc.assign_revision
   end
 
-  #def self.document_group_class
-    #DocumentGroup
-  #end
+  def self.document_group_class
+    DocumentGroup
+  end
 
   def assign_to_group
     if self.document_group_id.blank? && !self.is_a?(AccreditationRequiredDoc)
@@ -35,7 +35,7 @@ class InternalDocument < ActiveRecord::Base
     # it's an InternalDocument that has been edited to an AccreditationRequiredDoc
     # or an AccreditationRequiredDoc being created
     if AccreditationDocumentGroup.pluck(:title).include?(self.title)
-      AccreditationRequiredDocCallbacks.new.before_save(self)
+      NamedDocumentCallbacks.new("AccreditationRequiredDoc", "AccreditationDocumentGroup").before_save(self)
     end
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160408234207) do
+ActiveRecord::Schema.define(version: 20160409220837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,13 @@ ActiveRecord::Schema.define(version: 20160408234207) do
     t.datetime "updated_at"
   end
 
+  create_table "agencies", force: :cascade do |t|
+    t.string   "name"
+    t.string   "full_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "areas", force: :cascade do |t|
     t.text     "name"
     t.datetime "created_at"
@@ -109,6 +116,13 @@ ActiveRecord::Schema.define(version: 20160408234207) do
   end
 
   add_index "controllers", ["controller_name"], name: "index_controllers_on_controller_name", using: :btree
+
+  create_table "conventions", force: :cascade do |t|
+    t.string   "name"
+    t.string   "full_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "document_groups", force: :cascade do |t|
     t.datetime "created_at"
@@ -198,6 +212,12 @@ ActiveRecord::Schema.define(version: 20160408234207) do
   create_table "issue_subareas", force: :cascade do |t|
     t.integer  "advisory_council_issue_id"
     t.integer  "subarea_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "mandates", force: :cascade do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -348,6 +368,48 @@ ActiveRecord::Schema.define(version: 20160408234207) do
     t.datetime "updated_at"
   end
 
+  create_table "project_agencies", force: :cascade do |t|
+    t.integer  "project_id"
+    t.integer  "agency_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "project_conventions", force: :cascade do |t|
+    t.integer  "project_id"
+    t.integer  "convention_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "project_mandates", force: :cascade do |t|
+    t.integer  "project_id"
+    t.integer  "mandate_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "project_performance_indicators", force: :cascade do |t|
+    t.integer  "project_id"
+    t.integer  "performance_indicator_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "project_types", force: :cascade do |t|
+    t.integer  "project_id"
+    t.integer  "type_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "reminders", force: :cascade do |t|
     t.string   "text",            limit: 255
     t.string   "reminder_type",   limit: 255
@@ -420,6 +482,12 @@ ActiveRecord::Schema.define(version: 20160408234207) do
     t.integer  "author_id"
     t.datetime "date"
     t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "types", force: :cascade do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
