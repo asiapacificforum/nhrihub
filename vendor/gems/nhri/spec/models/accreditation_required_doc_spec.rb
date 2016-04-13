@@ -1,5 +1,12 @@
 require 'rails_helper'
-require_relative '../../../corporate_services/spec/helpers/internal_documents_spec_helpers'
+
+
+def setup_accreditation_required_groups
+  titles = ["Statement of Compliance", "Enabling Legislation", "Organization Chart", "Annual Report", "Budget"]
+  titles.each do |title|
+    AccreditationDocumentGroup.create(:title => title)
+  end
+end
 
 describe "create the first document in an accreditation_document_group" do
   it "should create a new accreditation document group" do
@@ -9,7 +16,6 @@ describe "create the first document in an accreditation_document_group" do
 end
 
 describe "create accreditation required docs also creates accreditation required doc group" do
-  include InternalDocumentsSpecHelpers
   before do
     # in this not-anticipated situation an accreditation required doc is created
     # without a previously existing doc group
@@ -20,10 +26,14 @@ describe "create accreditation required docs also creates accreditation required
     expect(DocumentGroup.count).to eq 1
     expect(@icc_doc.document_group.type).to eq "AccreditationDocumentGroup"
   end
+
+  it "should persist empty document groups" do
+    @icc_doc.destroy
+    expect(DocumentGroup.count).to eq 1
+  end
 end
 
 describe "edit a document, creating an icc accreditation document" do
-  include InternalDocumentsSpecHelpers
   context "the icc accreditation document group already exists" do
     before do
       setup_accreditation_required_groups # normally all accreditation required doc groups are pre-existing

@@ -85,7 +85,9 @@ describe "when accreditation required special filename is assigned to non-accred
 
     it "should convert primary and archive files to AccreditationRequiredDoc type" do
       expect(@primary.reload.type).to eq "AccreditationRequiredDoc"
+      expect(InternalDocument.find(@primary.id)).to be_a AccreditationRequiredDoc
       expect(@archive.reload.type).to eq "AccreditationRequiredDoc"
+      expect(InternalDocument.find(@archive.id)).to be_a AccreditationRequiredDoc
     end
 
     it "should assign accreditation required title to archive file" do

@@ -3,21 +3,13 @@
 class AccreditationRequiredDoc < InternalDocument
   belongs_to :accreditation_document_group, :foreign_key => :document_group_id
 
-  before_save AccreditationRequiredDocCallbacks.new, :on => :update # creates the AccreditationDocumentGroup or associates with existing
-
-  after_save do |doc|
-    if doc.document_group_id_changed? && doc.document_group_id_was.present?
-      # destroy previous document group if it was empty unless it was an accreditation required doc group
-      if (empty_group = DocumentGroup.find(doc.document_group_id_was)).accreditation_required_docs.count.zero?
-        empty_group.destroy
-      end
-    end
+  def self.callback_class
+    @callback_class ||= NamedDocumentCallbacks.new("AccreditationRequiredDoc", "AccreditationDocumentGroup")
   end
 
-  alias_method :document_group, :accreditation_document_group
+  before_save callback_class, :on => :update # creates the AccreditationDocumentGroup or associates with existing
+  after_save callback_class
 
-  #def self.document_group_class
-    #AccreditationDocumentGroup
-  #end
+  alias_method :document_group, :accreditation_document_group
 end
 
