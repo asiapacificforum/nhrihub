@@ -6,6 +6,8 @@ class PerformanceIndicator < ActiveRecord::Base
   has_many :media_appearances, :through => :media_appearance_performance_indicators
   has_many :outreach_event_performance_indicators, :dependent => :destroy
   has_many :outreach_events, :through => :outreach_event_performance_indicators
+  has_many :project_performance_indicators, :dependent => :destroy
+  has_many :projects, :through => :project_performance_indicators
   default_scope ->{ order(:index) }
 
   before_create do
