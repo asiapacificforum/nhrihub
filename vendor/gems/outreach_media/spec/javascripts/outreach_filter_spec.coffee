@@ -96,6 +96,7 @@ log = (str)->
 
 describe 'Outreach page', ->
   before (done)->
+    window.Collection = {}
     window.outreach_events = MagicLamp.loadJSON('outreach_event_data')
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
@@ -107,6 +108,8 @@ describe 'Outreach page', ->
     window.audience_types = MagicLamp.loadJSON('audience_types')
     window.default_selected_impact_rating = MagicLamp.loadRaw('selected_impact_rating')
     window.impact_ratings = MagicLamp.loadJSON('impact_ratings')
+    window.planned_results = []
+    window.performance_indicators = []
     MagicLamp.load("outreach_event_page") # that's the _index partial being loaded
     @page = new OutreachPage()
     $.getScript("/assets/outreach.js").

@@ -1,3 +1,5 @@
+#= require user_input_manager
+#= require in_page_edit
 # component hierarchy
 # internal_document_uploader template: #uploader_template (includes primary_fileupload decorator)
 #   docs                     template: #files
@@ -133,6 +135,7 @@ $ ->
       $(node).fileupload _.extend({}, fileupload_options)
 
   EditInPlace = (node,id)->
+    console.log "looking for InpageEdit"
     edit = new InpageEdit
       object : @
       on : node

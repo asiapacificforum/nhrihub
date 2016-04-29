@@ -1,6 +1,7 @@
 en:
   internal_documents:
     index:
+      heading: "Corporate Services Internal Documents"
       error: "Error"
       flash:
         no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'

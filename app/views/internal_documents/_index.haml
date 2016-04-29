@@ -1,6 +1,9 @@
 .message_block
-%h1= t("#{i18n_key}.index.heading")
+%h1= t("#{@i18n_key}.heading")
 
 #container
+
+= javascript_include_tag 'in_page_edit'
+= javascript_include_tag 'flash'
 
 = render :partial => 'internal_documents/internal_documents_templates'

@@ -27,7 +27,7 @@ MagicLamp.define do
   end
 
   fixture(:name => 'internal_document_page') do
-    render :partial => 'corporate_services/internal_documents/index'
+    render :partial => 'internal_documents/index'
   end
 
   fixture(:name => 'no_files_error_message') do
