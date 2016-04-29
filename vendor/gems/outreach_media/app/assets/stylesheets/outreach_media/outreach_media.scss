@@ -1,71 +1,9 @@
-#expand {
-  background-repeat: no-repeat;
-  height: 16px;
-  cursor: pointer;
-  background-image: asset-url("outreach_media/expand19.png"); //http://www.flaticon.com/free-icon/expand-arrows-couple_37089
-  display: block;
-  background-size: 12px;
-}
-
-#compact {
-  background-repeat: no-repeat;
-  height: 16px;
-  cursor: pointer;
-  background-image: asset-url("outreach_media/compress.png"); //http://www.flaticon.com/free-icon/compress-arrows-couple-symbol_36692
-  display: block;
-  background-size: 12px;
-}
-
 #media_appearances_controls, #outreach_events_controls, #advisory_council_issues_controls {
-  background-color : #9A9375;
-  margin-bottom : 6px;
-  border-radius : 10px;
-  padding-bottom : 12px;
-
-    #expand {
-      background-size: 18px;
-    }
-
-    #compact {
-      background-size: 18px;
-    }
-
-    .row {
-      margin-left : 0px;
-
-      h4 {
-        color : #fff;
-        font-weight: 300;
-      }
-
-      &.labels {
-        color: #F0F8FF;
-        font-weight: 300;
-        font-size: 14px;
-      }
-    }
+  @extend #filter_control_box // in main app, filter_controls.scss
 }
 
 .media_appearance.well, .outreach_event.well, .advisory_council_issue.well {
-  background-image: -webkit-linear-gradient(top, #DBD2AB 0%, #D8CD9F 100%);
-  background-image: linear-gradient(to bottom, #DBD2AB 0%, #D8CD9F 100%);
-  border-color: #ABA58D;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  .col-md-2, .col-md-4{padding-top: 4px; padding-bottom:4px;}
-
-  .panel {
-    border-color: #ABA58D;
-    background-color: #DBD2AB;
-
-    .panel-heading {
-      @extend h5;
-      background-image: -webkit-linear-gradient(top, #DBD2AB 0%, #D8CD9F 100%);
-      background-image: linear-gradient(to bottom, #DBD2AB 0%, #D8CD9F 100%);
-      color: #655F44;
-      border-color: #ABA58D;
-    }
-  }
+  @extend .expandable_well // in main app, expandable_list
 }
 
 // the display of the metrics of a media appearance
@@ -110,22 +48,14 @@
   }
 }
 
-/* the next two change the icon from a right caret to a down caret */
+// the next two change the icon from a right caret to a down caret
+// in the outreach_media admin page
 [aria-expanded='false'] .fa-caret-right:before {
   content: "\f0da";
 }
 
 [aria-expanded='true'] .fa-caret-right:before {
   content: "\f0d7";
-}
-
-/* error messages */
-.filter_field:not(.error) .error_message{
-  display : none;
-}
-
-.filter_field.error input{
-  border-color : #f00;
 }
 
 .checkbox label {

@@ -1,0 +1,29 @@
+%h1= t("#{@i18n_key}.index.heading")
+.btn.btn-success.btn-sm#add_project{:style => "margin-bottom:12px; color:white;", :onclick => "projects.new_project()"}
+  %i.fa.fa-plus.fa-lg{:style => "color:white"}
+  %span= t("#{@i18n_key}.index.add_project")
+
+=stylesheet_link_tag 'projects'
+#projects
+= render :partial => 'projects/projects_templates'
+= render :partial => 'shared/performance_indicator_select'
+=javascript_include_tag 'in_page_edit'
+=javascript_include_tag 'projects'
+
+:coffeescript
+  window.projects_data = #{@projects.to_json}
+  window.model_name = "#{@model_name}"
+  window.mandates = #{@mandates.to_json}
+  window.agencies = #{@agencies.to_json}
+  window.conventions = #{@conventions.to_json}
+  window.planned_results = #{@planned_results.to_json }
+  window.performance_indicators = _.chain(planned_results).
+    map((pr)->pr.outcomes).
+    flatten().
+    map((pr)->pr.activities).
+    flatten().
+    map((a)->a.performance_indicators).
+    flatten().
+    map((a)->_(a).values()).
+    object().
+    value()

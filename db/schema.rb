@@ -217,7 +217,7 @@ ActiveRecord::Schema.define(version: 20160409220837) do
   end
 
   create_table "mandates", force: :cascade do |t|
-    t.string   "name"
+    t.string   "key"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -396,9 +396,16 @@ ActiveRecord::Schema.define(version: 20160409220837) do
     t.datetime "updated_at"
   end
 
-  create_table "project_types", force: :cascade do |t|
+  create_table "project_project_types", force: :cascade do |t|
     t.integer  "project_id"
-    t.integer  "type_id"
+    t.integer  "project_type_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "project_types", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "mandate_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -406,6 +413,7 @@ ActiveRecord::Schema.define(version: 20160409220837) do
   create_table "projects", force: :cascade do |t|
     t.string   "title"
     t.text     "description"
+    t.text     "type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -482,12 +490,6 @@ ActiveRecord::Schema.define(version: 20160409220837) do
     t.integer  "author_id"
     t.datetime "date"
     t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "types", force: :cascade do |t|
-    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

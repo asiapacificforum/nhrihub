@@ -50,4 +50,12 @@ en:
       planned_result : "Planned result"
       select_performance_indicator : "Select performance indicator(s)"
       title_error_message: "Title cannot be blank"
+    performance_indicator_select:
+      performance_indicator : "Performance indicator"
+      performance_indicators: "Performance indicators"
+      select_performance_indicator : "Select performance indicator(s)"
+      planned_result : "Planned result"
+      outcome : "Outcome"
+      activity : "Activity"
+      none_assigned: "none assigned"
 

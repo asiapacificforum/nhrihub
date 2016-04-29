@@ -441,7 +441,7 @@ feature "performance indicator association", :js => true do
     sleep(0.4)
   end
 
-  scenario "add a performance indicator link" do
+  scenario "add a performance indicator association" do
     edit_outreach_event[0].click
     select_performance_indicators.click
     select_first_planned_result
@@ -451,5 +451,9 @@ feature "performance indicator association", :js => true do
     pi = PerformanceIndicator.first
     expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description )
     expect{edit_save.click; sleep(0.5)}.to change{OutreachEvent.first.performance_indicator_ids}.from([]).to([pi.id])
+  end
+
+  scenario "remove a performance indicator association" do
+    expect(1).to eq 0
   end
 end

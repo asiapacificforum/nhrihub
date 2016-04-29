@@ -7,6 +7,7 @@
 
 #collection_container
 
+= render :partial => 'shared/performance_indicator_select'
 = render :partial => 'shared/collection_filter_controls', :locals => {:collection => :media_appearances, :search_heading => t('.search_heading')}
 = render :partial => 'shared/collection', :locals => {:item => :media_appearance, :i18n_key => "outreach_media.media_appearances.index"}
 = render :partial => 'reminders/reminder' # it's in the main app

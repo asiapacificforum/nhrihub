@@ -1,0 +1,38 @@
+#filter_control_box {
+  background-color : #9A9375;
+  margin-bottom : 6px;
+  border-radius : 10px;
+  padding-bottom : 12px;
+
+    #expand {
+      background-size: 18px;
+    }
+
+    #compact {
+      background-size: 18px;
+    }
+
+    .row {
+      margin-left : 0px;
+
+      h4 {
+        color : #fff;
+        font-weight: 300;
+      }
+
+      &.labels {
+        color: #F0F8FF;
+        font-weight: 300;
+        font-size: 14px;
+      }
+    }
+}
+
+/* error messages */
+.filter_field:not(.error) .error_message{
+  display : none;
+}
+
+.filter_field.error input{
+  border-color : #f00;
+}

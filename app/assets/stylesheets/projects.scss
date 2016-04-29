@@ -1,0 +1,29 @@
+@import 'filter_controls';
+@import 'expandable_list';
+
+#projects_controls {
+  @extend #filter_control_box // from filter_controls.scss
+}
+
+.project.well {
+  @extend .expandable_well // from expandable_list
+}
+
+.help-block[id$='_error']:not(.has-error)
+{
+  display : none;
+}
+.help-block[id$='_error'].has-error {
+  display : block;
+}
+
+// add comma as list separator
+#mandates .mandate:not(:last-child):after {
+  content : ','
+}
+
+// add comma as list separator
+#mandates .mandate .type:not(:last-child):after {
+  content : ','
+}
+

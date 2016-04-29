@@ -7,6 +7,7 @@
 
 #collection_container
 
+= render :partial => 'shared/performance_indicator_select'
 = render :partial => 'shared/collection_filter_controls', :locals => {:collection => :advisory_council_issues, :search_heading => t('.search_heading')}
 = render :partial => 'shared/collection', :locals => {:item => :advisory_council_issue, :i18n_key => "nhri.advisory_council_issues.index"}
 = render :partial => 'reminders/reminder' # it's in the main app

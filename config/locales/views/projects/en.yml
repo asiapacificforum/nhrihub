@@ -1,0 +1,20 @@
+en:
+  projects:
+    projects_templates:
+      title: "Title"
+      title_error_message: "Title cannot be blank"
+      description : "Description"
+      description_error_message: "Description cannot be blank"
+      good_governance: "Good Governance"
+      human_rights: "Human Rights"
+      siu: "Special Investgations Unit"
+      chars_remaining: "You have {{count}} characters left"
+      compact : "Compact"
+      compact_all : "Compact all"
+      expand : "Expand"
+      expand_all : "Expand all"
+      choose_file : "Choose file"
+      mandate: "Mandate"
+      mandates: "Mandates"
+      project_type: "Project Type"
+      agency_convention: "Agency/Convention"

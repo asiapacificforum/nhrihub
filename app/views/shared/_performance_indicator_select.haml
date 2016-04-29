@@ -1,0 +1,59 @@
+%script#performance_indicator_select{:type => 'template/ractive'}
+  .panel.panel-default.performance_indicators
+    .panel-heading
+      .row
+        .col-md-2= t('.performance_indicators')
+    .panel-content{'data-toggle' => :edit}
+      %div.fade.no_edit{:class => "{{#persisted}}in{{/persisted}}"}
+        .row
+          .col-md-11.col-md-offset-1#performance_indicators{:style => "display:flex; flex-direction:column"}
+            {{#performance_indicator_ids}}
+            .row.performance_indicator
+              .col-md-6 {{all_performance_indicators[.]}}
+            {{/performance_indicator_ids}}
+            {{^performance_indicator_ids}}
+            %div.performance_indicator=t('.none_assigned')
+            {{/performance_indicator_ids}}
+      %div.fade.edit{:class => '{{^persisted}}in{{/persisted}}'}
+        .form-group.row#performance_indicator
+          .col-md-4{:style => 'padding-left:40px;'}
+            .dropdown.performance_indicator_select
+              %a.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                =t('.select_performance_indicator')
+                %span.caret
+              %ul.dropdown-menu
+                %li.dropdown-header= t('.planned_result')
+                {{#planned_results }}
+                %li.dropdown-submenu.planned_result
+                  %a {{ indexed_description }}
+                  %ul.dropdown-menu
+                    %li.dropdown-header= t('.outcome')
+                    {{#outcomes }}
+                    %li.dropdown-submenu.outcome
+                      %a {{ indexed_description }}
+                      %ul.dropdown-menu
+                        %li.dropdown-header= t('.activity')
+                        {{#activities}}
+                        %li.dropdown-submenu.activity
+                          %a {{ indexed_description }}
+                          %ul.dropdown-menu
+                            %li.dropdown-header= t('.performance_indicator')
+                            {{#performance_indicators}}
+                            %li.performance_indicator
+                              %a.opt{ 'on-click'=>'select(this)'}
+                                %span.text{'data-id'=>'{{id}}'} {{ indexed_description }}
+                                %span.fa.fa-check
+                            {{/performance_indicators}}
+                        {{/activities}}
+                    {{/outcomes }}
+                {{/planned_results }}
+          .col-md-8#performance_indicators
+            {{#performance_indicator_ids}}
+            .row.performance_indicator
+              .col-md-8 {{all_performance_indicators[.]}}
+              .col-md-4
+                %i.fa.fa-remove.remove{'on-click' => 'remove_indicator(.,id)'}
+            {{/performance_indicator_ids}}
+            {{^performance_indicator_ids}}
+            %div.performance_indicator=t('.none_assigned')
+            {{/performance_indicator_ids}}

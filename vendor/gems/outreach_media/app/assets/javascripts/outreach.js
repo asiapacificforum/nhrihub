@@ -1,6 +1,6 @@
 //= require 'jquery_datepicker'
 //= require 'media_issues_shared/datepicker'
 //= require 'media_issues_shared/subarea'
-//= require 'media_issues_shared/performance_indicator'
+//= require 'performance_indicator'
 //= require './outreach_media/outreach/outreach_events'
 //= require 'in_page_edit'

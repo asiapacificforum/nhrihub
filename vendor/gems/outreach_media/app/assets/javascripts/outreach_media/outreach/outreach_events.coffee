@@ -15,8 +15,9 @@ $ ->
         console.log "Changes were not saved, for some reason"
       start_callback : -> ractive.expand()
     return {
-      teardown : (id)->
-      update : (id)->
+      teardown : (id)=>
+        @edit.off()
+      update : (id)=>
       }
 
   Ractive.DEBUG = false
@@ -481,7 +482,13 @@ $ ->
                   {name : 'outreach_event[performance_indicator_ids][]', value: pid}
       _.union(name_value,aids,saids,pids)
     stash : ->
-      @stashed_instance = $.extend(true,{},@get())
+      computed_attributes = ['reminders_count', 'notes_count', 'model_name',
+                             'hr_violation', 'formatted_affected_people_count',
+                             'formatted_participant_count', 'formatted_date',
+                             'impact_rating_text', 'audience_type_text',
+                             'count', 'include', 'persisted', 'no_files_chosen']
+      stashed_attributes = _(@get()).omit(computed_attributes)
+      @stashed_instance = $.extend(true,{},stashed_attributes)
     restore : ->
       @set(@stashed_instance)
     deselect_file : ->
@@ -512,11 +519,6 @@ $ ->
       # jquery fileupload replaces the element. This doesn't behave well with ractive
       # which seems to cache the original element?
       $('#outreach_event_file').click()
-  # show_metrics : (id)->
-  #   if (Subarea.find(id).extended_name == "Human Rights Violation") && @get('checked')
-  #     $('.hr_metrics').show(300)
-  #   else if (Subarea.find(id).extended_name == "Human Rights Violation") && !@get('checked')
-  #     $('.hr_metrics').hide(300)
     show_metrics : (ev, id)->
       if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && ev.target.checked
         $('.hr_metrics').show(300)
@@ -531,7 +533,7 @@ $ ->
     audience_types : audience_types
     impact_ratings : impact_ratings
     planned_results : planned_results
-    performance_indicators : performance_indicators
+    all_performance_indicators : performance_indicators
     default_selected_audience_type : default_selected_audience_type
     default_selected_impact_rating : default_selected_impact_rating
     filter_criteria :

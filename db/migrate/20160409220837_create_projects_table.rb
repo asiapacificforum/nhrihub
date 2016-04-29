@@ -3,6 +3,7 @@ class CreateProjectsTable < ActiveRecord::Migration
     create_table :projects do |t|
       t.string :title
       t.text :description
+      t.text :type
       t.timestamps
     end
 
@@ -19,18 +20,19 @@ class CreateProjectsTable < ActiveRecord::Migration
     end
 
     create_table :mandates do |t|
-      t.string :name # Good Governance, Human Rights, Special Investigations Unit
+      t.string :key # good_governance, human_rights, special_investigations_unit
+      t.timestamps
+    end
+
+    create_table :project_project_types do |t|
+      t.integer :project_id
+      t.integer :project_type_id
       t.timestamps
     end
 
     create_table :project_types do |t|
-      t.integer :project_id
-      t.integer :type_id
-      t.timestamps
-    end
-
-    create_table :types do |t|
       t.string :name
+      t.integer :mandate_id
       t.timestamps
     end
 

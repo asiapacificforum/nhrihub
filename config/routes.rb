@@ -65,5 +65,8 @@ Rails.application.routes.draw do
     get 'admin', :to => 'admin#index'
     get 'placeholder', :to => 'placeholder#index'
     resources :internal_documents
+    resources :projects do
+      resources :project_performance_indicators, :only => :destroy
+    end
   end
 end

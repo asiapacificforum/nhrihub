@@ -18,7 +18,7 @@
 // require turbolinks
 //= require bootstrap-sprockets
 //= require jquery-fileupload
-//= require corporate_services
+// require corporate_services
 //= require ractive
 //= require ractive-bootstrap
 // TODO this hack (below) is not required, it's b/c I made a mistake, see my jquery pullrequest

@@ -1,0 +1,305 @@
+%script#projects_template{:type => 'template/ractive'}
+  {{#projects}}
+  <project id='{{id}}' title='{{title}}' description='{{description}}' mandate_ids='{{mandate_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_ids='{{performance_indicator_ids}}' project_type_ids='{{project_type_ids}}' all_mandates='{{all_mandates}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' mandates='{{mandates}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' />
+  {{/projects}}
+
+%script#project_template{:type => 'template/ractive'}
+  {{#if !persisted }}
+  {{> new_project_template }}
+  {{else}}
+  {{> show_project_template }}
+  {{/if}}
+
+%script#new_project_template{:type => 'template/ractive'}
+  .row.new_project{:intro => 'slide'}
+    .col-md-12
+      .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
+        .col-md-2
+          %label{:for => 'project_title'}=t('.title')
+        .col-md-7
+          %input.form-control#project_title{:value => '{{title}}', 'on-keydown'=>"remove_attribute_error('title')"}
+          .help-block.error#title_error= t('.title_error_message')
+        .col-sm-3
+          %i.fa.fa-remove.fa-lg#cancel_project{ :style=>"padding-left:30px", "on-click"=>"cancel_project()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>"cancel"}
+          %i.fa.fa-check.fa-lg#save_project{ :style=>"padding-left:60px", "on-click"=>"save_project()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>"save"}
+      .row.form-group{:class => "{{#description_error}}has-error{{/}}"}
+        .col-md-2
+          %label{:for => 'project_description'}=t('.description')
+        .col-md-7
+          %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"remove_attribute_error('description')"}
+          .help-block.error#description_error= t('.description_error_message')
+      <mandatesSelector mandates='{{all_mandates}}' />
+      <projectTypesSelector />
+      {{> agency_convention_selector }}
+      <performanceindicatorselect />
+
+%script#agency_convention_selector{:type => 'template/ractive'}
+  .row
+    .col-md-2
+      %label=t('.agency_convention')
+    .col-md-10
+      .row
+        .col-md-4#agencies
+          <agenciesSelector />
+        .col-md-4#conventions
+          <conventionsSelector />
+
+%script#agencies_selector_template{:type => 'template/ractive'}
+  .row
+    .col-md-12
+      %label=t('.good_governance')
+  {{#all_agencies}}
+  .row.agency
+    .col-md-8
+      %label{:for => 'agency_{{id}}', 'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
+    .col-md-4
+      %input{:id=>'agency_{{id}}', :type => :checkbox, :name => '{{agency_ids}}', :value => '{{id}}'}
+  {{/all_agencies}}
+
+%script#conventions_selector_template{:type => 'template/ractive'}
+  .row
+    .col-md-12
+      %label=t('.human_rights')
+  {{#all_conventions}}
+  .row.convention
+    .col-md-8
+      %label{:for => 'convention_{{id}}', 'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
+    .col-md-4
+      %input{:id=>'convention_{{id}}', :type => :checkbox, :name => '{{convention_ids}}', :value => '{{id}}'}
+  {{/all_conventions}}
+
+%script#project_types_selector_template{:type => 'template/ractive'}
+  .row
+    .col-md-2
+      %label=t('.project_type')
+    .col-md-10
+      .row
+        {{#all_mandates}}
+        .col-md-4{:id => '{{key}}_types'}
+          .row
+            .col-md-12
+              %label {{name}}
+          {{#project_types}}
+          .row.type
+            .col-md-9
+              %label{:for => 'project_type_{{id}}'} {{name}}
+            .col-md-3
+              %input{:id=>'project_type_{{id}}', :type => :checkbox, :name => '{{project_type_ids}}', :value => '{{id}}'}
+          {{/project_types}}
+        {{/all_mandates}}
+
+%script#mandates_selector_template{:type => 'template/ractive'}
+  .row
+    .col-md-2
+      %label=t('.mandate')
+    .col-md-10
+      {{#mandates}}
+      .row.mandate
+        .col-md-3
+          %label{:for => '{{key}}'} {{name}}
+        .col-md-1
+          %input{:id=>'{{key}}', :type => :checkbox, :name => '{{mandate_ids}}', :value => '{{id}}'}
+      {{/mandates}}
+
+%script#edit_title{:type => 'text/ractive'}
+  .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
+    .col-md-12.clearfix
+      .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
+      =text_field_tag 'project[title]', nil, :class => 'form-control', :id => 'project_title', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_attribute_error('title')"
+      %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
+
+%script#show_project_template{:type => 'template/ractive'}
+  .row.well.well-sm.project.editable_container{ :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+    .col-md-12
+      .row.basic_info
+        .col-md-2.title{'data-toggle'=>'edit', :style => "width:60%"}
+          .fade.no_edit.in
+            %span {{ title }}
+          .fade.edit{:style => "width: 100%"}
+            {{> edit_title}}
+        .col-md-2.actions{:style => "width:25%"}
+          .row{:style => "margin-left:0px;"}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+              .edit
+            .col-md-1.icon{ 'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-remove{:id => "project_editable{{id}}_edit_cancel"}
+            .col-md-1.icon{'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-check{:id => "project_editable{{id}}_edit_save"}
+              .fade.no_edit.in
+                %i.fa.fa-pencil-square-o{:id => "project_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_project(event)'}
+              .edit
+            .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
+              %div{'data-toggle'=>:edit}
+                .no_edit.in
+                  {{#if expanded}}
+                  %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
+                  {{else}}
+                  %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
+                  {{/if}}
+                .edit
+      .collapse.expanded_info{:class => "collapse{{id}}"}
+        .row.description{'data-toggle'=>'edit', :style => "width:60%"}
+          .col-md-2=t('.description')
+          .col-md-10
+            .fade.no_edit.in
+              %span {{description}}
+            .fade.edit{:style => "width: 100%"}
+              %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"remove_attribute_error('description')"}
+              .help-block.error#description_error= t('.description_error_message')
+        <performanceindicatorselect performance_indicators='{{performance_indicators}}' />
+        .panel.panel-default
+          .panel-heading
+            .row
+              .col-md-2{:style => "width:50%"} heading
+              .col-md-2{:style=>"width:25%;"} another heading
+          .panel-content{'data-toggle'=>'edit'}
+            .fade.no_edit.in
+              <projectTypes projectTypes='{{projectTypes}}' />
+              <mandates mandates='{{mandates}}' />
+              <agencies agencies='{{agencies}}' />
+              <conventions conventions='{{conventions}}' />
+            .fade.edit
+              <mandatesSelector mandates='{{all_mandates}}' />
+              <projectTypesSelector />
+              {{> agency_convention_selector }}
+
+%script#conventions_template{:type => 'template/ractive'}
+  .row#conventions
+    {{#conventions}}
+    .col-md-12.convention
+      .name {{name}}
+    {{/conventions}}
+
+%script#agencies_template{:type => 'template/ractive'}
+  .row#agencies
+    {{#agencies}}
+    .col-md-12.agency
+      .name {{name}}
+    {{/agencies}}
+
+%script#project_types_template{:type => 'template/ractive'}
+  .row#project_types
+    {{#project_types}}
+    .col-md-12.mandate
+      .name {{name}}
+      {{#types}}
+      %span.type{:style => 'padding-left:8px;'} {{name}}
+      {{/types}}
+    {{/project_types}}
+
+%script#mandates_template{:type => 'template/ractive'}
+  .row#mandates
+    .col-md-1=t('.mandates')
+    .col-md-11
+      {{#mandates}}
+      %span.mandate {{name}}
+      {{/mandates}}
+
+%script#show_proj_backup{:type => 'template/ractive'}
+  .project
+    .row
+      .col-md-2.title {{title}}
+      .col-md-4.description {{description}}
+    .row#mandates
+      {{#mandates}}
+      .col-md-12.mandate
+        .name {{name}}
+        {{#types}}
+        %span.type{:style => 'padding-left:8px;'} {{name}}
+        {{/types}}
+      {{/mandates}}
+    .row#agencies
+      {{#agencies}}
+      .col-md-12.agency
+        .name {{name}}
+      {{/agencies}}
+    .row#conventions
+      {{#conventions}}
+      .col-md-12.convention
+        .name {{name}}
+      {{/conventions}}
+
+  .row.well.well-sm.editable_container.project{:style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+    .col-md-12
+      .row.basic_info
+        .col-md-2.date{'data-toggle'=>:edit, :style => "width:15%"}
+          .fade.no_edit.in
+            %span {{ date }}
+          .fade.edit{:style => "margin-top:26px;"}
+            %span {{ date }}
+        .col-md-2.title{'data-toggle'=>'edit', :style => "width:60%"}
+          .fade.no_edit.in
+            %span {{ title }}
+          .fade.edit{:style => "width: 100%"}
+            {{> edit_title}}
+            .row.form-group{:class => "{{#collection_item_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+              .col-md-5
+                %span.help-block{:id => "collection_item_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"} item error message
+            .row.form-group{:class => "{{#collection_item_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+              .col-md-5
+                %span.help-block{:id => "collection_item_attachment_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"} another item error message
+        .col-md-2.actions{:style => "width:25%"}
+          .row{:style => "margin-left:0px;"}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-cloud-download{'on-click' => 'download_attachment()', 'data-toggle'=>'tooltip', 'title'=>'{{original_filename}}'}
+              .edit
+            .col-md-1.icon{ 'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-remove{:id => "project_editable{{id}}_edit_cancel"}
+            .col-md-1.icon{'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-check{:id => "project_editable{{id}}_edit_save"}
+              .fade.no_edit.in
+                %i.fa.fa-pencil-square-o{:id => "project_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
+              .edit
+            .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
+              %div{'data-toggle'=>:edit}
+                .no_edit.in
+                  {{#if expanded}}
+                  %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
+                  {{else}}
+                  %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
+                  {{/if}}
+                .edit
+      .row.fileupload{:decorator => 'file_upload', 'data-toggle'=>:edit}
+        .fade.no_edit.in
+        .fade.edit{:style => "padding-left:20px;"}
+          .row{:style => "margin-bottom: 12px;"}
+            .col-md-2#fileinput_button{:style => "width:15%"}
+              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
+              %input{:id => "project_file", :type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"project[file]"}
+            .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row; padding-left:8px;"}
+              {{#original_filename}}
+              <file/>
+              {{/original_filename}}
+      .collapse.expanded_info{:class => "collapse{{id}}"}
+        {{> reported_by}}
+        <performanceindicatorselect />
+        .panel.panel-default
+          .panel-heading
+            .row
+              .col-md-2.description{:style => "width:50%"} areas/subareas
+              .col-md-2.metrics{:style=>"width:25%;"} metrics
