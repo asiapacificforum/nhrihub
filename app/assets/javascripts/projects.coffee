@@ -1,6 +1,7 @@
-//= require 'performance_indicator'
-//= require 'fade'
-//= require 'slide'
+#= require 'performance_indicator'
+#= require 'fade'
+#= require 'slide'
+#= require 'in_page_edit'
 
 Ractive.DEBUG = false
 $ ->
@@ -157,7 +158,19 @@ $ ->
       stashed_attributes = _(@get()).omit('url', 'reminders_count', 'notes_count', 'count', 'persisted', 'type', 'include')
       @stashed_instance = $.extend(true,{},stashed_attributes)
     restore : ->
+      @restore_checkboxes()
       @set(@stashed_instance)
+    restore_checkboxes : ->
+      # major hack to circumvent ractive bug,
+      # it will not be necessary in ractive 0.8.0
+      _(['mandate','agency','convention','project_type']).
+        each (association)=>
+          @restore_checkboxes_for(association)
+    restore_checkboxes_for : (association)->
+      ids = @get("#{association}_ids")
+      _(@findAll(".edit .#{association} input")).each (checkbox)->
+        is_checked = ids.indexOf(parseInt($(checkbox).attr('value'))) != -1
+        $(checkbox).prop('checked',is_checked)
     remove_performance_indicator : (id)->
       index = @get('performance_indicator_ids').indexOf(id)
       @get('performance_indicator_ids').splice(index,1)

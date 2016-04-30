@@ -1,6 +1,7 @@
 en:
   good_governance:
     projects:
+      heading: "Good Governance Projects"
+      add_project: "Add project"
       index:
         heading: "Good Governance Projects"
-        add_project: "Add project"

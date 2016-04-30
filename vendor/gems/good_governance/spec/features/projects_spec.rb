@@ -47,7 +47,7 @@ feature "projects index", :js => true do
     select_first_planned_result
     select_first_outcome
     select_first_activity
-    #page.execute_script("scrollTo(0,800)")
+    page.execute_script("scrollTo(0,800)")
     select_first_performance_indicator
     pi = PerformanceIndicator.first
 
@@ -67,7 +67,7 @@ feature "projects index", :js => true do
       expect(all('.mandate .name').map(&:text)).to include 'Good Governance'
       within project_types do
         within good_governance_mandate do
-          expect(all('.type').map(&:text)).to include 'Consultation'
+          expect(all('.project_type').map(&:text)).to include 'Consultation'
         end
       end
       within agencies do
@@ -198,7 +198,7 @@ feature "projects index", :js => true do
       expect(all('.mandate .name').map(&:text)).to include 'Good Governance'
       within project_types do
         within good_governance_mandate do
-          expect(all('.type').map(&:text)).to include 'Consultation'
+          expect(all('.project_type').map(&:text)).to include 'Consultation'
         end
       end
       within agencies do
@@ -270,7 +270,7 @@ feature "projects index", :js => true do
       expect(find('.title').text).to eq project.title
       expect(find('.description .no_edit span').text).to eq project.description
       expect(all('.mandate .name').count).to eq 0
-      expect(all('#project_types .type').count).to eq 0
+      expect(all('#project_types .project_type').count).to eq 0
       expect(all('#agencies .agency').count).to eq 0
       expect(all('#conventions .convention').count).to eq 0
       expect(all('.performance_indicator').count).to eq project.performance_indicator_ids.count

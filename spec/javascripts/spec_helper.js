@@ -29,7 +29,12 @@
 // If you'd rather require your spec files manually (to control order for instance) you can disable the suite matcher in
 // the configuration and use this file as a manifest.
 //
+// see https://github.com/crismali/magic_lamp
+//= require magic_lamp
+//= require magic_lamp/all_fixtures
 // For more information: http://github.com/modeset/teaspoon
+//
+//= require simulant
 //
 // Chai
 // If you're using Chai, you'll probably want to initialize your preferred assertion style. You can read more about Chai

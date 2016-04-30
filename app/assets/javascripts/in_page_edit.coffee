@@ -78,6 +78,7 @@ class @InpageEdit
   constructor : (options)->
     @options = options
     node = options.on
+    options.object.editor = @
     if _.isFunction(options.object.validate)
       validate = true
     else
@@ -92,28 +93,12 @@ class @InpageEdit
     $(@options.on).find("[id$='_edit_start']").on 'click', (e)=>
       e.stopPropagation()
       $target = $(e.target)
-      if $target.closest('.editable_container').get(0) == @root.get(0)
-        @context = $target.closest('.editable_container')
-        if _.isFunction(@options.object.stash)
-          @options.object.stash()
-          @edit(false)
-        else
-          @edit(true)
-        @options.object.set('editing',true)
-        @context.find(@options.focus_element).first().focus()
-        if @options.start_callback
-          @options.start_callback()
+      @edit_start($target)
 
     $(@options.on).find("[id$='_edit_cancel']").on 'click', (e)=>
       e.stopPropagation()
       $target = $(e.target)
-      if $target.closest('.editable_container').get(0) == @root.get(0)
-        if _.isFunction(@options.object.restore)
-          @options.object.restore()
-        UserInput.reset()
-        @options.object.set('editing',false)
-        @context = $target.closest('.editable_container')
-        @show()
+      @edit_cancel($target)
 
     $(@options.on).find("[id$='_edit_save']").on 'click', (e)=>
       e.stopPropagation()
@@ -140,6 +125,28 @@ class @InpageEdit
             success : @_success
             error : @options.error
             context : @
+
+  edit_start : ($target) ->
+    if $target.closest('.editable_container').get(0) == @root.get(0)
+      @context = $target.closest('.editable_container')
+      if _.isFunction(@options.object.stash)
+        @options.object.stash()
+        @edit(false)
+      else
+        @edit(true)
+      @options.object.set('editing',true)
+      @context.find(@options.focus_element).first().focus()
+      if @options.start_callback
+          @options.start_callback()
+
+  edit_cancel : ($target)->
+      if $target.closest('.editable_container').get(0) == @root.get(0)
+        if _.isFunction(@options.object.restore)
+          @options.object.restore()
+        UserInput.reset()
+        @options.object.set('editing',false)
+        @context = $target.closest('.editable_container')
+        @show()
 
   _success : (response, textStatus, jqXhr)->
     UserInput.reset()

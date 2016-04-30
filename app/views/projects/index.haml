@@ -1,13 +1,5 @@
-%h1= t("#{@i18n_key}.index.heading")
-.btn.btn-success.btn-sm#add_project{:style => "margin-bottom:12px; color:white;", :onclick => "projects.new_project()"}
-  %i.fa.fa-plus.fa-lg{:style => "color:white"}
-  %span= t("#{@i18n_key}.index.add_project")
+= render :partial => 'projects/index'
 
-=stylesheet_link_tag 'projects'
-#projects
-= render :partial => 'projects/projects_templates'
-= render :partial => 'shared/performance_indicator_select'
-=javascript_include_tag 'in_page_edit'
 =javascript_include_tag 'projects'
 
 :coffeescript

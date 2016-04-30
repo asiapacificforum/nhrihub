@@ -80,7 +80,7 @@
             .col-md-12
               %label {{name}}
           {{#project_types}}
-          .row.type
+          .row.project_type
             .col-md-9
               %label{:for => 'project_type_{{id}}'} {{name}}
             .col-md-3
@@ -194,7 +194,7 @@
     .col-md-12.mandate
       .name {{name}}
       {{#types}}
-      %span.type{:style => 'padding-left:8px;'} {{name}}
+      %span.project_type{:style => 'padding-left:8px;'} {{name}}
       {{/types}}
     {{/project_types}}
 
@@ -216,7 +216,7 @@
       .col-md-12.mandate
         .name {{name}}
         {{#types}}
-        %span.type{:style => 'padding-left:8px;'} {{name}}
+        %span.project_type{:style => 'padding-left:8px;'} {{name}}
         {{/types}}
       {{/mandates}}
     .row#agencies

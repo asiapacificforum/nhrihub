@@ -1,5 +1,8 @@
 en:
   projects:
+    index:
+      heading: "Good Governance Projects"
+      add_project: "Add Project"
     projects_templates:
       title: "Title"
       title_error_message: "Title cannot be blank"
