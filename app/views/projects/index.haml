@@ -1,7 +1,5 @@
 = render :partial => 'projects/index'
 
-=javascript_include_tag 'projects'
-
 :coffeescript
   window.projects_data = #{@projects.to_json}
   window.model_name = "#{@model_name}"
@@ -19,3 +17,5 @@
     map((a)->_(a).values()).
     object().
     value()
+
+=javascript_include_tag 'projects'

@@ -33,6 +33,7 @@ Capybara.register_driver :poltergeist do |app|
 end
 #comment this line out to use the default javascript server firefox
 Capybara.javascript_driver = :poltergeist
+#Capybara.default_wait_time = 5
 #Capybara.javascript_driver = :selenium
 #Capybara.javascript_driver = :chrome
 

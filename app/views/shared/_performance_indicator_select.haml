@@ -49,11 +49,11 @@
                 {{/planned_results }}
           .col-md-8#performance_indicators
             {{#performance_indicator_ids}}
-            .row.performance_indicator
+            .row.selected_performance_indicator
               .col-md-8 {{all_performance_indicators[.]}}
               .col-md-4
                 %i.fa.fa-remove.remove{'on-click' => 'remove_indicator(.,id)'}
             {{/performance_indicator_ids}}
             {{^performance_indicator_ids}}
-            %div.performance_indicator=t('.none_assigned')
+            %div.selected_performance_indicator=t('.none_assigned')
             {{/performance_indicator_ids}}

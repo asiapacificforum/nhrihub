@@ -24,16 +24,10 @@ feature "projects index", :js => true do
     fill_in('project_title', :with => "new project title")
     fill_in('project_description', :with => "new project description")
     check('Good Governance')
-    #check('Human Rights')
-    #check('Special Investigations Unit')
 
     within good_governance_types do
       check('Consultation')
     end
-
-    #within human_rights_types do
-      #check('Awareness Raising')
-    #end
 
     within agencies do
       check('MJCA')
@@ -91,6 +85,47 @@ feature "projects index", :js => true do
     add_project.click
     expect(page.find('#project_title').value).to eq ""
     expect(page.find('#project_description').value).to eq ""
+  end
+
+  it "should remove performance indicator from the list during adding" do
+    add_project.click
+
+    select_performance_indicators.click
+    select_first_planned_result
+    select_first_outcome
+    select_first_activity
+    page.execute_script("scrollTo(0,800)")
+    select_first_performance_indicator
+    pi = PerformanceIndicator.first
+
+    expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description)
+    remove_first_indicator.click
+    sleep(0.3)
+    expect(page).not_to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description)
+  end
+
+  it "should prevent adding duplicate performance indicators" do
+    add_project.click
+
+    select_performance_indicators.click
+    select_first_planned_result
+    select_first_outcome
+    select_first_activity
+    page.execute_script("scrollTo(0,800)")
+    select_first_performance_indicator
+    pi = PerformanceIndicator.first
+
+    expect(page).to have_selector(".new_project #performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+
+    select_performance_indicators.click
+    select_first_planned_result
+    select_first_outcome
+    select_first_activity
+    page.execute_script("scrollTo(0,800)")
+    select_first_performance_indicator
+    pi = PerformanceIndicator.first
+
+    expect(page).to have_selector(".new_project #performance_indicators .selected_performance_indicator", :text => pi.indexed_description, :count => 1)
   end
 
   it "should show warning and not add when title is blank" do
@@ -217,7 +252,7 @@ feature "projects index", :js => true do
     edit_first_project.click
     sleep(0.3) # css transition
     expect{ remove_first_indicator.click; sleep(0.3) }.to change{ ProjectPerformanceIndicator.count }.by(-1).
-                                                       and change{ page.all('.performance_indicator').count }.by(-1)
+                                                       and change{ page.all('.selected_performance_indicator').count }.by(-1)
   end
 
   # test this b/c of special handling of checkboxes in ractive

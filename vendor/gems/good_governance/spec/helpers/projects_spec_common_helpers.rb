@@ -158,13 +158,14 @@ module ProjectsSpecCommonHelpers
   end
 
   def select_performance_indicators
-    sleep(0.1)
+    sleep(0.3)
     page.find('.performance_indicator_select>a')
   end
 
   def select_first_planned_result
     sleep(0.1)
     page.execute_script("$('.dropdown-backdrop').remove()") # it's inserted by bootstrap due to phantomjs declaring that it's responds to document.documentElement.ontouch
+    expect(page).to have_selector(".dropdown-submenu.planned_result") # to synchronize the timing
     page.all(".dropdown-submenu.planned_result").first.hover
   end
 
@@ -188,7 +189,7 @@ module ProjectsSpecCommonHelpers
   end
 
   def remove_first_indicator
-    page.all('.performance_indicator .remove')[0]
+    page.all('.selected_performance_indicator .remove')[0]
   end
 
   def uncheck_all_checkboxes
