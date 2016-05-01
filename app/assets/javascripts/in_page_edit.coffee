@@ -84,6 +84,9 @@ class @InpageEdit
     else
       validate = false
 
+    if _.isUndefined(options.object.get('url'))
+      throw new Error('Ractive object must have url defined')
+
     @root =
       if $(@options.on).hasClass('editable_container')
         $(@options.on)
