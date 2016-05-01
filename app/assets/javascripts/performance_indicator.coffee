@@ -3,8 +3,6 @@ PerformanceIndicatorSelect = Ractive.extend
   select : ->
     id = $(@event.original.target).data('id')
     @parent.add_unique_performance_indicator_id(id)
-    unless @parent.has_performance_indicator_id(id)
-      @parent.push('performance_indicator_ids', id)
     false
   remove_indicator : (performance_indicator_id,project_id)->
     if _.isNull(project_id)

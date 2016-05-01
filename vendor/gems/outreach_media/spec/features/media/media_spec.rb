@@ -65,7 +65,7 @@ feature "create a new article", :js => true do
     select_first_activity
     select_first_performance_indicator
     pi = PerformanceIndicator.first
-    expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description )
+    expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
     expect{page.execute_script("scrollTo(0,0)"); edit_save.click; sleep(0.5)}.to change{MediaAppearance.count}.from(0).to(1)
     ma = MediaAppearance.first
     expect(ma.performance_indicator_ids).to eq [pi.id]
@@ -443,7 +443,7 @@ feature "performance indicator association", :js => true do
     select_first_activity
     select_first_performance_indicator
     pi = PerformanceIndicator.first
-    expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description )
+    expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
     page.execute_script("scrollTo(0,0)")
     expect{edit_save.click; sleep(0.5)}.to change{MediaAppearance.first.performance_indicator_ids}.from([]).to([pi.id])
   end

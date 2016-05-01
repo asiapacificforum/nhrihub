@@ -449,7 +449,7 @@ feature "performance indicator association", :js => true do
     select_first_activity
     select_first_performance_indicator
     pi = PerformanceIndicator.first
-    expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description )
+    expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
     expect{edit_save.click; sleep(0.5)}.to change{OutreachEvent.first.performance_indicator_ids}.from([]).to([pi.id])
   end
 

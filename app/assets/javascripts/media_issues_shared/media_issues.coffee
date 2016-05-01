@@ -428,6 +428,7 @@ $ ->
         $('.hr_metrics').show(300)
       else if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && !ev.target.checked
         $('.hr_metrics').hide(300)
+  , PerformanceIndicatorAssociation
 
   window.collection_items_data = -> # an initialization data set so that tests can reset between
     expanded : false
@@ -435,7 +436,7 @@ $ ->
     areas : areas
     create_collection_item_url: create_collection_item_url
     planned_results : planned_results
-    performance_indicators : performance_indicators
+    all_performance_indicators : performance_indicators
     item_name : item_name
     filter_criteria :
       title : ""
