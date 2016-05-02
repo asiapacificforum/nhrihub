@@ -17,8 +17,12 @@
     <![endif]-->
 
     = javascript_include_tag 'application'
+
+    - if Rails.env.test?
+      = javascript_tag "$.fx.off = true;"
+
     = csrf_meta_tags
-  %body{:role => :document}
+  %body{:role => :document, :class => ("no-animation" if Rails.env.test?)}
     - if logged_in?
       %nav.navbar.navbar-default.navbar-fixed-top
         .container-fluid
