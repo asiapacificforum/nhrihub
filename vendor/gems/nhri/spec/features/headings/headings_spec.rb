@@ -218,7 +218,7 @@ feature "attributes behaviour on headings index page", :js => true do
   end
 
   it "restores previous value if editing attributes is cancelled" do
-    original_description = page.find('.attribute .description .no_edit span').text
+    original_description = page.all('.attribute .description .no_edit span').first.text
     edit_first_attribute.click
     fill_in('attribute_description', :with=>'Changed my mind')
     edit_cancel.click
@@ -235,11 +235,12 @@ feature "attributes behaviour on headings index page", :js => true do
   end
 
   it "restores previous value and terminates editing if attributes dropdown is closed" do
-    original_description = page.find('.attribute .description .no_edit span').text
-    edit_first_attribute.click
+    original_description = page.all('.attribute .description .no_edit span').first.text
+    edit_first_attribute.click # show
     fill_in('attribute_description', :with=>'Changed my mind')
+    sleep(0.3) # due to unknown timing condition in bootsrap collapse
     close_first_attributes_dropdown
-    sleep(0.3) # css transition
+    sleep(0.3) # due to unknown timing condition in bootsrap collapse
     open_first_attributes_dropdown
     expect(page).to have_selector('.attribute .description .no_edit span', :text => original_description)
   end
@@ -254,6 +255,10 @@ feature "attributes behaviour on headings index page", :js => true do
     edit_first_attribute.click
     add_attribute.click
     expect(page).to have_selector('input#attribute_description', :count => 1)
+    # b/c there was a bug test this..
+    add_attribute.click
+    expect(page).not_to have_selector("#description_error")
+    expect(page).to have_selector("#attributes .attribute", :count => 3)
   end
 
 end

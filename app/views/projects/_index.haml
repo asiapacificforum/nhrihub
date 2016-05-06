@@ -4,8 +4,8 @@
   %i.fa.fa-plus.fa-lg{:style => "color:white"}
   %span= t("#{@i18n_key}.add_project")
 
+=stylesheet_link_tag 'application' # included for javascript tests, there must be a better way, is it included twice?!
 =stylesheet_link_tag 'projects'
-=stylesheet_link_tag 'application' # included for javascript tests
 = render :partial => 'projects/projects_templates'
 = render :partial => 'shared/performance_indicator_select'
 #projects

@@ -1,4 +1,5 @@
 %script#projects_template{:type => 'template/ractive'}
+  {{> projects_controls}}
   {{#projects}}
   <project id='{{id}}' title='{{title}}' description='{{description}}' mandate_ids='{{mandate_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_ids='{{performance_indicator_ids}}' project_type_ids='{{project_type_ids}}' all_mandates='{{all_mandates}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' mandates='{{mandates}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' />
   {{/projects}}
@@ -29,7 +30,7 @@
           %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"remove_attribute_error('description')"}
           .help-block.error#description_error= t('.description_error_message')
       <mandatesSelector mandates='{{all_mandates}}' />
-      <projectTypesSelector />
+      <projectTypesSelector all_mandates='{{all_mandates}}' />
       {{> agency_convention_selector }}
       <performanceindicatorselect />
 
@@ -101,7 +102,7 @@
           %input{:id=>'{{key}}', :type => :checkbox, :name => '{{mandate_ids}}', :value => '{{id}}'}
       {{/mandates}}
 
-%script#edit_title{:type => 'text/ractive'}
+%script#edit_title{:type => 'template/ractive'}
   .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
     .col-md-12.clearfix
       .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
@@ -112,14 +113,14 @@
   .row.well.well-sm.project.editable_container{ :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
       .row.basic_info
-        .col-md-2.title{'data-toggle'=>'edit', :style => "width:60%"}
+        .col-md-9.title{'data-toggle'=>'edit'}
           .fade.no_edit.in
             %span {{ title }}
           .fade.edit{:style => "width: 100%"}
             {{> edit_title}}
-        .col-md-2.actions{:style => "width:25%"}
+        .col-md-3.actions
           .row{:style => "margin-left:0px;"}
-            .col-md-1{'data-toggle'=>:edit}
+            .col-md-1.col-md-offset-2{'data-toggle'=>:edit}
               .no_edit.in
                 .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
               .edit
@@ -149,7 +150,7 @@
                   {{/if}}
                 .edit
       .collapse.expanded_info{:class => "collapse{{id}}"}
-        .row.description{'data-toggle'=>'edit', :style => "width:60%"}
+        .row.description.form-group{:class => "{{#description_error}}has-error{{/}}", 'data-toggle'=>'edit', :style => "width:60%"}
           .col-md-2=t('.description')
           .col-md-10
             .fade.no_edit.in
@@ -159,49 +160,51 @@
               .help-block.error#description_error= t('.description_error_message')
         <performanceindicatorselect performance_indicators='{{performance_indicators}}' />
         .panel.panel-default
-          .panel-heading
-            .row
-              .col-md-2{:style => "width:50%"} heading
-              .col-md-2{:style=>"width:25%;"} another heading
           .panel-content{'data-toggle'=>'edit'}
             .fade.no_edit.in
-              <projectTypes projectTypes='{{projectTypes}}' />
               <mandates mandates='{{mandates}}' />
+              <projectTypes projectTypes='{{projectTypes}}' />
               <agencies agencies='{{agencies}}' />
               <conventions conventions='{{conventions}}' />
             .fade.edit
               <mandatesSelector mandates='{{all_mandates}}' />
-              <projectTypesSelector />
+              <projectTypesSelector all_mandates='{{all_mandates}}'/>
               {{> agency_convention_selector }}
 
 %script#conventions_template{:type => 'template/ractive'}
-  .row#conventions
-    {{#conventions}}
-    .col-md-12.convention
-      .name {{name}}
-    {{/conventions}}
+  .row#conventions{:style => "margin-left:0px;"}
+    .col-md-2=t('.conventions')
+    .col-md-10.comma-list
+      {{#conventions}}
+      %span.convention {{name}}
+      {{/conventions}}
 
 %script#agencies_template{:type => 'template/ractive'}
-  .row#agencies
-    {{#agencies}}
-    .col-md-12.agency
-      .name {{name}}
-    {{/agencies}}
+  .row#agencies{:style => "margin-left:0px;"}
+    .col-md-2=t('.agencies')
+    .col-md-10.comma-list
+      {{#agencies}}
+      %span.agency {{name}}
+      {{/agencies}}
 
 %script#project_types_template{:type => 'template/ractive'}
-  .row#project_types
-    {{#project_types}}
-    .col-md-12.mandate
-      .name {{name}}
-      {{#types}}
-      %span.project_type{:style => 'padding-left:8px;'} {{name}}
-      {{/types}}
-    {{/project_types}}
+  .row#mandate_project_types{:style => "margin-left:0px;"}
+    .col-md-2=t('.project_types')
+    .col-md-10
+      .row
+        {{#project_types}}
+        .col-md-12.mandate_project_type
+          .mandate_name {{name}}
+          #project_types.comma-list{:style => "padding-left:1.5em;"}
+            {{#types}}
+            %span.project_type {{name}}
+            {{/types}}
+        {{/project_types}}
 
 %script#mandates_template{:type => 'template/ractive'}
-  .row#mandates
-    .col-md-1=t('.mandates')
-    .col-md-11
+  .row#mandates{:style => "margin-left:0px;"}
+    .col-md-2=t('.mandates')
+    .col-md-10.comma-list
       {{#mandates}}
       %span.mandate {{name}}
       {{/mandates}}
@@ -303,3 +306,96 @@
             .row
               .col-md-2.description{:style => "width:50%"} areas/subareas
               .col-md-2.metrics{:style=>"width:25%;"} metrics
+
+%script#mandate_filter_select_template{:type => 'template/ractive'}
+  %li{:class => 'dropdown-header mandate_filter {{#if mandate_selected}}selected{{/if}}'}
+    %a{'on-click'=>'toggle()'}
+      %span {{name}}
+      %span.fa.fa-check
+
+%script#projects_controls{:type => 'template/ractive'}
+  .row#projects_controls
+    .row
+      .col-md-12
+        %h4= t('.search')
+    .row.labels
+      .col-md-3= t('.title')
+      .col-md-3= t('.mandate')
+      .col-md-3= t('.agency_convention')
+    .row{:style => "margin-bottom:12px;"}
+      .col-md-3= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_text'), :style=>"width:240px;"
+      .col-md-3
+        .btn-group.select{:style=>"width:240px;"}
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_mandate')
+            %span.caret
+          %ul.dropdown-menu
+            %li.filter_rule
+              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
+                %span=t('.all')
+                %span.fa.fa-check
+              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
+                %span=t('.any')
+                %span.fa.fa-check
+            {{#all_mandates}}
+            <mandateFilterSelect id='{{id}}' name='{{name}}'/>
+            {{/all_mandates}}
+      .col-md-3
+        .btn-group.select{:style=>"width:240px;"}
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_agency_convention')
+            %span.caret
+          %ul.dropdown-menu
+            %li.filter_rule
+              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
+                %span=t('.all')
+                %span.fa.fa-check
+              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
+                %span=t('.any')
+                %span.fa.fa-check
+      .col-md-1.col-md-offset-1
+        %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
+      .col-md-1
+        {{#if expanded}}
+        %a#compact_all{'on-click'=>'compact_all()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all')}
+        {{else}}
+        %a#expand_all{'on-click'=>'expand_all()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
+        {{/if}}
+    .row.labels
+      .col-md-3= t('.project_type')
+      .col-md-3= t('.performance_indicators')
+    .row
+      .col-md-3
+        .btn-group.select{:style=>"width:240px;"}
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_project_type')
+            %span.caret
+          %ul.dropdown-menu
+            %li.filter_rule
+              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
+                %span=t('.all')
+                %span.fa.fa-check
+              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
+                %span=t('.any')
+                %span.fa.fa-check
+            {{#areas}}
+            <area id='{{id}}' name='{{name}}'/>
+            {{/areas}}
+      .col-md-3
+        -#note width is spec'd here because the projects spec is being overriden
+        -#css needs cleanup!
+        .btn-group.select{:style=>"width:240px;"}
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_performance_indicators')
+            %span.caret
+          %ul.dropdown-menu
+            %li.filter_rule
+              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
+                %span=t('.all')
+                %span.fa.fa-check
+              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
+                %span=t('.any')
+                %span.fa.fa-check
+            {{#areas}}
+            <area id='{{id}}' name='{{name}}'/>
+            {{/areas}}

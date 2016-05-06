@@ -43,10 +43,19 @@ feature "projects index", :js => true do
     select_first_activity
     page.execute_script("scrollTo(0,800)")
     select_first_performance_indicator
-    pi = PerformanceIndicator.first
 
+    attach_file
+    select("Project Document", :from => "project_file_filename")
+
+    attach_file
+    fill_in("#project_file_filename", :with => "Title for an analysis document")
+
+    # SAVE IT
     page.execute_script("scrollTo(0,0)")
     expect{ save_project.click; sleep(0.3) }.to change{ project_model.count }.from(3).to(4)
+
+    # CHECK SERVER
+    pi = PerformanceIndicator.first
     project = GoodGovernance::Project.last
     expect(project.performance_indicator_ids).to eq [pi.id]
     expect(projects_count).to eq 4
@@ -54,11 +63,13 @@ feature "projects index", :js => true do
     expect(project.description).to eq "new project description"
     mandate = Mandate.find_by(:key => "good_governance")
     expect(project.mandate_ids).to include mandate.id
+
+    # CHECK CLIENT
     expand_first_project
     within first_project do
       expect(find('.title').text).to eq "new project title"
       expect(find('.description .no_edit span').text).to eq "new project description"
-      expect(all('.mandate .name').map(&:text)).to include 'Good Governance'
+      expect(all('#mandates .mandate').map(&:text)).to include 'Good Governance'
       within project_types do
         within good_governance_mandate do
           expect(all('.project_type').map(&:text)).to include 'Consultation'
@@ -230,7 +241,7 @@ feature "projects index", :js => true do
     within first_project do
       expect(find('.title').text).to eq "new project title"
       expect(find('.description .no_edit span').text).to eq "new project description"
-      expect(all('.mandate .name').map(&:text)).to include 'Good Governance'
+      expect(all('.mandate').map(&:text)).to include 'Good Governance'
       within project_types do
         within good_governance_mandate do
           expect(all('.project_type').map(&:text)).to include 'Consultation'
@@ -260,6 +271,7 @@ feature "projects index", :js => true do
     edit_last_project.click # has all associations checked
     uncheck_all_checkboxes
     project = project_model.last
+    page.execute_script("scrollTo(0,0)")
     expect{ edit_save.click; sleep(0.4) }.to change{project.project_type_ids}.to([]).
                                           and change{project.agency_ids}.to([]).
                                           and change{project.convention_ids}.to([]).
@@ -329,37 +341,74 @@ feature "projects index", :js => true do
     expect(checkbox('convention_2')).not_to be_checked
   end
 
-  #it "should show warning and not add when title is blank" do
-    #expect(2).to eq 3
-  #end
+  it "should show warning and not save when editing and title is blank" do
+    edit_first_project.click
+    fill_in('project_title', :with => '')
+    expect{ edit_save.click; sleep(0.3) }.not_to change{ project_model.find(1).title }
+    expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
+    fill_in('project_title', :with => 't')
+    expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
+  end
 
-  #it "should show warning and not add when title is whitespace" do
-    #expect(2).to eq 3
-  #end
+  it "should show warning and not save edited project when title is whitespace" do
+    edit_first_project.click
+    fill_in('project_title', :with => "   ")
+    expect{ edit_save.click; sleep(0.3) }.not_to change{ project_model.find(1).title }
+    expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
+    fill_in('project_title', :with => 't')
+    expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
+  end
 
-  #it "should show warning and not add when description is blank" do
-    #expect(2).to eq 3
-  #end
+  it "should show warning and not save edited project when description is blank" do
+    edit_first_project.click
+    fill_in('project_description', :with => "")
+    expect{ edit_save.click; sleep(0.3) }.not_to change{ project_model.find(1).description }
+    expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
+    fill_in('project_description', :with => 't')
+    expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
+  end
 
-  #it "should show warning and not add when description is whitespace" do
-    #expect(2).to eq 3
-  #end
+  it "should show warning and not save edited project when description is whitespace" do
+    edit_first_project.click
+    fill_in('project_description', :with => "  ")
+    expect{ edit_save.click; sleep(0.3) }.not_to change{ project_model.find(1).description }
+    expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
+    fill_in('project_description', :with => 't')
+    expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
+  end
 
-  #it "should terminate adding if editing is initiated" do
-    #expect(2).to eq 3
-  #end
+  it "should terminate adding if editing is initiated" do
+    add_project.click
+    expect(page).to have_selector('.new_project')
+    edit_first_project.click
+    expect(page).not_to have_selector('.new_project')
+  end
 
-  #it "should terminate editing if adding is initiated" do
-    #expect(2).to eq 3
-  #end
+  it "should terminate editing if adding is initiated" do
+    edit_first_project.click
+    expect(page).to have_selector('#projects .project textarea#project_description', :visible => true)
+    add_project.click
+    expect(page).not_to have_selector('#projects .project textarea#project_description', :visible => true)
+  end
 
-  #it "should prevent editing more than one project at at time" do
-    #expect(2).to eq 3
-  #end
+  it "should prevent editing more than one project at at time" do
+    edit_first_project.click
+    edit_last_project.click
+    expect(page).to have_selector('#projects .project textarea#project_description', :visible => true, :count => 1)
+  end
 
-  #it "should not permit duplicate performance indicator associations to be added" do
-  #  expect(2).to eq 5
-  #end
+  it "should not permit duplicate performance indicator associations to be added when editing" do
+    edit_first_project.click
+
+    select_performance_indicators.click
+    select_first_planned_result
+    select_first_outcome
+    select_first_activity
+    #page.execute_script("scrollTo(0,800)")
+    select_first_performance_indicator
+
+    expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :count => 3)
+  end
 end
 
 feature "projects file upload features", :js => true do
@@ -370,19 +419,12 @@ feature "projects file upload features", :js => true do
   include ProjectsSpecCommonHelpers
   #it_behaves_like "projects_fileupload"
 
-  it "should upload files" do
-    expect(1).to eq 3
-  end
+  #it "should upload files" do
+    #expect(1).to eq 3
+  #end
 end
 
-feature "projects index filter", :js => true do
-  include IERemoteDetector
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
-  include NavigationHelpers
-  include GoodGovernanceContextProjectsSpecHelpers
-  include ProjectsSpecCommonHelpers
-  #it_behaves_like "projects_filter"
-  it "should filter the view" do
-    expect(1).to eq 2
-  end
+feature "project reminders", :js => true do
+  #it behaves like remindable
 end
+

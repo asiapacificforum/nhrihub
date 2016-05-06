@@ -84,8 +84,8 @@ class @InpageEdit
     else
       validate = false
 
-    if _.isUndefined(options.object.get('url'))
-      throw new Error('Ractive object must have url defined')
+    #if _.isUndefined(options.object.get('url'))
+      #throw new Error('Ractive object must have url defined')
 
     @root =
       if $(@options.on).hasClass('editable_container')
@@ -163,7 +163,7 @@ class @InpageEdit
   edit : (stash)->
     _(@elements()).each (el,i) ->
       el.switch_to_edit(stash)
-    UserInput.claim_user_input_request(@options.object.edit, 'show')
+    UserInput.claim_user_input_request(@options.object.editor, 'show')
     @options.object.set('editing',true)
 
   show : ->

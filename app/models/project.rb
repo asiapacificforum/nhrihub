@@ -18,7 +18,7 @@ class Project < ActiveRecord::Base
        :title => title,
        :description => description,
        :project_types => project_mandate_types, # this is why I can't use the normal as_json technique!
-                                                # [{"name"=>"mandate name", "types"=>[{"id"=>1, "name"=>"type name"}]}]
+                                                # [{"name"=>"mandate name", "project_types"=>[{"id"=>1, "name"=>"type name"}]}]
        :mandate_ids => mandate_ids,
        :mandates => mandates,
        :agencies => agencies,

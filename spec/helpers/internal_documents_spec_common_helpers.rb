@@ -3,6 +3,8 @@ require 'rspec/core/shared_context'
 module InternalDocumentsSpecCommonHelpers
   extend RSpec::Core::SharedContext
 
+  # it's a test spec workaround, this method can be called multiple times
+  # whereas page.attach_file cannot
   def attach_file(locator,file,index = nil)
     page.attach_file("primary_file", upload_document, :visible => false)
     if !index # when it's first time, we pass a non-nil argument like :first_time

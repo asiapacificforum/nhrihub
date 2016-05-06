@@ -16,6 +16,8 @@ Teaspoon.configure do |config|
                         OutreachMedia::Engine.root.join("spec/support/javascript"),
                         CorporateServices::Engine.root.join("spec/javascripts"),
                         CorporateServices::Engine.root.join("spec/support/javascript"),
+                        Nhri::Engine.root.join("spec/javascripts"),
+                        Nhri::Engine.root.join("spec/support/javascript"),
                         Rails.root.join("spec/javascripts"),
                         Rails.root.join("spec/support/javascripts")]
 
@@ -196,5 +198,9 @@ Teaspoon.configure do |config|
   config.suite :projects do |suite|
     suite.helper = Rails.root.join("spec","javascripts","spec_helper.js")
     suite.matcher = "spec/javascripts/projects_spec.coffee"
+  end
+  config.suite :nhri do |suite|
+    suite.helper = Rails.root.join("vendor","gems","nhri","spec","javascripts","spec_helper.js")
+    suite.matcher = Rails.root.join("vendor/gems/nhri/spec/javascripts/**/*_spec.coffee")
   end
 end

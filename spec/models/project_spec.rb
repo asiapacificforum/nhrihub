@@ -14,7 +14,10 @@ describe 'to_json' do
     # {"id"=>1,
     #  "title"=>"voluptas ut illum voluptatum delectus et consequuntur",
     #  "description"=>"Totam sint consequuntur dolore atque non vel quisquam. Tempora velit qui rerum veniam. Aliquam accusamus hic voluptatum sed laboriosam.",
-    #  "mandates"=>[{"name"=>"voluptibas vincit hic", "types"=>[{"id"=>1, "name"=>"Schools"}]}]}
+    #  "mandates"=>[{"id"=>1,
+    #                "key"=>"some_key",
+    #                "name"=>"voluptibas vincit hic",
+    #                "project_types"=>[{"id"=>1, "name"=>"Schools"}]}]}
   end
 
   it "includes mandates array" do
@@ -26,13 +29,13 @@ describe 'to_json' do
   end
 
   it "includes project types nested in the first mandate" do
-    expect(@project_ruby["mandates"][0].keys).to include "types"
+    expect(@project_ruby["mandates"][0].keys).to include "project_types"
     expect(@project_ruby["mandates"][0].keys).to include "name"
   end
 
   it "includes project_types and not mandate_types inside the mandate" do
-    expect(@project_ruby["mandates"][0]["types"].map{|t| t["id"]}).to include @type1.id
-    expect(@project_ruby["mandates"][0]["types"].map{|t| t["id"]}).to include @type2.id
-    expect(@project_ruby["mandates"][0]["types"].map{|t| t["id"]}).not_to include @type3.id
+    expect(@project_ruby["project_types"][0]["types"].map{|t| t["id"]}).to include @type1.id
+    expect(@project_ruby["project_types"][0]["types"].map{|t| t["id"]}).to include @type2.id
+    expect(@project_ruby["project_types"][0]["types"].map{|t| t["id"]}).not_to include @type3.id
   end
 end

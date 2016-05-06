@@ -8,7 +8,7 @@ OutreachPage = ->
   $audience_name_input : -> @$outreach_event_controls().find('input.audience_name')
   $date_from : -> @$outreach_event_controls().find('input#from')
   $date_to : -> @$outreach_event_controls().find('input#to')
-  $area : -> @$outreach_event_controls().find('.area-select')
+  $area : -> @$outreach_event_controls().find('.btn-group.select')
   $filter_reset : -> @$outreach_event_controls().find('.fa-refresh')
   $empty_message : -> $('#outreach_event_list').text()
   select_audience_type : (text)->
@@ -26,7 +26,7 @@ OutreachPage = ->
   reset_filter_criteria : ->
     @$filter_reset().trigger('click')
   human_rights_crc_li : ->
-    _($('.area-select .subarea')).select (el)->
+    _($('.btn-group.select .subarea')).select (el)->
       re = new RegExp(/CRC/)
       re.test($(el).text())
   hr_crc_link : -> $(@human_rights_crc_li()).find('a')[0]

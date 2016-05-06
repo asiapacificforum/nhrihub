@@ -1,3 +1,4 @@
+//= require 'in_page_edit'
 $ ->
   MonitorEdit = (node,id)->
     ractive = @

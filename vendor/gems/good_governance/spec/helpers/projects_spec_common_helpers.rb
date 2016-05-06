@@ -2,6 +2,38 @@ require 'rspec/core/shared_context'
 
 module ProjectsSpecCommonHelpers
   extend RSpec::Core::SharedContext
+
+  def upload_file_path(filename)
+    CapybaraRemote.upload_file_path(page,filename)
+  end
+
+  def upload_document
+    upload_file_path('first_upload_file.pdf')
+  end
+
+  def big_upload_document
+    upload_file_path('big_upload_file.pdf')
+  end
+
+  def upload_image
+    upload_file_path('first_upload_image_file.png')
+  end
+
+  # it's a test spec workaround, this method can be called multiple times
+  # whereas page.attach_file cannot
+  def attach_file(index = nil)
+    page.attach_file("project_file", upload_document, :visible => false)
+    if !index # when it's first time, we pass a non-nil argument like :first_time
+      if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
+        # because the change event is not triggered when the same file is uploaded again,
+        # so must trigger it manually in a test scenario (or else use many different files)
+        # #project_fileinput and project_file both refer to the same element
+        # with id=project_fileinput and name=project_file
+        page.execute_script("$('#project_fileinput').trigger('change')")
+      end
+    end
+  end
+
   def resize_browser_window
     if page.driver.browser.respond_to?(:manage)
       page.driver.browser.manage.window.resize_to(1400,800) # b/c selenium driver doesn't seem to click when target is not in the view
@@ -105,11 +137,11 @@ module ProjectsSpecCommonHelpers
   end
 
   def project_types
-    find('#project_types')
+    find('#mandate_project_types')
   end
 
   def good_governance_mandate
-    find('.mandate',:text => 'Good Governance')
+    page.find(:xpath, ".//div[contains(@class,'mandate_project_type')][div[contains(.,'Good Governance')]]")
   end
 
   def agencies
@@ -141,7 +173,7 @@ module ProjectsSpecCommonHelpers
   end
 
   def edit_last_project
-    page.all('.project .icon .fa-pencil-square-o')[2]
+    page.all('.project .icon .fa-pencil-square-o').last
   end
 
   def setup_strategic_plan
@@ -215,4 +247,5 @@ module ProjectsSpecCommonHelpers
   def checkbox(id)
     page.find(:xpath, "//input[@type='checkbox'][@id='#{id}']")
   end
+
 end

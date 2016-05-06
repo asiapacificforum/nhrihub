@@ -55,7 +55,7 @@ module HeadingsSpecHelper
 
   def setup_database
     3.times do |i|
-      FactoryGirl.create(:heading, :with_human_rights_attributes, :title => "My really cool heading #{i}")
+      FactoryGirl.create(:heading, :with_three_human_rights_attributes, :title => "My really cool heading #{i}")
     end
   end
 

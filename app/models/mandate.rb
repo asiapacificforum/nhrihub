@@ -11,7 +11,7 @@ class Mandate < ActiveRecord::Base
   }
 
   # this is the form of the result we expect
-  # [{"name"=>"mandate name", "types"=>[{"id"=>1, "name"=>"type name"}]}]
+  # [{"name"=>"mandate name", "project_types"=>[{"id"=>1, "name"=>"type name"}]}]
   def self.project_types_for(project_id)
     project_types_for_project(project_id).
     group_by(&:name). # this is why we return Mandate objects, so we can use the #name method

@@ -11,6 +11,6 @@
   var headings_data = #{@headings.to_json(:only =>[:title, :id],
                                           :include => {:human_rights_attributes=>{:only => [:heading_id, :id, :description]}})}
 
-= render :partial => 'headings_templates'
+= render :partial => 'nhri/headings/headings_templates'
 
 = javascript_include_tag 'nhri/headings'

@@ -172,6 +172,9 @@ Project = Ractive.extend
       $(checkbox).prop('checked',is_checked)
   , ProjectValidator, PerformanceIndicatorAssociation
 
+MandateFilterSelect = Ractive.extend
+  template : "#mandate_filter_select_template"
+
 projects_options =
   el : "#projects"
   template : '#projects_template'
@@ -184,6 +187,7 @@ projects_options =
     all_performance_indicators : performance_indicators
   components :
     project : Project
+    mandateFilterSelect : MandateFilterSelect
   new_project : ->
     unless @add_project_active()
       new_project_attributes =
@@ -206,6 +210,12 @@ projects_options =
     project_guids = _(@findAllComponents('project')).map (pr)-> pr._guid
     index = project_guids.indexOf(guid)
     @splice('projects',index,1)
+  expand_all : ->
+    _(@findAllComponents('project')).each (project)->
+      project.expand()
+  compact_all : ->
+    _(@findAllComponents('project')).each (project)->
+      project.compact()
 
 Ractive.decorators.inpage_edit = EditInPlace
 

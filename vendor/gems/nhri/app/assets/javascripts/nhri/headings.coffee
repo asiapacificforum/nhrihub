@@ -1,3 +1,4 @@
+//= require 'in_page_edit'
 $ ->
   Ractive.DEBUG = false
 
@@ -41,7 +42,8 @@ $ ->
       @set('description_error', _.isEmpty(@get('description')))
       !@get('description_error')
     terminate_attribute : ->
-      @parent.remove_edit_attribute(@_guid)
+      @parent.remove_attribute_from_existing_heading(@_guid)
+      UserInput.reset()
     save_attribute : ->
       if @validate()
         url = Routes.nhri_heading_human_rights_attributes_path(current_locale, @get('heading_id'))
@@ -128,12 +130,12 @@ $ ->
       @set('title_error',false)
     create_instance_attributes : -> # required for inpage_edit decorator
       {heading: {title : @get('title'), human_rights_attributes_attributes : @get('human_rights_attributes_attributes')}}
-    add_attribute : ->
+    add_attribute_to_new_heading : ->
       # here we don't claim_user_input_request b/c
       # we will allow adding heading and adding attribute simultaneously
       @_add_attribute_in('attribute')
-    add_edit_attribute : ->
-      UserInput.claim_user_input_request(@,'remove_edit_attribute')
+    add_attribute_to_existing_heading : ->
+      UserInput.claim_user_input_request(@,'remove_attribute_from_existing_heading')
       @_add_attribute_in('editHumanRightsAttribute')
     _add_attribute_in : (collection)->
       attributes = @findAllComponents(collection)
@@ -141,6 +143,8 @@ $ ->
       valid_previous_attribute = first_attribute || !(_.isNull(attributes[0].get('id')) && !attributes[0].validate())
       if valid_previous_attribute
         @unshift('human_rights_attributes',{heading_id : @get('id'), id : null, description : '', description_error : false})
+    remove_attribute_from_existing_heading : ->
+      @shift('human_rights_attributes')
     remove : (guid)->
       @_remove_attribute_from('attribute',guid)
     remove_edit_attribute : (guid)->
@@ -156,7 +160,7 @@ $ ->
       $("#edit_attributes#{@get('id')}").collapse('toggle')
 
   Headings = Ractive.extend
-    template : "{{#headings}}<heading id='{{id}}' title='{{title}}' />{{/headings}}"
+    template : "{{#headings}}<heading id='{{id}}' title='{{title}}' human_rights_attributes='{{human_rights_attributes}}'/>{{/headings}}"
     components :
       heading : Heading
     remove : (heading)->

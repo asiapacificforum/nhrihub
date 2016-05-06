@@ -1,0 +1,8 @@
+// add comma as list separator
+.comma-list span:not(:last-child):after {
+  content : ','
+}
+// pad list items except for the first
+.comma-list span:not(:first-child) {
+  padding-left: 0.45em;
+}

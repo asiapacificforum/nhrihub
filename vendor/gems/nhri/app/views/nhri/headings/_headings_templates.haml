@@ -36,12 +36,12 @@
           .delete_heading{'on-click'=>'delete_this()'}
             %i.fa.fa-trash-o.fa-lg
   .row.collapse{:id => "edit_attributes{{id}}"}
-    .col-md-12
+    .col-md-12#attributes
       .row
         .col-md-8
           %label=t('.attributes')
         .col-md-1
-          %i.fa.fa-plus.fa-lg#add_attribute{'on-click'=>'add_edit_attribute()', 'data-toggle'=>'tooltip', 'title'=>t('.add_attribute'), :style => "position:relative; top:-5px; left:-4px;"}
+          %i.fa.fa-plus.fa-lg#add_attribute{'on-click'=>'add_attribute_to_existing_heading()', 'data-toggle'=>'tooltip', 'title'=>t('.add_attribute'), :style => "position:relative; top:-5px; left:-4px;"}
       {{#human_rights_attributes}}
       <editHumanRightsAttribute heading_id='{{heading_id}}' description='{{description}}' id='{{id}}' />
       {{/human_rights_attributes}}
@@ -97,7 +97,7 @@
       .col-md-8
         %label=t('.attributes')
       .col-md-1
-        %i.fa.fa-plus.fa-lg#add_attribute{'on-click'=>'add_attribute()', 'data-toggle'=>'tooltip', 'title'=>t('.add_attribute')}
+        %i.fa.fa-plus.fa-lg#add_attribute{'on-click'=>'add_attribute_to_new_heading()', 'data-toggle'=>'tooltip', 'title'=>t('.add_attribute')}
     {{#human_rights_attributes}}
     <attribute />
     {{/human_rights_attributes}}
@@ -116,7 +116,7 @@
 
 // when attributes are added while a new heading is being added
 %script#new_attribute_template{:type => 'template/ractive'}
-  .row{:style => "background-color: #c7be9a; margin-left:0px; margin-right:0px;"}
+  .row.new_attribute{:style => "background-color: #c7be9a; margin-left:0px; margin-right:0px;"}
     .col-md-8.form-group
       %input.form-control.attribute_description{:type => :text, :value =>'{{ description }}'}
     .col-md-2
@@ -124,7 +124,7 @@
 
 // when attributes are added individually
 %script#new_edit_attribute_template{:type => 'template/ractive'}
-  .row
+  .row#new_attribute
     .col-md-8.form-group{:class=>"{{#description_error}}has-error{{/}}"}
       %input#attribute_description{:type => :text, :value =>'{{ description }}', 'on-keydown'=>"remove_errors()"}
       %span.help-block.error#description_error=t('.blank_description_error')

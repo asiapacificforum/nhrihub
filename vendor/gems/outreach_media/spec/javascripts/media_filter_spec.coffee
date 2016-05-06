@@ -71,7 +71,7 @@ MediaPage = ->
   $title_input : -> @$media_appearance_controls().find('input#title')
   $date_from : -> @$media_appearance_controls().find('input#from')
   $date_to : -> @$media_appearance_controls().find('input#to')
-  $area : -> @$media_appearance_controls().find('.area-select')
+  $area : -> @$media_appearance_controls().find('.btn-group.select')
   set_from_date : (date_str)->
     @$date_from().datepicker('show')
     @$date_from().datepicker('setDate',date_str)
@@ -81,7 +81,7 @@ MediaPage = ->
     @$date_to().datepicker('setDate',date_str)
     @$date_to().datepicker('hide')
   human_rights_crc_li : ->
-    _($('.area-select .subarea')).select (el)->
+    _($('.btn-group.select .subarea')).select (el)->
       re = new RegExp(/CRC/)
       re.test($(el).text())
   hr_crc_link : -> $(@human_rights_crc_li()).find('a')[0]

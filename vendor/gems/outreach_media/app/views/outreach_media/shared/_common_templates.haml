@@ -29,12 +29,14 @@
   <subarea>
   {{/subareas}}
 
+-# not currently used, until Ractive 0.8.0 is reliable
 %script#subarea_select_template{:type=> 'template/ractive'}
   .checkbox.subarea
     %label
       %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :checked => '{{checked}}', :id => '{{model_name}}_subarea_ids_{{id}}', :name => '{{model_name}}[subarea_ids][]', :value => '{{id}}'}
       {{ name }}
 
+-# not currently used, until Ractive 0.8.0 is reliable
 %script#area_select_template{:type=> 'template/ractive'}
   .checkbox
     %label

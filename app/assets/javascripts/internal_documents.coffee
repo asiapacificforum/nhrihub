@@ -5,10 +5,10 @@
 #   docs                     template: #files
 #     doc                    template: #template-download (contains document_template as a partial)
 #       archivedoc           template: #document_template (includes archive_fileupload decorator here)
-#         uploadfiles
-#           uploadfile
-#   uploadfiles
-#     uploadfile
+#         uploadfiles        template: inline (archive files staged for uploading)
+#           uploadfile       template: #upload_template
+#   uploadfiles              template: inline (primary files staged for uploading)
+#     uploadfile             template: #upload_template
 #
 Ractive.DEBUG = false
 
@@ -135,7 +135,6 @@ $ ->
       $(node).fileupload _.extend({}, fileupload_options)
 
   EditInPlace = (node,id)->
-    console.log "looking for InpageEdit"
     edit = new InpageEdit
       object : @
       on : node
@@ -150,6 +149,8 @@ $ ->
       error : ->
         console.log "Changes were not saved, for some reason"
     teardown : =>
+      edit.off()
+    update : =>
       edit.off()
 
   Popover = (node)->
@@ -372,6 +373,8 @@ $ ->
         @set('duplicate_icc_title_error',false)
         true
     add_file : (file)->
+      # file also includes any associated archive files
+      # so the whole document group is set
       @set(file)
 
   Docs = Ractive.extend
@@ -399,6 +402,7 @@ $ ->
     select_file : ->
       @find('#primary_fileinput').click()
     add_file : (file)->
+      # add the new primary document to the array
       @unshift('files',file)
     start_upload : ->
       flash.notify()

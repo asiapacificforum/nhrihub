@@ -4,7 +4,11 @@
   border-color: #ABA58D;
   border-radius: 10px;
   margin-bottom: 8px;
-  .col-md-2, .col-md-4{padding-top: 4px; padding-bottom:4px;}
+  .col-md-1, .col-md-2, .col-md-3, .col-md-4,
+  .col-md-5, .col-md-6, .col-md-7, .col-md-8,
+  .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+    padding-top: 4px; padding-bottom:4px;
+  }
 
   .panel {
     border-color: #ABA58D;
@@ -22,7 +26,7 @@
 
 #expand {
   background-repeat: no-repeat;
-  height: 16px;
+  height: 18px;
   cursor: pointer;
   background-image: asset-url("outreach_media/expand19.png"); //http://www.flaticon.com/free-icon/expand-arrows-couple_37089
   display: block;

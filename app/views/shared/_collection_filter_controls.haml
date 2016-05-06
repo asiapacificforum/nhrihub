@@ -1,4 +1,4 @@
-%script{:id => "collection_template", :type => 'template/ractive'}
+%script#collection_template{:type => 'template/ractive'}
   .row{:id => "#{collection}_controls"}
     .row
       .col-md-4
@@ -18,7 +18,7 @@
       .col-md-2
         %input{:type=>"text", :id=>"to", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}"}
       .col-md-3
-        .btn-group.area-select
+        .btn-group.select
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left= t('.select')
             %span.caret

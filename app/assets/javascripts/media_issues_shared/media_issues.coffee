@@ -38,45 +38,42 @@ $ ->
   Collection.Metric = Ractive.extend
     template : '#metric_template'
 
-  Collection.SubareaFilter = Ractive.extend
-    template : '#subarea_template'
+  Selectable =
     oninit : ->
       @select()
     toggle : ->
       @event.original.preventDefault()
       @event.original.stopPropagation()
-      if @get('subarea_selected')
+      if @get("#{@get('attr')}_selected")
         @unselect()
       else
         @select()
     select : ->
-      @root.add_subarea_filter(@get('id'))
-      @set('subarea_selected',true)
+      @root.add_filter(@get('attr'),@get('id'))
+      @set("#{@get('attr')}_selected",true)
     unselect : ->
-      @root.remove_subarea_filter(@get('id'))
-      @set('subarea_selected',false)
+      @root.remove_filter(@get('attr'),@get('id'))
+      @set("#{@get('attr')}_selected",false)
+
+  SelectableArea = _.extend
+    data :
+      attr : "area"
+  , Selectable
+
+  SelectableSubarea = _.extend
+    data :
+      attr : "subarea"
+  , Selectable
+
+  Collection.SubareaFilter = Ractive.extend
+    template : '#subarea_template'
+  , SelectableSubarea
 
   Collection.AreaFilter = Ractive.extend
     template : '#area_template'
     components :
       subarea : Collection.SubareaFilter
-    oninit : ->
-      @select()
-    toggle : ->
-      @event.original.preventDefault()
-      @event.original.stopPropagation()
-      if @get('area_selected')
-        @unselect()
-      else
-        @select()
-    select : ->
-      #_(@findAllComponents('subarea')).each (sa)-> sa.select() # causes subareas to be initialized twice
-      @root.add_area_filter(@get('id'))
-      @set('area_selected',true)
-    unselect : ->
-      #_(@findAllComponents('subarea')).each (sa)-> sa.unselect()
-      @root.remove_area_filter(@get('id'))
-      @set('area_selected',false)
+  , SelectableArea
 
   # not currently used, until Ractive 0.8.0 is reliable
   Collection.SubareaSelect = Ractive.extend
@@ -525,16 +522,11 @@ $ ->
     compact : ->
       @set('expanded', false)
       _(@findAllComponents('collectionItem')).each (collectionItem)-> collectionItem.compact()
-    add_area_filter : (id) ->
-      @push('filter_criteria.areas',id)
-    remove_area_filter : (id) ->
-      i = _(@get('filter_criteria.areas')).indexOf(id)
-      @splice('filter_criteria.areas',i,1)
-    add_subarea_filter : (id) ->
-      @push('filter_criteria.subareas',id)
-    remove_subarea_filter : (id) ->
-      i = _(@get('filter_criteria.subareas')).indexOf(id)
-      @splice('filter_criteria.subareas',i,1)
+    add_filter : (attr,id)->
+      @push("filter_criteria.#{attr}s",id)
+    remove_filter : (attr,id)->
+      i = _(@get("filter_criteria.#{attr}s")).indexOf(id)
+      @splice("filter_criteria.#{attr}s",i,1)
     clear_filter : ->
       @set('filter_criteria',collection_items_data().filter_criteria)
       _(@findAllComponents('area')).each (a)-> a.select()
