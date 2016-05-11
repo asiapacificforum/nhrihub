@@ -13,5 +13,7 @@ assets = [ 'in_page_edit.js',
            'projects.css',
            'performance_indicator.js',
            'fade.js',
-           'slide.js']
+           'slide.js',
+           'ractive_local_methods.js',
+           'string.js' ]
 Rails.application.config.assets.precompile += assets
