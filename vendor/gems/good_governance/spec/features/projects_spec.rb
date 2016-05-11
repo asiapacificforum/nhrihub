@@ -19,7 +19,7 @@ feature "projects index", :js => true do
     expect(projects_count).to eq 3
   end
 
-  it "should add a project" do
+  it "adds a project that does not have a file attachment" do
     add_project.click
     fill_in('project_title', :with => "new project title")
     fill_in('project_description', :with => "new project description")
@@ -43,12 +43,6 @@ feature "projects index", :js => true do
     select_first_activity
     page.execute_script("scrollTo(0,800)")
     select_first_performance_indicator
-
-    attach_file
-    select("Project Document", :from => "project_file_filename")
-
-    attach_file
-    fill_in("#project_file_filename", :with => "Title for an analysis document")
 
     # SAVE IT
     page.execute_script("scrollTo(0,0)")
@@ -87,6 +81,85 @@ feature "projects index", :js => true do
     end
   end
 
+  it "adds a project that has a file attachment" do
+    add_project.click
+    fill_in('project_title', :with => "new project title")
+    fill_in('project_description', :with => "new project description")
+    check('Good Governance')
+
+    within good_governance_types do
+      check('Consultation')
+    end
+
+    within agencies do
+      check('MJCA')
+    end
+
+    within conventions do
+      check('ICERD')
+    end
+
+    select_performance_indicators.click
+    select_first_planned_result
+    select_first_outcome
+    select_first_activity
+    page.execute_script("scrollTo(0,800)")
+    select_first_performance_indicator
+
+    attach_file(:first_time)
+    fill_in("project_document_title", :with => "Project Document")
+    expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf")
+
+    attach_file
+    page.all("#project_document_title")[1].set("Title for an analysis document")
+    expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf", :count => 2)
+
+    # SAVE IT
+    page.execute_script("scrollTo(0,0)")
+    expect{ save_project.click; sleep(0.3) }.to change{ project_model.count }.from(3).to(4).
+                                             and change{ ProjectDocument.count }.by(2)
+
+    # CHECK SERVER
+    pi = PerformanceIndicator.first
+    project = GoodGovernance::Project.last
+    expect(project.performance_indicator_ids).to eq [pi.id]
+    expect(projects_count).to eq 4
+    expect(project.title).to eq "new project title"
+    expect(project.description).to eq "new project description"
+    mandate = Mandate.find_by(:key => "good_governance")
+    expect(project.mandate_ids).to include mandate.id
+
+    expect(project.project_documents.count).to eq 2
+    expect(project.project_documents.map(&:title)).to include "Project Document"
+    expect(project.project_documents.map(&:title)).to include "Title for an analysis document"
+
+    # CHECK CLIENT
+    expand_first_project
+    within first_project do
+      expect(find('.basic_info .title').text).to eq "new project title"
+      expect(find('.description .no_edit span').text).to eq "new project description"
+      expect(all('#mandates .mandate').map(&:text)).to include 'Good Governance'
+      within project_types do
+        within good_governance_mandate do
+          expect(all('.project_type').map(&:text)).to include 'Consultation'
+        end
+      end
+      within agencies do
+        expect(all('.agency').map(&:text)).to include "MJCA"
+      end
+      within conventions do
+        expect(all('.convention').map(&:text)).to include "ICERD"
+      end
+      within performance_indicators do
+        expect(find('.performance_indicator').text).to eq pi.indexed_description
+      end
+      within project_documents do
+        expect(all('.project_document .title').map(&:text)).to include "Project Document"
+        expect(all('.project_document .title').map(&:text)).to include "Title for an analysis document"
+      end
+    end
+  end
+
   it "should restore list when cancelling add project" do
     add_project.click
     fill_in('project_title', :with => "new project title")
@@ -109,10 +182,10 @@ feature "projects index", :js => true do
     select_first_performance_indicator
     pi = PerformanceIndicator.first
 
-    expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description)
+    expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
     remove_first_indicator.click
     sleep(0.3)
-    expect(page).not_to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description)
+    expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
   end
 
   it "should prevent adding duplicate performance indicators" do
@@ -411,20 +484,98 @@ feature "projects index", :js => true do
   end
 end
 
-feature "projects file upload features", :js => true do
+feature "new project file management features", :js => true do
   include IERemoteDetector
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   include GoodGovernanceContextProjectsSpecHelpers
   include ProjectsSpecCommonHelpers
-  #it_behaves_like "projects_fileupload"
+  #it_behaves_like "new_project_file_management"
 
-  #it "should upload files" do
-    #expect(1).to eq 3
+  it "should remove a selected file" do
+    add_project.click
+
+    attach_file
+    fill_in("project_document_title", :with => "Project Document")
+    expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf")
+
+    attach_file
+    page.all("#project_document_title")[1].set("Title for an analysis document")
+    expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf", :count => 2)
+
+    page.all("#documents .document .remove")[0].click
+    expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf", :count => 1)
+    page.all("#documents .document .remove")[0].click
+    expect(page).not_to have_selector("#documents .document .filename", :text => "upload_file.pdf")
+  end
+
+  it "shows filesize error if file is too big" do
+    add_project.click
+    page.attach_file("project_file", big_upload_document, :visible => false)
+    expect(page).to have_selector('#filesize_error', :text => "File is too large")
+  end
+
+  it "shows filetype error for unpermitted file type" do
+    add_project.click
+    page.attach_file("project_file", upload_image, :visible => false)
+    expect(page).to have_selector('#filetype_error', :text =>  "File type not allowed")
+  end
+
+  it "shows no filetypes configured error if no filetypes have been configured" do
+    reset_permitted_filetypes
+    add_project.click
+    page.attach_file("project_file", upload_document, :visible => false)
+    expect(page).to have_selector('#unconfigured_filetypes_error', :text => "No permitted file types have been configured")
+  end
+
+  #it "prevents duplicate named files from being added" do
+    
   #end
 end
 
-feature "project reminders", :js => true do
-  #it behaves like remindable
-end
 
+#feature "existing project file management features", :js => true do
+  #include IERemoteDetector
+  #include LoggedInEnAdminUserHelper # sets up logged in admin user
+  #include NavigationHelpers
+  #include GoodGovernanceContextProjectsSpecHelpers
+  #include ProjectsSpecCommonHelpers
+  ##it_behaves_like "existing_project_file_management"
+
+  #it "should upload new files" do
+    
+  #end
+
+  #it "shows filesize error if file is too big" do
+
+  #end
+
+  #it "shows filetype error for unpermitted file type" do
+    
+  #end
+
+  #it "replaces named files" do
+    
+  #end
+
+  #it "adds files to the files list if they are not 'named files'" do
+    
+  #end
+
+  #it "should delete files" do
+    
+  #end
+
+  #it "downloads files" do
+    
+  #end
+
+#end
+
+#feature "project reminders", :js => true do
+  ##it behaves like remindable
+#end
+
+#feature "project filter", :js => true do
+  ## test this in javascript
+#end

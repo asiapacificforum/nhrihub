@@ -403,7 +403,7 @@ $ ->
           $('.fileupload').fileupload('send',{files : _(files).compact()}) # handled by jquery-fileupload
         else
           url = @parent.get('create_outreach_event_url')
-          $.post(url, @create_instance_attributes(), @update_oe, 'json') # handled right here
+          $.post(url, @persisted_attributes(), @update_oe, 'json') # handled right here
     validate : ->
       vt = @validate_title()
       vf = @validate_files()
@@ -440,7 +440,7 @@ $ ->
     remove_errors : ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
-    create_instance_attributes: ->
+    persisted_attributes: ->
       attrs = _.chain(@get()).
         pick('impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
         omit((value, key, object)-> _.isNull(value) ).
@@ -502,7 +502,7 @@ $ ->
         $.ajax
           url: @get('url')
           method : 'put'
-          data : @create_instance_attributes()
+          data : @persisted_attributes()
           success : success
           error : error
           context : context

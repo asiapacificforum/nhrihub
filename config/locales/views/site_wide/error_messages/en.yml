@@ -1,0 +1,6 @@
+en:
+  error_messages:
+    too_large: "File is too large"
+    unpermitted_type: "File type not allowed"
+    noFileTypes: "No permitted file types have been configured"
+    title_error_message: "Title cannot be blank"

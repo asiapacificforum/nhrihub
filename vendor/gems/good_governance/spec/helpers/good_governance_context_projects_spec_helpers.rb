@@ -9,8 +9,14 @@ module GoodGovernanceContextProjectsSpecHelpers
     populate_agencies
     populate_conventions
     populate_database
+    set_file_defaults
     resize_browser_window
     visit good_governance_projects_path(:en)
+  end
+
+  def set_file_defaults
+    SiteConfig.defaults['project_documents.filetypes'] = ['pdf']
+    SiteConfig.defaults['project_documents.filesize'] = 5
   end
 
   def heading_prefix

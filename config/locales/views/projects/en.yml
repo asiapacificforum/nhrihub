@@ -20,6 +20,8 @@ en:
       mandate: "Mandate"
       mandates: "Mandates"
       project_types: "Project types"
+      add_file: "Add file"
+      project_documents: "Project documents"
       # search controls:
       search: "Search for projects by:"
       title: "Title"
@@ -40,3 +42,5 @@ en:
       compact_all : "Compact all"
       min: "Min"
       max: "Max"
+      doc_title: "Document title"
+      revision: "Revision"

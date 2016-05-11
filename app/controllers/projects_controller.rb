@@ -29,6 +29,8 @@ class ProjectsController < ApplicationController
     permitted_params = [:title,
                         :description,
                         :type,
+                        :file,
+                        :project_documents_attributes => [:file, :title],
                         :mandate_ids => [],
                         :project_type_ids => [],
                         :agency_ids => [],

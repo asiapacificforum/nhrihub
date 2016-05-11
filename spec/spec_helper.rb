@@ -19,8 +19,11 @@
 require 'faker'
 require 'capybara_remote'
 require 'capybara/poltergeist'
+require 'selenium-webdriver'
 require_relative './support/wait_for_ajax'
 
+#comment this line out to use the default javascript server firefox
+#Capybara.default_wait_time = 5
 Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome,)
 end
@@ -33,38 +36,49 @@ Capybara.register_driver :poltergeist do |app|
   #Capybara::Poltergeist::Driver.new(app, :inspector => true, :timeout => 300)
   Capybara::Poltergeist::Driver.new(:window_size => [1524,768])
 end
-#comment this line out to use the default javascript server firefox
-Capybara.javascript_driver = :poltergeist
-#Capybara.javascript_driver = :selenium
-#Capybara.javascript_driver = :chrome
-#Capybara.default_wait_time = 5
+
+url = CapybaraRemote.url # it's in lib directory
+capabilities = Selenium::WebDriver::Remote::Capabilities.internet_explorer
+capabilities.version = "11"
+
+Capybara.register_driver :remote do |app|
+  Capybara::Selenium::Driver.new(app,
+    :browser => :remote,
+    :url => url,
+    :desired_capabilities => capabilities)
+end
+
+if ENV["client"] =~ /(sel|ff)/i
+  puts "Browser: Firefox via Selenium"
+  Capybara.javascript_driver = :selenium
+elsif ENV["client"] =~ /chr/i
+  puts "Browser: Chrome"
+
+  Capybara.javascript_driver = :chrome
+elsif ENV["client"] =~ /ie/i
+  puts "Browser: IE"
+  CONFIGURATION FOR REMOTE TESTING OF IE
+  require 'capybara/rspec'
+
+
+  Capybara.server_port = 3010
+  ip = `ifconfig | grep 'inet ' | grep -v 127.0.0.1 | cut -d ' ' -f2`.strip
+  puts "this machine ip is #{ip}"
+
+  Capybara.app_host = "http://#{ip}:#{Capybara.server_port}"
+  Capybara.current_driver = :remote
+  Capybara.javascript_driver = :remote
+  Capybara.run_server = false
+  Capybara.remote = true
+
+else
+  puts "Browser: Phantomjs via Poltergeist"
+
+  Capybara.javascript_driver = :poltergeist
+end
 
 #require 'simplecov'
 #SimpleCov.start
-
-# CONFIGURATION FOR REMOTE TESTING OF IE
-#require 'capybara/rspec'
-#require 'selenium-webdriver'
-
-#url = CapybaraRemote.url # it's in lib directory
-#capabilities = Selenium::WebDriver::Remote::Capabilities.internet_explorer
-#capabilities.version = "11"
-#Capybara.register_driver :remote do |app|
-  #Capybara::Selenium::Driver.new(app,
-    #:browser => :remote,
-    #:url => url,
-    #:desired_capabilities => capabilities)
-#end
-#Capybara.server_port = 3010
-#ip = `ifconfig | grep 'inet ' | grep -v 127.0.0.1 | cut -d ' ' -f2`.strip
-#puts "this machine ip is #{ip}"
-#Capybara.app_host = "http://#{ip}:#{Capybara.server_port}"
-#Capybara.current_driver = :remote
-#Capybara.javascript_driver = :remote
-#Capybara.run_server = false
-#Capybara.remote = true
-
-# END OF REMOTE TESTING CONFIGURATION FOR IE
 
 # config for firefox with port 3010
 #require 'capybara/rspec'

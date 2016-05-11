@@ -111,8 +111,8 @@ class @InpageEdit
           return
         @context = $target.closest('.editable_container')
         url = @options.object.get('url')
-        if _.isFunction(@options.object.create_instance_attributes) # pull the data from the object
-          data = @options.object.create_instance_attributes()
+        if _.isFunction(@options.object.persisted_attributes) # pull the data from the object
+          data = @options.object.persisted_attributes()
           data['_method'] = 'put'
         else
           data = @context.find(':input').serializeArray() # pull the data from the dom

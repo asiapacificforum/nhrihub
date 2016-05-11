@@ -273,7 +273,7 @@ $ ->
           @get('fileupload').submit() # handled by jquery-fileupload
         else
           url = @parent.get('create_collection_item_url')
-          $.post(url, @create_instance_attributes(), @update_collection_item, 'json') # handled right here
+          $.post(url, @persisted_attributes(), @update_collection_item, 'json') # handled right here
     validate : ->
       vt = @_validate_title()
       va = @_validate_attachment()
@@ -354,7 +354,7 @@ $ ->
       attrs = ['file', 'title', 'affected_people_count', 'violation_severity_id', 'article_link', 'lastModifiedDate']
       attrs.push('positivity_rating_id') if item_name == "media_appearance"
       attrs
-    create_instance_attributes: ->
+    persisted_attributes: ->
       attrs = _(@get()).pick(@_attrs())
       if _.isEmpty(@get('performance_indicator_ids'))
         attrs.performance_indicator_ids = [""]
@@ -408,7 +408,7 @@ $ ->
         $.ajax
           url: @get('url')
           method : 'put'
-          data : @create_instance_attributes()
+          data : @persisted_attributes()
           success : success
           error : error
           context : context

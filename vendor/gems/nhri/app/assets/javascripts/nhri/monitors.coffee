@@ -30,11 +30,11 @@ $ ->
           $.datepicker.formatDate("M d, yy", new Date(@get('date')) )
         set: (val)-> 
           @set('date', $.datepicker.parseDate( "M d, yy", val))
-    create_instance_attributes : ->
+    persisted_attributes : ->
       {monitor : _.chain(@get()).pick(@get('params')).extend({type:@get('type')}).value() }
     save_monitor : ->
       url = Routes.nhri_indicator_monitors_path(current_locale,this.get('indicator_id'))
-      data = @create_instance_attributes()
+      data = @persisted_attributes()
       if @validate(data)
         $.ajax
           type : 'post'

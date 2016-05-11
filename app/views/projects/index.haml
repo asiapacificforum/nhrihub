@@ -17,5 +17,7 @@
     map((a)->_(a).values()).
     object().
     value()
+  window.maximum_filesize    = #{Project.maximum_filesize * 1000000}
+  window.permitted_filetypes = #{Project.permitted_filetypes.to_json }
 
 =javascript_include_tag 'projects'

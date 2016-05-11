@@ -72,7 +72,7 @@ $ ->
         context : @
     delete_callback : ->
       @parent.remove_edit_attribute(@_guid)
-    create_instance_attributes : ->
+    persisted_attributes : ->
       {human_rights_attribute : {description : @get('description')}}
     remove_description_error : ->
       @set('description_error', false)
@@ -128,7 +128,7 @@ $ ->
       @parent.remove(@)
     remove_errors : ->
       @set('title_error',false)
-    create_instance_attributes : -> # required for inpage_edit decorator
+    persisted_attributes : -> # required for inpage_edit decorator
       {heading: {title : @get('title'), human_rights_attributes_attributes : @get('human_rights_attributes_attributes')}}
     add_attribute_to_new_heading : ->
       # here we don't claim_user_input_request b/c

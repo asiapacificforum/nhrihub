@@ -2,6 +2,9 @@ require 'rspec/core/shared_context'
 
 module ProjectsSpecCommonHelpers
   extend RSpec::Core::SharedContext
+  def reset_permitted_filetypes
+    page.execute_script("permitted_filetypes=[]")
+  end
 
   def upload_file_path(filename)
     CapybaraRemote.upload_file_path(page,filename)
@@ -21,17 +24,19 @@ module ProjectsSpecCommonHelpers
 
   # it's a test spec workaround, this method can be called multiple times
   # whereas page.attach_file cannot
+  # UPDATE: after eliminating jQuery.fileupload, this doesn't seem to be required
+  # it's left here for reference
   def attach_file(index = nil)
     page.attach_file("project_file", upload_document, :visible => false)
-    if !index # when it's first time, we pass a non-nil argument like :first_time
-      if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
-        # because the change event is not triggered when the same file is uploaded again,
-        # so must trigger it manually in a test scenario (or else use many different files)
-        # #project_fileinput and project_file both refer to the same element
-        # with id=project_fileinput and name=project_file
-        page.execute_script("$('#project_fileinput').trigger('change')")
-      end
-    end
+    #if !index # when it's first time, we pass a truthy argument like :first_time
+      #if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
+        ## because the change event is not triggered when the same file is attached again,
+        ## so must trigger it manually in a test scenario (or else use many different files)
+        ## #project_fileinput and project_file both refer to the same element
+        ## with id=project_fileinput and name=project_file
+        #page.execute_script("$('#project_fileinput').trigger('change')")
+      #end
+    #end
   end
 
   def resize_browser_window
@@ -190,7 +195,11 @@ module ProjectsSpecCommonHelpers
   end
 
   def select_performance_indicators
-    sleep(0.3)
+    # because it was off the page!
+    coordinates = page.evaluate_script("$('.performance_indicator_select>a').offset()")
+    top = coordinates["top"]
+    top = top - 100
+    page.execute_script("scrollTo(0,#{top})")
     page.find('.performance_indicator_select>a')
   end
 
@@ -248,4 +257,7 @@ module ProjectsSpecCommonHelpers
     page.find(:xpath, "//input[@type='checkbox'][@id='#{id}']")
   end
 
+  def project_documents
+    page.find('#project_documents')
+  end
 end

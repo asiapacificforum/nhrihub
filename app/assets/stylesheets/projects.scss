@@ -18,3 +18,8 @@
 .help-block[id$='_error'].has-error {
   display : block;
 }
+
+.form-group.errors {
+  margin-top : 0;
+  margin-bottom : 0;
+}

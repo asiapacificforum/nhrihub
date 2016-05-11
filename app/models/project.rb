@@ -1,4 +1,8 @@
 class Project < ActiveRecord::Base
+  include FileConstraints
+
+  ConfigPrefix = 'project_documents'
+
   has_many :project_performance_indicators, :dependent => :destroy
   has_many :performance_indicators, :through => :project_performance_indicators
   has_many :project_conventions, :dependent => :destroy
@@ -11,6 +15,8 @@ class Project < ActiveRecord::Base
   has_many :project_types, :through => :project_project_types
   has_many :project_agencies, :dependent => :destroy
   has_many :agencies, :through => :project_agencies
+  has_many :project_documents
+  accepts_nested_attributes_for :project_documents
 
   def as_json(options={})
     if options.blank?
@@ -28,6 +34,7 @@ class Project < ActiveRecord::Base
        :project_type_ids => project_type_ids,
        :reminders => reminders,
        :notes => notes,
+       :project_documents => project_documents,
        :performance_indicator_ids => performance_indicator_ids }
     else
       super(options)
