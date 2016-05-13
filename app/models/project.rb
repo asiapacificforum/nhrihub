@@ -1,7 +1,4 @@
 class Project < ActiveRecord::Base
-  include FileConstraints
-
-  ConfigPrefix = 'project_documents'
 
   has_many :project_performance_indicators, :dependent => :destroy
   has_many :performance_indicators, :through => :project_performance_indicators
@@ -13,9 +10,12 @@ class Project < ActiveRecord::Base
   has_many :mandates, :through => :project_mandates
   has_many :project_project_types, :dependent => :destroy
   has_many :project_types, :through => :project_project_types
+  has_many :good_governance_project_types, ->{merge(ProjectType.good_governance)}, :through => :project_project_types, :source => :project_type
+  has_many :human_rights_project_types,    ->{merge(ProjectType.human_rights)},    :through => :project_project_types, :source => :project_type
+  has_many :siu_project_types,             ->{merge(ProjectType.siu)},             :through => :project_project_types, :source => :project_type
   has_many :project_agencies, :dependent => :destroy
   has_many :agencies, :through => :project_agencies
-  has_many :project_documents
+  has_many :project_documents, :dependent => :destroy
   accepts_nested_attributes_for :project_documents
 
   def as_json(options={})

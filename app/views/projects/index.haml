@@ -7,6 +7,7 @@
   window.agencies = #{@agencies.to_json}
   window.conventions = #{@conventions.to_json}
   window.planned_results = #{@planned_results.to_json }
+  window.project_named_documents_titles = #{@project_named_documents_titles.to_json}
   window.performance_indicators = _.chain(planned_results).
     map((pr)->pr.outcomes).
     flatten().
@@ -17,7 +18,7 @@
     map((a)->_(a).values()).
     object().
     value()
-  window.maximum_filesize    = #{Project.maximum_filesize * 1000000}
-  window.permitted_filetypes = #{Project.permitted_filetypes.to_json }
+  window.maximum_filesize    = #{ProjectDocument.maximum_filesize * 1000000}
+  window.permitted_filetypes = #{ProjectDocument.permitted_filetypes.to_json }
 
 =javascript_include_tag 'projects'

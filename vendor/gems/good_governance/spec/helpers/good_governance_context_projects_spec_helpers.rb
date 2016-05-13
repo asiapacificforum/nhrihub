@@ -28,11 +28,23 @@ module GoodGovernanceContextProjectsSpecHelpers
   end
 
   def populate_database
-    2.times do
-      ggp = FactoryGirl.create(:good_governance_project)
-      ggp.performance_indicator_ids = PerformanceIndicator.pluck(:id).shuffle.take(3)
-      ggp.save
-    end
+    #2.times do
+      #ggp = FactoryGirl.create(:good_governance_project)
+      #ggp.mandate_ids = Mandate.pluck(:id)
+      #ggp.project_type_ids = ProjectType.pluck(:id)
+      #ggp.agency_ids = Agency.pluck(:id)
+      #ggp.convention_ids = Convention.pluck(:id)
+      #ggp.performance_indicator_ids = PerformanceIndicator.pluck(:id).shuffle.take(3)
+      #ggp.save
+    #end
+    ggp = FactoryGirl.create(:good_governance_project)
+    #ggp.mandate_ids = Mandate.pluck(:id)
+    #ggp.project_type_ids = ProjectType.pluck(:id)
+    #ggp.agency_ids = Agency.pluck(:id)
+    #ggp.convention_ids = Convention.pluck(:id)
+    ggp.performance_indicator_ids = PerformanceIndicator.pluck(:id).shuffle.take(3)
+    ggp.save
+
     ggp = FactoryGirl.create(:good_governance_project)
     ggp.performance_indicator_ids = PerformanceIndicator.pluck(:id).shuffle.take(3)
     ggp.mandate_ids = Mandate.pluck(:id)

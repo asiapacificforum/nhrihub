@@ -7,10 +7,6 @@ module AdvisoryCouncilIssuesAdminSpecHelper
     page.find(:xpath, ".//div[@id='advisory_council_issues']//tr[contains(td,'#{text}')]").find('a').click
   end
 
-  def set_filesize(val)
-    page.find('#advisory_council_issues_filesize input#filesize').set(val)
-  end
-
   def new_filetype_button
     page.find("#advisory_council_issues_filetypes #new_advisory_council_issues_filetype table button")
   end

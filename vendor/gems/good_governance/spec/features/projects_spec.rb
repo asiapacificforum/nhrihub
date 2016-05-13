@@ -15,8 +15,47 @@ feature "projects index", :js => true do
   it "should show a list of projects" do
     expect(page_heading).to eq "#{heading_prefix} Projects"
     expect(page_title).to eq "#{heading_prefix} Projects"
-    expect(project_model.count).to eq 3
-    expect(projects_count).to eq 3
+    expect(project_model.count).to eq 2
+    expect(projects_count).to eq 2
+  end
+
+  it "shows expanded information for each of the projects" do
+    expand_last_project
+    within last_project do
+      last_project = Project.find(2)
+      expect(find('.basic_info .title').text).to eq last_project.title
+      expect(find('.description .no_edit span').text).to eq last_project.description
+      last_project.mandates.each do |mandate|
+        expect(all('#mandates .mandate').map(&:text)).to include mandate.name
+      end
+      within project_types do
+        within good_governance_mandate do
+          last_project.good_governance_project_types.each do |project_type|
+            expect(all('.project_type').map(&:text)).to include project_type.name
+          end
+        end
+      end
+      within agencies do
+        last_project.agencies.each do |agency|
+          expect(all('.agency').map(&:text)).to include agency.name
+        end
+      end
+      within conventions do
+        last_project.conventions.each do |convention|
+          expect(all('.convention').map(&:text)).to include convention.name
+        end
+      end
+      within performance_indicators do
+        last_project.performance_indicators.each do |performance_indicator|
+          expect(all('.performance_indicator').map(&:text)).to include performance_indicator.indexed_description
+        end
+      end
+      within project_documents do
+        last_project.project_documents.each do |project_document|
+          expect(all('.project_document .title').map(&:text)).to include project_document.title
+        end
+      end
+    end
   end
 
   it "adds a project that does not have a file attachment" do
@@ -46,13 +85,13 @@ feature "projects index", :js => true do
 
     # SAVE IT
     page.execute_script("scrollTo(0,0)")
-    expect{ save_project.click; sleep(0.3) }.to change{ project_model.count }.from(3).to(4)
+    expect{ save_project.click; wait_for_ajax }.to change{ project_model.count }.from(2).to(3)
 
     # CHECK SERVER
     pi = PerformanceIndicator.first
     project = GoodGovernance::Project.last
     expect(project.performance_indicator_ids).to eq [pi.id]
-    expect(projects_count).to eq 4
+    expect(projects_count).to eq 3
     expect(project.title).to eq "new project title"
     expect(project.description).to eq "new project description"
     mandate = Mandate.find_by(:key => "good_governance")
@@ -106,24 +145,28 @@ feature "projects index", :js => true do
     page.execute_script("scrollTo(0,800)")
     select_first_performance_indicator
 
-    attach_file(:first_time)
-    fill_in("project_document_title", :with => "Project Document")
+    within new_project do
+      attach_file(:first_time)
+      fill_in("project_document_title", :with => "Project Document")
+    end
     expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf")
 
-    attach_file
-    page.all("#project_document_title")[1].set("Title for an analysis document")
+    within new_project do
+      attach_file
+      page.all("#project_document_title")[0].set("Title for an analysis document")
+    end
     expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf", :count => 2)
 
     # SAVE IT
     page.execute_script("scrollTo(0,0)")
-    expect{ save_project.click; sleep(0.3) }.to change{ project_model.count }.from(3).to(4).
+    expect{ save_project.click; wait_for_ajax }.to change{ project_model.count }.from(2).to(3).
                                              and change{ ProjectDocument.count }.by(2)
 
     # CHECK SERVER
     pi = PerformanceIndicator.first
     project = GoodGovernance::Project.last
     expect(project.performance_indicator_ids).to eq [pi.id]
-    expect(projects_count).to eq 4
+    expect(projects_count).to eq 3
     expect(project.title).to eq "new project title"
     expect(project.description).to eq "new project description"
     mandate = Mandate.find_by(:key => "good_governance")
@@ -165,7 +208,7 @@ feature "projects index", :js => true do
     fill_in('project_title', :with => "new project title")
     fill_in('project_description', :with => "new project description")
     cancel_project.click
-    expect(projects_count).to eq 3
+    expect(projects_count).to eq 2
     add_project.click
     expect(page.find('#project_title').value).to eq ""
     expect(page.find('#project_description').value).to eq ""
@@ -184,7 +227,7 @@ feature "projects index", :js => true do
 
     expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
     remove_first_indicator.click
-    sleep(0.3)
+    wait_for_ajax
     expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
   end
 
@@ -215,7 +258,7 @@ feature "projects index", :js => true do
   it "should show warning and not add when title is blank" do
     add_project.click
     fill_in('project_description', :with => "new project description")
-    expect{ save_project.click; sleep(0.3) }.not_to change{ project_model.count }
+    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in('project_title', :with => 't')
     expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
@@ -225,7 +268,7 @@ feature "projects index", :js => true do
     add_project.click
     fill_in('project_title', :with => "    ")
     fill_in('project_description', :with => "new project description")
-    expect{ save_project.click; sleep(0.3) }.not_to change{ project_model.count }
+    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in('project_title', :with => 't')
     expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
@@ -234,7 +277,7 @@ feature "projects index", :js => true do
   it "should show warning and not add when description is blank" do
     add_project.click
     fill_in('project_title', :with => "new project title")
-    expect{ save_project.click; sleep(0.3) }.not_to change{ project_model.count }
+    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
     expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
     fill_in('project_description', :with => 't')
     expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
@@ -244,7 +287,7 @@ feature "projects index", :js => true do
     add_project.click
     fill_in('project_title', :with => "new project title")
     fill_in('project_description', :with => "   ")
-    expect{ save_project.click; sleep(0.3) }.not_to change{ project_model.count }
+    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
     expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
     fill_in('project_description', :with => 't')
     expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
@@ -261,13 +304,13 @@ feature "projects index", :js => true do
   end
 
   it "should delete a project" do
-    expect{ delete_project_icon.click; sleep(0.3)}.to change{ project_model.count }.by(-1).
+    expect{ delete_project_icon.click; wait_for_ajax }.to change{ project_model.count }.by(-1).
                                                    and change{ projects_count }.by(-1)
   end
 
   it "should edit a project" do
     edit_first_project.click
-    sleep(0.3) # css transition
+    #sleep(0.3) # css transition
     fill_in('project_title', :with => "new project title")
     fill_in('project_description', :with => "new project description")
     check('Good Governance')
@@ -297,8 +340,7 @@ feature "projects index", :js => true do
     select_first_performance_indicator
     pi = PerformanceIndicator.first
 
-    page.execute_script("scrollTo(0,0)")
-    expect{ edit_save.click; sleep(0.3) }.to change{ project_model.find(1).title }.to("new project title")
+    expect{ edit_save.click; wait_for_ajax }.to change{ project_model.find(1).title }.to("new project title")
     project = project_model.find(1)
     consultation_project_type = ProjectType.find_by(:name => "Consultation")
     expect( project.project_type_ids ).to include consultation_project_type.id
@@ -312,7 +354,7 @@ feature "projects index", :js => true do
     expand_first_project
 
     within first_project do
-      expect(find('.title').text).to eq "new project title"
+      expect(find('.basic_info .title').text).to eq "new project title"
       expect(find('.description .no_edit span').text).to eq "new project description"
       expect(all('.mandate').map(&:text)).to include 'Good Governance'
       within project_types do
@@ -334,8 +376,8 @@ feature "projects index", :js => true do
 
   it "should edit a project and remove performance indicators" do
     edit_first_project.click
-    sleep(0.3) # css transition
-    expect{ remove_first_indicator.click; sleep(0.3) }.to change{ ProjectPerformanceIndicator.count }.by(-1).
+    #sleep(0.3) # css transition
+    expect{ remove_first_indicator.click; wait_for_ajax }.to change{ ProjectPerformanceIndicator.count }.by(-1).
                                                        and change{ page.all('.selected_performance_indicator').count }.by(-1)
   end
 
@@ -344,8 +386,7 @@ feature "projects index", :js => true do
     edit_last_project.click # has all associations checked
     uncheck_all_checkboxes
     project = project_model.last
-    page.execute_script("scrollTo(0,0)")
-    expect{ edit_save.click; sleep(0.4) }.to change{project.project_type_ids}.to([]).
+    expect{ edit_save.click; wait_for_ajax }.to change{project.project_type_ids}.to([]).
                                           and change{project.agency_ids}.to([]).
                                           and change{project.convention_ids}.to([]).
                                           and change{project.mandate_ids}.to([])
@@ -353,7 +394,7 @@ feature "projects index", :js => true do
 
   it "should restore prior values if editing is cancelled" do
     edit_first_project.click
-    sleep(0.3) # css transition
+    #sleep(0.3) # css transition but now transitions turned off in test env
     fill_in('project_title', :with => "new project title")
     fill_in('project_description', :with => "new project description")
     check('Good Governance')
@@ -387,7 +428,7 @@ feature "projects index", :js => true do
 
     project = project_model.first
     within first_project do
-      expect(find('.title').text).to eq project.title
+      expect(find('.basic_info .title').text).to eq project.title
       expect(find('.description .no_edit span').text).to eq project.description
       expect(all('.mandate .name').count).to eq 0
       expect(all('#project_types .project_type').count).to eq 0
@@ -397,7 +438,7 @@ feature "projects index", :js => true do
     end
 
     edit_first_project.click
-    sleep(0.3) # css transition
+    #sleep(0.3) # css transition
 
     expect(page.find('#project_title').value).to eq project.title
     expect(page.find('#project_description').value).to eq project.description
@@ -417,7 +458,7 @@ feature "projects index", :js => true do
   it "should show warning and not save when editing and title is blank" do
     edit_first_project.click
     fill_in('project_title', :with => '')
-    expect{ edit_save.click; sleep(0.3) }.not_to change{ project_model.find(1).title }
+    expect{ edit_save.click; wait_for_ajax }.not_to change{ project_model.find(1).title }
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in('project_title', :with => 't')
     expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
@@ -426,7 +467,7 @@ feature "projects index", :js => true do
   it "should show warning and not save edited project when title is whitespace" do
     edit_first_project.click
     fill_in('project_title', :with => "   ")
-    expect{ edit_save.click; sleep(0.3) }.not_to change{ project_model.find(1).title }
+    expect{ edit_save.click; wait_for_ajax }.not_to change{ project_model.find(1).title }
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in('project_title', :with => 't')
     expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
@@ -435,7 +476,7 @@ feature "projects index", :js => true do
   it "should show warning and not save edited project when description is blank" do
     edit_first_project.click
     fill_in('project_description', :with => "")
-    expect{ edit_save.click; sleep(0.3) }.not_to change{ project_model.find(1).description }
+    expect{ edit_save.click; wait_for_ajax }.not_to change{ project_model.find(1).description }
     expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
     fill_in('project_description', :with => 't')
     expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
@@ -444,7 +485,7 @@ feature "projects index", :js => true do
   it "should show warning and not save edited project when description is whitespace" do
     edit_first_project.click
     fill_in('project_description', :with => "  ")
-    expect{ edit_save.click; sleep(0.3) }.not_to change{ project_model.find(1).description }
+    expect{ edit_save.click; wait_for_ajax }.not_to change{ project_model.find(1).description }
     expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
     fill_in('project_description', :with => 't')
     expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
@@ -495,13 +536,17 @@ feature "new project file management features", :js => true do
   it "should remove a selected file" do
     add_project.click
 
-    attach_file
-    fill_in("project_document_title", :with => "Project Document")
-    expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf")
+    within new_project do
+      attach_file
+      fill_in("project_document_title", :with => "Project Document")
+      expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf")
+    end
 
-    attach_file
-    page.all("#project_document_title")[1].set("Title for an analysis document")
-    expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf", :count => 2)
+    within new_project do
+      attach_file
+      page.all("#project_document_title")[1].set("Title for an analysis document")
+      expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf", :count => 2)
+    end
 
     page.all("#documents .document .remove")[0].click
     expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf", :count => 1)
@@ -511,20 +556,27 @@ feature "new project file management features", :js => true do
 
   it "shows filesize error if file is too big" do
     add_project.click
-    page.attach_file("project_file", big_upload_document, :visible => false)
+    within new_project do
+      page.attach_file("project_file", big_upload_document, :visible => false)
+    end
     expect(page).to have_selector('#filesize_error', :text => "File is too large")
   end
 
   it "shows filetype error for unpermitted file type" do
+    set_permitted_filetypes # ['anything']
     add_project.click
-    page.attach_file("project_file", upload_image, :visible => false)
+    within new_project do
+      page.attach_file("project_file", upload_image, :visible => false)
+    end
     expect(page).to have_selector('#filetype_error', :text =>  "File type not allowed")
   end
 
   it "shows no filetypes configured error if no filetypes have been configured" do
-    reset_permitted_filetypes
+    reset_permitted_filetypes # []
     add_project.click
-    page.attach_file("project_file", upload_document, :visible => false)
+    within new_project do
+      page.attach_file("project_file", upload_document, :visible => false)
+    end
     expect(page).to have_selector('#unconfigured_filetypes_error', :text => "No permitted file types have been configured")
   end
 
@@ -534,25 +586,44 @@ feature "new project file management features", :js => true do
 end
 
 
-#feature "existing project file management features", :js => true do
-  #include IERemoteDetector
-  #include LoggedInEnAdminUserHelper # sets up logged in admin user
-  #include NavigationHelpers
-  #include GoodGovernanceContextProjectsSpecHelpers
-  #include ProjectsSpecCommonHelpers
-  ##it_behaves_like "existing_project_file_management"
+feature "existing project file management features", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  include GoodGovernanceContextProjectsSpecHelpers
+  include ProjectsSpecCommonHelpers
+  #it_behaves_like "existing_project_file_management"
 
-  #it "should upload new files" do
-    
-  #end
+  it "should upload new files" do
+    edit_first_project.click
+    within edit_documents do
+      attach_file
+    end
+    page.find("#project_document_title").set("New uploaded document")
+    edit_save.click
+    wait_for_ajax
+    expect(project_model.first.project_documents.map(&:title)).to include "New uploaded document"
+    expect(all('.project_document .title').map(&:text)).to include "New uploaded document"
+  end
 
-  #it "shows filesize error if file is too big" do
+  it "shows filesize error if file is too big" do
+    edit_first_project.click
+    add_project.click
+    within new_project do
+      page.attach_file("project_file", big_upload_document, :visible => false)
+    end
+    expect(page).to have_selector('#filesize_error', :text => "File is too large")
+  end
 
-  #end
-
-  #it "shows filetype error for unpermitted file type" do
-    
-  #end
+  it "shows filetype error for unpermitted file type" do
+    set_permitted_filetypes # ['anything']
+    edit_first_project.click
+    add_project.click
+    within new_project do
+      page.attach_file("project_file", upload_image, :visible => false)
+    end
+    expect(page).to have_selector('#filetype_error', :text =>  "File type not allowed")
+  end
 
   #it "replaces named files" do
     
@@ -570,7 +641,7 @@ end
     
   #end
 
-#end
+end
 
 #feature "project reminders", :js => true do
   ##it behaves like remindable

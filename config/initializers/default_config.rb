@@ -1,2 +1,2 @@
-SiteConfig.defaults['project_documents.filetypes'] = []
-SiteConfig.defaults['project_documents.filesize'] = 5
+SiteConfig.defaults['project_document.filetypes'] = []
+SiteConfig.defaults['project_document.filesize'] = 5

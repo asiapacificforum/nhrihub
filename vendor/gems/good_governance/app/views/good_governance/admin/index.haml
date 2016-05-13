@@ -1,0 +1,25 @@
+.message_block
+%h1=t('.heading')
+
+%h4= t('.filetypes')
+#filetypes
+  = render :partial => 'admin/collection_configuration',
+    :locals => { :new_item => @filetype,
+                 :create_url => good_governance_project_document_filetypes_path,
+                 :delete_url => good_governance_project_document_filetype_path('id'),
+                 :collection => @project_document_filetypes,
+                 :item_name => 'filetype',
+                 :param_name => 'ext',
+                 :placeholder => 'e.g. ppt'}
+
+%h4= t('.filesize_max')
+#project_document_filesize
+  = render :partial => 'admin/document_filesize_configuration',
+           :locals => { :update_url => good_governance_project_document_filesize_path,
+                        :param => @filesize,
+                        :context => "project_document_filesize"}
+
+:coffeescript
+  $ ->
+    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+    window.flash_error_template = _.template("<ul class='error'><li>{{message}}</li></ul>")

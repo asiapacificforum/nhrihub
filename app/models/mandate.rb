@@ -3,6 +3,11 @@ class Mandate < ActiveRecord::Base
   has_many :projects, :through => :project_mandates
   has_many :project_types, :dependent => :destroy
 
+  scope :good_governance, ->{ where(:key => "good_governance") }
+  scope :human_rights,    ->{ where(:key => "human_rights") }
+  scope :siu,             ->{ where(:key => "special_investigations_unit") }
+
+
   scope :project_types_for_project, ->(id){
     # alias the name attribute to avoid collision with the Mandate#name method
     select("project_types.name as type_name, project_types.id as type_id, mandates.key").

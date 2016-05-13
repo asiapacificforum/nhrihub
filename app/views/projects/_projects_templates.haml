@@ -1,7 +1,7 @@
 %script#projects_template{:type => 'template/ractive'}
   {{> projects_controls}}
   {{#projects}}
-  <project id='{{id}}' title='{{title}}' description='{{description}}' mandate_ids='{{mandate_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_ids='{{performance_indicator_ids}}' project_type_ids='{{project_type_ids}}' all_mandates='{{all_mandates}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' mandates='{{mandates}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' />
+  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' mandate_ids='{{mandate_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_ids='{{performance_indicator_ids}}' project_type_ids='{{project_type_ids}}' all_mandates='{{all_mandates}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' mandates='{{mandates}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' />
   {{/projects}}
 
 %script#project_template{:type => 'template/ractive'}
@@ -35,12 +35,20 @@
       <performanceindicatorselect />
       {{> file_selector_template }}
 
-%script#document_template{:type => 'template/ractive'}
+%script#project_document_template{:type => 'template/ractive'}
   {{#if persisted}}
   {{> show_document_template }}
   {{else}}
   {{> new_document_template }}
   {{/if}}
+
+%script#project_documents_template{:type => 'template/ractive'}
+  {{#project_documents}}
+  <projectDocument id='{{id}}' file='{{file}}' title='{{title}}' file_id='{{file_id}}' url='{{url}}' filename='{{file.name}}' project_named_documents_titles='{{ project_named_documents_titles}}' />
+  {{/project_documents}}
+  {{^project_documents}}
+  %div{:style => 'padding-left:15px;'}=t('.no_documents')
+  {{/project_documents}}
 
 %script#show_document_template{:type => 'template/ractive'}
   .project_document
@@ -51,7 +59,11 @@
   .row.document
     .col-md-2.filename {{filename}}
     .col-md-6.title
-      %input.form-control#project_document_title{:type => :text, :value=>'{{title}}', :style =>"width:360px;"}
+      %input.form-control#project_document_title{:type => :text, :value=>'{{title}}', :style =>"width:360px;", :list => :project_named_documents}
+      %datalist#project_named_documents
+        {{#project_named_documents_titles}}
+        %option{:value=>'{{.}}'} {{.}}
+        {{/project_named_documents_titles}}
       .errors.form-group{:class => "{{#file.size_error}}has-error{{/}}"}
         %span.help-block.error#filesize_error= t('error_messages.too_large')
       .errors.form-group{:class => "{{#file.type_error}}has-error{{/}}"}
@@ -62,18 +74,17 @@
       %i.fa.fa-remove.remove{'on-click' => 'remove_file()'}
 
 %script#file_selector_template{:type => 'template/ractive'}
-  .fileupload
-    .row
-      .col-lg-9
-        %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
-          %i.fa.fa-plus.fa-lg{'onclick'=>"$('#project_fileinput').click()", :style => "color:white"}
-          %span{'onclick'=>"$('#project_fileinput').click()"}= t('.add_file')
-          %input#project_fileinput{:multiple => "multiple", :name => "project_file", :type => "file", 'onchange' => 'add_file(event)'}
-    .row.fileupload_progress
+  .row.fileupload
+    .col-md-1
+      %span.btn.btn-sm.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
+        %i.fa.fa-plus.fa-lg{'onclick'=>"$('#project_fileinput').click()", :style => "color:white"}
+        %span{'onclick'=>"$('#project_fileinput').click()"}= t('.add_file')
+        %input#project_fileinput{:multiple => "multiple", :name => "project_file", :type => "file", 'onchange' => 'FileInput.add_file(event)'}
+    .col-md-11.fileupload_progress
       <progressBar />
-    .row
-      .col-lg-12#documents
-        <projectDocuments project_documents='{{project_documents}}' />
+  .row
+    .col-md-12#documents
+      <projectDocuments project_documents='{{project_documents}}' />
 
 %script#progress_bar_template{:type => 'template/ractive'}
   .col-lg-9.fileupload-progress.fade
@@ -224,7 +235,8 @@
           .panel-content{'data-toggle' => :edit}
             .fade.no_edit.in#project_documents
               <projectDocuments project_documents='{{project_documents}}'>
-            .fade.edit
+            .fade.edit{:style => "padding-left:15px; padding-top:15px;"}
+              {{> file_selector_template }}
 
 %script#conventions_template{:type => 'template/ractive'}
   .row#conventions{:style => "margin-left:0px;"}
@@ -378,7 +390,7 @@
       .col-md-3= t('.mandate')
       .col-md-3= t('.agency_convention')
     .row{:style => "margin-bottom:12px;"}
-      .col-md-3= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_text'), :style=>"width:240px;"
+      .col-md-3= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_text'), :style=>"width:240px; position:relative; top:-2px; height:27px;", :class => 'form-control'
       .col-md-3
         .btn-group.select{:style=>"width:240px;"}
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}

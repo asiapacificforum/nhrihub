@@ -114,17 +114,18 @@ ProjectDocumentValidator = _.extend
   initialize_validator: ->
     @set 'validation_criteria',
       'file.size' :
-        ['lessThan', maximum_filesize]
+        ['lessThan', @get('maximum_filesize')]
       'file.type' :
-        ['match', permitted_filetypes]
+        ['match', @get('permitted_filetypes')]
     @set('unconfigured_validation_parameter_error',false)
   , Validator
 
 ProjectDocument = Ractive.extend
-  template : "#document_template"
+  template : "#project_document_template"
   oninit : ->
-    @initialize_validator()
-    @validate()
+    if !@get('persisted')
+      @initialize_validator()
+      @validate()
   data :
     serialization_key : 'project[project_documents_attributes][]'
   computed :
@@ -132,12 +133,14 @@ ProjectDocument = Ractive.extend
       ['title', 'file']
     unconfigured_filetypes_error : ->
       @get('unconfigured_validation_parameter_error')
+    persisted : ->
+      !_.isNull(@get('id'))
   remove_file : ->
     @parent.remove(@_guid)
   , ProjectDocumentValidator
 
 ProjectDocuments = Ractive.extend
-  template : "{{#project_documents}}<projectDocument title='{{title}}' />{{/project_documents}}"
+  template : "#project_documents_template"
   components :
     projectDocument : ProjectDocument
   remove : (guid)->
@@ -159,36 +162,42 @@ Persistence =
       context : @
   delete_callback : (data,textStatus,jqxhr)->
     @parent.remove(@_guid)
-  persisted_attributes : ->
-    project : @serialize(@get('persistent_attributes'))
+  #persisted_attributes : ->
+    #project : @serialize(@get('persistent_attributes'))
   formData : ->
-    attributes = _.extend([],@get('persistent_attributes'))
-    attributes.push('project_documents_attributes')
-    @asFormData attributes
-  save_project : ->
+    #attributes = _.extend([],@get('persistent_attributes'))
+    #attributes.push('project_documents_attributes')
+    #@asFormData attributes
+    @asFormData @get('persistent_attributes')
+  update_persist : ->
     if @validate()
-      if @get('project_documents').length > 0
-        data = @formData()
-        url = Routes.projects_path(current_locale)
-        $.ajax
-          # thanks to http://stackoverflow.com/a/22987941/451893
-          xhr: @progress_bar_create.bind(@)
-          method : 'post'
-          data : data
-          url : url
-          success : @save_project_callback
-          context : @
-          processData : false
-          contentType : false # jQuery correctly sets the contentType and boundary values
-      else
-        data = @persisted_attributes()
-        url = Routes.projects_path(current_locale)
-        $.ajax
-          method : 'post'
-          data : data
-          url : url
-          success : @save_project_callback
-          context : @
+      data = @formData()
+      $.ajax
+        # thanks to http://stackoverflow.com/a/22987941/451893
+        xhr: @progress_bar_create.bind(@)
+        method : 'put'
+        data : data
+        url : Routes.project_path(current_locale, @get('id'))
+        success : @update_project_callback
+        context : @
+        processData : false
+        contentType : false # jQuery correctly sets the contentType and boundary values
+  update_project_callback : (response, statusText, jqxhr)->
+     @editor.show() # before updating b/c we'll lose the handle
+     @set(response)
+  save_project: ->
+    if @validate()
+      data = @formData()
+      $.ajax
+        # thanks to http://stackoverflow.com/a/22987941/451893
+        xhr: @progress_bar_create.bind(@)
+        method : 'post'
+        data : data
+        url : Routes.projects_path(current_locale)
+        success : @save_project_callback
+        context : @
+        processData : false
+        contentType : false # jQuery correctly sets the contentType and boundary values
   save_project_callback : (response, status, jqxhr)->
     UserInput.reset()
     @set(response)
@@ -225,8 +234,9 @@ Project = Ractive.extend
     @initialize_validator()
   computed :
     persistent_attributes : ->
+      # the asFormData method knows how to interpret 'project_documents_attributes'
       ['title', 'description', 'type', 'mandate_ids', 'project_type_ids',
-       'agency_ids', 'convention_ids', 'performance_indicator_ids']
+       'agency_ids', 'convention_ids', 'performance_indicator_ids', 'project_documents_attributes']
     url : ->
       Routes.project_path(current_locale,@get('id'))
     reminders_count : ->
@@ -269,11 +279,9 @@ Project = Ractive.extend
   flash_hide : ->
     foo = ""
     #noop for now
-  add_file : (event)->
-    event.stopPropagation()
-    file = event.target.files[0]
-    @push('project_documents', {file : file, title: '', file_id : '', url : '', filename : file.name})
-    @replaceFileInput()
+  add_file : (file)->
+    @unshift('project_documents', {id : null, project_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name})
+    #@replaceFileInput()
   replaceFileInput : ->
     # this comes from jQuery.fileupload
     input = $(@find('#project_fileinput'))
@@ -301,6 +309,9 @@ projects_options =
     all_conventions : conventions
     planned_results : planned_results
     all_performance_indicators : performance_indicators
+    project_named_documents_titles : project_named_documents_titles
+    permitted_filetypes : permitted_filetypes
+    maximum_filesize : maximum_filesize
   components :
     project : Project
     mandateFilterSelect : MandateFilterSelect
@@ -339,10 +350,27 @@ Ractive.decorators.inpage_edit = EditInPlace
 window.start_page = ->
   window.projects = new Ractive projects_options
 
-# why not use ractive event? b/c it doesn't survive the 
-# file input element replacement
-window.add_file = (event)->
-  projects.findAllComponents('project')[0].add_file(event)
+@FileInput =
+  # why not use ractive event? b/c it doesn't survive the 
+  # file input element replacement
+  add_file : (event)->
+    event.stopPropagation()
+    file = event.target.files[0]
+    @project = projects.findAllComponents('project')[0]
+    @project.add_file(file)
+    @_replace_input()
+  _replace_input : ->
+    # this technique comes from jQuery.fileupload
+    input = $(@project.find('#project_fileinput'))
+    inputClone = input.clone(true)
+    # make a form and reset it. A hack to reset the fileinput element
+    $('<form></form>').append(inputClone)[0].reset()
+    # Detaching allows to insert the fileInput on another form
+    # without losing the file input value:
+    # detaches the original fileInput and leaves the clone in the DOM
+    input.after(inputClone).detach()
+    # Avoid memory leaks with the detached file input:
+    $.cleanData input.unbind('remove')
 
 $ ->
   start_page()

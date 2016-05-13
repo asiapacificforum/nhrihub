@@ -3,7 +3,11 @@ require 'rspec/core/shared_context'
 module ProjectsSpecCommonHelpers
   extend RSpec::Core::SharedContext
   def reset_permitted_filetypes
-    page.execute_script("permitted_filetypes=[]")
+    page.execute_script("projects.set('permitted_filetypes',[])")
+  end
+
+  def set_permitted_filetypes
+    page.execute_script("projects.set('permitted_filetypes',['anything'])")
   end
 
   def upload_file_path(filename)
@@ -27,7 +31,8 @@ module ProjectsSpecCommonHelpers
   # UPDATE: after eliminating jQuery.fileupload, this doesn't seem to be required
   # it's left here for reference
   def attach_file(index = nil)
-    page.attach_file("project_file", upload_document, :visible => false)
+    page.attach_file("project_fileinput", upload_document, :visible => false)
+    #page.attach_file("project_file", upload_document, :visible => false)
     #if !index # when it's first time, we pass a truthy argument like :first_time
       #if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
         ## because the change event is not triggered when the same file is attached again,
@@ -137,8 +142,16 @@ module ProjectsSpecCommonHelpers
     page.all('#projects .project')[0]
   end
 
+  def last_project
+    page.all('#projects .project')[1]
+  end
+
   def mandates
     find('#mandates')
+  end
+
+  def edit_documents
+    find('.documents .edit')
   end
 
   def project_types
@@ -159,10 +172,20 @@ module ProjectsSpecCommonHelpers
     all('#conventions').first
   end
 
+  def new_project
+    page.find('.new_project')
+  end
+
   def expand_first_project
     sleep(0.5) # seems to be necessary in order for bootstrap collapse('show') to be called
     page.all('#expand')[0].click
-    sleep(0.5) # css transition
+    #sleep(0.5) # css transition
+  end
+
+  def expand_last_project
+    sleep(0.5) # seems to be necessary in order for bootstrap collapse('show') to be called
+    page.all('#expand')[1].click
+    #sleep(0.5) # css transition
   end
 
   def delete_project_icon
@@ -170,6 +193,7 @@ module ProjectsSpecCommonHelpers
   end
 
   def edit_save
+    page.execute_script("scrollTo(0,0)")
     page.find('i.fa-check')
   end
 

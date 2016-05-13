@@ -77,12 +77,6 @@ class InternalDocument < ActiveRecord::Base
                        :archive_files] )
   end
 
-  #def url
-    #if persisted?
-      #Rails.application.routes.url_helpers.corporate_services_internal_document_path(I18n.locale, self)
-    #end
-  #end
-
   def document_group_primary
     document_group && document_group.primary
   end

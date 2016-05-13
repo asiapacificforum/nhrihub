@@ -7,6 +7,8 @@ class GoodGovernance::ProjectsController < ApplicationController
     @agencies = Agency.all
     @conventions = Convention.all
     @planned_results = PlannedResult.all_with_associations
+    # hard coded for now... it should be user-configurable
+    @project_named_documents_titles = ["Project Document", "Analysis", "Final Report"]
     render 'projects/index'
   end
 end
