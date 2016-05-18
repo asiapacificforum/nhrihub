@@ -20,3 +20,71 @@
 .icc_reference_document .alarm_icon.counter:after{
   right:1em;
 }
+
+.alarm_icon {
+  background-image: asset-url("corporate_services/alarm.png");
+  background-repeat: no-repeat;
+  height: 16px;
+  cursor: pointer;
+}
+
+// the "rules" icon
+.rule {
+  background-image: asset-url("corporate_services/ruler.png");
+  background-repeat: no-repeat;
+  background-size: 16px;
+  cursor: pointer;
+  position: relative;
+  float: left;
+  height: 16px;
+  width: 16px;
+  margin-left: 28px;
+  top: 3px;
+}
+
+// ICONS
+
+@mixin colorhover($baseColor) {
+  color: $baseColor;
+  &:hover{
+    color: darken($baseColor, 10%);
+  }
+}
+
+.fileupload-buttonbar .icon {
+  color: $light_on_dark;
+}
+
+.fa-info-circle {
+  @include colorhover($dark_blue)
+}
+
+.close .fa-remove {
+  color: black;
+}
+
+.fa-trash-o, .fa-remove, .fa-ban {
+  @include colorhover($red)
+}
+
+.fa-plus, .fa-check {
+  @include colorhover($green)
+}
+
+.fa-cloud-download {
+  @include colorhover($dark_blue)
+}
+
+/* the next two change the icon from a closed folder to an open folder */
+div[aria-expanded='false'] .fa-folder-o:before {
+  content: "\f114";
+}
+
+[aria-expanded='true'] .fa-folder-o:before {
+  content: "\f115";
+}
+
+.editable { /* so that switch to edit leaves text in precise same position */
+  padding-left:3px;
+  padding-top:3px;
+}

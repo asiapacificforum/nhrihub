@@ -9,7 +9,7 @@
   .row.heading.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"heading_editable{{id}}"}
     .col-md-8.title.form-group{'data-attribute' => :title, 'data-toggle' => :edit, :'data-name' => 'title', :style => "margin-bottom:0px; min-height:34px;"}
       .fade.edit
-        %input#heading_title.form-control{'value' => "{{title}}"}
+        %input#heading_title.form-control{'value' => "{{title}}", 'on-keydown'=>'remove_errors()'}
         %span.help-block.error#title_error{:class=>"{{#title_error}}has-error{{/}}"}=t('.blank_title_error')
       .fade.no_edit.editable.in
         %span

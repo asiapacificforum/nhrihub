@@ -3,7 +3,7 @@ en:
     advisory_council:
       issues:
         index:
-          heading: "Issues"
+          heading: "Advisory Council Issues"
           add_article: "Add issue"
           date: "Date"
           title_description: "Title/Description"

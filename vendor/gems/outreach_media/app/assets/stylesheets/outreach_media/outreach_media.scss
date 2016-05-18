@@ -1,8 +1,4 @@
-#media_appearances_controls, #outreach_events_controls, #advisory_council_issues_controls {
-  @extend #filter_control_box // in main app, filter_controls.scss
-}
-
-.media_appearance.well, .outreach_event.well, .advisory_council_issue.well {
+.media_appearance.well, .outreach_event.well {
   @extend .expandable_well // in main app, expandable_list
 }
 

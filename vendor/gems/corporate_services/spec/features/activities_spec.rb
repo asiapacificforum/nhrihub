@@ -88,6 +88,7 @@ feature "actions on existing activities", :js => true do
     o = Outcome.create(:planned_result_id => pr.id, :description => "whirled peas")
     Activity.create(:outcome_id => o.id, :description => "work hard")
     Activity.create(:outcome_id => o.id, :description => "do the right thing")
+    resize_browser_window
     visit corporate_services_strategic_plan_path(:en, "current")
     open_accordion_for_strategic_priority_one
   end
@@ -121,6 +122,7 @@ feature "actions on existing activities", :js => true do
   scenario "edit to blank description and cancel" do
     first_activity_description.click
     activity_description_field.first.set("")
+    save_and_open_screenshot
     expect{ activity_save_icon.click; wait_for_ajax }.not_to change{ Activity.first.description }
     expect(page).to have_selector(".activity .description #description_error", :text => "You must enter a description")
     activity_edit_cancel.click

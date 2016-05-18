@@ -9,6 +9,7 @@ Rails.application.config.assets.version = '1.0'
 assets = [ 'in_page_edit.js',
            'flash.js',
            'internal_documents.js',
+           'internal_documents.css',
            'projects.js',
            'projects.css',
            'performance_indicator.js',

@@ -132,7 +132,7 @@ feature "create a new outreach event", :js => true do
     fill_in("outreach_event_title", :with => "My new outreach event title")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     expect(selected_file).to eq "first_upload_file.pdf"
-    expect(page).to have_selector("#fileinput_button span.btn", :text => "Choose another file")
+    expect(page).to have_selector("#fileinput_button span.btn", :text => "Add another file")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(0).to(1)
                                        .and change{OutreachEventDocument.count}.from(0).to(2)
@@ -154,7 +154,7 @@ feature "create a new outreach event", :js => true do
     fill_in("outreach_event_title", :with => "My new outreach event title")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     expect(selected_file).to eq "first_upload_file.pdf"
-    expect(page).to have_selector("#fileinput_button span.btn", :text => "Choose another file")
+    expect(page).to have_selector("#fileinput_button span.btn", :text => "Add another file")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     deselect_first_file
     expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(0).to(1)

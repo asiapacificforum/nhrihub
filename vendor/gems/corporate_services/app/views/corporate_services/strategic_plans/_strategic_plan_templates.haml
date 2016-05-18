@@ -93,8 +93,8 @@
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event)'}
           %i.fa.fa-sm.fa-trash-o
-      .fade.edit
-        %textarea{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]', 'on-keydown' => "remove_description_errors()"}
+      .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
+        %textarea.form-control{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]', 'on-keydown' => "remove_description_errors()"}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
         .icon{'data-toggle' => 'edit', :style => 'height:20px'}
           %i.fa.fa-remove.fa-lg{:id => "planned_result_editable{{id}}_edit_cancel", :style => "margin-left:17px"}
@@ -119,9 +119,9 @@
 
 %script#new_planned_result_template{:type => 'text/ractive'}
   .row.new_planned_result
-    .col-md-2.form-group{:style=>"width:14.2857%; margin-bottom:0px;", :class=>"{{#description_error}}has-error{{/}}"}
+    .col-md-2.form-group{:style=>"width:14.2857%; margin-bottom:0px; padding-left:0px;", :class=>"{{#description_error}}has-error{{/}}"}
       %div
-        %textarea{'on-keydown' => "remove_description_errors()",
+        %textarea.form-control{'on-keydown' => "remove_description_errors()",
             :cols => 24, :rows => 4,
             :id=>'planned_result_description', :placeholder => "Enter description",
             :name => "planned_result[description]",
@@ -163,7 +163,7 @@
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
           %i.fa.fa-sm.fa-trash-o
-      .fade.edit
+      .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
             :name => "outcome[description]", :value => "{{ description }}", "on-keydown"=>"remove_description_errors()"}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.description_error_message')
@@ -195,7 +195,7 @@
 
 %script#new_activity_template{:type => 'text/ractive'}
   .row.new_activity
-    .col-md-2.description.form-group{:style=>"width:20%; z-index:10", :class => "{{#description_error}}has-error{{/}}"}
+    .col-md-2.description.form-group{:style=>"width:20%; z-index:10; padding-left:0px;", :class => "{{#description_error}}has-error{{/}}"}
       %textarea.form-control{ :id=>'new_activity_description', :placeholder => "Enter description",
         :name => "activity[description]", :style => "z-index:10; width: 100%;", "on-keydown"=>"remove_description_errors()",
         :value => "{{description}}"}
@@ -213,7 +213,7 @@
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
           %i.fa.fa-sm.fa-trash-o
-      .fade.edit
+      .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
             :name => "activity[description]", :value => "{{ description }}", :style => "width:initial; height:45px"}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.description_error_message')
@@ -245,12 +245,12 @@
 
 %script#new_performance_indicator_template{:type => 'text/ractive'}
   .row.new_performance_indicator
-    .col-md-2.description.form-group{:style=>"width:25%; z-index:10", :class => "{{#description_error}}has-error{{/}}"}
+    .col-md-2.description.form-group{:style=>"width:25%; z-index:10; padding-left:0px;", :class => "{{#description_error}}has-error{{/}}"}
       %textarea.form-control{ :id=>'new_performance_indicator_description', :placeholder => "Enter description",
         :name => "performance_indicator[description]", :style => "z-index:10; width: initial;", "on-keydown"=>"remove_description_errors()",
         :value => "{{description}}"}
       %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.description_error_message')
-    .col-md-2{:style=>"width:25%; z-index:10"}
+    .col-md-2{:style=>"width:25%; z-index:10; padding-left:0px;"}
       %textarea.form-control{ :id=>'new_performance_indicator_target', :placeholder => "Enter target",
         :name => "performance_indicator[target]", :style => "z-index:10; width:initial;",
         :value => "{{target}}"}
@@ -267,7 +267,7 @@
         %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
           %i.fa.fa-sm.fa-trash-o
-      .fade.edit
+      .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_description', :placeholder => "Enter performance indicator",
             :name => "performance_indicator[description]", :value => "{{ description }}", :style => "width:initial; height:45px;"}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.description_error_message')
@@ -277,7 +277,7 @@
     .col-md-2.target{'data-toggle'=>'edit', :style=>"width:25%", 'data-attribute'=>'target'}
       .fade.no_edit.in
         %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_target }}
-      .fade.edit
+      .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_target', :placeholder => "Enter target",
             :name => "performance_indicator[target]", :value => "{{ target }}", :style => "width:initial; height:45px;"}
     .col-md-2.performance_indicator_progress{:style=>"width:25%"}

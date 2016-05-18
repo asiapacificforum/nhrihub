@@ -1,3 +1,4 @@
+@import 'form_errors';
 $grey0: #FFFFFF;
 $grey1: #ECECEC;
 $grey2: #E0E0E0;
@@ -47,27 +48,6 @@ $heading3: #948E82;
 
 select.priority_level {
   @extend .sp-select;
-}
-
-.alarm_icon {
-  background-image: asset-url("corporate_services/alarm.png");
-  background-repeat: no-repeat;
-  height: 16px;
-  cursor: pointer;
-}
-
-// the "rules" icon
-.rule {
-  background-image: asset-url("corporate_services/ruler.png");
-  background-repeat: no-repeat;
-  background-size: 16px;
-  cursor: pointer;
-  position: relative;
-  float: left;
-  height: 16px;
-  width: 16px;
-  margin-left: 28px;
-  top: 3px;
 }
 
 .topaligned {

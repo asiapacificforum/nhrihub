@@ -16,7 +16,7 @@
     .edit
 
 %script#show_collection_item_template{:type => 'template/ractive'}
-  .row.well.well-sm.editable_container{:class=> "#{item}", :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+  .row.well.well-sm.expandable_well.editable_container{:class=> "#{item}", :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
       .row.basic_info
         .col-md-2.date{'data-toggle'=>:edit, 'data-attribute'=>:date, :style => "width:15%"}
@@ -119,7 +119,7 @@
   // so the partial inclusion doesn't barf
 
 %script#new_collection_item_template{:type => 'template/ractive'}
-  .row.well.well-sm.form.template-upload{:class => "#{item}"}
+  .row.well.well-sm.expandable_well.form.template-upload{:class => "#{item}"}
     .col-md-12
       .row
         .col-md-1{:style => "padding-top:28px"}= t('.title')

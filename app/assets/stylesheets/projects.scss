@@ -1,25 +1,5 @@
 @import 'filter_controls';
 @import 'expandable_list';
-//@import 'bootstrap-select'; already include this adds a second time
+@import "bootstrap-select";
 @import 'multilevel_select';
-
-#projects_controls {
-  @extend #filter_control_box // from filter_controls.scss
-}
-
-.project.well {
-  @extend .expandable_well // from expandable_list
-}
-
-.help-block[id$='_error']:not(.has-error)
-{
-  display : none;
-}
-.help-block[id$='_error'].has-error {
-  display : block;
-}
-
-.form-group.errors {
-  margin-top : 0;
-  margin-bottom : 0;
-}
+@import 'form_errors';

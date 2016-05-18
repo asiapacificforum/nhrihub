@@ -148,6 +148,8 @@ feature "index page behaviour with existing headings", :js => true do
     page.find('#heading_title').set("  ")
     expect{edit_save.click; sleep(0.3)}.not_to change{Nhri::Heading.first.title}
     expect(page).to have_selector('#title_error', :text => "Title can't be blank.")
+    page.find('#heading_title').set("I changed my mind")
+    expect(page).not_to have_selector('#title_error', :text => "Title can't be blank.")
   end
 
   it "restores previous value if editing is started and cancelled" do

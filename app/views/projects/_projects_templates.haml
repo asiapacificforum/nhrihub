@@ -19,7 +19,7 @@
           %label{:for => 'project_title'}=t('.title')
         .col-md-7
           %input.form-control#project_title{:value => '{{title}}', 'on-keydown'=>"remove_attribute_error('title')"}
-          .help-block.error#title_error= t('.title_error_message')
+          %span.help-block.error#title_error= t('.title_error_message')
         .col-sm-3
           %i.fa.fa-remove.fa-lg#cancel_project{ :style=>"padding-left:30px", "on-click"=>"cancel_project()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>"cancel"}
           %i.fa.fa-check.fa-lg#save_project{ :style=>"padding-left:60px", "on-click"=>"save_project()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>"save"}
@@ -28,7 +28,7 @@
           %label{:for => 'project_description'}=t('.description')
         .col-md-7
           %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"remove_attribute_error('description')"}
-          .help-block.error#description_error= t('.description_error_message')
+          %span.help-block.error#description_error= t('.description_error_message')
       <mandatesSelector mandates='{{all_mandates}}' />
       <projectTypesSelector all_mandates='{{all_mandates}}' />
       {{> agency_convention_selector }}
@@ -165,7 +165,7 @@
       %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
 %script#show_project_template{:type => 'template/ractive'}
-  .row.well.well-sm.project.editable_container{ :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+  .row.well.well-sm.expandable_well.project.editable_container{ :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
       .row.basic_info
         .col-md-9.title{'data-toggle'=>'edit'}
@@ -212,7 +212,7 @@
               %span {{description}}
             .fade.edit{:style => "width: 100%"}
               %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"remove_attribute_error('description')"}
-              .help-block.error#description_error= t('.description_error_message')
+              %span.help-block.error#description_error= t('.description_error_message')
         <performanceindicatorselect performance_indicators='{{performance_indicators}}' />
         .panel.panel-default
           .panel-content{'data-toggle'=>'edit'}
@@ -336,7 +336,7 @@
     {{/planned_results }}
 
 %script#filter_controls_template{:type => 'template/ractive'}
-  .row#projects_controls
+  .row.filter_control_box#projects_controls
     .row
       .col-md-12
         %h4= t('.search')

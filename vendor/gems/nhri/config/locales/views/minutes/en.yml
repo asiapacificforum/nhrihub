@@ -3,7 +3,7 @@ en:
     advisory_council:
       minutes:
         index:
-          heading: "Meeting Minutes"
+          heading: "Advisory Council Meeting Minutes"
           add: "Add minutes"
           flash:
             no_files_error: "You must select a file to upload."
