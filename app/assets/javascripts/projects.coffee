@@ -13,15 +13,21 @@ EditInPlace = (node,id)->
     object : @
     on : node
     focus_element : 'input.title'
-    success : (response, statusText, jqxhr)->
-       ractive = @.options.object
-       @.show() # before updating b/c we'll lose the handle
-       ractive.set(response)
+    #success : (response, statusText, jqxhr)->
+       #ractive = @.options.object
+       #@.show() # before updating b/c we'll lose the handle
+       #ractive.set(response)
+    success : (response, textStatus, jqXhr)->
+      @.options.object.set(response)
+      @load()
     error : ->
       console.log "Changes were not saved, for some reason"
     start_callback : -> ractive.expand()
-  teardown : =>
-    edit.off()
+  return {
+    teardown : (id)=>
+      edit.off()
+    update : (id)=>
+    }
 
 Validator =
   validate : ->
@@ -93,7 +99,7 @@ Conventions = Ractive.extend
 
 EditBackup =
   stash : ->
-    stashed_attributes = _(@get()).omit('url', 'reminders_count', 'notes_count', 'count', 'persisted', 'type', 'include')
+    stashed_attributes = _(@get()).omit('url', 'reminders_count', 'notes_count', 'count', 'persisted', 'type', 'include', 'expanded', 'editing')
     @stashed_instance = $.extend(true,{},stashed_attributes)
   restore : ->
     @restore_checkboxes()
@@ -130,13 +136,29 @@ ProjectDocument = Ractive.extend
     serialization_key : 'project[project_documents_attributes][]'
   computed :
     persistent_attributes : ->
-      ['title', 'file']
+      ['title', 'filename', 'file', 'original_type'] if @get('file') # only persist if there's a file object, otherwise don't
     unconfigured_filetypes_error : ->
       @get('unconfigured_validation_parameter_error')
     persisted : ->
       !_.isNull(@get('id'))
+    url : ->
+      Routes.project_document_path(current_locale, @get('id'))
   remove_file : ->
     @parent.remove(@_guid)
+  delete_project_document : ->
+    data = {'_method' : 'delete'}
+    # TODO if confirm
+    $.ajax
+      method : 'post'
+      url : @get('url')
+      data : data
+      success : @delete_callback
+      dataType : 'json'
+      context : @
+  delete_callback : (data,textStatus,jqxhr)->
+    @parent.remove(@_guid)
+  download_attachment : ->
+    window.location = @get('url')
   , ProjectDocumentValidator
 
 ProjectDocuments = Ractive.extend
@@ -162,14 +184,9 @@ Persistence =
       context : @
   delete_callback : (data,textStatus,jqxhr)->
     @parent.remove(@_guid)
-  #persisted_attributes : ->
-    #project : @serialize(@get('persistent_attributes'))
   formData : ->
-    #attributes = _.extend([],@get('persistent_attributes'))
-    #attributes.push('project_documents_attributes')
-    #@asFormData attributes
     @asFormData @get('persistent_attributes')
-  update_persist : ->
+  update_persist : (success, error, context) -> # called by EditInPlace
     if @validate()
       data = @formData()
       $.ajax
@@ -178,13 +195,15 @@ Persistence =
         method : 'put'
         data : data
         url : Routes.project_path(current_locale, @get('id'))
-        success : @update_project_callback
-        context : @
+        #success : @update_project_callback
+        success : success
+        #context : @
+        context : context
         processData : false
         contentType : false # jQuery correctly sets the contentType and boundary values
-  update_project_callback : (response, statusText, jqxhr)->
-     @editor.show() # before updating b/c we'll lose the handle
-     @set(response)
+  #update_project_callback : (response, statusText, jqxhr)->
+     #@editor.show() # before updating b/c we'll lose the handle
+     #@set(response)
   save_project: ->
     if @validate()
       data = @formData()
@@ -220,6 +239,59 @@ ProgressBar = Ractive.extend
     xhr.upload.addEventListener 'progress', @progress_evaluate , false
     xhr
 
+FilterMatch =
+  include : ->
+    @matches_title() &&
+    @matches_mandate() &&
+    @matches_agency_convention() &&
+    @matches_project_type() &&
+    @matches_performance_indicator()
+  matches_title : ->
+    re = new RegExp(@get('filter_criteria.title').trim(),"i")
+    re.test @get('title')
+  matches_mandate : ->
+    rule = @get('filter_criteria.mandate_rule')
+    criterion = @get('filter_criteria.mandate_ids')
+    value = @get('mandate_ids')
+    @contains(rule,criterion,value)
+  matches_agency_convention : ->
+    rule = @get('filter_criteria.agency_convention_rule')
+    criterion = @get('filter_criteria.agency_ids')
+    value = @get('agency_ids')
+    agency_match = @contains(rule,criterion,value)
+
+    criterion = @get('filter_criteria.convention_ids')
+    value = @get('convention_ids')
+    convention_match = @contains(rule,criterion,value)
+
+    if rule == "any"
+      agency_match || convention_match
+    else
+      agency_match && convention_match
+  matches_project_type : ->
+    rule = @get('filter_criteria.project_type_rule')
+    criterion = @get('filter_criteria.project_type_ids')
+    value = @get('project_type_ids')
+    @contains(rule,criterion,value)
+  matches_performance_indicator : ->
+    criterion = parseInt(@get('filter_criteria.performance_indicator_id'))
+    value = parseInt(@get('performance_indicator_id'))
+    return true if _.isUndefined(criterion) || _.isNaN(criterion)
+    _.isEqual(criterion, value)
+  contains : (rule, criterion, value) ->
+    return true if _.isEmpty(criterion)
+    if rule == "any"
+      common_elements = _.intersection(criterion, value)
+      # must have some common elements
+      !_.isEmpty(common_elements)
+    else if rule == "all"
+      # difference is values in criterion NOT PRESENT in value
+      diff = _.difference(criterion, value)
+      # all values in criterion should be present in value, so diff s/b empty
+      _.isEmpty(diff)
+    else # ? can't happen! so make test fail
+      undefined
+
 Project = Ractive.extend
   template : '#project_template'
   oninit : ->
@@ -250,9 +322,10 @@ Project = Ractive.extend
       !_.isNull(@get('id'))
     type : ->
       window.model_name
+    create_reminder_url : ->
+      Routes.good_governance_project_reminders_path(current_locale, @get('id'))
     include : ->
-      # for now hard-code it
-      true
+      @include()
   components :
     mandatesSelector : MandatesSelector
     projectTypesSelector : ProjectTypesSelector
@@ -276,45 +349,113 @@ Project = Ractive.extend
   remove_errors : ->
     @compact() #nothing to do with errors, but this method is called on edit_cancel
     @restore()
-  flash_hide : ->
-    foo = ""
-    #noop for now
   add_file : (file)->
-    @unshift('project_documents', {id : null, project_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name})
-    #@replaceFileInput()
-  replaceFileInput : ->
-    # this comes from jQuery.fileupload
-    input = $(@find('#project_fileinput'))
-    inputClone = input.clone(true)
-    # make a form and reset it, to reset the fileinput element
-    $('<form></form>').append(inputClone)[0].reset()
-    # Detaching allows to insert the fileInput on another form
-    # without losing the file input value:
-    # detaches the original fileInput and leaves the clone in the DOM
-    input.after(inputClone).detach()
-    # Avoid memory leaks with the detached file input:
-    $.cleanData input.unbind('remove')
-  , ProjectValidator, PerformanceIndicatorAssociation, EditBackup, Persistence
+    @unshift('project_documents', {id : null, project_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type})
+  show_file_selector : ->
+    @find('#project_fileinput').click()
+  show_reminders_panel : ->
+    reminders.set
+      reminders: @get('reminders')
+      create_reminder_url : Routes.good_governance_project_reminders_path('en', @get('id'))
+    $('#reminders_modal').modal('show')
+  show_notes_panel : ->
+    notes.set
+      notes : @get('notes')
+      create_note_url : Routes.good_governance_project_notes_path('en', @get('id'))
+    $('#notes_modal').modal('show')
+  , ProjectValidator, PerformanceIndicatorAssociation, EditBackup, Persistence, FilterMatch
+
+FilterSelect = Ractive.extend
+  computed :
+    selected : ->
+      _(@get("filter_criteria.#{@get('collection')}")).indexOf(@get('id')) != -1
+  toggle : (id)->
+    @event.original.preventDefault()
+    @event.original.stopPropagation()
+    if @get("selected")
+      @unselect()
+    else
+      @select()
+  select : ->
+    @push("filter_criteria.#{@get('collection')}",@get('id'))
+    console.log @get("filter_criteria.#{@get('collection')}")
+  unselect : ->
+    @set("filter_criteria.#{@get('collection')}", _(@get("filter_criteria.#{@get('collection')}")).without(@get('id')))
+    console.log @get("filter_criteria.#{@get('collection')}")
 
 MandateFilterSelect = Ractive.extend
   template : "#mandate_filter_select_template"
+  computed :
+    collection : ->
+      "mandate_ids"
+  , FilterSelect
+
+AgencyFilterSelect = Ractive.extend
+  template : "#agency_filter_select_template"
+  computed :
+    collection : ->
+      "agency_ids"
+  , FilterSelect
+
+ConventionFilterSelect = Ractive.extend
+  template : "#convention_filter_select_template"
+  computed :
+    collection : ->
+      "convention_ids"
+  , FilterSelect
+
+ProjectTypeFilterSelect = Ractive.extend
+  template : "#project_type_filter_select_template"
+  computed :
+    collection : ->
+      "project_type_ids"
+  , FilterSelect
+
+PerformanceIndicatorFilterSelect = Ractive.extend
+  template: "#performance_indicator_filter_select_template"
+  toggle : (id)->
+    if @get('filter_criteria.performance_indicator_id') == id
+      @set('filter_criteria.performance_indicator_id',null)
+    else
+      @set('filter_criteria.performance_indicator_id',id)
+    console.log "perf ind id #{@get('filter_criteria.performance_indicator_id')}"
+
+FilterControls = Ractive.extend
+  template : "#filter_controls_template"
+  components :
+    mandateFilterSelect : MandateFilterSelect
+    agencyFilterSelect : AgencyFilterSelect
+    conventionFilterSelect : ConventionFilterSelect
+    projectTypeFilterSelect : ProjectTypeFilterSelect
+    performanceIndicatorFilterSelect : PerformanceIndicatorFilterSelect
+  filter_rule : (type,rule)->
+    @event.original.preventDefault()
+    @event.original.stopPropagation()
+    @set("filter_criteria.#{type}_rule", rule)
+  expand : ->
+    @parent.expand()
+  compact : ->
+    @parent.compact()
 
 projects_options =
   el : "#projects"
   template : '#projects_template'
   data :
+    expanded : false
     projects : projects_data
     all_mandates : mandates
     all_agencies : agencies
     all_conventions : conventions
     planned_results : planned_results
     all_performance_indicators : performance_indicators
+    all_mandate_project_types : project_types
     project_named_documents_titles : project_named_documents_titles
     permitted_filetypes : permitted_filetypes
     maximum_filesize : maximum_filesize
+    filter_criteria : filter_criteria
   components :
     project : Project
-    mandateFilterSelect : MandateFilterSelect
+    filterControls : FilterControls
   new_project : ->
     unless @add_project_active()
       new_project_attributes =
@@ -338,10 +479,12 @@ projects_options =
     project_guids = _(@findAllComponents('project')).map (pr)-> pr._guid
     index = project_guids.indexOf(guid)
     @splice('projects',index,1)
-  expand_all : ->
+  expand : ->
+    @set('expanded',true)
     _(@findAllComponents('project')).each (project)->
       project.expand()
-  compact_all : ->
+  compact : ->
+    @set('expanded',false)
     _(@findAllComponents('project')).each (project)->
       project.compact()
 
@@ -353,10 +496,10 @@ window.start_page = ->
 @FileInput =
   # why not use ractive event? b/c it doesn't survive the 
   # file input element replacement
-  add_file : (event)->
+  add_file : (event,el)->
     event.stopPropagation()
-    file = event.target.files[0]
-    @project = projects.findAllComponents('project')[0]
+    file = el.files[0]
+    @project = Ractive.getNodeInfo($(el).closest('.new_project')[0]).ractive || Ractive.getNodeInfo($(el).closest('.project')[0]).ractive
     @project.add_file(file)
     @_replace_input()
   _replace_input : ->

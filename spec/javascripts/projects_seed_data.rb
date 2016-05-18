@@ -11,13 +11,15 @@ class ProjectsSeedData
     project
   end
 
-  def self.init_mandates
-    #Mandate.all
+  def self.init_project_types
+    []
   end
 
   def self.init_agencies
+    []
   end
 
   def self.init_conventions
+    []
   end
 end

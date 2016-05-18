@@ -5,7 +5,7 @@ class CreateProjectDocuments < ActiveRecord::Migration
       t.string   "file_id",           limit: 255
       t.string   "title",             limit: 255
       t.integer  "filesize"
-      t.string   "original_filename", limit: 255
+      t.string   "filename",          limit: 255
       t.datetime "lastModifiedDate"
       t.string   "original_type",     limit: 255
       t.integer  "user_id"

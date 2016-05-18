@@ -30,7 +30,7 @@ class ProjectsController < ApplicationController
                         :description,
                         :type,
                         :file,
-                        :project_documents_attributes => [:file, :title],
+                        :project_documents_attributes => [:file, :title, :filename, :original_type],
                         :mandate_ids => [],
                         :project_type_ids => [],
                         :agency_ids => [],

@@ -1,4 +1,5 @@
 class ProjectType < ActiveRecord::Base
+
   has_many :project_project_types, :dependent => :destroy
   has_many :projects, :through => :project_project_types
   belongs_to :mandate
@@ -14,4 +15,11 @@ class ProjectType < ActiveRecord::Base
   def as_json(options={})
     super(:only => [:name, :id])
   end
+
+  def self.mandate_groups
+    joins(:mandate).
+      select('mandates.key, project_types.*').
+      group_by{|pt| I18n.t('activerecord.models.mandate.keys.'+pt.key) }
+  end
+
 end

@@ -43,6 +43,7 @@ Rails.application.configure do
 
   # autoload vendor/gems files for every request
   config.autoload_paths += Dir.glob(Rails.root.join("vendor", "gems", "**", "app", "**", "{models,views,controllers}"))
+  config.autoload_paths += Dir.glob(Rails.root.join( "app", "domain_models"))
 
 
   # teaspoon assets config

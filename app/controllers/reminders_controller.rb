@@ -32,4 +32,3 @@ class RemindersController < ApplicationController
     params.require(:reminder).permit(:reminder_type, :start_date, :text, :remindable_id, :remindable_type, { :user_ids => [] })
   end
 end
-

@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
 require_relative '../helpers/good_governance_context_projects_spec_helpers'
-require_relative '../helpers/projects_spec_common_helpers'
+require 'projects_spec_common_helpers'
 
 feature "projects index", :js => true do
   include IERemoteDetector
@@ -100,7 +100,7 @@ feature "projects index", :js => true do
     # CHECK CLIENT
     expand_first_project
     within first_project do
-      expect(find('.title').text).to eq "new project title"
+      expect(find('.project .basic_info .title').text).to eq "new project title"
       expect(find('.description .no_edit span').text).to eq "new project description"
       expect(all('#mandates .mandate').map(&:text)).to include 'Good Governance'
       within project_types do
@@ -600,8 +600,7 @@ feature "existing project file management features", :js => true do
       attach_file
     end
     page.find("#project_document_title").set("New uploaded document")
-    edit_save.click
-    wait_for_ajax
+    expect{ edit_save.click; wait_for_ajax }.to change{ project_model.first.project_documents.count }.from(2).to(3)
     expect(project_model.first.project_documents.map(&:title)).to include "New uploaded document"
     expect(all('.project_document .title').map(&:text)).to include "New uploaded document"
   end
@@ -625,28 +624,48 @@ feature "existing project file management features", :js => true do
     expect(page).to have_selector('#filetype_error', :text =>  "File type not allowed")
   end
 
-  #it "replaces named files" do
-    
-  #end
+  it "replaces named files" do
+    edit_last_project.click
+    within edit_documents do
+      attach_file
+    end
+    page.find("#project_document_title").set("Final Report")
+    expect{ edit_save.click; wait_for_ajax }.not_to change{ ProjectDocument.count }
+  end
 
-  #it "adds files to the files list if they are not 'named files'" do
-    
-  #end
+  it "adds files to the files list if they are not 'named files'" do
+    edit_last_project.click
+    within edit_documents do
+      attach_file
+    end
+    page.find("#project_document_title").set("Any old title")
+    expect{ edit_save.click; wait_for_ajax }.to change{ ProjectDocument.count }.by(1)
+  end
 
-  #it "should delete files" do
-    
-  #end
+  it "should delete files" do
+    edit_last_project.click
+    expect{ delete_file.click; wait_for_ajax }.to change{ ProjectDocument.count }.by(-1).
+                                               and change{ project_documents.all('.project_document').count }.by(-1)
+  end
 
-  #it "downloads files" do
-    
-  #end
+  # can't test download in chrome or firefox
+  it "can download the saved document", :driver => :poltergeist do
+    @doc = Project.last.project_documents.first
+    expand_last_project
+    click_the_download_icon
+    expect(page.response_headers['Content-Type']).to eq('application/pdf')
+    filename = @doc.filename
+    expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+  end
 
+  it "panel expanding should behave" do
+    edit_first_project.click
+    edit_save.click
+    wait_for_ajax
+    expect(page.evaluate_script("projects.findAllComponents('project')[0].get('expanded')")).to eq true
+    expect(page.evaluate_script("projects.findAllComponents('project')[0].get('editing')")).to eq false
+    edit_first_project.click
+    expect(page.evaluate_script("projects.findAllComponents('project')[0].get('expanded')")).to eq true
+    expect(page.evaluate_script("projects.findAllComponents('project')[0].get('editing')")).to eq true
+  end
 end
-
-#feature "project reminders", :js => true do
-  ##it behaves like remindable
-#end
-
-#feature "project filter", :js => true do
-  ## test this in javascript
-#end

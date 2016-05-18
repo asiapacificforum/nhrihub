@@ -392,7 +392,7 @@ $ ->
                   {name : "#{item_name}[performance_indicator_ids][]", value: pid}
       _.union(name_value,aids,saids,pids)
     stash : ->
-      @stashed_instance = $.extend(true,{},@get())
+      @stashed_instance = $.extend(true,{},_(@get()).omit('expanded','editing'))
     restore : ->
       @set(@stashed_instance)
     deselect_file : ->

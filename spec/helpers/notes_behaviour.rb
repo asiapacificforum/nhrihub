@@ -2,11 +2,10 @@ RSpec.shared_examples "notes" do
   feature "notes behaviour" do
     scenario "add note" do
       add_note.click
-      sleep(0.2)
       expect(page).to have_selector("#new_note #note_text")
       fill_in(:note_text, :with => "nota bene")
       save_note.click
-      sleep(0.2)
+      wait_for_ajax
       expect(Note.count).to eq 3
       expect(note_text.first.text).to eq "nota bene"
       expect(note_date.first.text).to eq Date.today.to_s(:short)
@@ -18,7 +17,6 @@ RSpec.shared_examples "notes" do
 
     scenario "start adding a note, close modal panel, and then restart" do
       add_note.click
-      sleep(0.2)
       expect(page).to have_selector("#new_note #note_text")
       fill_in(:note_text, :with => "nota bene")
       close_modal.click()
@@ -30,9 +28,8 @@ RSpec.shared_examples "notes" do
     scenario "try to save note with blank text field" do
       add_note.click
       # skip setting the text
-      sleep(0.2)
       save_note.click
-      sleep(0.2)
+      wait_for_ajax
       expect(Note.count).to eq 2
       expect(note_text_error.first.text).to eq "Text cannot be blank"
     end
@@ -41,7 +38,7 @@ RSpec.shared_examples "notes" do
       add_note.click
       fill_in(:note_text, :with => " ")
       save_note.click
-      sleep(0.2)
+      wait_for_ajax
       expect(Note.count).to eq 2
       expect(note_text_error.first.text).to eq "Text cannot be blank"
     end
@@ -52,13 +49,13 @@ RSpec.shared_examples "notes" do
     end
 
     scenario "delete a note" do
-      expect{ delete_note.first.click; sleep(0.2) }.to change{Note.count}.from(2).to(1)
+      expect{ delete_note.first.click; wait_for_ajax }.to change{Note.count}.from(2).to(1)
     end
 
     scenario "edit a note" do
       edit_note.first.click
       fill_in('note_text', :with => "carpe diem")
-      expect{ save_edit.click; sleep(0.2) }.to change{Note.first.text}.to("carpe diem")
+      expect{ save_edit.click; wait_for_ajax }.to change{Note.first.text}.to("carpe diem")
       expect(page).to have_selector('#notes .note .text .no_edit span', :text => 'carpe diem')
     end
 
@@ -67,7 +64,7 @@ RSpec.shared_examples "notes" do
       edit_note.first.click
       fill_in('note_text', :with => " ")
       save_edit.click
-      sleep(0.2)
+      wait_for_ajax
       expect(edit_note_text_error.first.text).to eq "Text cannot be blank"
       cancel_edit.click
       expect(note_text.first.text).to eq original_text

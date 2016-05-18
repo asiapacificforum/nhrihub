@@ -20,7 +20,7 @@ $ ->
       update : (id)=>
       }
 
-  Ractive.DEBUG = false
+  #Ractive.DEBUG = false
 
   Ractive.decorators.inpage_edit = EditInPlace
 
@@ -486,7 +486,8 @@ $ ->
                              'hr_violation', 'formatted_affected_people_count',
                              'formatted_participant_count', 'formatted_date',
                              'impact_rating_text', 'audience_type_text',
-                             'count', 'include', 'persisted', 'no_files_chosen']
+                             'count', 'include', 'persisted', 'no_files_chosen',
+                             'expanded', 'editing']
       stashed_attributes = _(@get()).omit(computed_attributes)
       @stashed_instance = $.extend(true,{},stashed_attributes)
     restore : ->

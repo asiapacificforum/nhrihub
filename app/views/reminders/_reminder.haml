@@ -141,7 +141,7 @@
     window.reminders = new Ractive
       el: "#reminder"
       template : "#reminders_template"
-      data : 
+      data :
         reminders : []
       new_reminder : ->
         unless @_new_reminder_is_active()
@@ -210,6 +210,5 @@
         else # user types into input or changes select
           @set(field+"_error",false)
 
-    #Ractive.components.reminders = Reminders
     Ractive.components.reminder = Reminder
     Ractive.components.recipient = Recipient

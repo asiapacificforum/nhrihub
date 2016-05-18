@@ -68,5 +68,6 @@ Rails.application.routes.draw do
     resources :projects do
       resources :project_performance_indicators, :only => :destroy
     end
+    resources :project_documents, :only => [:destroy, :show]
   end
 end

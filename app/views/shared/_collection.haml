@@ -19,7 +19,7 @@
   .row.well.well-sm.editable_container{:class=> "#{item}", :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
       .row.basic_info
-        .col-md-2.date{'data-toggle'=>:edit, :style => "width:15%"}
+        .col-md-2.date{'data-toggle'=>:edit, 'data-attribute'=>:date, :style => "width:15%"}
           .fade.no_edit.in
             %span {{ date }}
           .fade.edit{:style => "margin-top:26px;"}

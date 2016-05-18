@@ -2,12 +2,19 @@ require 'rspec/core/shared_context'
 
 module NotesSpecCommonHelpers
   extend RSpec::Core::SharedContext
+  def resize_browser_window
+    if page.driver.browser.respond_to?(:manage)
+      page.driver.browser.manage.window.resize_to(1400,800) # b/c selenium driver doesn't seem to click when target is not in the view
+    end
+  end
+
   def save_edit
     page.all('.note i.fa').detect{|el| el['id'] && el['id'].match(/note_editable\d*_edit_save/)}
   end
 
   def open_notes_modal
     page.all('.show_notes')[0].click
+    expect(page).to have_selector('#note .modal h4', :text => 'Notes', :visible => true)
   end
 
   def close_modal

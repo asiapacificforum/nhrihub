@@ -23,5 +23,9 @@ FactoryGirl.define do
     trait :indicator do
       notable_type "Nhri::Heading:Indicator"
     end
+
+    trait :good_governance_project do
+      notable_type "GoodGovernance::Project"
+    end
   end
 end

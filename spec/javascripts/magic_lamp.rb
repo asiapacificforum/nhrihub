@@ -20,7 +20,30 @@ MagicLamp.define do
     Convention.all
   end
 
-  fixture(:name => 'projects_page') do
-    render :partial => 'projects/index'
+  fixture(:name => "project_named_documents_titles") do
+    ProjectDocument::NamedProjectDocumentTitles
   end
+
+  fixture(:name => 'projects_page') do
+    render :file => 'projects/index'
+  end
+
+  fixture(:name => 'project_types') do
+    ProjectsSeedData.initialize(:project_types)
+    ProjectType.all
+  end
+
+  fixture(:name => 'filter_criteria') do
+    { :title => "",
+      :mandate_ids => [],
+      :mandate_rule => 'any',
+      :agency_ids => [],
+      :convention_ids => [],
+      :agency_convention_rule => 'any',
+      :project_type_ids => [],
+      :project_type_rule => 'any',
+      :performance_indicator_id => nil
+    }
+  end
+
 end

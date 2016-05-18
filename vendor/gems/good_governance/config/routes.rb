@@ -7,6 +7,10 @@ Rails.application.routes.draw do
       end
       resources :internal_documents
       resources :complaints
+      resources :projects do
+        resources :reminders, :controller => "project/reminders"
+        resources :notes, :controller => "project/notes"
+      end
       resources :projects
       get 'admin', :to => "admin#index"
     end

@@ -53,6 +53,7 @@ select.form-control[id$=_3i] {
 
 // show the error messages inline with the input
 .form-group:not(.has-error){
+  margin-bottom: 0px;
   span.help-block {
     display : none;
   }

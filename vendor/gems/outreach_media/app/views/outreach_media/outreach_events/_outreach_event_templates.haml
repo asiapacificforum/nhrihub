@@ -8,7 +8,7 @@
   .row
     .col-md-8.col-md-offset-1
       .outreach_event_document#selected_file {{ file_filename }}
-    .col-md-1{:style => "padding-top:0px"}
+    .col-md-1
       %i.fa.fa-remove.fa-lg#deselect_file{:style =>'vertical-align:0px', 'on-click'=>'deselect_file()'}
     .col-md-1
       {{#if persisted }}
@@ -29,17 +29,18 @@
     .row.labels
       .col-md-2= t('.title')
       .col-md-2= t('.from')
-      .col-md-2{:style => "width:23%"}= t('.to')
+      .col-md-2= t('.to')
       .col-md-2
         =t('.area')
         \/
         =t('.subarea')
     .row{:style => "margin-bottom:12px;"}
-      .col-md-2= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_title_text')
       .col-md-2
-        %input#from{:type=>"text", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
-      .col-md-2{:style => "width:23%"}
-        %input#to{:type=>"text", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}"}
+        %input.form-control#title{:type => :text, :name => :title, :placeholder => t('.enter_title_text'), :value => "{{filter_criteria.title}}"}
+      .col-md-2
+        %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
+      .col-md-2
+        %input.form-control#to{:type=>"text", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}"}
       .col-md-3
         .btn-group.select
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
@@ -67,7 +68,7 @@
     .row.labels
       .col-md-2= t('.people_affected')
       .col-md-2= t('.participant_count')
-      .col-md-2{:style => 'width:23%'}= t('.audience_type')
+      .col-md-2= t('.audience_type')
       .col-md-2= t('.audience_name')
     .row.labels
       .col-md-1= t('.min')
@@ -76,19 +77,19 @@
       .col-md-1= t('.max')
     .row
       .col-md-1.filter_field.pa_min
-        %input{:style=>"width:80px", :value => '{{filter_criteria.pa_min}}'}
+        %input.form-control{:style=>"width:72px", :value => '{{filter_criteria.pa_min}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pa_max
-        %input{:style=>"width:80px", :value => '{{filter_criteria.pa_max}}'}
+        %input.form-control{:style=>"width:72px", :value => '{{filter_criteria.pa_max}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pp_min
-        %input{:style=>"width:50px", :value => '{{filter_criteria.pp_min}}'}
+        %input.form-control{:style=>"width:72px", :value => '{{filter_criteria.pp_min}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pp_max
-        %input{:style=>"width:50px", :value => '{{filter_criteria.pp_max}}'}
+        %input.form-control{:style=>"width:72px", :value => '{{filter_criteria.pp_max}}'}
         %span.error_message= t('defaults.invalid')
-      .col-md-2{:style => 'width:23%'}
-        .btn-group.audience_type-select
+      .col-md-2
+        .btn-group.audience_type-select.select{:style => "width:170px;"}
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left {{ selected_audience_type }}
             %span.caret
@@ -97,12 +98,12 @@
             <at id='{{id}}' text='{{text}}' long_type='{{long_type}}' short_type='{{short_type}}'/>
             {{/audience_types}}
       .col-md-1.filter_field.audience_name
-        %input.audience_name{:style=>"width:200px", :value => '{{filter_criteria.audience_name}}', :placeholder => t('.enter_audience_name')}
+        %input.audience_name.form-control{:style=>"width:200px", :value => '{{filter_criteria.audience_name}}', :placeholder => t('.enter_audience_name')}
     .row.labels{:style => "margin-top: 12px; margin-bottom:8px;"}
-      .col-md-2= t('.impact')
+      .col-md-4= t('.impact')
     .row
-      .col-md-2{:style => 'width:270px'}
-        .btn-group.impact_rating-select
+      .col-md-4
+        .btn-group.impact_rating-select.select{:style => "width:390px;"}
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left {{ selected_impact_rating }}
             %span.caret
@@ -129,7 +130,7 @@
         .col-md-2.date{:style => "width:15%", 'data-toggle'=>:edit}
           .fade.no_edit.in {{formatted_date}}
           .fade.edit{:style => 'padding-top:20px;'}
-            %input#event_date{:type => :text, :decorator => 'datepicker', :value => '{{formatted_date}}', :style => 'height:33px;'}
+            %input.form-control#event_date{:type => :text, :decorator => 'datepicker', :value => '{{formatted_date}}', :style => 'height:33px;'}
         .col-md-2.title{'data-toggle'=>'edit', :style => "width:60%"}
           .fade.no_edit.in
             %span {{ title }}
@@ -169,15 +170,17 @@
       .row.fileupload{:decorator => 'file_upload', 'data-toggle'=>:edit}
         .fade.no_edit.in
         .fade.edit
-          .col-md-3#fileinput_button{:style => 'margin-bottom:12px;'}
-            %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-            %input.show#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
+          .col-md-1
+            %span.btn.btn-xs.btn-success.fileinput-button{'onClick'=>"$(this).next('input').click()"}
+              %i.fa.fa-plus.fa-lg{ :style => "color:white"}
+              %span{:style=>"margin-left:6px;"}= t('add_file')
+            %input.hidden_fileinput#outreach_event_file{:multiple => "multiple", :name=>"outreach_event[outreach_event_documents][][file]", :type => "file", 'data-project_id'=>'{{id}}'}
       .collapse.expanded_info{:class => "collapse{{id}}"}
-        <performanceindicatorselect />
         .panel.panel-default
           .panel-heading= t('.files')
-          .panel-body
+          .panel-body{:style => "padding:0px"}
             <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
+        <performanceindicatorselect />
         .panel.panel-default
           .panel-heading
             .row
@@ -230,17 +233,18 @@
       .row
         .col-md-1{:style => "width:108px; padding-top:4px"}= t('.date')
         .col-md-2
-          %input#event_date{:type => :text, :decorator => 'datepicker', :value => '{{formatted_date}}'}
+          %input.form-control#event_date{:type => :text, :decorator => 'datepicker', :value => '{{formatted_date}}'}
 
       .row.fileupload-buttonbar
         .col-lg-9#fileinput_button
-          %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}
+          %span.btn.btn-success.btn-xs{:onClick => "$(this).next('input:file').click()"}
+            %i.fa.fa-plus.fa-lg{ :style => "color:white"}
             {{#if no_files_chosen }}
-            = t('.choose_file')
+            %span{:style=>"margin-left:6px;"}= t('add_file')
             {{else}}
-            = t('.choose_another_file')
+            %span{:style=>"margin-left:6px;"}= t('add_another_file')
             {{/if}}
-          %input.new#outreach_event_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
+          %input.form-control.new.hidden_fileinput#outreach_event_file{:type=>'file', :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
       .row
         <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
 

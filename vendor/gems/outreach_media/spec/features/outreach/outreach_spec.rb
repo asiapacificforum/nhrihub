@@ -350,6 +350,20 @@ feature "when there are existing outreach events", :js => true do
       expect{ remove_file.click; sleep(0.4)}.to change{OutreachEventDocument.count}.from(2).to(1)
       expect(OutreachEvent.count).to eq 1
     end
+
+    it "panel expanding should behave" do
+      edit_outreach_event[0].click
+      edit_save.click
+      wait_for_ajax
+      expect(page.evaluate_script("outreach.findAllComponents('oe')[0].get('expanded')")).to eq true
+      expect(page.evaluate_script("outreach.findAllComponents('oe')[0].get('editing')")).to eq false
+      edit_outreach_event[0].click
+      expect(page.evaluate_script("outreach.findAllComponents('oe')[0].get('expanded')")).to eq true
+      expect(page.evaluate_script("outreach.findAllComponents('oe')[0].get('editing')")).to eq true
+      edit_cancel.click
+      expect(page.evaluate_script("outreach.findAllComponents('oe')[0].get('expanded')")).to eq false
+      expect(page.evaluate_script("outreach.findAllComponents('oe')[0].get('editing')")).to eq false
+    end
   end
 end
 

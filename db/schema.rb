@@ -384,12 +384,12 @@ ActiveRecord::Schema.define(version: 20160508035249) do
 
   create_table "project_documents", force: :cascade do |t|
     t.integer  "project_id"
-    t.string   "file_id",           limit: 255
-    t.string   "title",             limit: 255
+    t.string   "file_id",          limit: 255
+    t.string   "title",            limit: 255
     t.integer  "filesize"
-    t.string   "original_filename", limit: 255
+    t.string   "filename",         limit: 255
     t.datetime "lastModifiedDate"
-    t.string   "original_type",     limit: 255
+    t.string   "original_type",    limit: 255
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"

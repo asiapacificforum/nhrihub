@@ -350,6 +350,27 @@ feature "when there are existing articles", :js => true do
       expect(MediaAppearance.first.original_type).to eq "application/pdf"
     end
   end
+
+  feature "panel expansion and editing" do
+    before do
+      setup_database(:media_appearance_with_link)
+      visit outreach_media_media_appearances_path(:en) # again, b/c setup changed
+    end
+
+    it "panel expanding should behave" do
+      edit_article[0].click
+      edit_save.click
+      wait_for_ajax
+      expect(page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('expanded')")).to eq true
+      expect(page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('editing')")).to eq false
+      edit_article[0].click
+      expect(page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('expanded')")).to eq true
+      expect(page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('editing')")).to eq true
+      edit_cancel.click
+      expect(page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('expanded')")).to eq false
+      expect(page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('editing')")).to eq false
+    end
+  end
 end
 
 feature "enforce single user add or edit action", :js => true do

@@ -1,7 +1,7 @@
 %script#projects_template{:type => 'template/ractive'}
-  {{> projects_controls}}
+  <filterControls filter_criteria='{{filter_criteria}}' />
   {{#projects}}
-  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' mandate_ids='{{mandate_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_ids='{{performance_indicator_ids}}' project_type_ids='{{project_type_ids}}' all_mandates='{{all_mandates}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' mandates='{{mandates}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' />
+  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' mandate_ids='{{mandate_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_ids='{{performance_indicator_ids}}' project_type_ids='{{project_type_ids}}' all_mandates='{{all_mandates}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' mandates='{{mandates}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
   {{/projects}}
 
 %script#project_template{:type => 'template/ractive'}
@@ -34,28 +34,38 @@
       {{> agency_convention_selector }}
       <performanceindicatorselect />
       {{> file_selector_template }}
-
-%script#project_document_template{:type => 'template/ractive'}
-  {{#if persisted}}
-  {{> show_document_template }}
-  {{else}}
-  {{> new_document_template }}
-  {{/if}}
+      .row#documents
+        <projectDocuments project_documents='{{project_documents}}'>
 
 %script#project_documents_template{:type => 'template/ractive'}
+  .row{:style => "margin-left:0px;"}
+    .col-md-4.title=t('.title')
+    .col-md-4.filename=t('.filename')
   {{#project_documents}}
-  <projectDocument id='{{id}}' file='{{file}}' title='{{title}}' file_id='{{file_id}}' url='{{url}}' filename='{{file.name}}' project_named_documents_titles='{{ project_named_documents_titles}}' />
+  <projectDocument id='{{id}}' file='{{file}}' title='{{title}}' file_id='{{file_id}}' filename='{{filename}}' project_named_documents_titles='{{ project_named_documents_titles}}' />
   {{/project_documents}}
   {{^project_documents}}
   %div{:style => 'padding-left:15px;'}=t('.no_documents')
   {{/project_documents}}
 
-%script#show_document_template{:type => 'template/ractive'}
-  .project_document
-    .title {{title}}
-    .filename {{filename}}
+%script#project_document_template{:type => 'template/ractive'}
+  {{#if persisted}}
+  {{> show_project_document_template }}
+  {{else}}
+  {{> new_project_document_template }}
+  {{/if}}
 
-%script#new_document_template{:type => 'template/ractive'}
+%script#show_project_document_template{:type => 'template/ractive'}
+  .project_document
+    .row{:style => "margin-left:0px;"}
+      .col-md-4.title {{title}}
+      .col-md-4.filename {{filename}}
+      .col-md-1
+        %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+      .col-md-1.delete
+        %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_project_document()'}
+
+%script#new_project_document_template{:type => 'template/ractive'}
   .row.document
     .col-md-2.filename {{filename}}
     .col-md-6.title
@@ -72,19 +82,6 @@
         %span.help-block.error#unconfigured_filetypes_error= t('error_messages.noFileTypes')
     .col-md-2
       %i.fa.fa-remove.remove{'on-click' => 'remove_file()'}
-
-%script#file_selector_template{:type => 'template/ractive'}
-  .row.fileupload
-    .col-md-1
-      %span.btn.btn-sm.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
-        %i.fa.fa-plus.fa-lg{'onclick'=>"$('#project_fileinput').click()", :style => "color:white"}
-        %span{'onclick'=>"$('#project_fileinput').click()"}= t('.add_file')
-        %input#project_fileinput{:multiple => "multiple", :name => "project_file", :type => "file", 'onchange' => 'FileInput.add_file(event)'}
-    .col-md-11.fileupload_progress
-      <progressBar />
-  .row
-    .col-md-12#documents
-      <projectDocuments project_documents='{{project_documents}}' />
 
 %script#progress_bar_template{:type => 'template/ractive'}
   .col-lg-9.fileupload-progress.fade
@@ -232,11 +229,21 @@
           .panel-heading
             .row
               .col-md-2= t('.project_documents')
-          .panel-content{'data-toggle' => :edit}
-            .fade.no_edit.in#project_documents
-              <projectDocuments project_documents='{{project_documents}}'>
+          .panel-content#project_documents{'data-toggle' => :edit}
             .fade.edit{:style => "padding-left:15px; padding-top:15px;"}
               {{> file_selector_template }}
+            .fade.no_edit.in
+            <projectDocuments project_documents='{{project_documents}}'>
+
+%script#file_selector_template{:type => 'template/ractive'}
+  .row.fileupload
+    .col-md-1
+      %span.btn.btn-xs.btn-success.fileinput-button{'on-click'=>'show_file_selector()'}
+        %i.fa.fa-plus.fa-lg{ :style => "color:white"}
+        %span= t('add_file')
+      %input.hidden_fileinput#project_fileinput{:multiple => "multiple", :name => "project_file", :type => "file", 'onchange' => 'FileInput.add_file(event,this)', 'data-project_id'=>'{{id}}'}
+    .col-md-11.fileupload_progress
+      <progressBar />
 
 %script#conventions_template{:type => 'template/ractive'}
   .row#conventions{:style => "margin-left:0px;"}
@@ -276,111 +283,59 @@
       %span.mandate {{name}}
       {{/mandates}}
 
-%script#show_proj_backup{:type => 'template/ractive'}
-  .project
-    .row
-      .col-md-2.title {{title}}
-      .col-md-4.description {{description}}
-    .row#mandates
-      {{#mandates}}
-      .col-md-12.mandate
-        .name {{name}}
-        {{#types}}
-        %span.project_type{:style => 'padding-left:8px;'} {{name}}
-        {{/types}}
-      {{/mandates}}
-    .row#agencies
-      {{#agencies}}
-      .col-md-12.agency
-        .name {{name}}
-      {{/agencies}}
-    .row#conventions
-      {{#conventions}}
-      .col-md-12.convention
-        .name {{name}}
-      {{/conventions}}
-
-  .row.well.well-sm.editable_container.project{:style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
-    .col-md-12
-      .row.basic_info
-        .col-md-2.date{'data-toggle'=>:edit, :style => "width:15%"}
-          .fade.no_edit.in
-            %span {{ date }}
-          .fade.edit{:style => "margin-top:26px;"}
-            %span {{ date }}
-        .col-md-2.title{'data-toggle'=>'edit', :style => "width:60%"}
-          .fade.no_edit.in
-            %span {{ title }}
-          .fade.edit{:style => "width: 100%"}
-            {{> edit_title}}
-            .row.form-group{:class => "{{#collection_item_error}}has-error{{/}}", :style => "margin-bottom:0px"}
-              .col-md-5
-                %span.help-block{:id => "collection_item_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"} item error message
-            .row.form-group{:class => "{{#collection_item_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
-              .col-md-5
-                %span.help-block{:id => "collection_item_attachment_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"} another item error message
-        .col-md-2.actions{:style => "width:25%"}
-          .row{:style => "margin-left:0px;"}
-            .col-md-1{'data-toggle'=>:edit}
-              .no_edit.in
-                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
-              .edit
-            .col-md-1{'data-toggle'=>:edit}
-              .no_edit.in
-                %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
-              .edit
-            .col-md-1{'data-toggle'=>:edit}
-              .no_edit.in
-                %i.fa.fa-cloud-download{'on-click' => 'download_attachment()', 'data-toggle'=>'tooltip', 'title'=>'{{original_filename}}'}
-              .edit
-            .col-md-1.icon{ 'data-toggle' => 'edit'}
-              .fade.edit
-                %i.fa.fa-remove{:id => "project_editable{{id}}_edit_cancel"}
-            .col-md-1.icon{'data-toggle' => 'edit'}
-              .fade.edit
-                %i.fa.fa-check{:id => "project_editable{{id}}_edit_save"}
-              .fade.no_edit.in
-                %i.fa.fa-pencil-square-o{:id => "project_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
-            .col-md-1{'data-toggle'=>:edit}
-              .no_edit.in
-                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
-              .edit
-            .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
-              %div{'data-toggle'=>:edit}
-                .no_edit.in
-                  {{#if expanded}}
-                  %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
-                  {{else}}
-                  %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
-                  {{/if}}
-                .edit
-      .row.fileupload{:decorator => 'file_upload', 'data-toggle'=>:edit}
-        .fade.no_edit.in
-        .fade.edit{:style => "padding-left:20px;"}
-          .row{:style => "margin-bottom: 12px;"}
-            .col-md-2#fileinput_button{:style => "width:15%"}
-              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-              %input{:id => "project_file", :type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"project[file]"}
-            .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row; padding-left:8px;"}
-              {{#original_filename}}
-              <file/>
-              {{/original_filename}}
-      .collapse.expanded_info{:class => "collapse{{id}}"}
-        {{> reported_by}}
-        <performanceindicatorselect />
-        .panel.panel-default
-          .panel-heading
-            .row
-              .col-md-2.description{:style => "width:50%"} areas/subareas
-              .col-md-2.metrics{:style=>"width:25%;"} metrics
-
 %script#mandate_filter_select_template{:type => 'template/ractive'}
-  %li{:class => 'dropdown-header mandate_filter {{#if mandate_selected}}selected{{/if}}'}
-    %a{'on-click'=>'toggle()'}
+  %li{:class => 'dropdown-header mandate_filter {{#if selected}}selected{{/if}}'}
+    %a{'on-click'=>'toggle(id)'}
       %span {{name}}
       %span.fa.fa-check
 
-%script#projects_controls{:type => 'template/ractive'}
+%script#project_type_filter_select_template{:type => 'template/ractive'}
+  %li{:class => 'project_type_filter {{#if selected}}selected{{/if}}'}
+    %a{'on-click'=>'toggle(id)'}
+      %span {{name}}
+      %span.fa.fa-check
+
+%script#agency_filter_select_template{:type => 'template/ractive'}
+  %li{:class => 'agency_filter {{#if selected}}selected{{/if}}'}
+    %a{'on-click'=>'toggle(id)'}
+      %span {{name}}
+      %span.fa.fa-check
+
+%script#convention_filter_select_template{:type => 'template/ractive'}
+  %li{:class => 'convention_filter {{#if selected}}selected{{/if}}'}
+    %a{'on-click'=>'toggle(id)'}
+      %span {{name}}
+      %span.fa.fa-check
+
+%script#performance_indicator_filter_select_template{:type => 'template/ractive'}
+  %ul.dropdown-menu
+    %li.dropdown-header= t('.planned_result')
+    {{#planned_results }}
+    %li.dropdown-submenu.planned_result
+      %a {{ indexed_description }}
+      %ul.dropdown-menu
+        %li.dropdown-header= t('.outcome')
+        {{#outcomes }}
+        %li.dropdown-submenu.outcome
+          %a {{ indexed_description }}
+          %ul.dropdown-menu
+            %li.dropdown-header= t('.activity')
+            {{#activities}}
+            %li.dropdown-submenu.activity
+              %a {{ indexed_description }}
+              %ul.dropdown-menu
+                %li.dropdown-header= t('.performance_indicator')
+                {{#performance_indicators}}
+                %li.performance_indicator
+                  %a.opt{ 'on-click'=>'toggle(id)'}
+                    %span.text {{ indexed_description }}
+                    %span.fa.fa-check
+                {{/performance_indicators}}
+            {{/activities}}
+        {{/outcomes }}
+    {{/planned_results }}
+
+%script#filter_controls_template{:type => 'template/ractive'}
   .row#projects_controls
     .row
       .col-md-12
@@ -398,10 +353,10 @@
             %span.caret
           %ul.dropdown-menu
             %li.filter_rule
-              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
+              %a{'on-click'=>"filter_rule('mandate','all')", :class => "{{#if filter_criteria.mandate_rule == 'all'}}selected{{/if}}"}
                 %span=t('.all')
                 %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
+              %a{'on-click'=>"filter_rule('mandate','any')", :class => "{{#if filter_criteria.mandate_rule == 'any'}}selected{{/if}}"}
                 %span=t('.any')
                 %span.fa.fa-check
             {{#all_mandates}}
@@ -414,19 +369,31 @@
             %span.caret
           %ul.dropdown-menu
             %li.filter_rule
-              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
+              %a{'on-click'=>"filter_rule('agency_convention','all')", :class => "{{#if filter_criteria.agency_convention_rule == 'all'}}selected{{/if}}"}
                 %span=t('.all')
                 %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
+              %a{'on-click'=>"filter_rule('agency_convention','any')", :class => "{{#if filter_criteria.agency_convention_rule == 'any'}}selected{{/if}}"}
                 %span=t('.any')
                 %span.fa.fa-check
+            %li.dropdown-header
+              =t('.agencies')
+              %ul{:style => "list-style:none; padding-left:18px;"}
+                {{#all_agencies}}
+                <agencyFilterSelect id='{{id}}' name='{{name}}'/>
+                {{/all_agencies}}
+            %li.dropdown-header
+              =t('.conventions')
+              %ul{:style => "list-style:none; padding-left:18px;"}
+                {{#all_conventions}}
+                <conventionFilterSelect id='{{id}}' name='{{name}}'/>
+                {{/all_conventions}}
       .col-md-1.col-md-offset-1
         %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
       .col-md-1
         {{#if expanded}}
-        %a#compact_all{'on-click'=>'compact_all()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all')}
+        %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all')}
         {{else}}
-        %a#expand_all{'on-click'=>'expand_all()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
+        %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
         {{/if}}
     .row.labels
       .col-md-3= t('.project_type')
@@ -439,31 +406,23 @@
             %span.caret
           %ul.dropdown-menu
             %li.filter_rule
-              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
+              %a{'on-click'=>"filter_rule('project_type','all')", :class => "{{#if filter_criteria.project_type_rule == 'all'}}selected{{/if}}"}
                 %span=t('.all')
                 %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
+              %a{'on-click'=>"filter_rule('project_type','any')", :class => "{{#if filter_criteria.project_type_rule == 'any'}}selected{{/if}}"}
                 %span=t('.any')
                 %span.fa.fa-check
-            {{#areas}}
-            <area id='{{id}}' name='{{name}}'/>
-            {{/areas}}
+            {{#all_mandate_project_types:mandate_name}}
+            %li.dropdown-header{:style => "padding: 3px 0px 3px 20px;"}
+              {{mandate_name}}
+              %ul{:style => "list-style:none; padding-left:18px;"}
+                {{#.}}
+                <projectTypeFilterSelect />
+                {{/.}}
+            {{/all_mandate_project_types}}
       .col-md-3
-        -#note width is spec'd here because the projects spec is being overriden
-        -#css needs cleanup!
-        .btn-group.select{:style=>"width:240px;"}
-          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+        .btn-group.performance_indicator_select.select{:style=>"width:240px;"}
+          %button.btn.btn-default.dropdown-toggle{:type => :button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left= t('.select_performance_indicators')
             %span.caret
-          %ul.dropdown-menu
-            %li.filter_rule
-              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
-                %span=t('.all')
-                %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
-                %span=t('.any')
-                %span.fa.fa-check
-            {{#areas}}
-            <area id='{{id}}' name='{{name}}'/>
-            {{/areas}}
-
+          <performanceIndicatorFilterSelect />

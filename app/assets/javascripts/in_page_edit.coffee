@@ -21,6 +21,19 @@
 #
 #  requirements:
 #    Needs an element with selector '.editable_container' with data attribute for save_url
+#
+#  two stash mechanisms are supported
+#  1. InpageEdit stash
+#    Editable elements should be of the form:
+#        .col-md-2.date{'data-toggle'=>:edit, 'data-attribute'=>:date, :style => "width:15%"}
+#          .fade.no_edit.in
+#            %span {{ date }}
+#          .fade.edit{:style => "margin-top:26px;"}
+#            %input{:type => :text, value =>'{{ date }}'}
+#   where data-attribute carries the name of the attribute to be stashed for a given element
+#
+#  2. Object stash
+#    Where the object implements its own stash/restore methods
 
 #= require 'user_input_manager'
 
@@ -84,9 +97,6 @@ class @InpageEdit
     else
       validate = false
 
-    #if _.isUndefined(options.object.get('url'))
-      #throw new Error('Ractive object must have url defined')
-
     @root =
       if $(@options.on).hasClass('editable_container')
         $(@options.on)
@@ -147,12 +157,13 @@ class @InpageEdit
         if _.isFunction(@options.object.restore)
           @options.object.restore()
         UserInput.reset()
-        @options.object.set('editing',false)
         @context = $target.closest('.editable_container')
+        @options.object.set('expanded',false)
         @show()
 
   _success : (response, textStatus, jqXhr)->
     UserInput.reset()
+    @options.object.set('editing',false)
     @options.success.apply(@, [response, textStatus, jqXhr])
 
   off : ->
