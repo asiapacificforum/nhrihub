@@ -20,7 +20,7 @@ feature "show advisory council issue archive", :js => true do
   end
 
   scenario "lists advisory council issues" do
-    expect(page_heading).to eq "Issues"
+    expect(page_heading).to eq "Advisory Council Issues"
     expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 1)
   end
 end

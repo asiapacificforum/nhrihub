@@ -4,7 +4,7 @@ require 'navigation_helpers'
 require_relative '../../helpers/outreach_setup_helper'
 require_relative '../../helpers/notes_spec_helpers'
 require_relative '../../helpers/outreach_event_context_notes_spec_helpers'
-require Rails.root.join('spec','helpers','notes_behaviour')
+require 'notes_behaviour'
 
 
 feature "media appearance notes", :js => true do

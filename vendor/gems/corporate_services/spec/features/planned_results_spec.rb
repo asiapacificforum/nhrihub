@@ -42,28 +42,28 @@ feature "populate strategic plan contents", :js => true do
   scenario "add planned results item" do
     expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => "Achieve nirvana"
-    expect{save_planned_result.click; sleep(0.2)}.to change{PlannedResult.count}.from(0).to(1)
+    expect{save_planned_result.click; wait_for_ajax}.to change{PlannedResult.count}.from(0).to(1)
     expect(page).to have_selector(".table#planned_results .row.planned_result .col-md-2.description", :text => "1.1 Achieve nirvana")
   end
 
   scenario "add multiple planned results" do
     expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => "Achieve nirvana"
-    expect{save_planned_result.click; sleep(0.2)}.to change{PlannedResult.count}.from(0).to(1)
+    expect{save_planned_result.click; wait_for_ajax}.to change{PlannedResult.count}.from(0).to(1)
     expect(page).to have_selector(".table#planned_results .row.planned_result .col-md-2:first-of-type", :text => "1.1 Achieve nirvana")
     expect(page).to have_selector(".new_planned_result")
   end
 
   scenario "try to save planned result with blank description field" do
     expect(page).not_to have_selector("i.new_planned_result")
-    expect{save_planned_result.click; sleep(0.2)}.not_to change{PlannedResult.count}
+    expect{save_planned_result.click; wait_for_ajax}.not_to change{PlannedResult.count}
     expect(page).to have_selector("#description_error", :text => "You must enter a description")
   end
 
   scenario "try to save planned result with whitespace-only description field" do
     expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => " "
-    expect{save_planned_result.click; sleep(0.3)}.not_to change{PlannedResult.count}
+    expect{save_planned_result.click; wait_for_ajax}.not_to change{PlannedResult.count}
     expect(page).to have_selector("#description_error", :text => "You must enter a description")
   end
 
@@ -86,14 +86,14 @@ feature "actions on existing planned results", :js => true do
   scenario "delete a planned result item" do
     page.find(".row.planned_result .col-md-2.description").hover
     page.find(".row.planned_result .col-md-2.description span.delete_icon").click
-    sleep(0.4)
+    wait_for_ajax
     expect(PlannedResult.count).to eq 0
   end
 
   scenario "edit a planned result item" do
     page.find(".row.planned_result .col-md-2.description span").click
     fill_in('planned_result_description', :with => "new description")
-    expect{ planned_result_save_icon.click; sleep(0.3) }.to change{ PlannedResult.first.description }.to("new description")
+    expect{ planned_result_save_icon.click; wait_for_ajax }.to change{ PlannedResult.first.description }.to("new description")
     expect(page.find(".planned_result.editable_container .col-md-2.description .no_edit span:first-of-type").text ).to eq "1.1 new description"
   end
 
@@ -108,7 +108,7 @@ feature "actions on existing planned results", :js => true do
   scenario "edit to blank description" do
     planned_results_descriptions[0].click
     fill_in('planned_result_description', :with => "")
-    expect{ planned_result_save_icon.click; sleep(0.2) }.not_to change{ PlannedResult.first.description }
+    expect{ planned_result_save_icon.click; wait_for_ajax }.not_to change{ PlannedResult.first.description }
     expect(page).to have_selector(".planned_result #description_error", :text => "You must enter a description")
     cancel_edit_planned_result.click
     expect(page).not_to have_selector(".planned_result #description_error", :text => "You must enter a description")

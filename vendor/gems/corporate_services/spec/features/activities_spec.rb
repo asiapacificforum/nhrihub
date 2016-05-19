@@ -122,7 +122,6 @@ feature "actions on existing activities", :js => true do
   scenario "edit to blank description and cancel" do
     first_activity_description.click
     activity_description_field.first.set("")
-    save_and_open_screenshot
     expect{ activity_save_icon.click; wait_for_ajax }.not_to change{ Activity.first.description }
     expect(page).to have_selector(".activity .description #description_error", :text => "You must enter a description")
     activity_edit_cancel.click

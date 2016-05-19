@@ -6,6 +6,7 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 require File.expand_path('../helpers/application_helpers',__FILE__)
 $:.unshift File.expand_path '../helpers', __FILE__
+$:.unshift File.expand_path '../shared_behaviours', __FILE__
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
