@@ -1,7 +1,5 @@
 en:
   admin:
-    index:
-      heading: 'Site administration dashboard'
     collection_configuration:
       empty: "None configured"
       filetype:
@@ -25,3 +23,9 @@ en:
     document_filesize_configuration:
       current_val: "Current value"
       change: "Change to"
+  project_admin:
+    show:
+      heading: "Projects Configuration"
+      filetypes: "Filetypes permitted for projects"
+      filesize_max: "Maximum permitted project file size"
+

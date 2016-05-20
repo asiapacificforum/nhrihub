@@ -27,5 +27,9 @@ FactoryGirl.define do
     trait :good_governance_project do
       remindable_type "GoodGovernance::Project"
     end
+
+    trait :siu_project do
+      remindable_type "Siu::Project"
+    end
   end
 end

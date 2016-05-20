@@ -85,7 +85,7 @@ RSpec.shared_examples "projects index" do
 
     # CHECK SERVER
     pi = PerformanceIndicator.first
-    project = GoodGovernance::Project.last
+    project = project_model.last
     expect(project.performance_indicator_ids).to eq [pi.id]
     expect(projects_count).to eq 3
     expect(project.title).to eq "new project title"
@@ -160,7 +160,7 @@ RSpec.shared_examples "projects index" do
 
     # CHECK SERVER
     pi = PerformanceIndicator.first
-    project = GoodGovernance::Project.last
+    project = project_model.last
     expect(project.performance_indicator_ids).to eq [pi.id]
     expect(projects_count).to eq 3
     expect(project.title).to eq "new project title"
@@ -306,7 +306,6 @@ RSpec.shared_examples "projects index" do
 
   it "should edit a project" do
     edit_first_project.click
-    #sleep(0.3) # css transition
     fill_in('project_title', :with => "new project title")
     fill_in('project_description', :with => "new project description")
     check('Good Governance')
@@ -372,7 +371,6 @@ RSpec.shared_examples "projects index" do
 
   it "should edit a project and remove performance indicators" do
     edit_first_project.click
-    #sleep(0.3) # css transition
     expect{ remove_first_indicator.click; wait_for_ajax }.to change{ ProjectPerformanceIndicator.count }.by(-1).
                                                        and change{ page.all('.selected_performance_indicator').count }.by(-1)
   end
@@ -390,7 +388,6 @@ RSpec.shared_examples "projects index" do
 
   it "should restore prior values if editing is cancelled" do
     edit_first_project.click
-    #sleep(0.3) # css transition but now transitions turned off in test env
     fill_in('project_title', :with => "new project title")
     fill_in('project_description', :with => "new project description")
     check('Good Governance')
@@ -434,7 +431,6 @@ RSpec.shared_examples "projects index" do
     end
 
     edit_first_project.click
-    #sleep(0.3) # css transition
 
     expect(page.find('#project_title').value).to eq project.title
     expect(page.find('#project_description').value).to eq project.description

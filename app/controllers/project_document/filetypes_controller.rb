@@ -1,6 +1,6 @@
 require 'project_document'
 
-class GoodGovernance::ProjectDocument::FiletypesController < FiletypesController
+class ProjectDocument::FiletypesController < FiletypesController
   def create
     super
   end

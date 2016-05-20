@@ -21,7 +21,6 @@ RSpec.shared_examples "notes" do
       fill_in(:note_text, :with => "nota bene")
       close_modal.click()
       open_notes_modal
-      sleep(0.3)
       expect(page).not_to have_selector("#new_note #note_text")
     end
 

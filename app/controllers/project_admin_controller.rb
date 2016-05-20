@@ -1,7 +1,5 @@
-require 'project_document'
-
-class GoodGovernance::AdminController < ApplicationController
-  def index
+class ProjectAdminController < ApplicationController
+  def show
     @project_document_filetypes = ProjectDocument.permitted_filetypes
     @filetype = Filetype.new
     @filesize = ProjectDocument.maximum_filesize

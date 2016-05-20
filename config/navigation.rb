@@ -2,8 +2,8 @@ SimpleNavigation::Configuration.run do |navigation|
   navigation.items do |primary|
     primary.item :nhri, t('layout.nav.nhri') do |nhri|
       nhri.item :pro, t('layout.nav.pro.pro'), :class => 'dropdown-submenu' do |pro|
-        pro.item :doc, t('layout.nav.pro.doc'), nhri_protection_promotion_internal_documents_path
-        pro.item :proj, t('layout.nav.pro.proj'), nhri_protection_promotion_projects_path
+        pro.item :doc, t('layout.nav.int_docs'), nhri_protection_promotion_internal_documents_path
+        pro.item :proj, t('layout.nav.projects'), nhri_protection_promotion_projects_path
       end
       nhri.item :adv_council, t('layout.nav.adv_council'), :class => 'dropdown-submenu' do |adv|
         adv.item :tor, t('layout.nav.adv.tor'), nhri_advisory_council_terms_of_references_path
@@ -21,7 +21,7 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.item :gg, t('layout.nav.gg.gg') do |gg|
       gg.item :action, t('layout.nav.int_docs'), good_governance_internal_documents_path
       gg.item :action, t('layout.nav.gg.complaints'), good_governance_complaints_path
-      gg.item :action, t('layout.nav.gg.projects'), good_governance_projects_path
+      gg.item :action, t('layout.nav.projects'), good_governance_projects_path
     end
     primary.item :corporate_services, t('layout.nav.corporate_services') do |cs|
       cs.item :int_docs, t('layout.nav.int_docs'), corporate_services_internal_documents_path
@@ -33,6 +33,7 @@ SimpleNavigation::Configuration.run do |navigation|
     end
     primary.item :spec_inv, t('layout.nav.spec_inv') do |siu|
       siu.item :int_docs, t('layout.nav.int_docs'), siu_internal_documents_path
+      siu.item :action, t('layout.nav.projects'), siu_projects_path
     end
     primary.item :reports, t('layout.nav.reports'), placeholder_path
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
@@ -41,7 +42,7 @@ SimpleNavigation::Configuration.run do |navigation|
       ad.item :organizations, t('layout.nav.organization'), admin_organizations_path
       ad.item :access, t('layout.nav.access'), authengine_action_roles_path
       ad.item :nhri, t('layout.nav.nhri'), nhri_admin_path
-      ad.item :gg, t('layout.nav.gg.gg'), good_governance_admin_path
+      ad.item :gg, t('layout.nav.projects'), project_admin_path
       ad.item :corp_svcs, t('layout.nav.corporate_services'), corporate_services_admin_path
       ad.item :or_media, t('layout.nav.outreach_media'), outreach_media_admin_path
     end

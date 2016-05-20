@@ -1,8 +1,0 @@
-en:
-  good_governance:
-    admin:
-      index:
-        heading: "Good Governance Module"
-        filetypes: "Filetypes permitted for projects"
-        filesize_max: "Maximum permitted project file size"
-

@@ -5,8 +5,8 @@
 #filetypes
   = render :partial => 'admin/collection_configuration',
     :locals => { :new_item => @filetype,
-                 :create_url => good_governance_project_document_filetypes_path,
-                 :delete_url => good_governance_project_document_filetype_path('id'),
+                 :create_url => project_document_filetypes_path('en'),
+                 :delete_url => project_document_filetype_path('en','id'),
                  :collection => @project_document_filetypes,
                  :item_name => 'filetype',
                  :param_name => 'ext',
@@ -15,7 +15,7 @@
 %h4= t('.filesize_max')
 #project_document_filesize
   = render :partial => 'admin/document_filesize_configuration',
-           :locals => { :update_url => good_governance_project_document_filesize_path,
+           :locals => { :update_url => project_document_filesize_path('en'),
                         :param => @filesize,
                         :context => "project_document_filesize"}
 

@@ -1,4 +1,4 @@
-class GoodGovernance::ProjectDocument::FilesizesController < FilesizesController
+class ProjectDocument::FilesizesController < FilesizesController
   def update
     super
   end

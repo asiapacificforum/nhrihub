@@ -50,5 +50,9 @@ FactoryGirl.define do
       type "GoodGovernance::Project"
     end
 
+    factory :siu_project do
+      type "Siu::Project"
+    end
+
   end
 end

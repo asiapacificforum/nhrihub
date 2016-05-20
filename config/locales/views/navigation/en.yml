@@ -15,8 +15,6 @@ en:
       complaints: 'Complaints'
       pro:
         pro: 'Human rights protection and promotion'
-        doc: 'Internal documents'
-        proj: 'Projects'
       icc:
         icc: 'ICC'
         int: "ICC internal documents"
@@ -30,7 +28,7 @@ en:
         gg: 'Good Governance'
         docs: 'Documents'
         complaints: 'Complaints'
-        projects: 'Projects'
+      projects: 'Projects'
       outreach_media: 'Outreach and media'
       outreach: 'Outreach'
       media: 'Media'

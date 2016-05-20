@@ -10,13 +10,12 @@ RSpec.shared_examples "reminders" do
     feature "add a reminder", :js => true do
       scenario "and reminder has no errors" do
         new_reminder_button.click
-        sleep(0.2)
         select("one-time", :from => :reminder_reminder_type)
         page.find('#reminder_start_date_1i') # forces wait until the element is available
         select_date("Aug 19 2017", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_ids)
         fill_in(:reminder_text, :with => "time to check the database")
-        expect{save_reminder.click; sleep(0.2)}.to change{Reminder.count}.from(1).to(2)
+        expect{save_reminder.click; wait_for_ajax}.to change{Reminder.count}.from(1).to(2)
         expect(page.all("#reminders .reminder .reminder_type .in").last.text).to eq "one-time"
         expect(page.all("#reminders .reminder .next .in").last.text).to eq "Aug 19, 2017"
         expect(page.all("#reminders .reminder .text .in").last.text).to eq "time to check the database"
@@ -26,9 +25,7 @@ RSpec.shared_examples "reminders" do
 
       scenario "and multiple adds disallowed" do
         new_reminder_button.click
-        sleep(0.2)
         new_reminder_button.click
-        sleep(0.2)
         expect(page.all('#new_reminder').count).to eq 1
       end
     end
@@ -40,7 +37,7 @@ RSpec.shared_examples "reminders" do
         select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_ids)
         fill_in(:reminder_text, :with => "time to check the database")
-        expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
+        expect{save_reminder.click; wait_for_ajax}.not_to change{Reminder.count}
         expect(reminder_error_message).to eq "Please select a type"
         select("weekly", :from => :reminder_reminder_type)
         expect(reminder_type).not_to have_selector('.has-error')
@@ -49,11 +46,10 @@ RSpec.shared_examples "reminders" do
 
       scenario "with no recipients error" do
         new_reminder_button.click
-        sleep(0.3)
         select("one-time", :from => :reminder_reminder_type)
         select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         fill_in(:reminder_text, :with => "time to check the database")
-        expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
+        expect{save_reminder.click; wait_for_ajax}.not_to change{Reminder.count}
         expect(recipients_error_message).to eq "Please select recipient(s)"
         select(User.first.first_last_name, :from => :reminder_user_ids)
         expect(recipients).not_to have_selector('.has-error')
@@ -62,12 +58,10 @@ RSpec.shared_examples "reminders" do
 
       scenario "with blank text error" do
         new_reminder_button.click
-        sleep(0.4)
         select("one-time", :from => :reminder_reminder_type)
         select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_ids)
-        expect{save_reminder.click; sleep(0.3)}.not_to change{Reminder.count}
-        sleep(0.2)
+        expect{save_reminder.click; wait_for_ajax}.not_to change{Reminder.count}
         expect(text_error_message).to eq "Text cannot be blank"
         description_field =  find("#reminder_text").native
         description_field.send_keys("m")
@@ -77,18 +71,16 @@ RSpec.shared_examples "reminders" do
 
       scenario "with whitespace only text error" do
         new_reminder_button.click
-        sleep(0.2)
         select("one-time", :from => :reminder_reminder_type)
         select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         fill_in(:reminder_text, :with => "  ")
         select(User.first.first_last_name, :from => :reminder_user_ids)
-        expect{save_reminder.click; sleep(0.2)}.not_to change{Reminder.count}
+        expect{save_reminder.click; wait_for_ajax}.not_to change{Reminder.count}
         expect(text_error_message).to eq "Text cannot be blank"
       end
 
       scenario "add but cancel without saving" do
         new_reminder_button.click
-        sleep(0.2)
         select("one-time", :from => :reminder_reminder_type)
         select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_ids)
@@ -108,8 +100,8 @@ RSpec.shared_examples "reminders" do
         select(User.last.first_last_name, :from => :reminder_user_ids)
         fill_in(:reminder_text, :with => "have a nice day")
         #edit_reminder_save_icon.click
-        #expect{ edit_reminder_save_icon.trigger('click'); sleep(0.2)}.to change{Reminder.first.text}.to('have a nice day')
-        expect{ edit_reminder_save_icon.click; sleep(0.2)}.to change{Reminder.first.text}.from("don't forget the fruit gums mum").to('have a nice day')
+        #expect{ edit_reminder_save_icon.trigger('click'); wait_for_ajax}.to change{Reminder.first.text}.to('have a nice day')
+        expect{ edit_reminder_save_icon.click; wait_for_ajax}.to change{Reminder.first.text}.from("don't forget the fruit gums mum").to('have a nice day')
         expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "one-time"
         expect(page.find("#reminders .reminder .next .in").text).to eq "Dec 25, #{Date.today.year}"
         expect(page.find("#reminders .reminder .text .in").text).to eq "have a nice day"
@@ -125,13 +117,11 @@ RSpec.shared_examples "reminders" do
         all("select#reminder_reminder_type option").first.select_option
         fill_in(:reminder_text, :with => " ")
         unselect(User.first.first_last_name, :from => :reminder_user_ids)
-        #expect{ edit_reminder_save_icon.trigger('click'); sleep(0.2)}.not_to change{Reminder.first.text}
-        expect{ edit_reminder_save_icon.click; sleep(0.2)}.not_to change{Reminder.first.text}
+        expect{ edit_reminder_save_icon.click; wait_for_ajax}.not_to change{Reminder.first.text}
         expect(page).to have_selector(".reminder .reminder_type.has-error")
         expect(page).to have_selector(".reminder .recipients.has-error")
         expect(page).to have_selector(".reminder .text.has-error")
         edit_reminder_cancel.click
-        sleep(0.4) #js transition
         expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "weekly"
         expect(page.find("#reminders .reminder .next .in").text).to eq next_date
         expect(page.find("#reminders .reminder .text .in").text).to eq "don't forget the fruit gums mum"
@@ -146,9 +136,7 @@ RSpec.shared_examples "reminders" do
         next_date = page.find("#reminders .reminder .next .in").text
         expect(page).to have_selector("#reminders .reminder .text", :text => "don't forget the fruit gums mum")
         edit_reminder_icon.click
-        sleep(0.2) #js transition
         edit_reminder_cancel.click
-        sleep(0.2) #js transition
         expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "weekly"
         expect(page.find("#reminders .reminder .next .in").text).to eq next_date # i.e. no change
         expect(page.find("#reminders .reminder .text .in").text).to eq "don't forget the fruit gums mum"
@@ -157,7 +145,7 @@ RSpec.shared_examples "reminders" do
     end
 
     scenario "delete a reminder" do
-      expect{reminder_delete_icon.click; sleep(0.2)}.to change{Reminder.count}.from(1).to(0)
+      expect{reminder_delete_icon.click; wait_for_ajax}.to change{Reminder.count}.from(1).to(0)
     end
   end
 end

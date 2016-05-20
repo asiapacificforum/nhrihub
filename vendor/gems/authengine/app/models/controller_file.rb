@@ -15,7 +15,7 @@ class ControllerFile < File
   # e.g. Pathname "~/app/controllers/admin_controller.rb"
   def self.application_files
     Pathname.
-      glob(CONTROLLERS_DIR+"**/*_controller.rb").
+      glob(CONTROLLERS_DIR+"/**/*_controller.rb").
       reject{|p| p.to_s =~ /application/ }
   end
 
