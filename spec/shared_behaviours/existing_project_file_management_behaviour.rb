@@ -4,7 +4,7 @@ require 'projects_spec_common_helpers'
 
 RSpec.shared_examples "existing project file management" do
   include IERemoteDetector
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  #include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   include ProjectsSpecCommonHelpers
 

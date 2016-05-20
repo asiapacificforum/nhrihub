@@ -54,5 +54,9 @@ FactoryGirl.define do
       type "Siu::Project"
     end
 
+    factory :nhri_protection_promotion_project do
+      type "Nhri::ProtectionPromotion::Project"
+    end
+
   end
 end

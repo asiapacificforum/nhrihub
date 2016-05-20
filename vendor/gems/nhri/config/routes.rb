@@ -8,6 +8,10 @@ Rails.application.routes.draw do
       end
       namespace :protection_promotion do
         resources :internal_documents
+        resources :projects do
+          resources :reminders, :controller => 'project/reminders'
+          resources :notes, :controller => 'project/notes'
+        end
         resources :projects
       end
       resources :complaints

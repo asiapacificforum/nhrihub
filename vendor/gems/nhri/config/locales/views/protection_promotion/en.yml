@@ -7,3 +7,8 @@ en:
           heading: "Protection and Promotion Internal Documents"
           flash:
             no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
+      projects:
+        heading: "NHRI Protection and Promotion Projects"
+        add_project: "Add project"
+        index:
+          heading: "NHRI Protection and Promotion Projects"

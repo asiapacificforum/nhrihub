@@ -1,8 +1,8 @@
 en:
   projects:
-    index:
-      heading: "Good Governance Projects"
-      add_project: "Add Project"
+    #index:
+      #heading: "Good Governance Projects"
+      #add_project: "Add Project"
     projects_templates:
       title: "Title"
       title_error_message: "Title cannot be blank"
@@ -10,7 +10,7 @@ en:
       description_error_message: "Description cannot be blank"
       good_governance: "Good Governance"
       human_rights: "Human Rights"
-      siu: "Special Investgations Unit"
+      siu: "Special Investigations Unit"
       chars_remaining: "You have {{count}} characters left"
       compact : "Compact"
       compact_all : "Compact all"

@@ -1,10 +1,8 @@
-require 'login_helpers'
 require 'navigation_helpers'
 require 'projects_spec_common_helpers'
 
 RSpec.shared_examples "projects index" do
   include IERemoteDetector
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   include ProjectsSpecCommonHelpers
 

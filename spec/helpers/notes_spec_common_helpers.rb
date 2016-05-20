@@ -18,7 +18,8 @@ module NotesSpecCommonHelpers
   end
 
   def close_modal
-    page.find('button.close')
+    page.execute_script("$.support.transition=false")
+    page.find('button.close').click()
   end
 
   def cancel_edit

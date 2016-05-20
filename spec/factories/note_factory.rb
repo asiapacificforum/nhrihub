@@ -31,5 +31,9 @@ FactoryGirl.define do
     trait :siu_project do
       notable_type "Siu::Project"
     end
+
+    trait :nhri_protection_promotion_project do
+      notable_type "Nhri::ProtectionPromotion::Project"
+    end
   end
 end

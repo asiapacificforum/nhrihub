@@ -1,4 +1,18 @@
 class ProjectsController < ApplicationController
+  def index
+    @projects = @model.all
+    @mandates = Mandate.all
+    @model_name = @model.to_s
+    @i18n_key = @model_name.tableize.gsub(/\//,'.')
+    @agencies = Agency.all
+    @conventions = Convention.all
+    @planned_results = PlannedResult.all_with_associations
+    @project_types = ProjectType.mandate_groups
+    @project_named_documents_titles = ProjectDocument::NamedProjectDocumentTitles
+    @maximum_filesize = ProjectDocument.maximum_filesize * 1000000
+    @permitted_filetypes = ProjectDocument.permitted_filetypes.to_json 
+  end
+
   def create
     model = params[:project][:type].constantize
     project = model.new(project_params)
