@@ -7,6 +7,7 @@ Rails.application.routes.draw do
         resources :notes, :controller => "project/notes"
       end
       resources :projects
+      resources :complaints
     end
   end
 end
