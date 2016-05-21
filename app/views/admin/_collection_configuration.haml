@@ -1,6 +1,6 @@
-%div{:id => "#{item_name}s"}
+%div{:id => "#{item_name.pluralize}"}
   .admin.well
-    %table.table.borderless{:class => "#{item_name}s", :style => "width:auto;"}
+    %table.table.borderless{:class => "#{item_name.pluralize}", :style => "width:auto;"}
       %tbody
 
     = form_for new_item, :url => create_url, :remote => true, :html => {:id => "new_#{item_name}"} do |f|
@@ -12,14 +12,14 @@
 
 %script{:type => 'template/html', :id => "#{item_name}_item_template"}
   %tr
-    %td.type {{ attribute }}
+    %td.type{:class => "#{item_name}"} {{ attribute }}
     %td= link_to t('defaults.delete'), nil, :class => "delete_#{item_name}"
 
 :coffeescript
   $ ->
     collection = #{collection}
     delete_url = "#{delete_url}"
-    el = $(".#{item_name}s tbody")
+    el = $(".#{item_name.pluralize} tbody")
     delete_link =  "a.delete_#{item_name}"
     form = $("#new_#{item_name}")
     param_field = $("##{item_name}_#{param_name}")

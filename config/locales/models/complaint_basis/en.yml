@@ -1,0 +1,11 @@
+en:
+  activerecord:
+    errors:
+      models:
+        complaint_basis:
+          attributes:
+            name:
+              taken: "already exists, must be unique."
+    attributes:
+      complaint_basis:
+        name: "Complaint basis"

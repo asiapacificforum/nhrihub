@@ -1,0 +1,29 @@
+.message_block
+%h1=t('.heading')
+
+%h4= t('.gg_bases')
+#gg_bases
+  = render :partial => 'admin/collection_configuration',
+    :locals => { :new_item => @good_governance_complaint_basis,
+                 :create_url => good_governance_complaint_bases_path('en'),
+                 :delete_url => good_governance_complaint_basis_path('en','id'),
+                 :collection => @good_governance_complaint_bases.to_json,
+                 :item_name => 'gg_basis',
+                 :param_name => 'name',
+                 :placeholder => 'e.g. delayed action'}
+
+%h4= t('.siu_bases')
+#siu_bases
+  = render :partial => 'admin/collection_configuration',
+    :locals => { :new_item => @siu_complaint_basis,
+                 :create_url => siu_complaint_bases_path('en'),
+                 :delete_url => siu_complaint_basis_path('en','id'),
+                 :collection => @siu_complaint_bases.to_json,
+                 :item_name => 'siu_basis',
+                 :param_name => 'name',
+                 :placeholder => 'e.g. delayed action'}
+
+:coffeescript
+  $ ->
+    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+    window.flash_error_template = _.template("<ul class='error'><li>{{message}}</li></ul>")

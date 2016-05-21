@@ -20,6 +20,10 @@ en:
         add: "Add file type"
       file_monitor_filetype:
         add: "Add file type"
+      gg_basis:
+        add: "Add Complaint Basis"
+      siu_basis:
+        add: "Add Complaint Basis"
     document_filesize_configuration:
       current_val: "Current value"
       change: "Change to"
@@ -28,4 +32,9 @@ en:
       heading: "Projects Configuration"
       filetypes: "Filetypes permitted for projects"
       filesize_max: "Maximum permitted project file size"
+  complaint_admin:
+    show:
+      heading: "Complaints Configuration"
+      gg_bases: "Good Governance Bases of Complaints"
+      siu_bases: "Special Investigations Unit Bases of Complaints"
 
