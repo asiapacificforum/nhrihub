@@ -2,3 +2,5 @@ en:
   nhri:
     complaints:
       heading: "NHRI Complaints"
+      index:
+        page_title: "NHRI Complaints"

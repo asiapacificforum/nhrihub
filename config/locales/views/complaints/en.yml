@@ -1,0 +1,9 @@
+en:
+  complaints:
+    complaints_templates:
+      compact: 'Compact'
+      expand: 'Expand'
+      reference: 'Ref'
+      current_assignee: 'Current assignee'
+      status: 'Status'
+      complainant: 'Complainant'

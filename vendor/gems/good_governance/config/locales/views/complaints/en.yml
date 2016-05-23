@@ -2,3 +2,5 @@ en:
   good_governance:
     complaints:
       heading: "Good Governance Complaints"
+      index:
+        page_title: "Good Governance Complaints"

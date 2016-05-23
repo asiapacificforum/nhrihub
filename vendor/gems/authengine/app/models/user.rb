@@ -57,6 +57,8 @@ class User < ActiveRecord::Base
   has_many :internal_documents
   has_and_belongs_to_many :reminders
   has_many :media_appearances
+  has_many :assigns, :autosave => true, :dependent => :destroy
+  has_many :complaints, :through => :assigns
 
   before_save :encrypt_password
   before_create :make_activation_code

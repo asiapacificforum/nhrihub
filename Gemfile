@@ -84,6 +84,7 @@ gem "refile", require: "refile/rails"
 gem "rails-settings-cached", '~> 0.4.2'
 gem "underscore-rails"
 gem "transpec"
+gem "human_attribute_values"
 
 
 # NHRI Modules:

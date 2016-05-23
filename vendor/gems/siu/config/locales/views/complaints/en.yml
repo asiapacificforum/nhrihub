@@ -2,3 +2,5 @@ en:
   siu:
     complaints:
       heading: "Special Investigations Unit Complaints"
+      index:
+        page_title: "Special Investigations Unit Complaints"

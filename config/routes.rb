@@ -74,7 +74,7 @@ Rails.application.routes.draw do
     resources :project_documents, :only => [:destroy, :show]
     resource :project_admin, :only => :show, :to => 'project_admin#show'
     resource :complaint_admin, :only => :show, :to => 'complaint_admin#show'
-    resources :good_governance_complaint_bases, :only => [:create, :destroy], :to => 'good_governance/complaint_bases'
-    resources :siu_complaint_bases, :only => [:create, :destroy], :to => 'siu/complaint_bases'
+    resources :good_governance_complaint_bases, :only => [:create, :destroy], :controller => 'good_governance/complaint_bases'
+    resources :siu_complaint_bases, :only => [:create, :destroy], :controller => 'siu/complaint_bases'
   end
 end

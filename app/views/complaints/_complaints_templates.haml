@@ -1,0 +1,69 @@
+%script#complaints_template{:type => 'template/ractive'}
+  {{#complaints}}
+  <complaint />
+  {{/complaints}}
+
+%script#complaint_template{:type => 'template/ractive'}
+  .row.well.well-sm.expandable_well.complaint.editable_container{ :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+    .col-md-12
+      .row.basic_info
+        .col-md-2{'data-toggle'=>'edit'}
+          .row
+            .col-md-12
+              .fade.no_edit.in
+                %label= t('.reference')
+                %span {{ case_reference }}
+          .row
+            .col-md-12
+              {{formatted_date}}
+        .col-md-3{'data-toggle'=>'edit'}
+          .row
+            .col-md-12
+              .fade.no_edit.in
+                %label= t('.current_assignee')
+                %span.current_assignee {{ current_assignee_name }}
+          .row
+            .col-md-12
+              .fade.no_edit.in
+                %label= t('.status')
+                %span.status {{ status_humanized }}
+          .row
+            .col-md-12
+              .fade.no_edit.in
+                %label= t('.complainant')
+                %span.complainant {{ complainant }}
+        .col-md-3.actions
+          .row{:style => "margin-left:0px;"}
+            .col-md-1.col-md-offset-2{'data-toggle'=>:edit}
+              .no_edit.in
+                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no-edit.in
+                %i.fa.fa-comments-o.fa-lg
+            .col-md-1.icon{ 'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-remove{:id => "project_editable{{id}}_edit_cancel"}
+            .col-md-1.icon{'data-toggle' => 'edit'}
+              .fade.edit
+                %i.fa.fa-check{:id => "project_editable{{id}}_edit_save"}
+              .fade.no_edit.in
+                %i.fa.fa-pencil-square-o{:id => "project_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_project(event)'}
+              .edit
+            .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
+              %div{'data-toggle'=>:edit}
+                .no_edit.in
+                  {{#if expanded}}
+                  %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
+                  {{else}}
+                  %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
+                  {{/if}}
+                .edit
+      .collapse.expanded_info{:class => "collapse{{id}}"}

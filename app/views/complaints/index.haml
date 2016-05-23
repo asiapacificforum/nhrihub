@@ -1,2 +1,12 @@
+= stylesheet_link_tag 'complaints'
 .message_block
 %h1= t("#{@i18n_key}.heading")
+
+#complaints
+
+= render :partial => 'complaints_templates'
+
+:coffeescript
+  window.complaints_data = #{@complaints.to_json}
+
+= javascript_include_tag 'complaints'

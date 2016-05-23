@@ -1,0 +1,7 @@
+en:
+  activerecord:
+    values:
+      complaint:
+        status:
+          'false': "closed"
+          'true': "open"

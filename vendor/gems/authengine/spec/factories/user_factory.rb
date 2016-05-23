@@ -1,8 +1,13 @@
 require 'faker'
+get_name = proc{
+uu = User.pluck(:login)
+nn = Faker::Name.last_name
+until(!uu.include?(nn)) do (nn = Faker::Name.last_name) end
+nn}
 
 FactoryGirl.define do
-  factory :user do
-    login {Faker::Name.last_name}
+  factory :user, :aliases => [:assignee] do
+    login {get_name.call}
     email {Faker::Internet.email}
     activated_at {Date.today - rand(365)}
     enabled 1
@@ -13,6 +18,16 @@ FactoryGirl.define do
       organization_id { Organization.pluck(:id).sample }
     else
       association :organization, strategy: :create
+    end
+
+    trait :with_password do
+      after(:create) do |user|
+        user.update_attribute(:salt, '1641b615ad281759adf85cd5fbf17fcb7a3f7e87')
+        user.update_attribute(:activation_code, '9bb0db48971821563788e316b1fdd53dd99bc8ff')
+        user.update_attribute(:activated_at, DateTime.new(2011,1,1))
+        user.update_attribute(:crypted_password, '660030f1be7289571b0467b9195ff39471c60651')
+        user
+      end
     end
 
     trait :admin do
