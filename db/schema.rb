@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160522165627) do
+ActiveRecord::Schema.define(version: 20160521010000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,12 +136,28 @@ ActiveRecord::Schema.define(version: 20160522165627) do
     t.datetime "updated_at"
   end
 
+  create_table "complaint_documents", force: :cascade do |t|
+    t.integer  "complaint_id"
+    t.string   "file_id",          limit: 255
+    t.string   "title",            limit: 255
+    t.integer  "filesize"
+    t.string   "filename",         limit: 255
+    t.datetime "lastModifiedDate"
+    t.string   "original_type",    limit: 255
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "complaints", force: :cascade do |t|
     t.string   "case_reference"
     t.string   "complainant"
     t.string   "village"
     t.string   "phone"
     t.boolean  "status"
+    t.datetime "closed_on"
+    t.integer  "closed_by_id"
+    t.integer  "opened_by_id"
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"

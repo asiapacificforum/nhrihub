@@ -6,10 +6,15 @@ class Complaint < ActiveRecord::Base
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
   has_many :assigns, :autosave => true, :dependent => :destroy
-  has_many :assignees, :through => :assigns, :source => :user
+  has_many :assignees, :through => :assigns
+  belongs_to :opened_by, :class_name => 'User', :foreign_key => :opened_by_id
+  belongs_to :closed_by, :class_name => 'User', :foreign_key => :closed_by_id
+  has_many :complaint_documents
 
   def as_json(options = {})
-    super( :methods => [:reminders, :notes, :assignees, :current_assignee_name, :formatted_date, :status_humanized])
+    super( :methods => [:reminders, :notes, :assigns,
+                        :current_assignee_name, :formatted_date,
+                        :status_humanized, :complaint_documents])
   end
 
   def formatted_date
@@ -21,7 +26,8 @@ class Complaint < ActiveRecord::Base
   end
 
   def current_assignee
-    assigns.last.user unless assigns.empty?
+    # first, b/c default sort is most-recent-first
+    assigns.first.assignee unless assigns.empty?
   end
 
   def status_humanized

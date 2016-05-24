@@ -1,7 +1,25 @@
-# desc "Explaining what the task does"
-# task :nhri do
-#   # Task goes here
-# end
+require 'wordlist'
+
+def rand_title
+  l = rand(4)+4
+  arr = []
+  l.times do
+    word = @words.sample
+    word = word.upcase == word ? word : word.capitalize
+    arr << word
+  end
+  arr.join(' ')
+end
+
+def rand_filename
+  l = rand(3)+3
+  arr = []
+  l.times do
+    arr << @words.sample
+  end
+  arr.join('_').downcase + ".pdf"
+end
+
 namespace :nhri do
   desc "populate all nhri modules"
   task :populate => [:populate_tor, :populate_mem, :populate_min, :populate_iss, :populate_ind_etc, :populate_complaints]
@@ -10,14 +28,25 @@ namespace :nhri do
   task :populate_complaints => :environment do
     Nhri::Complaint.destroy_all
     3.times do |i|
-      complaint = FactoryGirl.create(:complaint, :nhri, :case_reference => "C16/#{i+1}", :status => [true,false].sample)
+      complaint = FactoryGirl.create(:complaint,
+                                     :nhri,
+                                     :case_reference => "C16/#{i+1}",
+                                     :status => [true,false].sample)
+
       # avoid creating too many users... creates login collisions
-      if User.count < 20
+      if User.count > 20
         assignees = User.all.sample(2)
       else
         assignees = [FactoryGirl.create(:assignee), FactoryGirl.create(:assignee)]
       end
-      complaint.assignees << assignees
+      assigns = assignees.map do |user|
+        date = DateTime.now.advance(:days => -rand(365))
+        Assign.create(:created_at => date, :assignee => user)
+      end
+      complaint.assigns << assigns
+
+      complaint_document = FactoryGirl.create(:complaint_document, :title => rand_title, :filename => rand_filename)
+      complaint.complaint_documents << complaint_document
     end
   end
 

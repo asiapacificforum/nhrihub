@@ -7,3 +7,7 @@ en:
       current_assignee: 'Current assignee'
       status: 'Status'
       complainant: 'Complainant'
+      village: 'Village'
+      phone: 'Phone'
+    index:
+      add_complaint: "Add complaint"

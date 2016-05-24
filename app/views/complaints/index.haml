@@ -1,6 +1,9 @@
 = stylesheet_link_tag 'complaints'
 .message_block
 %h1= t("#{@i18n_key}.heading")
+.btn.btn-success.btn-sm#add_complaint{:style => "margin-bottom:12px; color:white;", :onclick => "complaints.new_complaint()"}
+  %i.fa.fa-plus.fa-lg{:style => "color:white"}
+  %span= t(".add_complaint")
 
 #complaints
 

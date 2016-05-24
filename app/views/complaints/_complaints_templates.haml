@@ -1,9 +1,19 @@
 %script#complaints_template{:type => 'template/ractive'}
   {{#complaints}}
-  <complaint />
+  <complaint assigns='{{assigns}}' case_reference='{{case_reference}}' closed_by_id='{{closed_by_id}}' complainant='{{complainant}}' complaint_documents='{{complaint_documents}}' current_assignee_name='{{current_assignee_name}}' id='{{id}}' notes='{{notes}}' opened_by_id='{{opened_by_id}}' phone='{{phone}}' reminders='{{reminders}}' status='{{status}}' status_humanized='{{status_humanized}}' village='{{village}}' />
   {{/complaints}}
 
 %script#complaint_template{:type => 'template/ractive'}
+  {{#if persisted }}
+  {{> show_complaint_template}}
+  {{else}}
+  {{> new_complaint_template}}
+  {{/if}}
+
+%script#new_complaint_template{:type => 'template/ractive'}
+  "new one"
+
+%script#show_complaint_template{:type => 'template/ractive'}
   .row.well.well-sm.expandable_well.complaint.editable_container{ :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
       .row.basic_info
@@ -66,4 +76,37 @@
                   %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
                   {{/if}}
                 .edit
-      .collapse.expanded_info{:class => "collapse{{id}}"}
+      .row.collapse.expanded_info
+        .col-md-2
+        .col-md-5{'data-toggle'=>'edit'}
+          .row
+            .col-md-12
+              .fade.no_edit.in
+                %label= t('.village')
+                %span.complainant_village {{ village }}
+          .row
+            .col-md-12
+              .fade.no_edit.in
+                %label= t('.phone')
+                %span.complainant_phone {{ phone }}
+          .row
+            .col-md-12
+              .fade.no_edit.in
+                <assignees assigns='{{assigns}}' />
+      .row.collapse
+        .col-md-12#complaint_documents
+          {{#complaint_documents}}
+          .complaint_document
+            .title {{title}}
+          {{/complaint_documents}}
+
+%script#assignees_template{:type => 'template/ractive'}
+  #assignees
+    {{#assigns}}
+    <assignee  name='{{name}}' date='{{date}}' />
+    {{/assigns}}
+
+%script#assignee_template{:type => 'template/ractive'}
+  .row.assignee
+    .col-md-6.date {{date}}
+    .col-md-6.name {{name}}
