@@ -12,7 +12,7 @@
   {{/if}}
 
 %script#new_project_template{:type => 'template/ractive'}
-  .row.new_project{:intro => 'slide'}
+  .row.new_project.expandable_well.well{:intro => 'slide'}
     .col-md-12
       .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
         .col-md-2
@@ -34,12 +34,14 @@
       {{> agency_convention_selector }}
       <performanceindicatorselect />
       {{> file_selector_template }}
-      .row#documents
-        <projectDocuments project_documents='{{project_documents}}'>
+      .panel.panel-default#documents
+        .panel-heading= t('.project_documents')
+        .panel-body
+          <projectDocuments project_documents='{{project_documents}}'>
 
 %script#project_documents_template{:type => 'template/ractive'}
-  .row{:style => "margin-left:0px;"}
-    .col-md-4.title=t('.title')
+  .row
+    .col-md-6.title=t('.title')
     .col-md-4.filename=t('.filename')
   {{#project_documents}}
   <projectDocument id='{{id}}' file='{{file}}' title='{{title}}' file_id='{{file_id}}' filename='{{filename}}' project_named_documents_titles='{{ project_named_documents_titles}}' />
@@ -58,7 +60,7 @@
 %script#show_project_document_template{:type => 'template/ractive'}
   .project_document
     .row{:style => "margin-left:0px;"}
-      .col-md-4.title {{title}}
+      .col-md-6.title {{title}}
       .col-md-4.filename {{filename}}
       .col-md-1
         %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
@@ -67,9 +69,8 @@
 
 %script#new_project_document_template{:type => 'template/ractive'}
   .row.document
-    .col-md-2.filename {{filename}}
     .col-md-6.title
-      %input.form-control#project_document_title{:type => :text, :value=>'{{title}}', :style =>"width:360px;", :list => :project_named_documents}
+      %input.form-control#project_document_title{:type => :text, :value=>'{{title}}', :list => :project_named_documents}
       %datalist#project_named_documents
         {{#project_named_documents_titles}}
         %option{:value=>'{{.}}'} {{.}}
@@ -80,6 +81,7 @@
         %span.help-block.error#filetype_error= t('error_messages.unpermitted_type')
       .errors.form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
         %span.help-block.error#unconfigured_filetypes_error= t('error_messages.noFileTypes')
+    .col-md-4.filename{:style => "overflow-wrap:break-word"} {{filename}}
     .col-md-2
       %i.fa.fa-remove.remove{'on-click' => 'remove_file()'}
 
@@ -95,32 +97,28 @@
       %label=t('.agency_convention')
     .col-md-10
       .row
-        .col-md-4#agencies
+        .col-md-4#agencies{:style => "padding-top:0;"}
           <agenciesSelector />
-        .col-md-4#conventions
+        .col-md-4#conventions{:style => "padding-top:0;"}
           <conventionsSelector />
 
 %script#agencies_selector_template{:type => 'template/ractive'}
-  .row
-    .col-md-12
-      %label=t('.good_governance')
+  %label=t('.good_governance')
   {{#all_agencies}}
   .row.agency
-    .col-md-8
-      %label{:for => 'agency_{{id}}', 'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
-    .col-md-4
+    .col-md-9
+      %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
+    .col-md-3
       %input{:id=>'agency_{{id}}', :type => :checkbox, :name => '{{agency_ids}}', :value => '{{id}}'}
   {{/all_agencies}}
 
 %script#conventions_selector_template{:type => 'template/ractive'}
-  .row
-    .col-md-12
-      %label=t('.human_rights')
+  %label=t('.human_rights')
   {{#all_conventions}}
   .row.convention
-    .col-md-8
-      %label{:for => 'convention_{{id}}', 'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
-    .col-md-4
+    .col-md-9
+      %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
+    .col-md-3
       %input{:id=>'convention_{{id}}', :type => :checkbox, :name => '{{convention_ids}}', :value => '{{id}}'}
   {{/all_conventions}}
 
@@ -131,14 +129,12 @@
     .col-md-10
       .row
         {{#all_mandates}}
-        .col-md-4{:id => '{{key}}_types'}
-          .row
-            .col-md-12
-              %label {{name}}
+        .col-md-4{:id => '{{key}}_types', :style => "padding-top:0;"}
+          %label {{name}}:
           {{#project_types}}
           .row.project_type
             .col-md-9
-              %label{:for => 'project_type_{{id}}'} {{name}}
+              %span {{name}}
             .col-md-3
               %input{:id=>'project_type_{{id}}', :type => :checkbox, :name => '{{project_type_ids}}', :value => '{{id}}'}
           {{/project_types}}
@@ -149,13 +145,13 @@
     .col-md-2
       %label=t('.mandate')
     .col-md-10
-      {{#mandates}}
-      .row.mandate
-        .col-md-3
-          %label{:for => '{{key}}'} {{name}}
-        .col-md-1
+      .row
+        {{#mandates}}
+        .col-md-3{:style => "padding-top:0;"}
+          %span {{name}}
+        .col-md-1.mandate{:style => "padding-top:0;"}
           %input{:id=>'{{key}}', :type => :checkbox, :name => '{{mandate_ids}}', :value => '{{id}}'}
-      {{/mandates}}
+        {{/mandates}}
 
 %script#edit_title{:type => 'template/ractive'}
   .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
@@ -240,7 +236,7 @@
     .col-md-1
       %span.btn.btn-xs.btn-success.fileinput-button{'on-click'=>'show_file_selector()'}
         %i.fa.fa-plus.fa-lg{ :style => "color:white"}
-        %span= t('add_file')
+        %span= t('add_document')
       %input.hidden_fileinput#project_fileinput{:multiple => "multiple", :name => "project_file", :type => "file", 'onchange' => 'FileInput.add_file(event,this)', 'data-project_id'=>'{{id}}'}
     .col-md-11.fileupload_progress
       <progressBar />

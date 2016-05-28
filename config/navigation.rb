@@ -12,7 +12,7 @@ SimpleNavigation::Configuration.run do |navigation|
         adv.item :issues, t('layout.nav.adv.issues'), nhri_advisory_council_issues_path
       end
       nhri.item :headings, t('layout.nav.headings'), nhri_headings_path
-      nhri.item :hr_prot, t('layout.nav.complaints'), nhri_complaints_path
+      nhri.item :hr_prot, t('layout.nav.complaints'), complaints_path
       nhri.item :icc, t('layout.nav.icc.icc'), :class => 'dropdown-submenu' do |icc|
         icc.item :icc_int, t('layout.nav.icc.int'), nhri_icc_index_path
         icc.item :icc_ref, t('layout.nav.icc.ref'), nhri_icc_reference_documents_path
@@ -20,7 +20,7 @@ SimpleNavigation::Configuration.run do |navigation|
     end
     primary.item :gg, t('layout.nav.gg.gg') do |gg|
       gg.item :int_docs, t('layout.nav.int_docs'), good_governance_internal_documents_path
-      gg.item :comp, t('layout.nav.complaints'), good_governance_complaints_path
+      gg.item :comp, t('layout.nav.complaints'), complaints_path
       gg.item :proj, t('layout.nav.projects'), good_governance_projects_path
     end
     primary.item :corporate_services, t('layout.nav.corporate_services') do |cs|
@@ -33,7 +33,7 @@ SimpleNavigation::Configuration.run do |navigation|
     end
     primary.item :spec_inv, t('layout.nav.spec_inv') do |siu|
       siu.item :int_docs, t('layout.nav.int_docs'), siu_internal_documents_path
-      siu.item :compl, t('layout.nav.complaints'), siu_complaints_path
+      siu.item :compl, t('layout.nav.complaints'), complaints_path
       siu.item :proj, t('layout.nav.projects'), siu_projects_path
     end
     primary.item :reports, t('layout.nav.reports'), placeholder_path

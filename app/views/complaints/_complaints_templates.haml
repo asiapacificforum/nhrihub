@@ -1,7 +1,32 @@
 %script#complaints_template{:type => 'template/ractive'}
   {{#complaints}}
-  <complaint assigns='{{assigns}}' case_reference='{{case_reference}}' closed_by_id='{{closed_by_id}}' complainant='{{complainant}}' complaint_documents='{{complaint_documents}}' current_assignee_name='{{current_assignee_name}}' id='{{id}}' notes='{{notes}}' opened_by_id='{{opened_by_id}}' phone='{{phone}}' reminders='{{reminders}}' status='{{status}}' status_humanized='{{status_humanized}}' village='{{village}}' />
+  <complaint all_agencies='{{all_agencies}}' all_mandates='{{all_mandates}}' assigns='{{assigns}}' case_reference='{{case_reference}}' closed_by_id='{{closed_by_id}}' complainant='{{complainant}}' complaint_bases='{{complaint_bases}}' complaint_categories='{{complaint_categories}}' complaint_documents='{{complaint_documents}}' complainant_error='{{complainant_error}}' current_assignee_name='{{current_assignee_name}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' mandate_ids='{{mandate_ids}}' notes='{{notes}}' opened_by_id='{{opened_by_id}}' phone='{{phone}}' reminders='{{reminders}}' status='{{status}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_humanized='{{status_humanized}}' village='{{village}}'/>
   {{/complaints}}
+
+%script#agencies_selector_template{:type => 'template/ractive'}
+  .row
+    .col-md-2
+      %label=t('.agency')
+    .col-md-10
+      .row
+        .col-md-4#agencies{:style => "padding-top:0;"}
+          {{#all_agencies}}
+          .row.agency
+            .col-md-9
+              %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
+            .col-md-3
+              %input{:id=>'agency_{{id}}', :type => :checkbox, :name => '{{agency_ids}}', :value => '{{id}}'}
+          {{/all_agencies}}
+
+%script#complaint_categories_template{:type => 'template/ractive'}
+  #complaint_categories
+    {{#complaint_categories}}
+    <complaintCategory name='{{name}}' />
+    {{/complaint_categories}}
+
+%script#complaint_category_template{:type => 'template/ractive'}
+  .complaint_category
+    .name {{name}}
 
 %script#complaint_template{:type => 'template/ractive'}
   {{#if persisted }}
@@ -10,8 +35,89 @@
   {{> new_complaint_template}}
   {{/if}}
 
+%script#mandates_selector_template{:type => 'template/ractive'}
+  .row
+    .col-md-2
+      %label=t('.mandate')
+    .col-md-10
+      .row
+        {{#mandates}}
+        .col-md-3{:style => "padding-top:0;"}
+          %span {{name}}
+        .col-md-1.mandate{:style => "padding-top:0;"}
+          %input{:id=>'{{key}}', :type => :checkbox, :name => '{{mandate_ids}}', :value => '{{id}}'}
+        {{/mandates}}
+
+%script#complaint_bases_selector_template{:type => 'template/ractive'}
+  .row
+    .col-md-2
+      %label=t('.complaint_basis')
+    .col-md-10
+      .row
+        {{#complaint_bases.0}}
+        .col-md-4{:id => '{{key}}_bases', :style => "padding-top:0;"}
+          %label {{name}}:
+          {{#complaint_bases}}
+          .row.complaint_basis
+            .col-md-9
+              %span {{name}}
+            .col-md-3
+              %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{good_governance_complaint_basis_ids}}", :value => '{{id}}'}
+          {{/complaint_bases}}
+        {{/complaint_bases.0}}
+        {{#complaint_bases.1}}
+        .col-md-4{:id => '{{key}}_bases', :style => "padding-top:0;"}
+          %label {{name}}:
+          {{#complaint_bases}}
+          .row.complaint_basis
+            .col-md-9
+              %span {{name}}
+            .col-md-3
+              %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{human_rights_complaint_basis_ids}}", :value => '{{id}}'}
+          {{/complaint_bases}}
+        {{/complaint_bases.1}}
+        {{#complaint_bases.2}}
+        .col-md-4{:id => '{{key}}_bases', :style => "padding-top:0;"}
+          %label {{name}}:
+          {{#complaint_bases}}
+          .row.complaint_basis
+            .col-md-9
+              %span {{name}}
+            .col-md-3
+              %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{special_investigations_unit_complaint_basis_ids}}", :value => '{{id}}'}
+          {{/complaint_bases}}
+        {{/complaint_bases.2}}
+
 %script#new_complaint_template{:type => 'template/ractive'}
-  "new one"
+  .row.well.well-sm.expandable_well.new_complaint.editable_container{:intro => 'slide'}
+    .col-md-12
+      .row
+        .col-md-2
+          %span=t('.case_reference')
+        .col-md-5
+          %span#case_reference {{case_reference}}
+      .row.form-group{:class => "{{#complainant_error}}has-error{{/}}"}
+        .col-md-2
+          %span=t('.complainant')
+        .col-md-6
+          %input.form-control#complainant{:value => '{{complainant}}', 'on-keydown'=>"remove_attribute_error('complainant')"}
+          %span.help-block.error#complainant_error= t('.complainant_error_message')
+        .col-sm-3
+          %i.fa.fa-remove.fa-lg#cancel_complaint{ :style=>"padding-left:30px", "on-click"=>"cancel_complaint()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>"cancel"}
+          %i.fa.fa-check.fa-lg#save_complaint{ :style=>"padding-left:60px", "on-click"=>"save_complaint()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>"save"}
+      .row.form-group
+        .col-md-2
+          %span=t('.village')
+        .col-md-6
+          %input.form-control#village{:value => '{{village}}'}
+      .row.form-group
+        .col-md-2
+          %span=t('.phone')
+        .col-md-6
+          %input.form-control#phone{:value => '{{phone}}'}
+      <mandatesSelector mandates='{{all_mandates}}' />
+      <complaintBasesSelector all_mandates='{{all_mandates}}' />
+      <agenciesSelector agencies='{{agencies}}' />
 
 %script#show_complaint_template{:type => 'template/ractive'}
   .row.well.well-sm.expandable_well.complaint.editable_container{ :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
@@ -22,11 +128,11 @@
             .col-md-12
               .fade.no_edit.in
                 %label= t('.reference')
-                %span {{ case_reference }}
+                %span.case_reference {{ case_reference }}
           .row
             .col-md-12
               {{formatted_date}}
-        .col-md-3{'data-toggle'=>'edit'}
+        .col-md-6{'data-toggle'=>'edit'}
           .row
             .col-md-12
               .fade.no_edit.in
@@ -89,16 +195,22 @@
               .fade.no_edit.in
                 %label= t('.phone')
                 %span.complainant_phone {{ phone }}
-          .row
-            .col-md-12
-              .fade.no_edit.in
-                <assignees assigns='{{assigns}}' />
       .row.collapse
-        .col-md-12#complaint_documents
+        .col-md-2=t('.assignees_history')
+        .col-md-5
+          .fade.no_edit.in
+            <assignees assigns='{{assigns}}' />
+      .row.collapse
+        .col-md-2=t('.documents')
+        .col-md-5#complaint_documents
           {{#complaint_documents}}
           .complaint_document
             .title {{title}}
           {{/complaint_documents}}
+      .row.collapse
+        .col-md-2=t('.categories')
+        .col-md-5
+          <complaintCategories />
 
 %script#assignees_template{:type => 'template/ractive'}
   #assignees

@@ -10,11 +10,24 @@ class Complaint < ActiveRecord::Base
   belongs_to :opened_by, :class_name => 'User', :foreign_key => :opened_by_id
   belongs_to :closed_by, :class_name => 'User', :foreign_key => :closed_by_id
   has_many :complaint_documents
+  has_many :complaint_complaint_categories, :dependent => :destroy
+  has_many :complaint_categories, :through => :complaint_complaint_categories
+  has_many :complaint_mandates, :dependent => :destroy
+  has_many :mandates, :through => :complaint_mandates
 
   def as_json(options = {})
     super( :methods => [:reminders, :notes, :assigns,
                         :current_assignee_name, :formatted_date,
-                        :status_humanized, :complaint_documents])
+                        :status_humanized, :complaint_documents,
+                        :complaint_categories, :mandate_ids,
+                        :good_governance_complaint_basis_ids,
+                        :special_investigations_unit_complaint_basis_ids,
+                        :human_rights_complaint_basis_ids])
+  end
+
+  def self.next_case_reference
+    case_references = CaseReferenceCollection.new(all.pluck(:case_reference))
+    case_references.next_ref
   end
 
   def formatted_date

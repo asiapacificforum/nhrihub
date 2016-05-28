@@ -1,6 +1,6 @@
 = stylesheet_link_tag 'complaints'
 .message_block
-%h1= t("#{@i18n_key}.heading")
+%h1= t(".heading")
 .btn.btn-success.btn-sm#add_complaint{:style => "margin-bottom:12px; color:white;", :onclick => "complaints.new_complaint()"}
   %i.fa.fa-plus.fa-lg{:style => "color:white"}
   %span= t(".add_complaint")
@@ -11,5 +11,9 @@
 
 :coffeescript
   window.complaints_data = #{@complaints.to_json}
+  window.mandates = #{@mandates.to_json}
+  window.agencies = #{@agencies.to_json}
+  window.complaint_bases = #{@complaint_bases.map(&:to_h).to_json}
+  window.next_case_reference = "#{@next_case_reference}"
 
 = javascript_include_tag 'complaints'

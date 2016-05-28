@@ -26,3 +26,4 @@ AGENCIES = {
     "MCIL" => "Ministry of Commerce Industry and Labour",
     "ACC" => "Accident Compensation Corporation"
     }
+ComplaintCategories = ["Informal", "Out of Jurisdiction", "Formal"]

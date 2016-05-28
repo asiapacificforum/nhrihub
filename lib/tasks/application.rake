@@ -56,3 +56,56 @@ namespace :projects do
     end
   end
 end
+
+namespace :complaints do
+  desc "populates all complaint-related tables"
+  task :populate => [:populate_complaints]
+
+  desc "populates complaints"
+  task :populate_complaints => [:environment, :populate_complaint_bases, :populate_cats] do
+    Complaint.destroy_all
+    3.times do |i|
+      complaint = FactoryGirl.create(:complaint,
+                                     :case_reference => "C16/#{i+1}",
+                                     :status => [true,false].sample)
+
+      # avoid creating too many users... creates login collisions
+      if User.count > 20
+        assignees = User.all.sample(2)
+      else
+        assignees = [FactoryGirl.create(:assignee), FactoryGirl.create(:assignee)]
+      end
+      assigns = assignees.map do |user|
+        date = DateTime.now.advance(:days => -rand(365))
+        Assign.create(:created_at => date, :assignee => user)
+      end
+      complaint.assigns << assigns
+
+      complaint_document = FactoryGirl.create(:complaint_document, :title => rand_title, :filename => rand_filename)
+      complaint.complaint_documents << complaint_document
+
+      complaint_category = ComplaintCategory.all.sample
+      complaint.complaint_categories << complaint_category
+    end
+  end
+
+  desc "populates complaint categories"
+  task :populate_cats => :environment do
+    ComplaintCategory.destroy_all
+    ComplaintCategories.each do |category|
+      ComplaintCategory.create(:name => category)
+    end
+  end
+
+  desc "populates complaint bases for all mandates"
+  task :populate_complaint_bases => :environment do
+    ComplaintBasis.destroy_all
+    Convention.destroy_all
+    ["GoodGovernance", "Nhri", "Siu"].each do |type_prefix|
+      klass = type_prefix+"::ComplaintBasis"
+      klass.constantize::DefaultNames.each do |name|
+        klass.constantize.create(:name => name)
+      end
+    end
+  end
+end

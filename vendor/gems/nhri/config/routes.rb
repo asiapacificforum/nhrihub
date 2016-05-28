@@ -14,7 +14,6 @@ Rails.application.routes.draw do
         end
         resources :projects
       end
-      resources :complaints
       resources :indicators, :controller => 'heading/indicators'
       resources :indicators do
         resources :reminders, :controller => 'indicator/reminders'

@@ -9,7 +9,6 @@ class CreateComplaint < ActiveRecord::Migration
       t.datetime :closed_on
       t.integer :closed_by_id
       t.integer :opened_by_id
-      t.string :type
       t.timestamps
     end
 
@@ -46,6 +45,17 @@ class CreateComplaint < ActiveRecord::Migration
       t.datetime "lastModifiedDate"
       t.string   "original_type",    limit: 255
       t.integer  "user_id"
+      t.timestamps
+    end
+
+    create_table :complaint_categories do |t|
+      t.string :name
+      t.timestamps
+    end
+
+    create_table :complaint_complaint_categories do |t|
+      t.integer :complaint_id
+      t.integer :complaint_category_id
       t.timestamps
     end
   end

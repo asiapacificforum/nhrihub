@@ -24,6 +24,8 @@ en:
         add: "Add Complaint Basis"
       siu_basis:
         add: "Add Complaint Basis"
+      complaint_category:
+        add: "Add Complaint Category"
     document_filesize_configuration:
       current_val: "Current value"
       change: "Change to"
@@ -37,4 +39,5 @@ en:
       heading: "Complaints Configuration"
       gg_bases: "Good Governance Bases of Complaints"
       siu_bases: "Special Investigations Unit Bases of Complaints"
+      categories: "Complaint Categories"
 

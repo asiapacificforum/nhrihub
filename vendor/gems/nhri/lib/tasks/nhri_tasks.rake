@@ -22,33 +22,8 @@ end
 
 namespace :nhri do
   desc "populate all nhri modules"
-  task :populate => [:populate_tor, :populate_mem, :populate_min, :populate_iss, :populate_ind_etc, :populate_complaints]
+  task :populate => [:populate_tor, :populate_mem, :populate_min, :populate_iss, :populate_ind_etc]
 
-  desc "populates NHRI complaints"
-  task :populate_complaints => :environment do
-    Nhri::Complaint.destroy_all
-    3.times do |i|
-      complaint = FactoryGirl.create(:complaint,
-                                     :nhri,
-                                     :case_reference => "C16/#{i+1}",
-                                     :status => [true,false].sample)
-
-      # avoid creating too many users... creates login collisions
-      if User.count > 20
-        assignees = User.all.sample(2)
-      else
-        assignees = [FactoryGirl.create(:assignee), FactoryGirl.create(:assignee)]
-      end
-      assigns = assignees.map do |user|
-        date = DateTime.now.advance(:days => -rand(365))
-        Assign.create(:created_at => date, :assignee => user)
-      end
-      complaint.assigns << assigns
-
-      complaint_document = FactoryGirl.create(:complaint_document, :title => rand_title, :filename => rand_filename)
-      complaint.complaint_documents << complaint_document
-    end
-  end
 
   desc "populates terms of reference"
   task :populate_tor => :environment do

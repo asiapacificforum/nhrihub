@@ -12,6 +12,7 @@ feature "complaint admin", :js => true do
     sleep(0.1)
     expect(page).to have_selector '#gg_bases #empty'
     expect(page).to have_selector '#siu_bases #empty'
+    expect(page).to have_selector '#complaint_categories #empty'
   end
 
   scenario "complaint bases configured" do
@@ -75,6 +76,41 @@ feature "complaint admin", :js => true do
     visit complaint_admin_path('en')
     expect{ delete_complaint_basis("A thing").click; wait_for_ajax }.to change{ GoodGovernance::ComplaintBasis.count }.by -1
     expect(page).to have_selector '#gg_bases #empty'
+  end
+
+  scenario "complaint categories configured" do
+    ComplaintCategory.create(:name=>"foo")
+    visit complaint_admin_path('en')
+    expect(page.find('#complaint_categories .complaint_category').text).to eq "foo"
+  end
+
+  scenario "add complaint category" do
+    visit complaint_admin_path('en')
+    sleep(0.1)
+    expect(page).to have_selector '#complaint_categories #empty'
+    page.find('#complaint_categories #complaint_category_name').set('A thing')
+    expect{ new_complaint_category_button.click; wait_for_ajax }.to change{ ComplaintCategory.all.map(&:name) }.from([]).to(["A thing"])
+    expect(page.find('#complaint_categories .complaint_category').text).to eq "A thing"
+    expect(page).not_to have_selector '#complaint_categories #empty'
+    page.find('#complaint_categories #complaint_category_name').set('Another thing')
+    expect{ new_complaint_category_button.click; wait_for_ajax }.to change{ ComplaintCategory.count }.from(1).to(2)
+    expect(page.all('#complaint_categories .complaint_category')[1].text).to eq "Another thing"
+  end
+
+  scenario "add duplicate complaint category" do
+    ComplaintCategory.create(:name => "A thing")
+    visit complaint_admin_path('en')
+    sleep(0.1)
+    page.find('#complaint_categories #complaint_category_name').set('A thing')
+    expect{ new_complaint_category_button.click; wait_for_ajax }.not_to change{ ComplaintCategory.count }
+    expect( flash_message ).to eq "Complaint category already exists, must be unique."
+  end
+
+  scenario "delete a complaint category" do
+    ComplaintCategory.create(:name => "A thing")
+    visit complaint_admin_path('en')
+    expect{ delete_complaint_basis("A thing").click; wait_for_ajax }.to change{ ComplaintCategory.count }.by -1
+    expect(page).to have_selector '#complaint_categories #empty'
   end
 
 end

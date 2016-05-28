@@ -1,6 +1,10 @@
 require 'rspec/core/shared_context'
 
 module ComplaintAdminSpecHelpers
+  def new_complaint_category_button
+    page.find('#new_complaint_category button')
+  end
+
   def new_siu_complaint_basis_button
     page.find('#new_siu_basis button')
   end
@@ -11,6 +15,10 @@ module ComplaintAdminSpecHelpers
 
   def flash_message
     page.find(".message_block").text
+  end
+
+  def delete_complaint_basis(text)
+    page.find(:xpath, ".//tr[contains(td,'#{text}')]//a")
   end
 
   def delete_complaint_basis(text)

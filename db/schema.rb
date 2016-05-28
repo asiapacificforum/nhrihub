@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160521010000) do
+ActiveRecord::Schema.define(version: 20160527155228) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -122,9 +122,22 @@ ActiveRecord::Schema.define(version: 20160521010000) do
     t.datetime "updated_at"
   end
 
+  create_table "complaint_categories", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "complaint_complaint_bases", force: :cascade do |t|
     t.integer  "complaint_id"
     t.integer  "complaint_basis_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "complaint_complaint_categories", force: :cascade do |t|
+    t.integer  "complaint_id"
+    t.integer  "complaint_category_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -149,6 +162,13 @@ ActiveRecord::Schema.define(version: 20160521010000) do
     t.datetime "updated_at"
   end
 
+  create_table "complaint_mandates", force: :cascade do |t|
+    t.integer  "complaint_id"
+    t.integer  "mandate_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "complaints", force: :cascade do |t|
     t.string   "case_reference"
     t.string   "complainant"
@@ -158,7 +178,6 @@ ActiveRecord::Schema.define(version: 20160521010000) do
     t.datetime "closed_on"
     t.integer  "closed_by_id"
     t.integer  "opened_by_id"
-    t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

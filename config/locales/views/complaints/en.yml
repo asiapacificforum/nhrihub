@@ -9,5 +9,14 @@ en:
       complainant: 'Complainant'
       village: 'Village'
       phone: 'Phone'
+      complainant_error_message : "Complainant can't be blank"
+      mandate: "Jurisdiction"
+      complaint_basis: "Basis of Complaint"
+      agency: "Agency"
+      assignees_history: "History of assignees"
+      documents: "Documents"
+      categories: "Categories"
+      case_reference: "Case reference"
     index:
+      heading: "Complaints"
       add_complaint: "Add complaint"
