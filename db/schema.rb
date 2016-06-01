@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 20160527155228) do
   create_table "complaint_complaint_bases", force: :cascade do |t|
     t.integer  "complaint_id"
     t.integer  "complaint_basis_id"
+    t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -174,7 +175,7 @@ ActiveRecord::Schema.define(version: 20160527155228) do
     t.string   "complainant"
     t.string   "village"
     t.string   "phone"
-    t.boolean  "status"
+    t.boolean  "status",         default: true
     t.datetime "closed_on"
     t.integer  "closed_by_id"
     t.integer  "opened_by_id"

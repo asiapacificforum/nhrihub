@@ -17,6 +17,16 @@ en:
       documents: "Documents"
       categories: "Categories"
       case_reference: "Case reference"
+      basis: "Complaint basis"
+      good_governance: "Good governance"
+      human_rights: "Human rights"
+      special_investigations_unit: "Special Investigations Unit"
+      open: "Open"
+      closed: "Closed"
+      'on': 'on' # b/c on is a keyword in yaml and the translation borks
+      by: 'by'
+      select_assignee: 'Select assignee'
+      assignee: 'Assignee'
     index:
       heading: "Complaints"
       add_complaint: "Add complaint"

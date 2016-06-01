@@ -4,10 +4,12 @@
   position: relative;
 
   .no_edit {
+    @extend .fade;
     position: relative;
   }
 
   .edit {
+    @extend .fade;
     top: 0px;
     left: 0px;
   }

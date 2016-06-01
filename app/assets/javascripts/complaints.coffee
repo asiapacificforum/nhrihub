@@ -37,6 +37,19 @@ Assignees = Ractive.extend
   components :
     assignee : Assignee
 
+ComplaintBasis = Ractive.extend
+  template : '#complaint_basis_template'
+  computed :
+    name : ->
+      mandate = _(@get('complaint_bases')).find (cb)=> _.isEqual(cb.key, @get(mandate).mandate)
+      complaint_basis = _(mandate.complaint_bases).find (cb)=> _.isEqual(cb.id, @get('id'))
+      complaint_basis.name
+
+ComplaintBases = Ractive.extend
+  template : '#complaint_bases_template'
+  components :
+    complaintBasis : ComplaintBasis
+
 ComplaintCategory = Ractive.extend
   template : '#complaint_category_template'
 
@@ -44,6 +57,9 @@ ComplaintCategories = Ractive.extend
   template : '#complaint_categories_template'
   components :
     complaintCategory : ComplaintCategory
+
+AssigneeSelector = Ractive.extend
+  template : '#assignee_selector_template'
 
 Complaint = Ractive.extend
   template : '#complaint_template'
@@ -59,7 +75,9 @@ Complaint = Ractive.extend
     params : ->
       ['case_reference','complainant','village','phone','mandate_ids',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
-        'human_rights_complaint_basis_ids']
+        'human_rights_complaint_basis_ids', 'status_humanized', 'current_assignee_id']
+    url : ->
+      Routes.complaint_path('en', @get('id'))
   oninit : ->
     @set
       'editing' : false
@@ -70,6 +88,8 @@ Complaint = Ractive.extend
     complaintBasesSelector : ComplaintBasesSelector 
     agenciesSelector : AgenciesSelector
     complaintCategories : ComplaintCategories
+    complaintBases : ComplaintBases
+    assigneeSelector : AssigneeSelector
   expand : ->
     @set('expanded',true)
     $(@findAll('.collapse')).collapse('show')
@@ -92,6 +112,10 @@ Complaint = Ractive.extend
     @set(data)
   remove_attribute_error : (attribute)->
     true
+  remove_errors : ->
+    true
+  cancel_add_complaint : ->
+    @parent.shift('complaints')
 
 complaints_options =
   el : '#complaints'
@@ -101,6 +125,7 @@ complaints_options =
     all_mandates : mandates
     complaint_bases : complaint_bases
     all_agencies : agencies
+    all_users : all_users
   components :
     complaint : Complaint
   new_complaint : ->
@@ -112,13 +137,17 @@ complaints_options =
       complainant : ""
       complaint_documents : []
       current_assignee : ""
+      current_assignee_id : ""
       formatted_date : ""
+      good_governance_complaint_basis_ids : []
+      human_rights_complaint_basis_ids : []
       id : null
+      mandate_ids : []
       notes : []
       opened_by_id : null
       phone : ""
       reminders : []
-      status : true
+      special_investigations_unit_complaint_basis_ids : []
       status_humanized : "open"
       village : ""
     @unshift('complaints',new_complaint)
@@ -130,3 +159,4 @@ Ractive.decorators.inpage_edit = EditInPlace
 
 $ ->
   start_page()
+

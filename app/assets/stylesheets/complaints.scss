@@ -5,3 +5,21 @@
   padding-top: 0;
   padding-bottom: 0;
 }
+
+div[id$='_complaint_bases'] {
+  .basis_name:after {
+    content : ":";
+  }
+}
+
+.status .closed_on:before {
+  content : "(";
+}
+
+.status .closed_on:after {
+  content : ",";
+}
+
+.status .closed_by:after {
+  content : ")";
+}

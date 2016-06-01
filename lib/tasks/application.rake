@@ -65,9 +65,7 @@ namespace :complaints do
   task :populate_complaints => [:environment, :populate_complaint_bases, :populate_cats] do
     Complaint.destroy_all
     3.times do |i|
-      complaint = FactoryGirl.create(:complaint,
-                                     :case_reference => "C16/#{i+1}",
-                                     :status => [true,false].sample)
+      complaint = FactoryGirl.create(:complaint, :case_reference => "C16/#{i+1}")
 
       # avoid creating too many users... creates login collisions
       if User.count > 20
@@ -86,6 +84,10 @@ namespace :complaints do
 
       complaint_category = ComplaintCategory.all.sample
       complaint.complaint_categories << complaint_category
+
+      complaint.good_governance_complaint_bases << GoodGovernance::ComplaintBasis.all.sample(2)
+      complaint.human_rights_complaint_bases << Nhri::ComplaintBasis.all.sample(2)
+      complaint.special_investigations_unit_complaint_bases << Siu::ComplaintBasis.all.sample(2)
     end
   end
 

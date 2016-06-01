@@ -101,7 +101,11 @@ class User < ActiveRecord::Base
   alias_method :to_s, :first_last_name
 
   def as_json(options={})
-    super(:except => [:created_at, :updated_at], :only =>[], :methods => [:first_last_name])
+    if options.empty?
+      super(:except => [:created_at, :updated_at], :only =>[], :methods => [:first_last_name])
+    else
+      super(options)
+    end
   end
 
   def initials

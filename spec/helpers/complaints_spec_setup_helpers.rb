@@ -7,9 +7,9 @@ module ComplaintsSpecSetupHelpers
     FactoryGirl.create(:complaint, :case_reference => "c12/34", :status => true,
                        :village => Faker::Address.city,
                        :phone => Faker::PhoneNumber.phone_number,
-                       :human_rights_complaint_bases => human_rights_complaint_bases,
-                       :good_governance_complaint_bases => good_governance_complaint_bases,
-                       :siu_complaint_bases => siu_complaint_bases,
+                       :human_rights_complaint_bases => hr_complaint_bases,
+                       :good_governance_complaint_bases => gg_complaint_bases,
+                       :special_investigations_unit_complaint_bases => siu_complaint_bases,
                        :assigns => assigns,
                        :complaint_documents => complaint_docs,
                        :complaint_categories => complaint_cats)
@@ -28,12 +28,12 @@ module ComplaintsSpecSetupHelpers
     Array.new(2) { FactoryGirl.create(:complaint_document) }
   end
 
-  def human_rights_complaint_bases
+  def hr_complaint_bases
     names = ["CAT", "ICESCR"]
     names.collect{|name| FactoryGirl.create(:convention, :name => name)}
   end
 
-  def good_governance_complaint_bases
+  def gg_complaint_bases
     names = ["Delayed action", "Failure to act"]
     names.collect{|name| FactoryGirl.create(:good_governance_complaint_basis, :name => name) }
   end

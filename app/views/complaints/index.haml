@@ -15,5 +15,6 @@
   window.agencies = #{@agencies.to_json}
   window.complaint_bases = #{@complaint_bases.map(&:to_h).to_json}
   window.next_case_reference = "#{@next_case_reference}"
+  window.all_users = #{@users.to_json(:only => :id, :methods => :first_last_name)}
 
 = javascript_include_tag 'complaints'
