@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160527155228) do
+ActiveRecord::Schema.define(version: 20160601131916) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -175,10 +175,6 @@ ActiveRecord::Schema.define(version: 20160527155228) do
     t.string   "complainant"
     t.string   "village"
     t.string   "phone"
-    t.boolean  "status",         default: true
-    t.datetime "closed_on"
-    t.integer  "closed_by_id"
-    t.integer  "opened_by_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -553,6 +549,14 @@ ActiveRecord::Schema.define(version: 20160527155228) do
   end
 
   add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
+
+  create_table "status_changes", force: :cascade do |t|
+    t.integer  "complaint_id"
+    t.integer  "user_id"
+    t.boolean  "new_value",    default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "strategic_plans", force: :cascade do |t|
     t.date     "start_date"

@@ -4,7 +4,7 @@ module ComplaintsSpecSetupHelpers
   extend RSpec::Core::SharedContext
 
   def populate_database
-    FactoryGirl.create(:complaint, :case_reference => "c12/34", :status => true,
+    FactoryGirl.create(:complaint, :case_reference => "c12/34",
                        :village => Faker::Address.city,
                        :phone => Faker::PhoneNumber.phone_number,
                        :human_rights_complaint_bases => hr_complaint_bases,
@@ -12,13 +12,20 @@ module ComplaintsSpecSetupHelpers
                        :special_investigations_unit_complaint_bases => siu_complaint_bases,
                        :assigns => assigns,
                        :complaint_documents => complaint_docs,
-                       :complaint_categories => complaint_cats)
+                       :complaint_categories => complaint_cats,
+                       :status_changes => _status_changes)
     [:good_governance, :human_rights, :special_investigations_unit].each do |key|
       FactoryGirl.create(:mandate, :key => key)
     end
   end
 
   private
+
+  def _status_changes
+    # open 100 days ago, closed 50 days ago
+    [FactoryGirl.build(:status_change, :created_at => DateTime.now.advance(:days => -100), :new_value => 1, :user_id => User.pluck(:id).first),
+     FactoryGirl.build(:status_change, :created_at => DateTime.now.advance(:days => -50), :new_value => 0, :user_id => User.pluck(:id).second )]
+  end
 
   def complaint_cats
     Array.new(1) { FactoryGirl.create(:complaint_category) }

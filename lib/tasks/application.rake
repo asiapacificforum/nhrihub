@@ -88,6 +88,7 @@ namespace :complaints do
       complaint.good_governance_complaint_bases << GoodGovernance::ComplaintBasis.all.sample(2)
       complaint.human_rights_complaint_bases << Nhri::ComplaintBasis.all.sample(2)
       complaint.special_investigations_unit_complaint_bases << Siu::ComplaintBasis.all.sample(2)
+      complaint.status_changes << FactoryGirl.create(:status_change, :user_id => User.all.sample.id)
     end
   end
 

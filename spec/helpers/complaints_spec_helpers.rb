@@ -6,6 +6,14 @@ module ComplaintsSpecHelpers
     page.find('#cancel_complaint').click
   end
 
+  def current_status
+    page.find('#current_status')
+  end
+
+  def status_changes
+    page.find('#status_changes')
+  end
+
   def status
     page.find('.status')
   end

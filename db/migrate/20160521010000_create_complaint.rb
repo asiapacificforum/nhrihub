@@ -5,10 +5,6 @@ class CreateComplaint < ActiveRecord::Migration
       t.string :complainant
       t.string :village
       t.string :phone
-      t.boolean :status, :default => true
-      t.datetime :closed_on
-      t.integer :closed_by_id
-      t.integer :opened_by_id
       t.timestamps
     end
 

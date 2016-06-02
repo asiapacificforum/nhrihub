@@ -6,16 +6,16 @@ describe "Complaint with siu complaint basis" do
   before do
     @complaint = Complaint.create
     @siu_complaint_basis = Siu::ComplaintBasis.create(:name => "A thing")
-    @complaint.siu_complaint_bases << @siu_complaint_basis
+    @complaint.special_investigations_unit_complaint_bases << @siu_complaint_basis
     @complaint.save
   end
 
   it "should be saved with the associations" do
-    expect(@complaint.siu_complaint_bases.count).to eq 1
-    expect(@complaint.siu_complaint_bases.first.name).to eq "A thing"
+    expect(@complaint.special_investigations_unit_complaint_bases.count).to eq 1
+    expect(@complaint.special_investigations_unit_complaint_bases.first.name).to eq "A thing"
     expect(Siu::ComplaintBasis.count).to eq 1
     expect(ComplaintComplaintBasis.count).to eq 1
-    expect(@complaint.siu_complaint_bases.first.type).to eq "Siu::ComplaintBasis"
+    expect(@complaint.special_investigations_unit_complaint_bases.first.type).to eq "Siu::ComplaintBasis"
   end
 end
 
@@ -83,5 +83,33 @@ describe "next case reference" do
     it "should create the first case reference for the current year" do
       expect(Complaint.next_case_reference).to eq("C#{ current_year }/1")
     end
+  end
+end
+
+describe "status change" do
+  before do
+    @current_user = FactoryGirl.create(:user)
+    @complaint = Complaint.create(:status_changes_attributes => [{:user_id => @current_user.id, :status_humanized => "open"}])
+  end
+
+  it "should create an initial status_change object" do
+    expect(@complaint.current_status).to eq true
+    expect(@complaint.status_changes.length).to eq 1
+    expect(@complaint.status_changes.first.new_value).to eq true
+    expect(@complaint.status_changes.first.user_id).to eq @current_user.id
+  end
+
+  it "should add a new status_change object when complaint is closed" do
+    @current_user = FactoryGirl.create(:user)
+    @complaint.update_attribute(:status_changes_attributes, [{:user_id => @current_user.id, :status_humanized => 'closed'}])
+    expect(@complaint.current_status).to eq false
+    expect(@complaint.status_changes.length).to eq 2
+    expect(@complaint.status_changes.last.new_value).to eq false
+    expect(@complaint.status_changes.last.user_id).to eq @current_user.id
+  end
+
+  it "should not create a new status_change object if status did not change" do
+    @complaint.update_attribute(:status_changes_attributes, [{:user_id => @current_user.id, :status_humanized => 'open'}])
+    expect(@complaint.status_changes.length).to eq 1
   end
 end

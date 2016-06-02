@@ -75,7 +75,7 @@ Complaint = Ractive.extend
     params : ->
       ['case_reference','complainant','village','phone','mandate_ids',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
-        'human_rights_complaint_basis_ids', 'status_humanized', 'current_assignee_id']
+        'human_rights_complaint_basis_ids', 'current_status_humanized', 'current_assignee_id']
     url : ->
       Routes.complaint_path('en', @get('id'))
   oninit : ->

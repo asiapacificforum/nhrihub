@@ -23,7 +23,8 @@ feature "complaints index", :js => true do
   it "shows basic information for each complaint" do
     within first_complaint do
       expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
-      expect(find('.status').text).to eq Complaint.first.status_humanized
+      expect(all('#status_changes .status_change').first.text).to match /#{Complaint.first.status_changes.first.status_humanized}/
+      expect(all('#status_changes .status_change').last.text).to match /#{Complaint.first.status_changes.last.status_humanized}/
       expect(find('.complainant').text).to eq Complaint.first.complainant
     end
   end
@@ -42,6 +43,16 @@ feature "complaints index", :js => true do
           expect(all('.date').map(&:text)).to include date
         end # /do
       end # /within
+
+      within status_changes do
+        expect(page).to have_selector('.status_change', :count => 2)
+        expect(all('.status_change .user_name')[0].text).to eq User.first.first_last_name
+        expect(all('.status_change .user_name')[1].text).to eq User.second.first_last_name
+        expect(all('.status_change .date')[0].text).to eq Complaint.first.status_changes[0].created_at.localtime.to_date.to_s(:short)
+        expect(all('.status_change .date')[1].text).to eq Complaint.first.status_changes[1].created_at.localtime.to_date.to_s(:short)
+        expect(all('.status_change .status_humanized')[0].text).to eq "open"
+        expect(all('.status_change .status_humanized')[1].text).to eq "closed"
+      end
 
       within complaint_documents do
         Complaint.first.complaint_documents.map(&:title).each do |title|
@@ -100,9 +111,12 @@ feature "complaints index", :js => true do
     expect(Complaint.last.human_rights_complaint_bases.map(&:name)).to include "CAT"
     expect(Complaint.last.special_investigations_unit_complaint_bases.map(&:name)).to include "Unreasonable delay"
     expect(Complaint.last.current_assignee_name).to eq User.first.first_last_name
+    expect(Complaint.last.status_changes.count).to eq 1
+    expect(Complaint.last.status_changes.first.new_value).to eq true
     expect(first_complaint.find('.case_reference').text).to eq next_ref
     expect(first_complaint.find('.current_assignee').text).to eq User.first.first_last_name
     expect(first_complaint.find('.complainant').text).to eq "Norman Normal"
+    expect(first_complaint.find('#status_changes .status_change .status_humanized').text).to eq 'open'
     expand
     expect(first_complaint.find('.complainant_village').text).to eq "Normaltown"
     expect(first_complaint.find('.complainant_phone').text).to eq "555-1212"
@@ -147,16 +161,17 @@ feature "complaints index", :js => true do
     expect(basis_checkbox(:special_investigations_unit, "Unreasonable delay")).not_to be_checked
   end
 
-  it "closes a complaint" do
+  it "changes complaint current status by adding a status_change" do
     edit_complaint
-    within status do
-      choose "close"
+    within current_status do
+      expect(page).to have_checked_field "close"
+      choose "open"
     end
-    expect{ edit_save; wait_for_ajax }.to change{ Complaint.first.status }.from(true).to(false)
-    expect( first_complaint.find('.status').text ).to match "closed"
-    expect( first_complaint.find('.closed_on').text ).to match /#{Date.today.to_s(:short)}/
+    expect{ edit_save; wait_for_ajax }.to change{ Complaint.first.current_status }.from(false).to(true)
+    expect( first_complaint.all('#status_changes .status_change').last.text ).to match "open"
+    expect( first_complaint.all('#status_changes .date').last.text ).to match /#{Date.today.to_s(:short)}/
     user = User.find_by(:login => 'admin')
-    expect( first_complaint.find('.closed_by').text ).to match /#{user.first_last_name}/
+    expect( first_complaint.all('#status_changes .user_name').last.text ).to match /#{user.first_last_name}/
   end
 
   it "edits a complaint" do
