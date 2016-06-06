@@ -33,10 +33,10 @@
       <projectTypesSelector all_mandates='{{all_mandates}}' />
       {{> agency_convention_selector }}
       <performanceindicatorselect />
-      {{> file_selector_template {key : 'project'} }}
       .panel.panel-default#documents
         .panel-heading= t('.project_documents')
         .panel-body
+          {{> file_selector_template {key : 'project'} }}
           <projectDocuments project_documents='{{project_documents}}'>
 
 %script#project_documents_template{:type => 'template/ractive'}
@@ -209,7 +209,7 @@
               %span.help-block.error#description_error= t('.description_error_message')
         <performanceindicatorselect performance_indicators='{{performance_indicators}}' />
         .panel.panel-default
-          .panel-content{'data-toggle'=>'edit'}
+          .panel-body{'data-toggle'=>'edit'}
             .fade.no_edit.in
               <mandates mandates='{{mandates}}' />
               <projectTypes projectTypes='{{projectTypes}}' />
@@ -223,7 +223,7 @@
           .panel-heading
             .row
               .col-md-2= t('.project_documents')
-          .panel-content#project_documents{'data-toggle' => :edit}
+          .panel-body#project_documents{'data-toggle' => :edit}
             .fade.edit{:style => "padding-left:15px; padding-top:15px;"}
               {{> file_selector_template {key : 'project'} }}
             .fade.no_edit.in

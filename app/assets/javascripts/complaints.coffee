@@ -1,5 +1,7 @@
 //= require 'in_page_edit'
 //= require 'validator'
+//= require 'file_input_decorator'
+//= require 'progress_bar'
 
 Ractive.DEBUG = false
 

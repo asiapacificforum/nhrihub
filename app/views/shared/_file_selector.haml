@@ -1,15 +1,15 @@
 %script#file_selector_template{:type => 'template/ractive'}
   .row.fileupload
-    .col-md-1
+    .col-md-2
       %span.btn.btn-xs.btn-success.fileinput-button
         %i.fa.fa-plus.fa-lg{ :style => "color:white"}
         %span= t('add_document')
       %input.hidden_fileinput{:id => "{{key}}_fileinput", :multiple => "multiple", :name => "{{key}}_file", :type => "file", :decorator=>:ractive_fileupload}
-    .col-md-11.fileupload_progress
+    .col-md-10.fileupload_progress
       <progressBar />
 
 %script#progress_bar_template{:type => 'template/ractive'}
-  .col-lg-9.fileupload-progress.fade
+  .fileupload-progress.fade
     .progress.progress-striped.active{:role => "progressbar"}
       .progress-bar.progress-bar-success{:style => "width:0%;"}
     .progress-extended  

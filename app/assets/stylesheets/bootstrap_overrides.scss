@@ -55,3 +55,8 @@ select.form-control[id$=_3i] {
   padding-left : 6px;
   padding-right : 6px;
 }
+
+.fade:not(.in) {
+  height : 0px;
+  margin-bottom: 0px;
+}
