@@ -455,18 +455,19 @@ Ractive.decorators.inpage_edit = EditInPlace
 window.start_page = ->
   window.projects = new Ractive projects_options
 
-@FileInput =
-  # why not use ractive event? b/c it doesn't survive the 
-  # file input element replacement
-  add_file : (event,el)->
-    event.stopPropagation()
+FileInput = (node)->
+  $(node).on 'change', (event)->
+    add_file(event,@)
+  $(node).closest('.fileupload').find('.fileinput-button').on 'click', (event)->
+    $(@).parent().find('#project_fileinput').trigger('click')
+  add_file = (event,el)->
     file = el.files[0]
     @project = Ractive.getNodeInfo($(el).closest('.new_project')[0]).ractive || Ractive.getNodeInfo($(el).closest('.project')[0]).ractive
     @project.add_file(file)
-    @_replace_input()
-  _replace_input : ->
+    _replace_input()
+  _replace_input = ->
     # this technique comes from jQuery.fileupload
-    input = $(@project.find('#project_fileinput'))
+    input = $(node)
     inputClone = input.clone(true)
     # make a form and reset it. A hack to reset the fileinput element
     $('<form></form>').append(inputClone)[0].reset()
@@ -476,6 +477,15 @@ window.start_page = ->
     input.after(inputClone).detach()
     # Avoid memory leaks with the detached file input:
     $.cleanData input.unbind('remove')
+  return {
+    teardown : ->
+      $(node).off 'change'
+      $(node).closest('.fileupload').find('.fileinput-button').off 'click'
+    update : ->
+      #noop
+  }
+
+Ractive.decorators.ractive_fileupload = FileInput
 
 $ ->
   start_page()

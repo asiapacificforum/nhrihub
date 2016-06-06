@@ -238,10 +238,10 @@
 %script#file_selector_template{:type => 'template/ractive'}
   .row.fileupload
     .col-md-1
-      %span.btn.btn-xs.btn-success.fileinput-button{'on-click'=>'show_file_selector()'}
+      %span.btn.btn-xs.btn-success.fileinput-button
         %i.fa.fa-plus.fa-lg{ :style => "color:white"}
         %span= t('add_document')
-      %input.hidden_fileinput#project_fileinput{:multiple => "multiple", :name => "project_file", :type => "file", 'onchange' => 'FileInput.add_file(event,this)', 'data-project_id'=>'{{id}}'}
+      %input.hidden_fileinput#project_fileinput{:multiple => "multiple", :name => "project_file", :type => "file", :decorator=>:ractive_fileupload, 'data-project_id'=>'{{id}}'}
     .col-md-11.fileupload_progress
       <progressBar />
 
