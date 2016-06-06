@@ -6,6 +6,7 @@
 
 =stylesheet_link_tag 'application' # included for javascript tests, there must be a better way, is it included twice?!
 =stylesheet_link_tag 'projects'
+= render :partial => 'shared/file_selector'
 = render :partial => 'projects/projects_templates'
 = render :partial => 'shared/performance_indicator_select'
 #projects

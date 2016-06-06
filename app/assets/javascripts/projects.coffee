@@ -5,6 +5,8 @@
 //= require 'ractive_local_methods'
 //= require 'string'
 //= require 'validator'
+//= require 'file_input_decorator'
+//= require 'progress_bar'
 
 Ractive.DEBUG = false
 
@@ -186,22 +188,6 @@ Persistence =
     @set(response)
   progress_bar_create : ->
     @findComponent('progressBar').start()
-
-ProgressBar = Ractive.extend
-  template : '#progress_bar_template'
-  progressbar_start : ->
-    # this is called for each file being uploaded
-    $('.fileupload-progress.fade').addClass('in')
-  progress_evaluate : (evt)->
-    if evt.lengthComputable
-      percentComplete = evt.loaded / evt.total
-      percentComplete = parseInt(percentComplete * 100)
-      $('.progress-bar').css('width',"#{percentComplete}%")
-  start : ->
-    xhr = new XMLHttpRequest()
-    xhr.upload.addEventListener 'loadstart', @progressbar_start , false
-    xhr.upload.addEventListener 'progress', @progress_evaluate , false
-    xhr
 
 FilterMatch =
   include : ->
@@ -454,38 +440,6 @@ Ractive.decorators.inpage_edit = EditInPlace
 
 window.start_page = ->
   window.projects = new Ractive projects_options
-
-FileInput = (node)->
-  $(node).on 'change', (event)->
-    add_file(event,@)
-  $(node).closest('.fileupload').find('.fileinput-button').on 'click', (event)->
-    $(@).parent().find('input:file').trigger('click')
-  add_file = (event,el)->
-    file = el.files[0]
-    ractive = Ractive.getNodeInfo($(el).closest('.fileupload')[0]).ractive
-    ractive.add_file(file)
-    _replace_input()
-  _replace_input = ->
-    # this technique comes from jQuery.fileupload
-    input = $(node)
-    inputClone = input.clone(true)
-    # make a form and reset it. A hack to reset the fileinput element
-    $('<form></form>').append(inputClone)[0].reset()
-    # Detaching allows to insert the fileInput on another form
-    # without losing the file input value:
-    # detaches the original fileInput and leaves the clone in the DOM
-    input.after(inputClone).detach()
-    # Avoid memory leaks with the detached file input:
-    $.cleanData input.unbind('remove')
-  return {
-    teardown : ->
-      $(node).off 'change'
-      $(node).closest('.fileupload').find('.fileinput-button').off 'click'
-    update : ->
-      #noop
-  }
-
-Ractive.decorators.ractive_fileupload = FileInput
 
 $ ->
   start_page()
