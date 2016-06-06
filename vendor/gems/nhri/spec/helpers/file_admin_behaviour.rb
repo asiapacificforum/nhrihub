@@ -67,10 +67,10 @@ RSpec.shared_examples "file admin" do |parameter|
       model.permitted_filetypes=["pdf", "ppt"]
       visit admin_page
       delete_filetype("pdf")
-      sleep(0.2)
+      wait_for_ajax
       expect( model.permitted_filetypes ).to eq ["ppt"]
       delete_filetype("ppt")
-      sleep(0.2)
+      wait_for_ajax
       expect( model.permitted_filetypes ).to eq []
       expect(page).to have_selector '#empty'
     end

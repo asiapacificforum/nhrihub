@@ -107,7 +107,8 @@
   {{#all_agencies}}
   .row.agency
     .col-md-9
-      %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
+      %label{:for => 'agency_{{id}}'}
+        %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
     .col-md-3
       %input{:id=>'agency_{{id}}', :type => :checkbox, :name => '{{agency_ids}}', :value => '{{id}}'}
   {{/all_agencies}}
@@ -117,7 +118,8 @@
   {{#all_conventions}}
   .row.convention
     .col-md-9
-      %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
+      %label{:for => 'convention_{{id}}'}
+        %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
     .col-md-3
       %input{:id=>'convention_{{id}}', :type => :checkbox, :name => '{{convention_ids}}', :value => '{{id}}'}
   {{/all_conventions}}
@@ -134,7 +136,8 @@
           {{#project_types}}
           .row.project_type
             .col-md-9
-              %span {{name}}
+              %label{:for => 'project_type_{{id}}'}
+                %span {{name}}
             .col-md-3
               %input{:id=>'project_type_{{id}}', :type => :checkbox, :name => '{{project_type_ids}}', :value => '{{id}}'}
           {{/project_types}}
@@ -148,7 +151,8 @@
       .row
         {{#mandates}}
         .col-md-3{:style => "padding-top:0;"}
-          %span {{name}}
+          %label{:for => '{{key}}'}
+            %span {{name}}
         .col-md-1.mandate{:style => "padding-top:0;"}
           %input{:id=>'{{key}}', :type => :checkbox, :name => '{{mandate_ids}}', :value => '{{id}}'}
         {{/mandates}}

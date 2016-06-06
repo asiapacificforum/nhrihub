@@ -16,6 +16,7 @@ feature "indicators behaviour", :js => true do
 
   it "should add valid indicator" do
     add_indicator
+    wait_for_modal_open
     fill_in('indicator_title', :with => "Some arbitrary indicator title")
     select("Text", :from => "indicator_monitor_format")
     expect(page).not_to have_selector("#indicator_numeric_monitor_explanation")
@@ -24,7 +25,8 @@ feature "indicators behaviour", :js => true do
     select("Numeric", :from => "indicator_monitor_format")
     expect(page).to have_selector("#indicator_numeric_monitor_explanation")
     fill_in("indicator_numeric_monitor_explanation", :with => "% of people who like me")
-    expect{save_indicator.click; sleep(0.2)}.to change{Nhri::Indicator.count}.by 1
+    expect{save_indicator.click; wait_for_ajax }.to change{Nhri::Indicator.count}.by 1
+    wait_for_modal_close
     indicator = Nhri::Indicator.last
     expect(indicator.monitor_format).to eq "numeric"
     expect(indicator.numeric_monitor_explanation).to eq "% of people who like me"
@@ -32,6 +34,7 @@ feature "indicators behaviour", :js => true do
     expect(page).not_to have_selector "#new_indicator_modal"
     expect(page).to have_selector('li.indicator', :text => "Some arbitrary indicator title")
     add_indicator
+    wait_for_modal_open
     expect(page.find('#indicator_monitor_format').value).to eq ""
   end
 
@@ -41,6 +44,7 @@ feature "indicators behaviour", :js => true do
     select("Numeric", :from => "indicator_monitor_format")
     fill_in("indicator_numeric_monitor_explanation", :with => "% of people who like me")
     cancel_add
+    wait_for_modal_close
     expect(page).not_to have_selector "#new_indicator_modal"
     add_indicator
     expect(page).to have_selector("#new_indicator_modal #indicator_title", :text => "")

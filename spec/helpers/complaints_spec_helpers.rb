@@ -2,8 +2,24 @@ require 'rspec/core/shared_context'
 
 module ComplaintsSpecHelpers
   extend RSpec::Core::SharedContext
+  def new_complaint
+    page.find('.new_complaint')
+  end
+
+  def delete_complaint
+    page.find('.delete_icon').click
+  end
+
+  def mandates
+    page.find('#mandates')
+  end
+
   def cancel_add
     page.find('#cancel_complaint').click
+  end
+
+  def edit_cancel
+    page.find('.fa-remove').click
   end
 
   def current_status
@@ -22,12 +38,49 @@ module ComplaintsSpecHelpers
     page.find('.actions .fa-pencil-square-o').click
   end
 
+  def edit_first_complaint
+    page.all('.actions .fa-pencil-square-o')[0].click
+  end
+
+  def edit_second_complaint
+    # b/c where this is used, the first complaint has been removed whe this is called, so the second edit complaint is actually the first!
+    edit_first_complaint
+  end
+
   def edit_save
     page.find('.fa-check').click
   end
 
+  def check_category(text)
+    within page.find('#categories') do
+      check(text)
+    end
+  end
+
+  def uncheck_category(text)
+    within page.find('#categories') do
+      uncheck(text)
+    end
+  end
+
+  def check_agency(text)
+    within page.find("#agencies") do
+      check(text)
+    end
+  end
+
+  def uncheck_agency(text)
+    within page.find("#agencies") do
+      uncheck(text)
+    end
+  end
+
   def check_basis(group, text)
     basis_checkbox(group, text).set(true)
+  end
+
+  def uncheck_basis(group, text)
+    basis_checkbox(group, text).set(false)
   end
 
   def basis_checkbox(group, text)
@@ -56,16 +109,44 @@ module ComplaintsSpecHelpers
     page.find('.new_complaint #case_reference').text
   end
 
+  def agencies
+    page.find('#agencies')
+  end
+
   def complaint_categories
     page.find('#complaint_categories')
   end
 
   def first_complaint
-    page.all('#complaints .complaint')[0]
+    complaints[0]
   end
 
   def complaint_documents
     page.find('#complaint_documents')
+  end
+
+  def complaints
+    page.all('#complaints .complaint')
+  end
+
+  def attach_file
+    page.attach_file("complaint_fileinput", upload_document, :visible => false)
+  end
+
+  def upload_file_path(filename)
+    CapybaraRemote.upload_file_path(page,filename)
+  end
+
+  def upload_document
+    upload_file_path('first_upload_file.pdf')
+  end
+
+  def big_upload_document
+    upload_file_path('big_upload_file.pdf')
+  end
+
+  def upload_image
+    upload_file_path('first_upload_image_file.png')
   end
 
   def assignee_history

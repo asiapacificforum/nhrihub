@@ -28,14 +28,14 @@ feature "advisory council minutes document", :js => true do
   it "should accept and save user-entered date" do
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find('#advisory_council_minutes_date').set('August 19, 2025')
-    expect{upload_files_link.click; sleep(0.5)}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.count}.by(1)
+    expect{upload_files_link.click; wait_for_ajax }.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.count}.by(1)
     expect(page).to have_selector('.advisory_council_minutes', :text => 'Advisory Council Meeting Minutes, August 19, 2025', :count => 1)
   end
 
   it "should reorder the list if a date is inserted in the middle" do
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find('#advisory_council_minutes_date').set('August 19, 2025')
-    expect{upload_files_link.click; sleep(0.5)}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.count}.by(1)
+    expect{upload_files_link.click; wait_for_ajax }.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.count}.by(1)
     expect(page.all('.advisory_council_minutes .title').map(&:text).map{|t| t.match(/, (.*)$/)[1]}).to eq ["August 19, 2025", "August 19, 2015", "August 19, 2014", "August 19, 2013"]
   end
 

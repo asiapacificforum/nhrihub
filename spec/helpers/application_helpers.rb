@@ -1,4 +1,10 @@
 module ApplicationHelpers
+  def resize_browser_window
+    if page.driver.browser.respond_to?(:manage)
+      page.driver.browser.manage.window.resize_to(1400,800) # b/c selenium driver doesn't seem to click when target is not in the view
+    end
+  end
+
   def select_date(date,options)
     base = options[:from].to_s
     year_selector = base+"_1i"

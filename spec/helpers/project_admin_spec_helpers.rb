@@ -14,4 +14,8 @@ module ProjectAdminSpecHelpers
   def set_filesize(val)
     page.find('input#filesize').set(val)
   end
+
+  def delete_project_type(text)
+    page.find(:xpath, ".//tr[contains(td,'#{text}')]").find('a').click
+  end
 end

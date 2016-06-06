@@ -62,7 +62,7 @@ namespace :complaints do
   task :populate => [:populate_complaints]
 
   desc "populates complaints"
-  task :populate_complaints => [:environment, :populate_complaint_bases, :populate_cats] do
+  task :populate_complaints => [:environment, :populate_complaint_bases, :populate_cats, 'projects:populate_mandates', 'projects:populate_agnc'] do
     Complaint.destroy_all
     3.times do |i|
       complaint = FactoryGirl.create(:complaint, :case_reference => "C16/#{i+1}")
@@ -89,6 +89,8 @@ namespace :complaints do
       complaint.human_rights_complaint_bases << Nhri::ComplaintBasis.all.sample(2)
       complaint.special_investigations_unit_complaint_bases << Siu::ComplaintBasis.all.sample(2)
       complaint.status_changes << FactoryGirl.create(:status_change, :user_id => User.all.sample.id)
+      complaint.mandate_ids = Mandate.pluck(:id).sample
+      complaint.agency_ids = Agency.pluck(:id).sample(2)
     end
   end
 

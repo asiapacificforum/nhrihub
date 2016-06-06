@@ -11,15 +11,3 @@ div[id$='_complaint_bases'] {
     content : ":";
   }
 }
-
-.status .closed_on:before {
-  content : "(";
-}
-
-.status .closed_on:after {
-  content : ",";
-}
-
-.status .closed_by:after {
-  content : ")";
-}

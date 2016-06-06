@@ -5,5 +5,11 @@ FactoryGirl.define do
     village { Faker::Address.city }
     phone { Faker::PhoneNumber.phone_number }
     created_at { DateTime.now.advance(:days => (rand(365) - 730))}
+
+    trait :open do
+      after(:build) do |complaint|
+        complaint.status_changes = [FactoryGirl.create(:status_change)]
+      end
+    end
   end
 end

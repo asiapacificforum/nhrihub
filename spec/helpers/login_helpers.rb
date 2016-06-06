@@ -61,6 +61,7 @@ module LoggedInEnAdminUserHelper
       fill_in "Password", :with => "password"
       click_button "Log in..."
     end
+    resize_browser_window
   end
 end
 

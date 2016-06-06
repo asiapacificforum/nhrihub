@@ -4,6 +4,9 @@ module ComplaintsSpecSetupHelpers
   extend RSpec::Core::SharedContext
 
   def populate_database
+    create_categories
+    create_mandates
+    create_agencies
     FactoryGirl.create(:complaint, :case_reference => "c12/34",
                        :village => Faker::Address.city,
                        :phone => Faker::PhoneNumber.phone_number,
@@ -13,13 +16,25 @@ module ComplaintsSpecSetupHelpers
                        :assigns => assigns,
                        :complaint_documents => complaint_docs,
                        :complaint_categories => complaint_cats,
-                       :status_changes => _status_changes)
+                       :status_changes => _status_changes,
+                       :mandates => _mandates,
+                       :agencies => _agencies)
+  end
+
+  private
+  def create_mandates
     [:good_governance, :human_rights, :special_investigations_unit].each do |key|
       FactoryGirl.create(:mandate, :key => key)
     end
   end
 
-  private
+  def _mandates
+    [ Mandate.find_by(:key => 'human_rights' ) ]
+  end
+
+  def _agencies
+    [ Agency.find_by(:name => 'SAA') ]
+  end
 
   def _status_changes
     # open 100 days ago, closed 50 days ago
@@ -27,8 +42,14 @@ module ComplaintsSpecSetupHelpers
      FactoryGirl.build(:status_change, :created_at => DateTime.now.advance(:days => -50), :new_value => 0, :user_id => User.pluck(:id).second )]
   end
 
+  def create_categories
+    ["Formal", "Informal", "Out of Jurisdication"].each do |category|
+      FactoryGirl.create(:complaint_category, :name => category) 
+    end
+  end
+
   def complaint_cats
-    Array.new(1) { FactoryGirl.create(:complaint_category) }
+    [ ComplaintCategory.find_by(:name => "Formal") ]
   end
 
   def complaint_docs
@@ -55,6 +76,12 @@ module ComplaintsSpecSetupHelpers
       assignee = FactoryGirl.create(:assignee, :with_password)
       date = DateTime.now.advance(:days => -rand(365))
       Assign.new(:created_at => date, :assignee => assignee)
+    end
+  end
+
+  def create_agencies
+    AGENCIES.each do |name,full_name|
+      Agency.create(:name => name, :full_name => full_name)
     end
   end
 end

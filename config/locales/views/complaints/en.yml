@@ -1,6 +1,9 @@
 en:
   complaints:
     complaints_templates:
+      title: "Title"
+      filename: "File name"
+      no_documents: "No documents"
       compact: 'Compact'
       expand: 'Expand'
       reference: 'Ref'
@@ -10,7 +13,7 @@ en:
       village: 'Village'
       phone: 'Phone'
       complainant_error_message : "Complainant can't be blank"
-      mandate: "Jurisdiction"
+      mandate: "Mandate"
       complaint_basis: "Basis of Complaint"
       agency: "Agency"
       assignees_history: "History of assignees"

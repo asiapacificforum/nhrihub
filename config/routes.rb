@@ -78,5 +78,16 @@ Rails.application.routes.draw do
     resources :good_governance_complaint_bases, :only => [:create, :destroy], :controller => 'good_governance/complaint_bases'
     resources :siu_complaint_bases, :only => [:create, :destroy], :controller => 'siu/complaint_bases'
     resources :complaint_categories, :only => [:create, :destroy]
+    namespace :good_governance do
+      resources :project_types, :only => [:create, :destroy]
+    end
+    namespace :siu do
+      resources :project_types, :only => [:create, :destroy]
+    end
+    namespace :human_rights do
+      resources :project_types, :only => [:create, :destroy]
+    end
+
+
   end
 end

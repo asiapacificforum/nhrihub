@@ -14,6 +14,7 @@ module WaitForAjax
     # this MAY change to jQuery.ajax.active in a later release
     page.evaluate_script('jQuery.active').zero?
   end
+
 end
 
 RSpec.configure do |config|

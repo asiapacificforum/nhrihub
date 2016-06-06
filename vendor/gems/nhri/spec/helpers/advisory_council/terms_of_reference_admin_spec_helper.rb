@@ -21,7 +21,7 @@ module TermsOfReferenceAdminSpecHelper
   end
 
   def delete_filetype(type)
-    #page.find(:xpath, ".//tr[contains(td,'#{type}')]").find('a').click
+    page.execute_script("scrollTo(0,$('#terms_of_reference_version_filetypes').position().top - 40)")
     page.find(:xpath, ".//div[@id='terms_of_reference_version_filetypes']//tr[contains(td,'#{type}')]").find('a').click
   end
 end

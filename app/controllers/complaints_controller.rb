@@ -8,6 +8,7 @@ class ComplaintsController < ApplicationController
                          Siu::ComplaintBasis.named_list]
     @next_case_reference = Complaint.next_case_reference
     @users = User.all
+    @categories = ComplaintCategory.all
   end
 
   def create
@@ -30,12 +31,20 @@ class ComplaintsController < ApplicationController
     end
   end
 
+  def destroy
+    complaint = Complaint.find(params[:id])
+    complaint.destroy
+    render :nothing => true, :status => 200
+  end
+
   private
   def complaint_params
     params.require(:complaint).permit( :case_reference, :complainant, :village, :phone, :current_assignee_id,
                                        :mandate_ids => [], :good_governance_complaint_basis_ids => [],
                                        :special_investigations_unit_complaint_basis_ids => [],
                                        :human_rights_complaint_basis_ids => [],
-                                       :status_changes_attributes => [:user_id, :status_humanized])
+                                       :status_changes_attributes => [:user_id, :status_humanized],
+                                       :complaint_category_ids => [],
+                                       :agency_ids => [])
   end
 end

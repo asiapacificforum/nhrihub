@@ -438,6 +438,7 @@ feature "view attachments", :js => true do
       click_the_link_icon
       sleep(0.5)
       page.switch_to_window(page.windows[1])
+      sleep(0.2)
       expect( page.evaluate_script('window.location.href')).to include first_article_link
     end
   end

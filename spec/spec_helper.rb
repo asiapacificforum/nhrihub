@@ -21,6 +21,7 @@ require 'capybara_remote'
 require 'capybara/poltergeist'
 require 'selenium-webdriver'
 require_relative './support/wait_for_ajax'
+require_relative './support/wait_for_modal'
 
 #comment this line out to use the default javascript server firefox
 #Capybara.default_wait_time = 5

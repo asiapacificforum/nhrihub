@@ -84,6 +84,14 @@ feature "complaints index", :js => true do
         end
       end
 
+      within mandates do
+        expect(find('.mandate').text).to eq "Human Rights"
+      end
+
+      within agencies do
+        expect(all('.agency').map(&:text)).to include "SAA"
+      end
+
     end # /within first
   end # /it
 
@@ -97,6 +105,15 @@ feature "complaints index", :js => true do
     check_basis(:human_rights, "CAT")
     check_basis(:special_investigations_unit, "Unreasonable delay")
     select(User.first.first_last_name, :from => "assignee")
+    check_category("Formal")
+    check_agency("SAA")
+    check_agency("ACC")
+    within new_complaint do
+      attach_file
+      fill_in("complaint_document_title", :with => "Complaint Document")
+    end
+    expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf")
+
     next_ref = Complaint.next_case_reference
     expect(new_complaint_case_reference).to eq next_ref
     expect{save_complaint.click; wait_for_ajax}.to change{ Complaint.count }.by(1)
@@ -113,6 +130,9 @@ feature "complaints index", :js => true do
     expect(Complaint.last.current_assignee_name).to eq User.first.first_last_name
     expect(Complaint.last.status_changes.count).to eq 1
     expect(Complaint.last.status_changes.first.new_value).to eq true
+    expect(Complaint.last.complaint_categories.map(&:name)).to include "Formal"
+    expect(Complaint.last.agencies.map(&:name)).to include "SAA"
+    expect(Complaint.last.agencies.map(&:name)).to include "ACC"
     expect(first_complaint.find('.case_reference').text).to eq next_ref
     expect(first_complaint.find('.current_assignee').text).to eq User.first.first_last_name
     expect(first_complaint.find('.complainant').text).to eq "Norman Normal"
@@ -137,6 +157,15 @@ feature "complaints index", :js => true do
       Complaint.last.special_investigations_unit_complaint_bases.map(&:name).each do |complaint_basis_name|
         expect(page).to have_selector('.complaint_basis', :text => complaint_basis_name)
       end
+    end
+
+    within complaint_categories do
+      expect(page.all('.name').map(&:text)).to include "Formal"
+    end
+
+    within agencies do
+      expect(all('.agency').map(&:text)).to include "SAA"
+      expect(all('.agency').map(&:text)).to include "ACC"
     end
   end
 
@@ -176,33 +205,140 @@ feature "complaints index", :js => true do
 
   it "edits a complaint" do
     edit_complaint
+    # COMPLAINANT
     fill_in('complainant', :with => "Norman Normal")
     fill_in('village', :with => "Normaltown")
     fill_in('phone', :with => "555-1212")
+    # CATEGORY
+    check_category("Informal")
+    uncheck_category("Formal")
+    # ASSIGNEE
+    select(User.last.first_last_name, :from => "assignee")
+    # MANDATE
+    check('special_investigations_unit') # originally had human rights mandate, now should have both
+    # BASIS
+    uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
+    uncheck_basis(:human_rights, "CAT") # originall had "CAT" "ICESCR"
+    uncheck_basis(:special_investigations_unit, "Unreasonable delay") #originally had "Unreasonable delay" "Not properly investigated"
+    # AGENCY
+    uncheck_agency("SAA")
+    check_agency("ACC")
+    # DOCUMENTS TODO
     expect{ edit_save; wait_for_ajax }.to change{ Complaint.first.complainant }.to("Norman Normal").
                                       and change{ Complaint.first.village }.to("Normaltown").
-                                      and change{ Complaint.first.phone }.to("555-1212")
+                                      and change{ Complaint.first.phone }.to("555-1212").
+                                      and change{ Complaint.first.assignees.count }.by 1
+
+    expect( Complaint.first.mandates.map(&:key) ).to include "special_investigations_unit"
+    expect( Complaint.first.mandates.map(&:key) ).to include "human_rights"
+    expect( Complaint.first.good_governance_complaint_bases.count ).to eq 1
+    expect( Complaint.first.good_governance_complaint_bases.first.name ).to eq "Failure to act"
+    expect( Complaint.first.human_rights_complaint_bases.count ).to eq 1
+    expect( Complaint.first.human_rights_complaint_bases.first.name ).to eq "ICESCR"
+    expect( Complaint.first.special_investigations_unit_complaint_bases.count ).to eq 1
+    expect( Complaint.first.special_investigations_unit_complaint_bases.first.name ).to eq "Not properly investigated"
+    expect( Complaint.first.complaint_categories.map(&:name) ).to include "Informal"
+    expect( Complaint.first.complaint_categories.count ).to eq 1
+    expect( Complaint.first.assignees ).to include User.last
+    expect( Complaint.first.agencies.map(&:name) ).to include "ACC"
+    expect( Complaint.first.agencies.count ).to eq 1
+
+    within good_governance_complaint_bases do
+      Complaint.last.good_governance_complaint_bases.map(&:name).each do |complaint_basis_name|
+        expect(page).to have_selector('.complaint_basis', :text => complaint_basis_name)
+      end
+    end
+
+    within human_rights_complaint_bases do
+      Complaint.last.human_rights_complaint_bases.map(&:name).each do |complaint_basis_name|
+        expect(page).to have_selector('.complaint_basis', :text => complaint_basis_name)
+      end
+    end
+
+    within special_investigations_unit_complaint_bases do
+      Complaint.last.special_investigations_unit_complaint_bases.map(&:name).each do |complaint_basis_name|
+        expect(page).to have_selector('.complaint_basis', :text => complaint_basis_name)
+      end
+    end
+
+    within complaint_categories do
+      expect(page.all('.name').map(&:text)).to include "Informal"
+    end
+
+    within agencies do
+      expect(all('.agency').map(&:text)).to include "ACC"
+    end
+  end
+
+  it "edits a complaint, adding a file" do
+    expect(1).to eq 0
+  end
+
+  it "edits a complaint, deleting a file" do
+    expect(1).to eq 0
+  end
+
+  it "downloads a file" do
+    expect(1).to eq 0
   end
 
   it "restores previous values when editing is cancelled" do
-    expect(1).to eq 0
+    original_complaint = Complaint.first
+    edit_complaint
+    fill_in('complainant', :with => "Norman Normal")
+    fill_in('village', :with => "Normaltown")
+    fill_in('phone', :with => "555-1212")
+    #check_basis(:good_governance, "Delayed action")
+    #check_basis(:human_rights, "CAT")
+    #check_basis(:special_investigations_unit, "Unreasonable delay")
+    edit_cancel
+    edit_complaint
+    expect(page.find('#complainant').value).to eq original_complaint.complainant
+    expect(page.find('#village').value).to eq original_complaint.village
+    expect(page.find('#phone').value).to eq original_complaint.phone
   end
 
   it "permits only one add at a time" do
-    expect(1).to eq 0
+    add_complaint
+    add_complaint
+    expect(page.all('.new_complaint').count).to eq 1
   end
 
   it "permits only one edit at a time" do
-    expect(1).to eq 0
+    FactoryGirl.create(:complaint, :open)
+    visit complaints_path('en')
+    edit_first_complaint
+    edit_second_complaint
+    expect(page.evaluate_script("_.chain(complaints.findAllComponents('complaint')).map(function(c){return c.get('editing')}).filter(function(c){return c}).value().length")).to eq 1
   end
 
   it "terminates adding new complaint when editing is inititated" do
-    # and new-complaint attributes are reset
-    expect(1).to eq 0
+    add_complaint
+    edit_first_complaint
+    expect(page.all('.new_complaint').count).to eq 0
+    add_complaint
+    expect(page.find('#complainant').value).to be_blank
+    expect(page.find('#village').value).to be_blank
+    expect(page.find('#phone').value).to be_blank
   end
 
   it "terminates editing complaint when adding is initiated" do
-    expect(1).to eq 0
+    original_complaint = Complaint.first
+    edit_first_complaint
+    fill_in('complainant', :with => "Norman Normal")
+    fill_in('village', :with => "Normaltown")
+    fill_in('phone', :with => "555-1212")
+    add_complaint
+    expect(page.evaluate_script("_.chain(complaints.findAllComponents('complaint')).map(function(c){return c.get('editing')}).filter(function(c){return c}).value().length")).to eq 0
+    cancel_add
+    edit_first_complaint
+    expect(page.find('#complainant').value).to eq original_complaint.complainant
+    expect(page.find('#village').value).to eq original_complaint.village
+    expect(page.find('#phone').value).to eq original_complaint.phone
   end
 
+  it "deletes a complaint" do
+    expect{delete_complaint; wait_for_ajax}.to change{ Complaint.count }.by(-1).
+                                           and change{ complaints.count }.by(-1)
+  end
 end

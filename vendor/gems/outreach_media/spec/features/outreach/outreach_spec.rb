@@ -81,11 +81,10 @@ feature "create a new outreach event", :js => true do
     select_first_activity
     select_first_performance_indicator
     pi = PerformanceIndicator.first
-    expect(page).to have_selector("#performance_indicators .performance_indicator", :text => pi.indexed_description )
-    expect{ edit_save.click; sleep(0.5)}.to change{ OutreachEvent.count}.from(0).to(1).
-      and change{OutreachEventDocument.count}.from(0).to(1)
+    expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
+    expect{ edit_save.click; wait_for_ajax }.to change{ OutreachEvent.count}.from(0).to(1).
+                                            and change{OutreachEventDocument.count}.from(0).to(1)
     expect(OutreachEvent.first.performance_indicator_ids).to eq [pi.id]
-    sleep(0.5)
     expect(OutreachEvent.count).to eq 1
     expect(OutreachEventDocument.count).to eq 1
     oe = OutreachEvent.first
@@ -94,7 +93,6 @@ feature "create a new outreach event", :js => true do
     expect(oe.audience_name).to eq "City of Monrovia PD"
     expect(oe.description).to match /Briefing/
     expect(oe.impact_rating_id).to eq ImpactRating.where(:rank => 1).first.id
-    sleep(0.4)
     expect(page).to have_selector("#outreach_event_list .outreach_event", :count => 1)
     expect(page.find("#outreach_events .outreach_event .basic_info .title").text).to eq "My new outreach event title"
     expand_all_panels
@@ -110,7 +108,7 @@ feature "create a new outreach event", :js => true do
     # now edit and upload another file
     edit_outreach_event[0].click
     page.attach_file("outreach_event_file", upload_document, :visible => false)
-    expect{edit_save.click; sleep(0.4)}.to change{OutreachEventDocument.count}.from(1).to(2)
+    expect{edit_save.click; wait_for_ajax }.to change{OutreachEventDocument.count}.from(1).to(2)
     expect(OutreachEvent.count).to eq 1
   end
 
@@ -295,9 +293,9 @@ feature "when there are existing outreach events", :js => true do
       clear_file_attachment
       page.execute_script("scrollTo(0,0)")
       edit_cancel.click
-      sleep(0.2)
+      #sleep(0.2)
       edit_outreach_event[0].click
-      sleep(0.2)
+      #sleep(0.2)
       expect(page).not_to have_selector('#filetype_error', :text => "File type not allowed")
     end
 

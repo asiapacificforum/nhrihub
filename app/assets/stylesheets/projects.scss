@@ -3,3 +3,7 @@
 @import "bootstrap-select";
 @import 'multilevel_select';
 @import 'form_errors';
+
+label>span {
+  font-weight : normal;
+}

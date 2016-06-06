@@ -108,6 +108,16 @@ describe "status change" do
     expect(@complaint.status_changes.last.user_id).to eq @current_user.id
   end
 
+  it "should add a new status_change object when closed complaint is reopened" do
+    @current_user = FactoryGirl.create(:user)
+    @complaint.update_attribute(:status_changes_attributes, [{:user_id => @current_user.id, :status_humanized => 'closed'}])
+    @complaint.update_attribute(:status_changes_attributes, [{:user_id => @current_user.id, :status_humanized => 'open'}])
+    expect(@complaint.current_status).to eq true
+    expect(@complaint.status_changes.length).to eq 3
+    expect(@complaint.status_changes.last.new_value).to eq true
+    expect(@complaint.status_changes.last.user_id).to eq @current_user.id
+  end
+
   it "should not create a new status_change object if status did not change" do
     @complaint.update_attribute(:status_changes_attributes, [{:user_id => @current_user.id, :status_humanized => 'open'}])
     expect(@complaint.status_changes.length).to eq 1
