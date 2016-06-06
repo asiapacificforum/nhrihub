@@ -302,7 +302,7 @@ RSpec.shared_examples "projects index" do
                                                    and change{ projects_count }.by(-1)
   end
 
-  it "should edit a project" do
+  it "should edit a project with a file" do
     edit_first_project.click
     fill_in('project_title', :with => "new project title")
     fill_in('project_description', :with => "new project description")
@@ -333,6 +333,14 @@ RSpec.shared_examples "projects index" do
     select_first_performance_indicator
     pi = PerformanceIndicator.first
 
+    attach_file(:first_time)
+    fill_in("project_document_title", :with => "Adding another doc")
+    expect(page).to have_selector("#project_documents .document .filename", :text => "upload_file.pdf")
+
+    attach_file
+    page.all("#project_document_title")[0].set("Adding still another doc")
+    expect(page).to have_selector("#project_documents .document .filename", :text => "upload_file.pdf", :count => 2)
+
     expect{ edit_save.click; wait_for_ajax }.to change{ project_model.find(1).title }.to("new project title")
     project = project_model.find(1)
     consultation_project_type = ProjectType.find_by(:name => "Consultation")
@@ -343,6 +351,7 @@ RSpec.shared_examples "projects index" do
     expect( project.agency_ids ).to include agency.id
     convention = Convention.find_by(:name => "CEDAW")
     expect( project.convention_ids ).to include convention.id
+    expect( project.project_documents.count ).to eq 4
 
     expand_first_project
 
@@ -363,6 +372,10 @@ RSpec.shared_examples "projects index" do
       end
       within performance_indicators do
         expect(all('.performance_indicator').map(&:text)).to include pi.indexed_description
+      end
+      within project_documents do
+        expect(all('.project_document .title').map(&:text)).to include "Adding still another doc"
+        expect(all('.project_document .title').map(&:text)).to include "Adding another doc"
       end
     end
   end

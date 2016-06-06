@@ -34,7 +34,7 @@ module ProjectsSpecCommonHelpers
   # UPDATE: after eliminating jQuery.fileupload, this doesn't seem to be required
   # it's left here for reference
   def attach_file(index = nil)
-    page.attach_file("project_fileinput", upload_document, :visible => false)
+    page.attach_file("project_fileinput", upload_document, :visible => true)
     #page.attach_file("project_file", upload_document, :visible => false)
     #if !index # when it's first time, we pass a truthy argument like :first_time
       #if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)

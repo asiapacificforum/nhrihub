@@ -33,7 +33,7 @@
       <projectTypesSelector all_mandates='{{all_mandates}}' />
       {{> agency_convention_selector }}
       <performanceindicatorselect />
-      {{> file_selector_template }}
+      {{> file_selector_template {key : 'project'} }}
       .panel.panel-default#documents
         .panel-heading= t('.project_documents')
         .panel-body
@@ -231,7 +231,7 @@
               .col-md-2= t('.project_documents')
           .panel-content#project_documents{'data-toggle' => :edit}
             .fade.edit{:style => "padding-left:15px; padding-top:15px;"}
-              {{> file_selector_template }}
+              {{> file_selector_template {key : 'project'} }}
             .fade.no_edit.in
             <projectDocuments project_documents='{{project_documents}}'>
 
@@ -241,7 +241,7 @@
       %span.btn.btn-xs.btn-success.fileinput-button
         %i.fa.fa-plus.fa-lg{ :style => "color:white"}
         %span= t('add_document')
-      %input.hidden_fileinput#project_fileinput{:multiple => "multiple", :name => "project_file", :type => "file", :decorator=>:ractive_fileupload, 'data-project_id'=>'{{id}}'}
+      %input.hidden_fileinput{:id => "{{key}}_fileinput", :multiple => "multiple", :name => "{{key}}_file", :type => "file", :decorator=>:ractive_fileupload}
     .col-md-11.fileupload_progress
       <progressBar />
 

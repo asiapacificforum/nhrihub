@@ -459,11 +459,11 @@ FileInput = (node)->
   $(node).on 'change', (event)->
     add_file(event,@)
   $(node).closest('.fileupload').find('.fileinput-button').on 'click', (event)->
-    $(@).parent().find('#project_fileinput').trigger('click')
+    $(@).parent().find('input:file').trigger('click')
   add_file = (event,el)->
     file = el.files[0]
-    @project = Ractive.getNodeInfo($(el).closest('.new_project')[0]).ractive || Ractive.getNodeInfo($(el).closest('.project')[0]).ractive
-    @project.add_file(file)
+    ractive = Ractive.getNodeInfo($(el).closest('.fileupload')[0]).ractive
+    ractive.add_file(file)
     _replace_input()
   _replace_input = ->
     # this technique comes from jQuery.fileupload
