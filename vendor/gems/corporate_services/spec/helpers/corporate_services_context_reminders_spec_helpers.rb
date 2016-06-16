@@ -1,5 +1,4 @@
 require 'rspec/core/shared_context'
-require 'reminders_spec_common_helpers'
 require_relative '../helpers/setup_helpers'
 require_relative '../helpers/strategic_plan_helpers'
 

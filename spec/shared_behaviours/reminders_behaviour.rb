@@ -1,7 +1,7 @@
-require 'reminder_page_helpers'
+require 'reminders_spec_common_helpers'
 RSpec.shared_examples "reminders" do
-  include ReminderPageHelpers
   feature "reminders behaviour" do
+    include RemindersSpecCommonHelpers
     scenario "reminders should be displayed" do
       expect(page).to have_selector("#reminders .reminder .reminder_type", :text => "weekly")
       expect(page).to have_selector("#reminders .reminder .text", :text => "don't forget the fruit gums mum")

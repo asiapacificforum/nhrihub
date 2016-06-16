@@ -1,11 +1,9 @@
 require 'rspec/core/shared_context'
 require_relative '../helpers/outreach_setup_helper'
-require_relative '../helpers/reminders_spec_helper'
 
 module OutreachEventContextRemindersSpecHelpers
   extend RSpec::Core::SharedContext
   include OutreachSetupHelper
-  include RemindersSpecHelpers
 
   before do
     setup_database(nil)

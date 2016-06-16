@@ -1,12 +1,9 @@
 require 'rspec/core/shared_context'
-require 'reminders_spec_common_helpers'
 require 'projects_spec_setup_helpers'
-require 'reminder_page_helpers'
 
 module SiuContextRemindersSpecHelpers
   extend RSpec::Core::SharedContext
   include ProjectsSpecSetupHelpers
-  include ReminderPageHelpers
 
   before do
     populate_database
