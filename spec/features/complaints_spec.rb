@@ -96,7 +96,7 @@ feature "complaints index", :js => true do
   end # /it
 
   it "adds a new complaint" do
-    add_complaint
+    add_complain
     fill_in('complainant', :with => "Norman Normal")
     fill_in('village', :with => "Normaltown")
     fill_in('phone', :with => "555-1212")
@@ -112,13 +112,14 @@ feature "complaints index", :js => true do
       attach_file
       fill_in("complaint_document_title", :with => "Complaint Document")
     end
-    expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf")
+    expect(page).to have_selector("#documents .document .filename", :text => "first_upload_file.pdf")
 
     next_ref = Complaint.next_case_reference
     expect(new_complaint_case_reference).to eq next_ref
     expect{save_complaint.click; wait_for_ajax}.to change{ Complaint.count }.by(1)
                                                .and change{ page.all('.complaint').count }.by(1)
                                                .and change{ page.all('.new_complaint').count }.by(-1)
+    # on the server
     expect(Complaint.last.case_reference).to eq next_ref
     expect(Complaint.last.complainant).to eq "Norman Normal"
     expect(Complaint.last.village).to eq "Normaltown"
@@ -133,6 +134,10 @@ feature "complaints index", :js => true do
     expect(Complaint.last.complaint_categories.map(&:name)).to include "Formal"
     expect(Complaint.last.agencies.map(&:name)).to include "SAA"
     expect(Complaint.last.agencies.map(&:name)).to include "ACC"
+    expect(Complaint.last.complaint_documents.count).to eq 1
+    expect(Complaint.last.complaint_documents[0].filename).to eq "first_upload_file.pdf"
+    expect(Complaint.last.complaint_documents[0].title).to eq "Complaint Document"
+    # on the client
     expect(first_complaint.find('.case_reference').text).to eq next_ref
     expect(first_complaint.find('.current_assignee').text).to eq User.first.first_last_name
     expect(first_complaint.find('.complainant').text).to eq "Norman Normal"
@@ -166,6 +171,11 @@ feature "complaints index", :js => true do
     within agencies do
       expect(all('.agency').map(&:text)).to include "SAA"
       expect(all('.agency').map(&:text)).to include "ACC"
+    end
+
+    within complaint_documents do
+      expect(page.all('#complaint_documents .complaint_document')[0].find('.filename').text).to eq "first_upload_file.pdf"
+      expect(page.all('#complaint_documents .complaint_document')[0].find('.title').text).to eq "Complaint Document"
     end
   end
 
@@ -224,10 +234,14 @@ feature "complaints index", :js => true do
     uncheck_agency("SAA")
     check_agency("ACC")
     # DOCUMENTS TODO
+    attach_file
+    fill_in("complaint_document_title", :with => "added complaint document")
+    expect(page).to have_selector("#complaint_documents .document .filename", :text => "first_upload_file.pdf")
     expect{ edit_save; wait_for_ajax }.to change{ Complaint.first.complainant }.to("Norman Normal").
                                       and change{ Complaint.first.village }.to("Normaltown").
                                       and change{ Complaint.first.phone }.to("555-1212").
-                                      and change{ Complaint.first.assignees.count }.by 1
+                                      and change{ Complaint.first.assignees.count }.by(1).
+                                      and change{ Complaint.first.complaint_documents.count }.by 1
 
     expect( Complaint.first.mandates.map(&:key) ).to include "special_investigations_unit"
     expect( Complaint.first.mandates.map(&:key) ).to include "human_rights"
@@ -268,18 +282,30 @@ feature "complaints index", :js => true do
     within agencies do
       expect(all('.agency').map(&:text)).to include "ACC"
     end
-  end
 
-  it "edits a complaint, adding a file" do
-    expect(1).to eq 0
+    within complaint_documents do
+      expect(page.all('#complaint_documents .complaint_document .filename').map(&:text)).to include "first_upload_file.pdf"
+      expect(page.all('#complaint_documents .complaint_document .title').map(&:text)).to include "added complaint document"
+    end
   end
 
   it "edits a complaint, deleting a file" do
-    expect(1).to eq 0
+    edit_complaint
+    expect{delete_document; wait_for_ajax}.to change{ Complaint.first.complaint_documents.count }.by(-1).
+                                          and change{ complaint_documents.count }.by(-1)
   end
 
-  it "downloads a file" do
-    expect(1).to eq 0
+  it "should download a complaint document file" do
+    expand
+    @doc = ComplaintDocument.first
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
+      click_the_download_icon
+      expect(page.response_headers['Content-Type']).to eq('application/pdf')
+      filename = @doc.filename
+      expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+    else
+      expect(1).to eq 1 # download not supported by selenium driver
+    end
   end
 
   it "restores previous values when editing is cancelled" do

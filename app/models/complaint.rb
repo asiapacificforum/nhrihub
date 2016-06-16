@@ -33,7 +33,8 @@ class Complaint < ActiveRecord::Base
 
   def as_json(options = {})
     super( :methods => [:reminders, :notes, :assigns,
-                        :current_assignee_name, :formatted_date,
+                        :current_assignee_id,
+                        :current_assignee_name, :date,
                         :current_status_humanized, :complaint_documents,
                         :complaint_categories, :mandate_ids,
                         :good_governance_complaint_basis_ids,
@@ -59,8 +60,8 @@ class Complaint < ActiveRecord::Base
     status_changes.last.status_humanized
   end
 
-  def formatted_date
-    created_at.localtime.to_date.to_s(:short)
+  def date
+    created_at.to_datetime.to_s
   end
 
   def current_assignee_name
@@ -78,4 +79,7 @@ class Complaint < ActiveRecord::Base
     end
   end
 
+  def current_assignee_id
+    current_assignee.id
+  end
 end

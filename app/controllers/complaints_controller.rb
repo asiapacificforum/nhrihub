@@ -9,9 +9,14 @@ class ComplaintsController < ApplicationController
     @next_case_reference = Complaint.next_case_reference
     @users = User.all
     @categories = ComplaintCategory.all
+    @good_governance_complaint_bases = GoodGovernance::ComplaintBasis.all
+    @human_rights_complaint_bases = Nhri::ComplaintBasis.all
+    @special_investigations_unit_complaint_bases = Siu::ComplaintBasis.all
+    @staff = User.staff
   end
 
   def create
+    params[:complaint].delete(:current_status_humanized)
     complaint = Complaint.new(complaint_params)
     complaint.status_changes_attributes = [{:user_id => @current_user.id, :status_humanized => "open"}]
     if complaint.save
@@ -45,6 +50,8 @@ class ComplaintsController < ApplicationController
                                        :human_rights_complaint_basis_ids => [],
                                        :status_changes_attributes => [:user_id, :status_humanized],
                                        :complaint_category_ids => [],
-                                       :agency_ids => [])
+                                       :agency_ids => [],
+                                       :complaint_documents_attributes => [:file, :title, :filename, :original_type],
+                                     )
   end
 end

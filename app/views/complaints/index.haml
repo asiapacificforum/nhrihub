@@ -8,15 +8,37 @@
 #complaints
 
 = render :partial => 'shared/file_selector'
-= render :partial => 'complaints_templates'
+= render :partial => 'complaints/complaints_templates'
 
 :coffeescript
-  window.complaints_data = #{@complaints.to_json}
-  window.all_mandates = #{@mandates.to_json}
-  window.all_agencies = #{@agencies.to_json}
-  window.complaint_bases = #{@complaint_bases.map(&:to_h).to_json}
-  window.next_case_reference = "#{@next_case_reference}"
-  window.all_users = #{@users.to_json(:only => :id, :methods => :first_last_name)}
-  window.all_categories = #{@categories.to_json}
+  @all_good_governance_complaint_bases = #{@good_governance_complaint_bases.to_json}
+  @all_human_rights_complaint_bases = #{@human_rights_complaint_bases.to_json}
+  @all_special_investigations_unit_complaint_bases = #{@special_investigations_unit_complaint_bases.to_json}
+  @complaints_data = #{@complaints.to_json}
+  @all_mandates = #{@mandates.to_json}
+  @all_agencies = #{@agencies.to_json}
+  @complaint_bases = #{(@complaint_bases || []).map(&:to_h).to_json}
+  @next_case_reference = "#{@next_case_reference}"
+  @all_users = #{@users.to_json(:only => :id, :methods => :first_last_name)}
+  @all_categories = #{@categories.to_json}
+  @all_staff = #{@staff.to_json}
+  @filter_criteria =
+    complainant : ""
+    from : null
+    to : null
+    case_ref : ""
+    village : ""
+    phone_number : ""
+    basis_rule : null
+    agency_rule : null
+    basis_ids : []
+    selected_agency_ids : []
+    current_assignee_id : ""
+    selected_assignee_id : ""
+    selected_closed_status : ["true"]
+    selected_open_status : ["true"]
+    selected_human_rights_complaint_basis_ids : []
+    selected_special_investigations_unit_complaint_basis_ids : []
+    selected_good_governance_complaint_basis_ids : []
 
 = javascript_include_tag 'complaints'

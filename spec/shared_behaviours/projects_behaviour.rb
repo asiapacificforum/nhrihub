@@ -526,4 +526,18 @@ RSpec.shared_examples "projects index" do
 
     expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :count => 3)
   end
+
+  it "should download a project document file" do
+    expand_first_project
+    @doc = ProjectDocument.first
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
+      click_the_download_icon
+      expect(page.response_headers['Content-Type']).to eq('application/pdf')
+      filename = @doc.filename
+      expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+    else
+      puts "disregard, it's fake"
+      expect(1).to eq 1 # download not supported by selenium driver
+    end
+  end
 end

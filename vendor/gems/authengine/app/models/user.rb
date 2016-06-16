@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
   validate :update_with_unique_first_last_name, :on => :update
 
   scope :active, ->{ where("status != 'deleted'") }
+  scope :staff, ->{ joins(:roles).where("roles.name = 'staff'") }
 
   # custom validator rather than built-in helper, in order to get custom message
   def create_with_unique_email
@@ -102,7 +103,7 @@ class User < ActiveRecord::Base
 
   def as_json(options={})
     if options.empty?
-      super(:except => [:created_at, :updated_at], :only =>[], :methods => [:first_last_name])
+      super(:except => [:created_at, :updated_at], :only =>[:id], :methods => [:first_last_name])
     else
       super(options)
     end

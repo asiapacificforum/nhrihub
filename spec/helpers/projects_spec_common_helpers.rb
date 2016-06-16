@@ -4,6 +4,9 @@ require 'projects_spec_setup_helpers'
 module ProjectsSpecCommonHelpers
   extend RSpec::Core::SharedContext
   include ProjectsSpecSetupHelpers
+  def click_the_download_icon
+    page.all('#project_documents .project_document .fa-cloud-download')[0].click
+  end
 
   def reset_permitted_filetypes
     page.execute_script("projects.set('permitted_filetypes',[])")

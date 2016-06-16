@@ -1,5 +1,5 @@
 //= require 'jquery_datepicker'
-//= require 'media_issues_shared/datepicker'
+//= require 'filter_criteria_datepicker'
 //= require 'media_issues_shared/subarea'
 //= require 'performance_indicator'
 //= require 'in_page_edit'

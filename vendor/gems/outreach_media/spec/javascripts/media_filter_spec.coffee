@@ -575,7 +575,7 @@ describe 'advisory_council_issue attachment validation', ->
     collection.set_defaults()
 
   it 'loads test fixtures and data', ->
-    expect($("h1",'.magic-lamp').text()).to.equal "Issues"
+    expect($("h1",'.magic-lamp').text()).to.equal "Advisory Council Issues"
     expect(typeof(simulant)).to.not.equal("undefined")
 
   it 'validates unpersisted advisory_council_issue with valid attachment and no link', ->

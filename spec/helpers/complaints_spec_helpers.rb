@@ -2,12 +2,20 @@ require 'rspec/core/shared_context'
 
 module ComplaintsSpecHelpers
   extend RSpec::Core::SharedContext
+  def click_the_download_icon
+    page.all('#complaint_documents .complaint_document .fa-cloud-download')[0].click
+  end
+
   def new_complaint
     page.find('.new_complaint')
   end
 
   def delete_complaint
     page.find('.delete_icon').click
+  end
+
+  def delete_document
+    page.all('#complaint_documents .complaint_document i.delete_icon').first.click
   end
 
   def mandates
@@ -127,6 +135,10 @@ module ComplaintsSpecHelpers
 
   def complaints
     page.all('#complaints .complaint')
+  end
+
+  def complaint_documents
+    page.all('#complaint_documents .complaint_document')
   end
 
   def attach_file

@@ -2,6 +2,10 @@
 //= require 'validator'
 //= require 'file_input_decorator'
 //= require 'progress_bar'
+//= require 'ractive_local_methods'
+//= require 'string'
+//= require 'jquery_datepicker'
+//= require 'filter_criteria_datepicker'
 
 Ractive.DEBUG = false
 
@@ -78,10 +82,9 @@ AssigneeSelector = Ractive.extend
 
 EditBackup =
   stash : ->
-    stashed_attributes = _(@get()).pick(@get('params'))
+    stashed_attributes = _(@get()).pick(@get('persistent_attributes'))
     @stashed_instance = $.extend(true,{},stashed_attributes)
   restore : ->
-    console.log "restore"
     @restore_checkboxes()
     @set(@stashed_instance)
   restore_checkboxes : ->
@@ -112,16 +115,16 @@ ComplaintCategoriesSelector = Ractive.extend
   template : '#complaint_categories_selector'
 
 Persistence =
-  save_complaint : ->
-    if @validate()
-      $.ajax
-        method : 'post'
-        data : @persisted_attributes()
-        url : Routes.complaints_path('en')
-        success : @save_callback
-        context : @
-  save_callback : (data,status,jqxhr)->
-    @set(data)
+  #save_complaint : ->
+    #if @validate()
+      #$.ajax
+        #method : 'post'
+        #data : @persisted_attributes()
+        #url : Routes.complaints_path('en')
+        #success : @save_callback
+        #context : @
+  #save_callback : (data,status,jqxhr)->
+    #@set(data)
   delete_complaint : (event)->
     data = {'_method' : 'delete'}
     url = Routes.complaint_path(current_locale, @get('id'))
@@ -135,6 +138,39 @@ Persistence =
       context : @
   delete_callback : (data,textStatus,jqxhr)->
     @parent.remove(@_guid)
+  save_complaint: ->
+    if @validate()
+      data = @formData()
+      $.ajax
+        # thanks to http://stackoverflow.com/a/22987941/451893
+        xhr: @progress_bar_create.bind(@)
+        method : 'post'
+        data : data
+        url : Routes.complaints_path(current_locale)
+        success : @save_complaint_callback
+        context : @
+        processData : false
+        contentType : false # jQuery correctly sets the contentType and boundary values
+  formData : ->
+    @asFormData @get('persistent_attributes') # in ractive_local_methods, returns a FormData instance
+  save_complaint_callback : (response, status, jqxhr)->
+    UserInput.reset()
+    @set(response)
+  progress_bar_create : ->
+    @findComponent('progressBar').start()
+  update_persist : (success, error, context) -> # called by EditInPlace
+    if @validate()
+      data = @formData()
+      $.ajax
+        # thanks to http://stackoverflow.com/a/22987941/451893
+        xhr: @progress_bar_create.bind(@)
+        method : 'put'
+        data : data
+        url : Routes.complaint_path(current_locale, @get('id'))
+        success : success
+        context : context
+        processData : false
+        contentType : false # jQuery correctly sets the contentType and boundary values
 
 ProgressBar = Ractive.extend
   template : '#progress_bar_template'
@@ -206,28 +242,151 @@ ComplaintDocuments = Ractive.extend
     index = _(guids).indexOf(guid)
     @splice('complaint_documents',index,1)
 
+FilterMatch =
+  include : ->
+    #console.log JSON.stringify "matches_complainant" : @matches_complainant(), "matches_case_reference" : @matches_case_reference(), "matches_village" : @matches_village(), "matches_date" : @matches_date(), "matches_phone" : @matches_phone(), "matches_agencies" : @matches_agencies(), "matches_assignee" : @matches_assignee(), "matches_status" : @matches_status()
+    #console.log JSON.stringify "matches_good_governance_complaint_basis" : @matches_good_governance_complaint_basis(), "matches_human_rights_complaint_basis" : @matches_human_rights_complaint_basis(), "matches_special_investigations_unit_complaint_basis" : @matches_special_investigations_unit_complaint_basis(), "basis_rule" : @get('filter_criteria.basis_rule'), "matches_basis" : @matches_basis(), "basis_requirement_is_specified" : @basis_requirement_is_specified(), "good_governance_basis_requirement_is_specified" : @good_governance_basis_requirement_is_specified(), "human_rights_basis_requirement_is_specified" : @human_rights_basis_requirement_is_specified(), "special_investigations_unit_basis_requirement_is_specified" : @special_investigations_unit_basis_requirement_is_specified()
+    @matches_complainant() &&
+    @matches_case_reference() &&
+    @matches_village() &&
+    @matches_date() &&
+    @matches_phone() &&
+    @matches_agencies() &&
+    @matches_basis() &&
+    @matches_assignee() &&
+    @matches_status()
+  matches_complainant : ->
+    return true if _.isEmpty(@get('filter_criteria.complainant'))
+    re = new RegExp(@get('filter_criteria.complainant').trim(),"i")
+    re.test @get('complainant')
+  matches_case_reference : ->
+    return true if _.isEmpty(@get('filter_criteria.case_reference'))
+    criterion_digits = @get('filter_criteria.case_reference').replace(/\D/g,'')
+    value_digits = @get('case_reference').replace(/\D/g,'')
+    re = new RegExp(criterion_digits)
+    re.test value_digits
+  matches_village : ->
+    return true if _.isEmpty(@get('filter_criteria.village'))
+    re = new RegExp(@get('filter_criteria.village').trim(),"i")
+    re.test @get('village')
+  matches_date : ->
+    @matches_from() && @matches_to()
+  matches_from : ->
+    return true if _.isNull(@get('date')) || _.isEmpty(@get('filter_criteria.from'))
+    (new Date(@get('date'))).valueOf() >= (new Date(@get('filter_criteria.from'))).valueOf()
+  matches_to : ->
+    return true if _.isNull(@get('date')) || _.isEmpty(@get('filter_criteria.to'))
+    new Date(@get('date')) <= new Date(@get('filter_criteria.to'))
+  matches_phone : ->
+    return true if _.isEmpty(@get('filter_criteria.phone'))
+    criterion_digits = @get('filter_criteria.phone').replace(/\D/g,'')
+    value_digits = @get('phone').replace(/\D/g,'')
+    re = new RegExp(criterion_digits)
+    re.test value_digits
+  matches_agencies : ->
+    return true if _.isEmpty(@get('filter_criteria.selected_agency_ids')) || _.isNull(@get('filter_criteria.agency_rule'))
+    if @get('filter_criteria.agency_rule') is 'all'
+      _.isEqual(@get('filter_criteria.selected_agency_ids').slice().sort(), @get('agency_ids').slice().sort())
+    else if @get('filter_criteria.agency_rule') is 'any'
+      _.intersection(@get('filter_criteria.selected_agency_ids'), @get('agency_ids')).length > 0
+  matches_basis : ->
+    if @get('filter_criteria.basis_rule') == 'all'
+      !@basis_requirement_is_specified() ||
+      ( @matches_good_governance_complaint_basis() &&
+        @matches_human_rights_complaint_basis() &&
+        @matches_special_investigations_unit_complaint_basis())
+    else if @get('filter_criteria.basis_rule') == 'any'
+      match = @matches_good_governance_complaint_basis() || # each val is undefined if no ids were selected
+              @matches_human_rights_complaint_basis() || # if all of them are undefined, match is undefined
+              @matches_special_investigations_unit_complaint_basis() # if any is true, true is returned
+      return true if _.isUndefined(match)
+      match
+    else
+      true # declare a match, b/c no requirements are specified
+  basis_requirement_is_specified : ->
+    @good_governance_basis_requirement_is_specified() ||
+    @human_rights_basis_requirement_is_specified() ||
+    @special_investigations_unit_basis_requirement_is_specified()
+  good_governance_basis_requirement_is_specified : ->
+    selected = @get('filter_criteria.selected_good_governance_complaint_basis_ids')
+    !(_.isEmpty(selected) || _.isUndefined(selected))
+  human_rights_basis_requirement_is_specified : ->
+    selected = @get('filter_criteria.selected_human_rights_complaint_basis_ids')
+    !(_.isEmpty(selected) || _.isUndefined(selected))
+  special_investigations_unit_basis_requirement_is_specified : ->
+    selected = @get('filter_criteria.selected_special_investigations_unit_complaint_basis_ids')
+    !(_.isEmpty(selected) || _.isUndefined(selected))
+  matches_good_governance_complaint_basis : ->
+    selected = @get('filter_criteria.selected_good_governance_complaint_basis_ids')
+    attrs = @get('good_governance_complaint_basis_ids')
+    if @get('filter_criteria.basis_rule') is 'all'
+      common_elements = _.intersection(selected,attrs)
+      _.isEqual(common_elements.length,selected.length)
+    else if (@get('filter_criteria.basis_rule') is 'any')
+      _.intersection(selected,attrs).length > 0
+  matches_human_rights_complaint_basis : ->
+    selected = @get('filter_criteria.selected_human_rights_complaint_basis_ids')
+    attrs = @get('human_rights_complaint_basis_ids')
+    if @get('filter_criteria.basis_rule') is 'all'
+      common_elements = _.intersection(selected,attrs)
+      _.isEqual(common_elements.length,selected.length)
+    else if (@get('filter_criteria.basis_rule') is 'any')
+      _.intersection(selected,attrs).length > 0
+  matches_special_investigations_unit_complaint_basis : ->
+    selected = @get('filter_criteria.selected_special_investigations_unit_complaint_basis_ids')
+    attrs = @get('special_investigations_unit_complaint_basis_ids')
+    if @get('filter_criteria.basis_rule') is 'all'
+      common_elements = _.intersection(selected,attrs)
+      _.isEqual(common_elements.length,selected.length)
+    else if (@get('filter_criteria.basis_rule') is 'any')
+      _.intersection(selected,attrs).length > 0
+  matches_assignee : ->
+    selected_assignee_id = @get('filter_criteria.selected_assignee_id')
+    assignee_id = @get('current_assignee_id')
+    _.isNaN(parseInt(selected_assignee_id)) || (assignee_id == selected_assignee_id)
+  matches_status : ->
+    closed = @get('filter_criteria.closed')
+    open = @get('filter_criteria.open')
+    status = @get('current_status_humanized')
+    return true if closed && open
+    return true if closed && status == "closed"
+    return true if open && status == "open"
+    return false if !closed && !open
+    return false if closed && status == "open"
+    return false if open && status == "closed"
+
 Complaint = Ractive.extend
   template : '#complaint_template'
   computed :
     include : ->
-      true
+      @include()
     reminders_count : ->
       @get('reminders').length
     notes_count : ->
       @get('notes').length
     persisted : ->
       !_.isNull(@get('id'))
-    params : ->
+    persistent_attributes : ->
       ['case_reference','complainant','village','phone','mandate_ids',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'current_assignee_id',
-        'complaint_category_ids', 'agency_ids']
+        'complaint_category_ids', 'agency_ids', 'complaint_documents_attributes']
     url : ->
       Routes.complaint_path('en', @get('id'))
+    formatted_date :
+      get: ->
+        $.datepicker.formatDate("yy, M d", new Date(@get('date')) )
+      set: (val)-> @set('date', $.datepicker.parseDate( "yy, M d", val))
   oninit : ->
     @set
       'editing' : false
       'complainant_error': false
+      'title_error': false
+      'complaint_error':false
+      'filetype_error': false
+      'filesize_error': false
+      'expanded':false
+      'serialization_key':'complaint'
   components :
     mandates : Mandates
     mandatesSelector : MandatesSelector
@@ -247,8 +406,6 @@ Complaint = Ractive.extend
   compact : ->
     @set('expanded',false)
     $(@findAll('.collapse')).collapse('hide')
-  persisted_attributes : ->
-    {complaint : _(@get()).pick(@get('params'))}
   validate : ->
     true
   remove_attribute_error : (attribute)->
@@ -259,20 +416,181 @@ Complaint = Ractive.extend
   cancel_add_complaint : ->
     UserInput.reset()
     @parent.shift('complaints')
-  , EditBackup, Persistence
+  add_file : (file)->
+    @unshift('complaint_documents', {id : null, complaint_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type})
+  , EditBackup, Persistence, FilterMatch
+
+GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
+  template : "#good_governance_complaint_basis_filter_select_template"
+  oninit : ->
+    @unselect()
+  computed :
+    selected :
+      get : ->
+        @get('filter_criteria.selected_good_governance_complaint_basis_ids').indexOf(@get('id')) != -1
+      set : (val)->
+        if val
+          @push('filter_criteria.selected_good_governance_complaint_basis_ids', @get('id'))
+        else
+          @remove_from_array('filter_criteria.selected_good_governance_complaint_basis_ids', @get('id'))
+  toggle : ->
+    @event.original.preventDefault()
+    @event.original.stopPropagation()
+    if @get('selected')
+      @unselect()
+    else
+      @select()
+  select : ->
+    @set('selected',true)
+  unselect : ->
+    @set('selected',false)
+
+HumanRightsComplaintBasisFilterSelect = Ractive.extend
+  template : "#human_rights_complaint_basis_filter_select_template"
+  oninit : ->
+    @unselect()
+  computed :
+    selected :
+      get : ->
+        @get('filter_criteria.selected_human_rights_complaint_basis_ids').indexOf(@get('id')) != -1
+      set : (val)->
+        if val
+          @push('filter_criteria.selected_human_rights_complaint_basis_ids', @get('id'))
+        else
+          @remove_from_array('filter_criteria.selected_human_rights_complaint_basis_ids', @get('id'))
+  toggle : ->
+    @event.original.preventDefault()
+    @event.original.stopPropagation()
+    if @get('selected')
+      @unselect()
+    else
+      @select()
+  select : ->
+    @set('selected',true)
+  unselect : ->
+    @set('selected',false)
+
+SpecialInvestigationsUnitComplaintBasisFilterSelect = Ractive.extend
+  template : "#special_investigations_unit_complaint_basis_filter_select_template"
+  oninit : ->
+    @unselect()
+  computed :
+    selected :
+      get : ->
+        @get('filter_criteria.selected_special_investigations_unit_complaint_basis_ids').indexOf(@get('id')) != -1
+      set : (val)->
+        if val
+          @push('filter_criteria.selected_special_investigations_unit_complaint_basis_ids', @get('id'))
+        else
+          @remove_from_array('filter_criteria.selected_special_investigations_unit_complaint_basis_ids', @get('id'))
+  toggle : ->
+    @event.original.preventDefault()
+    @event.original.stopPropagation()
+    if @get('selected')
+      @unselect()
+    else
+      @select()
+  select : ->
+    @set('selected',true)
+  unselect : ->
+    @set('selected',false)
+
+AgencyFilterSelect = Ractive.extend
+  template : "#agency_filter_select_template"
+  oninit : ->
+    @unselect()
+  computed :
+    selected :
+      get : ->
+        @get('filter_criteria.selected_agency_ids').indexOf(@get('id')) != -1
+      set : (val)->
+        if val
+          @push('filter_criteria.selected_agency_ids', @get('id'))
+        else
+          @remove_from_array('filter_criteria.selected_agency_ids', @get('id'))
+  toggle : ->
+    @event.original.preventDefault()
+    @event.original.stopPropagation()
+    if @get('selected')
+      @unselect()
+    else
+      @select()
+  select : ->
+    @set('selected',true)
+  unselect : ->
+    @set('selected',false)
+
+AssigneeFilterSelect = Ractive.extend
+  template : "#assignee_filter_select_template"
+  oninit : ->
+    @unselect()
+  computed :
+    selected :
+      get : ->
+        @get('filter_criteria.selected_assignee_id') == @get('id')
+      set : (val)->
+        if val
+          @set('filter_criteria.selected_assignee_id',@get('id'))
+        else
+          @set('filter_criteria.selected_assignee_id',null)
+  toggle : ->
+    @event.original.preventDefault()
+    @event.original.stopPropagation()
+    if @get('selected')
+      @unselect()
+    else
+      @select()
+  select : ->
+    @set('selected',true)
+  unselect : ->
+    @set('selected',false)
+
+FilterControls = Ractive.extend
+  template : "#filter_controls_template"
+  components :
+    goodGovernanceComplaintBasisFilterSelect : GoodGovernanceComplaintBasisFilterSelect
+    humanRightsComplaintBasisFilterSelect : HumanRightsComplaintBasisFilterSelect
+    specialInvestigationsUnitComplaintBasisFilterSelect : SpecialInvestigationsUnitComplaintBasisFilterSelect
+    agencyFilterSelect : AgencyFilterSelect
+    assigneeFilterSelect : AssigneeFilterSelect
+  filter_rule : (type,rule)->
+    @event.original.preventDefault()
+    @event.original.stopPropagation()
+    if rule == @get("filter_criteria.#{type}_rule")
+      @set("filter_criteria.#{type}_rule", null)
+    else
+      @set("filter_criteria.#{type}_rule", rule)
+  expand : ->
+    @parent.expand()
+  compact : ->
+    @parent.compact()
+  clear_filter : ->
+    @set('filter_criteria',$.extend(true,{},complaints_page_data().filter_criteria))
+
+window.complaints_page_data = ->
+  complaints : complaints_data
+  all_mandates : all_mandates
+  complaint_bases : complaint_bases
+  all_agencies : all_agencies
+  all_users : all_users
+  all_categories : all_categories
+  filter_criteria : filter_criteria
+  all_good_governance_complaint_bases : all_good_governance_complaint_bases
+  all_human_rights_complaint_bases : all_human_rights_complaint_bases
+  all_special_investigations_unit_complaint_bases : all_special_investigations_unit_complaint_bases
+  all_staff : all_staff
 
 complaints_options =
   el : '#complaints'
   template : '#complaints_template'
-  data :
-    complaints : complaints_data
-    all_mandates : all_mandates
-    complaint_bases : complaint_bases
-    all_agencies : all_agencies
-    all_users : all_users
-    all_categories : all_categories
+  data : $.extend(true,{},complaints_page_data())
   components :
     complaint : Complaint
+    filterControls : FilterControls
+  computed :
+    selected_agency_ids : -> @findComponent('filterControls').get('agency_ids')
+    'filter_criteria.open' : -> _.isEqual @get('filter_criteria.selected_open_status'), ['true']
+    'filter_criteria.closed' : -> _.isEqual @get('filter_criteria.selected_closed_status'), ['true']
   new_complaint : ->
     unless @add_complaint_active()
       new_complaint =
@@ -285,6 +603,7 @@ complaints_options =
         formatted_date : ""
         good_governance_complaint_basis_ids : []
         human_rights_complaint_basis_ids : []
+        special_investigations_unit_complaint_basis_ids : []
         id : null
         mandate_ids : []
         agency_ids : []
@@ -292,7 +611,6 @@ complaints_options =
         opened_by_id : null
         phone : ""
         reminders : []
-        special_investigations_unit_complaint_basis_ids : []
         status_humanized : "open"
         village : ""
       UserInput.claim_user_input_request(@,'cancel_add_complaint')
@@ -306,6 +624,10 @@ complaints_options =
     @splice('complaints',index,1)
   add_complaint_active : ->
     !_.isEmpty(@findAllComponents('complaint')) && !@findAllComponents('complaint')[0].get('persisted')
+  set_filter_criteria_from_date : (selectedDate)->
+    @set('filter_criteria.from',selectedDate)
+  set_filter_criteria_to_date : (selectedDate)->
+    @set('filter_criteria.to',selectedDate)
 
 window.start_page = ->
   window.complaints = new Ractive complaints_options
@@ -314,4 +636,4 @@ Ractive.decorators.inpage_edit = EditInPlace
 
 $ ->
   start_page()
-
+  filter_criteria_datepicker.start(complaints)

@@ -2,6 +2,8 @@
 # where the FormData object of the parent should be used
 # e.g. in accepts_nested_attributes_for scenarios
 # attributes is an array of attribute names to be included in the FormData object
+# ractive instance must have an attribute 'serialization_key' to
+# populate the hash key for the FormData object
 Ractive.prototype.asFormData = (attributes,formData)->
   unless typeof(formData)=='object'
     formData = new FormData()
@@ -59,3 +61,7 @@ Ractive.prototype.serialize = (attributes)->
     else
       result[attribute] = value
   result
+
+Ractive.prototype.remove_from_array = (array,item)->
+  i = _(@get(array)).indexOf(item)
+  @splice(array,i,1)

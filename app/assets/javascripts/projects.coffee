@@ -7,6 +7,8 @@
 //= require 'validator'
 //= require 'file_input_decorator'
 //= require 'progress_bar'
+//= require 'jquery_datepicker'
+//= require 'filter_criteria_datepicker'
 
 Ractive.DEBUG = false
 
@@ -151,7 +153,7 @@ Persistence =
   delete_callback : (data,textStatus,jqxhr)->
     @parent.remove(@_guid)
   formData : ->
-    @asFormData @get('persistent_attributes')
+    @asFormData @get('persistent_attributes') # in ractive_local_methods, returns a FormData instance
   update_persist : (success, error, context) -> # called by EditInPlace
     if @validate()
       data = @formData()
@@ -326,10 +328,8 @@ FilterSelect = Ractive.extend
       @select()
   select : ->
     @push("filter_criteria.#{@get('collection')}",@get('id'))
-    console.log @get("filter_criteria.#{@get('collection')}")
   unselect : ->
     @set("filter_criteria.#{@get('collection')}", _(@get("filter_criteria.#{@get('collection')}")).without(@get('id')))
-    console.log @get("filter_criteria.#{@get('collection')}")
 
 MandateFilterSelect = Ractive.extend
   template : "#mandate_filter_select_template"
@@ -366,7 +366,6 @@ PerformanceIndicatorFilterSelect = Ractive.extend
       @set('filter_criteria.performance_indicator_id',null)
     else
       @set('filter_criteria.performance_indicator_id',id)
-    console.log "perf ind id #{@get('filter_criteria.performance_indicator_id')}"
 
 FilterControls = Ractive.extend
   template : "#filter_controls_template"

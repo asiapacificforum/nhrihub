@@ -227,7 +227,7 @@
             .fade.edit{:style => "padding-left:15px; padding-top:15px;"}
               {{> file_selector_template {key : 'project'} }}
             .fade.no_edit.in
-            <projectDocuments project_documents='{{project_documents}}'>
+            <projectDocuments project_documents='{{project_documents}}' />
 
 %script#conventions_template{:type => 'template/ractive'}
   .row#conventions{:style => "margin-left:0px;"}

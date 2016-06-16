@@ -4,6 +4,10 @@ class Agency < ActiveRecord::Base
   has_many :complaint_agencies, :dependent => :destroy
   has_many :complaints, :through => :complaint_agencies
   def as_json(options={})
-    super(:except => [:created_at, :updated_at])
+    super(:except => [:created_at, :updated_at], :methods => [:selected])
+  end
+
+  def selected
+    true
   end
 end

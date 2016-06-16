@@ -11,5 +11,11 @@ FactoryGirl.define do
         complaint.status_changes = [FactoryGirl.create(:status_change)]
       end
     end
+
+    trait :closed do
+      after(:build) do |complaint|
+        complaint.status_changes = [FactoryGirl.create(:status_change, :new_value => 0)]
+      end
+    end
   end
 end

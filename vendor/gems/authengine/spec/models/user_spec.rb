@@ -38,3 +38,18 @@ describe "email uniqueness validation" do
     expect(user.valid?).to be true
   end
 end
+
+describe "staff scope" do
+  before do
+    @staff_user = FactoryGirl.create(:user, :staff)
+    @admin_user = FactoryGirl.create(:user, :admin)
+  end
+
+  it "should include users who have staff role assigned" do
+    expect(User.staff).to include @staff_user
+  end
+
+  it "should not include users who do not have staff role assigned" do
+    expect(User.staff).not_to include @admin_user
+  end
+end

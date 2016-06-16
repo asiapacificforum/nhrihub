@@ -5,7 +5,9 @@ en:
       filename: "File name"
       no_documents: "No documents"
       compact: 'Compact'
+      compact_all: 'Compact all'
       expand: 'Expand'
+      expand_all: 'Expand all'
       reference: 'Ref'
       current_assignee: 'Current assignee'
       status: 'Status'
@@ -29,7 +31,21 @@ en:
       'on': 'on' # b/c on is a keyword in yaml and the translation borks
       by: 'by'
       select_assignee: 'Select assignee'
+      select_basis: 'Select complaint basis'
+      select_agency: 'Select agency'
       assignee: 'Assignee'
+      complaint_documents : 'Complaint documents'
+      # filter controls:
+
+      search: "Search for complaints by:"
+      date_from: "Since date:"
+      date_to: "Before date:"
+      enter_complainant: "All or part of name"
+      enter_village: "All or part of village"
+      all: "All"
+      any: "Any"
+      clear: "reset"
+
     index:
       heading: "Complaints"
       add_complaint: "Add complaint"

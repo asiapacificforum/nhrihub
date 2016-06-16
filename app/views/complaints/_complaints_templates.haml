@@ -1,7 +1,216 @@
 %script#complaints_template{:type => 'template/ractive'}
+  <filterControls filter_criteria='{{filter_criteria}}' all_good_governance_complaint_bases='{{all_good_governance_complaint_bases}}' all_human_rights_complaint_bases='{{all_human_rights_complaint_bases}}' all_special_investigations_unit_complaint_bases='{{all_special_investigations_unit_complaint_bases}}' />
   {{#complaints}}
-  <complaint all_agencies='{{all_agencies}}' all_categories='{{all_categories}}' all_mandates='{{all_mandates}}' all_users='{{all_users}}' assigns='{{assigns}}' case_reference='{{case_reference}}' complaint_category_ids='{{complaint_category_ids}}' complainant='{{complainant}}' complaint_bases='{{complaint_bases}}' complaint_categories='{{complaint_categories}}' complaint_documents='{{complaint_documents}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' mandate_ids='{{mandate_ids}}' notes='{{notes}}' opened_by_id='{{opened_by_id}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}'/>
+  <complaint all_agencies='{{all_agencies}}' all_categories='{{all_categories}}' all_mandates='{{all_mandates}}' all_users='{{all_users}}' assigns='{{assigns}}' case_reference='{{case_reference}}' complaint_category_ids='{{complaint_category_ids}}' complainant='{{complainant}}' complaint_bases='{{complaint_bases}}' complaint_categories='{{complaint_categories}}' complaint_documents='{{complaint_documents}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' filter_criteria='{{filter_criteria}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' mandate_ids='{{mandate_ids}}' notes='{{notes}}' opened_by_id='{{opened_by_id}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}'/>
   {{/complaints}}
+
+%script#good_governance_complaint_basis_filter_select_template{:type => "template/ractive"}
+  %li{:class => 'good_governance_complaint_basis_filter {{#if selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle(id)'}
+      %span {{name}}
+      %span.fa.fa-check
+
+%script#human_rights_complaint_basis_filter_select_template{:type => "template/ractive"}
+  %li{:class => 'human_rights_complaint_basis_filter {{#if selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle(id)'}
+      %span {{name}}
+      %span.fa.fa-check
+
+%script#special_investigations_unit_complaint_basis_filter_select_template{:type => "template/ractive"}
+  %li{:class => 'special_investigations_unit_complaint_basis_filter {{#if selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle(id)'}
+      %span {{name}}
+      %span.fa.fa-check
+
+%script#agency_filter_select_template{:type => 'template/ractive'}
+  %li{:class => 'agency_filter {{#if selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle(id)'}
+      %span {{name}}
+      %span.fa.fa-check
+
+%script#assignee_filter_select_template{:type => 'template/ractive'}
+  %li{:class => 'assignee_filter {{#if selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle(id)'}
+      %span {{name}}
+      %span.fa.fa-check
+
+%script#filter_controls_template{:type => 'template/ractive'}
+  .row.filter_control_box#complaints_controls
+    .row
+      .col-md-12
+        %h4= t('.search')
+    .row.labels
+      .col-md-2= t('.complainant')
+      .col-md-2= t('.village')
+      .col-md-2= t('.phone')
+      .col-md-2= t('.case_reference')
+    .row{:style => "margin-bottom:12px;"}
+      .col-md-2= text_field_tag :complainant, "{{filter_criteria.complainant}}", :placeholder => t('.enter_complainant'), :class => 'form-control'
+      .col-md-2= text_field_tag :village, "{{filter_criteria.village}}", :placeholder => t('.enter_village'), :class => 'form-control'
+      .col-md-2= text_field_tag :phone, "{{filter_criteria.phone}}", :placeholder => t('.phone'), :class => 'form-control'
+      .col-md-2= text_field_tag :case_reference, "{{filter_criteria.case_reference}}", :placeholder => t('.case_reference'), :class => 'form-control'
+      .col-md-1{:style => 'text-align:center'}
+        %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
+      .col-md-1
+        {{#if expanded}}
+        %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all') }
+        {{else}}
+        %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
+        {{/if}}
+    .row.labels
+      .col-md-2= t('.status')
+      .col-md-2= t('.date_from')
+      .col-md-2= t('.date_to')
+      .col-md-2= t('.basis')
+    .row{:style => "margin-bottom:12px;"}
+      .col-md-2{:style => 'padding-top:7px;'}
+        %label.checkbox-inline{:style => 'color:#f0f8ff; font-weight:300;'}
+          <input type='checkbox' id='true_status' name='{{filter_criteria.selected_open_status}}' value='true'> <!-- html, workaround for ractive bug https://github.com/ractivejs/ractive/issues/1968 -->
+          = t('.open')
+        %label.checkbox-inline{:style => 'color:#f0f8ff; font-weight:300;'}
+          <input type='checkbox' id='false_status' name='{{filter_criteria.selected_closed_status}}' value='true'>
+          = t('.closed')
+      .col-md-2
+        %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.date_from'), :value => "{{filter_criteria.from}}"}
+      .col-md-2
+        %input.form-control#to{:type=>"text", :name=>"to", :placeholder => t('.date_to'), :value => "{{filter_criteria.to}}"}
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_basis')
+            %span.caret
+          %ul.dropdown-menu
+            %li.filter_rule
+              %a{'on-click'=>"filter_rule('basis','all')", :class => "{{#if filter_criteria.basis_rule == 'all'}}selected{{/if}}"}
+                %span= t('.all')
+                %span.fa.fa-check
+              %a{'on-click'=>"filter_rule('basis','any')", :class => "{{#if filter_criteria.basis_rule == 'any'}}selected{{/if}}"}
+                %span= t('.any')
+                %span.fa.fa-check
+            %li.dropdown-header= t('.good_governance')
+            {{#all_good_governance_complaint_bases}}
+            <goodGovernanceComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
+            {{/all_good_governance_complaint_bases}}
+            %li.dropdown-header= t('.human_rights')
+            {{#all_human_rights_complaint_bases}}
+            <humanRightsComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
+            {{/all_human_rights_complaint_bases}}
+            %li.dropdown-header= t('.special_investigations_unit')
+            {{#all_special_investigations_unit_complaint_bases}}
+            <specialInvestigationsUnitComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
+            {{/all_special_investigations_unit_complaint_bases}}
+    .row.labels
+      .col-md-2= t('.agency')
+      .col-md-2= t('.assignee')
+    .row{:style => "margin-bottom:12px;"}
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_agency')
+            %span.caret
+          %ul.dropdown-menu
+            %li.filter_rule
+              %a{'on-click'=>"filter_rule('agency','all')", :class => "{{#if filter_criteria.agency_rule == 'all'}}selected{{/if}}"}
+                %span= t('.all')
+                %span.fa.fa-check
+              %a{'on-click'=>"filter_rule('agency','any')", :class => "{{#if filter_criteria.agency_rule == 'any'}}selected{{/if}}"}
+                %span= t('.any')
+                %span.fa.fa-check
+            {{#all_agencies}}
+            <agencyFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
+            {{/all_agencies}}
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_assignee')
+            %span.caret
+          %ul.dropdown-menu
+            {{#all_staff}}
+            <assigneeFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{first_last_name}}'/>
+            {{/all_staff}}
+
+%script#nothing{:type => 'template/ractive'}
+  .row
+    .col-md-3
+      .btn-group.select{:style=>"width:240px;"}
+        %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+          %span.filter-option.pull-left  t('.select_mandate')
+          %span.caret
+        %ul.dropdown-menu
+          %li.filter_rule
+            %a{'on-click'=>"filter_rule('mandate','all')", :class => "{{#if filter_criteria.mandate_rule == 'all'}}selected{{/if}}"}
+              %span  t('.all')
+              %span.fa.fa-check
+            %a{'on-click'=>"filter_rule('mandate','any')", :class => "{{#if filter_criteria.mandate_rule == 'any'}}selected{{/if}}"}
+              %span  t('.any')
+              %span.fa.fa-check
+          {{#all_mandates}}
+          <mandateFilterSelect id='{{id}}' name='{{name}}'/>
+          {{/all_mandates}}
+    .col-md-3
+      .btn-group.select{:style=>"width:240px;"}
+        %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+          %span.filter-option.pull-left  t('.select_agency_convention')
+          %span.caret
+        %ul.dropdown-menu
+          %li.filter_rule
+            %a{'on-click'=>"filter_rule('agency_convention','all')", :class => "{{#if filter_criteria.agency_convention_rule == 'all'}}selected{{/if}}"}
+              %span  t('.all')
+              %span.fa.fa-check
+            %a{'on-click'=>"filter_rule('agency_convention','any')", :class => "{{#if filter_criteria.agency_convention_rule == 'any'}}selected{{/if}}"}
+              %span  t('.any')
+              %span.fa.fa-check
+          %li.dropdown-header
+            t('.agencies')
+            %ul{:style => "list-style:none; padding-left:18px;"}
+              {{#all_agencies}}
+              <agencyFilterSelect id='{{id}}' name='{{name}}'/>
+              {{/all_agencies}}
+          %li.dropdown-header
+            t('.conventions')
+            %ul{:style => "list-style:none; padding-left:18px;"}
+              {{#all_conventions}}
+              <conventionFilterSelect id='{{id}}' name='{{name}}'/>
+              {{/all_conventions}}
+    .col-md-1.col-md-offset-1
+      %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => '.clear'}
+    .col-md-1
+      {{#if expanded}}
+      %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>'.compact_all'}
+      {{else}}
+      %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>'.expand_all'}
+      {{/if}}
+  .row.labels
+    .col-md-3  t('.project_type')
+    .col-md-3  t('.performance_indicators')
+  .row
+    .col-md-3
+      .btn-group.select{:style=>"width:240px;"}
+        %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+          %span.filter-option.pull-left  t('.select_project_type')
+          %span.caret
+        %ul.dropdown-menu
+          %li.filter_rule
+            %a{'on-click'=>"filter_rule('project_type','all')", :class => "{{#if filter_criteria.project_type_rule == 'all'}}selected{{/if}}"}
+              %span  t('.all')
+              %span.fa.fa-check
+            %a{'on-click'=>"filter_rule('project_type','any')", :class => "{{#if filter_criteria.project_type_rule == 'any'}}selected{{/if}}"}
+              %span  t('.any')
+              %span.fa.fa-check
+          {{#all_mandate_project_types:mandate_name}}
+          %li.dropdown-header{:style => "padding: 3px 0px 3px 20px;"}
+            {{mandate_name}}
+            %ul{:style => "list-style:none; padding-left:18px;"}
+              {{#.}}
+              <projectTypeFilterSelect />
+              {{/.}}
+          {{/all_mandate_project_types}}
+    .col-md-3
+      .btn-group.performance_indicator_select.select{:style=>"width:240px;"}
+        %button.btn.btn-default.dropdown-toggle{:type => :button, 'data-toggle'=>'dropdown'}
+          %span.filter-option.pull-left  t('.select_performance_indicators')
+          %span.caret
+        <performanceIndicatorFilterSelect />
 
 %script#agencies_selector_template{:type => 'template/ractive'}
   .row
@@ -75,16 +284,6 @@
     {{/complaint_bases}}
   {{/complaint_bases.2}}
 
-%script#file_selector_template{:type => 'template/ractive'}
-  .row.fileupload
-    .col-md-1
-      %span.btn.btn-xs.btn-success.fileinput-button{'on-click'=>'show_file_selector()'}
-        %i.fa.fa-plus.fa-lg{ :style => "color:white"}
-        %span= t('add_document')
-      %input.hidden_fileinput#complaint_fileinput{:multiple => "multiple", :name => "complaint_file", :type => "file", 'onchange' => 'FileInput.add_file(event,this)', 'data-complaint_id'=>'{{id}}'}
-    .col-md-11.fileupload_progress
-      <progressBar />
-
 %script#new_complaint_template{:type => 'template/ractive'}
   .row.well.well-sm.expandable_well.new_complaint.editable_container{:intro => 'slide'}
     .col-md-12
@@ -140,7 +339,11 @@
         .col-md-10
           .row#categories
             <complaintCategoriesSelector all_categories='{{all_categories}}' />
-      {{> file_selector_template }}
+      .panel.panel-default#documents
+        .panel-heading= t('.complaint_documents')
+        .panel-body
+          {{> file_selector_template {key : 'complaint'} }}
+          <complaintDocuments complaint_documents='{{complaint_documents}}'>
 
 %script#complaint_categories_selector{:type => 'template/ractive'}
   {{#all_categories}}
@@ -302,13 +505,13 @@
             <agencies agency_ids='{{agency_ids}}' />
           .edit
             <agenciesSelector agencies='{{agencies}}' />
-      .row.collapse
+      .row.collapse{'data-toggle'=>:edit}
         .col-md-2=t('.documents')
-        .col-md-5#complaint_documents
-          {{#complaint_documents}}
-          .complaint_document
-            .title {{title}}
-          {{/complaint_documents}}
+        .col-md-10#complaint_documents
+          .edit{:style => "padding-left:15px; padding-top:15px;"}
+            {{> file_selector_template {key : 'complaint'} }}
+          .no_edit.in
+          <complaintDocuments complaint_documents='{{complaint_documents}}' />
       .row.collapse{'data-toggle'=>:edit}
         .col-md-2=t('.categories')
         .col-md-10
@@ -382,7 +585,7 @@
 
 %script#show_complaint_document_template{:type => 'template/ractive'}
   .complaint_document
-    .row{:style => "margin-left:0px;"}
+    .row
       .col-md-6.title {{title}}
       .col-md-4.filename {{filename}}
       .col-md-1
@@ -407,10 +610,3 @@
     .col-md-4.filename{:style => "overflow-wrap:break-word"} {{filename}}
     .col-md-2
       %i.fa.fa-remove.remove{'on-click' => 'remove_file()'}
-
-%script#progress_bar_template{:type => 'template/ractive'}
-  .col-lg-9.fileupload-progress.fade
-    .progress.progress-striped.active{:role => "progressbar"}
-      .progress-bar.progress-bar-success{:style => "width:0%;"}
-    .progress-extended  
-

@@ -1,13 +1,32 @@
 @import 'expandable_list';
 @import 'form_errors';
+@import 'filter_controls';
+@import 'jquery_datepicker';
+@import 'bootstrap-select';
 
-.expandable_well .col-md-1, .expandable_well .col-md-2, .expandable_well .col-md-3, .expandable_well .col-md-4, .expandable_well .col-md-5, .expandable_well .col-md-6, .expandable_well .col-md-7, .expandable_well .col-md-8, .expandable_well .col-md-9, .expandable_well .col-md-10, .expandable_well .col-md-11, .expandable_well .col-md-12 {
-  padding-top: 0;
-  padding-bottom: 0;
-}
+//.expandable_well .col-md-1, .expandable_well .col-md-2, .expandable_well .col-md-3, .expandable_well .col-md-4, .expandable_well .col-md-5, .expandable_well .col-md-6, .expandable_well .col-md-7, .expandable_well .col-md-8, .expandable_well .col-md-9, .expandable_well .col-md-10, .expandable_well .col-md-11, .expandable_well .col-md-12 {
+  //padding-top: 0;
+  //padding-bottom: 0;
+//}
 
 div[id$='_complaint_bases'] {
   .basis_name:after {
     content : ":";
   }
+}
+
+#complaints_controls input {
+  width : 220px;
+}
+
+#complaints_controls .col-md-2 {
+  width : 20%;
+}
+
+#complaints_controls .col-md-1 {
+  width : 10%;
+}
+
+#complaints_controls .filter_rule {
+  display : flex;
 }

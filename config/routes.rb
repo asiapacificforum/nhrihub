@@ -72,6 +72,7 @@ Rails.application.routes.draw do
       resource :filesize, :only => :update
     end
     resources :project_documents, :only => [:destroy, :show]
+    resources :complaint_documents, :only => [:destroy, :show]
     resource :project_admin, :only => :show, :to => 'project_admin#show'
     resource :complaint_admin, :only => :show, :to => 'complaint_admin#show'
     resources :complaints
