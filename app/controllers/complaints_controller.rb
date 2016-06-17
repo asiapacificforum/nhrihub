@@ -13,6 +13,8 @@ class ComplaintsController < ApplicationController
     @human_rights_complaint_bases = Nhri::ComplaintBasis.all
     @special_investigations_unit_complaint_bases = Siu::ComplaintBasis.all
     @staff = User.staff
+    #@create_reminder_url = complaint_reminders_path('en','id')
+    #@create_note_url     = complaint_notes_path('en','id')
   end
 
   def create

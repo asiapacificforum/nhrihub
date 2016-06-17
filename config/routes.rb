@@ -76,6 +76,10 @@ Rails.application.routes.draw do
     resource :project_admin, :only => :show, :to => 'project_admin#show'
     resource :complaint_admin, :only => :show, :to => 'complaint_admin#show'
     resources :complaints
+    resources :complaints do
+      resources :reminders, :controller => "complaint/reminders"
+      resources :notes, :controller => "complaint/notes"
+    end
     resources :good_governance_complaint_bases, :only => [:create, :destroy], :controller => 'good_governance/complaint_bases'
     resources :siu_complaint_bases, :only => [:create, :destroy], :controller => 'siu/complaint_bases'
     resources :complaint_categories, :only => [:create, :destroy]

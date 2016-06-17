@@ -6,7 +6,9 @@
   %span= t(".add_complaint")
 
 #complaints
+#reminder
 
+= render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'shared/file_selector'
 = render :partial => 'complaints/complaints_templates'
 

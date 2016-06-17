@@ -377,6 +377,10 @@ Complaint = Ractive.extend
       get: ->
         $.datepicker.formatDate("yy, M d", new Date(@get('date')) )
       set: (val)-> @set('date', $.datepicker.parseDate( "yy, M d", val))
+    create_reminder_url : ->
+      Routes.complaint_reminders_path('en', @get('id'))
+    create_note_url : ->
+      Routes.complaint_notes_path('en', @get('id'))
   oninit : ->
     @set
       'editing' : false
@@ -418,6 +422,11 @@ Complaint = Ractive.extend
     @parent.shift('complaints')
   add_file : (file)->
     @unshift('complaint_documents', {id : null, complaint_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type})
+  show_reminders_panel : ->
+    reminders.set
+      reminders: @get('reminders')
+      create_reminder_url : @get('create_reminder_url')
+    $('#reminders_modal').modal('show')
   , EditBackup, Persistence, FilterMatch
 
 GoodGovernanceComplaintBasisFilterSelect = Ractive.extend

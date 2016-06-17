@@ -57,7 +57,7 @@ class Complaint < ActiveRecord::Base
   end
 
   def current_status_humanized
-    status_changes.last.status_humanized
+    status_changes.last.status_humanized unless status_changes.empty?
   end
 
   def date
@@ -80,6 +80,10 @@ class Complaint < ActiveRecord::Base
   end
 
   def current_assignee_id
-    current_assignee.id
+    current_assignee.id if current_assignee
+  end
+
+  def namespace
+    nil
   end
 end
