@@ -276,6 +276,10 @@ Project = Ractive.extend
       window.model_name
     include : ->
       @include()
+    create_note_url : ->
+      window.create_note_url.replace('id',@get('id'))
+    create_reminder_url : ->
+      window.create_reminder_url.replace('id',@get('id'))
   components :
     mandatesSelector : MandatesSelector
     projectTypesSelector : ProjectTypesSelector
@@ -303,17 +307,7 @@ Project = Ractive.extend
     @unshift('project_documents', {id : null, project_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type})
   show_file_selector : ->
     @find('#project_fileinput').click()
-  show_reminders_panel : ->
-    reminders.set
-      reminders: @get('reminders')
-      create_reminder_url : window.create_reminder_url.replace('id',@get('id'))
-    $('#reminders_modal').modal('show')
-  show_notes_panel : ->
-    notes.set
-      notes : @get('notes')
-      create_note_url : window.create_note_url.replace('id',@get('id'))
-    $('#notes_modal').modal('show')
-  , ProjectValidator, PerformanceIndicatorAssociation, EditBackup, Persistence, FilterMatch
+  , ProjectValidator, PerformanceIndicatorAssociation, EditBackup, Persistence, FilterMatch, Remindable, Notable
 
 FilterSelect = Ractive.extend
   computed :

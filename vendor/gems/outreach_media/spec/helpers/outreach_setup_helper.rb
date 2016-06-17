@@ -20,6 +20,7 @@ module OutreachSetupHelper
                          :event_date => DateTime.now,
                          :reminders=>[] )
     end
+    add_reminder
   end
 
   def setup_audience_types

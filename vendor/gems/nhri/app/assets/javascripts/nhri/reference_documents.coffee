@@ -211,11 +211,8 @@ $ ->
         true
     add_file : (file)->
       @set(file)
-    show_reminders_panel : ->
-      reminders.set
-        reminders: @get('reminders')
-        create_reminder_url : @get('create_reminder_url')
       $('#reminders_modal').modal('show')
+    , Remindable
 
   Docs = Ractive.extend
     template: '#files'

@@ -10,6 +10,7 @@ module ComplaintsRemindersSetupHelpers
                           :text => "don't forget the fruit gums mum",
                           :users => [User.first], :remindable => Complaint.first)
     visit complaints_path(:en)
+    expect(reminders_icon['data-count']).to eq "1"
     open_reminders_panel
   end
 

@@ -21,6 +21,8 @@ RSpec.shared_examples "reminders" do
         expect(page.all("#reminders .reminder .text .in").last.text).to eq "time to check the database"
         expect(page.all("#reminders .reminder .recipient").last.text).to eq User.first.first_last_name
         expect(page.all("#reminders .reminder .previous").last.text).to eq "none"
+        close_reminders_modal
+        expect(reminders_icon['data-count']).to eq "2"
       end
 
       scenario "and multiple adds disallowed" do
@@ -87,6 +89,8 @@ RSpec.shared_examples "reminders" do
         fill_in(:reminder_text, :with => "time to check the database")
         cancel_reminder.click
         expect(page).not_to have_selector('#new_reminder')
+        close_reminders_modal
+        expect(reminders_icon['data-count']).to eq "1"
       end
     end
 
@@ -99,8 +103,6 @@ RSpec.shared_examples "reminders" do
         select(User.first.first_last_name, :from => :reminder_user_ids)
         select(User.last.first_last_name, :from => :reminder_user_ids)
         fill_in(:reminder_text, :with => "have a nice day")
-        #edit_reminder_save_icon.click
-        #expect{ edit_reminder_save_icon.trigger('click'); wait_for_ajax}.to change{Reminder.first.text}.to('have a nice day')
         expect{ edit_reminder_save_icon.click; wait_for_ajax}.to change{Reminder.first.text}.from("don't forget the fruit gums mum").to('have a nice day')
         expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "one-time"
         expect(page.find("#reminders .reminder .next .in").text).to eq "Dec 25, #{Date.today.year}"
@@ -146,6 +148,8 @@ RSpec.shared_examples "reminders" do
 
     scenario "delete a reminder" do
       expect{reminder_delete_icon.click; wait_for_ajax}.to change{Reminder.count}.from(1).to(0)
+      close_reminders_modal
+      expect(reminders_icon['data-count']).to eq "0"
     end
   end
 end

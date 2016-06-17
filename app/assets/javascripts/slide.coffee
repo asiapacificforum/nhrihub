@@ -1,4 +1,4 @@
-SlideDefaults = 
+SlideDefaults =
   duration: 300
   easing: 'easeInOut'
 

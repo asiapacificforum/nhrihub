@@ -2,10 +2,15 @@ require 'rspec/core/shared_context'
 
 module RemindersSpecCommonHelpers
   extend RSpec::Core::SharedContext
+
   def open_reminders_panel
     reminders_icon.click
     page.find('i#add_reminder', :visible => true, :wait => 20)
     sleep(0.2) # b/c capybara finds it on the page before css transitions are complete, I think
+  end
+
+  def close_reminders_modal
+    page.find('#reminder .modal .modal-header button.close').click
   end
 
   def reminders_icon

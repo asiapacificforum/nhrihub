@@ -149,16 +149,10 @@ $ ->
         @get('reminders').length
       notes_count : ->
         @get('notes').length
-    show_reminders_panel : ->
-      reminders.set
-        reminders: @get('reminders')
-        create_reminder_url : Routes.nhri_indicator_reminders_path(current_locale,@get('id'))
-      $('#reminders_modal').modal('show')
-    show_notes_panel : ->
-      notes.set
-        notes : @get('notes')
-        create_note_url : Routes.nhri_indicator_notes_path(current_locale,@get('id'))
-      $('#notes_modal').modal('show')
+      create_reminder_url : ->
+        Routes.nhri_indicator_reminders_path(current_locale,@get('id'))
+      create_note_url : ->
+        Routes.nhri_indicator_notes_path(current_locale,@get('id'))
     show_monitors_panel : ->
       type = @get('monitor_format')
       if type == 'file'
@@ -191,6 +185,7 @@ $ ->
       new_indicator.set(@get())
       new_indicator.set('source',@)
       $('#new_indicator_modal').modal('show')
+    , Remindable, Notable
 
   NatureHumanRightsAttribute = Ractive.extend
     template : "#nature_attribute_template"

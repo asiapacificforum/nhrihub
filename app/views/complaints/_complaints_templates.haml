@@ -65,10 +65,10 @@
     .row{:style => "margin-bottom:12px;"}
       .col-md-2{:style => 'padding-top:7px;'}
         %label.checkbox-inline{:style => 'color:#f0f8ff; font-weight:300;'}
-          <input type='checkbox' id='true_status' name='{{filter_criteria.selected_open_status}}' value='true'> <!-- html, workaround for ractive bug https://github.com/ractivejs/ractive/issues/1968 -->
+          <input type='checkbox' id='true_status' name='{{filter_criteria.selected_open_status}}' value='true' style='width:initial;'> <!-- html, workaround for ractive bug https://github.com/ractivejs/ractive/issues/1968 -->
           = t('.open')
         %label.checkbox-inline{:style => 'color:#f0f8ff; font-weight:300;'}
-          <input type='checkbox' id='false_status' name='{{filter_criteria.selected_closed_status}}' value='true'>
+          <input type='checkbox' id='false_status' name='{{filter_criteria.selected_closed_status}}' value='true' style='width:initial;'>
           = t('.closed')
       .col-md-2
         %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.date_from'), :value => "{{filter_criteria.from}}"}

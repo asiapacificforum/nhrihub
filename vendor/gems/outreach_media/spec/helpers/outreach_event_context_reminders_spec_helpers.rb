@@ -7,8 +7,8 @@ module OutreachEventContextRemindersSpecHelpers
 
   before do
     setup_database(nil)
-    add_reminder
     visit outreach_media_outreach_events_path(:en)
+    expect(reminders_icon['data-count']).to eq "1"
     open_reminders_panel
   end
 end

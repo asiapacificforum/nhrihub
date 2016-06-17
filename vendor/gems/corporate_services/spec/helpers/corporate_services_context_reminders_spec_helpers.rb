@@ -15,6 +15,7 @@ module CorporateServicesContextRemindersSpecHelpers
                           :users => [User.first], :remindable => PerformanceIndicator.first)
     visit corporate_services_strategic_plan_path(:en, "current")
     open_accordion_for_strategic_priority_one
+    expect(reminders_icon['data-count']).to eq "1"
     open_reminders_panel
   end
 end

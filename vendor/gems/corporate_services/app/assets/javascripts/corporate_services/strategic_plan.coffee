@@ -26,6 +26,8 @@ $ ->
     computed :
       persisted : ->
         !isNaN(parseInt(@get('id')))
+      reminders_count : ->
+        @get('reminders').length
     remove_description_errors : ->
       @set("description_error","")
     create_save : ->
@@ -67,16 +69,6 @@ $ ->
       @parent.set('performance_indicators',resp)
     remove_errors : ->
       @remove_description_errors()
-    show_reminders_panel : ->
-      reminders.set
-        reminders: @get('reminders')
-        create_reminder_url : @get('create_reminder_url')
-      $('#reminders_modal').modal('show')
-    show_notes_panel : ->
-      notes.set
-        notes : @get('notes')
-        create_note_url : @get('create_note_url')
-      $('#notes_modal').modal('show')
     show_rules_panel : ->
       $('#rules_modal').modal('show')
     create_stop : ->
@@ -84,6 +76,7 @@ $ ->
       @parent.remove_performance_indicator_form()
     edit_update : (performance_indicator) ->
       @set(performance_indicator)
+  , Remindable, Notable
 
   Activity = Ractive.extend
     template : '#activity_template'

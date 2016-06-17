@@ -16,7 +16,7 @@ class Nhri::ProtectionPromotion::Project::RemindersController < RemindersControl
   protected
   def reminder_params
     params[:reminder][:remindable_id] = params[:project_id]
-    params[:reminder][:remindable_type] = 'Nhri::ProtectionPromotion::Project'
+    params[:reminder][:remindable_type] = 'Project'
     super
   end
 end

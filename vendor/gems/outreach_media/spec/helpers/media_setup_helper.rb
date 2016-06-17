@@ -24,6 +24,7 @@ module MediaSetupHelper
                          :positivity_rating => PositivityRating.first,
                          :reminders=>[] )
     end
+    add_reminder
   end
 
   def add_a_second_article

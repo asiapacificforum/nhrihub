@@ -16,7 +16,7 @@ class Siu::Project::RemindersController < RemindersController
   protected
   def reminder_params
     params[:reminder][:remindable_id] = params[:project_id]
-    params[:reminder][:remindable_type] = 'Siu::Project'
+    params[:reminder][:remindable_type] = 'Project'
     super
   end
 end

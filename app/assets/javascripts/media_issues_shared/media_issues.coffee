@@ -250,16 +250,6 @@ $ ->
     compact : ->
       @set('expanded',false)
       $(@find('.collapse')).collapse('hide')
-    show_reminders_panel : ->
-      reminders.set
-        reminders: @get('reminders')
-        create_reminder_url : @get('create_reminder_url')
-      $('#reminders_modal').modal('show')
-    show_notes_panel : ->
-      notes.set
-        notes : @get('notes')
-        create_note_url : @get('create_note_url')
-      $('#notes_modal').modal('show')
     remove_title_errors : ->
       @set('title_error',false)
     cancel : ->
@@ -425,7 +415,7 @@ $ ->
         $('.hr_metrics').show(300)
       else if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && !ev.target.checked
         $('.hr_metrics').hide(300)
-  , PerformanceIndicatorAssociation
+  , PerformanceIndicatorAssociation, Remindable, Notable
 
   window.collection_items_data = -> # an initialization data set so that tests can reset between
     expanded : false

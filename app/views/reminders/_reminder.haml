@@ -182,8 +182,9 @@
           dataType : 'json'
           context : @
           success : @update_reminder
-      update_reminder : (resp, statusText, jqxhr)->
-        @parent.set(resp)
+      update_reminder : (response, statusText, jqxhr)->
+        @parent.set('reminders',response) # the global reminders
+        @get('parent').set('reminders',response) # the parent object
       validate : ->
         type = @_validate('reminder_type')
         text = @_validate('text')
@@ -202,7 +203,8 @@
         else
           true
       create_reminder : (response, statusText, jqxhr)->
-        @parent.set('reminders',response)
+        @parent.set('reminders',response) # the global reminders
+        @get('parent').set('reminders',response) # the parent object
       remove_errors : (field)->
         if _.isUndefined(field) # after edit, failed save, and cancel, remove all errors
           error_attrs = _(_(@get()).keys()).select (k)-> k.match(/error/)
@@ -212,3 +214,12 @@
 
     Ractive.components.reminder = Reminder
     Ractive.components.recipient = Recipient
+
+:coffeescript
+  @Remindable =
+    show_reminders_panel : ->
+      reminders.set # copy this complaint's reminders into the global reminders object
+        reminders: @get('reminders')
+        create_reminder_url : @get('create_reminder_url')
+        parent : @
+      $('#reminders_modal').modal('show')

@@ -115,16 +115,6 @@ ComplaintCategoriesSelector = Ractive.extend
   template : '#complaint_categories_selector'
 
 Persistence =
-  #save_complaint : ->
-    #if @validate()
-      #$.ajax
-        #method : 'post'
-        #data : @persisted_attributes()
-        #url : Routes.complaints_path('en')
-        #success : @save_callback
-        #context : @
-  #save_callback : (data,status,jqxhr)->
-    #@set(data)
   delete_complaint : (event)->
     data = {'_method' : 'delete'}
     url = Routes.complaint_path(current_locale, @get('id'))
@@ -422,17 +412,7 @@ Complaint = Ractive.extend
     @parent.shift('complaints')
   add_file : (file)->
     @unshift('complaint_documents', {id : null, complaint_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type})
-  show_reminders_panel : ->
-    reminders.set
-      reminders: @get('reminders')
-      create_reminder_url : @get('create_reminder_url')
-    $('#reminders_modal').modal('show')
-  show_notes_panel : ->
-    notes.set
-      notes : @get('notes')
-      create_note_url : @get('create_note_url')
-    $('#notes_modal').modal('show')
-  , EditBackup, Persistence, FilterMatch
+  , EditBackup, Persistence, FilterMatch, Remindable, Notable
 
 GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
   template : "#good_governance_complaint_basis_filter_select_template"
