@@ -35,5 +35,9 @@ FactoryGirl.define do
     trait :nhri_protection_promotion_project do
       remindable_type "Nhri::ProtectionPromotion::Project"
     end
+
+    trait :complaint do
+      remindable_type "Complaint"
+    end
   end
 end

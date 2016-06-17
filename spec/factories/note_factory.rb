@@ -35,5 +35,9 @@ FactoryGirl.define do
     trait :nhri_protection_promotion_project do
       notable_type "Nhri::ProtectionPromotion::Project"
     end
+
+    trait :complaint do
+      notable_type "Complaint"
+    end
   end
 end
