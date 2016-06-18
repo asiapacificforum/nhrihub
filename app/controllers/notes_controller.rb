@@ -3,7 +3,7 @@ class NotesController < ApplicationController
     note = Note.new(note_params)
     note.author = note.editor = current_user
     if note.save
-      render :json => Note.includes(:author, :editor, :notable).where(:notable_id => note.notable_id, :notable_type => note.notable_type), :status => 200
+      render :json => Note.includes(:author, :editor, :notable).where(:notable_id => note.notable_id), :status => 200
     else
       render :nothing => true, :status => 500
     end
