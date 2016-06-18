@@ -137,7 +137,7 @@ module ComplaintsSpecHelpers
     page.all('#complaints .complaint')
   end
 
-  def complaint_documents
+  def documents
     page.all('#complaint_documents .complaint_document')
   end
 
@@ -166,7 +166,7 @@ module ComplaintsSpecHelpers
   end
 
   def expand
-    all('#expand').first.click
+    all('.complaint #expand').first.click
   end
 
   def add_complaint

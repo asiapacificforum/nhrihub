@@ -96,19 +96,19 @@ feature "complaints index", :js => true do
   end # /it
 
   it "adds a new complaint" do
-    add_complain
-    fill_in('complainant', :with => "Norman Normal")
-    fill_in('village', :with => "Normaltown")
-    fill_in('phone', :with => "555-1212")
-    check('special_investigations_unit')
-    check_basis(:good_governance, "Delayed action")
-    check_basis(:human_rights, "CAT")
-    check_basis(:special_investigations_unit, "Unreasonable delay")
-    select(User.first.first_last_name, :from => "assignee")
-    check_category("Formal")
-    check_agency("SAA")
-    check_agency("ACC")
+    add_complaint
     within new_complaint do
+      fill_in('complainant', :with => "Norman Normal")
+      fill_in('village', :with => "Normaltown")
+      fill_in('phone', :with => "555-1212")
+      check('special_investigations_unit')
+      check_basis(:good_governance, "Delayed action")
+      check_basis(:human_rights, "CAT")
+      check_basis(:special_investigations_unit, "Unreasonable delay")
+      select(User.first.first_last_name, :from => "assignee")
+      check_category("Formal")
+      check_agency("SAA")
+      check_agency("ACC")
       attach_file
       fill_in("complaint_document_title", :with => "Complaint Document")
     end
@@ -181,23 +181,27 @@ feature "complaints index", :js => true do
 
   it "cancels adding" do
     add_complaint
-    fill_in('complainant', :with => "Norman Normal")
-    fill_in('village', :with => "Normaltown")
-    fill_in('phone', :with => "555-1212")
-    check('special_investigations_unit')
-    check_basis(:good_governance, "Delayed action")
-    check_basis(:human_rights, "CAT")
-    check_basis(:special_investigations_unit, "Unreasonable delay")
-    select(User.first.first_last_name, :from => "assignee")
+    within new_complaint do
+      fill_in('complainant', :with => "Norman Normal")
+      fill_in('village', :with => "Normaltown")
+      fill_in('phone', :with => "555-1212")
+      check('special_investigations_unit')
+      check_basis(:good_governance, "Delayed action")
+      check_basis(:human_rights, "CAT")
+      check_basis(:special_investigations_unit, "Unreasonable delay")
+      select(User.first.first_last_name, :from => "assignee")
+    end
     cancel_add
     expect(page).not_to have_selector('.new_complaint')
     add_complaint
-    expect(page.find('#complainant').value).to be_blank
-    expect(page.find('#village').value).to be_blank
-    expect(page.find('#phone').value).to be_blank
-    expect(basis_checkbox(:good_governance, "Delayed action")).not_to be_checked
-    expect(basis_checkbox(:human_rights, "CAT")).not_to be_checked
-    expect(basis_checkbox(:special_investigations_unit, "Unreasonable delay")).not_to be_checked
+    within new_complaint do
+      expect(page.find('#complainant').value).to be_blank
+      expect(page.find('#village').value).to be_blank
+      expect(page.find('#phone').value).to be_blank
+      expect(basis_checkbox(:good_governance, "Delayed action")).not_to be_checked
+      expect(basis_checkbox(:human_rights, "CAT")).not_to be_checked
+      expect(basis_checkbox(:special_investigations_unit, "Unreasonable delay")).not_to be_checked
+    end
   end
 
   it "changes complaint current status by adding a status_change" do
@@ -216,27 +220,29 @@ feature "complaints index", :js => true do
   it "edits a complaint" do
     edit_complaint
     # COMPLAINANT
-    fill_in('complainant', :with => "Norman Normal")
-    fill_in('village', :with => "Normaltown")
-    fill_in('phone', :with => "555-1212")
-    # CATEGORY
-    check_category("Informal")
-    uncheck_category("Formal")
-    # ASSIGNEE
-    select(User.last.first_last_name, :from => "assignee")
-    # MANDATE
-    check('special_investigations_unit') # originally had human rights mandate, now should have both
-    # BASIS
-    uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
-    uncheck_basis(:human_rights, "CAT") # originall had "CAT" "ICESCR"
-    uncheck_basis(:special_investigations_unit, "Unreasonable delay") #originally had "Unreasonable delay" "Not properly investigated"
-    # AGENCY
-    uncheck_agency("SAA")
-    check_agency("ACC")
-    # DOCUMENTS TODO
-    attach_file
-    fill_in("complaint_document_title", :with => "added complaint document")
-    expect(page).to have_selector("#complaint_documents .document .filename", :text => "first_upload_file.pdf")
+    within first_complaint do
+      fill_in('complainant', :with => "Norman Normal")
+      fill_in('village', :with => "Normaltown")
+      fill_in('phone', :with => "555-1212")
+      # CATEGORY
+      check_category("Informal")
+      uncheck_category("Formal")
+      # ASSIGNEE
+      select(User.last.first_last_name, :from => "assignee")
+      # MANDATE
+      check('special_investigations_unit') # originally had human rights mandate, now should have both
+      # BASIS
+      uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
+      uncheck_basis(:human_rights, "CAT") # originall had "CAT" "ICESCR"
+      uncheck_basis(:special_investigations_unit, "Unreasonable delay") #originally had "Unreasonable delay" "Not properly investigated"
+      # AGENCY
+      uncheck_agency("SAA")
+      check_agency("ACC")
+      # DOCUMENTS
+      attach_file
+      fill_in("complaint_document_title", :with => "added complaint document")
+      expect(page).to have_selector("#complaint_documents .document .filename", :text => "first_upload_file.pdf")
+    end
     expect{ edit_save; wait_for_ajax }.to change{ Complaint.first.complainant }.to("Norman Normal").
                                       and change{ Complaint.first.village }.to("Normaltown").
                                       and change{ Complaint.first.phone }.to("555-1212").
@@ -292,7 +298,7 @@ feature "complaints index", :js => true do
   it "edits a complaint, deleting a file" do
     edit_complaint
     expect{delete_document; wait_for_ajax}.to change{ Complaint.first.complaint_documents.count }.by(-1).
-                                          and change{ complaint_documents.count }.by(-1)
+                                          and change{ documents.count }.by(-1)
   end
 
   it "should download a complaint document file" do
@@ -311,17 +317,21 @@ feature "complaints index", :js => true do
   it "restores previous values when editing is cancelled" do
     original_complaint = Complaint.first
     edit_complaint
-    fill_in('complainant', :with => "Norman Normal")
-    fill_in('village', :with => "Normaltown")
-    fill_in('phone', :with => "555-1212")
-    #check_basis(:good_governance, "Delayed action")
-    #check_basis(:human_rights, "CAT")
-    #check_basis(:special_investigations_unit, "Unreasonable delay")
+    within first_complaint do
+      fill_in('complainant', :with => "Norman Normal")
+      fill_in('village', :with => "Normaltown")
+      fill_in('phone', :with => "555-1212")
+      #check_basis(:good_governance, "Delayed action")
+      #check_basis(:human_rights, "CAT")
+      #check_basis(:special_investigations_unit, "Unreasonable delay")
+    end
     edit_cancel
     edit_complaint
-    expect(page.find('#complainant').value).to eq original_complaint.complainant
-    expect(page.find('#village').value).to eq original_complaint.village
-    expect(page.find('#phone').value).to eq original_complaint.phone
+    within first_complaint do
+      expect(page.find('#complainant').value).to eq original_complaint.complainant
+      expect(page.find('#village').value).to eq original_complaint.village
+      expect(page.find('#phone').value).to eq original_complaint.phone
+    end
   end
 
   it "permits only one add at a time" do
@@ -343,24 +353,30 @@ feature "complaints index", :js => true do
     edit_first_complaint
     expect(page.all('.new_complaint').count).to eq 0
     add_complaint
-    expect(page.find('#complainant').value).to be_blank
-    expect(page.find('#village').value).to be_blank
-    expect(page.find('#phone').value).to be_blank
+    within new_complaint do
+      expect(page.find('#complainant').value).to be_blank
+      expect(page.find('#village').value).to be_blank
+      expect(page.find('#phone').value).to be_blank
+    end
   end
 
   it "terminates editing complaint when adding is initiated" do
     original_complaint = Complaint.first
     edit_first_complaint
-    fill_in('complainant', :with => "Norman Normal")
-    fill_in('village', :with => "Normaltown")
-    fill_in('phone', :with => "555-1212")
+    within first_complaint do
+      fill_in('complainant', :with => "Norman Normal")
+      fill_in('village', :with => "Normaltown")
+      fill_in('phone', :with => "555-1212")
+    end
     add_complaint
     expect(page.evaluate_script("_.chain(complaints.findAllComponents('complaint')).map(function(c){return c.get('editing')}).filter(function(c){return c}).value().length")).to eq 0
     cancel_add
     edit_first_complaint
-    expect(page.find('#complainant').value).to eq original_complaint.complainant
-    expect(page.find('#village').value).to eq original_complaint.village
-    expect(page.find('#phone').value).to eq original_complaint.phone
+    within first_complaint do
+      expect(page.find('#complainant').value).to eq original_complaint.complainant
+      expect(page.find('#village').value).to eq original_complaint.village
+      expect(page.find('#phone').value).to eq original_complaint.phone
+    end
   end
 
   it "deletes a complaint" do
