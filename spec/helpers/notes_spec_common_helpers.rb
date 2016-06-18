@@ -13,11 +13,15 @@ module NotesSpecCommonHelpers
   end
 
   def open_notes_modal
-    page.all('.show_notes')[0].click
+    notes_icon.click
     expect(page).to have_selector('#note .modal h4', :text => 'Notes', :visible => true)
   end
 
-  def close_modal
+  def notes_icon
+    page.all('.show_notes')[0]
+  end
+
+  def close_notes_modal
     page.execute_script("$.support.transition=false")
     page.find('button.close').click()
   end

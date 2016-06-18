@@ -23,7 +23,7 @@ class NotesController < ApplicationController
     note = Note.find(params[:id])
     notable = note.notable
     if note.destroy
-      render :json => notable.reload.to_json, :status => 200
+      render :json => notable.reload.notes, :status => 200
     else
       render :nothing => true, :status => 500
     end

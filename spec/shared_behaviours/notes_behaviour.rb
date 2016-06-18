@@ -13,13 +13,15 @@ RSpec.shared_examples "notes" do
       expect(author).to eq User.first.first_last_name
       expect(editor).to eq User.first.first_last_name
       expect(last_edited).to eq Date.today.to_s(:short)
+      close_notes_modal
+      expect(notes_icon['data-count']).to eq "3"
     end
 
     scenario "start adding a note, close modal panel, and then restart" do
       add_note.click
       expect(page).to have_selector("#new_note #note_text")
       fill_in(:note_text, :with => "nota bene")
-      close_modal
+      close_notes_modal
       open_notes_modal
       expect(page).not_to have_selector("#new_note #note_text")
     end
@@ -49,6 +51,7 @@ RSpec.shared_examples "notes" do
 
     scenario "delete a note" do
       expect{ delete_note.first.click; wait_for_ajax }.to change{Note.count}.from(2).to(1)
+      expect(notes_icon['data-count']).to eq "1"
     end
 
     scenario "edit a note" do

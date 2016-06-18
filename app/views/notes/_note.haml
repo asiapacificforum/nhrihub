@@ -82,6 +82,8 @@
 %div#detailsTitle{:style=>"display: none"}
   %span{:style => 'z-index:20'}= t('.details')
 
+#note
+
 :coffeescript
   $ ->
     NoteEdit = (node,id)->
@@ -133,8 +135,9 @@
           dataType : 'json'
           context : @
           success : @update_note
-      update_note : (resp, statusText, jqxhr)->
-        @parent.set(resp)
+      update_note : (response, statusText, jqxhr)->
+        @parent.set('notes',response)
+        @get('parent').set('notes',response)
       validate : ->
         @_validate('text')
       _validate : (field)->
@@ -151,6 +154,7 @@
           true
       create_note : (response, statusText, jqxhr)->
         @parent.set('notes',response)
+        @get('parent').set('notes',response)
       remove_errors : (field)->
         if _.isUndefined(field) # after edit, failed save, and cancel, remove all errors
           error_attrs = _(_(@get()).keys()).select (k)-> k.match(/error/)
