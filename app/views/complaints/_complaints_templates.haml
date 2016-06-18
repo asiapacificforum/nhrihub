@@ -428,13 +428,11 @@
               .edit
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+                %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()"}
               .edit
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
                 %i.fa.fa-comments-o.fa-lg
-              .fade.edit
-            .col-md-1.icon{ 'data-toggle' => 'edit'}
               .fade.edit
                 %i.fa.fa-remove{:id => "complaint_editable{{id}}_edit_cancel"}
             .col-md-1.icon{'data-toggle' => 'edit'}

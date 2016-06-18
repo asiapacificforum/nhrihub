@@ -578,6 +578,9 @@ complaints_options =
   el : '#complaints'
   template : '#complaints_template'
   data : $.extend(true,{},complaints_page_data())
+  oninit : ->
+    @set
+      'expanded' : false
   components :
     complaint : Complaint
     filterControls : FilterControls
@@ -622,6 +625,12 @@ complaints_options =
     @set('filter_criteria.from',selectedDate)
   set_filter_criteria_to_date : (selectedDate)->
     @set('filter_criteria.to',selectedDate)
+  expand : ->
+    @set('expanded', true)
+    _(@findAllComponents('complaint')).each (ma)-> ma.expand()
+  compact : ->
+    @set('expanded', false)
+    _(@findAllComponents('complaint')).each (ma)-> ma.compact()
 
 window.start_page = ->
   window.complaints = new Ractive complaints_options
