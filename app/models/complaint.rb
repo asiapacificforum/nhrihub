@@ -19,6 +19,7 @@ class Complaint < ActiveRecord::Base
   has_many :agencies, :through => :complaint_agencies
   has_many :complaint_documents, :dependent => :destroy
   accepts_nested_attributes_for :complaint_documents
+  has_many :communications, :dependent => :destroy
 
   def status_changes_attributes=(attrs)
     # only create a status_change object if this is a new complaint
@@ -40,7 +41,8 @@ class Complaint < ActiveRecord::Base
                         :good_governance_complaint_basis_ids,
                         :special_investigations_unit_complaint_basis_ids,
                         :human_rights_complaint_basis_ids, :status_changes,
-                        :agency_ids])
+                        :agency_ids,
+                        :communications])
   end
 
   def self.next_case_reference

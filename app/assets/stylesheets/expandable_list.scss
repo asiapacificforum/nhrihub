@@ -24,22 +24,20 @@
   }
 }
 
-#expand {
+#expand, #compact {
   background-repeat: no-repeat;
   height: 18px;
   cursor: pointer;
-  background-image: asset-url("outreach_media/expand19.png"); //http://www.flaticon.com/free-icon/expand-arrows-couple_37089
   display: block;
   background-size: 12px;
   background-position-x: 50%;
 }
 
+#expand {
+  background-image: asset-url("outreach_media/expand19.png"); //http://www.flaticon.com/free-icon/expand-arrows-couple_37089
+}
+
 #compact {
-  background-repeat: no-repeat;
-  height: 16px;
-  cursor: pointer;
   background-image: asset-url("outreach_media/compress.png"); //http://www.flaticon.com/free-icon/compress-arrows-couple-symbol_36692
-  display: block;
-  background-size: 12px;
 }
 

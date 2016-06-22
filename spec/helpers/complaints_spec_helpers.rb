@@ -172,4 +172,8 @@ module ComplaintsSpecHelpers
   def add_complaint
     page.find('#add_complaint').click
   end
+
+  def open_communications_modal
+    page.all('#complaints .complaint .fa-comments-o')[0].click
+  end
 end

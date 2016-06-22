@@ -432,7 +432,7 @@
               .edit
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                %i.fa.fa-comments-o.fa-lg
+                %i.fa.fa-comments-o.fa-lg{'on-click' => 'show_communications_panel()'}
               .fade.edit
                 %i.fa.fa-remove{:id => "complaint_editable{{id}}_edit_cancel"}
             .col-md-1.icon{'data-toggle' => 'edit'}

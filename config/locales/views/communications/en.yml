@@ -1,0 +1,17 @@
+en:
+  communications:
+    communication:
+      communications: "Complaint Communications"
+      date: "Date"
+      method: "Method"
+      method_error_message: "You must select a method"
+      email : "Email"
+      phone: "Phone"
+      face_to_face: "Face to face"
+      sent_or_received: "Sent or received"
+      sent_or_received_error_message: "You must select sent or received"
+      sent: "Sent"
+      received: "Received"
+      select_user: "Select user"
+      communication_by: "Communication by"
+      note: "Note"

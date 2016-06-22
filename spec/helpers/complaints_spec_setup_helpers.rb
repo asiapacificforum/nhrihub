@@ -7,6 +7,7 @@ module ComplaintsSpecSetupHelpers
     create_categories
     create_mandates
     create_agencies
+    create_staff
     FactoryGirl.create(:complaint, :case_reference => "c12/34",
                        :village => Faker::Address.city,
                        :phone => Faker::PhoneNumber.phone_number,
@@ -18,14 +19,23 @@ module ComplaintsSpecSetupHelpers
                        :complaint_categories => complaint_cats,
                        :status_changes => _status_changes,
                        :mandates => _mandates,
-                       :agencies => _agencies)
+                       :agencies => _agencies,
+                       :communications => _communications)
   end
 
   private
+  def create_staff
+    FactoryGirl.create(:user, :staff, :with_password, :firstName => "Hailee", :lastName => "Ortiz")
+  end
+
   def create_mandates
     [:good_governance, :human_rights, :special_investigations_unit].each do |key|
       FactoryGirl.create(:mandate, :key => key)
     end
+  end
+
+  def _communications
+    [ FactoryGirl.create(:communication) ]
   end
 
   def _mandates

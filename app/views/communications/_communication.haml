@@ -1,0 +1,179 @@
+%script#communications_template{:type => 'ractive/template'}
+  <modal-custom id="communications_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
+  <modal-header>
+  <h4>#{t('.communications')}<modal-close/></h4>
+  </modal-header>
+  <modal-body>
+  <i class="fa fa-plus fa-sm" id="add_communication" on-click='new_communication()' data-toggle="tooltip" data-placement="bottom" title="add communication"/>
+  #communications{:style => "margin-bottom:80px;"}
+    .row
+      %h5.col-md-2{:style => "width:15%;"}= t('.date')
+    {{#communications}}
+    <communication />
+    {{/communications}}
+  </modal-body>
+  </modal-custom>
+
+%script#communication_template{:type => 'text/ractive'}
+  {{#if !persisted }}
+  {{> new_communication_template }}
+  {{else}}
+  {{> show_communication_template }}
+  {{/if}}
+
+%script#new_communication_template{:type => 'text/ractive'}
+  .form#new_communication
+    .row.form-group#mode{:class => '{{#mode_error}}has-error{{/}}'}
+      %label.control-label.col-sm-2= t('.method')
+      .col-sm-8
+        %label.radio-inline
+          %input{:type=>'radio', :id=>:email_mode, :name=>'{{mode}}', :value=>'email'}
+          = t('.email')
+        %label.radio-inline
+          %input{:type=>'radio', :id=>:phone_mode, :name=>'{{mode}}', :value=>'phone'}
+          = t('.phone')
+        %label.radio-inline
+          %input{:type=>'radio', :id=>:face_to_face_mode, :name=>'{{mode}}', :value=>'face to face'}
+          = t('.face_to_face')
+        %span.help-block= t('.method_error_message')
+      .col-sm-2
+        %i.fa.fa-remove.fa-lg#cancel_communication{:style=>"padding-left:30px", "on-click"=>"cancel_communication()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>t("cancel")}
+        %i.fa.fa-check.fa-lg#save_communication{:style=>"padding-left:60px", "on-click"=>"save_communication()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>t("save")}
+    .row.form-group#date{:class => '{{#date_error}}has-error{{/}}'}
+      %label.control-label.col-sm-2=t('.date')
+      .col-sm-4
+        %input#communication_date{:type => :text, :decorator=>:datepicker, :name => "communication[date]", :style => "width:150px", :value => "{{formatted_date}}"}
+    .row.form-group#sent_or_received{:class => '{{#direction_error}}has-error{{/}}'}
+      %label.control-label.col-sm-2= t('.sent_or_received')
+      .col-sm-8
+        %label.radio-inline
+          %input#sent{:type=>'radio', :name=>'{{direction}}', :value=>'sent'}
+          = t('.sent')
+        %label.radio-inline
+          %input#received{:type=>'radio', :name=>'{{direction}}', :value=>'received'}
+          = t('.received')
+        %span.help-block= t('.sent_or_received_error_message')
+    .row.form-group#communication_by
+      %label.control-label.col-sm-2= t('.communication_by')
+      .col-sm-8
+        %select.form-control#communication_by{:value => '{{user_id}}'}
+          %option{:value => '', :selected => true, :disabled => true, :style =>"color:#333;"}=t('.select_user')
+          {{#all_staff}}
+          %option{:value => '{{id}}'} {{ first_last_name }}
+          {{/all_staff}}
+    .row.form-group#note
+      %label.control-label.col-sm-2= t('.note')
+      .col-sm-8
+        %textarea.form-control#note{:rows => 3, :value=>'{{note}}'}
+
+%script#show_communication_template{:type => 'text/ractive'}
+  .communication.row.editable_container{:id => "communication_editable{{id}}", :decorator => 'communication_edit:{{id}}'}
+    .col-md-2.date {{formatted_date}}
+    .col-md-2.by {{ user.first_last_name }}
+
+=javascript_include_tag 'single_month_datepicker'
+
+#communication
+
+:coffeescript
+  $ ->
+    CommunicationEdit = (node,id)->
+      ractive = @
+      @edit = new InpageEdit
+        on : node
+        object : @
+        focus_element : 'input.title'
+        success : (response, textStatus, jqXhr)->
+          @.options.object.set(response)
+          @load()
+        error : ->
+          console.log "Changes were not saved, for some reason"
+      return {
+        teardown : (id)->
+        update : (id)->
+        }
+
+    Ractive.decorators.communication_edit = CommunicationEdit
+
+    Communication = Ractive.extend
+      template : '#communication_template'
+      computed :
+        persisted : ->
+          !isNaN(parseInt(@get('id')))
+        formatted_date :
+          get: ->
+            $.datepicker.formatDate("yy, M d", new Date(@get('date')) )
+          set: (val)->
+            @set('date', $.datepicker.parseDate( "yy, M d", val))
+        persistent_attributes : ->
+          ['user_id', 'complaint_id', 'direction', 'mode', 'date', 'note']
+      data :
+        serialization_key : 'communication'
+      save_communication : ->
+        url = Routes.complaint_communications_path(current_locale, @get('complaint_id'))
+        data = @asFormData(@get('persistent_attributes'))
+        if @validate(data)
+          $.ajax
+            # thanks to http://stackoverflow.com/a/22987941/451893
+            #xhr: @progress_bar_create.bind(@)
+            method : 'post'
+            data : data
+            url : url
+            success : @create_communication
+            context : @
+            processData : false
+            contentType : false # jQuery correctly sets the contentType and boundary values
+      cancel_communication : ->
+        @parent.pop('communications')
+      delete_communication : (event)->
+        ev = $.Event(event)
+        ev.stopPropagation()
+        data = [{name:'_method', value: 'delete'}]
+        $.ajax
+          url : @get('url')
+          data : data
+          method : 'post'
+          dataType : 'json'
+          context : @
+          success : @update_communication
+      update_communication : (response, statusText, jqxhr)->
+        @parent.set('communications',response)
+        @get('parent').set('communications',response)
+      validate : ->
+        true
+      create_communication : (response, statusText, jqxhr)->
+        console.log JSON.stringify response
+        @parent.set('communications',response)
+        @get('parent').set('communications',response)
+      remove_errors : (field)->
+        if _.isUndefined(field) # after edit, failed save, and cancel, remove all errors
+          error_attrs = _(_(@get()).keys()).select (k)-> k.match(/error/)
+          _(error_attrs).each (a)=> @set(a,false)
+        else # user types into input or changes select
+          @set(field+"_error",false)
+
+    window.communications = new Ractive
+      el : '#communication'
+      template : '#communications_template'
+      data : ->
+        all_staff : all_staff
+      new_communication : ->
+        unless @_new_communication_is_active()
+          @push('communications',{id:null, complaint_id:@get('parent').get('id'), direction : null, date:new Date()})
+      _new_communication_is_active : ->
+        communications = @findAllComponents('communication')
+        (communications.length > 0) && _.isNull( communications[communications.length - 1].get('id'))
+      onModalClose : ->
+        if @_new_communication_is_active()
+          @pop('communications')
+
+    Ractive.components.communication = Communication
+
+:coffeescript
+  @Communications =
+    show_communications_panel : ->
+      communications.set
+        communications : @get('communications')
+        create_communication_url : @get('create_communication_url')
+        parent : @
+      $('#communications_modal').modal('show')

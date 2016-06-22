@@ -2,3 +2,5 @@ en:
   add_file: "Add file"
   add_document: "Add document"
   add_another_file: "Add another file"
+  save : "Save"
+  cancel : "Cancel"

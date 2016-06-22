@@ -96,6 +96,7 @@ $ ->
     components :
       'subarea-select' : SubareaSelect
 
+  # TODO replace this with the single_month_datepicker from root/app/assets/javascripts
   Datepicker = (node)->
     $(node).datepicker
       maxDate: null

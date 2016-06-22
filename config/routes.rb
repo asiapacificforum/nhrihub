@@ -79,6 +79,7 @@ Rails.application.routes.draw do
     resources :complaints do
       resources :reminders, :controller => "complaint/reminders"
       resources :notes, :controller => "complaint/notes"
+      resources :communications, :controller => "complaint/communications"
     end
     resources :good_governance_complaint_bases, :only => [:create, :destroy], :controller => 'good_governance/complaint_bases'
     resources :siu_complaint_bases, :only => [:create, :destroy], :controller => 'siu/complaint_bases'

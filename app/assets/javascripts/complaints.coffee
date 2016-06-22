@@ -412,7 +412,7 @@ Complaint = Ractive.extend
     @parent.shift('complaints')
   add_file : (file)->
     @unshift('complaint_documents', {id : null, complaint_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type})
-  , EditBackup, Persistence, FilterMatch, Remindable, Notable
+  , EditBackup, Persistence, FilterMatch, Remindable, Notable, Communications
 
 GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
   template : "#good_governance_complaint_basis_filter_select_template"
