@@ -34,6 +34,8 @@ EditInPlace = (node,id)->
     update : (id)=>
     }
 
+# TODO this approach, where Validator is a mixin should be replaced by the approach used
+# in 'communication' where Validator is a separate class
 ProjectValidator = _.extend
   initialize_validator : ->
     @set 'validation_criteria',

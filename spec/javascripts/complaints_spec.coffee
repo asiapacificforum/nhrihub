@@ -973,3 +973,51 @@ describe "render included complaints", ->
     complaints.set('filter_criteria.selected_assignee_id',1)
     $('.fa-refresh').trigger('click')
     expect($('#complaints .complaint:visible').length).to.equal 4
+
+describe "communication validation", ->
+  before (done)->
+    load_variables()
+    get_script_under_test(done)
+
+  after ->
+    reset_page()
+
+  it "should not be valid with null user_id", ->
+    window.communications.set('communications',[{id:1,user_id:null,mode:'email'}])
+    expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+    expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.true
+
+  it "should not be valid with blank user_id", ->
+    window.communications.set('communications',[{id:1,user_id:"",mode:'email'}])
+    expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+    expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.true
+
+  it "should be valid with numeric user_id", ->
+    window.communications.set('communications',[{id:1,user_id:5,mode:'email'}])
+    expect(communications.findAllComponents('communication')[0].validate()).to.be.true
+    expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.false
+
+  it "should be valid with numeric string user_id", ->
+    window.communications.set('communications',[{id:1,user_id:"5",mode:'email'}])
+    expect(communications.findAllComponents('communication')[0].validate()).to.be.true
+    expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.false
+
+  it "should not be valid with null mode", ->
+    window.communications.set('communications',[{id:1,user_id:5,mode:null}])
+    expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+    expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
+
+  it "should not be valid with blank mode", ->
+    window.communications.set('communications',[{id:1,user_id:5,mode:""}])
+    expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+    expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
+
+  it "should be valid with valid string mode", ->
+    window.communications.set('communications',[{id:1,user_id:5,mode:'email'}])
+    expect(communications.findAllComponents('communication')[0].validate()).to.be.true
+    expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.false
+
+  it "should not be valid with invalid string mode", ->
+    window.communications.set('communications',[{id:1,user_id:5,mode:"foo"}])
+    expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+    expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
