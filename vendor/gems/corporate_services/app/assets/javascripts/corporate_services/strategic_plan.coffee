@@ -28,6 +28,8 @@ $ ->
         !isNaN(parseInt(@get('id')))
       reminders_count : ->
         @get('reminders').length
+      notes_count : ->
+        @get('notes').length
     remove_description_errors : ->
       @set("description_error","")
     create_save : ->
