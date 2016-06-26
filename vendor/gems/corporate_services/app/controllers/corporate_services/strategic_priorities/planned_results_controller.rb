@@ -12,7 +12,7 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
   def destroy
     planned_result = PlannedResult.find(params[:id])
     if planned_result.destroy
-      render :json => PlannedResult.where(:strategic_priority_id => planned_result.strategic_priority_id), :status => 200
+      render :json => PlannedResult.where(:strategic_priority_id => planned_result.strategic_priority_id).to_json, :status => 200
     else
       render :nothing => true, :status => 500
     end
