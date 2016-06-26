@@ -25,3 +25,4 @@
 //= require jquery_json_parse_hack
 //= require js-routes
 //= require locale
+Ractive.DEBUG = false

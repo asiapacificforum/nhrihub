@@ -7,7 +7,7 @@ require_relative '../../helpers/outreach_event_context_notes_spec_helpers'
 require 'notes_behaviour'
 
 
-feature "media appearance notes", :js => true do
+feature "outreach notes", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include OutreachSetupHelper
   include NotesSpecHelpers

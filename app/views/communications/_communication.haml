@@ -39,7 +39,7 @@
       .col-sm-2
         %i.fa.fa-remove.fa-lg#cancel_communication{:style=>"padding-left:30px", "on-click"=>"cancel_communication()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>t("cancel")}
         %i.fa.fa-check.fa-lg#save_communication{:style=>"padding-left:60px", "on-click"=>"save_communication()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>t("save")}
-    .row.form-group#date{:class => '{{#date_error}}has-error{{/}}'}
+    .row.form-group#date
       %label.control-label.col-sm-2=t('.date')
       .col-sm-4
         %input#communication_date{:type => :text, :decorator=>:datepicker, :name => "communication[date]", :style => "width:150px", :value => "{{formatted_date}}"}
@@ -53,7 +53,7 @@
           %input#received{:type=>'radio', :name=>'{{direction}}', :value=>'received'}
           = t('.received')
         %span.help-block= t('.sent_or_received_error_message')
-    .row.form-group#communication_by
+    .row.form-group#communication_by{:class => '{{#user_id_error}}has-error{{/}}'}
       %label.control-label.col-sm-2= t('.communication_by')
       .col-sm-8
         %select.form-control#communication_by{:value => '{{user_id}}'}
@@ -61,6 +61,7 @@
           {{#all_staff}}
           %option{:value => '{{id}}'} {{ first_last_name }}
           {{/all_staff}}
+        %span.help-block= t('.user_id_error_message')
     .row.form-group#note
       %label.control-label.col-sm-2= t('.note')
       .col-sm-8
@@ -70,6 +71,8 @@
   .communication.row.editable_container{:id => "communication_editable{{id}}", :decorator => 'communication_edit:{{id}}'}
     .col-md-2.date {{formatted_date}}
     .col-md-2.by {{ user.first_last_name }}
+    .col-md-1.delete
+      %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_communication(event)'}
 
 =javascript_include_tag 'single_month_datepicker'
 

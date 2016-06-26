@@ -15,6 +15,11 @@ feature "complaints communications", :js => true do
   before do
     populate_database
     visit complaints_path('en')
+    # TODO this is better than the 'wait_for_model_open' and 'wait_for_modal_close' used elsewhere...
+    # refactor those instances and make this available everywhere
+    # or even make them automatic when visiting a page?
+    # or perhaps override the bootstrap css transitions in test mode?
+    page.execute_script("$('.fade').removeClass('fade')")
     open_communications_modal
   end
 
@@ -34,8 +39,8 @@ feature "complaints communications", :js => true do
       select("Hailee Ortiz", :from => "communication_by")
       fill_in("note", :with => "Some note text")
     end
-    expect{ save_communication; wait_for_ajax }.to change{ Communication.count }.by(1).
-                                               and change{ communications.count }.by(1)
+    expect{ save_communication }.to change{ Communication.count }.by(1).
+                                and change{ communications.count }.by(1)
     # on the server
     communication = Communication.last
     expect(communication.mode).to eq "email"
@@ -54,38 +59,18 @@ feature "complaints communications", :js => true do
 
   it "should validate and not add invalid communication" do
     add_communication
-    expect{ save_communication; wait_for_ajax }.not_to change{ Communication.count }
+    expect{ save_communication }.not_to change{ Communication.count }
+    expect(page).to have_selector('#mode .help-block', :text => 'You must select a method')
+    expect(page).to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
+    expect(page).to have_selector('#communication_by .help-block', :text => 'You must select a user')
   end
 
   it "should delete a communication" do
-    
+    expect{ delete_communication }.to change{ Communication.count }.from(1).to(0).
+                                  and change{ communications.count }.from(1).to(0)
   end
 end
 
-feature "communications notes", :js => true do
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
-  include ComplaintsSpecSetupHelpers
-  include NavigationHelpers
-  include ComplaintsSpecHelpers
-
-  before do
-    populate_database
-    visit complaints_path('en')
-    open_communications_modal
-  end
-
-  it "should add notes to a communication" do
-    
-  end
-
-  it "should delete notes from a communication" do
-    
-  end
-
-  it "should edit notes from a communication" do
-    
-  end
-end
 
 feature "communications files", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user

@@ -77,11 +77,12 @@ Communication = Ractive.extend
         @set('date', $.datepicker.parseDate( "yy, M d", val))
     persistent_attributes : ->
       ['user_id', 'complaint_id', 'direction', 'mode', 'date', 'note']
-  data :
+  data : ->
     serialization_key : 'communication'
     validation_criteria :
       user_id : 'numeric'
       mode: ['match',['email','phone']]
+      direction: ['match',['sent','received']]
   save_communication : ->
     url = Routes.complaint_communications_path(current_locale, @get('complaint_id'))
     data = @asFormData(@get('persistent_attributes'))
@@ -104,8 +105,9 @@ Communication = Ractive.extend
     ev = $.Event(event)
     ev.stopPropagation()
     data = [{name:'_method', value: 'delete'}]
+    url = Routes.complaint_communication_path(current_locale,@get('complaint_id'),@get('id'))
     $.ajax
-      url : @get('url')
+      url : url
       data : data
       method : 'post'
       dataType : 'json'
@@ -128,7 +130,7 @@ Communication = Ractive.extend
   el : '#communication'
   template : '#communications_template'
   data : ->
-    all_staff : all_staff
+    all_staff : window.all_staff
   new_communication : ->
     unless @_new_communication_is_active()
       @push('communications',{id:null, complaint_id:@get('parent').get('id'), mode : null, direction : null, date:new Date()})

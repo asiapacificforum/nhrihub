@@ -8,7 +8,6 @@
 //= require 'filter_criteria_datepicker'
 //= require 'communication'
 
-Ractive.DEBUG = false
 
 EditInPlace = (node,id)->
   ractive = @

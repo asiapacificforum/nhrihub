@@ -13,5 +13,6 @@ en:
       sent: "Sent"
       received: "Received"
       select_user: "Select user"
+      user_id_error_message: "You must select a user"
       communication_by: "Communication by"
       note: "Note"

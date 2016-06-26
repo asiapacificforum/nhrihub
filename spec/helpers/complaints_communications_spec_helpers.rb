@@ -20,5 +20,11 @@ module ComplaintsCommunicationsSpecHelpers
 
   def save_communication
     page.find("#save_communication").click
+    wait_for_ajax
+  end
+
+  def delete_communication
+    page.all('#communications .communication .delete .delete_icon')[0].click
+    wait_for_ajax
   end
 end

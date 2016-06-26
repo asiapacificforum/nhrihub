@@ -35,6 +35,7 @@ feature "populate strategic plan contents", :js => true do
     sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
     StrategicPriority.create(:strategic_plan_id => sp1.id, :priority_level => 1, :description => "Gonna do things betta")
     visit corporate_services_strategic_plan_path(:en, "current")
+    page.execute_script("$('.fade').removeClass('fade')")
     open_accordion_for_strategic_priority_one
     add_planned_result.click
   end
@@ -49,7 +50,10 @@ feature "populate strategic plan contents", :js => true do
   scenario "add multiple planned results" do
     expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => "Achieve nirvana"
-    expect{save_planned_result.click; wait_for_ajax}.to change{PlannedResult.count}.from(0).to(1)
+    save_and_open_screenshot
+    save_planned_result.click
+    wait_for_ajax
+    expect(PlannedResult.count).to eq 1
     expect(page).to have_selector(".table#planned_results .row.planned_result .col-md-2:first-of-type", :text => "1.1 Achieve nirvana")
     expect(page).to have_selector(".new_planned_result")
   end
@@ -63,8 +67,11 @@ feature "populate strategic plan contents", :js => true do
   scenario "try to save planned result with whitespace-only description field" do
     expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => " "
-    expect{save_planned_result.click; wait_for_ajax}.not_to change{PlannedResult.count}
-    expect(page).to have_selector("#description_error", :text => "You must enter a description")
+    save_planned_result.click
+    expect(page).to have_selector("#description_error", :text => "You must enter a description", :visible => true)
+    #expect{save_planned_result.click}.
+      #to change{page.all("#description_error", :text => "You must enter a description", :visible => true).count }.from(0).to(1).
+      #and change{PlannedResult.count}.by(0)
   end
 
 end
@@ -79,28 +86,32 @@ feature "actions on existing planned results", :js => true do
     sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
     spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
     PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
+    PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something not so profound")
     visit corporate_services_strategic_plan_path(:en, "current")
     open_accordion_for_strategic_priority_one
   end
 
   scenario "delete a planned result item" do
-    page.find(".row.planned_result .col-md-2.description").hover
+    expect(page.all('.row.planned_result .col-md-2.description .no_edit span:first-of-type')[0].text).to eq "1.1 Something profound"
+    expect(page.all('.row.planned_result .col-md-2.description .no_edit span:first-of-type')[1].text).to eq "1.2 Something not so profound"
+    page.all(".row.planned_result .col-md-2.description")[0].hover
     page.find(".row.planned_result .col-md-2.description span.delete_icon").click
     wait_for_ajax
-    expect(PlannedResult.count).to eq 0
+    expect(PlannedResult.count).to eq 1
+    expect(page.find('.row.planned_result .col-md-2.description .no_edit span:first-of-type').text).to eq "1.1 Something not so profound"
   end
 
   scenario "edit a planned result item" do
-    page.find(".row.planned_result .col-md-2.description span").click
+    page.all(".row.planned_result .col-md-2.description span")[0].click
     fill_in('planned_result_description', :with => "new description")
     expect{ planned_result_save_icon.click; wait_for_ajax }.to change{ PlannedResult.first.description }.to("new description")
-    expect(page.find(".planned_result.editable_container .col-md-2.description .no_edit span:first-of-type").text ).to eq "1.1 new description"
+    expect(page.all(".planned_result.editable_container .col-md-2.description .no_edit span:first-of-type")[0].text ).to eq "1.1 new description"
   end
 
   scenario "edit without making changes and cancel" do
     planned_results_descriptions[0].click
     cancel_edit_planned_result.click
-    expect(page.find(".planned_result.editable_container .col-md-2.description .no_edit span:first-of-type").text ).to eq "1.1 Something profound"
+    expect(page.all(".planned_result.editable_container .col-md-2.description .no_edit span:first-of-type")[0].text ).to eq "1.1 Something profound"
     planned_results_descriptions[0].click
     expect(page.find('#planned_result_description').value).to eq "Something profound"
   end

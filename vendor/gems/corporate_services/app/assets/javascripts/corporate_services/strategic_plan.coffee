@@ -240,7 +240,7 @@ $ ->
       url = @parent.get('create_planned_result_url')
       data = context.find('.new_planned_result :input').serializeArray()
       data.push({name: 'planned_result[strategic_priority_id]', value : @get('strategic_priority_id')})
-      if @.validate(data)
+      if @validate()
         $.ajax
           type : 'post'
           url : url

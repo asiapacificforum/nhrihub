@@ -15,7 +15,8 @@ RSpec.shared_examples "reminders" do
         select_date("Aug 19 2017", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_ids)
         fill_in(:reminder_text, :with => "time to check the database")
-        expect{save_reminder.click; wait_for_ajax}.to change{Reminder.count}.from(1).to(2)
+        expect{save_reminder.click; wait_for_ajax}.to change{Reminder.count}.from(1).to(2).
+                                                  and change{ page.all('#reminders .reminder').count }.from(1).to(2)
         expect(page.all("#reminders .reminder .reminder_type .in").last.text).to eq "one-time"
         expect(page.all("#reminders .reminder .next .in").last.text).to eq "Aug 19, 2017"
         expect(page.all("#reminders .reminder .text .in").last.text).to eq "time to check the database"

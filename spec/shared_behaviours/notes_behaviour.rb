@@ -1,12 +1,12 @@
 RSpec.shared_examples "notes" do
   feature "notes behaviour" do
     scenario "add note" do
+      expect(notes_icon['data-count']).to eq "2"
       add_note.click
       expect(page).to have_selector("#new_note #note_text")
       fill_in(:note_text, :with => "nota bene")
-      save_note.click
-      wait_for_ajax
-      expect(Note.count).to eq 3
+      expect{save_note.click; wait_for_ajax}.to change{ Note.count }.from(2).to(3).
+                                            and change{ note_text.count }.from(2).to(3)
       expect(note_text.first.text).to eq "nota bene"
       expect(note_date.first.text).to eq Date.today.to_s(:short)
       hover_over_info_icon

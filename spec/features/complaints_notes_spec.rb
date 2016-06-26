@@ -6,7 +6,7 @@ require 'notes_spec_common_helpers'
 require 'notes_behaviour'
 
 
-feature "good governance projects notes", :js => true do
+feature "complaints notes", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ComplaintsContextNotesSpecHelpers
   include NotesSpecCommonHelpers
