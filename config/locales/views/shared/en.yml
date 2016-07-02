@@ -58,3 +58,7 @@ en:
       outcome : "Outcome"
       activity : "Activity"
       none_assigned: "none assigned"
+    file_selector:
+      title: "Title"
+      filename: "File name"
+      no_documents: "No documents"

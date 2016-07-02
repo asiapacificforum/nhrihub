@@ -1,9 +1,6 @@
 en:
   complaints:
     complaints_templates:
-      title: "Title"
-      filename: "File name"
-      no_documents: "No documents"
       compact: 'Compact'
       compact_all: 'Compact all'
       expand: 'Expand'

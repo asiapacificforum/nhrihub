@@ -1,7 +1,7 @@
 %script#complaints_template{:type => 'template/ractive'}
   <filterControls filter_criteria='{{filter_criteria}}' all_good_governance_complaint_bases='{{all_good_governance_complaint_bases}}' all_human_rights_complaint_bases='{{all_human_rights_complaint_bases}}' all_special_investigations_unit_complaint_bases='{{all_special_investigations_unit_complaint_bases}}' />
   {{#complaints}}
-  <complaint all_agencies='{{all_agencies}}' all_categories='{{all_categories}}' all_mandates='{{all_mandates}}' all_users='{{all_users}}' assigns='{{assigns}}' case_reference='{{case_reference}}' communications='{{communications}}' complaint_category_ids='{{complaint_category_ids}}' complainant='{{complainant}}' complaint_bases='{{complaint_bases}}' complaint_categories='{{complaint_categories}}' complaint_documents='{{complaint_documents}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' date='{{date}}' filter_criteria='{{filter_criteria}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' mandate_ids='{{mandate_ids}}' new_assignee_id=null notes='{{notes}}' opened_by_id='{{opened_by_id}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}'/>
+  <complaint all_agencies='{{all_agencies}}' all_categories='{{all_categories}}' all_mandates='{{all_mandates}}' all_users='{{all_users}}' assigns='{{assigns}}' case_reference='{{case_reference}}' communications='{{communications}}' complaint_category_ids='{{complaint_category_ids}}' complainant='{{complainant}}' complaint_bases='{{complaint_bases}}' complaint_categories='{{complaint_categories}}' complaint_named_documents_titles='{{complaint_named_documents_titles}}' attached_documents='{{attached_documents}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' date='{{date}}' filter_criteria='{{filter_criteria}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' mandate_ids='{{mandate_ids}}' new_assignee_id=null notes='{{notes}}' opened_by_id='{{opened_by_id}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}'/>
   {{/complaints}}
 
 %script#good_governance_complaint_basis_filter_select_template{:type => "template/ractive"}
@@ -347,7 +347,7 @@
         .panel-heading= t('.complaint_documents')
         .panel-body
           {{> file_selector_template {key : 'complaint'} }}
-          <complaintDocuments complaint_documents='{{complaint_documents}}'>
+          <attachedDocuments attached_documents='{{attached_documents}}' parent='complaint' parent_named_document_datalist='{{complaint_named_documents_titles}}' />
 
 %script#complaint_categories_selector{:type => 'template/ractive'}
   {{#all_categories}}
@@ -520,7 +520,7 @@
           .edit{:style => "padding-left:15px; padding-top:15px;"}
             {{> file_selector_template {key : 'complaint'} }}
           .no_edit.in
-          <complaintDocuments complaint_documents='{{complaint_documents}}' />
+          <attachedDocuments attached_documents='{{attached_documents}}' />
       .row.collapse{'data-toggle'=>:edit}
         .col-md-2=t('.categories')
         .col-md-10
@@ -578,21 +578,3 @@
   .row.assignee
     .col-md-6.date {{date}}
     .col-md-6.name {{name}}
-
-%script#complaint_documents_template{:type => 'template/ractive'}
-  {{#if complaint_documents}}
-  .row
-    .col-md-6.title=t('.title')
-    .col-md-4.filename=t('.filename')
-  {{/if}}
-  {{#complaint_documents}}
-  <complaintDocument id='{{id}}' file='{{file}}' title='{{title}}' file_id='{{file_id}}' filename='{{filename}}' complaint_named_documents_titles='{{ complaint_named_documents_titles}}' />
-  {{/complaint_documents}}
-  {{^complaint_documents}}
-  %div{:style => 'padding-left:15px;'}=t('.no_documents')
-  {{/complaint_documents}}
-
-%script#complaint_document_template{:type => 'template/ractive'}
-  // attached_document_template is in the shared/file_selector partial
-  {{> attached_document_template {parent : 'complaint', parent_named_document_datalist : complaint_named_documents_titles} }}
-

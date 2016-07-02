@@ -37,13 +37,17 @@ class Complaint < ActiveRecord::Base
                         :current_assignee_id,
                         :new_assignee_id,
                         :current_assignee_name, :date,
-                        :current_status_humanized, :complaint_documents,
+                        :current_status_humanized, :attached_documents,
                         :complaint_categories, :mandate_ids,
                         :good_governance_complaint_basis_ids,
                         :special_investigations_unit_complaint_basis_ids,
                         :human_rights_complaint_basis_ids, :status_changes,
                         :agency_ids,
                         :communications])
+  end
+
+  def attached_documents
+    complaint_documents
   end
 
   def new_assignee_id

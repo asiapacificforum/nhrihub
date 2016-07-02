@@ -17,8 +17,19 @@
       .progress-bar.progress-bar-success{:style => "width:0%;"}
     .progress-extended  
 
-// include this inside a ractive view template with:
-// {{> attached_document_template {parent : 'complaint', parent_named_document_datalist : complaint_named_documents_titles} }}
+%script#attached_documents_template{:type => 'template/ractive'}
+  {{#if attached_documents}}
+  .row
+    .col-md-6.title=t('.title')
+    .col-md-4.filename=t('.filename')
+  {{/if}}
+  {{#attached_documents}}
+  <attachedDocument parent='{{parent}}', parent_named_document_datalist='{{parent_named_document_datalist}}' id='{{id}}' file='{{file}}' title='{{title}}' file_id='{{file_id}}' filename='{{filename}}' />
+  {{/attached_documents}}
+  {{^attached_documents}}
+  %div{:style => 'padding-left:15px;'}=t('.no_documents')
+  {{/attached_documents}}
+
 %script#attached_document_template{:type => 'template/ractive'}
   {{#if persisted}}
   {{> show_attached_document_template {parent : parent, parent_named_document_datalist : parent_named_document_datalist} }}
@@ -54,3 +65,47 @@
     .col-md-2
       %i.fa.fa-remove.remove{'on-click' => 'remove_file()'}
 
+:coffeescript
+  @AttachedDocument = Ractive.extend
+    template : "#attached_document_template"
+    oninit : ->
+      @set 'validation_criteria',
+        'file.size' :
+          ['lessThan', @get('maximum_filesize')]
+        'file.type' :
+          ['match', @get('permitted_filetypes')]
+      @set('unconfigured_validation_parameter_error',false)
+      @validator = new Validator(@)
+      @validator.validate()
+    computed :
+      persistent_attributes : ->
+        ['title', 'filename', 'file', 'original_type'] unless @get('id')
+      unconfigured_filetypes_error : ->
+        @get('unconfigured_validation_parameter_error')
+      persisted : ->
+        !_.isNull(@get('id'))
+    remove_file : ->
+      @parent.remove(@_guid)
+    delete_document : ->
+      data = {'_method' : 'delete'}
+      # TODO if confirm
+      $.ajax
+        method : 'post'
+        url : @get('url')
+        data : data
+        success : @delete_callback
+        dataType : 'json'
+        context : @
+    delete_callback : (data,textStatus,jqxhr)->
+      @parent.remove(@_guid)
+    download_attachment : ->
+      window.location = @get('url')
+
+  @AttachedDocuments = Ractive.extend
+    template : "#attached_documents_template"
+    components :
+      attachedDocument : AttachedDocument
+    remove : (guid)->
+      guids = _(@findAllComponents('attachedDocument')).pluck('_guid')
+      index = _(guids).indexOf(guid)
+      @splice('attached_documents',index,1)

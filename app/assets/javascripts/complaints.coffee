@@ -186,53 +186,12 @@ ProgressBar = Ractive.extend
     xhr.upload.addEventListener 'progress', @progress_evaluate , false
     xhr
 
-ComplaintDocument = Ractive.extend
-  template : "#complaint_document_template"
-  oninit : ->
-    @set 'validation_criteria',
-      'file.size' :
-        ['lessThan', @get('maximum_filesize')]
-      'file.type' :
-        ['match', @get('permitted_filetypes')]
-    @set('unconfigured_validation_parameter_error',false)
-    @validator = new Validator(@)
-    @validator.validate()
-  data :
-    serialization_key : 'complaint[complaint_documents_attributes][]'
-  computed :
-    persistent_attributes : ->
-      ['title', 'filename', 'file', 'original_type'] unless @get('id')
-    unconfigured_filetypes_error : ->
-      @get('unconfigured_validation_parameter_error')
-    persisted : ->
-      !_.isNull(@get('id'))
-    url : ->
-      Routes.complaint_document_path(current_locale, @get('id'))
-  remove_file : ->
-    @parent.remove(@_guid)
-  delete_document : ->
-    data = {'_method' : 'delete'}
-    # TODO if confirm
-    $.ajax
-      method : 'post'
-      url : @get('url')
-      data : data
-      success : @delete_callback
-      dataType : 'json'
-      context : @
-  delete_callback : (data,textStatus,jqxhr)->
-    @parent.remove(@_guid)
-  download_attachment : ->
-    window.location = @get('url')
-
 ComplaintDocuments = Ractive.extend
-  template : "#complaint_documents_template"
-  components :
-    complaintDocument : ComplaintDocument
-  remove : (guid)->
-    guids = _(@findAllComponents('complaintDocument')).pluck('_guid')
-    index = _(guids).indexOf(guid)
-    @splice('complaint_documents',index,1)
+  data :
+    parent : 'complaint'
+    parent_named_document_datalist : ->
+      @get('complaint_named_document_titles')
+  , AttachedDocuments
 
 FilterMatch =
   include : ->
@@ -362,7 +321,7 @@ Complaint = Ractive.extend
       ['case_reference','complainant','village','phone','mandate_ids',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
-        'complaint_category_ids', 'agency_ids', 'complaint_documents_attributes']
+        'complaint_category_ids', 'agency_ids', 'attached_documents_attributes']
     url : ->
       Routes.complaint_path('en', @get('id'))
     formatted_date :
@@ -413,7 +372,7 @@ Complaint = Ractive.extend
     complaintCategoriesSelector : ComplaintCategoriesSelector
     assignees : Assignees
     assigneeSelector : AssigneeSelector
-    complaintDocuments : ComplaintDocuments
+    attachedDocuments : ComplaintDocuments
     progressBar : ProgressBar
   expand : ->
     @set('expanded',true)
@@ -432,7 +391,7 @@ Complaint = Ractive.extend
     UserInput.reset()
     @parent.shift('complaints')
   add_file : (file)->
-    @unshift('complaint_documents', {id : null, complaint_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type})
+    @unshift('attached_documents', {id : null, complaint_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type, serialization_key : 'complaint[complaint_documents_attributes][]'})
   , EditBackup, Persistence, FilterMatch, @Remindable, @Notable, @Communications # Remindable, Notable and Communications are found in the _reminder.haml, _note.haml and _communication.haml files
 
 GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
@@ -618,7 +577,7 @@ complaints_options =
         assigns : []
         case_reference : next_case_reference
         complainant : ""
-        complaint_documents : []
+        attached_documents : []
         current_assignee : ""
         current_assignee_id : ""
         formatted_date : ""
