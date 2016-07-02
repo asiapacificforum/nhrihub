@@ -32,24 +32,6 @@ module ProjectsSpecCommonHelpers
     upload_file_path('first_upload_image_file.png')
   end
 
-  # it's a test spec workaround, this method can be called multiple times
-  # whereas page.attach_file cannot
-  # UPDATE: after eliminating jQuery.fileupload, this doesn't seem to be required
-  # it's left here for reference
-  def attach_file(index = nil)
-    page.attach_file("project_fileinput", upload_document, :visible => true)
-    #page.attach_file("project_file", upload_document, :visible => false)
-    #if !index # when it's first time, we pass a truthy argument like :first_time
-      #if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
-        ## because the change event is not triggered when the same file is attached again,
-        ## so must trigger it manually in a test scenario (or else use many different files)
-        ## #project_fileinput and project_file both refer to the same element
-        ## with id=project_fileinput and name=project_file
-        #page.execute_script("$('#project_fileinput').trigger('change')")
-      #end
-    #end
-  end
-
   def resize_browser_window
     if page.driver.browser.respond_to?(:manage)
       page.driver.browser.manage.window.resize_to(1400,800) # b/c selenium driver doesn't seem to click when target is not in the view

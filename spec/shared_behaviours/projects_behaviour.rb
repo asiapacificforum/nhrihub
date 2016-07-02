@@ -1,10 +1,12 @@
 require 'navigation_helpers'
 require 'projects_spec_common_helpers'
+require 'upload_file_helpers'
 
 RSpec.shared_examples "projects index" do
   include IERemoteDetector
   include NavigationHelpers
   include ProjectsSpecCommonHelpers
+  include UploadFileHelpers
 
   it "should show a list of projects" do
     expect(page_heading).to eq "#{heading_prefix} Projects"
@@ -140,13 +142,13 @@ RSpec.shared_examples "projects index" do
     select_first_performance_indicator
 
     within new_project do
-      attach_file(:first_time)
+      attach_file("project_fileinput", upload_document)
       fill_in("project_document_title", :with => "Project Document")
     end
     expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf")
 
     within new_project do
-      attach_file
+      attach_file("project_fileinput", upload_document)
       page.all("#project_document_title")[0].set("Title for an analysis document")
     end
     expect(page).to have_selector("#documents .document .filename", :text => "upload_file.pdf", :count => 2)
@@ -195,6 +197,28 @@ RSpec.shared_examples "projects index" do
         expect(all('.project_document .title').map(&:text)).to include "Title for an analysis document"
       end
     end
+  end
+
+  it "flags as invalid when file attachment exceeds permitted filesize" do
+    add_project.click
+
+    within new_project do
+      attach_file("project_fileinput", big_upload_document)
+    end
+    expect(page).to have_selector('#filesize_error', :text => "File is too large")
+
+    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
+  end
+
+  it "flags as invalid when file attachment is unpermitted filetype" do
+    add_project.click
+
+    within new_project do
+      attach_file("project_fileinput", upload_image)
+    end
+    expect(page).to have_css('#filetype_error', :text => "File type not allowed")
+
+    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
   end
 
   it "should restore list when cancelling add project" do
@@ -333,11 +357,11 @@ RSpec.shared_examples "projects index" do
     select_first_performance_indicator
     pi = PerformanceIndicator.first
 
-    attach_file(:first_time)
+    attach_file("project_fileinput", upload_document)
     fill_in("project_document_title", :with => "Adding another doc")
     expect(page).to have_selector("#project_documents .document .filename", :text => "upload_file.pdf")
 
-    attach_file
+    attach_file("project_fileinput", upload_document)
     page.all("#project_document_title")[0].set("Adding still another doc")
     expect(page).to have_selector("#project_documents .document .filename", :text => "upload_file.pdf", :count => 2)
 

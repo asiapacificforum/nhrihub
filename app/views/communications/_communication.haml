@@ -9,7 +9,7 @@
     .row
       %h5.col-md-2{:style => "width:15%;"}= t('.date')
     {{#communications}}
-    <communication />
+    <communication communication_documents='{{communication_documents}}' />
     {{/communications}}
   </modal-body>
   </modal-custom>
@@ -27,7 +27,7 @@
       %label.control-label.col-sm-2= t('.method')
       .col-sm-8
         %label.radio-inline
-          %input{:type=>'radio', :id=>:email_mode, :name=>'{{mode}}', :value=>'email'}
+          %input{:type=>'radio', :id=>:email_mode, :name=>'{{mode}}', :value=>'email', 'on-change'=>"remove_errors('mode')"}
           = t('.email')
         %label.radio-inline
           %input{:type=>'radio', :id=>:phone_mode, :name=>'{{mode}}', :value=>'phone'}
@@ -47,16 +47,16 @@
       %label.control-label.col-sm-2= t('.sent_or_received')
       .col-sm-8
         %label.radio-inline
-          %input#sent{:type=>'radio', :name=>'{{direction}}', :value=>'sent'}
+          %input#sent{:type=>'radio', :name=>'{{direction}}', :value=>'sent', 'on-change'=>"remove_errors('direction')"}
           = t('.sent')
         %label.radio-inline
-          %input#received{:type=>'radio', :name=>'{{direction}}', :value=>'received'}
+          %input#received{:type=>'radio', :name=>'{{direction}}', :value=>'received', 'on-change'=>"remove_errors('direction')"}
           = t('.received')
         %span.help-block= t('.sent_or_received_error_message')
     .row.form-group#communication_by{:class => '{{#user_id_error}}has-error{{/}}'}
       %label.control-label.col-sm-2= t('.communication_by')
       .col-sm-8
-        %select.form-control#communication_by{:value => '{{user_id}}'}
+        %select.form-control#communication_by{:value => '{{user_id}}', 'on-change'=>"remove_errors('user_id')"}
           %option{:value => '', :selected => true, :disabled => true, :style =>"color:#333;"}=t('.select_user')
           {{#all_staff}}
           %option{:value => '{{id}}'} {{ first_last_name }}
@@ -66,6 +66,11 @@
       %label.control-label.col-sm-2= t('.note')
       .col-sm-8
         %textarea.form-control#note{:rows => 3, :value=>'{{note}}'}
+    .panel.panel-default#communication_documents
+      .panel-heading= t('.communication_documents')
+      .panel-body
+        {{> file_selector_template {key : 'communication_document'} }}
+        <communicationDocuments communication_documents='{{communication_documents}}'>
 
 %script#show_communication_template{:type => 'text/ractive'}
   .communication.row.editable_container{:id => "communication_editable{{id}}", :decorator => 'communication_edit:{{id}}'}

@@ -2,8 +2,11 @@ require 'rails_helper'
 require 'login_helpers'
 require 'complaint_admin_spec_helpers'
 require 'navigation_helpers'
+require 'complaint_context_file_admin_spec_helpers'
+require 'communication_context_file_admin_spec_helpers'
+require 'shared_behaviours/file_admin_behaviour'
 
-feature "complaint admin", :js => true do
+feature "complaint bases admin", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ComplaintAdminSpecHelpers
 
@@ -78,6 +81,12 @@ feature "complaint admin", :js => true do
     expect(page).to have_selector '#gg_bases #empty'
   end
 
+end
+
+feature "complaint categories admin", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include ComplaintAdminSpecHelpers
+
   scenario "complaint categories configured" do
     ComplaintCategory.create(:name=>"foo")
     visit complaint_admin_path('en')
@@ -115,3 +124,14 @@ feature "complaint admin", :js => true do
 
 end
 
+feature "complaint file admin", :js => true do
+  include ComplaintAdminSpecHelpers
+  include ComplaintContextFileAdminSpecHelpers
+  it_should_behave_like "file admin"
+end
+
+feature "communication file admin", :js => true do
+  include ComplaintAdminSpecHelpers
+  include CommunicationContextFileAdminSpecHelpers
+  it_should_behave_like "file admin"
+end

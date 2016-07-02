@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160619191444) do
+ActiveRecord::Schema.define(version: 20160701043358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,19 @@ ActiveRecord::Schema.define(version: 20160619191444) do
   create_table "audience_types", force: :cascade do |t|
     t.string   "short_type"
     t.string   "long_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "communication_documents", force: :cascade do |t|
+    t.integer  "communication_id"
+    t.string   "file_id",          limit: 255
+    t.string   "title",            limit: 255
+    t.integer  "filesize"
+    t.string   "filename",         limit: 255
+    t.datetime "lastModifiedDate"
+    t.string   "original_type",    limit: 255
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

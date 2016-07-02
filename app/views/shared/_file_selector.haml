@@ -16,3 +16,41 @@
     .progress.progress-striped.active{:role => "progressbar"}
       .progress-bar.progress-bar-success{:style => "width:0%;"}
     .progress-extended  
+
+// include this inside a ractive view template with:
+// {{> attached_document_template {parent : 'complaint', parent_named_document_datalist : complaint_named_documents_titles} }}
+%script#attached_document_template{:type => 'template/ractive'}
+  {{#if persisted}}
+  {{> show_attached_document_template {parent : parent, parent_named_document_datalist : parent_named_document_datalist} }}
+  {{else}}
+  {{> new_attached_document_template {parent : parent, parent_named_document_datalist : parent_named_document_datalist} }}
+  {{/if}}
+
+%script#show_attached_document_template{:type => 'template/ractive'}
+  %div{:class => "{{parent}}_document"}
+    .row
+      .col-md-6.title {{title}}
+      .col-md-4.filename {{filename}}
+      .col-md-1
+        %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+      .col-md-1.delete
+        %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_document()'}
+
+%script#new_attached_document_template{:type => 'template/ractive'}
+  .row.document
+    .col-md-6.title
+      %input.form-control#attached_document_title{:type => :text, :value=>'{{title}}', :list => '{{parent}}_named_documents'}
+      %datalist{:id => '{{parent}}_named_documents'}
+        {{#parent_named_document_datalist}}
+        %option{:value=>'{{.}}'} {{.}}
+        {{/parent_named_document_datalist}}
+      .errors.form-group{:class => "{{#file.size_error}}has-error{{/}}"}
+        %span.help-block.error#filesize_error= t('error_messages.too_large')
+      .errors.form-group{:class => "{{#file.type_error}}has-error{{/}}"}
+        %span.help-block.error#filetype_error= t('error_messages.unpermitted_type')
+      .errors.form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
+        %span.help-block.error#unconfigured_filetypes_error= t('error_messages.noFileTypes')
+    .col-md-4.filename{:style => "overflow-wrap:break-word"} {{filename}}
+    .col-md-2
+      %i.fa.fa-remove.remove{'on-click' => 'remove_file()'}
+

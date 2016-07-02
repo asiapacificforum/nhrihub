@@ -2,7 +2,6 @@ require 'rspec/core/shared_context'
 require_relative './terms_of_reference_admin_spec_helper'
 
 module TermsOfReferenceContextAdminSpecHelper
-  include TermsOfReferenceAdminSpecHelper
   extend RSpec::Core::SharedContext
   def model
     Nhri::AdvisoryCouncil::TermsOfReferenceVersion
@@ -12,8 +11,16 @@ module TermsOfReferenceContextAdminSpecHelper
     '#terms_of_reference_version_filesize'
   end
 
+  def filesize_context
+    page.find('#terms_of_reference_version_filesize')
+  end
+
   def filetypes_selector
     '#terms_of_reference_version_filetypes'
+  end
+
+  def filetypes_context
+    page.find('#terms_of_reference_version_filetypes')
   end
 
   def admin_page

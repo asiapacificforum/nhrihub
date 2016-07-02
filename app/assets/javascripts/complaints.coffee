@@ -1,5 +1,5 @@
 //= require 'in_page_edit'
-//= require 'validator'
+//= require 'ractive_validator'
 //= require 'file_input_decorator'
 //= require 'progress_bar'
 //= require 'ractive_local_methods'
@@ -44,9 +44,15 @@ Agencies = Ractive.extend
 
 MandatesSelector = Ractive.extend
   template : '#mandates_selector_template'
+  remove_error : ->
+    if !_.isEmpty @get('mandate_ids')
+      @parent.remove_attribute_error('mandate_ids')
 
 ComplaintBasesSelector = Ractive.extend
   template : '#complaint_bases_selector_template'
+  remove_error : ->
+    if @parent.get('complaint_basis_id_count') != 0
+      @parent.remove_attribute_error('complaint_basis_id_count')
 
 Assignee = Ractive.extend
   template : "#assignee_template"
@@ -79,6 +85,8 @@ ComplaintCategories = Ractive.extend
 
 AssigneeSelector = Ractive.extend
   template : '#assignee_selector_template'
+  remove_error : ->
+    @parent.remove_attribute_error('new_assignee_id')
 
 EditBackup =
   stash : ->
@@ -178,27 +186,22 @@ ProgressBar = Ractive.extend
     xhr.upload.addEventListener 'progress', @progress_evaluate , false
     xhr
 
-ComplaintDocumentValidator = _.extend
-  initialize_validator: ->
+ComplaintDocument = Ractive.extend
+  template : "#complaint_document_template"
+  oninit : ->
     @set 'validation_criteria',
       'file.size' :
         ['lessThan', @get('maximum_filesize')]
       'file.type' :
         ['match', @get('permitted_filetypes')]
     @set('unconfigured_validation_parameter_error',false)
-  , Validator
-
-ComplaintDocument = Ractive.extend
-  template : "#complaint_document_template"
-  oninit : ->
-    if !@get('persisted')
-      @initialize_validator()
-      @validate()
+    @validator = new Validator(@)
+    @validator.validate()
   data :
     serialization_key : 'complaint[complaint_documents_attributes][]'
   computed :
     persistent_attributes : ->
-      ['title', 'filename', 'file', 'original_type'] if @get('file') # only persist if there's a file object, otherwise don't
+      ['title', 'filename', 'file', 'original_type'] unless @get('id')
     unconfigured_filetypes_error : ->
       @get('unconfigured_validation_parameter_error')
     persisted : ->
@@ -207,7 +210,7 @@ ComplaintDocument = Ractive.extend
       Routes.complaint_document_path(current_locale, @get('id'))
   remove_file : ->
     @parent.remove(@_guid)
-  delete_complaint_document : ->
+  delete_document : ->
     data = {'_method' : 'delete'}
     # TODO if confirm
     $.ajax
@@ -221,7 +224,6 @@ ComplaintDocument = Ractive.extend
     @parent.remove(@_guid)
   download_attachment : ->
     window.location = @get('url')
-  , ComplaintDocumentValidator
 
 ComplaintDocuments = Ractive.extend
   template : "#complaint_documents_template"
@@ -359,7 +361,7 @@ Complaint = Ractive.extend
     persistent_attributes : ->
       ['case_reference','complainant','village','phone','mandate_ids',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
-        'human_rights_complaint_basis_ids', 'current_status_humanized', 'current_assignee_id',
+        'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
         'complaint_category_ids', 'agency_ids', 'complaint_documents_attributes']
     url : ->
       Routes.complaint_path('en', @get('id'))
@@ -371,16 +373,35 @@ Complaint = Ractive.extend
       Routes.complaint_reminders_path('en', @get('id'))
     create_note_url : ->
       Routes.complaint_notes_path('en', @get('id'))
+    complaint_basis_id_count : ->
+      @get('good_governance_complaint_basis_ids').length +
+      @get('special_investigations_unit_complaint_basis_ids').length +
+      @get('human_rights_complaint_basis_ids').length
+    validation_criteria : -> # this MUST be a computed attribute and not data, so that it depends on mandate_ids
+      if @get('editing')
+        complainant : 'notBlank'
+        village : 'notBlank'
+        mandate_ids : ['nonEmpty',@get('mandate_ids')]
+        complaint_basis_id_count : 'nonZero'
+      else
+        complainant : 'notBlank'
+        village : 'notBlank'
+        mandate_ids : ['nonEmpty',@get('mandate_ids')]
+        complaint_basis_id_count : 'nonZero'
+        new_assignee_id : 'numeric'
   oninit : ->
     @set
-      'editing' : false
-      'complainant_error': false
-      'title_error': false
-      'complaint_error':false
-      'filetype_error': false
-      'filesize_error': false
-      'expanded':false
-      'serialization_key':'complaint'
+      editing : false
+      complainant_error: false
+      village_error : false
+      current_assignee_id_error : false
+      mandate_error : false
+      complaint_basis_id_count_error : false
+      filetype_error: false
+      filesize_error: false
+      expanded:false
+      serialization_key:'complaint'
+    @validator = new Validator(@)
   components :
     mandates : Mandates
     mandatesSelector : MandatesSelector
@@ -401,9 +422,9 @@ Complaint = Ractive.extend
     @set('expanded',false)
     $(@findAll('.collapse')).collapse('hide')
   validate : ->
-    true
+    @validator.validate()
   remove_attribute_error : (attribute)->
-    true
+    @set(attribute+"_error",false)
   remove_errors : ->
     @compact() #nothing to do with errors, but this method is called on edit_cancel
     @restore()
@@ -412,7 +433,7 @@ Complaint = Ractive.extend
     @parent.shift('complaints')
   add_file : (file)->
     @unshift('complaint_documents', {id : null, complaint_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type})
-  , EditBackup, Persistence, FilterMatch, @Remindable, @Notable, @Communications
+  , EditBackup, Persistence, FilterMatch, @Remindable, @Notable, @Communications # Remindable, Notable and Communications are found in the _reminder.haml, _note.haml and _communication.haml files
 
 GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
   template : "#good_governance_complaint_basis_filter_select_template"
@@ -573,6 +594,9 @@ window.complaints_page_data = ->
   all_human_rights_complaint_bases : all_human_rights_complaint_bases
   all_special_investigations_unit_complaint_bases : all_special_investigations_unit_complaint_bases
   all_staff : all_staff
+  permitted_filetypes : permitted_filetypes
+  maximum_filesize : maximum_filesize
+  #complaint_named_documents_titles : ["bish", "bash", "bosh"] # shown as an example for future reference
 
 complaints_options =
   el : '#complaints'

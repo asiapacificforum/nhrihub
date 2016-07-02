@@ -56,7 +56,9 @@ module ComplaintsSpecHelpers
   end
 
   def edit_save
+    page.execute_script("scrollTo(0,0)")
     page.find('.fa-check').click
+    wait_for_ajax
   end
 
   def check_category(text)
@@ -81,6 +83,10 @@ module ComplaintsSpecHelpers
     within page.find("#agencies") do
       uncheck(text)
     end
+  end
+
+  def uncheck_mandate(text)
+    uncheck(text)
   end
 
   def check_basis(group, text)
@@ -139,26 +145,6 @@ module ComplaintsSpecHelpers
 
   def documents
     page.all('#complaint_documents .complaint_document')
-  end
-
-  def attach_file
-    page.attach_file("complaint_fileinput", upload_document, :visible => false)
-  end
-
-  def upload_file_path(filename)
-    CapybaraRemote.upload_file_path(page,filename)
-  end
-
-  def upload_document
-    upload_file_path('first_upload_file.pdf')
-  end
-
-  def big_upload_document
-    upload_file_path('big_upload_file.pdf')
-  end
-
-  def upload_image
-    upload_file_path('first_upload_image_file.png')
   end
 
   def assignee_history

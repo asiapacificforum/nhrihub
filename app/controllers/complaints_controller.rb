@@ -13,8 +13,8 @@ class ComplaintsController < ApplicationController
     @human_rights_complaint_bases = Nhri::ComplaintBasis.all
     @special_investigations_unit_complaint_bases = Siu::ComplaintBasis.all
     @staff = User.staff
-    #@create_reminder_url = complaint_reminders_path('en','id')
-    #@create_note_url     = complaint_notes_path('en','id')
+    @maximum_filesize = ComplaintDocument.maximum_filesize * 1000000
+    @permitted_filetypes = ComplaintDocument.permitted_filetypes.to_json
   end
 
   def create
@@ -24,7 +24,7 @@ class ComplaintsController < ApplicationController
     if complaint.save
       render :json => complaint, :status => 200
     else
-      render :nothing => true, :status => 500
+      render :text => complaint.errors.full_messages, :status => 500
     end
   end
 
@@ -46,7 +46,7 @@ class ComplaintsController < ApplicationController
 
   private
   def complaint_params
-    params.require(:complaint).permit( :case_reference, :complainant, :village, :phone, :current_assignee_id,
+    params.require(:complaint).permit( :case_reference, :complainant, :village, :phone, :new_assignee_id,
                                        :mandate_ids => [], :good_governance_complaint_basis_ids => [],
                                        :special_investigations_unit_complaint_basis_ids => [],
                                        :human_rights_complaint_basis_ids => [],

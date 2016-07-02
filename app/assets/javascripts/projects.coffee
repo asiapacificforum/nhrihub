@@ -106,7 +106,7 @@ ProjectDocument = Ractive.extend
     serialization_key : 'project[project_documents_attributes][]'
   computed :
     persistent_attributes : ->
-      ['title', 'filename', 'file', 'original_type'] if @get('file') # only persist if there's a file object, otherwise don't
+      ['title', 'filename', 'file', 'original_type'] unless @get('id') # only persist if it's not already persisted, otherwise don't
     unconfigured_filetypes_error : ->
       @get('unconfigured_validation_parameter_error')
     persisted : ->

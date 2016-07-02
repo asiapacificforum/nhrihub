@@ -10,12 +10,12 @@
                  :create_url => outreach_media_filetypes_path,
                  :delete_url => outreach_media_filetype_path('id'),
                  :collection => @outreach_filetypes,
-                 :item_name => 'outreach_event_filetype',
+                 :item_name => 'filetype',
                  :param_name => 'ext',
                  :placeholder => 'e.g. ppt'}
 
 %h4=t('.subheading.filesize')
-#outreach
+#outreach_event_filesize
   = render :partial => 'admin/document_filesize_configuration',
     :locals => { :update_url => outreach_media_filesize_path,
                  :param => @outreach_filesize,

@@ -1,3 +1,4 @@
+#TODO clean up the redundancy here
 en:
   admin:
     collection_configuration:
@@ -32,6 +33,10 @@ en:
         add: "Add project type"
       special_investigations_unit_project_type:
         add: "Add project type"
+      complaint_document_filetype:
+        add: "Add file type"
+      communication_document_filetype:
+        add: "Add file type"
     document_filesize_configuration:
       current_val: "Current value"
       change: "Change to"
@@ -47,6 +52,10 @@ en:
   complaint_admin:
     show:
       heading: "Complaints Configuration"
+      complaint_filetypes: "Filetypes permitted for complaints"
+      complaint_filesize_max: "Maximum permitted complaint file size"
+      communication_filetypes: "Filetypes permitted for communications"
+      communication_filesize_max: "Maximum permitted communication file size"
       gg_bases: "Good Governance Bases of Complaints"
       siu_bases: "Special Investigations Unit Bases of Complaints"
       categories: "Complaint Categories"

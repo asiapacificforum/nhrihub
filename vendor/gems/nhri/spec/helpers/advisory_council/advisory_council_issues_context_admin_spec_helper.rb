@@ -2,7 +2,6 @@ require 'rspec/core/shared_context'
 require_relative './advisory_council_issues_admin_spec_helper'
 
 module AdvisoryCouncilIssuesContextAdminSpecHelper
-  include AdvisoryCouncilIssuesAdminSpecHelper
   extend RSpec::Core::SharedContext
   def model
     Nhri::AdvisoryCouncil::AdvisoryCouncilIssue
@@ -12,8 +11,16 @@ module AdvisoryCouncilIssuesContextAdminSpecHelper
     '#advisory_council_issues_filesize'
   end
 
+  def filesize_context
+    page.find( '#advisory_council_issues_filesize')
+  end
+
   def filetypes_selector
     '#advisory_council_issues_filetypes'
+  end
+
+  def filetypes_context
+    page.find('#advisory_council_issues_filetypes')
   end
 
   def admin_page

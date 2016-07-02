@@ -1,3 +1,5 @@
+//= require 'ractive_validator'
+
 CommunicationEdit = (node,id)->
   ractive = @
   @edit = new InpageEdit
@@ -16,57 +18,20 @@ CommunicationEdit = (node,id)->
 
 Ractive.decorators.communication_edit = CommunicationEdit
 
-class Validator
-  constructor : (validatee)->
-    @validatee = validatee
-    @validation_criteria = validatee.get('validation_criteria')
-    attributes = _(@validation_criteria).keys()
-    undefined_attributes = _(attributes).map (attr)=> _.isUndefined(@validatee.get(attr))
-    if _(undefined_attributes).any((attr)->attr)
-      throw new Error "cannot validate undefined attribute"
-  validate : ->
-    attributes = _(@validation_criteria).keys()
-    valid_attributes = _(attributes).map (attribute)=> @validate_attribute(attribute)
-    !_(valid_attributes).any (valid)->!valid
-  validate_attribute : (attribute)->
-    params = @validation_criteria[attribute]
-    [criterion,param] = if _.isArray(params) then params else [params]
-    @[criterion].call(@,attribute,param)
-  notBlank : (attribute)->
-    @validatee.set(attribute, @validatee.get(attribute).trim()) unless _.isNull(@validatee.get(attribute))
-    @validatee.set(attribute+"_error", _.isEmpty(@validatee.get(attribute)))
-    !@validatee.get(attribute+"_error")
-  lessThan : (attribute,param)->
-    @validatee.set(attribute+"_error", @validatee.get(attribute) > param)
-    !@validatee.get(attribute+"_error")
-  numeric : (attribute)->
-    @validatee.set(attribute+"_error", _.isNaN(parseInt(@validatee.get(attribute))))
-    !@validatee.get(attribute+"_error")
-  match : (attribute,param)->
-    value = @validatee.get(attribute)
-    if _.isArray(param)
-      if @nonEmpty("unconfigured_validation_parameter",param)
-        match = _(param).any (val)->
-          re = new RegExp(val)
-          re.test value
-      else
-        # don't trigger match error if params are empty
-        match = true
-    else
-      re = new RegExp(param)
-      match = re.test value
-    @validatee.set(attribute+"_error", !match)
-    !@validatee.get(attribute+"_error")
-  nonEmpty : (attribute,param)->
-    @validatee.set(attribute+"_error", _.isEmpty(param))
-    !@validatee.get(attribute+"_error")
-  remove_attribute_error : (attribute)->
-    @validatee.set(attribute+"_error",false)
+CommunicationDocument = Ractive.extend
+  template : "comm doc"
+
+CommunicationDocuments = Ractive.extend
+  template : "{{#communication_documents}}<communicationDocument />{{/}}"
+  components:
+    communicationDocument : CommunicationDocument
 
 Communication = Ractive.extend
   template : '#communication_template'
   oninit : ->
     @validator = new Validator(@)
+  components :
+    communicationDocuments : CommunicationDocuments
   computed :
     persisted : ->
       !isNaN(parseInt(@get('id')))
@@ -125,6 +90,8 @@ Communication = Ractive.extend
       _(error_attrs).each (a)=> @set(a,false)
     else # user types into input or changes select
       @set(field+"_error",false)
+  add_file : (file)->
+    @unshift('communication_documents', {id : null, complaint_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type})
 
 @communications = new Ractive
   el : '#communication'
@@ -133,7 +100,7 @@ Communication = Ractive.extend
     all_staff : window.all_staff
   new_communication : ->
     unless @_new_communication_is_active()
-      @push('communications',{id:null, complaint_id:@get('parent').get('id'), mode : null, direction : null, date:new Date()})
+      @push('communications',{id:null, complaint_id:@get('parent').get('id'), mode : null, direction : null, date:new Date(), communication_documents : []})
   _new_communication_is_active : ->
     communications = @findAllComponents('communication')
     (communications.length > 0) && _.isNull( communications[communications.length - 1].get('id'))

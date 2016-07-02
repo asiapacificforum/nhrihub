@@ -10,13 +10,17 @@ en:
       expand_all: 'Expand all'
       reference: 'Ref'
       current_assignee: 'Current assignee'
+      assignee_error_message: "You must designate an assignee"
       status: 'Status'
       complainant: 'Complainant'
       village: 'Village'
+      village_error_message : "You must enter a village"
       phone: 'Phone'
-      complainant_error_message : "Complainant can't be blank"
+      complainant_error_message : "You must enter a complainant"
       mandate: "Mandate"
+      mandate_error_message: "You must select at least one mandate"
       complaint_basis: "Basis of Complaint"
+      complaint_basis_error_message : "You must select at least one complaint basis"
       agency: "Agency"
       assignees_history: "History of assignees"
       documents: "Documents"
@@ -31,6 +35,7 @@ en:
       'on': 'on' # b/c on is a keyword in yaml and the translation borks
       by: 'by'
       select_assignee: 'Select assignee'
+      reassign: 'Reassign to...'
       select_basis: 'Select complaint basis'
       select_agency: 'Select agency'
       assignee: 'Assignee'

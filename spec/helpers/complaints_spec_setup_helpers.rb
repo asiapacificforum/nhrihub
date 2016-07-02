@@ -21,9 +21,15 @@ module ComplaintsSpecSetupHelpers
                        :mandates => _mandates,
                        :agencies => _agencies,
                        :communications => _communications)
+    set_file_defaults
   end
 
   private
+  def set_file_defaults
+    SiteConfig["complaint_document.filetypes"]=["pdf"]
+    SiteConfig["complaint_document.filesize"]= 5
+  end
+
   def create_staff
     FactoryGirl.create(:user, :staff, :with_password, :firstName => "Hailee", :lastName => "Ortiz")
   end
@@ -48,8 +54,8 @@ module ComplaintsSpecSetupHelpers
 
   def _status_changes
     # open 100 days ago, closed 50 days ago
-    [FactoryGirl.build(:status_change, :created_at => DateTime.now.advance(:days => -100), :new_value => 1, :user_id => User.pluck(:id).first),
-     FactoryGirl.build(:status_change, :created_at => DateTime.now.advance(:days => -50), :new_value => 0, :user_id => User.pluck(:id).second )]
+    [FactoryGirl.build(:status_change, :created_at => DateTime.now.advance(:days => -100), :new_value => 1, :user_id => User.staff.pluck(:id).first),
+     FactoryGirl.build(:status_change, :created_at => DateTime.now.advance(:days => -50), :new_value => 0, :user_id => User.staff.pluck(:id).second )]
   end
 
   def create_categories

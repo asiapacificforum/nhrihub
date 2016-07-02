@@ -1,9 +1,26 @@
 require 'rspec/core/shared_context'
-require 'admin_spec_common_helpers'
 
 module CorporateServicesAdminSpecHelpers
   extend RSpec::Core::SharedContext
-  include AdminSpecCommonHelpers
+  def admin_page
+    corporate_services_admin_path('en')
+  end
+
+  def filesize_context
+    page.find('#internal_document_filesize')
+  end
+
+  def model
+    InternalDocument
+  end
+
+  def filetypes_context
+    page.find(filetypes_selector)
+  end
+
+  def filetypes_selector
+    '#internal_document_filetypes'
+  end
 
   def remove_add_delete_fileconfig_permissions
     ActionRole.

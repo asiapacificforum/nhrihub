@@ -13,10 +13,6 @@ module ComplaintAdminSpecHelpers
     page.find('#new_gg_basis button')
   end
 
-  def flash_message
-    page.find(".message_block").text
-  end
-
   def delete_complaint_basis(text)
     page.find(:xpath, ".//tr[contains(td,'#{text}')]//a")
   end

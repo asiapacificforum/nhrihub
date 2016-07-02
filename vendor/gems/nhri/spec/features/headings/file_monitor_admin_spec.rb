@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
 require_relative '../../helpers/headings/file_monitor_context_admin_spec_helper'
-require_relative '../../helpers/file_admin_behaviour'
+require 'shared_behaviours/file_admin_behaviour'
 
 feature "file monitor admin" do
   include FileMonitorContextAdminSpecHelper

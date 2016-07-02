@@ -72,7 +72,16 @@ Rails.application.routes.draw do
       resource :filesize, :only => :update
     end
     resources :project_documents, :only => [:destroy, :show]
+    namespace :complaint_document do
+      resources :filetypes, :param => :ext, :only => [:create, :destroy]
+      resource :filesize, :only => :update
+    end
     resources :complaint_documents, :only => [:destroy, :show]
+    namespace :communication_document do
+      resources :filetypes, :param => :ext, :only => [:create, :destroy]
+      resource :filesize, :only => :update
+    end
+    resources :communication_documents, :only => [:destroy, :show]
     resource :project_admin, :only => :show, :to => 'project_admin#show'
     resource :complaint_admin, :only => :show, :to => 'complaint_admin#show'
     resources :complaints

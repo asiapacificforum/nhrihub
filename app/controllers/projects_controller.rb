@@ -10,7 +10,7 @@ class ProjectsController < ApplicationController
     @project_types = ProjectType.mandate_groups
     @project_named_documents_titles = ProjectDocument::NamedProjectDocumentTitles
     @maximum_filesize = ProjectDocument.maximum_filesize * 1000000
-    @permitted_filetypes = ProjectDocument.permitted_filetypes.to_json 
+    @permitted_filetypes = ProjectDocument.permitted_filetypes.to_json
   end
 
   def create

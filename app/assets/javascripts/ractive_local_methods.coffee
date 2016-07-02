@@ -16,9 +16,9 @@ Ractive.prototype.asFormData = (attributes,formData)->
     throw new ReferenceError("missing serialization_key attribute")
 
   array_attributes = _(attributes).select (attr)=> _.isArray(@get(attr))
-  # nested attributes are named accordint to the rails accepts_nested_attributes_for convention
+  # nested attributes are named according to the Rails accepts_nested_attributes_for convention
   # if Project accept_nested_attributes_for :project_documents
-  # then the ractive Project instance has attribute project_document_attributes defined
+  # then the ractive Project instance has attribute project_documents_attributes defined
   # and the component must be projectDocument defined by the constant ProjectDocument
   # convention over configuration!
   nested_attributes = _(attributes).select (attr)-> attr.match(/_attributes$/)

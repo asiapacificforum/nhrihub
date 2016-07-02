@@ -4,6 +4,7 @@ require 'complaints_spec_setup_helpers'
 require 'navigation_helpers'
 require 'complaints_spec_helpers'
 require 'complaints_communications_spec_helpers'
+require 'upload_file_helpers'
 
 feature "complaints communications", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
@@ -11,6 +12,7 @@ feature "complaints communications", :js => true do
   include NavigationHelpers
   include ComplaintsSpecHelpers
   include ComplaintsCommunicationsSpecHelpers
+  include UploadFileHelpers
 
   before do
     populate_database
@@ -38,6 +40,8 @@ feature "complaints communications", :js => true do
       choose("Received")
       select("Hailee Ortiz", :from => "communication_by")
       fill_in("note", :with => "Some note text")
+      attach_file('communication_document_file', upload_document)
+      expect(page).to have_selector('#selected_file', :text => 'first_upload_file.pdf')
     end
     expect{ save_communication }.to change{ Communication.count }.by(1).
                                 and change{ communications.count }.by(1)
@@ -63,6 +67,14 @@ feature "complaints communications", :js => true do
     expect(page).to have_selector('#mode .help-block', :text => 'You must select a method')
     expect(page).to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
     expect(page).to have_selector('#communication_by .help-block', :text => 'You must select a user')
+    within new_communication do
+      choose("Email")
+      expect(page).not_to have_selector('#mode .help-block', :text => 'You must select a method')
+      choose("Received")
+      expect(page).not_to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
+      select("Hailee Ortiz", :from => "communication_by")
+      expect(page).not_to have_selector('#communication_by .help-block', :text => 'You must select a user')
+    end
   end
 
   it "should delete a communication" do
@@ -77,6 +89,7 @@ feature "communications files", :js => true do
   include ComplaintsSpecSetupHelpers
   include NavigationHelpers
   include ComplaintsSpecHelpers
+  include UploadFileHelpers
 
   before do
     populate_database

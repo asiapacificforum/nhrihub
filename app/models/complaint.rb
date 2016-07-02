@@ -35,6 +35,7 @@ class Complaint < ActiveRecord::Base
   def as_json(options = {})
     super( :methods => [:reminders, :notes, :assigns,
                         :current_assignee_id,
+                        :new_assignee_id,
                         :current_assignee_name, :date,
                         :current_status_humanized, :complaint_documents,
                         :complaint_categories, :mandate_ids,
@@ -43,6 +44,10 @@ class Complaint < ActiveRecord::Base
                         :human_rights_complaint_basis_ids, :status_changes,
                         :agency_ids,
                         :communications])
+  end
+
+  def new_assignee_id
+    nil
   end
 
   def self.next_case_reference
@@ -75,8 +80,8 @@ class Complaint < ActiveRecord::Base
     assigns.first.assignee unless assigns.empty?
   end
 
-  def current_assignee_id=(id)
-    unless id.blank?
+  def new_assignee_id=(id)
+    unless id.blank? || id=="null"
       self.assignees << User.find(id)
     end
   end

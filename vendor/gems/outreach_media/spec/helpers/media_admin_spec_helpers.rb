@@ -44,18 +44,6 @@ module MediaAdminSpecHelpers
     page.find('.row.area', :text => text)
   end
 
-  def new_filetype_button
-    page.find("#new_outreach_event_filetype table button")
-  end
-
-  def set_filesize(val)
-    page.find('input#filesize').set(val)
-  end
-
-  def delete_filetype(type)
-    page.find(:xpath, ".//tr[contains(td,'#{type}')]").find('a').click
-  end
-
   def remove_add_delete_fileconfig_permissions
     ActionRole.
       joins(:action => :controller).
@@ -100,5 +88,29 @@ module MediaAdminSpecHelpers
   def open_subarea_panel_for_area(area)
     page.find(:xpath, ".//div[@class='panel panel-default'][.//div[contains(text(),'#{area}')]]//a[@id='subareas_link']").click
     sleep(0.3)
+  end
+
+  def model
+    OutreachEvent
+  end
+
+  def filesize_selector
+    '#outreach_event_filesize'
+  end
+
+  def filesize_context
+    page.find(filesize_selector)
+  end
+
+  def filetypes_context
+    page.find(filetypes_selector)
+  end
+
+  def filetypes_selector
+    '#outreach_event_filetypes'
+  end
+
+  def admin_page
+    outreach_media_admin_path('en')
   end
 end

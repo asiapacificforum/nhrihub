@@ -5,7 +5,7 @@ module UploadFileHelpers
   #TODO this method needs to be made generic and used throughout the app,
   #and all the many instances removed
   def attach_file(locator,file,index = nil)
-    page.attach_file("primary_file", upload_document, :visible => false)
+    page.attach_file(locator, file, :visible => true)
     if !index # when it's first time, we pass a non-nil argument like :first_time
       if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
         # because the change event is not triggered when the same file is uploaded again,
@@ -18,7 +18,7 @@ module UploadFileHelpers
   #TODO this method needs to be made generic and used throughout the app,
   #and all the many instances removed
   def add_a_second_file
-    page.attach_file("primary_file", upload_document, :visible => false)
+    page.attach_file("primary_file", upload_document, :visible => true)
     page.find("#internal_document_title").set("a second file")
     page.find('#internal_document_revision').set("3.3")
     expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)

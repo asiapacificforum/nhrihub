@@ -2,7 +2,7 @@
 %h1=t('.heading')
 
 %h4= t('.filetypes')
-#filetypes
+#internal_document_filetypes
   = render :partial => 'admin/collection_configuration',
     :locals => { :new_item => @filetype,
                  :create_url => corporate_services_internal_documents_filetypes_path,
@@ -13,7 +13,7 @@
                  :placeholder => 'e.g. ppt'}
 
 %h4= t('.filesize_max')
-#internal_document_filesize
+#document_filesize
   = render :partial => 'admin/document_filesize_configuration',
            :locals => { :update_url => corporate_services_internal_documents_filesize_path,
                         :param => @filesize,

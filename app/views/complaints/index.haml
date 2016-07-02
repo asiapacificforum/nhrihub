@@ -25,6 +25,8 @@
   @all_users = #{@users.to_json(:only => :id, :methods => :first_last_name)}
   @all_categories = #{@categories.to_json}
   @all_staff = #{@staff.to_json}
+  @permitted_filetypes = #{@permitted_filetypes}
+  @maximum_filesize = #{@maximum_filesize}
   @filter_criteria =
     complainant : ""
     from : null

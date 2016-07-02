@@ -964,6 +964,22 @@ describe "complaints index page", ->
       $('.fa-refresh').trigger('click')
       expect($('#complaints .complaint:visible').length).to.equal 4
 
+  describe "complaint validation", ->
+    before (done)->
+      load_variables()
+      get_script_under_test(done)
+
+    after ->
+      reset_page()
+
+    it "should validate a well-formed complaint", ->
+      complaints.set('complaints',[{complainant:"Foo"}])
+      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
+
+    it "should not validate a complaint with no complainant", ->
+      complaints.set('complaints',[{}])
+      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
+
   describe "communication validation", ->
     before (done)->
       load_variables()

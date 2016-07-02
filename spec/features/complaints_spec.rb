@@ -3,12 +3,14 @@ require 'login_helpers'
 require 'complaints_spec_setup_helpers'
 require 'navigation_helpers'
 require 'complaints_spec_helpers'
+require 'upload_file_helpers'
 
 feature "complaints index", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ComplaintsSpecSetupHelpers
   include NavigationHelpers
   include ComplaintsSpecHelpers
+  include UploadFileHelpers
 
   before do
     populate_database
@@ -46,8 +48,8 @@ feature "complaints index", :js => true do
 
       within status_changes do
         expect(page).to have_selector('.status_change', :count => 2)
-        expect(all('.status_change .user_name')[0].text).to eq User.first.first_last_name
-        expect(all('.status_change .user_name')[1].text).to eq User.second.first_last_name
+        expect(all('.status_change .user_name')[0].text).to eq User.staff.first.first_last_name
+        expect(all('.status_change .user_name')[1].text).to eq User.staff.second.first_last_name
         expect(all('.status_change .date')[0].text).to eq Complaint.first.status_changes[0].created_at.localtime.to_date.to_s(:short)
         expect(all('.status_change .date')[1].text).to eq Complaint.first.status_changes[1].created_at.localtime.to_date.to_s(:short)
         expect(all('.status_change .status_humanized')[0].text).to eq "open"
@@ -95,7 +97,7 @@ feature "complaints index", :js => true do
     end # /within first
   end # /it
 
-  it "adds a new complaint" do
+  it "adds a new complaint that is valid" do
     add_complaint
     within new_complaint do
       fill_in('complainant', :with => "Norman Normal")
@@ -105,12 +107,12 @@ feature "complaints index", :js => true do
       check_basis(:good_governance, "Delayed action")
       check_basis(:human_rights, "CAT")
       check_basis(:special_investigations_unit, "Unreasonable delay")
-      select(User.first.first_last_name, :from => "assignee")
+      select(User.staff.first.first_last_name, :from => "assignee")
       check_category("Formal")
       check_agency("SAA")
       check_agency("ACC")
-      attach_file
-      fill_in("complaint_document_title", :with => "Complaint Document")
+      attach_file("complaint_fileinput", upload_document)
+      fill_in("attached_document_title", :with => "Complaint Document")
     end
     expect(page).to have_selector("#documents .document .filename", :text => "first_upload_file.pdf")
 
@@ -128,7 +130,7 @@ feature "complaints index", :js => true do
     expect(Complaint.last.good_governance_complaint_bases.map(&:name)).to include "Delayed action"
     expect(Complaint.last.human_rights_complaint_bases.map(&:name)).to include "CAT"
     expect(Complaint.last.special_investigations_unit_complaint_bases.map(&:name)).to include "Unreasonable delay"
-    expect(Complaint.last.current_assignee_name).to eq User.first.first_last_name
+    expect(Complaint.last.current_assignee_name).to eq User.staff.first.first_last_name
     expect(Complaint.last.status_changes.count).to eq 1
     expect(Complaint.last.status_changes.first.new_value).to eq true
     expect(Complaint.last.complaint_categories.map(&:name)).to include "Formal"
@@ -139,7 +141,7 @@ feature "complaints index", :js => true do
     expect(Complaint.last.complaint_documents[0].title).to eq "Complaint Document"
     # on the client
     expect(first_complaint.find('.case_reference').text).to eq next_ref
-    expect(first_complaint.find('.current_assignee').text).to eq User.first.first_last_name
+    expect(first_complaint.find('.current_assignee').text).to eq User.staff.first.first_last_name
     expect(first_complaint.find('.complainant').text).to eq "Norman Normal"
     expect(first_complaint.find('#status_changes .status_change .status_humanized').text).to eq 'open'
     expand
@@ -179,6 +181,52 @@ feature "complaints index", :js => true do
     end
   end
 
+  it "does not add a new complaint that is invalid" do
+    add_complaint
+    within new_complaint do
+      save_complaint.click
+      expect(page).to have_selector('#complainant_error', :text => "You must enter a complainant")
+      expect(page).to have_selector('#village_error', :text => 'You must enter a village')
+      expect(page).to have_selector('#new_assignee_id_error', :text => 'You must designate an assignee')
+      expect(page).to have_selector('#mandate_ids_error', :text => 'You must select at least one mandate')
+      expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
+      fill_in('complainant', :with => "Norman Normal")
+      expect(page).not_to have_selector('#complainant_error', :text => "You must enter a complainant")
+      fill_in('village', :with => "Leaden Roding")
+      expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
+      select(User.staff.first.first_last_name, :from => "assignee")
+      expect(page).not_to have_selector('#new_assignee_id_error', :text => 'You must designate an assignee')
+      check('special_investigations_unit')
+      expect(page).not_to have_selector('#mandate_ids_error', :text => 'You must select at least one mandate')
+      check_basis(:special_investigations_unit, "Unreasonable delay")
+      expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
+    end
+  end
+
+  it "flags as invalid when file attachment exceeds permitted filesize" do
+    add_complaint
+
+    within new_complaint do
+      attach_file("complaint_fileinput", big_upload_document)
+    end
+    expect(page).to have_selector('#filesize_error', :text => "File is too large")
+
+    expect{ save_complaint.click; wait_for_ajax }.not_to change{ Complaint.count }
+  end
+
+  it "flags as invalid when file attachment is unpermitted filetype" do
+    SiteConfig["complaint_document.filetypes"]=["doc"]
+    visit complaints_path('en')
+    add_complaint
+
+    within new_complaint do
+      attach_file("complaint_fileinput", upload_image)
+    end
+    expect(page).to have_css('#filetype_error', :text => "File type not allowed")
+
+    expect{ save_complaint.click; wait_for_ajax }.not_to change{ Complaint.count }
+  end
+
   it "cancels adding" do
     add_complaint
     within new_complaint do
@@ -189,7 +237,7 @@ feature "complaints index", :js => true do
       check_basis(:good_governance, "Delayed action")
       check_basis(:human_rights, "CAT")
       check_basis(:special_investigations_unit, "Unreasonable delay")
-      select(User.first.first_last_name, :from => "assignee")
+      select(User.staff.first.first_last_name, :from => "assignee")
     end
     cancel_add
     expect(page).not_to have_selector('.new_complaint')
@@ -210,7 +258,7 @@ feature "complaints index", :js => true do
       expect(page).to have_checked_field "close"
       choose "open"
     end
-    expect{ edit_save; wait_for_ajax }.to change{ Complaint.first.current_status }.from(false).to(true)
+    expect{ edit_save }.to change{ Complaint.first.current_status }.from(false).to(true)
     expect( first_complaint.all('#status_changes .status_change').last.text ).to match "open"
     expect( first_complaint.all('#status_changes .date').last.text ).to match /#{Date.today.to_s(:short)}/
     user = User.find_by(:login => 'admin')
@@ -228,7 +276,7 @@ feature "complaints index", :js => true do
       check_category("Informal")
       uncheck_category("Formal")
       # ASSIGNEE
-      select(User.last.first_last_name, :from => "assignee")
+      select(User.staff.last.first_last_name, :from => "assignee")
       # MANDATE
       check('special_investigations_unit') # originally had human rights mandate, now should have both
       # BASIS
@@ -239,11 +287,11 @@ feature "complaints index", :js => true do
       uncheck_agency("SAA")
       check_agency("ACC")
       # DOCUMENTS
-      attach_file
-      fill_in("complaint_document_title", :with => "added complaint document")
+      attach_file("complaint_fileinput", upload_document)
+      fill_in("attached_document_title", :with => "added complaint document")
       expect(page).to have_selector("#complaint_documents .document .filename", :text => "first_upload_file.pdf")
     end
-    expect{ edit_save; wait_for_ajax }.to change{ Complaint.first.complainant }.to("Norman Normal").
+    expect{ edit_save }.to change{ Complaint.first.complainant }.to("Norman Normal").
                                       and change{ Complaint.first.village }.to("Normaltown").
                                       and change{ Complaint.first.phone }.to("555-1212").
                                       and change{ Complaint.first.assignees.count }.by(1).
@@ -259,7 +307,7 @@ feature "complaints index", :js => true do
     expect( Complaint.first.special_investigations_unit_complaint_bases.first.name ).to eq "Not properly investigated"
     expect( Complaint.first.complaint_categories.map(&:name) ).to include "Informal"
     expect( Complaint.first.complaint_categories.count ).to eq 1
-    expect( Complaint.first.assignees ).to include User.last
+    expect( Complaint.first.assignees ).to include User.staff.last
     expect( Complaint.first.agencies.map(&:name) ).to include "ACC"
     expect( Complaint.first.agencies.count ).to eq 1
 
@@ -293,6 +341,11 @@ feature "complaints index", :js => true do
       expect(page.all('#complaint_documents .complaint_document .filename').map(&:text)).to include "first_upload_file.pdf"
       expect(page.all('#complaint_documents .complaint_document .title').map(&:text)).to include "added complaint document"
     end
+  end
+
+  it "edits a complaint with no change of assignee" do
+    edit_complaint
+    expect{ edit_save }.not_to change{ Complaint.first.assignees.count }
   end
 
   it "edits a complaint, deleting a file" do
@@ -382,5 +435,44 @@ feature "complaints index", :js => true do
   it "deletes a complaint" do
     expect{delete_complaint; wait_for_ajax}.to change{ Complaint.count }.by(-1).
                                            and change{ complaints.count }.by(-1)
+  end
+
+  it "edits a complaint to invalid values" do
+    edit_complaint
+    # COMPLAINANT
+    within first_complaint do
+      fill_in('complainant', :with => "")
+      fill_in('village', :with => "")
+      fill_in('phone', :with => "555-1212")
+      # CATEGORY
+      uncheck_category("Formal")
+      # MANDATE
+      uncheck_mandate('human_rights') # originally had human rights mandate, now should have both
+      # BASIS
+      uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
+      uncheck_basis(:good_governance, "Failure to act") # originally had "Delayed action" and "Failure to Act"
+      uncheck_basis(:human_rights, "CAT") # originall had "CAT" "ICESCR"
+      uncheck_basis(:human_rights, "ICESCR") # originall had "CAT" "ICESCR"
+      uncheck_basis(:special_investigations_unit, "Unreasonable delay") #originally had "Unreasonable delay" "Not properly investigated"
+      uncheck_basis(:special_investigations_unit, "Not properly investigated") #originally had "Unreasonable delay" "Not properly investigated"
+      # AGENCY
+      uncheck_agency("SAA")
+    end
+    expect{ edit_save }.not_to change{ Complaint.first}
+
+    expect(page).to have_selector('#complainant_error', :text => "You must enter a complainant")
+    expect(page).to have_selector('#village_error', :text => 'You must enter a village')
+    expect(page).to have_selector('#mandate_ids_error', :text => 'You must select at least one mandate')
+    expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
+    within first_complaint do
+      fill_in('complainant', :with => "Norman Normal")
+      expect(page).not_to have_selector('#complainant_error', :text => "You must enter a complainant")
+      fill_in('village', :with => "Leaden Roding")
+      expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
+      check('special_investigations_unit')
+      expect(page).not_to have_selector('#mandate_ids_error', :text => 'You must select at least one mandate')
+      check_basis(:special_investigations_unit, "Unreasonable delay")
+      expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
+    end
   end
 end

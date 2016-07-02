@@ -47,7 +47,7 @@
     form.bind "ajax:success", (e,data,status,xhr)->
       el.append item_template({attribute : data})
       param_field.val('')
-      $('td#empty').closest('tr').remove()
+      $('td#empty',el).closest('tr').remove()
       $('.message_block').html ''
 
     form.bind "ajax:error", (e,data,status,xhr)->
