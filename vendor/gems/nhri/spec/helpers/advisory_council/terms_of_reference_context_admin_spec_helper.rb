@@ -1,5 +1,4 @@
 require 'rspec/core/shared_context'
-require_relative './terms_of_reference_admin_spec_helper'
 
 module TermsOfReferenceContextAdminSpecHelper
   extend RSpec::Core::SharedContext

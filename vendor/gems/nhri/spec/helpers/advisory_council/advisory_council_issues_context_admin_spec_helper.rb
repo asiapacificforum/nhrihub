@@ -1,5 +1,4 @@
 require 'rspec/core/shared_context'
-require_relative './advisory_council_issues_admin_spec_helper'
 
 module AdvisoryCouncilIssuesContextAdminSpecHelper
   extend RSpec::Core::SharedContext

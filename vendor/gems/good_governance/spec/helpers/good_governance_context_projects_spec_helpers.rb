@@ -15,8 +15,8 @@ module GoodGovernanceContextProjectsSpecHelpers
   end
 
   def set_file_defaults
-    SiteConfig.defaults['project_document.filetypes'] = ['pdf']
-    SiteConfig.defaults['project_document.filesize'] = 5
+    SiteConfig['project_document.filetypes'] = ['pdf']
+    SiteConfig['project_document.filesize'] = 5
   end
 
   def heading_prefix

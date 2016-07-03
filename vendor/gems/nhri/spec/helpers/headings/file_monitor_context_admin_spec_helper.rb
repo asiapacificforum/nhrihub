@@ -1,5 +1,4 @@
 require 'rspec/core/shared_context'
-require_relative './file_monitor_admin_spec_helper'
 
 module FileMonitorContextAdminSpecHelper
   extend RSpec::Core::SharedContext

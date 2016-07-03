@@ -15,8 +15,8 @@ module NhriContextProjectsSpecHelpers
   end
 
   def set_file_defaults
-    SiteConfig.defaults['project_documents.filetypes'] = ['pdf']
-    SiteConfig.defaults['project_documents.filesize'] = 5
+    SiteConfig['project_document.filetypes'] = ['pdf']
+    SiteConfig['project_document.filesize'] = 5
   end
 
   def heading_prefix
