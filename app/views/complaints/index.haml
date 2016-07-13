@@ -7,10 +7,11 @@
 
 #complaints
 
-= render :partial => 'communications/communication'
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note'
+= render :partial => 'notes/single_note'
 = render :partial => 'shared/file_selector'
+= render :partial => 'communications/communication'
 = render :partial => 'complaints/complaints_templates'
 
 :coffeescript
@@ -27,6 +28,8 @@
   @all_staff = #{@staff.to_json}
   @permitted_filetypes = #{@permitted_filetypes}
   @maximum_filesize = #{@maximum_filesize}
+  @communication_permitted_filetypes = #{@communication_permitted_filetypes}
+  @communication_maximum_filesize = #{@communication_maximum_filesize}
   @filter_criteria =
     complainant : ""
     from : null
@@ -45,5 +48,13 @@
     selected_human_rights_complaint_basis_ids : []
     selected_special_investigations_unit_complaint_basis_ids : []
     selected_good_governance_complaint_basis_ids : []
+  @i18n =
+    tooltip_messages:
+      face_to_face : "#{t('.face_to_face')}"
+      letter: "#{t('.letter')}"
+      phone: "#{t('.phone')}"
+      email: "#{t('.email')}"
+      sent: "#{t('.sent')}"
+      received: "#{t('.received')}"
 
 = javascript_include_tag 'complaints'

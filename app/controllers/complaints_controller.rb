@@ -15,6 +15,8 @@ class ComplaintsController < ApplicationController
     @staff = User.staff
     @maximum_filesize = ComplaintDocument.maximum_filesize * 1000000
     @permitted_filetypes = ComplaintDocument.permitted_filetypes.to_json
+    @communication_maximum_filesize    = CommunicationDocument.maximum_filesize * 1000000
+    @communication_permitted_filetypes = CommunicationDocument.permitted_filetypes.to_json
   end
 
   def create

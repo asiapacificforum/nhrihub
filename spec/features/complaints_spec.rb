@@ -295,7 +295,8 @@ feature "complaints index", :js => true do
                                       and change{ Complaint.first.village }.to("Normaltown").
                                       and change{ Complaint.first.phone }.to("555-1212").
                                       and change{ Complaint.first.assignees.count }.by(1).
-                                      and change{ Complaint.first.complaint_documents.count }.by 1
+                                      and change{ Complaint.first.complaint_documents.count }.by(1).
+                                      and change{ (`\ls tmp/uploads/store | wc -l`).to_i }.by 1
 
     expect( Complaint.first.mandates.map(&:key) ).to include "special_investigations_unit"
     expect( Complaint.first.mandates.map(&:key) ).to include "human_rights"

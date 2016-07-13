@@ -1,0 +1,27 @@
+%script#single_note_template{:type => 'template/ractive'}
+  .modal.fade#single_note_modal{:role => :dialog}
+    .modal-dialog{:role => :document}
+      .modal-content
+        .modal-header
+          %button.close{:type=>"button", 'data-dismiss'=>:modal}
+            %span &times
+          %h4.modal-title#myModalLabel Note
+        .modal-body
+          .note_text
+            {{note}}
+        .modal-footer
+          -#%button.btn.btn-default{:type=>:button, 'data-dismiss'=>:modal} Close
+          -#%button.btn.btn-default{:type=>:button} Save changes
+
+#single_note
+
+:coffeescript
+  note = new Ractive
+    el : '#single_note'
+    template : '#single_note_template'
+
+  @Note =
+    show_note : ->
+      note.set
+        note : @get('note')
+      $('#single_note_modal').modal('show')

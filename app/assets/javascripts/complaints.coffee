@@ -6,6 +6,7 @@
 //= require 'string'
 //= require 'jquery_datepicker'
 //= require 'filter_criteria_datepicker'
+//= require 'attached_documents'
 //= require 'communication'
 
 
@@ -170,21 +171,21 @@ Persistence =
         processData : false
         contentType : false # jQuery correctly sets the contentType and boundary values
 
-ProgressBar = Ractive.extend
-  template : '#progress_bar_template'
-  progressbar_start : ->
-    # this is called for each file being uploaded
-    $('.fileupload-progress.fade').addClass('in')
-  progress_evaluate : (evt)->
-    if evt.lengthComputable
-      percentComplete = evt.loaded / evt.total
-      percentComplete = parseInt(percentComplete * 100)
-      $('.progress-bar').css('width',"#{percentComplete}%")
-  start : ->
-    xhr = new XMLHttpRequest()
-    xhr.upload.addEventListener 'loadstart', @progressbar_start , false
-    xhr.upload.addEventListener 'progress', @progress_evaluate , false
-    xhr
+#ProgressBar = Ractive.extend
+  #template : '#progress_bar_template'
+  #progressbar_start : ->
+    ## this is called for each file being uploaded
+    #$('.fileupload-progress.fade').addClass('in')
+  #progress_evaluate : (evt)->
+    #if evt.lengthComputable
+      #percentComplete = evt.loaded / evt.total
+      #percentComplete = parseInt(percentComplete * 100)
+      #$('.progress-bar').css('width',"#{percentComplete}%")
+  #start : ->
+    #xhr = new XMLHttpRequest()
+    #xhr.upload.addEventListener 'loadstart', @progressbar_start , false
+    #xhr.upload.addEventListener 'progress', @progress_evaluate , false
+    #xhr
 
 ComplaintDocuments = Ractive.extend
   data :
@@ -391,7 +392,18 @@ Complaint = Ractive.extend
     UserInput.reset()
     @parent.shift('complaints')
   add_file : (file)->
-    @unshift('attached_documents', {id : null, complaint_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type, serialization_key : 'complaint[complaint_documents_attributes][]'})
+    attached_document =
+      id : null
+      complaint_id : @get('id')
+      file : file
+      title: ''
+      file_id : ''
+      url : ''
+      filename : file.name
+      filesize : file.size
+      original_type : file.type
+      serialization_key : 'complaint[complaint_documents_attributes][]'
+    @unshift('attached_documents', attached_document)
   , EditBackup, Persistence, FilterMatch, @Remindable, @Notable, @Communications # Remindable, Notable and Communications are found in the _reminder.haml, _note.haml and _communication.haml files
 
 GoodGovernanceComplaintBasisFilterSelect = Ractive.extend

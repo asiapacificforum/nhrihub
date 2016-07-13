@@ -11,14 +11,19 @@ class @Validator
     !_(valid_attributes).any (valid)->!valid
   validate_attribute : (attribute)->
     params = @validation_criteria()[attribute]
-    [criterion,param] = if _.isArray(params) then params else [params]
-    @[criterion].call(@,attribute,param)
+    if _.isFunction(params) # not a simple validation, so the validation function is passed-in
+      @validatee.set(attribute+"_error", !params())
+      !@validatee.get(attribute+"_error")
+    else
+      [criterion,param] = if _.isArray(params) then params else [params]
+      @[criterion].call(@,attribute,param)
   notBlank : (attribute)->
-    @validatee.set(attribute, @validatee.get(attribute).trim()) unless _.isNull(@validatee.get(attribute))
+    @validatee.set(attribute, @validatee.get(attribute).trim()) unless _.isEmpty(@validatee.get(attribute))
     @validatee.set(attribute+"_error", _.isEmpty(@validatee.get(attribute)))
     !@validatee.get(attribute+"_error")
   lessThan : (attribute,param)->
     @validatee.set(attribute+"_error", @validatee.get(attribute) > param)
+    console.log "#{attribute}_error: #{@validatee.get(attribute+"_error")} attr: #{ @validatee.get(attribute)} param : #{ param}"
     !@validatee.get(attribute+"_error")
   numeric : (attribute)->
     @validatee.set(attribute+"_error", _.isNaN(parseInt(@validatee.get(attribute))))

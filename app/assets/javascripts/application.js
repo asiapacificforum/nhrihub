@@ -17,6 +17,10 @@
 //= require underscore
 // require turbolinks
 //= require bootstrap-sprockets
+// see http://stackoverflow.com/a/34212085/451893
+// the bootply solution works, but the github plugin does not...
+// so this is the bootply code!
+//= require bootstrap-multimodal
 //= require jquery-fileupload
 // require corporate_services
 //= require ractive

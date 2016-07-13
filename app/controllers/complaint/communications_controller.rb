@@ -18,8 +18,18 @@ class Complaint::CommunicationsController < ApplicationController
     end
   end
 
+  def update
+    communication = Communication.find(params[:id])
+    if communication.update(communication_params)
+      render :json => communication, :status => 200
+    else
+      render :status => 500
+    end
+  end
+
   private
   def communication_params
-    params.require(:communication).permit(:user_id, :complaint_id, :direction, :mode, :date, :note)
+    params.require(:communication).permit(:user_id, :complaint_id, :direction, :mode, :date, :note,
+                                          :communication_documents_attributes => [:file, :title, :filename, :original_type])
   end
 end

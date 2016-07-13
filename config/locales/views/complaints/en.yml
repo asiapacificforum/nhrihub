@@ -51,3 +51,9 @@ en:
     index:
       heading: "Complaints"
       add_complaint: "Add complaint"
+      face_to_face : "face to face"
+      phone: "phone"
+      email: "email"
+      letter: "letter"
+      sent: "Sent"
+      received: "Received"

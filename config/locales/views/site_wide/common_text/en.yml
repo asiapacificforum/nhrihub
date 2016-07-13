@@ -4,3 +4,7 @@ en:
   add_another_file: "Add another file"
   save : "Save"
   cancel : "Cancel"
+  icon :
+    note : "note"
+    documents: "documents"
+    delete: "delete"

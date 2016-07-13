@@ -46,6 +46,10 @@ module ComplaintsSpecHelpers
     page.find('.actions .fa-pencil-square-o').click
   end
 
+  def deselect_file
+    page.find('#edit_communication #communication_documents .document i.remove').click
+  end
+
   def edit_first_complaint
     page.all('.actions .fa-pencil-square-o')[0].click
   end

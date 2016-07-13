@@ -1,5 +1,6 @@
-Datepicker = (node)->
+SingleMonthDatepicker = (node)->
   $(node).datepicker
+    #altField: $(node).attr['id'] can't use this b/c it doesn't trigger ractive change
     maxDate: null
     defaultDate: new Date()
     changeMonth: true
@@ -13,4 +14,4 @@ Datepicker = (node)->
   teardown : ->
     $(node).datepicker('destroy')
 
-Ractive.decorators.datepicker = Datepicker
+Ractive.decorators.single_month_datepicker = SingleMonthDatepicker

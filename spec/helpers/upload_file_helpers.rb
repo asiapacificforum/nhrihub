@@ -10,7 +10,9 @@ module UploadFileHelpers
       if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
         # because the change event is not triggered when the same file is uploaded again,
         # so must trigger it manually in a test scenario (or else use many different files)
-        page.execute_script("$('#primary_fileinput').trigger('change')")
+        # NOTE that the change event is triggered on the first matching element
+        # this makes an assumption that may not be always correct
+        #page.execute_script("$('input[name=\"#{locator}\"]').first().trigger('change')")
       end
     end
   end
@@ -31,6 +33,14 @@ module UploadFileHelpers
 
   def upload_document
     upload_file_path('first_upload_file.pdf')
+  end
+
+  def upload_document1
+    upload_file_path('first_upload_file1.pdf')
+  end
+
+  def upload_document2
+    upload_file_path('first_upload_file2.pdf')
   end
 
   def big_upload_document

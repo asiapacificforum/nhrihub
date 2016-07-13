@@ -21,8 +21,10 @@
 #
 #  requirements:
 #    Needs an element with selector '.editable_container' with data attribute for save_url
+#    Alternatively the url may be an attribute on the object being edited.
 #
-#  two stash mechanisms are supported
+#  Stash is the saving of the original attributes when editing is commenced, so that they can be
+#  restored if editing is cancelled. Two stash mechanisms are supported
 #  1. InpageEdit stash
 #    Editable elements should be of the form:
 #        .col-md-2.date{'data-toggle'=>:edit, 'data-attribute'=>:date, :style => "width:15%"}

@@ -185,6 +185,7 @@ RSpec.configure do |config| # rspec-expectations config goes here. You can use a
   config.after(:each) do
     DatabaseCleaner.clean
     Rails.root.join('tmp', 'cache').children.each{|dir| FileUtils.remove_dir(dir) unless dir.to_s.match(/assets/)}
+    Rails.root.join('tmp', 'uploads', 'store').children.each{|file| FileUtils.rm(file)}
   end
 
 end

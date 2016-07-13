@@ -42,6 +42,12 @@ describe "complaints index page", ->
   after ->
     reset_page()
 
+  it "loads all fixtures", ->
+    expect($("h1",'.magic-lamp').text()).to.equal "Complaints"
+    #expect($(".complaint", '.magic-lamp').length).to.equal 1 # none pre-loaded
+    expect(typeof(simulant)).to.not.equal("undefined")
+    return
+
   describe "match complainant", ->
     it "UI should set the filter criterion value", ->
       $('.filter_control_box #complainant').val("Siddhi")
@@ -972,8 +978,14 @@ describe "complaints index page", ->
     after ->
       reset_page()
 
-    it "should validate a well-formed complaint", ->
-      complaints.set('complaints',[{complainant:"Foo"}])
+    it "should validate a well-formed complaint, excluding assignee when editing", ->
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_ids:[1],complaint_basis_ids:[2]}])
+      complaints.findAllComponents('complaint')[0].set('editing',true)
+      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
+
+    it "should validate a well-formed complaint, including assignee when not editing", ->
+      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_ids:[1],complaint_basis_ids:[2]}])
+      complaints.findAllComponents('complaint')[0].set('new_assignee_id', 8)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should not validate a complaint with no complainant", ->
@@ -1027,3 +1039,20 @@ describe "complaints index page", ->
       window.communications.set('communications',[{id:1,user_id:5,mode:"foo",direction:'sent'}])
       expect(communications.findAllComponents('communication')[0].validate()).to.be.false
       expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
+
+    describe "validation of direction with a custom function", ->
+      it "should not validate if mode is phone and direction is not provided", ->
+        window.communications.set('communications',[{id:1,user_id:5,mode:"phone"}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+        expect(communications.findAllComponents('communication')[0].get('direction_error')).to.be.true
+
+      it "should validate if mode is phone and direction is provided", ->
+        window.communications.set('communications',[{id:1,user_id:5,mode:"phone",direction:"sent"}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.true
+        expect(communications.findAllComponents('communication')[0].get('direction_error')).to.be.false
+
+      it "should validate if mode is face to face and direction is not provided", ->
+        window.communications.set('communications',[{id:1,user_id:5,mode:"face to face"}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.true
+        expect(communications.findAllComponents('communication')[0].get('direction_error')).to.be.false
+

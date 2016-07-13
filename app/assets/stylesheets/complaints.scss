@@ -30,3 +30,34 @@ div[id$='_complaint_bases'] {
 #complaints_controls .filter_rule {
   display : flex;
 }
+
+.inactive-icon {
+  cursor : default;
+}
+
+.face_to_face div:nth-child(1):before {
+  cursor : default;
+  content: "\f007";
+}
+.face_to_face div:nth-child(2):before {
+  cursor : default;
+  content: "\f007";
+  position: relative;
+  left: -8px;
+  color : #fff;
+}
+.face_to_face div:nth-child(3):before {
+  cursor : default;
+  content: "\f007";
+  position: relative;
+  left: -17px;
+}
+
+.note_icon {
+  cursor : pointer;
+  background-image : asset-url("note.png");
+  background-size : 17px;
+  background-repeat : no-repeat;
+  width : 20px;
+  height : 20px;
+}
