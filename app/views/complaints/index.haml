@@ -6,6 +6,7 @@
   %span= t(".add_complaint")
 
 #complaints
+#documents
 
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note'
@@ -13,6 +14,7 @@
 = render :partial => 'shared/file_selector'
 = render :partial => 'communications/communication'
 = render :partial => 'complaints/complaints_templates'
+= render :partial => 'complaints/documents_templates'
 
 :coffeescript
   @all_good_governance_complaint_bases = #{@good_governance_complaint_bases.to_json}

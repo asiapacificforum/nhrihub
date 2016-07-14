@@ -1,0 +1,20 @@
+%script#documents_modal_template{:type => 'template/ractive'}
+  .modal.fade#documents_modal{:role => :dialog}
+    .modal-dialog.modal-lg{:role => :document}
+      .modal-content
+        .modal-header
+          %button.close{:type=>"button", 'data-dismiss'=>:modal}
+            %span &times
+          %h4.modal-title#myModalLabel Docs
+        .modal-body
+          <attachedDocuments attached_documents='{{attached_documents}}' key='communication_document'>
+        .modal-footer
+
+:coffeescript
+  @documents = new Ractive
+    el : '#documents'
+    template : '#documents_modal_template'
+    components :
+      attachedDocuments : AttachedDocuments
+    showModal : ->
+      $(@find('#documents_modal')).modal('show')

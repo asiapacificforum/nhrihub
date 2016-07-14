@@ -8,7 +8,6 @@
         ['match', @get('permitted_filetypes')]
     @set('unconfigured_validation_parameter_error',false)
     @validator = new Validator(@)
-    console.log "validating size of #{@get('filename')} #{@get('filesize')}"
     @validator.validate() unless @get('persisted')
   computed :
     persistent_attributes : ->

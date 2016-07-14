@@ -25,7 +25,7 @@ Ractive.prototype.asFormData = (attributes,formData)->
   simple_attributes = _.difference( attributes, array_attributes, nested_attributes)
 
   _(nested_attributes).each (attribute)=>
-    # attribute = project_documents_attributes
+    # e.g. attribute = project_documents_attributes
     ar = attribute.split('_')
     ar.pop()
     ar = _(ar).map (val,i)->
@@ -33,7 +33,7 @@ Ractive.prototype.asFormData = (attributes,formData)->
              val.singularize().capitalize()
            else
              val
-    # component = projectDocument
+    # e.g. component = projectDocument
     component = ar.join('')
 
     _(@findAllComponents(component)).each (component_instance)=>

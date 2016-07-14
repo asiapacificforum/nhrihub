@@ -70,15 +70,28 @@ feature "complaints communications", :js => true do
     expect(page.all('#communications .communication .date').map(&:text)).to eq [DateTime.now.to_date.to_s,"2016, May 19"]
   end
 
-  it "should validate and not add invalid communication" do
+  it "should validate and not add invalid communication with null mode attribute" do
     add_communication
     expect{ save_communication }.not_to change{ Communication.count }
     expect(page).to have_selector('#mode .help-block', :text => 'You must select a method')
-    expect(page).to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
     expect(page).to have_selector('#communication_by .help-block', :text => 'You must select a user')
     within new_communication do
       choose("Email")
       expect(page).not_to have_selector('#mode .help-block', :text => 'You must select a method')
+      select("Hailee Ortiz", :from => "communication_by")
+      expect(page).not_to have_selector('#communication_by .help-block', :text => 'You must select a user')
+    end
+  end
+
+  it "should validate and not add invalid communication with valid mode attribute" do
+    add_communication
+    within new_communication do
+      choose("Email")
+    end
+    expect{ save_communication }.not_to change{ Communication.count }
+    expect(page).to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
+    expect(page).to have_selector('#communication_by .help-block', :text => 'You must select a user')
+    within new_communication do
       choose("Received")
       expect(page).not_to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
       select("Hailee Ortiz", :from => "communication_by")
@@ -93,7 +106,7 @@ feature "complaints communications", :js => true do
 
   it "should edit a communication note" do
     edit_communication
-    page.find(".note .edit textarea").set "And now for something completely different"
+    page.find(".communication .edit textarea#note").set "And now for something completely different"
     expect{edit_save; wait_for_ajax}.to change{Complaint.first.communications.first.note}.to "And now for something completely different"
   end
 end
@@ -141,26 +154,50 @@ feature "communications files", :js => true do
     expect(page).not_to have_selector("#communication_documents .document .filename", :text => "first_upload_file.pdf")
   end
 
-  it "should validate file size when adding" do
+  it "should validate file size when editing" do
     edit_communication
-    puts "attach"
     attach_file('communication_document_file', big_upload_document)
     expect(page).to have_css('#filesize_error', :text => "File is too large")
   end
 
-  it "should validate file type when adding" do
-    expect(0).to eq 1
-  end
-
-  it "should validate file size when editing" do
-    
-  end
-
   it "should validate file type when editing" do
-    
+    SiteConfig["communication_document.filetypes"] = ["pdf"]
+    visit complaints_path('en')
+    open_communications_modal
+    edit_communication
+    attach_file('communication_document_file', upload_image)
+    expect(page).to have_css('#original_type_error', :text => "File type not allowed")
+  end
+
+  it "should validate file size when adding" do
+    add_communication
+    expect(page).to have_selector('#new_communication')
+    within new_communication do
+      attach_file('communication_document_file', big_upload_document)
+      expect(page).to have_css('#filesize_error', :text => "File is too large")
+    end
+  end
+
+  it "should validate file type when adding" do
+    SiteConfig["communication_document.filetypes"] = ["pdf"]
+    visit complaints_path('en')
+    open_communications_modal
+    add_communication
+    expect(page).to have_selector('#new_communication')
+    within new_communication do
+      attach_file('communication_document_file', upload_image)
+      expect(page).to have_css('#original_type_error', :text => "File type not allowed")
+    end
   end
 
   it "should download files" do
-    
+    open_documents_modal
+    filename = CommunicationDocument.first.filename
+    expect(page).to have_selector('.communication_document_document .filename', :text=>filename)
+    download_document
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
+      expect(page.response_headers['Content-Type']).to eq('application/pdf')
+      expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+    end
   end
 end

@@ -23,7 +23,6 @@ class @Validator
     !@validatee.get(attribute+"_error")
   lessThan : (attribute,param)->
     @validatee.set(attribute+"_error", @validatee.get(attribute) > param)
-    console.log "#{attribute}_error: #{@validatee.get(attribute+"_error")} attr: #{ @validatee.get(attribute)} param : #{ param}"
     !@validatee.get(attribute+"_error")
   numeric : (attribute)->
     @validatee.set(attribute+"_error", _.isNaN(parseInt(@validatee.get(attribute))))

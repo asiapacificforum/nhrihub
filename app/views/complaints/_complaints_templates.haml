@@ -347,7 +347,7 @@
         .panel-heading= t('.complaint_documents')
         .panel-body
           {{> file_selector_template {key : 'complaint'} }}
-          <attachedDocuments attached_documents='{{attached_documents}}' key='complaint' named_document_datalist='{{complaint_named_documents_titles}}' />
+          <attachedDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' attached_documents='{{attached_documents}}' key='complaint' named_document_datalist='{{complaint_named_documents_titles}}' />
 
 %script#complaint_categories_selector{:type => 'template/ractive'}
   {{#all_categories}}
@@ -520,7 +520,7 @@
           .edit{:style => "padding-left:15px; padding-top:15px;"}
             {{> file_selector_template {key : 'complaint'} }}
           .no_edit.in
-          <attachedDocuments key='complaint' attached_documents='{{attached_documents}}' />
+          <attachedDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' key='complaint' attached_documents='{{attached_documents}}' />
       .row.collapse{'data-toggle'=>:edit}
         .col-md-2=t('.categories')
         .col-md-10

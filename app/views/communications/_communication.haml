@@ -9,7 +9,7 @@
     .row
       %h5.col-md-2{:style => "width:15%;"}= t('.date')
     {{#communications}}
-    <communication maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' complaint_id='{{complaint_id}}' user_id='{{user_id}}' direction='{{direction}}' mode='{{mode}}' note='{{note}}' user='{{user}}' date='{{date}}' attached_documents='{{attached_documents}}' complaint_id='{{complaint_id}}' attached_documents='{{attached_documents}}' />
+    <communication maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' complaint_id='{{complaint_id}}' user_id='{{user_id}}' direction='{{direction}}' mode='{{mode}}' note='{{note}}' user='{{user}}' date='{{date}}' attached_documents='{{attached_documents}}' complaint_id='{{complaint_id}}' />
     {{/communications}}
   </modal-body>
   </modal-custom>
@@ -141,7 +141,7 @@
             .note_icon{'data-toggle' => :tooltip, :title => t('icon.note'), 'on-click'=>'show_note()'}
         .col-md-1.documents{'data-toggle'=>:edit}
           .no_edit.in
-            .fa.fa-file-text-o.counter{'data-count' => '{{document_count}}', 'data-toggle' => :tooltip, :title => t('icon.documents')}
+            .fa.fa-file-text-o.counter#show_document_modal{'on-click'=>"show_document_modal()", 'data-count' => '{{document_count}}', 'data-toggle' => :tooltip, :title => t('icon.documents')}
         .col-md-1{'data-toggle'=>:edit}
           .no_edit.in
           .edit

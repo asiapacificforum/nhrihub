@@ -104,7 +104,6 @@ Communication = Ractive.extend
   update_persist : (success, error, context) -> # called by EditInPlace
     if @validate()
       data = @formData()
-      #`for(pair of data.entries()){console.log(pair[0]+ ', '+ pair[1])}`
       $.ajax
         # thanks to http://stackoverflow.com/a/22987941/451893
         #xhr: @start_progress_bar.bind(@)
@@ -140,7 +139,6 @@ Communication = Ractive.extend
     else # user types into input or changes select
       @set(field+"_error",false)
   add_file : (file)->
-    console.log "add_file #{JSON.stringify(_.extend({},file))}"
     attached_document =
       communication_id : @get('id')
       file : file
@@ -150,12 +148,20 @@ Communication = Ractive.extend
       filesize : file.size
       id : null
       lastModifiedDate : file.lastModifiedDate
+      maximum_filesize : @get('maximum_filesize')
       original_type : file.type
+      permitted_filetypes : @get('permitted_filetypes')
       serialization_key : 'communication[communication_documents_attributes][]'
       title: ''
       user_id : null
-    @unshift('attached_documents', attached_document)
-    console.log JSON.stringify @get('attached_documents')
+    # aargh hack due to ractive problem with @unshift here
+    # @unshift('attached_documents', attached_document) doesn't work but it should
+    attached_documents = @get('attached_documents')
+    attached_documents.unshift(attached_document)
+    @set('attached_documents', attached_documents)
+  show_document_modal : ->
+    documents.set('attached_documents', @get('attached_documents'))
+    documents.showModal()
   , Note
 
 @communications = new Ractive

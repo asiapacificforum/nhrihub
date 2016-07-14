@@ -5,5 +5,9 @@ FactoryGirl.define do
     filename            { "#{Faker::Lorem.words(2).join("_")}.pdf" }
     original_type       "application/pdf"
     title               { "#{Faker::Lorem.words(8).join(" ")}" }
+
+    after(:create) do |doc|
+      `touch tmp/uploads/store/#{doc.file_id}`
+    end
   end
 end

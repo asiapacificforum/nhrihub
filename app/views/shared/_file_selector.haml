@@ -26,7 +26,7 @@
     .col-md-4.filename=t('.filename')
   {{/if}}
   {{#attached_documents}}
-  <attachedDocument communication_id='{{communication_id}}' file='{{file}}' file_id='{{file_id}}' filename='{{filename}}' filesize='{{filesize}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' original_type='{{original_type}}' serialization_key='{{serialization_key}}' title='{{title}}' user_id='{{user_id}}' />
+  <attachedDocument permitted_filetypes='{{permitted_filetypes}}' maximum_filesize='{{maximum_filesize}}' communication_id='{{communication_id}}' file='{{file}}' file_id='{{file_id}}' filename='{{filename}}' filesize='{{filesize}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' original_type='{{original_type}}' serialization_key='{{serialization_key}}' title='{{title}}' user_id='{{user_id}}' />
   {{/attached_documents}}
   {{^attached_documents}}
   %div{:style => 'padding-left:15px;'}=t('.no_documents')
@@ -44,7 +44,7 @@
     .row
       .col-md-6.title {{title}}
       .col-md-4.filename {{filename}}
-      .col-md-1
+      .col-md-1.download
         %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
       .col-md-1.delete
         %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_document()'}
@@ -59,8 +59,8 @@
         {{/named_document_datalist}}
       .errors.form-group{:class => "{{#filesize_error}}has-error{{/}}"}
         %span.help-block.error#filesize_error= t('error_messages.too_large')
-      .errors.form-group{:class => "{{#file.type_error}}has-error{{/}}"}
-        %span.help-block.error#filetype_error= t('error_messages.unpermitted_type')
+      .errors.form-group{:class => "{{#original_type_error}}has-error{{/}}"}
+        %span.help-block.error#original_type_error= t('error_messages.unpermitted_type')
       .errors.form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
         %span.help-block.error#unconfigured_filetypes_error= t('error_messages.noFileTypes')
     .col-md-4.filename{:style => "overflow-wrap:break-word"} {{filename}}

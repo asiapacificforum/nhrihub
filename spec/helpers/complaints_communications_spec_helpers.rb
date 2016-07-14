@@ -54,4 +54,12 @@ module ComplaintsCommunicationsSpecHelpers
   def dismiss_the_note_modal
     page.find('#single_note button.close').click
   end
+
+  def open_documents_modal
+    page.find("#communications .communication .documents #show_document_modal").click
+  end
+
+  def download_document
+    page.find('.communication_document_document .download i').click
+  end
 end
