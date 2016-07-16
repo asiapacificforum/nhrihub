@@ -179,6 +179,7 @@ Communication = Ractive.extend
     unless @_new_communication_is_active()
       new_communication =
         id:null
+        user_id:""
         complaint_id:@get('parent').get('id')
         mode : null
         direction : null

@@ -10,6 +10,10 @@ module ComplaintsCommunicationsSpecHelpers
     page.find('#add_communication').click
   end
 
+  def cancel_add
+    page.find('#new_communication #cancel_communication').click
+  end
+
   def set_datepicker(id,date)
     page.execute_script %Q{ $('##{id}').trigger('focus') } # trigger datepicker
     page.execute_script %Q{ $('##{id}').datepicker('setDate','#{date}') }

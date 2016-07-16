@@ -99,6 +99,48 @@ feature "complaints communications", :js => true do
     end
   end
 
+  it "should show validation errors when adding, and remove them when user enters valid information" do
+    add_communication
+    expect{ save_communication }.not_to change{ Communication.count }
+    expect(page).not_to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
+    expect(page).to have_selector('#communication_by .help-block', :text => 'You must select a user')
+    expect(page).to have_selector('#mode .help-block', :text => 'You must select a method')
+    within new_communication do
+      choose("Email")
+      expect(page).not_to have_selector('#mode .help-block', :text => 'You must select a method')
+      choose("Received")
+      expect(page).not_to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
+      select("Hailee Ortiz", :from => "communication_by")
+      expect(page).not_to have_selector('#communication_by .help-block', :text => 'You must select a user')
+    end
+  end
+
+  it "should reset the form if adding is cancelled" do
+    add_communication
+    expect(page).to have_selector('#new_communication')
+    within new_communication do
+      choose("Email")
+      set_datepicker('new_communication_date',"2016, May 19")
+      choose("Received")
+      select("Hailee Ortiz", :from => "communication_by")
+      fill_in("note", :with => "Some note text")
+      attach_file('communication_document_file', upload_document)
+      fill_in("attached_document_title", :with => "random stuff")
+      expect(page).to have_selector("#communication_documents .document .filename", :text => "first_upload_file.pdf")
+    end
+    cancel_add
+    add_communication
+    expect(page).to have_selector('#new_communication')
+    expect(page.find('#new_communication_date').value).to eq DateTime.now.to_date.to_s
+    expect(page.find('select#communication_by').value).to be_blank
+    expect(page).not_to have_checked_field('#email_mode')
+    expect(page).not_to have_checked_field('#phone_mode')
+    expect(page).not_to have_checked_field('#letter_mode')
+    expect(page).not_to have_checked_field('#face_to_face_mode')
+    expect(page).not_to have_checked_field('#sent')
+    expect(page).not_to have_checked_field('#received')
+  end
+
   it "should delete a communication" do
     expect{ delete_communication }.to change{ Communication.count }.from(1).to(0).
                                   and change{ communications.count }.from(1).to(0)
