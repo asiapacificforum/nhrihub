@@ -222,7 +222,7 @@ feature "complaints index", :js => true do
     within new_complaint do
       attach_file("complaint_fileinput", upload_image)
     end
-    expect(page).to have_css('#filetype_error', :text => "File type not allowed")
+    expect(page).to have_css('#original_type_error', :text => "File type not allowed")
 
     expect{ save_complaint.click; wait_for_ajax }.not_to change{ Complaint.count }
   end

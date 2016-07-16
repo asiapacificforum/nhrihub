@@ -17,7 +17,7 @@
     persisted : ->
       !_.isNull(@get('id'))
     url : ->
-      Routes.communication_document_path(current_locale, @get('id'))
+      Routes[@get('parent_type')+"_document_path"](current_locale,@get('id'))
   remove_file : ->
     @parent.remove(@_guid)
   delete_document : ->

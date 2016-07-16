@@ -55,7 +55,7 @@ class ComplaintsController < ApplicationController
                                        :status_changes_attributes => [:user_id, :status_humanized],
                                        :complaint_category_ids => [],
                                        :agency_ids => [],
-                                       :complaint_documents_attributes => [:file, :title, :filename, :original_type],
+                                       :complaint_documents_attributes => [:file, :title, :filename, :original_type, :filesize, :lastModifiedDate],
                                      )
   end
 end

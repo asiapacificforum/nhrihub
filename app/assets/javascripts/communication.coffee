@@ -20,11 +20,11 @@ CommunicationEdit = (node,id)->
 Ractive.decorators.communication_edit = CommunicationEdit
 
 CommunicationDocuments = Ractive.extend
-  data :
-    #parent : 'communication_document'
-    parent : 'communication'
-    parent_named_document_datalist : ->
-      @get('communication_named_document_titles')
+  oninit : ->
+    @set
+      parent_type : 'communication'
+      parent_named_document_datalist : @get('communication_named_document_titles')
+    return
   , AttachedDocuments
 
 ModeIcon = Ractive.extend
@@ -128,7 +128,7 @@ Communication = Ractive.extend
       success : @update_communication
   update_communication : (response, statusText, jqxhr)->
     @parent.set('communications',response)
-    @get('parent').set('communications',response)
+    @get('parent').set('communications',response) # @get('parent') is the complaint instance
   create_communication : (response, statusText, jqxhr)->
     @parent.set('communications',response) # the communications collection
     @get('parent').set('communications',response) # the complaint communications collection
@@ -160,7 +160,7 @@ Communication = Ractive.extend
     attached_documents.unshift(attached_document)
     @set('attached_documents', attached_documents)
   show_document_modal : ->
-    documents.set('attached_documents', @get('attached_documents'))
+    documents.set({attached_documents : @get('attached_documents'), parent_type : 'communication'})
     documents.showModal()
   , Note
 

@@ -26,7 +26,7 @@
     .col-md-4.filename=t('.filename')
   {{/if}}
   {{#attached_documents}}
-  <attachedDocument permitted_filetypes='{{permitted_filetypes}}' maximum_filesize='{{maximum_filesize}}' communication_id='{{communication_id}}' file='{{file}}' file_id='{{file_id}}' filename='{{filename}}' filesize='{{filesize}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' original_type='{{original_type}}' serialization_key='{{serialization_key}}' title='{{title}}' user_id='{{user_id}}' />
+  <attachedDocument parent='{{parent}}' permitted_filetypes='{{permitted_filetypes}}' maximum_filesize='{{maximum_filesize}}' communication_id='{{communication_id}}' file='{{file}}' file_id='{{file_id}}' filename='{{filename}}' filesize='{{filesize}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' original_type='{{original_type}}' serialization_key='{{serialization_key}}' title='{{title}}' user_id='{{user_id}}' />
   {{/attached_documents}}
   {{^attached_documents}}
   %div{:style => 'padding-left:15px;'}=t('.no_documents')

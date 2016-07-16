@@ -188,10 +188,10 @@ Persistence =
     #xhr
 
 ComplaintDocuments = Ractive.extend
-  data :
-    parent : 'complaint'
-    parent_named_document_datalist : ->
-      @get('complaint_named_document_titles')
+  oninit : ->
+    @set
+      parent_type : 'complaint'
+      parent_named_document_datalist : @get('complaint_named_document_titles')
   , AttachedDocuments
 
 FilterMatch =
@@ -592,6 +592,7 @@ complaints_options =
         attached_documents : []
         current_assignee : ""
         current_assignee_id : ""
+        new_assignee_id : null
         formatted_date : ""
         good_governance_complaint_basis_ids : []
         human_rights_complaint_basis_ids : []
