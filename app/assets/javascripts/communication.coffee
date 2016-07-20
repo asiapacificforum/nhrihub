@@ -1,5 +1,7 @@
 //= require 'ractive_validator'
 //= require 'progress_bar'
+//= require 'single_note_modal'
+//= require 'single_month_datepicker'
 
 CommunicationEdit = (node,id)->
   ractive = @
@@ -42,6 +44,29 @@ DirectionIcon = Ractive.extend
       when "received" then return "<div class='inactive-icon fa fa-reply' data-toggle='tooltip' title='{{i18n.tooltip_messages.received}}' />"
       else ""
 
+Communicant = Ractive.extend
+  template : "#communicant_template"
+  computed :
+    persistent_attributes : ->
+      ['name']
+    serialization_key : ->
+      'communication[communicants_attributes][]'
+  add_communicant : ->
+    @parent.add_communicant()
+  remove_communicant : (index)->
+    @parent.remove_communicant(index)
+
+Communicants = Ractive.extend
+  template : "#communicants_template"
+  components :
+    communicant : Communicant
+  add_communicant : ->
+    blank_inputs = _(@findAllComponents('communicant')).any (communicant) =>
+      _.isEmpty(communicant.get('name').trim())
+    @push('communicants',{name : ""}) unless blank_inputs
+  remove_communicant : (index)->
+    @splice('communicants',index,1)
+
 Communication = Ractive.extend
   template : '#communication_template'
   oninit : ->
@@ -61,6 +86,7 @@ Communication = Ractive.extend
     modeIcon : ModeIcon
     directionIcon : DirectionIcon
     progressBar : ProgressBar
+    communicants : Communicants
   computed :
     persisted : ->
       !isNaN(parseInt(@get('id')))
@@ -70,11 +96,13 @@ Communication = Ractive.extend
       set: (val)->
         @set('date', $.datepicker.parseDate( "yy, M d", val))
     persistent_attributes : ->
-      ['user_id', 'complaint_id', 'direction', 'mode', 'date', 'note', 'attached_documents_attributes']
+      ['user_id', 'complaint_id', 'direction', 'mode', 'date', 'note', 'attached_documents_attributes', 'communicants_attributes']
     url: ->
       Routes.complaint_communication_path(current_locale, @get('complaint_id'), @get('id'))
     document_count : ->
       @get('attached_documents').length
+    face_to_face : ->
+      @get('mode') == 'face to face'
   persisted_attributes : ->
     { communication : _.chain(@get()).pick(@get('persistent_attributes')).value() }
   data : ->
@@ -138,6 +166,8 @@ Communication = Ractive.extend
       _(error_attrs).each (a)=> @set(a,false)
     else # user types into input or changes select
       @set(field+"_error",false)
+  disable_direction : ->
+    @set('direction',null)
   add_file : (file)->
     attached_document =
       communication_id : @get('id')
@@ -182,9 +212,10 @@ Communication = Ractive.extend
         user_id:""
         complaint_id:@get('parent').get('id')
         mode : null
-        direction : null
+        direction : 'sent'
         date:new Date()
         attached_documents : []
+        communicants : [{name: ""}]
       @push('communications',new_communication)
   _new_communication_is_active : ->
     communications = @findAllComponents('communication')

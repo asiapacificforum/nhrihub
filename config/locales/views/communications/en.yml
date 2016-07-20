@@ -16,5 +16,8 @@ en:
       select_user: "Select user"
       user_id_error_message: "You must select a user"
       communication_by: "Communication by"
+      communicant: "Communication with"
       note: "Note"
       communication_documents: "Communication documents"
+      add_communicant: "add another communicant"
+      remove_communicant: "remove communicant"

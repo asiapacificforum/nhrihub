@@ -187,9 +187,9 @@ $ ->
         matches_positivity_rating : @_matches_positivity_rating()
         matches_title: @_matches_title()
     _matches_from : ->
-      new Date(@get('date')) >= new Date(@get('filter_criteria.from'))
+      $.datepicker.parseDate("yy, M d",@get('date')) >= new Date(@get('filter_criteria.from'))
     _matches_to : ->
-      new Date(@get('date')) <= new Date(@get('filter_criteria.to'))
+      $.datepicker.parseDate("yy, M d",@get('date')) <= new Date(@get('filter_criteria.to'))
     _matches_area_subarea : ->
       return (@_matches_area() || @_matches_subarea()) if @get('filter_criteria.rule') == 'any'
       return (@_matches_area() && @_matches_subarea()) if @get('filter_criteria.rule') == 'all'
@@ -449,7 +449,7 @@ $ ->
       @populate_min_max_fields()
     computed :
       dates : ->
-        _(@findAllComponents('collectionItem')).map (collectionItem)->new Date(collectionItem.get('date'))
+        _(@findAllComponents('collectionItem')).map (collectionItem)-> $.datepicker.parseDate("yy, M d",collectionItem.get('date'))
       violation_coefficients : ->
         _(@findAllComponents('collectionItem')).map (collectionItem)->parseFloat (collectionItem.get("violation_coefficient") || 0.0 )
       positivity_ratings : ->

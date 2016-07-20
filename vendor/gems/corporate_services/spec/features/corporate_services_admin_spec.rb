@@ -77,6 +77,6 @@ feature "strategic plan admin", :js => true do
     page.select 'April', :from => 'strategic_plan_start_date_date_2i'
     page.select '1', :from => 'strategic_plan_start_date_date_3i'
     page.find('#change_start_date').click; sleep(0.2)
-    expect( SiteConfig['corporate_services.strategic_plans.start_date'] ).to match(/^April 1/)
+    expect( Date.parse(SiteConfig['corporate_services.strategic_plans.start_date']).strftime("%B %-d") ).to match(/^April 1/)
   end
 end

@@ -34,10 +34,27 @@ feature "complaints communications", :js => true do
     add_communication
     expect(page).to have_selector('#new_communication')
     within new_communication do
-      choose("Email")
       set_datepicker('new_communication_date',"2016, May 19")
+      choose("Email")
       choose("Received")
+      choose("Face to face")
+      expect(page).to have_no_checked_field("Received")
+      expect(page).to have_no_checked_field("Sent")
       select("Hailee Ortiz", :from => "communication_by")
+      # cannot add another until the last was filled in with a value
+      expect(all('input.communicant').count).to eq 1
+      add_communicant
+      expect(all('input.communicant').count).to eq 1
+      page.all('input.communicant')[0].set("Harry Harker")
+      add_communicant
+      page.all('input.communicant')[1].set("Harriet Harker")
+      add_communicant
+      page.all('input.communicant')[2].set("Otto Maggio")
+      # can remove a communicant
+      remove_last_communicant
+      expect(all('input.communicant').count).to eq 2
+      add_communicant
+      page.all('input.communicant')[2].set("Margarita Cormier")
       fill_in("note", :with => "Some note text")
       attach_file('communication_document_file', upload_document)
       fill_in("attached_document_title", :with => "random stuff")
@@ -45,7 +62,8 @@ feature "complaints communications", :js => true do
     end
     expect{ save_communication }.to change{ Communication.count }.by(1).
                                 and change{ CommunicationDocument.count }.by(1).
-                                and change{ communications.count }.by(1)
+                                and change{ communications.count }.by(1).
+                                and change{ Communicant.count }.by(3)
     # on the server
     communication = Communication.last
     expect(communication.mode).to eq "email"
@@ -54,6 +72,9 @@ feature "complaints communications", :js => true do
     expect(communication.user.first_last_name).to eq "Hailee Ortiz"
     expect(communication.note).to eq "Some note text"
     expect(communication.communication_documents.first.title).to eq "random stuff"
+    expect(communication.communicants[0].name).to eq "Harry Harker"
+    expect(communication.communicants[1].name).to eq "Harriet Harker"
+    expect(communication.communicants[2].name).to eq "Margarita Cormier"
 
     expect(page).not_to have_selector('#new_communication')
     # on the browser
@@ -61,6 +82,9 @@ feature "complaints communications", :js => true do
     within communication do
       expect(find('.date').text).to eq "2016, May 19"
       expect(find('.by').text).to eq "Hailee Ortiz"
+      expect(all('.with')[0].text).to eq "Harry Harker"
+      expect(all('.with')[1].text).to eq "Harriet Harker"
+      expect(all('.with')[2].text).to eq "Margarita Cormier"
       expect(page).to have_selector '.fa-at'
       click_the_note_icon
     end

@@ -26,15 +26,18 @@ Ractive.prototype.asFormData = (attributes,formData)->
 
   _(nested_attributes).each (attribute)=>
     # e.g. attribute = project_documents_attributes
+    # or   attribute = communicants_attributes
     ar = attribute.split('_')
     ar.pop()
     ar = _(ar).map (val,i)->
-           if i!=0
+           #if i!=0
+           if i == ar.length-1
              val.singularize().capitalize()
            else
              val
     # e.g. component = projectDocument
-    component = ar.join('')
+    # or component = communicant
+    component = ar.join('').downcase()
 
     _(@findAllComponents(component)).each (component_instance)=>
       component_instance.asFormData(component_instance.get('persistent_attributes'),formData)
