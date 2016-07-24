@@ -3,6 +3,9 @@
   color: #a94442;
 }
 
+// if either the element with class 'form-group' OR the
+// element with class 'help-block' also has the class 'has-error'
+// the style above will prevail over the style below
 .form-group:not(.has-error){
   //margin-bottom: 0px;
   span.help-block:not(.has-error) {

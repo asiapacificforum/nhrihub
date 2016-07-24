@@ -103,6 +103,16 @@ Communication = Ractive.extend
       @get('attached_documents').length
     face_to_face : ->
       @get('mode') == 'face to face'
+    has_email : ->
+      @get('mode') == 'email'
+    has_phone : ->
+      @get('mode') == 'phone'
+    has_letter : ->
+      @get('mode') == 'letter'
+    received_direction : ->
+      @get('direction') == 'received'
+    multiple_sender_error : ->
+      (@get('direction') == 'received') && ( @get('communications').length > 1)
   persisted_attributes : ->
     { communication : _.chain(@get()).pick(@get('persistent_attributes')).value() }
   data : ->
@@ -212,7 +222,7 @@ Communication = Ractive.extend
         user_id:""
         complaint_id:@get('parent').get('id')
         mode : null
-        direction : 'sent'
+        direction : null
         date:new Date()
         attached_documents : []
         communicants : [{name: ""}]

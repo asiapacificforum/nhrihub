@@ -36,17 +36,34 @@
 
 %script#new_communicant_template{:type => 'template/ractive'}
   .row.form-group.new_communicant
-    .col-sm-2
-      <label class="control-label {{#if i>0}}hidden{{/if}}">
-      = t('.communicant')
-      </label>
-    .col-sm-4
-      %input.communicant{:type => :text, :style => "width:100%", :value=>"{{name}}"}
-    .col-sm-1
-      <span class="btn btn-xs btn-success {{#if i>0}}hidden{{/if}}" data-toggle='tooltip' title="#{t('.add_communicant')}">
-      %i.fa.fa-plus.fa-lg#add_communicant{:style=>'color:white;', 'on-click'=>'add_communicant()'}
-      </span>
-      <i class="fa fa-remove fa-lg remove_communicant {{#unless i>0}}hidden{{/unless}}" on-click="remove_communicant(i)" data-toggle='tooltip' title="#{t('.remove_communicant')}" />
+    .col-sm-12
+      .row
+        .col-sm-2= t('.communicant')
+        .col-sm-4
+          %input.communicant{:type => :text, :style => "width:100%", :value=>"{{name}}"}
+        .col-sm-1
+          <button id="add_communicant_button" class="btn btn-xs btn-success {{#if i>0}}hidden{{/if}} {{#received_direction}}disabled{{/}}" data-toggle='tooltip' title="#{t('.add_communicant')}">
+          %i.fa.fa-plus.fa-lg#add_communicant{:style=>'color:white;', 'on-click'=>'add_communicant()'}
+          </button>
+          <i class="fa fa-remove fa-lg remove_communicant {{#unless i>0}}hidden{{/unless}}" on-click="remove_communicant(i)" data-toggle='tooltip' title="#{t('.remove_communicant')}" />
+      {{#has_email}}
+      .row{'intro-outro' => 'slide'}
+        .col-sm-2=t('.email')
+        .col-sm-4
+          %input#email_address{:type => :text, :style => "width:100%", :value => "{{email}}"}
+      {{/has_email}}
+      {{#has_phone}}
+      .row{'intro-outro' => 'slide'}
+        .col-sm-2=t('.phone')
+        .col-sm-4
+          %input#phone{:type => :text, :style => "width:100%", :value => "{{phone}}"}
+      {{/has_phone}}
+      {{#has_letter}}
+      .row{'intro-outro' => 'slide'}
+        .col-sm-2=t('.address')
+        .col-sm-4
+          %input#letter{:type => :text, :style => "width:100%", :value => "{{letter}}"}
+      {{/has_letter}}
 
 %script#show_communicant_template{:type => 'template/ractive'}
   .with {{name}}
@@ -69,30 +86,32 @@
           %option{:value => '{{id}}'} {{ first_last_name }}
           {{/all_staff}}
         %span.help-block= t('.user_id_error_message')
-    .row.form-group#sent_or_received{:class => '{{#direction_error}}has-error{{/}}'}
+    .row.form-group#sent_or_received
       %label.control-label.col-sm-2= t('.sent_or_received')
       .col-sm-8
         %label.radio-inline
-          %input#sent{:type=>'radio', :name=>'{{direction}}', :value=>'sent', 'on-change'=>"remove_errors('direction')", :disabled=>"{{face_to_face}}"}
+          // aargh ractive bug requires attributes in a specific order! so must use html
+          <input id='sent' type="radio" name="{{direction}}" value="sent" on-change="remove_errors('direction')" disabled="{{face_to_face}}" >
           = t('.sent')
         %label.radio-inline
-          %input#received{:type=>'radio', :name=>'{{direction}}', :value=>'received', 'on-change'=>"remove_errors('direction')", :disabled=>"{{face_to_face}}"}
+          <input id='received' type="radio" name="{{direction}}" value="received" on-change="remove_errors('direction')" disabled="{{face_to_face}}" >
           = t('.received')
-        %span.help-block= t('.sent_or_received_error_message')
+        %span.help-block{:class => '{{#direction_error}}has-error{{/}}'}= t('.sent_or_received_error_message')
+        %span.help-block#multiple_sender_error{:class => '{{#multiple_sender_error}}has-error{{/}}'}= t('.multiple_sender_error_message')
     .row.form-group#mode{:class => '{{#mode_error}}has-error{{/}}'}
       %label.control-label.col-sm-2= t('.method')
       .col-sm-8
         %label.radio-inline
-          %input{:type=>'radio', :id=>:email_mode, :name=>'{{mode}}', :value=>'email', 'on-change'=>"remove_errors('mode')"}
+          <input type='radio' id='email_mode' name='{{mode}}' value='email' on-change="remove_errors('mode')" >
           = t('.email')
         %label.radio-inline
-          %input{:type=>'radio', :id=>:phone_mode, :name=>'{{mode}}', :value=>'phone', 'on-change'=>"remove_errors('mode')"}
+          <input type='radio' id='phone_mode' name='{{mode}}' value='phone' on-change="remove_errors('mode')" >
           = t('.phone')
         %label.radio-inline
-          %input{:type=>'radio', :id=>:letter_mode, :name=>'{{mode}}', :value=>'letter', 'on-change'=>"remove_errors('mode')"}
+          <input type='radio' id='letter_mode' name='{{mode}}' value='letter' on-change="remove_errors('mode')" >
           = t('.letter')
         %label.radio-inline
-          %input{:type=>'radio', :id=>:face_to_face_mode, :name=>'{{mode}}', :value=>'face to face', 'on-change'=>"remove_errors('mode')", 'on-change'=>"disable_direction()"}
+          <input type='radio' id='face_to_face_mode' name='{{mode}}' value='face to face' on-change="remove_errors('mode')" on-change="disable_direction()" >
           = t('.face_to_face')
         %span.help-block= t('.method_error_message')
     .row.form-group#communicants

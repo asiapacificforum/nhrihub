@@ -28,6 +28,8 @@ module ComplaintsSpecSetupHelpers
   def set_file_defaults
     SiteConfig["complaint_document.filetypes"]=["pdf"]
     SiteConfig["complaint_document.filesize"]= 5
+    SiteConfig["communication_document.filetypes"]=["pdf"]
+    SiteConfig["communication_document.filesize"]= 5
   end
 
   def create_staff

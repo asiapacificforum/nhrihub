@@ -11,6 +11,7 @@ en:
       face_to_face: "Face to face"
       sent_or_received: "Sent or received"
       sent_or_received_error_message: "You must select sent or received"
+      multiple_sender_error_message: "Cannot receive from multiple communicants"
       sent: "Sent"
       received: "Received"
       select_user: "Select user"
@@ -21,3 +22,4 @@ en:
       communication_documents: "Communication documents"
       add_communicant: "add another communicant"
       remove_communicant: "remove communicant"
+      address: "Address"

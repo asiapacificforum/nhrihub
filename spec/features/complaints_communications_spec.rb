@@ -36,25 +36,51 @@ feature "complaints communications", :js => true do
     within new_communication do
       set_datepicker('new_communication_date',"2016, May 19")
       choose("Email")
+
+      # Received direction allows only one communicant
       choose("Received")
+      expect(page).to have_checked_field("Received")
+      expect(page).to have_css("#add_communicant_button.disabled")
+      choose("Sent")
+      expect(page).to have_checked_field("Sent")
+      expect(page).not_to have_css("#add_communicant_button.disabled")
+
+      # face to face deselects direction and disables direction radio boxes
       choose("Face to face")
       expect(page).to have_no_checked_field("Received")
       expect(page).to have_no_checked_field("Sent")
+      expect(page).not_to have_selector("#email_address")
+
+      choose("Email")
+      choose("Sent")
+      expect(page).to have_selector("#email_address")
+      fill_in("email_address", :with => "norm@normco.com")
       select("Hailee Ortiz", :from => "communication_by")
+
       # cannot add another until the last was filled in with a value
       expect(all('input.communicant').count).to eq 1
       add_communicant
       expect(all('input.communicant').count).to eq 1
+
       page.all('input.communicant')[0].set("Harry Harker")
       add_communicant
       page.all('input.communicant')[1].set("Harriet Harker")
       add_communicant
       page.all('input.communicant')[2].set("Otto Maggio")
+
       # can remove a communicant
       remove_last_communicant
       expect(all('input.communicant').count).to eq 2
+
       add_communicant
       page.all('input.communicant')[2].set("Margarita Cormier")
+
+      # choose received when multiple communicants are already defined
+      choose("Received")
+      expect(page).to have_selector("#multiple_sender_error", :text => "Cannot receive from multiple communicants")
+      choose("Sent")
+      expect(page).not_to have_selector("#multiple_sender_error", :text => "Cannot receive from multiple communicants")
+
       fill_in("note", :with => "Some note text")
       attach_file('communication_document_file', upload_document)
       fill_in("attached_document_title", :with => "random stuff")
@@ -68,7 +94,7 @@ feature "complaints communications", :js => true do
     communication = Communication.last
     expect(communication.mode).to eq "email"
     expect(communication.date).to eq DateTime.new(2016,5,19,0,0,0,local_offset)
-    expect(communication.direction).to eq "received"
+    expect(communication.direction).to eq "sent"
     expect(communication.user.first_last_name).to eq "Hailee Ortiz"
     expect(communication.note).to eq "Some note text"
     expect(communication.communication_documents.first.title).to eq "random stuff"

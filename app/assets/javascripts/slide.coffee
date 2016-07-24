@@ -32,7 +32,7 @@ slide = (t, params) ->
     t.setStyle t.getStyle(SlideProps)
     targetStyle = SlideCollapsed
   t.setStyle 'overflowY', 'hidden'
-  t.animateStyle(targetStyle, params).then t.complete
+  t.animateStyle(targetStyle, params).then t.complete(true)
   return
 
 Ractive.transitions.slide = slide
