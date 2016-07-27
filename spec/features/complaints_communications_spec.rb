@@ -63,10 +63,13 @@ feature "complaints communications", :js => true do
       expect(all('input.communicant').count).to eq 1
 
       page.all('input.communicant')[0].set("Harry Harker")
+      page.all(:css, 'input#email_address')[0].set("harry@acme.com")
       add_communicant
       page.all('input.communicant')[1].set("Harriet Harker")
+      page.all(:css, 'input#email_address')[1].set("harriet@acme.com")
       add_communicant
       page.all('input.communicant')[2].set("Otto Maggio")
+      page.all(:css, 'input#email_address')[2].set("otto@acme.com")
 
       # can remove a communicant
       remove_last_communicant
@@ -74,10 +77,12 @@ feature "complaints communications", :js => true do
 
       add_communicant
       page.all('input.communicant')[2].set("Margarita Cormier")
+      page.all(:css, 'input#email_address')[2].set("margarita@acme.com")
 
       # choose received when multiple communicants are already defined
       choose("Received")
       expect(page).to have_selector("#multiple_sender_error", :text => "Cannot receive from multiple communicants")
+      expect{ save_communication }.not_to change{ Communication.count }
       choose("Sent")
       expect(page).not_to have_selector("#multiple_sender_error", :text => "Cannot receive from multiple communicants")
 
@@ -163,6 +168,65 @@ feature "complaints communications", :js => true do
       select("Hailee Ortiz", :from => "communication_by")
       expect(page).not_to have_selector('#communication_by .help-block', :text => 'You must select a user')
     end
+  end
+
+  it "should validate and not save with blank communicant field" do
+    add_communication
+    within new_communication do
+      choose("Email")
+      choose("Received")
+      fill_in("email_address", :with => "norm@normco.com")
+      select("Hailee Ortiz", :from => "communication_by")
+    end
+    expect{ save_communication }.not_to change{ Communication.count }
+    expect(page).to have_selector('.name_error', :text => "Name can't be blank")
+    page.all('input.communicant')[0].set("Harry Harker")
+    expect(page).not_to have_selector('.name_error', :text => "Name can't be blank")
+  end
+
+  it "should validate and not save with blank email field" do
+    add_communication
+    expect(page).to have_selector('#new_communication')
+    within new_communication do
+      choose("Email")
+      choose("Received")
+      expect(page).to have_selector("#email_address")
+      select("Hailee Ortiz", :from => "communication_by")
+    end
+    expect{ save_communication }.not_to change{ Communication.count }
+    expect(page).to have_selector('.email_error', :text => "Email can't be blank")
+    fill_in("email_address", :with => "norm@normco.com")
+    expect(page).not_to have_selector('.email_error', :text => "Email can't be blank")
+  end
+
+  it "should validate and not save with blank phone field" do
+    add_communication
+    expect(page).to have_selector('#new_communication')
+    within new_communication do
+      choose("Phone")
+      choose("Received")
+      expect(page).to have_selector("#phone")
+      select("Hailee Ortiz", :from => "communication_by")
+    end
+    expect{ save_communication }.not_to change{ Communication.count }
+    expect(page).to have_selector('.phone_error', :text => "Phone number can't be blank")
+    page.find(:css, "#new_communication input#phone").set("555-1212")
+    expect(page).not_to have_selector('.phone_error', :text => "Phone number can't be blank")
+  end
+
+  it "should validate and not save with blank address field" do
+    add_communication
+    expect(page).to have_selector('#new_communication')
+    within new_communication do
+      choose("Letter")
+      choose("Received")
+      expect(page).to have_selector("#address")
+      select("Hailee Ortiz", :from => "communication_by")
+    end
+    expect{ save_communication }.not_to change{ Communication.count }
+    expect(page).to have_selector('.address_error', :text => "Address can't be blank")
+    page.find(:css, "#new_communication input#address").set("some place somewhere")
+    expect(page).not_to have_selector('.address_error', :text => "Address can't be blank")
   end
 
   it "should reset the form if adding is cancelled" do

@@ -46,6 +46,14 @@ DirectionIcon = Ractive.extend
 
 Communicant = Ractive.extend
   template : "#communicant_template"
+  oninit : ->
+    @set
+      validation_criteria :
+        name : 'notBlank'
+        email : ['notBlank', {if : =>@get('has_email')}]
+        phone : ['notBlank', {if : =>@get('has_phone')}]
+        address : ['notBlank', {if : =>@get('has_letter')}]
+    @validator = new Validator(@)
   computed :
     persistent_attributes : ->
       ['name']
@@ -55,6 +63,10 @@ Communicant = Ractive.extend
     @parent.add_communicant()
   remove_communicant : (index)->
     @parent.remove_communicant(index)
+  validate : ->
+    @validator.validate()
+  remove_errors : (attribute)->
+    @set(attribute+"_error",false)
 
 Communicants = Ractive.extend
   template : "#communicants_template"
@@ -67,56 +79,7 @@ Communicants = Ractive.extend
   remove_communicant : (index)->
     @splice('communicants',index,1)
 
-Communication = Ractive.extend
-  template : '#communication_template'
-  oninit : ->
-    @set
-      validation_criteria :
-        user_id : 'numeric'
-        mode: ['match',['email','phone','letter','face to face']]
-        direction: =>
-          # return true if attribute is valid, validator handles the error attribute
-          return true if !@get('mode')
-          return true if @get('mode') == 'face to face'
-          return true if /sent|received/.test @get('direction')
-          return false # mode is phone,email,or letter and there's no direction supplied
-    @validator = new Validator(@)
-  components :
-    attachedDocuments : CommunicationDocuments
-    modeIcon : ModeIcon
-    directionIcon : DirectionIcon
-    progressBar : ProgressBar
-    communicants : Communicants
-  computed :
-    persisted : ->
-      !isNaN(parseInt(@get('id')))
-    formatted_date :
-      get: ->
-        $.datepicker.formatDate("yy, M d", new Date(@get('date')) )
-      set: (val)->
-        @set('date', $.datepicker.parseDate( "yy, M d", val))
-    persistent_attributes : ->
-      ['user_id', 'complaint_id', 'direction', 'mode', 'date', 'note', 'attached_documents_attributes', 'communicants_attributes']
-    url: ->
-      Routes.complaint_communication_path(current_locale, @get('complaint_id'), @get('id'))
-    document_count : ->
-      @get('attached_documents').length
-    face_to_face : ->
-      @get('mode') == 'face to face'
-    has_email : ->
-      @get('mode') == 'email'
-    has_phone : ->
-      @get('mode') == 'phone'
-    has_letter : ->
-      @get('mode') == 'letter'
-    received_direction : ->
-      @get('direction') == 'received'
-    multiple_sender_error : ->
-      (@get('direction') == 'received') && ( @get('communications').length > 1)
-  persisted_attributes : ->
-    { communication : _.chain(@get()).pick(@get('persistent_attributes')).value() }
-  data : ->
-    serialization_key : 'communication'
+Persistence =
   save_communication : ->
     url = Routes.complaint_communications_path(current_locale, @get('complaint_id'))
     data = @formData()
@@ -170,6 +133,61 @@ Communication = Ractive.extend
   create_communication : (response, statusText, jqxhr)->
     @parent.set('communications',response) # the communications collection
     @get('parent').set('communications',response) # the complaint communications collection
+
+Communication = Ractive.extend
+  template : '#communication_template'
+  oninit : ->
+    @set
+      validation_criteria :
+        user_id : 'numeric'
+        mode: ['match',['email','phone','letter','face to face']]
+        direction: =>
+          # return true if attribute is valid, validator handles the error attribute
+          return true if !@get('mode')
+          return true if @get('mode') == 'face to face'
+          return true if /sent|received/.test @get('direction')
+          return false # mode is phone,email,or letter and there's no direction supplied
+        multiple_sender: =>
+          !((@get('direction') == 'received') && ( @get('communicants').length > 1))
+        communicant: =>
+          valid_communicants = _(@findAllComponents('communicant')).map (communicant)->communicant.validate()
+          # validate() returns false for invalid communicant
+          _(valid_communicants).all (valid)->valid
+    @validator = new Validator(@)
+  components :
+    attachedDocuments : CommunicationDocuments
+    modeIcon : ModeIcon
+    directionIcon : DirectionIcon
+    progressBar : ProgressBar
+    communicants : Communicants
+  computed :
+    persisted : ->
+      !isNaN(parseInt(@get('id')))
+    formatted_date :
+      get: ->
+        $.datepicker.formatDate("yy, M d", new Date(@get('date')) )
+      set: (val)->
+        @set('date', $.datepicker.parseDate( "yy, M d", val))
+    persistent_attributes : ->
+      ['user_id', 'complaint_id', 'direction', 'mode', 'date', 'note', 'attached_documents_attributes', 'communicants_attributes']
+    url: ->
+      Routes.complaint_communication_path(current_locale, @get('complaint_id'), @get('id'))
+    document_count : ->
+      @get('attached_documents').length
+    face_to_face : ->
+      @get('mode') == 'face to face'
+    has_email : ->
+      @get('mode') == 'email'
+    has_phone : ->
+      @get('mode') == 'phone'
+    has_letter : ->
+      @get('mode') == 'letter'
+    received_direction : ->
+      @get('direction') == 'received'
+  persisted_attributes : ->
+    { communication : _.chain(@get()).pick(@get('persistent_attributes')).value() }
+  data : ->
+    serialization_key : 'communication'
   remove_errors : (field)->
     if _.isUndefined(field) # after edit, failed save, and cancel, remove all errors
       error_attrs = _(_(@get()).keys()).select (k)-> k.match(/error/)
@@ -202,7 +220,10 @@ Communication = Ractive.extend
   show_document_modal : ->
     documents.set({attached_documents : @get('attached_documents'), parent_type : 'communication'})
     documents.showModal()
-  , Note
+  validate_direction : ->
+    @validator.validate_attribute('direction')
+    @validator.validate_attribute('multiple_sender')
+  , Note, Persistence
 
 @communications = new Ractive
   el : '#communication'
@@ -233,5 +254,3 @@ Communication = Ractive.extend
   onModalClose : ->
     if @_new_communication_is_active()
       @pop('communications')
-
-#Ractive.components.communication = Communication
