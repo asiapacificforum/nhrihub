@@ -1,3 +1,16 @@
+# for example:
+#  oninit : ->
+#    @set
+#      validation_criteria :
+#        name : 'notBlank'
+#        age : ['lessThan', 21]
+#        user_id : numeric
+#        email : ['notBlank', {if : =>@get('has_email')}]
+# here email validation is notBlank, which has no parameters
+#      age validation is lessThan, with a threshold parameter
+#      user_id validation has no parameters, tests numeric
+#      email validation is conditional depending on the value returned in the 'if' function
+
 class @Validator
   constructor : (validatee)->
     if typeof validatee != 'object'
@@ -16,7 +29,12 @@ class @Validator
       !@validatee.get(attribute+"_error")
     else
       [criterion,param] = if _.isArray(params) then params else [params]
-      @[criterion].call(@,attribute,param)
+      if _.isObject(param) && (_(param).keys()[0]== 'if') && !_(param).values()[0]() # condition not met
+        true
+      else if _.isObject(param) && (_(param).keys()[0]== 'if') && _(param).values()[0]() #condition is met
+        @[criterion].call(@,attribute,param)
+      else # no condition
+        @[criterion].call(@,attribute,param)
   notBlank : (attribute)->
     @validatee.set(attribute, @validatee.get(attribute).trim()) unless _.isEmpty(@validatee.get(attribute))
     @validatee.set(attribute+"_error", _.isEmpty(@validatee.get(attribute)))
