@@ -3,24 +3,6 @@
 //= require 'single_note_modal'
 //= require 'single_month_datepicker'
 
-CommunicationEdit = (node,id)->
-  ractive = @
-  @edit = new InpageEdit
-    on : node
-    object : @
-    focus_element : 'input.title'
-    success : (response, textStatus, jqXhr)->
-      @.options.object.set(response)
-      @load()
-    error : ->
-      console.log "Changes were not saved, for some reason"
-  return {
-    teardown : (id)->
-    update : (id)->
-    }
-
-Ractive.decorators.communication_edit = CommunicationEdit
-
 CommunicationDocuments = Ractive.extend
   oninit : ->
     @set

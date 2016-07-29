@@ -260,11 +260,6 @@ feature "complaints communications", :js => true do
                                   and change{ communications.count }.from(1).to(0)
   end
 
-  it "should edit a communication note" do
-    edit_communication
-    page.find(".communication .edit textarea#note").set "And now for something completely different"
-    expect{edit_save; wait_for_ajax}.to change{Complaint.first.communications.first.note}.to "And now for something completely different"
-  end
 end
 
 
@@ -280,49 +275,6 @@ feature "communications files", :js => true do
     populate_database
     visit complaints_path('en')
     open_communications_modal
-  end
-
-  it "should add new files while editing" do
-    edit_communication
-    attach_file('communication_document_file', upload_document)
-    fill_in("attached_document_title", :with => "random stuff")
-    expect(page).to have_selector("#communication_documents .document .filename", :text => "first_upload_file.pdf")
-    expect{edit_save; wait_for_ajax}.to change{Complaint.first.communications.first.communication_documents.count}.from(1).to(2).
-                                    and change{ (`\ls tmp/uploads/store | wc -l`).to_i }.by(1)
-    expect(page.find('.communication .documents .fa-file-text-o')['data-count']).to eq "2"
-  end
-
-  it "should delete persisted files from a communication while editing" do
-    edit_communication
-    expect{page.find('#communication_documents .communication_document_document .delete .delete_icon').click; wait_for_ajax }.
-      to change{Complaint.first.communications.first.communication_documents.count}.by(-1).
-     and change{ page.all('#communication_documents .communication_document_document').length }.by(-1)
-    edit_cancel
-    expect(page.find('.communication .documents .fa-file-text-o')['data-count']).to eq "0"
-  end
-
-  it "should deselect unpersisted files from a communication from a communication while adding" do
-    edit_communication
-    attach_file('communication_document_file', upload_document)
-    fill_in("attached_document_title", :with => "random stuff")
-    expect(page).to have_selector("#communication_documents .document .filename", :text => "first_upload_file.pdf")
-    deselect_file
-    expect(page).not_to have_selector("#communication_documents .document .filename", :text => "first_upload_file.pdf")
-  end
-
-  it "should validate file size when editing" do
-    edit_communication
-    attach_file('communication_document_file', big_upload_document)
-    expect(page).to have_css('#filesize_error', :text => "File is too large")
-  end
-
-  it "should validate file type when editing" do
-    SiteConfig["communication_document.filetypes"] = ["pdf"]
-    visit complaints_path('en')
-    open_communications_modal
-    edit_communication
-    attach_file('communication_document_file', upload_image)
-    expect(page).to have_css('#original_type_error', :text => "File type not allowed")
   end
 
   it "should validate file size when adding" do
@@ -357,3 +309,5 @@ feature "communications files", :js => true do
     end
   end
 end
+
+

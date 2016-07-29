@@ -39,9 +39,10 @@
     .col-sm-12
       .row
         .col-sm-2
-          <span class="{{#if i>0}}hidden{{/if}}">
-          = t('.communicant')
-          </span>
+          %label
+            <span class="{{#if i>0}}hidden{{/if}}">
+            = t('.communicant')
+            </span>
         .col-sm-4.form-group{:class => "{{#name_error}}has-error{{/name_error}}"}
           %input.communicant{:type => :text, :style => "width:100%", :value=>"{{name}}", "on-keydown"=>"remove_errors('name')"}
           %span.help-block.name_error= t('.name_error_message')
@@ -75,6 +76,20 @@
 %script#show_communicant_template{:type => 'template/ractive'}
   .with {{name}}
 
+%script#select_direction{:type => 'template/ractive'}
+  %label.control-label.col-sm-2= t('.sent_or_received')
+  .col-sm-2
+    %label.radio-inline
+      // aargh ractive bug requires attributes in a specific order! so must use html
+      <input id='sent' type="radio" name="{{direction}}" value="sent" on-change="validate_direction()" disabled="{{face_to_face}}" >
+      = t('.sent')
+    %label.radio-inline
+      <input id='received' type="radio" name="{{direction}}" value="received" on-change="validate_direction()" disabled="{{face_to_face}}" >
+      = t('.received')
+  .col-sm-6
+    %span.help-block{:class => '{{#direction_error}}has-error{{/}}', :style => 'margin:0px'}= t('.sent_or_received_error_message')
+    %span.help-block#multiple_sender_error{:class => '{{#multiple_sender_error}}has-error{{/}}', :style => 'margin:0px'}= t('.multiple_sender_error_message')
+
 %script#new_communication_template{:type => 'text/ractive'}
   .form#new_communication
     .row.form-group#date
@@ -94,18 +109,7 @@
           {{/all_staff}}
         %span.help-block= t('.user_id_error_message')
     .row.form-group#sent_or_received
-      %label.control-label.col-sm-2= t('.sent_or_received')
-      .col-sm-2
-        %label.radio-inline
-          // aargh ractive bug requires attributes in a specific order! so must use html
-          <input id='sent' type="radio" name="{{direction}}" value="sent" on-change="validate_direction()" disabled="{{face_to_face}}" >
-          = t('.sent')
-        %label.radio-inline
-          <input id='received' type="radio" name="{{direction}}" value="received" on-change="validate_direction()" disabled="{{face_to_face}}" >
-          = t('.received')
-      .col-sm-6
-        %span.help-block{:class => '{{#direction_error}}has-error{{/}}', :style => 'margin:0px'}= t('.sent_or_received_error_message')
-        %span.help-block#multiple_sender_error{:class => '{{#multiple_sender_error}}has-error{{/}}', :style => 'margin:0px'}= t('.multiple_sender_error_message')
+      {{> select_direction }}
     .row.form-group#mode{:class => '{{#mode_error}}has-error{{/}}'}
       %label.control-label.col-sm-2= t('.method')
       .col-sm-8
@@ -134,93 +138,27 @@
         {{> file_selector_template {key : 'communication_document'} }}
         <attachedDocuments attached_documents='{{attached_documents}}' key='communication_document'>
 
-%script#edit_communication_template{:type => 'text/ractive'}
-  .form#edit_communication
-    .row.form-group#mode{:class => '{{#mode_error}}has-error{{/}}'}
-      %label.control-label.col-sm-2= t('.method')
-      .col-sm-8
-        %label.radio-inline
-          %input{:type=>'radio', :id=>:email_mode, :name=>'{{mode}}', :value=>'email', 'on-change'=>"remove_errors('mode')"}
-          = t('.email')
-        %label.radio-inline
-          %input{:type=>'radio', :id=>:phone_mode, :name=>'{{mode}}', :value=>'phone'}
-          = t('.phone')
-        %label.radio-inline
-          %input{:type=>'radio', :id=>:letter_mode, :name=>'{{mode}}', :value=>'letter'}
-          = t('.letter')
-        %label.radio-inline
-          %input{:type=>'radio', :id=>:face_to_face_mode, :name=>'{{mode}}', :value=>'face to face'}
-          = t('.face_to_face')
-        %span.help-block= t('.method_error_message')
-    .row.form-group#sent_or_received{:class => '{{#direction_error}}has-error{{/}}'}
-      %label.control-label.col-sm-2= t('.sent_or_received')
-      .col-sm-8
-        %label.radio-inline
-          %input#sent{:type=>'radio', :name=>'{{direction}}', :value=>'sent', 'on-change'=>"remove_errors('direction')"}
-          = t('.sent')
-        %label.radio-inline
-          %input#received{:type=>'radio', :name=>'{{direction}}', :value=>'received', 'on-change'=>"remove_errors('direction')"}
-          = t('.received')
-        %span.help-block= t('.sent_or_received_error_message')
-    .row.form-group#note
-      %label.control-label.col-sm-2= t('.note')
-      .col-sm-8
-        %textarea.form-control#note{:rows => 3, :value=>'{{note}}'}
-    .panel.panel-default#communication_documents
-      .panel-heading= t('.communication_documents')
-      .panel-body
-        {{> file_selector_template {key : 'communication_document'} }}
-        <attachedDocuments attached_documents='{{attached_documents}}' key='communication_document'>
-
 %script#show_communication_template{:type => 'text/ractive'}
-  .communication.row.editable_container{:id => "communication_editable{{id}}", :decorator => 'communication_edit:{{id}}'}
+  .communication.row
     .col-md-12
       .row
-        .col-md-2.date{'data-toggle' => :edit}
-          .no_edit.in {{formatted_date}}
-          .edit
-            %input#edit_communication_date{:type => :text, :decorator=>:single_month_datepicker, :name => "communication[date]", :style => "width:150px", :value => "{{formatted_date}}"}
-        .col-md-2.by{'data-toggle' => :edit}
-          .no_edit.in {{ user.first_last_name }}
-          .edit
-            %select.form-control#communication_by{:value => '{{user_id}}', 'on-change'=>"remove_errors('user_id')", :style=>"height:26px;"}
-              %option{:value => '', :selected => true, :disabled => true, :style =>"color:#333;"}=t('.select_user')
-              {{#all_staff}}
-              %option{:value => '{{id}}'} {{ first_last_name }}
-              {{/all_staff}}
-            -#%span.help-block= t('.user_id_error_message')
-        .col-md-1{'data-toggle'=>:edit, :style=>'display:flex'}
-          .mode.no_edit.in
+        .col-md-2.date
+          {{formatted_date}}
+        .col-md-2.by
+          {{ user.first_last_name }}
+        .col-md-1{:style=>'display:flex'}
+          .mode
             <modeIcon />
-          .direction.no_edit.in{:style => "padding-left:15px;"}
+          .direction{:style => "padding-left:15px;"}
             <directionIcon />
         .col-md-2{'data-toggle'=>:edit}
-          .no_edit.in
-            <communicants communicants='{{communicants}}' />
-          .edit
-            %input#communicant{:type => :text, :style => "width:100%", :value=>"{{name}}"}
+          <communicants communicants='{{communicants}}' />
         .col-md-1.note{'data-toggle'=>:edit}
-          .no_edit.in
-            .note_icon{'data-toggle' => :tooltip, :title => t('icon.note'), 'on-click'=>'show_note()'}
-        .col-md-1.documents{'data-toggle'=>:edit}
-          .no_edit.in
-            .fa.fa-file-text-o.counter#show_document_modal{'on-click'=>"show_document_modal()", 'data-count' => '{{document_count}}', 'data-toggle' => :tooltip, :title => t('icon.documents')}
-        .col-md-1{'data-toggle'=>:edit}
-          .no_edit.in
-          .edit
-            %i.fa.fa-remove{:id => "communication_editable{{id}}_edit_cancel"}
-        .col-md-1.icon{'data-toggle' => 'edit'}
-          .edit
-            %i.fa.fa-check{:id => "communication_editable{{id}}_edit_save"}
-          .no_edit.in
-            %i.fa.fa-pencil-square-o{:id => "communication_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
-        .col-md-1.delete{'data-toggle'=>:edit}
-          .no_edit.in
-            %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_communication(event)', 'data-toggle' => :tooltip, :title => t('icon.delete')}
-          .edit
-    .col-md-12{'data-toggle'=>:edit}
-      .edit
-        {{> edit_communication_template }}
+          .note_icon{'data-toggle' => :tooltip, :title => t('icon.note'), 'on-click'=>'show_note()'}
+        .col-md-1.documents
+          .fa.fa-file-text-o.counter#show_document_modal{'on-click'=>"show_document_modal()", 'data-count' => '{{document_count}}', 'data-toggle' => :tooltip, :title => t('icon.documents')}
+        .col-md-1.delete
+          %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_communication(event)', 'data-toggle' => :tooltip, :title => t('icon.delete')}
 
 #communication
 
