@@ -42,6 +42,11 @@ PATH
       sqlite3
 
 PATH
+  remote: vendor/gems/complaints
+  specs:
+    complaints (0.0.1)
+
+PATH
   remote: vendor/gems/corporate_services
   specs:
     corporate_services (0.0.1)
@@ -391,6 +396,7 @@ DEPENDENCIES
   capistrano-rvm
   capybara!
   coffee-rails (~> 4.0.0)
+  complaints!
   corporate_services!
   database_cleaner
   debugger
