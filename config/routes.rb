@@ -62,7 +62,6 @@ Rails.application.routes.draw do
   # this route is specified as it's used in authengine as the place
   # where logged-in users first land
     get 'home', :to => 'home#index'
-    get 'placeholder', :to => 'placeholder#index'
     resources :internal_documents
     resources :projects do
       resources :project_performance_indicators, :only => :destroy

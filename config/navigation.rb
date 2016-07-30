@@ -36,7 +36,6 @@ SimpleNavigation::Configuration.run do |navigation|
       siu.item :compl, t('layout.nav.complaints'), complaints_path
       siu.item :proj, t('layout.nav.projects'), siu_projects_path
     end
-    primary.item :reports, t('layout.nav.reports'), placeholder_path
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path
       ad.item :roles, t('layout.nav.role'), authengine_roles_path
