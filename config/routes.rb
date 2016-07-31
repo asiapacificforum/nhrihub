@@ -63,30 +63,10 @@ Rails.application.routes.draw do
   # where logged-in users first land
     get 'home', :to => 'home#index'
     resources :internal_documents
-    resources :projects do
-      resources :project_performance_indicators, :only => :destroy
-    end
-    namespace :project_document do
-      resources :filetypes, :param => :ext, :only => [:create, :destroy]
-      resource :filesize, :only => :update
-    end
-    resources :project_documents, :only => [:destroy, :show]
     namespace :communication_document do
       resources :filetypes, :param => :ext, :only => [:create, :destroy]
       resource :filesize, :only => :update
     end
     resources :communication_documents, :only => [:destroy, :show]
-    resource :project_admin, :only => :show, :to => 'project_admin#show'
-    namespace :good_governance do
-      resources :project_types, :only => [:create, :destroy]
-    end
-    namespace :siu do
-      resources :project_types, :only => [:create, :destroy]
-    end
-    namespace :human_rights do
-      resources :project_types, :only => [:create, :destroy]
-    end
-
-
   end
 end

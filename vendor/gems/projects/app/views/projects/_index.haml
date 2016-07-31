@@ -1,8 +1,8 @@
 .message_block
-%h1= t("#{@i18n_key}.heading")
+%h1= t(".heading")
 .btn.btn-success.btn-sm#add_project{:style => "margin-bottom:12px; color:white;", :onclick => "projects.new_project()"}
   %i.fa.fa-plus.fa-lg{:style => "color:white"}
-  %span= t("#{@i18n_key}.add_project")
+  %span= t(".add_project")
 
 =stylesheet_link_tag 'application' # included for javascript tests, there must be a better way, is it included twice?!
 =stylesheet_link_tag 'projects'

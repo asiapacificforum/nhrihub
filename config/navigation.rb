@@ -1,10 +1,10 @@
 SimpleNavigation::Configuration.run do |navigation|
   navigation.items do |primary|
     primary.item :compl, t('layout.nav.complaints'), complaints_path
+    primary.item :proj, t('layout.nav.projects'), projects_path
     primary.item :nhri, t('layout.nav.nhri') do |nhri|
       nhri.item :pro, t('layout.nav.pro.pro'), :class => 'dropdown-submenu' do |pro|
         pro.item :doc, t('layout.nav.int_docs'), nhri_protection_promotion_internal_documents_path
-        pro.item :proj, t('layout.nav.projects'), nhri_protection_promotion_projects_path
       end
       nhri.item :adv_council, t('layout.nav.adv_council'), :class => 'dropdown-submenu' do |adv|
         adv.item :tor, t('layout.nav.adv.tor'), nhri_advisory_council_terms_of_references_path
@@ -20,7 +20,6 @@ SimpleNavigation::Configuration.run do |navigation|
     end
     primary.item :gg, t('layout.nav.gg.gg') do |gg|
       gg.item :int_docs, t('layout.nav.int_docs'), good_governance_internal_documents_path
-      gg.item :proj, t('layout.nav.projects'), good_governance_projects_path
     end
     primary.item :corporate_services, t('layout.nav.corporate_services') do |cs|
       cs.item :int_docs, t('layout.nav.int_docs'), corporate_services_internal_documents_path
@@ -32,7 +31,6 @@ SimpleNavigation::Configuration.run do |navigation|
     end
     primary.item :spec_inv, t('layout.nav.spec_inv') do |siu|
       siu.item :int_docs, t('layout.nav.int_docs'), siu_internal_documents_path
-      siu.item :proj, t('layout.nav.projects'), siu_projects_path
     end
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path

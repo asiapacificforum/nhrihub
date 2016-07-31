@@ -3,5 +3,18 @@ Rails.application.routes.draw do
     namespace :projects do
       # insert your routes here
     end
+    resources :projects
+    resources :projects do
+      resources :project_performance_indicators, :only => :destroy
+      resources :reminders, :controller => 'project/reminders'
+      resources :notes, :controller => 'project/notes'
+    end
+    namespace :project_document do
+      resources :filetypes, :param => :ext, :only => [:create, :destroy]
+      resource :filesize, :only => :update
+    end
+    resources :project_documents, :only => [:destroy, :show]
+    resource :project_admin, :only => :show, :to => 'project_admin#show'
+    resources :project_types, :only => [:create, :destroy]
   end
 end

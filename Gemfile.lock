@@ -69,6 +69,11 @@ PATH
       rails (~> 4.2.0)
 
 PATH
+  remote: vendor/gems/projects
+  specs:
+    projects (0.0.1)
+
+PATH
   remote: vendor/gems/siu
   specs:
     siu (0.0.1)
@@ -417,6 +422,7 @@ DEPENDENCIES
   outreach_media!
   pg
   poltergeist
+  projects!
   quiet_assets
   rails (= 4.2.0)
   rails-settings-cached (~> 0.4.2)

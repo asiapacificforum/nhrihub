@@ -6,4 +6,7 @@ require "projects/version"
 Gem::Specification.new do |s|
   s.name        = "projects"
   s.version     = Projects::VERSION
+  s.authors     = ["Les Nightingill"]
+  s.email       = ["codehacker@comcast.net"]
+  s.summary     = "private gem engine for nhridocs app"
 end

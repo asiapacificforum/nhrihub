@@ -1,0 +1,37 @@
+.message_block
+%h1=t('.heading')
+
+%h4= t('.filetypes')
+#project_document_filetypes
+  = render :partial => 'admin/collection_configuration',
+    :locals => { :new_item => @filetype,
+                 :create_url => project_document_filetypes_path('en'),
+                 :delete_url => project_document_filetype_path('en','id'),
+                 :collection => @project_document_filetypes,
+                 :item_name => 'filetype',
+                 :param_name => 'ext',
+                 :placeholder => 'e.g. ppt'}
+
+%h4= t('.filesize_max')
+#filesize
+  = render :partial => 'admin/document_filesize_configuration',
+           :locals => { :update_url => project_document_filesize_path('en'),
+                        :param => @filesize,
+                        :context => "project_document_filesize"}
+
+%h4= t('.project_types')
+#project_types
+  = render :partial => 'admin/collection_configuration',
+   :locals => { :new_item => @project_type,
+                :create_url => project_types_path('en'),
+                :delete_url => project_type_path('en','id'),
+                :collection => @project_types.to_json,
+                :item_name => 'project_type',
+                :param_name => 'name',
+                :placeholder => ''}
+
+
+:coffeescript
+  $ ->
+    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+    window.flash_error_template = _.template("<ul class='error'><li>{{message}}</li></ul>")

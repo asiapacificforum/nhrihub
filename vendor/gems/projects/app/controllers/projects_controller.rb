@@ -1,9 +1,7 @@
 class ProjectsController < ApplicationController
   def index
-    @projects = @model.all
+    @projects = Project.all
     @mandates = Mandate.all
-    @model_name = @model.to_s
-    @i18n_key = @model_name.tableize.gsub(/\//,'.')
     @agencies = Agency.all
     @conventions = Convention.all
     @planned_results = PlannedResult.all_with_associations
@@ -11,11 +9,12 @@ class ProjectsController < ApplicationController
     @project_named_documents_titles = ProjectDocument::NamedProjectDocumentTitles
     @maximum_filesize = ProjectDocument.maximum_filesize * 1000000
     @permitted_filetypes = ProjectDocument.permitted_filetypes.to_json
+    @create_reminder_url = project_reminders_path('en','id')
+    @create_note_url     = project_notes_path('en','id')
   end
 
   def create
-    model = params[:project][:type].constantize
-    project = model.new(project_params)
+    project = Project.new(project_params)
     if project.save
       render :json => project.to_json, :status => 200
     else

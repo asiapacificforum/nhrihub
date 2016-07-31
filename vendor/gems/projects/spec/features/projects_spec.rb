@@ -1,5 +1,5 @@
 require 'rails_helper'
-require_relative '../helpers/siu_context_projects_spec_helpers'
+require_relative '../helpers/projects_spec_helpers'
 require 'projects_behaviour'
 require "new_project_file_management_behaviour"
 require "existing_project_file_management_behaviour"

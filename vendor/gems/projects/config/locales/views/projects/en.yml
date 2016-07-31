@@ -1,7 +1,7 @@
 en:
   projects:
     index:
-      heading: "Good Governance Projects"
+      heading: "Projects"
       add_project: "Add Project"
     projects_templates:
       title: "Title"

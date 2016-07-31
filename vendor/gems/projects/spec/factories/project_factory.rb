@@ -45,18 +45,5 @@ FactoryGirl.define do
         project.convention_ids = Convention.pluck(:id)
       end
     end
-
-    factory :good_governance_project do
-      type "GoodGovernance::Project"
-    end
-
-    factory :siu_project do
-      type "Siu::Project"
-    end
-
-    factory :nhri_protection_promotion_project do
-      type "Nhri::ProtectionPromotion::Project"
-    end
-
   end
 end
