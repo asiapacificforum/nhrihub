@@ -24,16 +24,8 @@ FactoryGirl.define do
       remindable_type "Nhri::Heading:Indicator"
     end
 
-    trait :good_governance_project do
-      remindable_type "GoodGovernance::Project"
-    end
-
-    trait :siu_project do
+    trait :project do
       remindable_type "Siu::Project"
-    end
-
-    trait :nhri_protection_promotion_project do
-      remindable_type "Nhri::ProtectionPromotion::Project"
     end
 
     trait :complaint do

@@ -1,7 +1,7 @@
 require 'rspec/core/shared_context'
-require 'projects_spec_setup_helpers'
+require_relative '../helpers/projects_spec_setup_helpers'
 
-module SiuContextRemindersSpecHelpers
+module ProjectsContextRemindersSpecHelpers
   extend RSpec::Core::SharedContext
   include ProjectsSpecSetupHelpers
 
@@ -10,13 +10,13 @@ module SiuContextRemindersSpecHelpers
     rem = Reminder.create(:reminder_type => 'weekly',
                           :start_date => Date.new(2015,8,19),
                           :text => "don't forget the fruit gums mum",
-                          :users => [User.first], :remindable => Siu::Project.first)
-    visit siu_projects_path(:en)
+                          :users => [User.first], :remindable => Project.first)
+    visit projects_path(:en)
     open_reminders_panel
   end
 
   def populate_database
-    FactoryGirl.create(:siu_project)
+    FactoryGirl.create(:project)
   end
 end
 

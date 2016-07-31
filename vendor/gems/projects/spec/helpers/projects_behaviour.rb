@@ -69,8 +69,6 @@ RSpec.shared_examples "projects index" do
     end
 
     within conventions do
-      convention = Convention.where(:name => "ICERD").first
-      puts page.evaluate_script("$('#convention_#{convention.id}').first().offset()")
       check('ICERD')
     end
 

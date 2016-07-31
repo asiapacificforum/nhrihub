@@ -32,12 +32,6 @@ module ProjectsSpecCommonHelpers
     upload_file_path('first_upload_image_file.png')
   end
 
-  def resize_browser_window
-    if page.driver.browser.respond_to?(:manage)
-      page.driver.browser.manage.window.resize_to(1400,800) # b/c selenium driver doesn't seem to click when target is not in the view
-    end
-  end
-
   def good_governance_types
     page.find('#good_governance_types')
   end
@@ -51,8 +45,6 @@ module ProjectsSpecCommonHelpers
   end
 
   def add_project
-    #add_project_top = page.evaluate_script("$('#add_project').offset().top")
-    #page.execute_script("scrollTo(0,#{add_project_top}+120)")
     page.find('#add_project')
   end
 

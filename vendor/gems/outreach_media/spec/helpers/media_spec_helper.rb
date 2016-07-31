@@ -2,11 +2,6 @@ require 'rspec/core/shared_context'
 
 module MediaSpecHelper
   extend RSpec::Core::SharedContext
-  def resize_browser_window
-    if page.driver.browser.respond_to?(:manage)
-      page.driver.browser.manage.window.resize_to(1400,800) # b/c selenium driver doesn't seem to click when target is not in the view
-    end
-  end
 
   def edit_article
     page.all('.fa-pencil-square-o')
