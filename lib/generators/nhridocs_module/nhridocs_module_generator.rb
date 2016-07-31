@@ -33,6 +33,7 @@ module Rails
 
     def config
       template "config/routes.rb" if engine?
+      template "config/initializers/%name%_initializer.rb"
       empty_directory_with_keep_file "config/locales/models"
       empty_directory_with_keep_file "config/locales/views"
     end
@@ -47,10 +48,10 @@ module Rails
     end
 
     def spec
-      template "spec/rails_helper.rb"
       template "spec/features/example_spec.rb"
       template "spec/models/example_spec.rb"
       empty_directory_with_keep_file "spec/helpers"
+      empty_directory_with_keep_file "spec/factories"
     end
 
     def rakefile

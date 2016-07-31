@@ -16,7 +16,7 @@ module FileAdminCommonHelpers
   end
 
   def delete_filetype(type)
-    page.execute_script("scrollTo(0,$('#{filetypes_selector}').position().top - 40)")
+    page.execute_script("scrollTo(0,$('#{filetypes_selector}').position().top - 80)")
     page.find(:xpath, ".//tr[contains(td,'#{type}')]").find('a').click
   end
 end

@@ -23,6 +23,7 @@ module ComplaintsSpecHelpers
   end
 
   def cancel_add
+    page.execute_script("scrollTo(0,0)")
     page.find('#cancel_complaint').click
   end
 
@@ -120,6 +121,7 @@ module ComplaintsSpecHelpers
   end
 
   def save_complaint
+    page.execute_script("scrollTo(0,0)")
     page.find('#save_complaint')
   end
 

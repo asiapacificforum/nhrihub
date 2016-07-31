@@ -1,4 +1,5 @@
 require 'rails_helper'
+$:.unshift File.expand_path '../../helpers', __FILE__
 require 'login_helpers'
 require 'navigation_helpers'
 require 'complaints_reminders_setup_helpers'
