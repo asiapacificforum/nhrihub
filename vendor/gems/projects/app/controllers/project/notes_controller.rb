@@ -1,6 +1,6 @@
 require 'notes_controller'
 
-class GoodGovernance::Project::NotesController < NotesController
+class Project::NotesController < NotesController
   def create
     super
   end

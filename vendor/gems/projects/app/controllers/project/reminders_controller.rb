@@ -1,6 +1,6 @@
 require 'reminders_controller'
 
-class GoodGovernance::Project::RemindersController < RemindersController
+class Project::RemindersController < RemindersController
   def update
     super
   end

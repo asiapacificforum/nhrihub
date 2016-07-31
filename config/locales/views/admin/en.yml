@@ -27,7 +27,11 @@ en:
         add: "Add Complaint Basis"
       complaint_category:
         add: "Add Complaint Category"
-      project_type:
+      good_governance_project_type:
+        add: "Add project type"
+      human_rights_project_type:
+        add: "Add project type"
+      special_investigations_unit_project_type:
         add: "Add project type"
       complaint_document_filetype:
         add: "Add file type"

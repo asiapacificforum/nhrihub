@@ -15,6 +15,16 @@ Rails.application.routes.draw do
     end
     resources :project_documents, :only => [:destroy, :show]
     resource :project_admin, :only => :show, :to => 'project_admin#show'
-    resources :project_types, :only => [:create, :destroy]
+    namespace :good_governance do
+      resources :project_types, :only => [:create, :destroy]
+    end
+    namespace :siu do
+      resources :project_types, :only => [:create, :destroy]
+    end
+    namespace :human_rights do
+      resources :project_types, :only => [:create, :destroy]
+    end
+
+
   end
 end
