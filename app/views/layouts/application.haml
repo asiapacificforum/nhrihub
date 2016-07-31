@@ -22,7 +22,7 @@
       = javascript_tag "$.fx.off = true;"
 
     = csrf_meta_tags
-  %body{:role => :document, :class => ("no-animation" if Rails.env.test? || Rails.env.jstest?)}
+  %body{:role => :document, :class => ("no-animation" if Rails.env.test? || Rails.env.jstest?), :style => 'padding-top:80px;'}
     - if logged_in?
       %nav.navbar.navbar-default.navbar-fixed-top
         .container-fluid

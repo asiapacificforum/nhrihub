@@ -35,7 +35,7 @@ Capybara.register_driver :poltergeist do |app|
 # use this configuration to enable the page.driver.debug interface
 # see https://github.com/teampoltergeist/poltergeist
   #Capybara::Poltergeist::Driver.new(app, :inspector => true, :timeout => 300)
-  Capybara::Poltergeist::Driver.new(:window_size => [1524,768])
+  Capybara::Poltergeist::Driver.new(:window_size => [1600,900])
 end
 
 url = CapybaraRemote.url # it's in lib directory

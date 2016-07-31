@@ -1,6 +1,6 @@
 require 'rspec/core/shared_context'
 
-module SiuContextProjectsSpecHelpers
+module ProjectsSpecHelpers
   extend RSpec::Core::SharedContext
   before do
     setup_strategic_plan
@@ -11,7 +11,7 @@ module SiuContextProjectsSpecHelpers
     populate_database
     set_file_defaults
     resize_browser_window
-    visit siu_projects_path(:en)
+    visit projects_path(:en)
   end
 
   def set_file_defaults
@@ -19,20 +19,12 @@ module SiuContextProjectsSpecHelpers
     SiteConfig['project_document.filesize'] = 5
   end
 
-  def heading_prefix
-    "Special Investigations Unit"
-  end
-
-  def project_model
-    Siu::Project
-  end
-
   def populate_database
-    ggp = FactoryGirl.create(:siu_project,
+    ggp = FactoryGirl.create(:project,
                              :with_documents,
                              :with_performance_indicators)
 
-    ggp = FactoryGirl.create(:siu_project,
+    ggp = FactoryGirl.create(:project,
                              :with_named_documents,
                              :with_performance_indicators,
                              :with_mandates,

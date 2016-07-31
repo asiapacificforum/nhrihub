@@ -17,8 +17,8 @@ RSpec.shared_examples "existing project file management" do
       attach_file("project_fileinput", upload_document)
     end
     page.find("#project_document_title").set("New uploaded document")
-    expect{ edit_save.click; wait_for_ajax }.to change{ project_model.first.project_documents.count }.from(2).to(3)
-    expect(project_model.first.project_documents.map(&:title)).to include "New uploaded document"
+    expect{ edit_save.click; wait_for_ajax }.to change{ Project.first.project_documents.count }.from(2).to(3)
+    expect(Project.first.project_documents.map(&:title)).to include "New uploaded document"
     expect(all('.project_document .title').map(&:text)).to include "New uploaded document"
   end
 

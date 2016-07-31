@@ -9,9 +9,9 @@ RSpec.shared_examples "projects index" do
   include UploadFileHelpers
 
   it "should show a list of projects" do
-    expect(page_heading).to eq "#{heading_prefix} Projects"
-    expect(page_title).to eq "#{heading_prefix} Projects"
-    expect(project_model.count).to eq 2
+    expect(page_heading).to eq "Projects"
+    expect(page_title).to eq "Projects"
+    expect(Project.count).to eq 2
     expect(projects_count).to eq 2
   end
 
@@ -69,6 +69,8 @@ RSpec.shared_examples "projects index" do
     end
 
     within conventions do
+      convention = Convention.where(:name => "ICERD").first
+      puts page.evaluate_script("$('#convention_#{convention.id}').first().offset()")
       check('ICERD')
     end
 
@@ -81,11 +83,11 @@ RSpec.shared_examples "projects index" do
 
     # SAVE IT
     page.execute_script("scrollTo(0,0)")
-    expect{ save_project.click; wait_for_ajax }.to change{ project_model.count }.from(2).to(3)
+    expect{ save_project.click; wait_for_ajax }.to change{ Project.count }.from(2).to(3)
 
     # CHECK SERVER
     pi = PerformanceIndicator.first
-    project = project_model.last
+    project = Project.last
     expect(project.performance_indicator_ids).to eq [pi.id]
     expect(projects_count).to eq 3
     expect(project.title).to eq "new project title"
@@ -155,12 +157,12 @@ RSpec.shared_examples "projects index" do
 
     # SAVE IT
     page.execute_script("scrollTo(0,0)")
-    expect{ save_project.click; wait_for_ajax }.to change{ project_model.count }.from(2).to(3).
+    expect{ save_project.click; wait_for_ajax }.to change{ Project.count }.from(2).to(3).
                                              and change{ ProjectDocument.count }.by(2)
 
     # CHECK SERVER
     pi = PerformanceIndicator.first
-    project = project_model.last
+    project = Project.last
     expect(project.performance_indicator_ids).to eq [pi.id]
     expect(projects_count).to eq 3
     expect(project.title).to eq "new project title"
@@ -207,7 +209,7 @@ RSpec.shared_examples "projects index" do
     end
     expect(page).to have_selector('#filesize_error', :text => "File is too large")
 
-    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
+    expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
   end
 
   it "flags as invalid when file attachment is unpermitted filetype" do
@@ -218,7 +220,7 @@ RSpec.shared_examples "projects index" do
     end
     expect(page).to have_css('#filetype_error', :text => "File type not allowed")
 
-    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
+    expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
   end
 
   it "should restore list when cancelling add project" do
@@ -276,7 +278,7 @@ RSpec.shared_examples "projects index" do
   it "should show warning and not add when title is blank" do
     add_project.click
     fill_in('project_description', :with => "new project description")
-    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
+    expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in('project_title', :with => 't')
     expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
@@ -286,7 +288,7 @@ RSpec.shared_examples "projects index" do
     add_project.click
     fill_in('project_title', :with => "    ")
     fill_in('project_description', :with => "new project description")
-    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
+    expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in('project_title', :with => 't')
     expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
@@ -295,7 +297,7 @@ RSpec.shared_examples "projects index" do
   it "should show warning and not add when description is blank" do
     add_project.click
     fill_in('project_title', :with => "new project title")
-    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
+    expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
     expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
     fill_in('project_description', :with => 't')
     expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
@@ -305,7 +307,7 @@ RSpec.shared_examples "projects index" do
     add_project.click
     fill_in('project_title', :with => "new project title")
     fill_in('project_description', :with => "   ")
-    expect{ save_project.click; wait_for_ajax }.not_to change{ project_model.count }
+    expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
     expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
     fill_in('project_description', :with => 't')
     expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
@@ -322,7 +324,7 @@ RSpec.shared_examples "projects index" do
   end
 
   it "should delete a project" do
-    expect{ delete_project_icon.click; wait_for_ajax }.to change{ project_model.count }.by(-1).
+    expect{ delete_project_icon.click; wait_for_ajax }.to change{ Project.count }.by(-1).
                                                    and change{ projects_count }.by(-1)
   end
 
@@ -365,8 +367,8 @@ RSpec.shared_examples "projects index" do
     page.all("#project_document_title")[0].set("Adding still another doc")
     expect(page).to have_selector("#project_documents .document .filename", :text => "upload_file.pdf", :count => 2)
 
-    expect{ edit_save.click; wait_for_ajax }.to change{ project_model.find(1).title }.to("new project title")
-    project = project_model.find(1)
+    expect{ edit_save.click; wait_for_ajax }.to change{ Project.find(1).title }.to("new project title")
+    project = Project.find(1)
     consultation_project_type = ProjectType.find_by(:name => "Consultation")
     expect( project.project_type_ids ).to include consultation_project_type.id
     amicus_project_type = ProjectType.find_by(:name => "Amicus Curiae")
@@ -414,7 +416,7 @@ RSpec.shared_examples "projects index" do
   it "should edit a project and save when all checkboxes are unchecked" do
     edit_last_project.click # has all associations checked
     uncheck_all_checkboxes
-    project = project_model.last
+    project = Project.last
     expect{ edit_save.click; wait_for_ajax }.to change{project.project_type_ids}.to([]).
                                           and change{project.agency_ids}.to([]).
                                           and change{project.convention_ids}.to([]).
@@ -454,7 +456,7 @@ RSpec.shared_examples "projects index" do
 
     expand_first_project
 
-    project = project_model.first
+    project = Project.first
     within first_project do
       expect(find('.basic_info .title').text).to eq project.title
       expect(find('.description .no_edit span').text).to eq project.description
@@ -485,7 +487,7 @@ RSpec.shared_examples "projects index" do
   it "should show warning and not save when editing and title is blank" do
     edit_first_project.click
     fill_in('project_title', :with => '')
-    expect{ edit_save.click; wait_for_ajax }.not_to change{ project_model.find(1).title }
+    expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).title }
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in('project_title', :with => 't')
     expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
@@ -494,7 +496,7 @@ RSpec.shared_examples "projects index" do
   it "should show warning and not save edited project when title is whitespace" do
     edit_first_project.click
     fill_in('project_title', :with => "   ")
-    expect{ edit_save.click; wait_for_ajax }.not_to change{ project_model.find(1).title }
+    expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).title }
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in('project_title', :with => 't')
     expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
@@ -503,7 +505,7 @@ RSpec.shared_examples "projects index" do
   it "should show warning and not save edited project when description is blank" do
     edit_first_project.click
     fill_in('project_description', :with => "")
-    expect{ edit_save.click; wait_for_ajax }.not_to change{ project_model.find(1).description }
+    expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).description }
     expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
     fill_in('project_description', :with => 't')
     expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
@@ -512,7 +514,7 @@ RSpec.shared_examples "projects index" do
   it "should show warning and not save edited project when description is whitespace" do
     edit_first_project.click
     fill_in('project_description', :with => "  ")
-    expect{ edit_save.click; wait_for_ajax }.not_to change{ project_model.find(1).description }
+    expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).description }
     expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
     fill_in('project_description', :with => 't')
     expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")

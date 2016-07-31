@@ -51,6 +51,8 @@ module ProjectsSpecCommonHelpers
   end
 
   def add_project
+    #add_project_top = page.evaluate_script("$('#add_project').offset().top")
+    #page.execute_script("scrollTo(0,#{add_project_top}+120)")
     page.find('#add_project')
   end
 
