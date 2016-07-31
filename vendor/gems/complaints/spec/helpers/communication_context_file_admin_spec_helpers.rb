@@ -16,8 +16,6 @@ module CommunicationContextFileAdminSpecHelpers
   end
 
   def filetypes_context
-    #filetypes_top = page.evaluate_script("$('#communication_document_filetypes').offset().top")
-    #page.execute_script("scrollTo(0,#{filetypes_top}-40)")
     page.find('#communication_document_filetypes')
   end
 
