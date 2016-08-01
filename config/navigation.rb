@@ -16,9 +16,7 @@ SimpleNavigation::Configuration.run do |navigation|
         icc.item :icc_ref, t('layout.nav.icc.ref'), nhri_icc_reference_documents_path
       end
     end
-    primary.item :corporate_services, t('layout.nav.corporate_services') do |cs|
-      cs.item :strat_plan, t('layout.nav.strat_plan'), corporate_services_strategic_plan_path("current")
-    end
+    primary.item :corporate_services, t('layout.nav.strat_plan'), corporate_services_strategic_plan_path("current")
     primary.item :outreach_media, t('layout.nav.outreach_media') do |om|
       om.item :outreach, t('layout.nav.outreach'), outreach_media_outreach_events_path
       om.item :media, t('layout.nav.media'), outreach_media_media_appearances_path
