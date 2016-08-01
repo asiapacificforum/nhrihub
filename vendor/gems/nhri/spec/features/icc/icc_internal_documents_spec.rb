@@ -12,8 +12,8 @@ feature "show icc internal documents index page", :js => true do
 
   before do
     setup_database
-    SiteConfig['corporate_services.internal_documents.filetypes']=["pdf"]
-    SiteConfig['corporate_services.internal_documents.filesize'] = 3
+    SiteConfig['internal_documents.filetypes']=["pdf"]
+    SiteConfig['internal_documents.filesize'] = 3
     visit nhri_icc_index_path(:en)
     @title = "Statement of Compliance"
   end
