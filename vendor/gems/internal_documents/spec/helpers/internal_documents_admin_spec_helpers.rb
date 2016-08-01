@@ -2,6 +2,10 @@ require 'rspec/core/shared_context'
 
 module InternalDocumentAdminSpecHelpers
   extend RSpec::Core::SharedContext
+  def model
+    InternalDocument
+  end
+
   def admin_page
     internal_document_admin_path('en')
   end
