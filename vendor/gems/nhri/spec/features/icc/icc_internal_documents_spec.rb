@@ -19,8 +19,8 @@ feature "show icc internal documents index page", :js => true do
   end
 
   scenario "shows list of required icc docs" do
-    expect(page_heading).to eq "NHRI ICC Internal Documents"
-    expect(page_title).to eq "NHRI ICC Internal Documents"
+    expect(page_heading).to eq "NHRI ICC Accreditation Internal Documents"
+    expect(page_title).to eq "NHRI ICC Accreditation Internal Documents"
     expect(page).to have_selector ".internal_document .title", :text => @title
   end
 

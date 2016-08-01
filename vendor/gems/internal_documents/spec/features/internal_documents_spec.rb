@@ -474,54 +474,72 @@ feature "behaviour with multiple primary files on the page", :js => true do
   end
 end # /feature
 
-  feature "internal document management when no filetypes have been configured", :js => true do
+feature "internal document management when no filetypes have been configured", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  include InternalDocumentDefaultSettings
+  include InternalDocumentsSpecHelpers
+  include InternalDocumentsSpecCommonHelpers
 
-    before do
-      create_a_document(:revision => "3.0", :title => "my important document")
-      visit index_path
-    end
-
-    scenario "upload an unpermitted file type and cancel" do
-      page.attach_file("primary_file", upload_image, :visible => false)
-      expect(page).to have_css('.error', :text => "No permitted file types have been configured")
-      page.find(".template-upload i.cancel").click
-      expect(page).not_to have_css(".files .template_upload")
-    end
+  before do
+    create_a_document(:revision => "3.0", :title => "my important document")
+    visit index_path
   end
 
-  feature "internal document management", :js => true do
+  scenario "upload an unpermitted file type and cancel" do
+    page.attach_file("primary_file", upload_image, :visible => false)
+    expect(page).to have_css('.error', :text => "No permitted file types have been configured")
+    page.find(".template-upload i.cancel").click
+    expect(page).not_to have_css(".files .template_upload")
+  end
+end
 
-    before do
-      toggle_navigation_dropdown(navigation_menu_text)
-      select_dropdown_menu_item("Internal documents")
-    end
+feature "internal document management", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  include InternalDocumentDefaultSettings
+  include InternalDocumentsSpecHelpers
+  include InternalDocumentsSpecCommonHelpers
 
-    xscenario "add a new document when permission is not granted" do
-      # error is in ajax response, must handle it appropriately
-    end
+  before do
+    toggle_navigation_dropdown(navigation_menu_text)
+    select_dropdown_menu_item("Internal documents")
   end
 
-  feature "sequential operations", :js => true do
-
-    before do
-      populate_database
-      SiteConfig['internal_documents.filetypes'] = ['pdf']
-      SiteConfig['internal_documents.filesize'] = 3
-      visit index_path
-    end
-
-    it "should correctly follow the sequence of operations" do # b/c there was a bug!
-      expect(InternalDocument.count).to eq 5
-      #delete a primary that has some archive files
-      expect{page.find('.template-download .delete').click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
-      click_the_archive_icon
-      expect(page).to have_selector('table.internal_document.editable_container', :count => 4)
-      #again delete a primary file
-      expect{page.all('.template-download .delete')[0].click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
-      expect(page).to have_selector('table.internal_document.editable_container', :count => 3)
-      # try to upload an archive file CURRENTLY FAILS
-      page.attach_file("replace_file", upload_document, :visible => false)
-      page.find("#internal_document_title").set("some replacement file name")
-      page.find('#internal_document_revision').set("3.5")
-    end
+  xscenario "add a new document when permission is not granted" do
+    # error is in ajax response, must handle it appropriately
   end
+end
+
+feature "sequential operations", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  include InternalDocumentDefaultSettings
+  include InternalDocumentsSpecHelpers
+  include InternalDocumentsSpecCommonHelpers
+
+  before do
+    populate_database
+    SiteConfig['internal_documents.filetypes'] = ['pdf']
+    SiteConfig['internal_documents.filesize'] = 3
+    visit index_path
+  end
+
+  it "should correctly follow the sequence of operations" do # b/c there was a bug!
+    expect(InternalDocument.count).to eq 5
+    #delete a primary that has some archive files
+    expect{page.find('.template-download .delete').click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
+    click_the_archive_icon
+    expect(page).to have_selector('table.internal_document.editable_container', :count => 4)
+    #again delete a primary file
+    expect{page.all('.template-download .delete')[0].click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
+    expect(page).to have_selector('table.internal_document.editable_container', :count => 3)
+    # try to upload an archive file CURRENTLY FAILS
+    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find("#internal_document_title").set("some replacement file name")
+    page.find('#internal_document_revision').set("3.5")
+  end
+end
