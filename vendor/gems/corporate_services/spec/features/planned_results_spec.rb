@@ -50,7 +50,6 @@ feature "populate strategic plan contents", :js => true do
   scenario "add multiple planned results" do
     expect(page).not_to have_selector("i.new_planned_result")
     fill_in 'planned_result_description', :with => "Achieve nirvana"
-    save_and_open_screenshot
     save_planned_result.click
     wait_for_ajax
     expect(PlannedResult.count).to eq 1
