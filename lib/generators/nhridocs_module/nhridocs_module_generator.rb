@@ -52,6 +52,7 @@ module Rails
       template "spec/models/example_spec.rb"
       empty_directory_with_keep_file "spec/helpers"
       empty_directory_with_keep_file "spec/factories"
+      empty_directory_with_keep_file "spec/javascripts"
     end
 
     def rakefile

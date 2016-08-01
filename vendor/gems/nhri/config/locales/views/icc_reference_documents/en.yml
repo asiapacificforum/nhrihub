@@ -4,7 +4,7 @@ en:
   nhri:
     icc_reference_documents:
       index:
-        heading: "ICC Accreditation Reference Documents"
+        heading: "NHRI ICC Accreditation Reference Documents"
         error: "Error"
         flash:
           no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'

@@ -62,7 +62,6 @@ Rails.application.routes.draw do
   # this route is specified as it's used in authengine as the place
   # where logged-in users first land
     get 'home', :to => 'home#index'
-    resources :internal_documents
     namespace :communication_document do
       resources :filetypes, :param => :ext, :only => [:create, :destroy]
       resource :filesize, :only => :update

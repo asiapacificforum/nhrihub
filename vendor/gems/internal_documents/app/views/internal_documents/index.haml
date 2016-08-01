@@ -1,0 +1,13 @@
+= stylesheet_link_tag 'internal_documents'
+= render :partial => 'internal_documents/index'
+
+:javascript
+  var maximum_filesize = #{InternalDocument.maximum_filesize * 1000000}
+  var permitted_filetypes = #{ InternalDocument.permitted_filetypes.to_json }
+  var files = #{ @internal_documents.to_json }
+  var files_list_error = "#{t('.flash.no_files_error')}"
+  var required_files_titles = #{@required_files_titles.to_json}
+  var context = "internal_document"
+  var type = "InternalDocument"
+
+= javascript_include_tag "internal_documents"

@@ -4,7 +4,7 @@ en:
       index:
         heading: "NHRI Module"
         accreditation:
-          required_files_titles: "ICC Accreditation: Required Documents Titles"
+          required_files_titles: "ICC Accreditation: Internal Documents Titles"
         reference: "ICC Reference Documents"
         terms: "Terms Of Reference"
         minutes: "Advisory council minutes"

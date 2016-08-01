@@ -18,13 +18,13 @@ fr:
         doc: 'Les documents internes'
         proj: 'Des projets'
       icc:
-        icc: 'ICC'
-        int: "Documents internes ICC"
-        ref: "Accréditation Documents de référence ICC"
+        icc: 'ICC accréditation '
+        int: "Documents internes"
+        ref: "Documents de référence"
       adv:
         tor: "Termes de Référence"
         memb: "Appartenance"
-        min: "Procès-verbal"
+        min: "Minutes de Procès-verbal"
         issues: "Problèmes"
       gg:
         gg: "Bonne gouvernance"
