@@ -91,7 +91,7 @@ gem "human_attribute_values"
 gem 'corporate_services', :path => 'vendor/gems/corporate_services'
 gem 'outreach_media', :path => 'vendor/gems/outreach_media'
 gem 'nhri', :path => 'vendor/gems/nhri'
-gem 'good_governance', :path => 'vendor/gems/good_governance'
 gem 'siu', :path => 'vendor/gems/siu'
 gem 'complaints', :path => 'vendor/gems/complaints'
 gem 'projects', :path => 'vendor/gems/projects'
+gem 'internal_documents', :path => 'vendor/gems/internal_documents'

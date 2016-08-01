@@ -16,13 +16,13 @@ en:
       pro:
         pro: 'Human rights protection and promotion'
       icc:
-        icc: 'ICC'
-        int: "ICC internal documents"
-        ref: "ICC accreditation reference documents"
+        icc: 'ICC accreditation'
+        int: "Internal documents"
+        ref: "Reference documents"
       adv:
         tor: "Terms of Reference"
         memb: "Membership"
-        min: "Minutes"
+        min: "Meeting Minutes"
         issues: "Issues"
       gg:
         gg: 'Good Governance'

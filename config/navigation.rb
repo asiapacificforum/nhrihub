@@ -2,10 +2,8 @@ SimpleNavigation::Configuration.run do |navigation|
   navigation.items do |primary|
     primary.item :compl, t('layout.nav.complaints'), complaints_path
     primary.item :proj, t('layout.nav.projects'), projects_path
+    primary.item :doc, t('layout.nav.int_docs'), internal_documents_path
     primary.item :nhri, t('layout.nav.nhri') do |nhri|
-      nhri.item :pro, t('layout.nav.pro.pro'), :class => 'dropdown-submenu' do |pro|
-        pro.item :doc, t('layout.nav.int_docs'), nhri_protection_promotion_internal_documents_path
-      end
       nhri.item :adv_council, t('layout.nav.adv_council'), :class => 'dropdown-submenu' do |adv|
         adv.item :tor, t('layout.nav.adv.tor'), nhri_advisory_council_terms_of_references_path
         adv.item :memb, t('layout.nav.adv.memb'), nhri_advisory_council_members_path
@@ -18,19 +16,12 @@ SimpleNavigation::Configuration.run do |navigation|
         icc.item :icc_ref, t('layout.nav.icc.ref'), nhri_icc_reference_documents_path
       end
     end
-    primary.item :gg, t('layout.nav.gg.gg') do |gg|
-      gg.item :int_docs, t('layout.nav.int_docs'), good_governance_internal_documents_path
-    end
     primary.item :corporate_services, t('layout.nav.corporate_services') do |cs|
-      cs.item :int_docs, t('layout.nav.int_docs'), corporate_services_internal_documents_path
       cs.item :strat_plan, t('layout.nav.strat_plan'), corporate_services_strategic_plan_path("current")
     end
     primary.item :outreach_media, t('layout.nav.outreach_media') do |om|
       om.item :outreach, t('layout.nav.outreach'), outreach_media_outreach_events_path
       om.item :media, t('layout.nav.media'), outreach_media_media_appearances_path
-    end
-    primary.item :spec_inv, t('layout.nav.spec_inv') do |siu|
-      siu.item :int_docs, t('layout.nav.int_docs'), siu_internal_documents_path
     end
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path
@@ -42,6 +33,7 @@ SimpleNavigation::Configuration.run do |navigation|
       ad.item :corp_svcs, t('layout.nav.corporate_services'), corporate_services_admin_path
       ad.item :or_media, t('layout.nav.outreach_media'), outreach_media_admin_path
       ad.item :compl, t('layout.nav.complaints'), complaint_admin_path
+      ad.item :doc, t('layout.nav.int_docs'), internal_document_admin_path
     end
     primary.item :logout, t('layout.nav.logout'), logout_path
     primary.dom_class = 'nav navbar-nav'

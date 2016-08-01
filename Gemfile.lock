@@ -52,9 +52,9 @@ PATH
     corporate_services (0.0.1)
 
 PATH
-  remote: vendor/gems/good_governance
+  remote: vendor/gems/internal_documents
   specs:
-    good_governance (0.0.1)
+    internal_documents (0.0.1)
 
 PATH
   remote: vendor/gems/nhri
@@ -408,10 +408,10 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   faker
   font-awesome-sass
-  good_governance!
   haml
   haml-rails
   human_attribute_values
+  internal_documents!
   jbuilder (~> 2.0)
   jquery-fileupload-rails!
   jquery-rails

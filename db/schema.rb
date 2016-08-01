@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160716211805) do
+ActiveRecord::Schema.define(version: 20160801013012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -245,9 +245,9 @@ ActiveRecord::Schema.define(version: 20160716211805) do
   create_table "document_groups", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type",              limit: 40
     t.string   "title"
-    t.integer  "archive_doc_count",            default: 0
+    t.integer  "archive_doc_count", default: 0
+    t.string   "type"
   end
 
   create_table "file_monitors", force: :cascade do |t|
@@ -317,7 +317,7 @@ ActiveRecord::Schema.define(version: 20160716211805) do
     t.string   "original_type",     limit: 255
     t.integer  "document_group_id"
     t.integer  "user_id"
-    t.string   "type",              limit: 60
+    t.string   "type"
   end
 
   create_table "issue_areas", force: :cascade do |t|
@@ -547,7 +547,6 @@ ActiveRecord::Schema.define(version: 20160716211805) do
   create_table "projects", force: :cascade do |t|
     t.string   "title"
     t.text     "description"
-    t.text     "type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

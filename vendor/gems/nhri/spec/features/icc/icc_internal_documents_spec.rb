@@ -12,15 +12,15 @@ feature "show icc internal documents index page", :js => true do
 
   before do
     setup_database
-    SiteConfig['corporate_services.internal_documents.filetypes']=["pdf"]
-    SiteConfig['corporate_services.internal_documents.filesize'] = 3
+    SiteConfig['internal_documents.filetypes']=["pdf"]
+    SiteConfig['internal_documents.filesize'] = 3
     visit nhri_icc_index_path(:en)
     @title = "Statement of Compliance"
   end
 
   scenario "shows list of required icc docs" do
-    expect(page_heading).to eq "NHRI ICC Internal Documents"
-    expect(page_title).to eq "NHRI ICC Internal Documents"
+    expect(page_heading).to eq "NHRI ICC Accreditation Internal Documents"
+    expect(page_title).to eq "NHRI ICC Accreditation Internal Documents"
     expect(page).to have_selector ".internal_document .title", :text => @title
   end
 
