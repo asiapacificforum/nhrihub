@@ -24,5 +24,6 @@ assets = [ 'in_page_edit.js',
            'slide.js',
            'ractive_local_methods.js',
            'string.js',
-           'file_upload.js']
+           'file_upload.js',
+           'file_input_decorator.js']
 Rails.application.config.assets.precompile += assets

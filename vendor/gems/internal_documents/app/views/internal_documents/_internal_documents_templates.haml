@@ -1,34 +1,26 @@
+%script#fileuploadButtonbar{:type => 'template/ractive'}
+  / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
+  .row.fileupload-buttonbar
+    .col-lg-9
+      %input.hidden_fileinput{:id => "{{key}}_fileinput", :multiple => "multiple", :name => "{{key}}_file", :type => "file", :decorator=>:ractive_fileupload}
+      %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
+        %i.fa.fa-plus.fa-lg{ :style => "color:white"}
+        %span= t('.add')
+
+      / The fileinput-button span is used to style the file input field as button
+      %button.btn.btn-primary.start{'on-click'=>'start_upload()', :type => "submit"}
+        %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
+        %span= t('.start')
+      %button.btn.btn-warning.cancel{:type => "reset", 'on-click'=>'flash_hide()'}
+        %i.fa.fa-ban.fa-lg{:style => "color:white"}
+        %span= t('.cancel')
+
 %script#uploader_template{:type => 'html/template'}
   / The file upload form used as target for the jQuery fileupload widget
   / this is the fileupload configuration when uploading files via the buttonbar
-  .fileupload.buttonbar{:decorator => "primary_fileupload:{{required_files_titles}}", :'data-file-input' => '#primary_fileinput' }
-    / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
-    .row.fileupload-buttonbar
-      .col-lg-9
-        / The fileinput-button span is used to style the file input field as button
-        %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
-          %i.fa.fa-plus.fa-lg{'onclick'=>"$('#primary_fileinput').click()", :style => "color:white"}
-          %span{'onclick'=>"$('#primary_fileinput').click()"}= t('.add')
-          %input#primary_fileinput{:multiple => "multiple", :name => "primary_file", :type => "file"}
-        %button.btn.btn-primary.start{'on-click'=>'start_upload()', :type => "submit"}
-          %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
-          %span= t('.start')
-        %button.btn.btn-warning.cancel{:type => "reset", 'on-click'=>'flash_hide()'}
-          %i.fa.fa-ban.fa-lg{:style => "color:white"}
-          %span= t('.cancel')
-    .row.fileupload_progress
-      / The global progress state
-      .col-lg-9.fileupload-progress.fade
-        / The global progress bar
-        .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
-          .progress-bar.progress-bar-success{:style => "width:0%;"}
-        / The extended global progress state
-        .progress-extended  
-    .row
-      .col-lg-9#uploads
-        <uploadfiles/>
-    .row
-      .col-lg-9.the_files
+  .fileupload.buttonbar
+    {{> fileuploadButtonbar {key : 'primary'} }}
+    <uploadDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' upload_documents='{{upload_documents}}' key='complaint' named_document_datalist='{{complaint_named_documents_titles}}' />
     .row
       .col-lg-9
         / The table listing the files available for upload/download
@@ -140,10 +132,7 @@
       %td{:style => "text-align:center; width:8%"}
         {{#if file}}
         -# next tag is where the fileupload is attached
-        .fileupload.icon{:decorator => "archive_fileupload:'{{id}}','{{type}}'",
-                         :id => "upload{{ id }}",
-                         :'data-file-input' => "#upload{{ id }} #archive_fileinput",
-                         :'data-document_group_id' => "{{document_group_id}}"}
+        .fileupload.icon
           %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
           -# weird opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
           -# only required for testing, it actually works in firefox in real life!
@@ -189,9 +178,14 @@
           %option{:value=>'{{title}}'} {{title}}
           {{/unassigned_titles}}
 
+%script#upload_documents_template{:type => 'html/template'}
+  {{#upload_documents}}
+  <uploadDocument />
+  {{/upload_documents}}
+
 / The template to display files ready for upload
-%script#upload_template{:type => 'html/template'}
-  .panel.panel-default.fade.template-upload{:intro => :fade}
+%script#upload_document_template{:type => 'html/template'}
+  .panel.panel-default.template-upload{:intro => :fade}
     .panel-heading
       %table{:width => '100%'}
         %tr{:style => "vertical-align:top;"}

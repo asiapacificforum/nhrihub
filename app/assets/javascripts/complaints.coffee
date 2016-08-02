@@ -399,7 +399,7 @@ Complaint = Ractive.extend
       title: ''
       file_id : ''
       url : ''
-      filename : file.name
+      original_filename : file.name
       filesize : file.size
       original_type : file.type
       serialization_key : 'complaint[complaint_documents_attributes][]'
