@@ -75,9 +75,10 @@ feature "internal document management", :js => true do
   end
 
   scenario "upload a permitted file type, cancel, and retry with same file" do
-    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find('.internal_document .fileinput-button').click
+    page.attach_file("primary_file", upload_document, :visible => false)
     page.find(".template-upload i.cancel").click
-    page.attach_file("replace_file", upload_document, :visible => false)
+    page.attach_file("primary_file", upload_document, :visible => false)
     expect(page).to have_selector('.template-upload')
   end
 
@@ -105,11 +106,11 @@ feature "internal document management", :js => true do
 
   scenario "delete the last file in a document group" do
     page.find('.template-download .delete').click
-    sleep(0.3)
+    wait_for_ajax
     expect(InternalDocument.count).to eq 1
-    sleep(0.3)
+    wait_for_ajax
     page.find('.template-download .delete').click
-    sleep(0.3)
+    wait_for_ajax
     expect(InternalDocument.count).to eq 0
     expect(DocumentGroup.count).to eq 5 # the 5 icc doc groups
   end
@@ -211,13 +212,14 @@ feature "internal document management", :js => true do
     context "including user configured title" do
       before do
         expect(page_heading).to eq "Internal Documents"
-        page.attach_file("replace_file", upload_document, :visible => false)
+        page.find('.internal_document .fileinput-button').click
+        page.attach_file("primary_file", upload_document, :visible => false)
         page.find("#internal_document_title").set("some replacement file name")
         page.find('#internal_document_revision').set("3.5")
       end
 
       scenario "using the single-upload icon" do
-        expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.by(1)
+        expect{upload_primary_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.by(1)
         expect(page.all('.template-download').count).to eq 1
         expect(page.find('.template-download .internal_document .title .no_edit span').text).to eq "some replacement file name"
         expect(page.find('.template-download .internal_document .revision .no_edit span').text).to eq "3.5"
@@ -234,7 +236,8 @@ feature "internal document management", :js => true do
     context "omitting user configured title and revision" do
       before do
         expect(page_heading).to eq "Internal Documents"
-        page.attach_file("replace_file", upload_document, :visible => false)
+        page.find('.internal_document .fileinput-button').click
+        page.attach_file("primary_file", upload_document, :visible => false)
       end
 
       scenario "using the buttonbar upload icon" do
@@ -267,7 +270,8 @@ feature "internal document management", :js => true do
   end
 
   scenario "initiate adding a revision but cancel" do
-    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find('.internal_document .fileinput-button').click
+    page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
     expect(page).to have_selector('.template-upload', :visible => true)
@@ -281,10 +285,11 @@ feature "internal document management", :js => true do
 
   scenario "upload a revision then edit the title and revision" do
     expect(page_heading).to eq "Internal Documents"
-    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find('.internal_document .fileinput-button').click
+    page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
-    expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.by(1)
+    expect{upload_primary_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.by(1)
     expect(page.all('.template-download').count).to eq 1
     click_the_edit_icon(page)
     page.find('.template-download input.title').set("changed my mind title")
@@ -296,11 +301,12 @@ feature "internal document management", :js => true do
   scenario "upload a revision then edit the title and revision of the archive file" do
     expect(page_heading).to eq "Internal Documents"
     # upload the revision
-    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find('.internal_document .fileinput-button').click
+    page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
     # make sure it worked
     page.find('#internal_document_revision').set("3.5")
-    expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.by(1)
+    expect{upload_primary_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.by(1)
     expect(page.all('.template-download').count).to eq 1
     click_the_archive_icon
     within archive_panel do
@@ -421,11 +427,12 @@ feature "internal document management", :js => true do
     expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
     expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
     expect(page.find('.template-download .panel-body')).to have_selector('table.internal_document')
-    # now make sure the new primary replace_file works
-    page.attach_file("replace_file", upload_document, :visible => false)
+    # now make sure the new primary primary_file works
+    page.find('.internal_document .fileinput-button').click
+    page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
-    expect{upload_replace_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(2).to(3)
+    expect{upload_primary_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(2).to(3)
     expect(page.all('.template-download').count).to eq 1
   end
 
@@ -538,7 +545,8 @@ feature "sequential operations", :js => true do
     expect{page.all('.template-download .delete')[0].click; sleep(0.5)}.to change{InternalDocument.count}.by(-1)
     expect(page).to have_selector('table.internal_document.editable_container', :count => 3)
     # try to upload an archive file CURRENTLY FAILS
-    page.attach_file("replace_file", upload_document, :visible => false)
+    page.find('.internal_document .fileinput-button').click
+    page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
   end

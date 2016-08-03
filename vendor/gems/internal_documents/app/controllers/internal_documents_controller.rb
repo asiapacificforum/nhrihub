@@ -10,7 +10,7 @@ class InternalDocumentsController < ApplicationController
     params[:internal_document][:type] = "AccreditationRequiredDoc" if accreditation_type
     model = params[:internal_document][:type].constantize
     @internal_document = model.create(doc_params)
-    render :json => {:file => @internal_document, :required_files_titles => AccreditationDocumentGroup.all.map(&:id_and_title) }
+    render :json => {:file => @internal_document.document_group.primary, :required_files_titles => AccreditationDocumentGroup.all.map(&:id_and_title) }
   end
 
   def destroy

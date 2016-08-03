@@ -26,7 +26,7 @@ class InternalDocument < ActiveRecord::Base
   end
 
   def assign_to_group
-    if self.document_group_id.blank? && !self.is_a?(AccreditationRequiredDoc)
+    if (self.document_group_id.blank? || self.document_group_id.zero?) && !self.is_a?(AccreditationRequiredDoc)
       self.document_group_id = self.class.document_group_class.create.id
     end
   end

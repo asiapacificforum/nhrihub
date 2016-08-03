@@ -6,7 +6,7 @@ $ ->
       message :  window.files_list_error
     computed :
       empty_fileslist : ->
-        $('#uploads .template-upload').length == 0
+        internal_document_uploader.get('upload_documents').length == 0
     show : ->
       $(@find('ul.error')).show()
     hide : ->

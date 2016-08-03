@@ -3,11 +3,9 @@
   .row.fileupload-buttonbar
     .col-lg-9
       %input.hidden_fileinput{:id => "{{key}}_fileinput", :multiple => "multiple", :name => "{{key}}_file", :type => "file", :decorator=>:ractive_fileupload}
-      %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
+      %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()', :decorator => :file_select_trigger}
         %i.fa.fa-plus.fa-lg{ :style => "color:white"}
         %span= t('.add')
-
-      / The fileinput-button span is used to style the file input field as button
       %button.btn.btn-primary.start{'on-click'=>'start_upload()', :type => "submit"}
         %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
         %span= t('.start')
@@ -131,19 +129,16 @@
         {{/if}}
       %td{:style => "text-align:center; width:8%"}
         {{#if file}}
-        -# next tag is where the fileupload is attached
         .fileupload.icon
-          %i.fa.fa-plus.fa-lg{:onClick => "$(this).parent().find('input:file').click()"}
-          -# weird opacity and width ensures that firefox recognizes element as visible and capybara-webkit can interact!
-          -# only required for testing, it actually works in firefox in real life!
-          %input#archive_fileinput{:multiple => "multiple", :name => "replace_file", :type => "file", :style => "position:absolute; top:0px; opacity:0.01;"}
+          -#%input.hidden_fileinput#archive_fileinput{:id => "{{key}}_fileinput", :multiple => "multiple", :name => "{{key}}_file", :type => "file", :decorator=>:ractive_fileupload}
+          %i.fa.fa-plus.fa-lg.fileinput-button{:decorator => :file_select_trigger}
         {{else}}
         -# just to keep the spacing the same
         #file_replace{:style => 'visibility:hidden'}
           %i.fa.fa-plus.fa-lg
         {{/if}}
       %td{:style => "text-align:center; width:8%"}
-        %div.icon.delete{'decorator'=>'doc_deleter'}
+        %div.icon.delete{'on-click'=>'delete_document()'}
           %i.fa.fa-trash-o.fa-lg
 
 %script#files{:type => 'ractive/template'}
@@ -193,8 +188,8 @@
             %p.name {{ name }}
             .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
               %span.help-block.error#filesize_error= t('.too_large')
-            .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
-              %span.help-block.error#filetype_error= t('.unpermitted_type')
+            .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
+              %span.help-block.error#original_type_error= t('.unpermitted_type')
             .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
               %span.help-block.error#unconfigured_filetypes_error= t('.noFileTypes')
           %td{:colspan => 2}

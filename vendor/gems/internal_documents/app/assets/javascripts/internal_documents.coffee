@@ -1,5 +1,6 @@
 #= require user_input_manager
 #= require in_page_edit
+#= require ractive_validator
 # component hierarchy
 # internal_document_uploader template: #uploader_template (includes primary_fileupload decorator)
 #   docs                     template: #files
@@ -13,6 +14,52 @@
 Ractive.DEBUG = false
 
 $ ->
+  FileInput = (node)->
+    $(node).on 'change', (event)->
+      add_file(event,@)
+    #$(node).closest('.fileupload').find('.fileinput-button').on 'click', (event)->
+      #$(@).parent().find('input:file').trigger('click')
+    add_file = (event,el)->
+      file = el.files[0]
+      ractive = Ractive.getNodeInfo($(el).closest('.fileupload')[0]).ractive
+      ractive.add_file(file)
+      _reset_input()
+    _reset_input = ->
+      # this technique comes from jQuery.fileupload does'nt work well with ractive
+      input = $(node)
+      #inputClone = input.clone(true)
+      # make a form and reset it. A hack to reset the fileinput element
+      #$('<form></form>').append(inputClone)[0].reset()
+      # Detaching allows to insert the fileInput on another form
+      # without losing the file input value:
+      # detaches the original fileInput and leaves the clone in the DOM
+      #input.after(inputClone).detach()
+      # Avoid memory leaks with the detached file input:
+      #$.cleanData input.unbind('remove')
+      input.wrap('<form></form>').closest('form').get(0).reset()
+      input.unwrap()
+    return {
+      teardown : ->
+        $(node).off 'change'
+      update : ->
+        #noop
+    }
+
+  Ractive.decorators.ractive_fileupload = FileInput
+
+  FileSelectTrigger = (node)->
+    $(node).on 'click', (event)->
+      source = Ractive.getNodeInfo(@).ractive # might be an archive doc (has document_group_id) or primary doc (no document_group_id)
+      internal_document_uploader.findComponent('uploadDocuments').set('source', source)
+      $('input:file').trigger('click')
+    return {
+      teardown : ->
+        $(node).closest('.fileupload').find('.fileinput-button').off 'click'
+      update : ->
+        #noop
+    }
+
+  Ractive.decorators.file_select_trigger = FileSelectTrigger
 
   # these options apply to the primary fileupload
   #window.fileupload_options =
@@ -166,10 +213,11 @@ $ ->
       @asFormData @get('persistent_attributes') # in ractive_local_methods, returns a FormData instance
     save_upload_document_callback : (response, status, jqxhr)->
       #UserInput.reset()
-      #@set(response)
       @remove_file()
-      internal_document_uploader.unshift('files',response.file)
-      console.log "response received"
+      if response.file.archive_files.length == 0
+        internal_document_uploader.unshift('files',response.file)
+      else
+        internal_document_uploader.replace(response.file)
     #progress_bar_create : ->
       #@findComponent('progressBar').start()
     #update_persist : (success, error, context) -> # called by EditInPlace
@@ -191,14 +239,14 @@ $ ->
     oninit : ->
       @set 'validation_criteria',
         filesize :
-          ['lessThan', @get('maximum_filesize')]
+          ['lessThan', window.maximum_filesize]
         original_type:
-          ['match', @get('permitted_filetypes')]
+          ['match', window.permitted_filetypes]
       @set
         unconfigured_validation_parameter_error:false
         serialization_key:'internal_document'
-      #@validator = new Validator(@)
-      #@validator.validate() unless @get('persisted')
+      @validator = new Validator(@)
+      @validator.validate() unless @get('persisted')
     computed :
       persistent_attributes : ->
         ['title', 'original_filename', 'filesize', 'lastModifiedDate', 'file', 'original_type', 'type', 'document_group_id', 'revision'] unless @get('persisted')
@@ -208,6 +256,8 @@ $ ->
         !_.isNull(@get('id'))
       url : ->
         Routes[@get('parent_type')+"_document_path"](current_locale,@get('id'))
+      document_group_id : ->
+        @get('source').get('document_group_id')
     remove_file : ->
       @parent.remove(@_guid)
     delete_document : ->
@@ -225,7 +275,9 @@ $ ->
     download_attachment : ->
       window.location = @get('url')
     validate : ->
-      true
+      @validator.validate()
+    cancel_upload : ->
+      @parent.remove(@_guid)
     , Persistence
 
   UploadDocuments = Ractive.extend
@@ -272,24 +324,24 @@ $ ->
     teardown: ->
       $(node).off('mouseenter')
 
-  DocDeleter = (node)->
-    $(node).on 'click', (event)->
-      ev = $.Event(event)
-      context = $(event.target).closest('table.document')
-      data = $(event.target).closest('.fileupload').data()
-      $(event.target).
-        closest('.fileupload').
-        fileupload('option','destroy')( ev, $.extend({
-                                                    context: context,
-                                                    type: 'DELETE'
-                                                }, data))
-    teardown : ->
-      $(node).off 'click'
+  #DocDeleter = (node)->
+    #$(node).on 'click', (event)->
+      #ev = $.Event(event)
+      #context = $(event.target).closest('table.document')
+      #data = $(event.target).closest('.fileupload').data()
+      #$(event.target).
+        #closest('.fileupload').
+        #fileupload('option','destroy')( ev, $.extend({
+                                                    #context: context,
+                                                    #type: 'DELETE'
+                                                #}, data))
+    #teardown : ->
+      #$(node).off 'click'
 
   #Ractive.decorators.archive_fileupload = ArchiveFileUpload
   #Ractive.decorators.primary_fileupload = PrimaryFileUpload
   Ractive.decorators.inpage_edit = EditInPlace
-  Ractive.decorators.doc_deleter = DocDeleter
+  #Ractive.decorators.doc_deleter = DocDeleter
   Ractive.decorators.popover = Popover
 
   #UploadFile = Ractive.extend
@@ -412,6 +464,8 @@ $ ->
         icc_document_group_ids.indexOf(@get('document_group_id')) == -1
       title_edit_permitted : ->
         @get('non_icc_document_group')
+      document_group : ->
+        @parent.parent
     remove_errors : ->
       @set
         title_error: false
@@ -432,6 +486,20 @@ $ ->
       @set('revision', @get('revision').trim())
       @set("revision_error", @get('revision') == "")
       !@get('revision_error')
+    delete_document : ->
+      data = {'_method' : 'delete'}
+      url = Routes.internal_document_path(current_locale, @get('id'))
+      # TODO if confirm
+      $.ajax
+        method : 'post'
+        url : url
+        data : data
+        success : @delete_callback
+        dataType : 'json'
+        context : @
+    delete_callback : (data,textStatus,jqxhr)->
+      # the whole document group is replaced
+      @get('document_group').replace(data)
 
   Doc = Ractive.extend
     template: '#template-download'
@@ -476,10 +544,36 @@ $ ->
         @set('duplicate_icc_title_error',false)
         true
     add_file : (file)->
-      console.log "add_file in Doc"
-      # file also includes any associated archive files
-      # so the whole document group is set
-      @set(file)
+      attached_document =
+        id : null
+        file : file
+        title: ''
+        file_id : ''
+        url : ''
+        original_filename : file.name
+        filesize : file.size
+        original_type : file.type
+        type : "InternalDocument"
+        document_group_id : @get('document_group_id')
+        revision : null
+        #serialization_key : 'complaint[complaint_documents_attributes][]'
+      internal_document_uploader.unshift('upload_documents', attached_document)
+    delete_document : ->
+      data = {'_method' : 'delete'}
+      url = Routes.internal_document_path(current_locale, @get('id'))
+      # TODO if confirm
+      $.ajax
+        method : 'post'
+        url : url
+        data : data
+        success : @delete_callback
+        dataType : 'json'
+        context : @
+    delete_callback : (data,textStatus,jqxhr)->
+      if _.isUndefined(data) # last doc in the group, so nothing returned
+        @parent.remove(@)
+      else
+        @parent.replace(data)
 
   Docs = Ractive.extend
     template: '#files'
@@ -487,6 +581,15 @@ $ ->
       doc : Doc
     docs_without : (doc)->
       _(@findAllComponents('doc')).reject((this_doc)-> this_doc.get('id') == doc.get('id'))
+    replace : (primary_file)-> # an archive file was added or deleted... replace the document group with the returned primary plus archive files
+      what_to_replace = _(@findAllComponents('doc')).find (doc) ->
+        doc.get('document_group_id') == primary_file.document_group_id
+      index_to_replace = @findAllComponents('doc').indexOf(what_to_replace)
+      @splice('files',index_to_replace,1,primary_file)
+    remove : (document)->
+      what_to_replace = _(@findAllComponents('doc')).find (doc) -> doc.get('document_group_id') == document.document_group_id
+      index_to_replace = @findAllComponents('doc').indexOf(what_to_replace)
+      @splice('files',index_to_replace,1)
 
   uploader_options =
     el: '#container'
@@ -523,12 +626,14 @@ $ ->
         #serialization_key : 'complaint[complaint_documents_attributes][]'
       @unshift('upload_documents', attached_document)
     start_upload : ->
-      #flash.notify()
+      flash.notify()
       _(@findAllComponents('uploadDocument')).each (upload_document)->
         upload_document.submit()
     flash_hide : ->
       @event.original.stopPropagation()
       flash.hide()
+    replace : (primary_file)-> # an archive file was added... replace the document group with the returned primary plus archive files
+      @findComponent('docs').replace(primary_file)
 
   window.start_page = ->
     window.internal_document_uploader = new Ractive uploader_options
