@@ -32,7 +32,7 @@ feature "show icc internal documents index page", :js => true do
   scenario "add a new document" do
     page.attach_file("primary_file", upload_document, :visible => false)
     select('Budget', :from => :internal_document_title)
-    expect{upload_files_link.click; sleep(0.5)}.to change{AccreditationRequiredDoc.count}.by(1)
+    expect{upload_files_link.click; wait_for_ajax}.to change{AccreditationRequiredDoc.count}.by(1)
     expect(page).to have_css(".files .template-download", :count => 2)
     doc = AccreditationRequiredDoc.unscoped.order(:created_at => :asc).last
     expect( doc.title ).to eq "Budget"
@@ -43,13 +43,8 @@ feature "show icc internal documents index page", :js => true do
 
   scenario "add a document, omitting file title" do
     page.attach_file("primary_file", upload_document, :visible => false)
-    expect{upload_files_link.click; sleep(0.5)}.not_to change{InternalDocument.count}
+    expect{upload_files_link.click; wait_for_ajax}.not_to change{InternalDocument.count}
     expect(page).to have_selector('#title_error', :text => "Title cannot be blank")
-    select('Budget', :from => :internal_document_title)
-    expect(page).not_to have_selector('#title_error', :text => "Title cannot be blank")
-    select('Select ICC document title', :from => :internal_document_title)
-    expect(page).to have_selector('#title_error', :text => "Title cannot be blank")
-    expect{upload_files_link.click; sleep(0.5)}.not_to change{InternalDocument.count}
     select('Budget', :from => :internal_document_title)
     expect(page).not_to have_selector('#title_error', :text => "Title cannot be blank")
   end

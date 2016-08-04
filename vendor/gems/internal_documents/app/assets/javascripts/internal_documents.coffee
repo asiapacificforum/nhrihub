@@ -1,6 +1,7 @@
 #= require user_input_manager
 #= require in_page_edit
 #= require ractive_validator
+#= require ractive_local_methods
 # component hierarchy
 # internal_document_uploader template: #uploader_template (includes primary_fileupload decorator)
 #   docs                     template: #files
@@ -242,6 +243,7 @@ $ ->
           ['lessThan', window.maximum_filesize]
         original_type:
           ['match', window.permitted_filetypes]
+        title : ['notBlank', {if : =>@get('icc_context')}]
       @set
         unconfigured_validation_parameter_error:false
         serialization_key:'internal_document'
@@ -257,6 +259,10 @@ $ ->
         !_.isNull(@get('id'))
       url : ->
         Routes[@get('parent_type')+"_document_path"](current_locale,@get('id'))
+      unassigned_titles : ->
+        _(required_files_titles).select (title)-> title.empty
+      icc_context : ->
+        context == 'icc'
     remove_file : ->
       @parent.remove(@_guid)
     delete_document : ->
@@ -277,6 +283,12 @@ $ ->
       @validator.validate()
     cancel_upload : ->
       @parent.remove(@_guid)
+    validate_icc_title : ->
+      @validator.validate_attribute('title')
+      #icc = context == 'icc'
+      #blank_title = _.isEmpty(@get('title')) || (@get('title')=='0')
+      #@set('title_error', icc && blank_title)
+      #!@get('title_error')
     , Persistence
 
   UploadDocuments = Ractive.extend
