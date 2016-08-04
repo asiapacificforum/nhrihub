@@ -50,7 +50,7 @@ $ ->
   FileSelectTrigger = (node)->
     $(node).on 'click', (event)->
       source = Ractive.getNodeInfo(@).ractive # might be an archive doc (has document_group_id) or primary doc (no document_group_id)
-      internal_document_uploader.findComponent('uploadDocuments').set('source', source)
+      internal_document_uploader.findComponent('uploadDocuments').set('document_group_id', source.get('document_group_id'))
       $('input:file').trigger('click')
     return {
       teardown : ->
@@ -245,6 +245,7 @@ $ ->
       @set
         unconfigured_validation_parameter_error:false
         serialization_key:'internal_document'
+        document_group_id: @parent.get('document_group_id')
       @validator = new Validator(@)
       @validator.validate() unless @get('persisted')
     computed :
@@ -256,8 +257,6 @@ $ ->
         !_.isNull(@get('id'))
       url : ->
         Routes[@get('parent_type')+"_document_path"](current_locale,@get('id'))
-      document_group_id : ->
-        @get('source').get('document_group_id')
     remove_file : ->
       @parent.remove(@_guid)
     delete_document : ->

@@ -46,7 +46,7 @@ class InternalDocument < ActiveRecord::Base
   end
 
   def assign_revision
-    if self.revision_major.nil?
+    if self.revision_major.nil? || self.revision.to_f.zero?
       self.revision = self.document_group.next_minor_revision
     end
   end

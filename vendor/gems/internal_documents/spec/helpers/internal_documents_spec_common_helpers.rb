@@ -5,15 +5,8 @@ module InternalDocumentsSpecCommonHelpers
 
   # it's a test spec workaround, this method can be called multiple times
   # whereas page.attach_file cannot
-  def attach_file(locator,file,index = nil)
-    page.attach_file("primary_file", upload_document, :visible => false)
-    if !index # when it's first time, we pass a non-nil argument like :first_time
-      if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
-        # because the change event is not triggered when the same file is uploaded again,
-        # so must trigger it manually in a test scenario (or else use many different files)
-        page.execute_script("$('#primary_fileinput').trigger('change')")
-      end
-    end
+  def attach_file(locator,file)
+    page.attach_file("primary_file", file, :visible => false)
   end
 
   def upload_files_link
@@ -104,5 +97,20 @@ module InternalDocumentsSpecCommonHelpers
 
   def upload_image
     upload_file_path('first_upload_image_file.png')
+  end
+
+  def set_upload_source_to_revision
+    document_group_id = DocumentGroup.first.id
+    page.execute_script("internal_document_uploader.findComponent('uploadDocuments').set('document_group_id',#{document_group_id})")
+  end
+
+  def set_upload_source_to_first_revision
+    document_group_id = DocumentGroup.first.id
+    page.execute_script("internal_document_uploader.findComponent('uploadDocuments').set('document_group_id',#{document_group_id})")
+  end
+
+  def set_upload_source_to_last_revision
+    document_group_id = DocumentGroup.last.id
+    page.execute_script("internal_document_uploader.findComponent('uploadDocuments').set('document_group_id',#{document_group_id})")
   end
 end

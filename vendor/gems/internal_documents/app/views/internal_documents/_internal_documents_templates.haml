@@ -175,7 +175,7 @@
 
 %script#upload_documents_template{:type => 'html/template'}
   {{#upload_documents}}
-  <uploadDocument />
+  <uploadDocument document_group_id='{{document_group_id}}' title='{{title}}', original_filename='{{original_filename}}', filesize='{{filesize}}', lastModifiedDate='{{lastModifiedDate}}', file='{{file}}', original_type='{{original_type}}', type='{{type}}', revision='{{revision}}' />
   {{/upload_documents}}
 
 / The template to display files ready for upload
@@ -185,7 +185,7 @@
       %table{:width => '100%'}
         %tr{:style => "vertical-align:top;"}
           %td{:colspan => 2}
-            %p.name {{ name }}
+            %p.name {{ original_filename }}
             .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
               %span.help-block.error#filesize_error= t('.too_large')
             .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
