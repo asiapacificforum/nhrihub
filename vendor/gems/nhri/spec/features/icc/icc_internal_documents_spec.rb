@@ -43,6 +43,7 @@ feature "show icc internal documents index page", :js => true do
 
   scenario "add a document, omitting file title" do
     page.attach_file("primary_file", upload_document, :visible => false)
+    expect(page).not_to have_selector('#title_error', :text => "Title cannot be blank")
     expect{upload_files_link.click; wait_for_ajax}.not_to change{InternalDocument.count}
     expect(page).to have_selector('#title_error', :text => "Title cannot be blank")
     select('Budget', :from => :internal_document_title)

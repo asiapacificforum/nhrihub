@@ -249,7 +249,10 @@ $ ->
         serialization_key:'internal_document'
         document_group_id: @parent.get('document_group_id')
       @validator = new Validator(@)
-      @validator.validate() unless @get('persisted')
+      @validate_file() unless @get('persisted')
+    validate_file : ->
+      @validator.validate_attribute('filesize')
+      @validator.validate_attribute('original_type')
     computed :
       persistent_attributes : ->
         ['title', 'original_filename', 'filesize', 'lastModifiedDate', 'file', 'original_type', 'type', 'document_group_id', 'revision'] unless @get('persisted')
@@ -285,10 +288,6 @@ $ ->
       @parent.remove(@_guid)
     validate_icc_title : ->
       @validator.validate_attribute('title')
-      #icc = context == 'icc'
-      #blank_title = _.isEmpty(@get('title')) || (@get('title')=='0')
-      #@set('title_error', icc && blank_title)
-      #!@get('title_error')
     , Persistence
 
   UploadDocuments = Ractive.extend
