@@ -457,7 +457,14 @@ $ ->
   ArchiveDoc = Ractive.extend
     template: '#document_template'
     oninit : ->
+      @set
+        validation_criteria :
+          icc_title : =>
+            return true if !@get('has_icc_title')
+            match_parent = @get('title') == @parent.get('title')
+            return true if match_parent
       @remove_errors()
+      @validator = new Validator(@)
     computed :
       url : -> Routes.internal_document_path(current_locale,@get('id'))
       file : -> false
@@ -476,26 +483,31 @@ $ ->
         @get('non_icc_document_group')
       document_group : ->
         @parent.parent
+      has_icc_title : ->
+        icc_titles = _(@get('required_files_titles')).pluck('title')
+        _(icc_titles).any (title)=>
+          re = new RegExp(title)
+          re.test @get('title')
     remove_errors : ->
       @set
         title_error: false
         revision_error: false
         icc_title_error:false
-    validate : ->
-      @_validate_nonblank_title() && @_validate_non_icc_title() && @_validate_revision()
-    _validate_non_icc_title : ->
-      has_icc_title = @get('is_icc_doc')
-      non_icc_document_group = @get('non_icc_document_group')
-      @set('icc_title_error', has_icc_title && non_icc_document_group )
-      !@get('icc_title_error')
-    _validate_nonblank_title : ->
-      @set('title', @get('title').trim())
-      @set("title_error", @get('title') == "" )
-      !@get('title_error')
-    _validate_revision : ->
-      @set('revision', @get('revision').trim())
-      @set("revision_error", @get('revision') == "")
-      !@get('revision_error')
+    #validate : ->
+      #@_validate_nonblank_title() && @_validate_non_icc_title() && @_validate_revision()
+    #_validate_non_icc_title : ->
+      #has_icc_title = @get('is_icc_doc')
+      #non_icc_document_group = @get('non_icc_document_group')
+      #@set('icc_title_error', has_icc_title && non_icc_document_group )
+      #!@get('icc_title_error')
+    #_validate_nonblank_title : ->
+      #@set('title', @get('title').trim())
+      #@set("title_error", @get('title') == "" )
+      #!@get('title_error')
+    #_validate_revision : ->
+      #@set('revision', @get('revision').trim())
+      #@set("revision_error", @get('revision') == "")
+      #!@get('revision_error')
     delete_document : ->
       data = {'_method' : 'delete'}
       url = Routes.internal_document_path(current_locale, @get('id'))
@@ -510,6 +522,8 @@ $ ->
     delete_callback : (data,textStatus,jqxhr)->
       # the whole document group is replaced
       @get('document_group').replace(data)
+    validate : ->
+      @validator.validate()
 
   Doc = Ractive.extend
     template: '#template-download'
@@ -530,29 +544,6 @@ $ ->
     remove_errors : ->
       @set("title_error", false)
       @set("revision_error", false)
-    validate : ->
-      @_validate_title() && @_validate_revision() && @_validate_icc_unique()
-    _validate_title : ->
-      @set('title', @get('title').trim())
-      if @get('title') == ""
-        @set("title_error",true)
-        false
-      else
-        true
-    _validate_revision : ->
-      @set('revision', @get('revision').trim())
-      if @get('revision') == ""
-        @set("revision_error",true)
-        false
-      else
-        true
-    _validate_icc_unique : ->
-      if _(@parent.docs_without(@)).map((doc)-> doc.get('stripped_title')).indexOf(@get('stripped_title')) != -1
-        @set('duplicate_icc_title_error',true)
-        false
-      else
-        @set('duplicate_icc_title_error',false)
-        true
     add_file : (file)->
       attached_document =
         id : null
@@ -566,7 +557,6 @@ $ ->
         type : "InternalDocument"
         document_group_id : @get('document_group_id')
         revision : null
-        #serialization_key : 'complaint[complaint_documents_attributes][]'
       internal_document_uploader.unshift('upload_documents', attached_document)
     delete_document : ->
       data = {'_method' : 'delete'}
@@ -584,6 +574,8 @@ $ ->
         @parent.remove(@)
       else
         @parent.replace(data)
+    validate : ->
+      false
 
   Docs = Ractive.extend
     template: '#files'

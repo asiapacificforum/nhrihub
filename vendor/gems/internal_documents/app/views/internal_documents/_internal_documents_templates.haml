@@ -90,7 +90,6 @@
           %input.title{:name => "internal_document[title]", :'value' => "{{ title }}", :style => "width:100%"}
           %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
           %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
-          %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
           %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}"}= t('.icc_revision_in_non_icc_primary_error_message')
           %span.help-block.error#icc_title_error{:class =>"{{#icc_title_error}}has-error{{/}}"}= t('.icc_title_error_message')
         .fade.no_edit.editable.in
@@ -201,8 +200,7 @@
             {{> .context+"_title_selector" }}
             %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.title_error_message')
             %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
-            %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
-            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.icc_revision_in_non_icc_primary_error_message')
+            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.icc_revision_in_non_icc_primary_error_message')
           %td.revision
             %label{:for => "internal_document_revision"}= t('.revision')
             %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}

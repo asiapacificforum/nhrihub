@@ -209,7 +209,8 @@ feature "internal document management", :js => true do
     context "including user configured title" do
       before do
         expect(page_heading).to eq "Internal Documents"
-        page.find('.internal_document .fileinput-button').click
+        #page.find('.internal_document .fileinput-button').click
+        set_upload_source_to_first_revision
         page.attach_file("primary_file", upload_document, :visible => false)
         page.find("#internal_document_title").set("some replacement file name")
         page.find('#internal_document_revision').set("3.5")
@@ -539,7 +540,7 @@ feature "sequential operations", :js => true do
     #again delete a primary file
     expect{page.all('.template-download .delete')[0].click; wait_for_ajax}.to change{InternalDocument.count}.by(-1)
     expect(page).to have_selector('table.internal_document.editable_container', :count => 3)
-    # try to upload an archive file CURRENTLY FAILS
+    # try to upload an archive file
     page.find('.internal_document .fileinput-button').click
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
