@@ -6,10 +6,12 @@
 #        age : ['lessThan', 21]
 #        user_id : numeric
 #        email : ['notBlank', {if : =>@get('has_email')}]
+#        recipient : ['match', ['Fred', 'Wilma']}
 # here email validation is notBlank, which has no parameters
 #      age validation is lessThan, with a threshold parameter
 #      user_id validation has no parameters, tests numeric
 #      email validation is conditional depending on the value returned in the 'if' function
+#      recipient validation is match against the array of acceptable values. If array is blank an 'unconfigured_validation_parameter' error is set to true
 
 class @Validator
   constructor : (validatee)->
