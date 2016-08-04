@@ -171,14 +171,11 @@ feature "internal document management", :js => true do
   scenario "edit archive doc title to icc value" do
     click_the_archive_icon
     within archive_panel do
-      # the page element is now contextualized within the archive panel
       click_the_edit_icon(page)
       page.find('.template-download input.title').set("Statement of Compliance")
       page.find('.template-download input.revision').set("0.1")
       expect{ click_edit_save_icon(page); wait_for_ajax }.not_to change{ @doc.reload.title }
     end
-    #expect{ click_edit_save_icon(page) }.
-    #not_to change{ @doc.reload.title }
     expect(page).to have_selector(".internal_document .title .edit.in #icc_title_error", :text => "ICC accreditation file title not allowed")
     click_edit_cancel_icon(page)
     expect(page.find('.collapse .internal_document .title .no_edit').text).to eq "first archive document"

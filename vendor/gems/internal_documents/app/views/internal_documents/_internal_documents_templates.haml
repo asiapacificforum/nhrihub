@@ -172,10 +172,6 @@
           {{#unassigned_titles}}
           %option{:value=>'{{title}}'} {{title}}
           {{/unassigned_titles}}
-  %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.title_error_message')
-  %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
-  %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
-  %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.icc_revision_in_non_icc_primary_error_message')
 
 %script#upload_documents_template{:type => 'html/template'}
   {{#upload_documents}}
@@ -203,6 +199,10 @@
         %tr{:style => "vertical-align:top;"}
           %td.title.form-group
             {{> .context+"_title_selector" }}
+            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.title_error_message')
+            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
+            %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
+            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_revision_to_non_icc_primary_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.icc_revision_in_non_icc_primary_error_message')
           %td.revision
             %label{:for => "internal_document_revision"}= t('.revision')
             %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}

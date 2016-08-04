@@ -13,4 +13,8 @@ module IccSpecHelper
   def upload_file_path(filename)
     CapybaraRemote.upload_file_path(page,filename)
   end
+
+  def delete_first_document
+    page.all('.fa-trash-o').first.click
+  end
 end

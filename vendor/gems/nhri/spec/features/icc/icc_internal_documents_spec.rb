@@ -11,7 +11,7 @@ feature "show icc internal documents index page", :js => true do
   include IccSetupHelper
 
   before do
-    setup_database
+    setup_database # Statement of Compliance with 4 archive files
     SiteConfig['internal_documents.filetypes']=["pdf"]
     SiteConfig['internal_documents.filesize'] = 3
     visit nhri_icc_index_path(:en)
@@ -81,5 +81,29 @@ feature "add a document", :js => true do
     end
 
   end
+
+end
+
+feature "delete documents", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include IccSpecHelper
+  include IccSetupHelper
+
+    before do
+      setup_database_multiple_docs # Statement of Compliance, Annual Report and Budget
+      SiteConfig['internal_documents.filetypes']=["pdf"]
+      SiteConfig['internal_documents.filesize'] = 3
+      visit nhri_icc_index_path(:en)
+      @title = "Statement of Compliance"
+    end
+
+    scenario "delete the first document" do
+      expect(page.all('.files .internal_document .title .no_edit span')[0].text).to eq "Statement of Compliance"
+      expect(page.all('.files .internal_document .title .no_edit span')[1].text).to eq "Annual Report"
+      expect(page.all('.files .internal_document .title .no_edit span')[2].text).to eq "Budget"
+      expect{delete_first_document; wait_for_ajax}.to change{page.all('.files .internal_document').count}.from(3).to(2)
+      expect(page.all('.files .internal_document .title .no_edit span')[0].text).to eq "Annual Report"
+      expect(page.all('.files .internal_document .title .no_edit span')[1].text).to eq "Budget"
+    end
 
 end

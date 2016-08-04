@@ -597,7 +597,7 @@ $ ->
       index_to_replace = @findAllComponents('doc').indexOf(what_to_replace)
       @splice('files',index_to_replace,1,primary_file)
     remove : (document)->
-      what_to_replace = _(@findAllComponents('doc')).find (doc) -> doc.get('document_group_id') == document.document_group_id
+      what_to_replace = _(@findAllComponents('doc')).find (doc) -> doc.get('document_group_id') == document.get('document_group_id')
       index_to_replace = @findAllComponents('doc').indexOf(what_to_replace)
       @splice('files',index_to_replace,1)
 
