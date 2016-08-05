@@ -22,7 +22,7 @@ module InternalDocumentsSpecCommonHelpers
 
   def click_edit_save_icon(context)
     context.find('.fa-check').click
-    sleep(0.1)
+    wait_for_ajax
   end
 
   def click_edit_cancel_icon(context)

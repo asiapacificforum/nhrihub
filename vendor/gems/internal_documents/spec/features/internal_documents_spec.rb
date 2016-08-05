@@ -148,24 +148,19 @@ feature "internal document management", :js => true do
     click_the_edit_icon(page)
     page.find('.template-download input.title').set("")
     page.find('.template-download input.revision').set("4.4")
-    expect{ click_edit_save_icon(page) }.
-      not_to change{ @doc.reload.title }
-    expect(page).to have_selector(".internal_document .title .edit.in #title_error", :text => "Title cannot be blank")
-    click_edit_cancel_icon(page)
-    expect(page.find('td.title .no_edit').text).to eq "my important document"
-    expect(page.find('td.revision .no_edit').text).to eq "3.0"
+    filename = @doc.original_filename.split('.')[0]
+    expect{ click_edit_save_icon(page) }.to change{ @doc.reload.title }.from("my important document").to(filename)
+    expect(page.find('td.title .no_edit').text).to eq filename
+    expect(page.find('td.revision .no_edit').text).to eq "4.4"
   end
 
   scenario "edit revision to invalid value" do
     click_the_edit_icon(page)
     page.find('.template-download input.title').set("new document title")
     page.find('.template-download input.revision').set("")
-    expect{ click_edit_save_icon(page) }.
-      not_to change{ @doc.reload.title }
-    expect(page).to have_selector(".internal_document .revision .edit.in #revision_error", :text => "Invalid")
-    click_edit_cancel_icon(page)
-    expect(page.find('td.title .no_edit').text).to eq "my important document"
-    expect(page.find('td.revision .no_edit').text).to eq "3.0"
+    expect{ click_edit_save_icon(page) }.to change{ @doc.reload.title }.to "new document title"
+    expect(page.find('td.title .no_edit').text).to eq "new document title"
+    expect(page.find('td.revision .no_edit').text).to eq "3.1" # assigns the next value after 3.0, the previous value
   end
 
   scenario "edit archive doc title to icc value" do

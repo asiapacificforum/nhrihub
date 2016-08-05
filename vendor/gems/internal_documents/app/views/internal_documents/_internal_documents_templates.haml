@@ -36,7 +36,7 @@
         #accordion.panel-group.files{:role => "tablist", :name => 'internal_document[file]'}
           <docs/>
 
-%script#template-download{:type => 'html/template'}
+%script#document_group_template{:type => 'html/template'}
   .panel.panel-default.template-download
     #headingOne.panel-heading{:role => "tab"}
       %strong.error.text-danger {{= file.error }}
@@ -140,7 +140,7 @@
         %div.icon.delete{'on-click'=>'delete_document()'}
           %i.fa.fa-trash-o.fa-lg
 
-%script#files{:type => 'ractive/template'}
+%script#document_groups_template{:type => 'ractive/template'}
   {{#files}}
   <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' />
   {{/files}}
