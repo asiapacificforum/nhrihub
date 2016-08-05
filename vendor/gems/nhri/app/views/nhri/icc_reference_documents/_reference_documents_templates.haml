@@ -4,7 +4,6 @@
     <uploadDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' upload_documents='{{upload_documents}}' named_document_datalist='{{complaint_named_documents_titles}}' />
     .row
       .col-lg-10
-        / The table listing the files available for upload/download
         .row.headings{:style => "margin-left:0px; margin-right:0px;"}
           .col-md-2{:style => "padding-right:3px; width:30%"}= t('.doc_title')
           .col-md-2{:style => "padding-left:3px; padding-right:3px; width:20%"}= t('.link')
@@ -109,36 +108,38 @@
   {{/upload_documents}}
 
 %script#upload_document_template{:type => 'html/template'}
-  .panel.panel-default.template-upload{:intro => :fade}
-    .panel-heading
-      %table{:width => '100%'}
-        %tr{:style=>"vertical-align:top"}
-          %td{:colspan => 2}
-            %p.name {{ original_filename }}
-            .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
-              %span.help-block.error#filesize_error= t('.too_large')
-            .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
-              %span.help-block.error#original_type_error= t('.unpermitted_type')
-            .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
-              %span.help-block.error#unconfigured_filetypes_error= t('.noFileTypes')
-          %td{:colspan => 2}
-            .size
-            .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
-              .progress-bar.progress-bar-success{:style => "width:0%"}
-        %tr{:style=>"vertical-align:top"}
-          %td.title.form-group
-            %label{:for =>"icc_reference_document_title"}= t('.doc_title')
-            %input#icc_reference_document_title{:type => :text, :name => "icc_reference_document[title]", :value => "{{title}}"}
-            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-top:0px; margin-bottom:0px;"}= t('.title_error_message')
-            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-top:0px; margin-bottom:0px;"}= t('.duplicate_title_error_message')
-            %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}", :style => "margin-top:0px; margin-bottom:0px;"}= t('.duplicate_title_error_message')
-          %td.source_url
-            %label{:for =>"icc_reference_document_source_url"}= t('.doc_url')
-            %input#icc_reference_document_source_url{:type => :text, :name => "icc_reference_document[source_url]", :value => "{{source_url}}"}
-          %td
-            %div.start{'on-click'=>'submit()'}
-              %i.fa.fa-cloud-upload.fa-lg
-          %td
-            %div.cancel
-              %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
+  .row
+    .col-md-10
+      .panel.panel-default.template-upload{:intro => :fade}
+        .panel-heading
+          %table{:width => '100%'}
+            %tr{:style=>"vertical-align:top"}
+              %td{:colspan => 2}
+                %p.name {{ original_filename }}
+                .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
+                  %span.help-block.error#filesize_error= t('.too_large')
+                .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
+                  %span.help-block.error#original_type_error= t('.unpermitted_type')
+                .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
+                  %span.help-block.error#unconfigured_filetypes_error= t('.noFileTypes')
+              %td{:colspan => 2}
+                .size
+                .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
+                  .progress-bar.progress-bar-success{:style => "width:0%"}
+            %tr{:style=>"vertical-align:top"}
+              %td.title.form-group
+                %label{:for =>"icc_reference_document_title"}= t('.doc_title')
+                %input#icc_reference_document_title{:type => :text, :name => "icc_reference_document[title]", :value => "{{title}}"}
+                %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-top:0px; margin-bottom:0px;"}= t('.title_error_message')
+                %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-top:0px; margin-bottom:0px;"}= t('.duplicate_title_error_message')
+                %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}", :style => "margin-top:0px; margin-bottom:0px;"}= t('.duplicate_title_error_message')
+              %td.source_url
+                %label{:for =>"icc_reference_document_source_url"}= t('.doc_url')
+                %input#icc_reference_document_source_url{:type => :text, :name => "icc_reference_document[source_url]", :value => "{{source_url}}"}
+              %td
+                %div.start{'on-click'=>'submit()'}
+                  %i.fa.fa-cloud-upload.fa-lg
+              %td
+                %div.cancel
+                  %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
 

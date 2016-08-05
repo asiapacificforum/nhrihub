@@ -161,36 +161,38 @@
   <uploadDocument document_group_id='{{document_group_id}}' title='{{title}}', original_filename='{{original_filename}}', filesize='{{filesize}}', lastModifiedDate='{{lastModifiedDate}}', file='{{file}}', original_type='{{original_type}}', type='{{type}}', revision='{{revision}}' />
   {{/upload_documents}}
 
-/ The template to display files ready for upload
 %script#upload_document_template{:type => 'html/template'}
-  .panel.panel-default.template-upload{:intro => :fade}
-    .panel-heading
-      %table{:width => '100%'}
-        %tr{:style => "vertical-align:top;"}
-          %td{:colspan => 2}
-            %p.name {{ original_filename }}
-            .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
-              %span.help-block.error#filesize_error= t('.too_large')
-            .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
-              %span.help-block.error#original_type_error= t('.unpermitted_type')
-            .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
-              %span.help-block.error#unconfigured_filetypes_error= t('.noFileTypes')
-          %td{:colspan => 2}
-            .size
-            .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
-              .progress-bar.progress-bar-success{:style => "width:0%"}
-        %tr{:style => "vertical-align:top;"}
-          %td.title.form-group
-            {{> .context+"_title_selector" }}
-            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.title_error_message')
-            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
-            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.icc_revision_in_non_icc_primary_error_message')
-          %td.revision
-            %label{:for => "internal_document_revision"}= t('.revision')
-            %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}
-          %td
-            %div.start{'on-click'=>'submit()'}
-              %i.fa.fa-cloud-upload.fa-lg
-          %td
-            %div.cancel
-              %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
+  .row
+    .col-md-9
+      .panel.panel-default.template-upload{:intro => :fade}
+        .panel-heading
+          %table{:width => '100%'}
+            %tr{:style => "vertical-align:top;"}
+              %td{:colspan => 2}
+                %p.name {{ original_filename }}
+                .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
+                  %span.help-block.error#filesize_error= t('.too_large')
+                .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
+                  %span.help-block.error#original_type_error= t('.unpermitted_type')
+                .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
+                  %span.help-block.error#unconfigured_filetypes_error= t('.noFileTypes')
+              %td{:colspan => 2}
+                .size
+                .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
+                  .progress-bar.progress-bar-success{:style => "width:0%"}
+            %tr{:style => "vertical-align:top;"}
+              %td.title.form-group
+                {{> .context+"_title_selector" }}
+                %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.title_error_message')
+                %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
+                %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.icc_revision_in_non_icc_primary_error_message')
+              %td.revision
+                %label{:for => "internal_document_revision"}= t('.revision')
+                %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}
+              %td
+                %div.start{'on-click'=>'submit()'}
+                  %i.fa.fa-cloud-upload.fa-lg
+              %td
+                %div.cancel
+                  %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
+
