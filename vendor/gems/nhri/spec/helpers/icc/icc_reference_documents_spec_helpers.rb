@@ -2,15 +2,8 @@ require 'rspec/core/shared_context'
 
 module IccReferenceDocumentsSpecHelpers
   extend RSpec::Core::SharedContext
-  def attach_file(locator,file,index = nil)
+  def attach_file(locator,file)
     page.attach_file("primary_file", upload_document, :visible => false)
-    if !index # when it's first time, we pass a non-nil argument like :first_time
-      if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
-        # because the change event is not triggered when the same file is uploaded again,
-        # so must trigger it manually in a test scenario (or else use many different files)
-        page.execute_script("$('#primary_fileinput').trigger('change')")
-      end
-    end
   end
 
   def populate_database

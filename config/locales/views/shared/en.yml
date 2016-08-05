@@ -63,6 +63,6 @@ en:
       filename: "File name"
       no_documents: "No documents"
     fileupload_buttonbar:
-      add : "Add"
-      start : "Start"
-      cancel : "Cancel"
+      add : "Add files..."
+      start : "Start upload"
+      cancel : "Cancel upload"

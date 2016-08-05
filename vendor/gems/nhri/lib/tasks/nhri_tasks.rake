@@ -22,7 +22,15 @@ end
 
 namespace :nhri do
   desc "populate all nhri modules"
-  task :populate => [:populate_tor, :populate_mem, :populate_min, :populate_iss, :populate_ind_etc]
+  task :populate => [:populate_ref_docs, :populate_tor, :populate_mem, :populate_min, :populate_iss, :populate_ind_etc]
+
+  desc "populates icc accreditation reference documents"
+  task :populate_ref_docs => :environment do
+    IccReferenceDocument.destroy_all
+    5.times do |i|
+      FactoryGirl.create(:icc_reference_document)
+    end
+  end
 
 
   desc "populates terms of reference"

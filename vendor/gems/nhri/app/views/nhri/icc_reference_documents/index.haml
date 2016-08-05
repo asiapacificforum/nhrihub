@@ -3,10 +3,6 @@
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'shared/fileupload_buttonbar'
 
-= javascript_include_tag 'in_page_edit'
-= javascript_include_tag 'flash'
-
-
 :javascript
   var maximum_filesize = #{IccReferenceDocument.maximum_filesize * 1000000}
   var permitted_filetypes = #{ IccReferenceDocument.permitted_filetypes }

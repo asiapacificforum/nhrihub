@@ -2,17 +2,6 @@
 #= require in_page_edit
 #= require ractive_validator
 #= require ractive_local_methods
-# component hierarchy
-# internal_document_uploader template: #uploader_template (includes primary_fileupload decorator)
-#   docs                     template: #document_groups_template
-#     doc                    template: #document_group_template (contains document_template as a partial)
-#       archivedoc           template: #document_template (includes archive_fileupload decorator here)
-#         uploadfiles        template: inline (archive files staged for uploading)
-#           uploadfile       template: #upload_template
-#   uploadfiles              template: inline (primary files staged for uploading)
-#     uploadfile             template: #upload_template
-#
-Ractive.DEBUG = false
 
 $ ->
   FileInput = (node)->
@@ -302,6 +291,8 @@ $ ->
     computed :
       stripped_titles : ->
         _(@findAllComponents('doc')).map (doc)->doc.get('stripped_title')
+      empty_upload_files_list : ->
+        @get('upload_documents').length == 0
     select_file : ->
       @find('#primary_fileinput').click()
     add_file : (file)->
@@ -319,7 +310,7 @@ $ ->
         revision : null
       @unshift('upload_documents', attached_document)
     start_upload : ->
-      flash.notify()
+      flash.notify() if @get('empty_upload_files_list')
       _(@findAllComponents('uploadDocument')).each (upload_document)->
         upload_document.submit()
     flash_hide : ->

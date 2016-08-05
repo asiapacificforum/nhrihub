@@ -190,6 +190,9 @@ $ ->
       upload_files : []
       context : window.context
       _ : _ # use underscore for sorting
+    computed :
+      empty_upload_files_list : ->
+        @get('upload_files').length == 0
     components :
       docs : Docs
       uploadfiles : UploadFiles
@@ -199,7 +202,7 @@ $ ->
       @unshift('files',file)
       @sort()
     start_upload : ->
-      flash.notify()
+      flash.notify() if @get('empty_upload_files_list')
       _(@findAllComponents('uploadfile')).each (uploadfile)->
         uploadfile.submit()
     flash_hide : ->

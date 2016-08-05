@@ -1,13 +1,8 @@
-# component hierarchy
-# icc_reference_document_uploader template: #uploader_template (includes primary_fileupload decorator)
-#   docs                     template: #files
-#     doc                    template: #template-download (contains document_template as a partial)
-#         uploadfiles
-#           uploadfile
-#   uploadfiles
-#     uploadfile
-#
-Ractive.DEBUG = false
+#= require user_input_manager
+#= require in_page_edit
+#= require ractive_validator
+#= require ractive_local_methods
+#= require flash
 
 $ ->
   FileInput = (node)->
@@ -75,61 +70,76 @@ $ ->
     teardown: ->
       $(node).off('mouseenter')
 
-  #DocDeleter = (node)->
-    #$(node).on 'click', (event)->
-      #ev = $.Event(event)
-      #context = $(event.target).closest('table.document')
-      #data = $(event.target).closest('.fileupload').data()
-      #$(event.target).
-        #closest('.fileupload').
-        #fileupload('option','destroy')( ev, $.extend({
-                                                    #context: context,
-                                                    #type: 'DELETE'
-                                                #}, data))
-    #teardown : ->
-      #$(node).off 'click'
-
-  #Ractive.decorators.primary_fileupload = PrimaryFileUpload
   Ractive.decorators.inpage_edit = EditInPlace
-  #Ractive.decorators.doc_deleter = DocDeleter
   Ractive.decorators.popover = Popover
 
   UploadDocument = Ractive.extend
     template : "#upload_document_template"
+    oninit : ->
+      @set 'validation_criteria',
+        filesize :
+          ['lessThan', window.maximum_filesize]
+        original_type:
+          ['match', window.permitted_filetypes]
+        title : ['notBlank', {if : =>@get('icc_context')}]
+      @set
+        unconfigured_validation_parameter_error:false
+        serialization_key:'icc_reference_document'
+        title_error: false
+        duplicate_title_error: false
+        duplicate_icc_title_error: false
+      @validator = new Validator(@)
+      @validate_file() unless @get('persisted')
+    validate_file : ->
+      @validator.validate_attribute('filesize')
+      @validator.validate_attribute('original_type')
     computed :
-      formData : ->
-        [ {name : 'icc_reference_document[title]', value : @get('title')}
-          {name : 'icc_reference_document[filesize]', value : @get('size')}
-          {name : 'icc_reference_document[original_type]', value : @get('type')}
-          {name : 'icc_reference_document[original_filename]', value : @get('name')}
-          {name : 'icc_reference_document[source_url]', value : @get('source_url')}
-        ]
+      persisted : ->
+        !_.isNull(@get('id'))
+      persistent_attributes : ->
+        ['title', 'file', 'original_filename', 'original_type', 'lastModifiedDate', 'filesize', 'user_id', 'source_url'] unless @get('persisted')
       stripped_title : ->
         @get('title').replace(/\s/g,"").toLowerCase()
-    validate_file_constraints : -> # the attributes that are checked when a file is added
-      extension = @get('name').split('.').pop()
-      @set('unconfigured_filetypes_error', permitted_filetypes.length == 0)
-      @set('filetype_error', permitted_filetypes.indexOf(extension) == -1)
-      @set('filesize_error', @get('size') > maximum_filesize)
-      !@get('filetype_error') && !@get('filesize_error') && !@get('unconfigured_filetypes_error')
+      unconfigured_filetypes_error : ->
+        @get('unconfigured_validation_parameter_error')
+    formData : ->
+      @asFormData @get('persistent_attributes') # in ractive_local_methods, returns a FormData instance
     cancel_upload : ->
       @parent.remove(@)
     submit : ->
-      unless !@validate_file_constraints()
-        @get('fileupload').formData = @get('formData')
-        @get('fileupload').submit()
+      @save_upload_document()
+    save_upload_document: ->
+      if @validate()
+        data = @formData()
+        $.ajax
+          # thanks to http://stackoverflow.com/a/22987941/451893
+          #xhr: @progress_bar_create.bind(@)
+          method : 'post'
+          data : data
+          url : Routes.nhri_icc_reference_documents_path(current_locale)
+          success : @save_upload_document_callback
+          context : @
+          processData : false
+          contentType : false # jQuery correctly sets the contentType and boundary values
+    formData : ->
+      @asFormData @get('persistent_attributes') # in ractive_local_methods, returns a FormData instance
+    save_upload_document_callback : (response, status, jqxhr)->
+      UserInput.reset()
+      @remove_file()
+      icc_reference_document_uploader.unshift('files',response.file)
+    remove_file : ->
+      @parent.remove(@_guid)
+    validate : ->
+      @validator.validate()
 
   UploadDocuments = Ractive.extend
     template: "#upload_documents_template"
     components:
       uploadDocument : UploadDocument
-    remove : (uploadfile)->
-      index = _(@findAllComponents(uploadfile)).indexOf(uploadfile)
-      @splice('upload_files',index,1)
-    remove_upload_file : (upload_file_guid)->
-      guids = _(@findAllComponents('uploadfile')).map('_guid')
-      index = _(guids).indexOf(upload_file_guid)
-      @splice('upload_files',index,1)
+    remove : (guid)->
+      guids = _(@findAllComponents('uploadDocument')).pluck('_guid')
+      index = _(guids).indexOf(guid)
+      @splice('upload_documents',index,1)
 
   Doc = Ractive.extend
     template: '#template-download'
@@ -156,6 +166,19 @@ $ ->
     add_file : (file)->
       @set(file)
       $('#reminders_modal').modal('show')
+    delete_document : ->
+      data = {'_method' : 'delete'}
+      url = Routes.nhri_icc_reference_document_path(current_locale, @get('id'))
+      # TODO if confirm
+      $.ajax
+        method : 'post'
+        url : url
+        data : data
+        success : @delete_callback
+        dataType : 'json'
+        context : @
+    delete_callback : (data,textStatus,jqxhr)->
+      @parent.remove(@get('id'))
     , Remindable
 
   Docs = Ractive.extend
@@ -164,6 +187,10 @@ $ ->
       doc : Doc
     docs_without : (doc)->
       _(@findAllComponents('doc')).reject((this_doc)-> this_doc.get('id') == doc.get('id'))
+    remove : (id)->
+      indexes = _(@findAllComponents('doc')).map((doc)->doc.get('id'))
+      index_to_remove = indexes.indexOf(id)
+      @splice('files',index_to_remove,1)
 
   uploader_options =
     el: '#container'
@@ -178,6 +205,8 @@ $ ->
     computed :
       stripped_titles : ->
         _(@findAllComponents('doc')).map (doc)->doc.get('stripped_title')
+      empty_upload_files_list : ->
+        @get('upload_documents').length == 0
     select_file : ->
       @find('#primary_fileinput').click()
     add_file : (file)->
@@ -185,21 +214,22 @@ $ ->
         id : null
         file : file
         title: ''
-        file_id : ''
         url : ''
         original_filename : file.name
         filesize : file.size
         original_type : file.type
-        document_group_id : @get('document_group_id')
-        revision : null
+        lastModifiedDate : file.lastModifiedDate
       icc_reference_document_uploader.unshift('upload_documents', attached_document)
     start_upload : ->
-      flash.notify()
-      _(@findAllComponents('uploadfile')).each (uploadfile)->
-        uploadfile.submit()
+      flash.notify() if @get('empty_upload_files_list')
+      _(@findAllComponents('uploadDocument')).each (upload_document)->
+        upload_document.submit()
     flash_hide : ->
       @event.original.stopPropagation()
       flash.hide()
+    cancel_all : ->
+      @flash_hide()
+      @set('upload_documents',[])
 
   window.start_page = ->
     window.icc_reference_document_uploader = new Ractive uploader_options

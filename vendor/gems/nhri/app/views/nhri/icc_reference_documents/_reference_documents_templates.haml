@@ -89,7 +89,7 @@
         .icon
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
       .col-md-1{:style => "text-align:center; width:8%"}
-        .icon.delete
+        .icon.delete{'on-click'=>'delete_document()'}
           %i.fa.fa-trash-o.fa-lg
 
 %script#files{:type => 'ractive/template'}
@@ -105,14 +105,14 @@
 
 %script#upload_documents_template{:type => 'html/template'}
   {{#upload_documents}}
-  <uploadDocument document_group_id='{{document_group_id}}' title='{{title}}', original_filename='{{original_filename}}', filesize='{{filesize}}', lastModifiedDate='{{lastModifiedDate}}', file='{{file}}', original_type='{{original_type}}', type='{{type}}', revision='{{revision}}' />
+  <uploadDocument document_group_id='{{document_group_id}}' title='{{title}}', original_filename='{{original_filename}}', filesize='{{filesize}}', lastModifiedDate='{{lastModifiedDate}}', file='{{file}}', original_type='{{original_type}}' />
   {{/upload_documents}}
 
 %script#upload_document_template{:type => 'html/template'}
   .panel.panel-default.template-upload{:intro => :fade}
     .panel-heading
       %table{:width => '100%'}
-        %tr{:style => "vertical-align:top;"}
+        %tr{:style=>"vertical-align:top"}
           %td{:colspan => 2}
             %p.name {{ original_filename }}
             .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
@@ -125,18 +125,20 @@
             .size
             .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
               .progress-bar.progress-bar-success{:style => "width:0%"}
-        %tr{:style => "vertical-align:top;"}
+        %tr{:style=>"vertical-align:top"}
           %td.title.form-group
-            {{> .context+"_title_selector" }}
-            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.title_error_message')
-            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
-            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.icc_revision_in_non_icc_primary_error_message')
-          %td.revision
-            %label{:for => "internal_document_revision"}= t('.revision')
-            %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}
+            %label{:for =>"icc_reference_document_title"}= t('.doc_title')
+            %input#icc_reference_document_title{:type => :text, :name => "icc_reference_document[title]", :value => "{{title}}"}
+            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-top:0px; margin-bottom:0px;"}= t('.title_error_message')
+            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-top:0px; margin-bottom:0px;"}= t('.duplicate_title_error_message')
+            %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}", :style => "margin-top:0px; margin-bottom:0px;"}= t('.duplicate_title_error_message')
+          %td.source_url
+            %label{:for =>"icc_reference_document_source_url"}= t('.doc_url')
+            %input#icc_reference_document_source_url{:type => :text, :name => "icc_reference_document[source_url]", :value => "{{source_url}}"}
           %td
             %div.start{'on-click'=>'submit()'}
               %i.fa.fa-cloud-upload.fa-lg
           %td
             %div.cancel
               %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
+

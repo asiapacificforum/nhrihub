@@ -27,7 +27,7 @@ feature "internal document management", :js => true do
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#icc_reference_document_title").set("some file name")
     page.find("#icc_reference_document_source_url").set("http://www.example.com")
-    expect{upload_files_link.click; sleep(0.5)}.to change{IccReferenceDocument.count}.from(1).to(2)
+    expect{upload_files_link.click; wait_for_ajax}.to change{IccReferenceDocument.count}.from(1).to(2)
     expect(page).to have_css(".files .template-download", :count => 2)
     doc = IccReferenceDocument.last
     expect( doc.title ).to eq "some file name"
@@ -40,21 +40,20 @@ feature "internal document management", :js => true do
     expect(page_heading).to eq "NHRI ICC Accreditation Reference Documents"
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#icc_reference_document_title").set("")
-    expect{upload_files_link.click; sleep(0.5)}.to change{IccReferenceDocument.count}
+    expect{upload_files_link.click; wait_for_ajax}.to change{IccReferenceDocument.count}
     expect(page).to have_css(".title", :text => 'first_upload_file')
   end
 
   scenario "start upload before any docs have been selected" do
     expect(page_heading).to eq "NHRI ICC Accreditation Reference Documents"
     upload_files_link.click
-    debugger
     expect(flash_message).to eq "You must first click \"Add files...\" and select file(s) to upload"
   end
 
   scenario "upload an unpermitted file type" do
     page.attach_file("primary_file", upload_image, :visible => false)
     expect(page).to have_css('.error', :text => "File type not allowed")
-    expect{ upload_files_link.click; sleep(0.5)}.not_to change{IccReferenceDocument.count}
+    expect{ upload_files_link.click; wait_for_ajax}.not_to change{IccReferenceDocument.count}
   end
 
   scenario "upload an unpermitted file type and cancel" do
@@ -90,19 +89,19 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete a file from database" do
-    expect{page.find('.template-download .delete').click; sleep(0.3)}.to change{IccReferenceDocument.count}.to(0)
+    expect{page.find('.template-download .delete').click; wait_for_ajax}.to change{IccReferenceDocument.count}.to(0)
     expect(page.all('.template-download').count).to eq 0
   end
 
   scenario "delete a file from filesystem" do
-    expect{ page.find('.template-download .delete').click; sleep(0.3)}.to change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
+    expect{ page.find('.template-download .delete').click; wait_for_ajax}.to change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
   end
 
   scenario "view file details", :js => true do
     expect(page).to have_css(".files .template-download", :count => 1)
     expect(page).to have_css("div.icon.details")
     page.execute_script("$('div.icon.details').first().trigger('mouseenter')")
-    sleep(0.2) # transition animation
+    #sleep(0.2) # transition animation
     expect(page).to have_css('.fileDetails')
     expect(page.find('.popover-content .name' ).text).to         eq (@doc.original_filename)
     expect(page.find('.popover-content .size' ).text).to         match /\d+\.?\d+ KB/
@@ -117,9 +116,8 @@ feature "internal document management", :js => true do
     click_the_edit_icon(page)
     page.find('.template-download input.title').set("new document title")
     page.find('.template-download input.source_url').set("http://www.google.com")
-    expect{ click_edit_save_icon(page) }.to change{ @doc.reload.title }.to("new document title")
+    expect{ click_edit_save_icon(page); wait_for_ajax }.to change{ @doc.reload.title }.to("new document title")
     expect(@doc.source_url).to eq "http://www.google.com"
-    sleep(0.3)
     expect(page.find('.template-download .title .no_edit').text).to eq "new document title"
     expect(page.find('.template-download .source_url .no_edit').text).to eq "http://www.google.com"
   end
@@ -155,11 +153,11 @@ feature "internal document management", :js => true do
   end
 
 
-  describe "add multiple icc accreditation files" do
+  describe "add multiple icc accreditation reference files" do
     before do
       expect(page_heading).to eq "NHRI ICC Accreditation Reference Documents"
       # first doc
-      attach_file("primary_file", upload_document, :first_time)
+      attach_file("primary_file", upload_document)
       page.find("#icc_reference_document_title").set("fancy file")
       # second doc
       attach_file("primary_file", upload_document)
@@ -170,7 +168,7 @@ feature "internal document management", :js => true do
     end
 
     scenario "upload with buttonbar action" do
-      expect{upload_files_link.click; sleep(0.5)}.to change{IccReferenceDocument.count}.by(3)
+      expect{upload_files_link.click; wait_for_ajax}.to change{IccReferenceDocument.count}.by(3)
       persisted_titles = IccReferenceDocument.all.map(&:title)
       expect(persisted_titles).to include("fancy file")
       expect(persisted_titles).to include("kook file")
@@ -182,9 +180,9 @@ feature "internal document management", :js => true do
     end
 
     scenario "upload with multiple individual actions" do
-      expect{ upload_single_file_link_click(:first) ; sleep(0.4) }.to change{ IccReferenceDocument.count }.by(1)
-      expect{ upload_single_file_link_click(:second); sleep(0.4) }.to change{ IccReferenceDocument.count }.by(1)
-      expect{ upload_single_file_link_click(:third) ; sleep(0.4) }.to change{ IccReferenceDocument.count }.by(1)
+      expect{ upload_single_file_link_click(:first) ; wait_for_ajax }.to change{ IccReferenceDocument.count }.by(1)
+      expect{ upload_single_file_link_click(:second); wait_for_ajax }.to change{ IccReferenceDocument.count }.by(1)
+      expect{ upload_single_file_link_click(:third) ; wait_for_ajax }.to change{ IccReferenceDocument.count }.by(1)
     end
   end
 end
