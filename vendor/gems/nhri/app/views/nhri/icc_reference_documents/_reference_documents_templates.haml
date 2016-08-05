@@ -1,34 +1,7 @@
 %script#uploader_template{:type => 'html/template'}
-  / The file upload form used as target for the jQuery fileupload widget
-  / this is the fileupload configuration when uploading files via the buttonbar
-  .fileupload.buttonbar{:decorator => "primary_fileupload", :'data-file-input' => '#primary_fileinput' }
-    / The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload
-    .row.fileupload-buttonbar
-      .col-lg-10
-        / The fileinput-button span is used to style the file input field as button
-        %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()'}
-          %i.fa.fa-plus.fa-lg{'onclick'=>"$('#primary_fileinput').click()", :style => "color:white"}
-          %span{'onclick'=>"$('#primary_fileinput').click()"}= t('.add')
-          %input#primary_fileinput{:multiple => "multiple", :name => "primary_file", :type => "file"}
-        %button.btn.btn-primary.start{'on-click'=>'start_upload()', :type => "submit"}
-          %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
-          %span= t('.start')
-        %button.btn.btn-warning.cancel{:type => "reset", 'on-click'=>'flash_hide()'}
-          %i.fa.fa-ban.fa-lg{:style => "color:white"}
-          %span= t('.cancel')
-    .row.fileupload_progress
-      / The global progress state
-      .col-lg-10.fileupload-progress.fade
-        / The global progress bar
-        .progress.progress-striped.active{"aria-valuemax" => "100", "aria-valuemin" => "0", :role => "progressbar"}
-          .progress-bar.progress-bar-success{:style => "width:0%;"}
-        / The extended global progress state
-        .progress-extended  
-    .row
-      .col-lg-10#uploads
-        <uploadfiles/>
-    .row
-      .col-lg-10.the_files
+  .fileupload.buttonbar
+    {{> fileuploadButtonbar }}
+    <uploadDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' upload_documents='{{upload_documents}}' named_document_datalist='{{complaint_named_documents_titles}}' />
     .row
       .col-lg-10
         / The table listing the files available for upload/download
@@ -116,7 +89,7 @@
         .icon
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
       .col-md-1{:style => "text-align:center; width:8%"}
-        .icon.delete{'decorator'=>'doc_deleter'}
+        .icon.delete
           %i.fa.fa-trash-o.fa-lg
 
 %script#files{:type => 'ractive/template'}
@@ -130,33 +103,37 @@
 
   / The template to display files ready for upload
 
-%script#upload_template{:type => 'html/template'}
-  .panel.panel-default.fade.template-upload{:intro => :fade}
+%script#upload_documents_template{:type => 'html/template'}
+  {{#upload_documents}}
+  <uploadDocument document_group_id='{{document_group_id}}' title='{{title}}', original_filename='{{original_filename}}', filesize='{{filesize}}', lastModifiedDate='{{lastModifiedDate}}', file='{{file}}', original_type='{{original_type}}', type='{{type}}', revision='{{revision}}' />
+  {{/upload_documents}}
+
+%script#upload_document_template{:type => 'html/template'}
+  .panel.panel-default.template-upload{:intro => :fade}
     .panel-heading
       %table{:width => '100%'}
-        %tr
+        %tr{:style => "vertical-align:top;"}
           %td{:colspan => 2}
-            %p.name {{ name }}
+            %p.name {{ original_filename }}
             .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
               %span.help-block.error#filesize_error= t('.too_large')
-            .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
-              %span.help-block.error#filetype_error= t('.unpermitted_type')
+            .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
+              %span.help-block.error#original_type_error= t('.unpermitted_type')
             .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
               %span.help-block.error#unconfigured_filetypes_error= t('.noFileTypes')
           %td{:colspan => 2}
             .size
             .progress.progress-striped.active{:role => 'progressbar', :aria_valuemin => '0', :aria_valuemax => '100', :aria_valuenow=>'0'}
               .progress-bar.progress-bar-success{:style => "width:0%"}
-        %tr
-          %td.title
-            %label{:for =>"icc_reference_document_title"}= t('.doc_title')
-            %input#icc_reference_document_title{:type => :text, :name => "icc_reference_document[title]", :value => "{{title}}"}
-            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}"}= t('.title_error_message')
-            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
-            %span.help-block.error#duplicate_icc_title_error{:class =>"{{#duplicate_icc_title_error}}has-error{{/}}"}= t('.duplicate_title_error_message')
-          %td.source_url
-            %label{:for =>"icc_reference_document_source_url"}= t('.doc_url')
-            %input#icc_reference_document_source_url{:type => :text, :name => "icc_reference_document[source_url]", :value => "{{source_url}}"}
+        %tr{:style => "vertical-align:top;"}
+          %td.title.form-group
+            {{> .context+"_title_selector" }}
+            %span.help-block.error#title_error{:class =>"{{#title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.title_error_message')
+            %span.help-block.error#duplicate_title_error{:class =>"{{#duplicate_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.duplicate_title_error_message')
+            %span.help-block.error#icc_revision_to_non_icc_primary_error{:class =>"{{#icc_title_error}}has-error{{/}}", :style => "margin-left:148px;"}= t('.icc_revision_in_non_icc_primary_error_message')
+          %td.revision
+            %label{:for => "internal_document_revision"}= t('.revision')
+            %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}
           %td
             %div.start{'on-click'=>'submit()'}
               %i.fa.fa-cloud-upload.fa-lg

@@ -10,90 +10,40 @@
 Ractive.DEBUG = false
 
 $ ->
+  FileInput = (node)->
+    $(node).on 'change', (event)->
+      add_file = (event,el)->
+        file = el.files[0]
+        ractive = Ractive.getNodeInfo($(el).closest('.fileupload')[0]).ractive
+        ractive.add_file(file)
+        _reset_input()
+      _reset_input = ->
+        input = $(node)
+        input.wrap('<form></form>').closest('form').get(0).reset()
+        input.unwrap()
+      add_file(event,@)
+    return {
+      teardown : ->
+        $(node).off 'change'
+      update : ->
+        #noop
+    }
 
-  # these options apply to the primary fileupload
-  window.fileupload_options =
-    permittedFiletypes: window.permitted_filetypes
-    maxFileSize: parseInt(window.maximum_filesize)
-    failed: (e,data)->
-      if data.errorThrown != 'abort'
-        alert("The upload failed for some reason")
-    prependFiles : false
-    filesContainer: '.files'
-    downloadTemplateId: '#template-download'
-    uploadTemplateContainerId: '#uploads'
-    fileInput: '#primary_fileinput'
-    #replaceFileInput: false # this doesn't seem to cause any problem, and it solves problems caused by replacing the file input!
-    replaceFileInput: true
-    url : 'icc_reference_documents.json',
-    paramName : 'icc_reference_document[file]',
-    uploadTemplateId : '#upload_template' 
-    uploadTemplate : Ractive.parse($('#upload_template').html())
-    done: (e, data)->
-      if e.isDefaultPrevented()
-          return false
-      # 'this' is the upload form
-      # $this.data is a jQuery widget
-      that = $(@).data('blueimp-fileupload') || $(@).data('fileupload')
-      current_locale = that.options.current_locale()
-      getFilesFromResponse = data.getFilesFromResponse || that.options.getFilesFromResponse
-      file = data.result.file
-      ractive = Ractive.getNodeInfo(@).ractive # it's the icc_reference_documents_uploader ractive instance
-      ractive.add_file(file)
-      upload_file = Ractive.getNodeInfo(data.context[0]).ractive
-      upload_file.parent.remove_upload_file(upload_file._guid)
-      that._trigger('completed', e, data)
-      that._trigger('finished', e, data)
-    add : (e, data) ->
-      if e.isDefaultPrevented()
-        return false
-      $this = $(@)
-      that = $this.data('blueimp-fileupload') or $this.data('fileupload')
-      _(data.files).each (file)->
-        file_attrs =
-          name : file.name
-          size: file.size
-          type: file.type
-          title: ""
-          fileupload: data
-          primary : true
-        icc_reference_document_uploader.
-          unshift('upload_files', file_attrs).
-          then(
-            new_upload = icc_reference_document_uploader.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
-            data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
-            data.context.addClass('in')
-            new_upload.validate_file_constraints()
-          )
-      return
-    destroy : (event, data) ->
-      if event.isDefaultPrevented()
-        return false
-      ractive = Ractive.getNodeInfo(event.originalEvent.target).ractive
-      delete_url = ractive.get('url')
-      that = $(event.originalEvent.target).closest('.fileupload').data('blueimpFileupload')
-      data = $.extend(data, that.options, ractive.get(), type: 'DELETE')
-      removeNode = (resp, stat, jqx) ->
-          index = @parent.findAllComponents('doc').indexOf(this)
-          @parent.splice 'files', index, 1
-      data.url = delete_url
-      data.dataType = 'json'
-      data.context = ractive
-      $.ajax(data).done(removeNode).fail ->
-        that._trigger 'destroyfailed', event, data
-        return
-      return
+  Ractive.decorators.ractive_fileupload = FileInput
 
-  PrimaryFileUpload = (node)->
-    $(node).fileupload _.extend({}, fileupload_options)
-    teardown : ->
-      id = Ractive.getNodeInfo(node).ractive.get('id')
-      $(node).fileupload "destroy"
-      $(node).fileupload _.extend({}, fileupload_options)
-    update : ->
-      id = Ractive.getNodeInfo(node).ractive.get('id')
-      $(node).fileupload "destroy"
-      $(node).fileupload _.extend({}, fileupload_options)
+  FileSelectTrigger = (node)->
+    $(node).on 'click', (event)->
+      UserInput.terminate_user_input_request()
+      UserInput.reset()
+      $('input:file').trigger('click')
+    return {
+      teardown : ->
+        $(node).off 'click'
+      update : ->
+        #noop
+    }
+
+  Ractive.decorators.file_select_trigger = FileSelectTrigger
 
   EditInPlace = (node,id)->
     @edit = new InpageEdit
@@ -125,27 +75,27 @@ $ ->
     teardown: ->
       $(node).off('mouseenter')
 
-  DocDeleter = (node)->
-    $(node).on 'click', (event)->
-      ev = $.Event(event)
-      context = $(event.target).closest('table.document')
-      data = $(event.target).closest('.fileupload').data()
-      $(event.target).
-        closest('.fileupload').
-        fileupload('option','destroy')( ev, $.extend({
-                                                    context: context,
-                                                    type: 'DELETE'
-                                                }, data))
-    teardown : ->
-      $(node).off 'click'
+  #DocDeleter = (node)->
+    #$(node).on 'click', (event)->
+      #ev = $.Event(event)
+      #context = $(event.target).closest('table.document')
+      #data = $(event.target).closest('.fileupload').data()
+      #$(event.target).
+        #closest('.fileupload').
+        #fileupload('option','destroy')( ev, $.extend({
+                                                    #context: context,
+                                                    #type: 'DELETE'
+                                                #}, data))
+    #teardown : ->
+      #$(node).off 'click'
 
-  Ractive.decorators.primary_fileupload = PrimaryFileUpload
+  #Ractive.decorators.primary_fileupload = PrimaryFileUpload
   Ractive.decorators.inpage_edit = EditInPlace
-  Ractive.decorators.doc_deleter = DocDeleter
+  #Ractive.decorators.doc_deleter = DocDeleter
   Ractive.decorators.popover = Popover
 
-  UploadFile = Ractive.extend
-    template : "#upload_template"
+  UploadDocument = Ractive.extend
+    template : "#upload_document_template"
     computed :
       formData : ->
         [ {name : 'icc_reference_document[title]', value : @get('title')}
@@ -164,21 +114,15 @@ $ ->
       !@get('filetype_error') && !@get('filesize_error') && !@get('unconfigured_filetypes_error')
     cancel_upload : ->
       @parent.remove(@)
-    duplicated_title_in_this_upload : ->
-      false
-    duplicated_title_with_existing_file : -> #returns true for duplicate found
-      false
-    duplicate_primary_file : ->
-      @duplicated_title_in_this_upload() || @duplicated_title_with_existing_file()
     submit : ->
-      unless @duplicate_primary_file() || !@validate_file_constraints()
+      unless !@validate_file_constraints()
         @get('fileupload').formData = @get('formData')
         @get('fileupload').submit()
 
-  UploadFiles = Ractive.extend
-    template: "{{#upload_files}}<uploadfile title='{{title}}' size='{{size}}' name='{{name}}' />{{/upload_files}}"
+  UploadDocuments = Ractive.extend
+    template: "#upload_documents_template"
     components:
-      uploadfile : UploadFile
+      uploadDocument : UploadDocument
     remove : (uploadfile)->
       index = _(@findAllComponents(uploadfile)).indexOf(uploadfile)
       @splice('upload_files',index,1)
@@ -226,18 +170,29 @@ $ ->
     template : '#uploader_template'
     data:
       files : files
-      upload_files : []
+      upload_documents : []
       _ : _ # use underscore for sorting
     components :
       docs : Docs
-      uploadfiles : UploadFiles
+      uploadDocuments : UploadDocuments
     computed :
       stripped_titles : ->
         _(@findAllComponents('doc')).map (doc)->doc.get('stripped_title')
     select_file : ->
       @find('#primary_fileinput').click()
     add_file : (file)->
-      @unshift('files',file)
+      attached_document =
+        id : null
+        file : file
+        title: ''
+        file_id : ''
+        url : ''
+        original_filename : file.name
+        filesize : file.size
+        original_type : file.type
+        document_group_id : @get('document_group_id')
+        revision : null
+      icc_reference_document_uploader.unshift('upload_documents', attached_document)
     start_upload : ->
       flash.notify()
       _(@findAllComponents('uploadfile')).each (uploadfile)->

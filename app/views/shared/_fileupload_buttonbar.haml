@@ -1,0 +1,14 @@
+%script#fileuploadButtonbar{:type => 'template/ractive'}
+  .row.fileupload-buttonbar
+    .col-lg-9
+      %input.hidden_fileinput{:id => "primary_fileinput", :multiple => "multiple", :name => "primary_file", :type => "file", :decorator=>:ractive_fileupload}
+      %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()', :decorator => :file_select_trigger}
+        %i.fa.fa-plus.fa-lg{ :style => "color:white"}
+        %span= t('.add')
+      %button.btn.btn-primary.start{'on-click'=>'start_upload()', :type => "submit"}
+        %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
+        %span= t('.start')
+      %button.btn.btn-warning.cancel{:type => "reset", 'on-click'=>'cancel_all()'}
+        %i.fa.fa-ban.fa-lg{:style => "color:white"}
+        %span= t('.cancel')
+
