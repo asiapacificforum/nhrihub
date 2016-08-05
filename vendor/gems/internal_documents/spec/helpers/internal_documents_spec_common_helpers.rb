@@ -41,6 +41,10 @@ module InternalDocumentsSpecCommonHelpers
     page.find(".template-upload .fa-ban").click
   end
 
+  def click_global_cancel_icon
+    page.find(".fileupload-buttonbar .fa-ban").click
+  end
+
   def archive_panel
     page.find('.collapse', :text => 'Archive')
   end

@@ -17,16 +17,16 @@ Ractive.DEBUG = false
 $ ->
   FileInput = (node)->
     $(node).on 'change', (event)->
+      add_file = (event,el)->
+        file = el.files[0]
+        ractive = Ractive.getNodeInfo($(el).closest('.fileupload')[0]).ractive
+        ractive.add_file(file)
+        _reset_input()
+      _reset_input = ->
+        input = $(node)
+        input.wrap('<form></form>').closest('form').get(0).reset()
+        input.unwrap()
       add_file(event,@)
-    add_file = (event,el)->
-      file = el.files[0]
-      ractive = Ractive.getNodeInfo($(el).closest('.fileupload')[0]).ractive
-      ractive.add_file(file)
-      _reset_input()
-    _reset_input = ->
-      input = $(node)
-      input.wrap('<form></form>').closest('form').get(0).reset()
-      input.unwrap()
     return {
       teardown : ->
         $(node).off 'change'
@@ -40,6 +40,8 @@ $ ->
     $(node).on 'click', (event)->
       source = Ractive.getNodeInfo(@).ractive # might be an archive doc (has document_group_id) or primary doc (no document_group_id)
       internal_document_uploader.findComponent('uploadDocuments').set('document_group_id', source.get('document_group_id'))
+      UserInput.terminate_user_input_request()
+      UserInput.reset()
       $('input:file').trigger('click')
     return {
       teardown : ->
@@ -69,7 +71,7 @@ $ ->
     formData : ->
       @asFormData @get('persistent_attributes') # in ractive_local_methods, returns a FormData instance
     save_upload_document_callback : (response, status, jqxhr)->
-      #UserInput.reset()
+      UserInput.reset()
       @remove_file()
       if response.file.archive_files.length == 0
         internal_document_uploader.unshift('files',response.file)
@@ -109,20 +111,6 @@ $ ->
         context == 'icc'
     remove_file : ->
       @parent.remove(@_guid)
-    #delete_document : ->
-      #data = {'_method' : 'delete'}
-      ## TODO if confirm
-      #$.ajax
-        #method : 'post'
-        #url : @get('url')
-        #data : data
-        #success : @delete_callback
-        #dataType : 'json'
-        #context : @
-    #delete_callback : (data,textStatus,jqxhr)->
-      #@parent.remove(@_guid)
-    #download_attachment : ->
-      #window.location = @get('url')
     validate : ->
       @validator.validate()
     cancel_upload : ->
@@ -242,10 +230,8 @@ $ ->
       url : -> Routes.internal_document_path(current_locale,@get('id'))
       file : -> true
       archive_file : -> false
-      stripped_title : ->
-        @get('title').replace(/\s/g,"").toLowerCase()
-      title_edit_permitted : ->
-        true
+      stripped_title : -> @get('title').replace(/\s/g,"").toLowerCase()
+      title_edit_permitted : -> true
     components :
       archivedoc : ArchiveDoc
     download_file : ->
@@ -269,11 +255,10 @@ $ ->
       internal_document_uploader.unshift('upload_documents', attached_document)
     delete_document : ->
       data = {'_method' : 'delete'}
-      url = Routes.internal_document_path(current_locale, @get('id'))
       # TODO if confirm
       $.ajax
         method : 'post'
-        url : url
+        url : @get('url')
         data : data
         success : @delete_callback
         dataType : 'json'
@@ -342,6 +327,9 @@ $ ->
       flash.hide()
     replace : (primary_file)-> # an archive file was added... replace the document group with the returned primary plus archive files
       @findComponent('docs').replace(primary_file)
+    cancel_all : ->
+      @flash_hide()
+      @set('upload_documents',[])
 
   window.start_page = ->
     window.internal_document_uploader = new Ractive uploader_options

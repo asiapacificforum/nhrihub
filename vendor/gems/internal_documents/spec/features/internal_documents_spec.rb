@@ -272,6 +272,19 @@ feature "internal document management", :js => true do
     expect(page).not_to have_selector('.template-upload', :visible => true)
   end
 
+  scenario "initiate adding revisions and cancel all" do
+    set_upload_source_to_revision
+    page.attach_file("primary_file", upload_document, :visible => false)
+    expect(page).to have_selector('.template-upload', :visible => true)
+
+    set_upload_source_to_revision
+    page.attach_file("primary_file", upload_document, :visible => false)
+    expect(page).to have_selector('.template-upload', :visible => true, :count => 2)
+
+    click_global_cancel_icon
+    expect(page).not_to have_selector('.template-upload', :visible => true)
+  end
+
   xscenario "ensure all functions in download-template work for newly added docs and edited docs" do
 
   end

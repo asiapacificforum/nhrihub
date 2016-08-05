@@ -7,8 +7,8 @@
       original_type:
         ['match', @get('permitted_filetypes')]
     @set('unconfigured_validation_parameter_error',false)
-    #@validator = new Validator(@)
-    #@validator.validate() unless @get('persisted')
+    @validator = new Validator(@)
+    @validator.validate() unless @get('persisted')
   computed :
     persistent_attributes : ->
       ['title', 'filename', 'filesize', 'lastModifiedDate', 'file', 'original_type'] unless @get('persisted')

@@ -47,6 +47,7 @@ feature "internal document management", :js => true do
   scenario "start upload before any docs have been selected" do
     expect(page_heading).to eq "NHRI ICC Accreditation Reference Documents"
     upload_files_link.click
+    debugger
     expect(flash_message).to eq "You must first click \"Add files...\" and select file(s) to upload"
   end
 

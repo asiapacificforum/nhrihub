@@ -11,7 +11,7 @@
   var permitted_filetypes = #{ IccReferenceDocument.permitted_filetypes }
   var files = #{ @icc_reference_documents.to_json }
   var files_list_error = "#{t('.flash.no_files_error')}"
-  //var required_files_titles = #{@required_files_titles.to_json}
-  //var context = "icc"
+  var required_files_titles = #{@required_files_titles.to_json}
+  var context = "icc"
 
 = javascript_include_tag "nhri/reference_documents"
