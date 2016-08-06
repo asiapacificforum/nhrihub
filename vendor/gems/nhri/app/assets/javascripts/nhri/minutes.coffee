@@ -1,71 +1,44 @@
-//= require 'jquery_datepicker'
+#= require 'jquery_datepicker'
+#= require ractive_validator
+#= require ractive_local_methods
 
 Ractive.DEBUG = false
 
 $ ->
-  window.fileupload_options =
-    permittedFiletypes: window.permitted_filetypes
-    maxFileSize: parseInt(window.maximum_filesize)
-    failed: (e,data)->
-      if data.errorThrown != 'abort'
-        alert("The upload failed for some reason")
-    prependFiles : false
-    filesContainer: '.files'
-    downloadTemplateId: '#template-download'
-    uploadTemplateContainerId: '#uploads'
-    fileInput: '#primary_fileinput'
-    replaceFileInput: true
-    url : 'minutes.json',
-    paramName : 'advisory_council_minutes[file]',
-    uploadTemplateId : '#upload_template' 
-    uploadTemplate : Ractive.parse($('#upload_template').html())
-    done: (e, data)->
-      if e.isDefaultPrevented()
-          return false
-      # 'this' is the upload form
-      # $this.data is a jQuery widget
-      that = $(@).data('blueimp-fileupload') || $(@).data('fileupload')
-      current_locale = that.options.current_locale()
-      getFilesFromResponse = data.getFilesFromResponse || that.options.getFilesFromResponse
-      file = data.result
-      ractive = Ractive.getNodeInfo(@).ractive # it's the ractive instance
-      ractive.add_file(file)
-      upload_file = Ractive.getNodeInfo(data.context[0]).ractive
-      upload_file.parent.remove_upload_file(upload_file._guid)
-      that._trigger('completed', e, data)
-      that._trigger('finished', e, data)
-    add : (e, data) ->
-      if e.isDefaultPrevented()
-        return false
-      $this = $(@)
-      that = $this.data('blueimp-fileupload') or $this.data('fileupload')
-      _(data.files).each (file)->
-        file_attrs =
-          lastModifiedDate: file.lastModifiedDate
-          name : file.name
-          size: file.size
-          type: file.type
-          fileupload: data
-        advisory_council_minutes_document_uploader.
-          unshift('upload_files', file_attrs).
-          then(
-            new_upload = advisory_council_minutes_document_uploader.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
-            data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
-            data.context.addClass('in')
-            new_upload.validate_file_constraints()
-          )
-      return
+  FileInput = (node)->
+    $(node).on 'change', (event)->
+      add_file = (event,el)->
+        file = el.files[0]
+        ractive = Ractive.getNodeInfo($(el).closest('.fileupload')[0]).ractive
+        ractive.add_file(file)
+        _reset_input()
+      _reset_input = ->
+        input = $(node)
+        input.wrap('<form></form>').closest('form').get(0).reset()
+        input.unwrap()
+      add_file(event,@)
+    return {
+      teardown : ->
+        $(node).off 'change'
+      update : ->
+        #noop
+    }
 
-  PrimaryFileUpload = (node)->
-    $(node).fileupload _.extend({}, fileupload_options)
-    teardown : ->
-      id = Ractive.getNodeInfo(node).ractive.get('id')
-      $(node).fileupload "destroy"
-      $(node).fileupload _.extend({}, fileupload_options)
-    update : ->
-      id = Ractive.getNodeInfo(node).ractive.get('id')
-      $(node).fileupload "destroy"
-      $(node).fileupload _.extend({}, fileupload_options)
+  Ractive.decorators.ractive_fileupload = FileInput
+
+  FileSelectTrigger = (node)->
+    $(node).on 'click', (event)->
+      UserInput.terminate_user_input_request()
+      UserInput.reset()
+      $('input:file').trigger('click')
+    return {
+      teardown : ->
+        $(node).off 'click'
+      update : ->
+        #noop
+    }
+
+  Ractive.decorators.file_select_trigger = FileSelectTrigger
 
   Popover = (node)->
     $(node).popover
@@ -112,48 +85,64 @@ $ ->
       $(node).datepicker( "destroy" )
 
   Ractive.decorators.inpage_edit = EditInPlace
-  Ractive.decorators.primary_fileupload = PrimaryFileUpload # for the archive file upload
+  #Ractive.decorators.primary_fileupload = PrimaryFileUpload # for the archive file upload
   Ractive.decorators.popover = Popover
 
-  AdvisoryCouncilMinutesValidation =
-    validate_file_constraints : -> # the attributes that are checked when a file is added
-      extension = @get('name').split('.').pop()
-      @set('unconfigured_filetypes_error', permitted_filetypes.length == 0)
-      @set('filetype_error', permitted_filetypes.indexOf(extension) == -1)
-      @set('filesize_error', @get('size') > maximum_filesize)
-      !@get('filetype_error') && !@get('filesize_error') && !@get('unconfigured_filetypes_error')
-
-  UploadFile = Ractive.extend
+  UploadDocument = Ractive.extend
     template : "#upload_template"
+    oninit : ->
+      @set 'validation_criteria',
+        filesize :
+          ['lessThan', window.maximum_filesize]
+        original_type:
+          ['match', window.permitted_filetypes]
+      @set
+        unconfigured_validation_parameter_error:false
+        serialization_key:'advisory_council_minutes'
+      @validator = new Validator(@)
+      @validate_file() unless @get('persisted')
+    validate_file : ->
+      @validator.validate_attribute('filesize')
+      @validator.validate_attribute('original_type')
     decorators:
       datepicker : Datepicker
     computed :
-      formData : ->
-        [ {name : 'advisory_council_minutes[filesize]', value : @get('size')}
-          {name : 'advisory_council_minutes[original_type]', value : @get('type')}
-          {name : 'advisory_council_minutes[original_filename]', value : @get('name')}
-          {name : 'advisory_council_minutes[lastModifiedDate]', value : @get('lastModifiedDate')}
-          {name : 'advisory_council_minutes[date]', value : @get('date')}
-        ]
+      persistent_attributes : ->
+        ['filesize', 'original_type', 'original_filename', 'lastModifiedDate', 'date']
     cancel_upload : ->
       @parent.remove(@)
     submit : ->
-      if @validate_file_constraints()
-        @get('fileupload').formData = @get('formData')
-        @get('fileupload').submit()
-  , AdvisoryCouncilMinutesValidation
+      if @validate()
+        data = @formData()
+        $.ajax
+          # thanks to http://stackoverflow.com/a/22987941/451893
+          #xhr: @progress_bar_create.bind(@)
+          method : 'post'
+          data : data
+          url : Routes.nhri_advisory_council_minutes_index_path(current_locale)
+          success : @save_upload_document_callback
+          context : @
+          processData : false
+          contentType : false # jQuery correctly sets the contentType and boundary values
+    formData : ->
+      @asFormData @get('persistent_attributes') # in ractive_local_methods, returns a FormData instance
+    save_upload_document_callback : (response,statusText,jqxhr)->
+      UserInput.reset()
+      @remove_file()
+      advisory_council_minutes_document_uploader.unshift('files',response)
+    validate : ->
+      @validator.validate()
+    remove_file : ->
+      @parent.remove(@_guid)
 
-  UploadFiles = Ractive.extend
-    template: "{{#upload_files}}<uploadfile size='{{size}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' date='{{date}}' />{{/upload_files}}"
+  UploadDocuments = Ractive.extend
+    template: "{{#upload_documents}}<uploadDocument size='{{size}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' date='{{date}}' />{{/upload_documents}}"
     components:
-      uploadfile : UploadFile
-    remove : (uploadfile)->
-      index = _(@findAllComponents(uploadfile)).indexOf(uploadfile)
-      @splice('upload_files',index,1)
-    remove_upload_file : (upload_file_guid)->
-      guids = _(@findAllComponents('uploadfile')).map('_guid')
-      index = _(guids).indexOf(upload_file_guid)
-      @splice('upload_files',index,1)
+      uploadDocument : UploadDocument
+    remove : (guid)->
+      guids = _(@findAllComponents('uploadDocument')).pluck('_guid')
+      index = _(guids).indexOf(guid)
+      @splice('upload_documents',index,1)
 
   Doc = Ractive.extend
     template: '#template-download'
@@ -172,7 +161,6 @@ $ ->
         context : @
     delete_callback : (data,textStatus,jqxhr)->
       @parent.delete(@)
-  , AdvisoryCouncilMinutesValidation
 
   Docs = Ractive.extend
     template: '#files'
@@ -187,24 +175,32 @@ $ ->
     template : '#uploader_template'
     data:
       files : files
-      upload_files : []
+      upload_documents : []
       context : window.context
       _ : _ # use underscore for sorting
     computed :
-      empty_upload_files_list : ->
-        @get('upload_files').length == 0
+      empty_upload_documents_list : ->
+        @get('upload_documents').length == 0
     components :
       docs : Docs
-      uploadfiles : UploadFiles
+      uploadDocuments : UploadDocuments
     select_file : ->
       @find('#primary_fileinput').click()
     add_file : (file)->
-      @unshift('files',file)
+      attached_document =
+        id : null
+        file : file
+        url : ''
+        original_filename : file.name
+        filesize : file.size
+        original_type : file.type
+        lastModifiedDate : file.lastModifiedDate
+      @unshift('upload_documents',attached_document)
       @sort()
     start_upload : ->
-      flash.notify() if @get('empty_upload_files_list')
-      _(@findAllComponents('uploadfile')).each (uploadfile)->
-        uploadfile.submit()
+      flash.notify() if @get('empty_upload_documents_list')
+      _(@findAllComponents('uploadDocument')).each (uploadDocument)->
+        uploadDocument.submit()
     flash_hide : ->
       @event.original.stopPropagation()
       flash.hide()
@@ -217,17 +213,3 @@ $ ->
 
   start_page()
 
-  # this is a hack to workaround a jquery-fileupload-ui bug
-  # that causes multiple cancel events, due to multiple event
-  # handlers being attached
-  #$('#uploads').on 'click', 'i.cancel', (event)->
-    #event.preventDefault()
-    #template = $(event.currentTarget).closest('.template-upload,.template-download')
-    #data = template.data('data') || {}
-    #data.context = data.context || template
-    #if data.abort
-      #data.abort()
-    #else
-      #data.errorThrown = 'abort'
-      ##this._trigger('fail', event, data)
-      #$(@).closest('.fileupload').data('blueimp-fileupload').options.fail(event)

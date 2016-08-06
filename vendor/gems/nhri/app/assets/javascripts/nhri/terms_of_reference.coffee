@@ -1,5 +1,7 @@
 #= require ractive_validator
 #= require ractive_local_methods
+#= require 'flash'
+#= require 'in_page_edit'
 $ ->
   FileInput = (node)->
     $(node).on 'change', (event)->
