@@ -1,4 +1,5 @@
 #= require 'ractive_validator'
+#= require 'ractive_local_methods'
 $ ->
   class Subarea extends Collection.Subarea
 
@@ -269,6 +270,8 @@ $ ->
           title : 'notBlank'
           files : => _(@findAllComponents('outreacheventdocument')).all (doc) -> doc.get('valid')
       @validator = new Validator(@)
+    data : ->
+      serialization_key : 'outreach_event'
     _between : (min,max,val)->
       return true if _.isNaN(val) # declare match if there's no value
       min = if _.isNaN(min) # from the input element a zero-length string can be presented
@@ -387,7 +390,15 @@ $ ->
           $('.fileupload').fileupload('send',{files : _(files).compact()}) # handled by jquery-fileupload
         else
           url = @parent.get('create_outreach_event_url')
-          $.post(url, @persisted_attributes(), @update_oe, 'json') # handled right here
+          #$.post(url, @persisted_attributes(), @update_oe, 'json') # handled right here
+          $.ajax
+            method : 'post'
+            url : url
+            data : @persisted_attributes()
+            dataType : 'json'
+            success : @update_oe
+            processData : false
+            contentType : false
     validate : ->
       @validator.validate()
     update_oe : (data,textStatus,jqxhr)->
@@ -413,24 +424,12 @@ $ ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
     persisted_attributes: ->
-      attrs = _.chain(@get()).
-        pick('impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
-        omit((value, key, object)-> _.isNull(value) ).
-        value()
-      if _.isEmpty(@get('performance_indicator_ids'))
-        attrs.performance_indicator_ids = [""]
-      else
-        attrs.performance_indicator_ids = @get('performance_indicator_ids')
-      if _.isEmpty(@get('area_ids'))
-        attrs.area_ids = [""] # hack to workaround jQuery not sending empty arrays
-      else
-        attrs.area_ids = @get('area_ids')
-      if _.isEmpty(@get('subarea_ids'))
-        attrs.subarea_ids = [""]
-      else
-        attrs.subarea_ids = @get('subarea_ids')
-      {outreach_event : attrs }
+      persistent_attributes = ['performance_indicator_ids', 'subarea_ids', 'area_ids', 'impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count']
+      @asFormData persistent_attributes # in ractive_local_methods, returns a FormData instance
     formData : ->
+      # not ready for this until I get rid of jquery fileupload
+      #persistent_attributes = ['performance_indicator_ids', 'subarea_ids', 'area_ids', 'impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count']
+      #@asFormData persistent_attributes
       name_value = _.chain(@get()).
         pick('impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
         omit((value, key, object)-> _.isNull(value)).
@@ -479,6 +478,8 @@ $ ->
           success : success
           error : error
           context : context
+          processData : false
+          contentType : false
       else # handle it with jquery fileupload
         $('.fileupload').fileupload('option',{url:@get('url'), type:'put', formData:@formData()})
         files = _(@findAllComponents('outreacheventdocument')).map (oed)-> oed.get('file')
