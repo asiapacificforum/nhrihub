@@ -261,7 +261,7 @@ Project = Ractive.extend
   computed :
     persistent_attributes : ->
       # the asFormData method knows how to interpret 'project_documents_attributes'
-      ['title', 'description', 'type', 'mandate_ids', 'project_type_ids',
+      ['title', 'description', 'mandate_ids', 'project_type_ids',
        'agency_ids', 'convention_ids', 'performance_indicator_ids', 'project_documents_attributes']
     url : ->
       Routes.project_path(current_locale,@get('id'))
