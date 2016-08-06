@@ -8,9 +8,4 @@ class Nhri::AdvisoryCouncil::TermsOfReferenceVersion < AdvisoryCouncilDocument
     self.class.model_name.human(:revision => revision)
   end
 
-  def url
-    if persisted?
-      Rails.application.routes.url_helpers.nhri_advisory_council_terms_of_reference_path(I18n.locale, self)
-    end
-  end
 end

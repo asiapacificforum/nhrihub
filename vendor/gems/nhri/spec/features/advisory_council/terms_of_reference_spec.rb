@@ -26,37 +26,37 @@ feature "terms of reference document", :js => true do
 
   it "should append the added revision to the title" do
     page.attach_file("primary_file", upload_document, :visible => false)
-    expect{upload_files_link.click; sleep(0.5)}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(1)
+    expect{upload_files_link.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(1)
     expect(page).to have_selector('.terms_of_reference_version', :text => 'Terms of Reference, revision 4.0', :count => 1)
   end
 
   it "should accept and save user-entered revision" do
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find('#terms_of_reference_version_revision').set('3.4')
-    expect{upload_files_link.click; sleep(0.5)}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(1)
+    expect{upload_files_link.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(1)
     expect(page).to have_selector('.terms_of_reference_version', :text => 'Terms of Reference, revision 3.4', :count => 1)
   end
 
   it "should warn and not save duplicate revisions" do
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find('#terms_of_reference_version_revision').set('3.1')
-    expect{upload_files_link.click; sleep(0.5)}.not_to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}
-    expect(page).to have_selector('#duplicate_revision_error', :text => "Duplicate revision not allowed")
+    expect{upload_files_link.click; wait_for_ajax}.not_to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}
+    expect(page).to have_selector('#unique_revision_error', :text => "Duplicate revision not allowed")
     page.find('#terms_of_reference_version_revision').set('3.2')
-    expect{upload_files_link.click; sleep(0.5)}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(1)
+    expect{upload_files_link.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(1)
   end
 
   it "should warn and not save invalid revisions" do
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find('#terms_of_reference_version_revision').set('x')
-    expect{upload_files_link.click; sleep(0.5)}.not_to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}
-    expect(page).to have_selector('#invalid_revision_error', :text => "Invalid revision.")
+    expect{upload_files_link.click; wait_for_ajax}.not_to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}
+    expect(page).to have_selector('#revision_format_error', :text => "Invalid revision.")
   end
 
   it "should reorder the list if a revision is inserted in the middle" do
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find('#terms_of_reference_version_revision').set('2.2')
-    expect{upload_files_link.click; sleep(0.5)}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(1)
+    expect{upload_files_link.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(1)
     expect(page.all('.terms_of_reference_version .revision').map(&:text)).to eq ["3.1", "2.2", "1.2"]
   end
 
@@ -64,7 +64,7 @@ feature "terms of reference document", :js => true do
     tor = Nhri::AdvisoryCouncil::TermsOfReferenceVersion.where(:revision_major => 3).first.id
     first_edit_icon.click
     page.find('input.revision').set('5.1')
-    expect{edit_save_icon.click; sleep(0.3)}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.find(tor).revision}.from("3.1").to("5.1")
+    expect{edit_save_icon.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.find(tor).revision}.from("3.1").to("5.1")
     expect(page).to have_selector('.terms_of_reference_version', :text => 'Terms of Reference, revision 5.1', :count => 1)
   end
 
@@ -72,7 +72,7 @@ feature "terms of reference document", :js => true do
     tor = Nhri::AdvisoryCouncil::TermsOfReferenceVersion.where(:revision_major => 3).first.id
     first_edit_icon.click
     page.find('input.revision').set('0.9')
-    expect{edit_save_icon.click; sleep(0.3)}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.find(tor).revision}.from("3.1").to("0.9")
+    expect{edit_save_icon.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.find(tor).revision}.from("3.1").to("0.9")
     expect(page).to have_selector('.terms_of_reference_version', :text => 'Terms of Reference, revision 0.9', :count => 1)
     expect(page.all('.terms_of_reference_version .revision').map(&:text)).to eq ["1.2", "0.9"]
   end
@@ -80,19 +80,19 @@ feature "terms of reference document", :js => true do
   it "user is warned and no save occurs if a revision is duplicated by edit" do
     first_edit_icon.click
     page.find('input.revision').set('1.2')
-    expect{edit_save_icon.click; sleep(0.3)}.not_to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.first.revision}
-    expect(page).to have_selector('#duplicate_revision_error', :text => "Duplicate revision not allowed")
+    expect{edit_save_icon.click; wait_for_ajax}.not_to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.first.revision}
+    expect(page).to have_selector('#unique_revision_error', :text => "Duplicate revision not allowed")
   end
 
   it "user is warned and no save occurs if an illegal revision is entered" do
     first_edit_icon.click
     page.find('input.revision').set('x')
-    expect{edit_save_icon.click; sleep(0.3)}.not_to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.first.revision}
-    expect(page).to have_selector('#invalid_revision_error', :text => "Invalid revision.")
+    expect{edit_save_icon.click; wait_for_ajax}.not_to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.first.revision}
+    expect(page).to have_selector('#revision_format_error', :text => "Invalid revision.")
   end
 
   it "revision can be deleted" do
-    expect{first_delete_icon.click;sleep(0.2)}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(-1).
+    expect{first_delete_icon.click;wait_for_ajax}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(-1).
                                                and change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
     expect(page.all('.terms_of_reference_version').count).to eq 1
   end
@@ -100,7 +100,6 @@ feature "terms of reference document", :js => true do
   it "shows information popover populated with file details" do
     @doc = Nhri::AdvisoryCouncil::TermsOfReferenceVersion.first
     page.execute_script("$('div.icon.details').first().trigger('mouseenter')")
-    sleep(0.2) # transition animation
     expect(page).to have_css('.fileDetails')
     expect(page.find('.popover-content .name' ).text).to         eq (@doc.original_filename)
     expect(page.find('.popover-content .size' ).text).to         match /\d+\.?\d+ KB/
