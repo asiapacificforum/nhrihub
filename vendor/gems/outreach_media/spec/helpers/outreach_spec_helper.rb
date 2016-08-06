@@ -2,6 +2,13 @@ require 'rspec/core/shared_context'
 
 module OutreachSpecHelper
   extend RSpec::Core::SharedContext
+  def delete_first_performance_indicator
+    selected_performance_indicators.first.find('i.remove').click
+  end
+
+  def selected_performance_indicators
+    page.all('#performance_indicators .selected_performance_indicator')
+  end
 
   def edit_outreach_event
     page.all('.fa-pencil-square-o')

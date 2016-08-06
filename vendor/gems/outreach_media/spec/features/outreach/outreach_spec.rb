@@ -116,7 +116,7 @@ feature "create a new outreach event", :js => true do
     fill_in("outreach_event_title", :with => "My new outreach event title")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     expect(selected_file).to eq "first_upload_file.pdf"
-    expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(0).to(1)
+    expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.count}.from(0).to(1)
     expect(page).to have_css("#outreach_events .outreach_event", :count => 1)
     doc = OutreachEvent.last
     expect( doc.title ).to eq "My new outreach event title"
@@ -132,7 +132,7 @@ feature "create a new outreach event", :js => true do
     expect(selected_file).to eq "first_upload_file.pdf"
     expect(page).to have_selector("#fileinput_button span.btn", :text => "Add another file")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
-    expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(0).to(1)
+    expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.count}.from(0).to(1)
                                        .and change{OutreachEventDocument.count}.from(0).to(2)
     outreach_event = OutreachEvent.last
     expect( outreach_event.title ).to eq "My new outreach event title"
@@ -155,7 +155,7 @@ feature "create a new outreach event", :js => true do
     expect(page).to have_selector("#fileinput_button span.btn", :text => "Add another file")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     deselect_first_file
-    expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(0).to(1)
+    expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.count}.from(0).to(1)
                                        .and change{OutreachEventDocument.count}.from(0).to(1)
     outreach_event = OutreachEvent.last
     expect( outreach_event.title ).to eq "My new outreach event title"
@@ -174,14 +174,14 @@ feature "create a new outreach event", :js => true do
   scenario "repeated adds" do # b/c there was a bug!
     fill_in("outreach_event_title", :with => "My new outreach event title")
     expect(chars_remaining).to eq "You have 73 characters left"
-    expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(0).to(1)
-    sleep(0.4)
+    expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.count}.from(0).to(1)
+    wait_for_ajax
     expect(page).to have_selector("#outreach_events .outreach_event", :count => 1)
     expect(page.all("#outreach_events .outreach_event .basic_info .title").first.text).to eq "My new outreach event title"
     add_outreach_event_button.click
     fill_in("outreach_event_title", :with => "My second new outreach event title")
-    expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.count}.from(1).to(2)
-    sleep(0.4)
+    expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.count}.from(1).to(2)
+    wait_for_ajax
     expect(page).to have_selector("#outreach_events .outreach_event", :count => 2)
     expect(page.all("#outreach_events .outreach_event .basic_info .title")[0].text).to eq "My second new outreach event title"
     expect(page.all("#outreach_events .outreach_event .basic_info .title")[1].text).to eq "My new outreach event title"
@@ -209,7 +209,7 @@ feature "attempt to save with errors", :js => true do
 
   scenario "title is blank" do
     sleep(0.8)
-    expect{edit_save.click; sleep(0.4)}.not_to change{OutreachEvent.count}
+    expect{edit_save.click; wait_for_ajax}.not_to change{OutreachEvent.count}
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in("outreach_event_title", :with => "m")
     expect(page).not_to have_selector("#title_error", :visible => true)
@@ -220,7 +220,7 @@ feature "attempt to save with errors", :js => true do
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     page.attach_file("outreach_event_file", upload_image, :visible => false)
     expect(page).to have_css('#filetype_error', :text => "File type not allowed", :count => 1)
-    expect{edit_save.click; sleep(0.5)}.not_to change{OutreachEvent.count}
+    expect{edit_save.click; wait_for_ajax}.not_to change{OutreachEvent.count}
     page.find(".outreach_event i#edit_cancel").click
     expect(page).not_to have_css("#outreach_events .outreach_event")
   end
@@ -266,7 +266,7 @@ feature "when there are existing outreach events", :js => true do
       check("CRC")
       fill_in('people_affected', :with => " 100000 ")
       select( "Universal improved understanding", :from => :impact_rating)
-      expect{edit_save.click; sleep(0.4)}.to change{OutreachEvent.first.title}
+      expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.first.title}
       expect(OutreachEvent.first.area_ids).to eql [2]
       sleep(0.4)
       expect(page.all("#outreach_events .outreach_event .basic_info .title").first.text).to eq "My new outreach event title"
@@ -280,7 +280,7 @@ feature "when there are existing outreach events", :js => true do
       edit_outreach_event[0].click
       fill_in("outreach_event_title", :with => "")
       expect(chars_remaining).to eq "You have 100 characters left"
-      expect{edit_save.click; sleep(0.4)}.not_to change{OutreachEvent.count}
+      expect{edit_save.click; wait_for_ajax}.not_to change{OutreachEvent.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       fill_in("outreach_event_title", :with => "m")
       expect(page).not_to have_selector("#title_error", :visible => true)
@@ -303,10 +303,10 @@ feature "when there are existing outreach events", :js => true do
       edit_outreach_event[0].click
       fill_in("outreach_event_title", :with => "")
       expect(chars_remaining).to eq "You have 100 characters left"
-      expect{edit_save.click; sleep(0.4)}.not_to change{OutreachEvent.count}
+      expect{edit_save.click; wait_for_ajax}.not_to change{OutreachEvent.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       edit_cancel.click
-      sleep(0.2)
+      wait_for_ajax
       edit_outreach_event[0].click
       expect(page).not_to have_selector("#title_error", :visible => true)
     end
@@ -322,7 +322,7 @@ feature "when there are existing outreach events", :js => true do
       check("Good Governance")
       check("CRC")
       fill_in('people_affected', :with => " 100000 ")
-      expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click; sleep(0.4)}.not_to change{OutreachEvent.first.title}
+      expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click; wait_for_ajax}.not_to change{OutreachEvent.first.title}
       expect(page.all("#outreach_events .outreach_event .basic_info .title").first.text).to eq original_outreach_event.title
       expand_all_panels
       expect(areas).to include "Human Rights"
@@ -335,7 +335,7 @@ feature "when there are existing outreach events", :js => true do
       edit_outreach_event[0].click
       sleep(0.2) # css transition
       expect(page.find('#outreach_event_documents #selected_file').text).not_to be_blank
-      expect{ remove_file.click; sleep(0.4)}.to change{OutreachEventDocument.count}.from(1).to(0)
+      expect{ remove_file.click; wait_for_ajax}.to change{OutreachEventDocument.count}.from(1).to(0)
       expect(page).not_to have_selector('#outreach_event_documents #selected_file')
       expect(File.exists?(File.join('tmp','uploads','store',file_id))).to eq false
     end
@@ -343,9 +343,9 @@ feature "when there are existing outreach events", :js => true do
     scenario "add a second file" do
       edit_outreach_event[0].click
       page.attach_file("outreach_event_file", upload_document, :visible => false)
-      expect{edit_save.click; sleep(0.4)}.to change{OutreachEventDocument.count}.from(1).to(2)
+      expect{edit_save.click; wait_for_ajax}.to change{OutreachEventDocument.count}.from(1).to(2)
       expect(OutreachEvent.count).to eq 1
-      expect{ remove_file.click; sleep(0.4)}.to change{OutreachEventDocument.count}.from(2).to(1)
+      expect{ remove_file.click; wait_for_ajax}.to change{OutreachEventDocument.count}.from(2).to(1)
       expect(OutreachEvent.count).to eq 1
     end
 
@@ -462,10 +462,11 @@ feature "performance indicator association", :js => true do
     select_first_performance_indicator
     pi = PerformanceIndicator.first
     expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
-    expect{edit_save.click; sleep(0.5)}.to change{OutreachEvent.first.performance_indicator_ids}.from([]).to([pi.id])
+    expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.first.performance_indicator_ids}.from([]).to([pi.id])
   end
 
   scenario "remove a performance indicator association" do
-    expect(1).to eq 0
+    edit_outreach_event[0].click
+    expect{delete_first_performance_indicator; wait_for_ajax}.to change{selected_performance_indicators.count}.from(2).to(1)
   end
 end

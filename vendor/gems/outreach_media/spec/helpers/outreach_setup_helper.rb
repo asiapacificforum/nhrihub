@@ -21,6 +21,13 @@ module OutreachSetupHelper
                          :reminders=>[] )
     end
     add_reminder
+    add_performance_indicators
+  end
+
+  def add_performance_indicators
+    oe = OutreachEvent.first
+    oe.performance_indicators << [ FactoryGirl.create(:performance_indicator), FactoryGirl.create(:performance_indicator) ]
+    oe.save
   end
 
   def setup_audience_types
@@ -35,9 +42,9 @@ module OutreachSetupHelper
   end
 
   def add_reminder
-    ma = OutreachEvent.first
-    ma.reminders << FactoryGirl.create(:reminder, :reminder_type => 'weekly', :text => "don't forget the fruit gums mum", :users => [User.first])
-    ma.save
+    oe = OutreachEvent.first
+    oe.reminders << FactoryGirl.create(:reminder, :reminder_type => 'weekly', :text => "don't forget the fruit gums mum", :users => [User.first])
+    oe.save
   end
 
   def setup_outreach_events
