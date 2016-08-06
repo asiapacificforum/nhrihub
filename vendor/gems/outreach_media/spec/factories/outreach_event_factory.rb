@@ -16,9 +16,14 @@ FactoryGirl.define do
     description { Faker::Lorem.sentences(2).join(' ') }
     impact_rating_id { ImpactRating.pluck(:id).sample }
 
+    trait :with_two_performance_indicators do
+      after(:create) do |oe|
+        oe.performance_indicator_ids = [PerformanceIndicator.pluck(:id)[0],PerformanceIndicator.pluck(:id)[1]]
+        oe.save
+      end
+    end
+
     after(:create) do |oe|
-      oe.performance_indicator_ids = PerformanceIndicator.pluck(:id).sample(rand(2))
-      oe.save
       FactoryGirl.create(:outreach_event_document, :outreach_event_id => oe.id)
     end
 

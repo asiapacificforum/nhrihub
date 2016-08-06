@@ -219,7 +219,7 @@ feature "attempt to save with errors", :js => true do
     fill_in("outreach_event_title", :with => "My new outreach event title")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     page.attach_file("outreach_event_file", upload_image, :visible => false)
-    expect(page).to have_css('#filetype_error', :text => "File type not allowed", :count => 1)
+    expect(page).to have_css('#file_content_type_error', :text => "File type not allowed", :count => 1)
     expect{edit_save.click; wait_for_ajax}.not_to change{OutreachEvent.count}
     page.find(".outreach_event i#edit_cancel").click
     expect(page).not_to have_css("#outreach_events .outreach_event")
@@ -227,7 +227,7 @@ feature "attempt to save with errors", :js => true do
 
   scenario "upload a file that exceeds size limit" do
     page.attach_file("outreach_event_file", big_upload_document, :visible => false)
-    expect(page).to have_css('#filesize_error', :text => "File is too large")
+    expect(page).to have_css('#file_size_error', :text => "File is too large")
     page.find(".outreach_event i#edit_cancel").click
     expect(page).not_to have_css("#outreach_events .outreach_event")
   end
@@ -289,14 +289,14 @@ feature "when there are existing outreach events", :js => true do
     scenario "edit an outreach event and add file error" do
       edit_outreach_event[0].click
       page.attach_file("outreach_event_file", upload_image, :visible => false)
-      expect(page).to have_css('#filetype_error', :text => "File type not allowed")
+      expect(page).to have_css('#file_content_type_error', :text => "File type not allowed")
       clear_file_attachment
       page.execute_script("scrollTo(0,0)")
       edit_cancel.click
       #sleep(0.2)
       edit_outreach_event[0].click
       #sleep(0.2)
-      expect(page).not_to have_selector('#filetype_error', :text => "File type not allowed")
+      expect(page).not_to have_selector('#file_content_type_error', :text => "File type not allowed")
     end
 
     scenario "edit an outreach event, add errors, and cancel" do
@@ -446,8 +446,8 @@ feature "performance indicator association", :js => true do
   include OutreachSetupHelper
 
   before do
-    setup_database
     setup_strategic_plan
+    setup_database
     resize_browser_window
     visit outreach_media_outreach_events_path(:en)
     sleep(0.4)
@@ -458,11 +458,11 @@ feature "performance indicator association", :js => true do
     select_performance_indicators.click
     select_first_planned_result
     select_first_outcome
-    select_first_activity
+    select_third_activity
     select_first_performance_indicator
-    pi = PerformanceIndicator.first
+    pi = PerformanceIndicator.third
     expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
-    expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.first.performance_indicator_ids}.from([]).to([pi.id])
+    expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.first.performance_indicator_ids}.from([1,2]).to([1,2,pi.id])
   end
 
   scenario "remove a performance indicator association" do

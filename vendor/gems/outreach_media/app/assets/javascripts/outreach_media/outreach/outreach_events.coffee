@@ -1,3 +1,4 @@
+#= require 'ractive_validator'
 $ ->
   class Subarea extends Collection.Subarea
 
@@ -124,8 +125,8 @@ $ ->
         data.context = upload_widget.element.closest('.outreach_event')
         outreach_event.set('fileupload', data) # so ractive can configure/control upload with data.submit()
         file = data.files[0]
-        outreach_event.push('outreach_event_documents', {file : file, file_id : '', url : '', file_filename : file.name})
-        outreach_event.validate_files()
+        outreach_event.push('outreach_event_documents', {file : file, file_id : '', url : '', file_filename : file.name, file_size : file.size, file_content_type : file.type})
+        outreach_event.validator.validate_attribute('files')
         return
       done: (e, data) ->
         ractive = Ractive.getNodeInfo(@).ractive
@@ -149,6 +150,17 @@ $ ->
 
   OutreachEventDocument = Ractive.extend
     template : "#outreach_event_document_template"
+    oninit : ->
+      @set
+        validation_criteria:
+          file_size :
+            ['lessThan', @get('maximum_filesize')]
+          file_content_type:
+            ['match', @get('permitted_filetypes')]
+        file_content_type_error: false
+        file_size_error: false
+      @validator = new Validator(@)
+      @validator.validate()
     deselect_file : ->
       if @get('persisted')
         @remove_file()
@@ -168,30 +180,7 @@ $ ->
         if @get('persisted')
           true
         else
-          vf = @get('valid_filetype')
-          vs = @get('valid_filesize')
-          vf && vs
-      valid_filetype : ->
-        type = @get('file').type # this is the attribute when the file has been just imported as a File object and not yet persisted
-        extension = type.split('/').pop()
-        if permitted_filetypes.indexOf(extension) == -1
-          @set('filetype_error', true)
-          false
-        else
-          @set('filetype_error', false)
-          true
-      valid_filesize : ->
-        size = @get('file').size # this is the attribute when the file has been just imported as a File object and not yet persisted
-        if size > maximum_filesize
-          @set('filesize_error', true)
-          false
-        else
-          @set('filesize_error', false)
-          true
-    oninit : ->
-      @set
-        'filetype_error': false
-        'filesize_error': false
+          @validator.validate()
     remove_file : ->
       $.ajax
         method : 'post'
@@ -272,10 +261,14 @@ $ ->
       # 'area-select' : AreaSelect
     oninit : ->
       @set
-        'title_error': false
-        'outreach_event_error':false
-        'expanded':false
-        'editing' : false
+        title_error: false
+        outreach_event_error:false
+        expanded:false
+        editing : false
+        validation_criteria :
+          title : 'notBlank'
+          files : => _(@findAllComponents('outreacheventdocument')).all (doc) -> doc.get('valid')
+      @validator = new Validator(@)
     _between : (min,max,val)->
       return true if _.isNaN(val) # declare match if there's no value
       min = if _.isNaN(min) # from the input element a zero-length string can be presented
@@ -396,19 +389,7 @@ $ ->
           url = @parent.get('create_outreach_event_url')
           $.post(url, @persisted_attributes(), @update_oe, 'json') # handled right here
     validate : ->
-      vt = @validate_title()
-      vf = @validate_files()
-      vt && vf
-    validate_title : ->
-      @set('title',@get('title').trim())
-      if _.isEmpty(@get('title'))
-        @set('title_error',true)
-        false
-      else
-        true
-    validate_files : ->
-      # note: .all method also returns true when the array is empty
-      _(@findAllComponents('outreacheventdocument')).all (doc) -> doc.get('valid')
+      @validator.validate()
     update_oe : (data,textStatus,jqxhr)->
       outreach.set('outreach_events.0', data)
       outreach.populate_min_max_fields() # to ensure that the newly-added outreach_event is included in the filter
@@ -529,6 +510,8 @@ $ ->
     all_performance_indicators : performance_indicators
     default_selected_audience_type : default_selected_audience_type
     default_selected_impact_rating : default_selected_impact_rating
+    permitted_filetypes : permitted_filetypes
+    maximum_filesize : maximum_filesize
     filter_criteria :
       title : ""
       from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation

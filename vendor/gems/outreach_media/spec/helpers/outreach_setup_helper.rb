@@ -7,6 +7,7 @@ module OutreachSetupHelper
     setup_areas
     FactoryGirl.create(:outreach_event,
                        :hr_area,
+                       :with_two_performance_indicators,
                        :impact_rating => ImpactRating.first,
                        :participant_count => 1000,
                        :event_date => DateTime.now,
@@ -21,13 +22,6 @@ module OutreachSetupHelper
                          :reminders=>[] )
     end
     add_reminder
-    add_performance_indicators
-  end
-
-  def add_performance_indicators
-    oe = OutreachEvent.first
-    oe.performance_indicators << [ FactoryGirl.create(:performance_indicator), FactoryGirl.create(:performance_indicator) ]
-    oe.save
   end
 
   def setup_audience_types

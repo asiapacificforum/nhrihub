@@ -56,7 +56,8 @@ gem 'haml-rails'
 
 group :development, :test, :jstest do
   gem 'rspec-rails'
-  gem 'capybara', :git => "git@github.com:lazylester/capybara.git", :branch => "attach_file_remote"
+  #gem 'capybara', :git => "git@github.com:lazylester/capybara.git", :branch => "attach_file_remote"
+  gem 'capybara'
   gem 'selenium-webdriver'
   gem 'database_cleaner'
   gem 'debugger'
