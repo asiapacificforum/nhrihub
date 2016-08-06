@@ -1,72 +1,6 @@
 #= require ractive_validator
 #= require ractive_local_methods
 $ ->
-  #window.fileupload_options =
-    #permittedFiletypes: window.permitted_filetypes
-    #maxFileSize: parseInt(window.maximum_filesize)
-    #failed: (e,data)->
-      #if data.errorThrown != 'abort'
-        #alert("The upload failed for some reason")
-    #prependFiles : false
-    #filesContainer: '.files'
-    #downloadTemplateId: '#template-download'
-    #uploadTemplateContainerId: '#uploads'
-    #fileInput: '#primary_fileinput'
-    #replaceFileInput: true
-    #url : 'terms_of_references.json',
-    #paramName : 'terms_of_reference_version[file]',
-    #uploadTemplateId : '#upload_template' 
-    #uploadTemplate : Ractive.parse($('#upload_template').html())
-    #done: (e, data)->
-      #if e.isDefaultPrevented()
-          #return false
-      ## 'this' is the upload form
-      ## $this.data is a jQuery widget
-      #that = $(@).data('blueimp-fileupload') || $(@).data('fileupload')
-      #current_locale = that.options.current_locale()
-      #getFilesFromResponse = data.getFilesFromResponse || that.options.getFilesFromResponse
-      #file = data.result
-      #ractive = Ractive.getNodeInfo(@).ractive # it's the ractive instance
-      #ractive.add_file(file)
-      #upload_file = Ractive.getNodeInfo(data.context[0]).ractive
-      #upload_file.parent.remove_upload_file(upload_file._guid)
-      #that._trigger('completed', e, data)
-      #that._trigger('finished', e, data)
-    #add : (e, data) ->
-      #if e.isDefaultPrevented()
-        #return false
-      #$this = $(@)
-      #that = $this.data('blueimp-fileupload') or $this.data('fileupload')
-      #_(data.files).each (file)->
-        #file_attrs =
-          #lastModifiedDate: file.lastModifiedDate
-          #name : file.name
-          #size: file.size
-          #type: file.type
-          #title: ""
-          #revision: ""
-          #fileupload: data
-          #primary : true
-        #terms_of_reference_document_uploader.
-          #unshift('upload_files', file_attrs).
-          #then(
-            #new_upload = terms_of_reference_document_uploader.findAllComponents('uploadfile')[0] # the uploadfile ractive instance
-            #data.context = $(new_upload.find('*')) # the DOM node associated with the uploadfile ractive instance
-            #data.context.addClass('in')
-            #new_upload.validate_file_constraints()
-          #)
-      #return
-
-  #PrimaryFileUpload = (node)->
-    #$(node).fileupload _.extend({}, fileupload_options)
-    #teardown : ->
-      #id = Ractive.getNodeInfo(node).ractive.get('id')
-      #$(node).fileupload "destroy"
-      #$(node).fileupload _.extend({}, fileupload_options)
-    #update : ->
-      #id = Ractive.getNodeInfo(node).ractive.get('id')
-      #$(node).fileupload "destroy"
-      #$(node).fileupload _.extend({}, fileupload_options)
   FileInput = (node)->
     $(node).on 'change', (event)->
       add_file = (event,el)->
@@ -102,7 +36,6 @@ $ ->
 
   Ractive.decorators.file_select_trigger = FileSelectTrigger
 
-
   Popover = (node)->
     $(node).popover
       html : true,
@@ -132,9 +65,7 @@ $ ->
     teardown : =>
       @edit.off()
 
-
   Ractive.decorators.inpage_edit = EditInPlace
-  #Ractive.decorators.primary_fileupload = PrimaryFileUpload # for the archive file upload
   Ractive.decorators.popover = Popover
 
   UploadDocument = Ractive.extend
