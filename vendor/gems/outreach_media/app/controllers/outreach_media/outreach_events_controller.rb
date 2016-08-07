@@ -10,16 +10,7 @@ class OutreachMedia::OutreachEventsController < ApplicationController
   end
 
   def create
-    oep = outreach_event_params.dup
-    if oep[:outreach_event_documents]
-      docs = oep.delete(:outreach_event_documents).collect do |doc|
-        OutreachEventDocument.new(doc)
-      end
-    else
-      docs = []
-    end
-    oe = OutreachEvent.new(oep)
-    oe.outreach_event_documents = docs
+    oe = OutreachEvent.new(outreach_event_params)
     if oe.save
       render :json => oe, :status => 200
     else
@@ -61,7 +52,7 @@ class OutreachMedia::OutreachEventsController < ApplicationController
              :participant_count,
              :audience_type_id,
              :impact_rating_id,
-             :outreach_event_documents =>[:file],
+             :outreach_event_documents_attributes =>['outreach_event_id', 'file', 'file_filename', 'file_size', 'file_content_type'],
              :performance_indicator_ids => [],
              :area_ids => [],
              :subarea_ids => [])

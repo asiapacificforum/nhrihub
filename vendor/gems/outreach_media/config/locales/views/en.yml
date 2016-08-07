@@ -30,7 +30,6 @@ en:
       index:
         heading: "Outreach Events"
         search_heading: "Search for outreach events by:"
-        add_outreach: "Add outreach event"
         select_audience_type: "Select audience type"
         select_impact_rating: "Select impact rating"
 
@@ -87,6 +86,7 @@ en:
         files: "Files"
         impact_rating: "Impact rating"
         select_ir: "Select impact rating"
+        add_outreach: "Add outreach event"
 
     shared:
       common_templates:

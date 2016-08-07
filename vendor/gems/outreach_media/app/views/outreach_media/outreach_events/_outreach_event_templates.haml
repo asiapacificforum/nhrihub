@@ -1,7 +1,7 @@
 %script#outreach_event_documents_template{:type => 'template/ractive'}
   .col-md-6#outreach_event_documents{:style=>"display:flex; flex-direction: column"}
     {{#outreach_event_documents}}
-    <outreacheventdocument file_content_type={{file_content_type}} file_filename={{file_filename}} file_size={{file_size}} name={{name}} id={{id}} outreach_event_id={{outreach_event_id}} url={{url}} file_id={{file_id}} />
+    <outreachEventDocument file_content_type={{file_content_type}} file_filename={{file_filename}} file_size={{file_size}} name={{name}} id={{id}} outreach_event_id={{outreach_event_id}} url={{url}} file_id={{file_id}} />
     {{/}}
 
 %script#outreach_event_document_template{:type => 'template/ractive'}
@@ -22,6 +22,11 @@
         %span.help-block#file_content_type_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.unpermitted_type')
 
 %script#outreach_events_template{:type => 'template/ractive'}
+  .row
+    .btn.btn-success.btn-sm#add_outreach_event{:style => "margin-bottom:12px; color:white;", :onclick => "outreach.new_article()"}
+      %i.fa.fa-plus.fa-lg{:style => "color:white"}
+      %span= t('.add_outreach')
+    %input.hidden_fileinput#outreach_event_file{:multiple => "multiple", :type => "file", :decorator => :ractive_fileupload }
   .row.filter_control_box#outreach_events_controls
     .row
       .col-md-4
@@ -167,19 +172,18 @@
                   %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
                   {{/if}}
                 .fade.edit
-      .row.fileupload{:decorator => 'file_upload', 'data-toggle'=>:edit}
+      .row.fileupload{'data-toggle'=>:edit}
         .fade.no_edit.in
         .fade.edit
           .col-md-1
-            %span.btn.btn-xs.btn-success.fileinput-button{'onClick'=>"$(this).next('input').click()"}
+            %span.btn.btn-xs.btn-success.fileinput-button{:decorator=>"file_select_trigger"}
               %i.fa.fa-plus.fa-lg{ :style => "color:white"}
               %span{:style=>"margin-left:6px;"}= t('add_file')
-            %input.hidden_fileinput#outreach_event_file{:multiple => "multiple", :name=>"outreach_event[outreach_event_documents][][file]", :type => "file", 'data-project_id'=>'{{id}}'}
       .collapse.expanded_info{:class => "collapse{{id}}"}
         .panel.panel-default
           .panel-heading= t('.files')
           .panel-body{:style => "padding:0px"}
-            <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
+            <outreachEventDocuments outreach_event_documents={{outreach_event_documents}} />
         <performanceindicatorselect />
         .panel.panel-default
           .panel-heading
@@ -219,7 +223,7 @@
               {{> outreach_event_edit}}
 
 %script#new_outreach_event_template{:type => 'template/ractive'}
-  .row.outreach_event.well.well-sm.form.fileupload{:decorator => 'file_upload'}
+  .row.outreach_event.well.well-sm.form.fileupload
     .col-md-12
       .row
         .col-md-1{:style => "padding-top:28px; width: 108px"}= t('.title')
@@ -237,16 +241,15 @@
 
       .row.fileupload-buttonbar
         .col-lg-9#fileinput_button
-          %span.btn.btn-success.btn-xs{:onClick => "$(this).next('input:file').click()"}
+          %span.btn.btn-success.btn-xs{:decorator=>"file_select_trigger"}
             %i.fa.fa-plus.fa-lg{ :style => "color:white"}
             {{#if no_files_chosen }}
             %span{:style=>"margin-left:6px;"}= t('add_file')
             {{else}}
             %span{:style=>"margin-left:6px;"}= t('add_another_file')
             {{/if}}
-          %input.form-control.new.hidden_fileinput#outreach_event_file{:type=>'file', :name=>'outreach_event[outreach_event_documents][][file]', :multiple => true}
       .row
-        <outreacheventdocuments outreach_event_documents={{outreach_event_documents}} />
+        <outreachEventDocuments outreach_event_documents={{outreach_event_documents}} />
 
       <performanceindicatorselect />
       .row.form-group{:class => "{{#outreach_event_error}}has-error{{/}}", :style => "padding-bottom:0px"}

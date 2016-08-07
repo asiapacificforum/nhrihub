@@ -1,4 +1,5 @@
 #= require 'ractive_validator'
+#= require 'string'
 #= require 'ractive_local_methods'
 $ ->
   class Subarea extends Collection.Subarea
@@ -116,38 +117,76 @@ $ ->
 
   Ractive.decorators.datepicker = Datepicker
 
-  FileUpload = (node)->
-    $(node).fileupload
-      add: (e, data) -> # data includes a files property containing added files and also a submit property
-        upload_widget = $(@).data('blueimp-fileupload')
-        @outreach_event = outreach_event = data.ractive = Ractive.
-          getNodeInfo(upload_widget.element[0]).
-          ractive
-        data.context = upload_widget.element.closest('.outreach_event')
-        outreach_event.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-        file = data.files[0]
-        outreach_event.push('outreach_event_documents', {file : file, file_id : '', url : '', file_filename : file.name, file_size : file.size, file_content_type : file.type})
-        outreach_event.validator.validate_attribute('files')
-        return
-      done: (e, data) ->
-        ractive = Ractive.getNodeInfo(@).ractive
-        ractive.update_oe(data.jqXHR.responseJSON)
-        return
-      formData : ->
-        Ractive.getNodeInfo(el[0]).ractive.formData()
-      uploadTemplateId: '#outreach_event_document_template'
-      uploadTemplateContainerId: '#outreach_event_documents'
-      filesContainer: '#outreach_event_documents'
-      downloadTemplateId: '#show_outreach_event_template'
-      fileInput: $(node).find('#outreach_event_file')
-      permittedFiletypes: permitted_filetypes
-      maxFileSize: parseInt(maximum_filesize)
-    teardown : ->
-      # TODO must turn off all event listeners, else they're still enabled!
-      # else destroy the jquery fileupload instance
-      #noop for now
+  #FileUpload = (node)->
+    #$(node).fileupload
+      #add: (e, data) -> # data includes a files property containing added files and also a submit property
+        #upload_widget = $(@).data('blueimp-fileupload')
+        #@outreach_event = outreach_event = data.ractive = Ractive.
+          #getNodeInfo(upload_widget.element[0]).
+          #ractive
+        #data.context = upload_widget.element.closest('.outreach_event')
+        #outreach_event.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+        #file = data.files[0]
+        #outreach_event.push('outreach_event_documents', {file : file, file_id : '', url : '', file_filename : file.name, file_size : file.size, file_content_type : file.type})
+        #outreach_event.validator.validate_attribute('files')
+        #return
+      #done: (e, data) ->
+        #ractive = Ractive.getNodeInfo(@).ractive
+        #ractive.update_oe(data.jqXHR.responseJSON)
+        #return
+      #formData : ->
+        #Ractive.getNodeInfo(el[0]).ractive.formData()
+      #uploadTemplateId: '#outreach_event_document_template'
+      #uploadTemplateContainerId: '#outreach_event_documents'
+      #filesContainer: '#outreach_event_documents'
+      #downloadTemplateId: '#show_outreach_event_template'
+      #fileInput: $(node).find('#outreach_event_file')
+      #permittedFiletypes: permitted_filetypes
+      #maxFileSize: parseInt(maximum_filesize)
+    #teardown : ->
+      ## TODO must turn off all event listeners, else they're still enabled!
+      ## else destroy the jquery fileupload instance
+      ##noop for now
 
-  Ractive.decorators.file_upload = FileUpload
+  #Ractive.decorators.file_upload = FileUpload
+
+  FileInput = (node)->
+    $(node).on 'change', (event)->
+      add_file = (event,el)->
+        file = el.files[0]
+        ractive = Ractive.getNodeInfo(el).ractive
+        ractive.add_file(file)
+        _reset_input()
+      _reset_input = ->
+        input = $(node)
+        input.wrap('<form></form>').closest('form').get(0).reset()
+        input.unwrap()
+      add_file(event,@)
+    return {
+      teardown : ->
+        $(node).off 'change'
+      update : ->
+        #noop
+    }
+
+  Ractive.decorators.ractive_fileupload = FileInput
+
+  FileSelectTrigger = (node)->
+    $(node).on 'click', (event)->
+      source = Ractive.getNodeInfo(@).ractive # might be an archive doc (has document_group_id) or primary doc (no document_group_id)
+      outreach.set('document_target', source)
+      #UserInput.terminate_user_input_request()
+      #UserInput.reset()
+      $('input:file').trigger('click')
+    return {
+      teardown : ->
+        $(node).off 'click'
+      update : ->
+        #noop
+    }
+
+  Ractive.decorators.file_select_trigger = FileSelectTrigger
+
 
   OutreachEventDocument = Ractive.extend
     template : "#outreach_event_document_template"
@@ -162,6 +201,9 @@ $ ->
         file_size_error: false
       @validator = new Validator(@)
       @validator.validate()
+    remove_errors : ->
+      @set('file_content_type_error',false)
+      @set('file_size_error',false)
     deselect_file : ->
       if @get('persisted')
         @remove_file()
@@ -169,7 +211,7 @@ $ ->
         file_input = $(@findParent('oe').find('#outreach_event_file'))
         # see http://stackoverflow.com/questions/1043957/clearing-input-type-file-using-jquery
         file_input.replaceWith(file_input.clone()) # the actual file input field
-        if @parent.findAllComponents('outreacheventdocument').length == 1
+        if @parent.findAllComponents('outreachEventDocument').length == 1
           @findParent('oe').set('fileupload',null) # remove all traces!
         @set('file_filename',null) # remove all traces!
         @parent.deselect_file(@)
@@ -177,6 +219,8 @@ $ ->
       persisted : ->
         # null or undefined
         !_.isEmpty(@get('file_id'))
+      persistent_attributes : ->
+        ['outreach_event_id', 'file', 'file_filename', 'file_size', 'file_content_type'] unless @get('persisted')
       valid : ->
         if @get('persisted')
           true
@@ -198,9 +242,9 @@ $ ->
   OutreachEventDocuments = Ractive.extend
     template : "#outreach_event_documents_template"
     components :
-      outreacheventdocument : OutreachEventDocument
+      outreachEventDocument : OutreachEventDocument
     deselect_file : (file) ->
-      index = _(@findAllComponents('outreacheventdocument')).indexOf file
+      index = _(@findAllComponents('outreachEventDocument')).indexOf file
       @splice('outreach_event_documents', index, 1)
     remove : (file) ->
       @deselect_file(file)
@@ -254,7 +298,7 @@ $ ->
     components :
       outreacharea : CollectionItemArea
       metric : Metric
-      outreacheventdocuments : OutreachEventDocuments
+      outreachEventDocuments : OutreachEventDocuments
       # due to a ractive bug, checkboxes don't work in components,
       # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
       # so this component is not used, until the bug is fixed
@@ -268,7 +312,7 @@ $ ->
         editing : false
         validation_criteria :
           title : 'notBlank'
-          files : => _(@findAllComponents('outreacheventdocument')).all (doc) -> doc.get('valid')
+          files : => _(@findAllComponents('outreachEventDocument')).all (doc) -> doc.get('valid')
       @validator = new Validator(@)
     data : ->
       serialization_key : 'outreach_event'
@@ -369,6 +413,8 @@ $ ->
         !_.isNull(@get('id'))
       no_files_chosen : ->
         @get('outreach_event_documents').length == 0
+      persistent_attributes : ->
+        ['outreach_event_documents_attributes', 'performance_indicator_ids', 'subarea_ids', 'area_ids', 'impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count']
     expand : ->
       @set('expanded',true)
       $(@find('.collapse')).collapse('show')
@@ -385,16 +431,15 @@ $ ->
     save : ->
       if @validate()
         if !_.isUndefined(@get('fileupload')) && !_.isNull(@get('fileupload'))
-          files = _(@findAllComponents('outreacheventdocument')).map (oed)-> oed.get('file')
+          files = _(@findAllComponents('outreachEventDocument')).map (oed)-> oed.get('file')
           # TODO fix this, should find a way to access fileupload without hard-coding the css class here:
           $('.fileupload').fileupload('send',{files : _(files).compact()}) # handled by jquery-fileupload
         else
           url = @parent.get('create_outreach_event_url')
-          #$.post(url, @persisted_attributes(), @update_oe, 'json') # handled right here
           $.ajax
             method : 'post'
             url : url
-            data : @persisted_attributes()
+            data : @formData()
             dataType : 'json'
             success : @update_oe
             processData : false
@@ -422,36 +467,13 @@ $ ->
       @parent.delete(@)
     remove_errors : ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
-      @restore()
-    persisted_attributes: ->
-      persistent_attributes = ['performance_indicator_ids', 'subarea_ids', 'area_ids', 'impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count']
-      @asFormData persistent_attributes # in ractive_local_methods, returns a FormData instance
+      @set('title_error',false)
+      @set('files_error',false)
+      _(@findAllComponents()).each (component)->
+        if _.isFunction(component.remove_errors)
+          component.remove_errors()
     formData : ->
-      # not ready for this until I get rid of jquery fileupload
-      #persistent_attributes = ['performance_indicator_ids', 'subarea_ids', 'area_ids', 'impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count']
-      #@asFormData persistent_attributes
-      name_value = _.chain(@get()).
-        pick('impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count').
-        omit((value, key, object)-> _.isNull(value)).
-        pairs().
-        map((kv)->{name:"outreach_event["+kv[0]+"]", value:kv[1]}).
-        value()
-      if _.isEmpty(@get('area_ids'))
-        aids = [{name : 'outreach_event[area_ids][]', value: ""}]
-      else
-        aids = _(@get('area_ids')).map (aid)->
-                 {name : 'outreach_event[area_ids][]', value: aid}
-      if _.isEmpty(@get('subarea_ids'))
-        saids = [{name : 'outreach_event[subarea_ids][]', value: ""}]
-      else
-        saids = _(@get('subarea_ids')).map (said)->
-                  {name : 'outreach_event[subarea_ids][]', value: said}
-      if _.isEmpty(@get('performance_indicator_ids'))
-        pids = [{name : 'outreach_event[performance_indicator_ids][]', value: ""}]
-      else
-        pids = _(@get('performance_indicator_ids')).map (pid)->
-                  {name : 'outreach_event[performance_indicator_ids][]', value: pid}
-      _.union(name_value,aids,saids,pids)
+      @asFormData @get('persistent_attributes')
     stash : ->
       computed_attributes = ['reminders_count', 'notes_count', 'model_name',
                              'hr_violation', 'formatted_affected_people_count',
@@ -470,20 +492,15 @@ $ ->
       @set('fileupload',null) # remove all traces!
       @set('original_filename',null) # remove all traces!
     update_persist : (success, error, context) ->
-      if _.isEmpty(@get('fileupload')) # handle the update directly
-        $.ajax
-          url: @get('url')
-          method : 'put'
-          data : @persisted_attributes()
-          success : success
-          error : error
-          context : context
-          processData : false
-          contentType : false
-      else # handle it with jquery fileupload
-        $('.fileupload').fileupload('option',{url:@get('url'), type:'put', formData:@formData()})
-        files = _(@findAllComponents('outreacheventdocument')).map (oed)-> oed.get('file')
-        $('.fileupload').fileupload('send',{files : _(files).compact()})
+      $.ajax
+        url: @get('url')
+        method : 'put'
+        data : @formData()
+        success : success
+        error : error
+        context : context
+        processData : false
+        contentType : false
     fetch_link : ->
       window.location = @get('article_link')
     set_date_from_datepicker : (selectedDate)->
@@ -498,6 +515,25 @@ $ ->
         $('.hr_metrics').show(300)
       else if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && !ev.target.checked
         $('.hr_metrics').hide(300)
+    add_file : (file)->
+      # target id is null if this is a new outreach event
+      attached_document =
+        outreach_event_id : @get('id')
+        file : file
+        file_id : null
+        file_filename : file.name
+        file_size : file.size
+        id : null
+        maximum_filesize : @get('maximum_filesize')
+        file_content_type : file.type
+        permitted_filetypes : @get('permitted_filetypes')
+        serialization_key : 'outreach_event[outreach_event_documents_attributes][]'
+      # aargh hack due to ractive problem with @unshift here
+      # @unshift('attached_documents', attached_document) doesn't work but it should
+      # unshift file onto outreach_event_documents array
+      attached_documents = @get('outreach_event_documents')
+      attached_documents.unshift(attached_document)
+      @set('outreach_event_documents', attached_documents)
     , PerformanceIndicatorAssociation, Remindable, Notable
 
   window.outreach_page_data = -> # an initialization data set so that tests can reset between
@@ -654,6 +690,8 @@ $ ->
       @set('filter_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate).getTime())
       $('#to').datepicker 'option', 'minDate', selectedDate
       @update()
+    add_file : (file)->
+      @get('document_target').add_file(file)
 
   window.start_page = ->
     window.outreach = new Ractive options

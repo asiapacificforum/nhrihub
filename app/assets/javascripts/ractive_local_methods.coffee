@@ -34,7 +34,7 @@ Ractive.prototype.asFormData = (attributes,formData)->
            if i == ar.length-1
              val.singularize().capitalize()
            else
-             val
+             val.capitalize()
     # e.g. component = projectDocument
     # or component = communicant
     component = ar.join('').downcase()

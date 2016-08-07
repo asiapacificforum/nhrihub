@@ -74,6 +74,7 @@ feature "create a new outreach event", :js => true do
     #IMPACT RATING
     select( "No improved audience understanding", :from => :impact_rating)
     #FILE!!!
+    page.execute_script("outreach.set('document_target',outreach.findComponent('oe'))")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     select_performance_indicators.click
     select_first_planned_result
@@ -107,6 +108,7 @@ feature "create a new outreach event", :js => true do
     expect(impact_rating).to eq "1: No improved audience understanding"
     # now edit and upload another file
     edit_outreach_event[0].click
+    # note that document_target is set above, and outreach.findComponent('oe') now has an id b/c it's persisted
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     expect{edit_save.click; wait_for_ajax }.to change{OutreachEventDocument.count}.from(1).to(2)
     expect(OutreachEvent.count).to eq 1
@@ -114,6 +116,7 @@ feature "create a new outreach event", :js => true do
 
   scenario "upload outreach event with attached file" do
     fill_in("outreach_event_title", :with => "My new outreach event title")
+    page.execute_script("outreach.set('document_target',outreach.findComponent('oe'))")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     expect(selected_file).to eq "first_upload_file.pdf"
     expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.count}.from(0).to(1)
@@ -128,6 +131,7 @@ feature "create a new outreach event", :js => true do
 
   scenario "upload outreach event with multiple attached files" do
     fill_in("outreach_event_title", :with => "My new outreach event title")
+    page.execute_script("outreach.set('document_target',outreach.findComponent('oe'))")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     expect(selected_file).to eq "first_upload_file.pdf"
     expect(page).to have_selector("#fileinput_button span.btn", :text => "Add another file")
@@ -150,6 +154,7 @@ feature "create a new outreach event", :js => true do
 
   scenario "start creating, but cancel file selection" do
     fill_in("outreach_event_title", :with => "My new outreach event title")
+    page.execute_script("outreach.set('document_target',outreach.findComponent('oe'))")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     expect(selected_file).to eq "first_upload_file.pdf"
     expect(page).to have_selector("#fileinput_button span.btn", :text => "Add another file")
@@ -217,6 +222,7 @@ feature "attempt to save with errors", :js => true do
 
   scenario "upload an unpermitted file type and cancel" do
     fill_in("outreach_event_title", :with => "My new outreach event title")
+    page.execute_script("outreach.set('document_target',outreach.findComponent('oe'))")
     page.attach_file("outreach_event_file", upload_document, :visible => false)
     page.attach_file("outreach_event_file", upload_image, :visible => false)
     expect(page).to have_css('#file_content_type_error', :text => "File type not allowed", :count => 1)
@@ -226,6 +232,7 @@ feature "attempt to save with errors", :js => true do
   end
 
   scenario "upload a file that exceeds size limit" do
+    page.execute_script("outreach.set('document_target',outreach.findComponent('oe'))")
     page.attach_file("outreach_event_file", big_upload_document, :visible => false)
     expect(page).to have_css('#file_size_error', :text => "File is too large")
     page.find(".outreach_event i#edit_cancel").click
@@ -288,6 +295,7 @@ feature "when there are existing outreach events", :js => true do
 
     scenario "edit an outreach event and add file error" do
       edit_outreach_event[0].click
+      page.execute_script("outreach.set('document_target',outreach.findComponent('oe'))")
       page.attach_file("outreach_event_file", upload_image, :visible => false)
       expect(page).to have_css('#file_content_type_error', :text => "File type not allowed")
       clear_file_attachment
@@ -330,7 +338,7 @@ feature "when there are existing outreach events", :js => true do
     end
 
     scenario "delete an attached file" do
-      file_id = page.evaluate_script("outreach.findAllComponents('oe')[0].findAllComponents('outreacheventdocuments')[0].findAllComponents('outreacheventdocument')[0].get('file_id')")
+      file_id = page.evaluate_script("outreach.findAllComponents('oe')[0].findAllComponents('outreachEventDocuments')[0].findAllComponents('outreachEventDocument')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',file_id))).to eq true
       edit_outreach_event[0].click
       sleep(0.2) # css transition
@@ -342,6 +350,7 @@ feature "when there are existing outreach events", :js => true do
 
     scenario "add a second file" do
       edit_outreach_event[0].click
+      page.execute_script("outreach.set('document_target',outreach.findComponent('oe'))")
       page.attach_file("outreach_event_file", upload_document, :visible => false)
       expect{edit_save.click; wait_for_ajax}.to change{OutreachEventDocument.count}.from(1).to(2)
       expect(OutreachEvent.count).to eq 1

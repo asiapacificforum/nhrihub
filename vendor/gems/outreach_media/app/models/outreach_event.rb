@@ -11,6 +11,7 @@ class OutreachEvent < ActiveRecord::Base
   has_many :outreach_event_subareas
   has_many :subareas, :through => :outreach_event_subareas
   has_many :outreach_event_documents, :dependent => :destroy
+  accepts_nested_attributes_for :outreach_event_documents
   belongs_to :audience_type
   has_many :outreach_event_performance_indicators, :dependent => :delete_all
   has_many :performance_indicators, :through => :outreach_event_performance_indicators
