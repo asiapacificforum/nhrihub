@@ -236,7 +236,7 @@ describe 'media filter', ->
     simulant.fire(@page.violation_coefficient('max')[0],'change')
     expect(@page.text_fields_length()).to.equal 1
 
-  it 'shows error message when invalid minimum validation coefficient values are entered',->
+  it 'shows error message when invalid minimum violation coefficient values are entered',->
     @page.violation_coefficient('min').val('A')
     simulant.fire(@page.violation_coefficient('min')[0],'change')
     expect(@page.vc_min()).to.have.$class('error')
@@ -247,7 +247,7 @@ describe 'media filter', ->
     simulant.fire(@page.violation_coefficient('min')[0],'change')
     expect(@page.vc_min()).to.not.have.$class('error')
 
-  it 'shows error message when invalid max validation coefficient values are entered',->
+  it 'shows error message when invalid max violation coefficient values are entered',->
     @page.violation_coefficient('max').val('A')
     simulant.fire(@page.violation_coefficient('max')[0],'change')
     expect(@page.vc_max()).to.have.$class('error')
@@ -375,6 +375,7 @@ describe 'media filter', ->
     ma1 = _.extend({}, @page.new_media_appearance())
 
     ma2 = _.extend(@page.new_media_appearance(), {
+                                            date : "2015, Aug 19"
                                             title: "bar",
                                             id : 44,
                                             affected_people_count : 15,
@@ -382,6 +383,7 @@ describe 'media filter', ->
                                             subarea_ids : [1]})
 
     ma3 = _.extend(@page.new_media_appearance(), {
+                                            date : "2016, Aug 19"
                                             title: "baz",
                                             id : 48,
                                             affected_people_count : 23 ,
@@ -391,14 +393,14 @@ describe 'media filter', ->
 
     collection.set({'collection_items': [ma1,ma2,ma3]})
     collection.populate_min_max_fields()
-    expect($('.media_appearance:visible').length).to.equal 3
+    expect($('.media_appearance:visible').length).to.equal 3, "initial condition"
     expect(collection.get('filter_criteria.pa_min')).to.equal 0 # due to the new_media_appearance
     expect(collection.get('filter_criteria.pa_max')).to.equal 23
     collection.findAllComponents('collectionItem')[0].set('metrics.affected_people_count.value',30)
-    expect($('.media_appearance:visible').length).to.equal 3
+    expect($('.media_appearance:visible').length).to.equal 3, "second"
     collection.findAllComponents('collectionItem')[1].set('editing',true)
     collection.findAllComponents('collectionItem')[1].set('metrics.affected_people_count.value',40)
-    expect($('.media_appearance:visible').length).to.equal 3
+    expect($('.media_appearance:visible').length).to.equal 3, "third"
 
 
 describe 'media_appearance attachment validation', ->
@@ -480,7 +482,7 @@ describe 'media_appearance attachment validation', ->
                                            })
     collection.set({'collection_items': [media_appearance]})
     expect(collection.findComponent('collectionItem').validate()).to.equal false
-    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal true
+    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal true
 
   it 'does not validate persisted media_appearance with both link and attachment', ->
     media_appearance = _.extend(@page.new_media_appearance(), {
@@ -492,7 +494,7 @@ describe 'media_appearance attachment validation', ->
                                            })
     collection.set({'collection_items': [media_appearance]})
     expect(collection.findComponent('collectionItem').validate()).to.equal false
-    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal true
+    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal true
 
   it 'does not validate persisted media_appearance with a link and no attachment but with an original_filename', ->
     media_appearance = _.extend(@page.new_media_appearance(), {
@@ -502,7 +504,7 @@ describe 'media_appearance attachment validation', ->
                                             original_filename : "some_file_name.pdf" })
     collection.set({'collection_items': [media_appearance]})
     expect(collection.findComponent('collectionItem').validate()).to.equal false
-    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal true
+    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal true
 
   it 'does not validate unpersisted media_appearance with no link and no attachment', ->
     media_appearance = _.extend(@page.new_media_appearance(), {
@@ -625,7 +627,7 @@ describe 'advisory_council_issue attachment validation', ->
                                            })
     collection.set({'collection_items': [advisory_council_issue]})
     expect(collection.findComponent('collectionItem').validate()).to.equal true
-    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal false
+    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal false
 
   it 'validates persisted advisory_council_issue with both link and attachment', ->
     advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
@@ -637,7 +639,7 @@ describe 'advisory_council_issue attachment validation', ->
                                            })
     collection.set({'collection_items': [advisory_council_issue]})
     expect(collection.findComponent('collectionItem').validate()).to.equal true
-    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal false
+    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal false
 
   it 'validates persisted advisory_council_issue with a link and no attachment but with an original_filename', ->
     advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
@@ -647,7 +649,7 @@ describe 'advisory_council_issue attachment validation', ->
                                             original_filename : "some_file_name.pdf" })
     collection.set({'collection_items': [advisory_council_issue]})
     expect(collection.findComponent('collectionItem').validate()).to.equal true
-    expect(collection.findComponent('collectionItem').get('collection_item_double_attachment_error')).to.equal false
+    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal false
 
   # problem test
   it 'validates unpersisted advisory_council_issue with no link and no attachment', ->

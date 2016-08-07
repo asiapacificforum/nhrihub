@@ -4,11 +4,11 @@ require_relative './complaints_seed_data'
 MagicLamp.define do
   fixture(:name => "projects") do
     ProjectsSeedData.initialize(:projects)
-    {:projects => GoodGovernance::Project.all, :mandates => Mandate.all}
+    {:projects => Project.all, :mandates => Mandate.all}
   end
 
   fixture(:name => "model_name") do
-    GoodGovernance::Project.to_s
+    Project.to_s
   end
 
   fixture(:name => "agencies") do

@@ -217,11 +217,4 @@
     Ractive.components.reminder = Reminder
     Ractive.components.recipient = Recipient
 
-:coffeescript
-  @Remindable =
-    show_reminders_panel : ->
-      reminders.set # copy this complaint's reminders into the global reminders object
-        reminders: @get('reminders')
-        create_reminder_url : @get('create_reminder_url')
-        parent : @
-      $('#reminders_modal').modal('show')
+= javascript_include_tag 'remindable'

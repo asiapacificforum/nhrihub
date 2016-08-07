@@ -23,7 +23,7 @@ en:
       max: "Max"
     collection:
       collection_item_error_message: "A file or link must be included"
-      collection_item_double_attachment_error_message : "Either file or link, not both"
+      collection_item_single_attachment_error_message : "Either file or link, not both"
       expand : "Expand"
       compact : "Compact"
       choose_file : "Choose file"

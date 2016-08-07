@@ -4,8 +4,8 @@ class ProjectsSeedData
   end
 
   def self.init_projects
-    FactoryGirl.create(:good_governance_project)
-    project = GoodGovernance::Project.first
+    FactoryGirl.create(:project)
+    project = Project.first
     project.mandates = [FactoryGirl.create(:mandate, :key => 'human_rights')]
     project.save
     project

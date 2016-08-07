@@ -18,6 +18,9 @@ class @Validator
     if typeof validatee != 'object'
       throw new Error "No ractive object has been provided to ractive validator"
     @validatee = validatee
+    attributes = _(validatee.get('validation_criteria')).keys()
+    error_attributes = _(attributes).map (attribute)-> attribute+"_error"
+    _(error_attributes).each (attribute)-> validatee.set(attribute,false)
   validation_criteria : ->
     @validatee.get('validation_criteria')
   validate : ->

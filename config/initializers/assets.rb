@@ -25,5 +25,7 @@ assets = [ 'in_page_edit.js',
            'ractive_local_methods.js',
            'string.js',
            'file_upload.js',
-           'file_input_decorator.js']
+           'file_input_decorator.js',
+           'remindable.js',
+           'notable.js']
 Rails.application.config.assets.precompile += assets

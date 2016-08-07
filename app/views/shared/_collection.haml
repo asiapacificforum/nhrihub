@@ -32,7 +32,7 @@
             .row.form-group{:class => "{{#collection_item_error}}has-error{{/}}", :style => "margin-bottom:0px"}
               .col-md-5
                 %span.help-block{:id => "collection_item_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t("#{i18n_key}.item_error_message")
-            .row.form-group{:class => "{{#collection_item_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+            .row.form-group{:class => "{{#collection_item_single_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
               .col-md-5
                 %span.help-block{:id => "collection_item_attachment_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t("#{i18n_key}.item_double_attachment_error_message")
         .col-md-2.actions{:style => "width:25%"}
@@ -151,9 +151,9 @@
       .row.form-group{:class => "{{#collection_item_error}}has-error{{/}}", :style => "padding-bottom:0px"}
         .col-md-2
           %span.help-block{:id => "collection_item_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t(".collection_item_error_message")
-      .row.form-group{:class => "{{#collection_item_double_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+      .row.form-group{:class => "{{#collection_item_single_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
         .col-md-2
-          %span.help-block{:id => "collection_item_attachment_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t(".collection_item_double_attachment_error_message")
+          %span.help-block{:id => "collection_item_attachment_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t(".collection_item_single_attachment_error_message")
       .row
         .col-md-2
           %label{:for => "#{item}_article_link"}= t('.weblink')

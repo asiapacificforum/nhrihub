@@ -1,3 +1,4 @@
+#= require 'ractive_validator'
 $ ->
   Collection.EditInPlace = (node,id)->
     ractive = @
@@ -124,6 +125,12 @@ $ ->
     template : "#selected_file_template"
     deselect_file : ->
       @parent.deselect_file()
+    oninit : ->
+      @set
+        validation_criteria:
+          filesize : ['lessThan', @get('maximum_filesize')]
+          filetype : ['match', @get('permitted_filetypes')]
+      @validator = new Validator(@)
 
   Collection.CollectionItem = Ractive.extend
     template : '#collection_item_template'
@@ -138,13 +145,65 @@ $ ->
       # 'area-select' : AreaSelect
     oninit : ->
       @set
-        'editing' : false
-        'title_error': false
-        'collection_item_error':false
-        'collection_item_double_attachment_error':false
-        'filetype_error': false
-        'filesize_error': false
-        'expanded':false
+        editing : false
+        collection_item_error:false
+        collection_item_single_attachment_error:false
+        expanded:false
+        validation_criteria:
+          title : 'notBlank'
+      @validator = new Validator(@)
+    validate : ->
+      #vt = @_validate_title()
+      vt = @validator.validate_attribute('title')
+      va = @_validate_attachment()
+      vt && va
+    #_validate_title : ->
+      #@set('title',@get('title').trim())
+      #if _.isEmpty(@get('title'))
+        #@set('title_error',true)
+        #false
+      #else
+        #true
+    _validate_attachment : ->
+      @_validate_any_attachment() && @_validate_single_attachment()
+    _validate_any_attachment : ->
+      unless @_validate_file() || @_validate_link()
+        @set('collection_item_error',true)
+        false
+      else
+        @set('collection_item_error',false)
+        true
+    _validate_single_attachment : ->
+      if @_validate_file() && @_validate_link()
+        @set('collection_item_single_attachment_error',true)
+        false
+      else
+        @set('collection_item_single_attachment_error',false)
+        true
+    _validate_file : ->
+      # 3 cases to consider:
+      if !@get('persisted') # 1. not persisted... creating new, with file attached
+        !_.isNull(@get('original_filename')) && @validate_file_constraints()
+      else
+        if _.isEmpty(@get('fileupload')) # 2. persisted, only original_filename attribute is present
+          !_.isNull(@get('original_filename'))
+        else # 3. persisted, changing the attached file, so a fileupload object is present
+          !_.isNull(@get('original_filename')) && @validate_file_constraints()
+    _validate_link : ->
+      !_.isNull(@get('article_link')) && @get('article_link').length > 0
+    validate_file_constraints : ->
+      file = @get('fileupload').files[0]
+      size = file.size
+      extension = @get('fileupload').files[0].name.split('.').pop()
+      if permitted_filetypes.indexOf(extension) == -1
+        @set('filetype_error', true)
+      else
+        @set('filetype_error', false)
+      if size > maximum_filesize
+        @set('filesize_error', true)
+      else
+        @set('filesize_error', false)
+      !@get('filetype_error') && !@get('filesize_error')
     computed :
       reminders_count : ->
         @get('reminders').length
@@ -164,7 +223,7 @@ $ ->
         t = @get('title') || ""
         100 - t.length
       include : ->
-        @get('editing') ||
+        @get('editing') || !@get('persisted') ||
           (@_matches_title() &&
           @_matches_from() &&
           @_matches_to() &&
@@ -264,60 +323,6 @@ $ ->
         else
           url = @parent.get('create_collection_item_url')
           $.post(url, @persisted_attributes(), @update_collection_item, 'json') # handled right here
-    validate : ->
-      vt = @_validate_title()
-      va = @_validate_attachment()
-      vt && va
-    _validate_title : ->
-      @set('title',@get('title').trim())
-      if _.isEmpty(@get('title'))
-        @set('title_error',true)
-        false
-      else
-        true
-    _validate_attachment : ->
-      @_validate_any_attachment() && @_validate_single_attachment()
-    _validate_any_attachment : ->
-      unless @_validate_file() || @_validate_link()
-        @set('collection_item_error',true)
-        false
-      else
-        @set('collection_item_error',false)
-        true
-    _validate_single_attachment : ->
-      if @_validate_file() && @_validate_link()
-        @set('collection_item_double_attachment_error',true)
-        false
-      else
-        @set('collection_item_double_attachment_error',false)
-        true
-    _validate_file : ->
-      # 3 cases to consider:
-      if !@get('persisted') # 1. not persisted... creating new, with file attached
-        !_.isNull(@get('original_filename')) && @validate_file_constraints()
-      else
-        if _.isEmpty(@get('fileupload')) # 2. persisted, only original_filename attribute is present
-          !_.isNull(@get('original_filename'))
-        else # 3. persisted, changing the attached file, so a fileupload object is present
-          !_.isNull(@get('original_filename')) && @validate_file_constraints()
-    _validate_link : ->
-      !_.isNull(@get('article_link')) && @get('article_link').length > 0
-    validate_file_constraints : ->
-      file = @get('fileupload').files[0]
-      size = file.size
-      extension = @get('fileupload').files[0].name.split('.').pop()
-      if permitted_filetypes.indexOf(extension) == -1
-        @set('filetype_error', true)
-      else
-        @set('filetype_error', false)
-      if size > maximum_filesize
-        @set('filesize_error', true)
-      else
-        @set('filesize_error', false)
-      !@get('filetype_error') && !@get('filesize_error')
-    #remove_attachment_errors : ->
-      #@set('collection_item_double_attachment_error',false)
-      #@set('collection_item_error',false)
     update_collection_item : (data,textStatus,jqxhr)->
       collection.set('collection_items.0', data)
       collection.populate_min_max_fields() # to ensure that the newly-added collection_item is included in the filter
@@ -449,7 +454,9 @@ $ ->
       @populate_min_max_fields()
     computed :
       dates : ->
-        _(@findAllComponents('collectionItem')).map (collectionItem)-> $.datepicker.parseDate("yy, M d",collectionItem.get('date'))
+        _(@findAllComponents('collectionItem')).map (collectionItem)->
+          if !_.isNull(collectionItem.get('date'))
+            $.datepicker.parseDate("yy, M d",collectionItem.get('date'))
       violation_coefficients : ->
         _(@findAllComponents('collectionItem')).map (collectionItem)->parseFloat (collectionItem.get("violation_coefficient") || 0.0 )
       positivity_ratings : ->
@@ -485,12 +492,14 @@ $ ->
         get: -> $.datepicker.formatDate("dd/mm/yy", @get('filter_criteria.to'))
         set: (val)-> @set('filter_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
     min : (param)->
-      @get(param).reduce (min,val)->
-        return val if val<min
+      params = _(@get(param)).reject (p)-> _.isNull(p) || _.isUndefined(p)
+      params.reduce (min,val)->
+        return val if val<min && !_.isNull(val) && !_.isUndefined(val)
         min
     max : (param)->
-      @get(param).reduce (max,val)->
-        return val if val > max
+      params = _(@get(param)).reject (p)-> _.isNull(p) || _.isUndefined(p)
+      params.reduce (max,val)->
+        return val if val > max && !_.isNull(val) && !_.isUndefined(val)
         max
     components :
       collectionItem : Collection.CollectionItem
