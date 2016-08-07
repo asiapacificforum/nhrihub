@@ -213,7 +213,6 @@ feature "attempt to save with errors", :js => true do
   end
 
   scenario "title is blank" do
-    sleep(0.8)
     expect{edit_save.click; wait_for_ajax}.not_to change{OutreachEvent.count}
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in("outreach_event_title", :with => "m")
@@ -275,7 +274,6 @@ feature "when there are existing outreach events", :js => true do
       select( "Universal improved understanding", :from => :impact_rating)
       expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.first.title}
       expect(OutreachEvent.first.area_ids).to eql [2]
-      sleep(0.4)
       expect(page.all("#outreach_events .outreach_event .basic_info .title").first.text).to eq "My new outreach event title"
       expect(areas).not_to include "Human Rights"
       expect(areas).to include "Good Governance"
@@ -301,9 +299,7 @@ feature "when there are existing outreach events", :js => true do
       clear_file_attachment
       page.execute_script("scrollTo(0,0)")
       edit_cancel.click
-      #sleep(0.2)
       edit_outreach_event[0].click
-      #sleep(0.2)
       expect(page).not_to have_selector('#file_content_type_error', :text => "File type not allowed")
     end
 
@@ -341,7 +337,6 @@ feature "when there are existing outreach events", :js => true do
       file_id = page.evaluate_script("outreach.findAllComponents('oe')[0].findAllComponents('outreachEventDocuments')[0].findAllComponents('outreachEventDocument')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',file_id))).to eq true
       edit_outreach_event[0].click
-      sleep(0.2) # css transition
       expect(page.find('#outreach_event_documents #selected_file').text).not_to be_blank
       expect{ remove_file.click; wait_for_ajax}.to change{OutreachEventDocument.count}.from(1).to(0)
       expect(page).not_to have_selector('#outreach_event_documents #selected_file')
@@ -459,7 +454,6 @@ feature "performance indicator association", :js => true do
     setup_database
     resize_browser_window
     visit outreach_media_outreach_events_path(:en)
-    sleep(0.4)
   end
 
   scenario "add a performance indicator association" do
