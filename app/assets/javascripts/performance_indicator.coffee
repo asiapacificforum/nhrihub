@@ -9,7 +9,6 @@ PerformanceIndicatorSelect = Ractive.extend
   delete_indicator_callback : (data,status,jqxhr)->
     @parent.remove_performance_indicator(data.performance_indicator_id)
 
-
 Ractive.components.performanceindicatorselect = PerformanceIndicatorSelect
 
 @PerformanceIndicatorAssociation =

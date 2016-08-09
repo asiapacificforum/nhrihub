@@ -306,7 +306,16 @@ Project = Ractive.extend
     @compact() #nothing to do with errors, but this method is called on edit_cancel
     @restore()
   add_file : (file)->
-    @unshift('project_documents', {id : null, project_id : @get('id'), file : file, title: '', file_id : '', url : '', filename : file.name, original_type : file.type})
+    project =
+      id : null
+      project_id : @get('id')
+      file : file
+      title: ''
+      file_id : ''
+      url : ''
+      filename : file.name
+      original_type : file.type
+    @unshift('project_documents', project)
   show_file_selector : ->
     @find('#project_fileinput').click()
   , ProjectValidator, PerformanceIndicatorAssociation, EditBackup, Persistence, FilterMatch, Remindable, Notable

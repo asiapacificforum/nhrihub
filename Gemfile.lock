@@ -6,14 +6,6 @@ GIT
       capistrano (>= 3.1)
 
 PATH
-  remote: vendor/gems
-  specs:
-    jquery-fileupload-rails (0.4.5)
-      actionpack (>= 3.1)
-      railties (>= 3.1)
-      sass (>= 3.2)
-
-PATH
   remote: vendor/gems/authengine
   specs:
     authengine (0.0.2)
@@ -408,7 +400,6 @@ DEPENDENCIES
   human_attribute_values
   internal_documents!
   jbuilder (~> 2.0)
-  jquery-fileupload-rails!
   jquery-rails
   js-routes
   launchy
