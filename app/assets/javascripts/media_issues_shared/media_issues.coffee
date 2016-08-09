@@ -130,48 +130,10 @@ $ ->
 
   Ractive.decorators.file_select_trigger = FileSelectTrigger
 
-  #Collection.FileUpload = (node)->
-    #$(node).fileupload
-      #dataType: 'json'
-      #type: 'post'
-      #add: (e, data) -> # data includes a files property containing added files and also a submit property
-        #upload_widget = $(@).data('blueimp-fileupload')
-        #ractive = data.ractive = Ractive.
-          #getNodeInfo(upload_widget.element[0]).
-          #ractive
-        #data.context = upload_widget.element.closest(".#{item_name}")
-        #ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-        #ractive.set('original_filename', data.files[0].name)
-        #ractive.validate_file_constraints()
-        #ractive._validate_attachment()
-        #return
-      #done: (e, data) ->
-        #data.ractive.update_collection_item(data.jqXHR.responseJSON)
-        #return
-      #formData : ->
-        #@ractive.formData()
-      #uploadTemplateId: '#selected_file_template'
-      #uploadTemplateContainerId: '#selected_file_container'
-      #downloadTemplateId: '#show_collection_item_template'
-      #permittedFiletypes: permitted_filetypes
-      #maxFileSize: parseInt(maximum_filesize)
-    #teardown : ->
-      ##noop for now
-
-  #Ractive.decorators.file_upload = Collection.FileUpload
-
   Collection.File = Ractive.extend
     template : "#selected_file_template"
     deselect_file : ->
       @parent.deselect_file()
-    #oninit : ->
-      #console.log "init File"
-      #@set
-        #validation_criteria:
-          #filesize : ['lessThan', @get('maximum_filesize')]
-          #filetype : ['match', @get('permitted_filetypes')]
-      #@validator = new Validator(@)
-      #@validator.validate()
 
   Collection.CollectionItem = Ractive.extend
     template : '#collection_item_template'
@@ -207,58 +169,7 @@ $ ->
         serialization_key : item_name
       @validator = new Validator(@)
     validate : ->
-      #vt = @_validate_title()
-      #vt = @validator.validate_attribute('title')
-      #va = @_validate_attachment()
-      #vt && va
       @validator.validate()
-    #_validate_title : ->
-      #@set('title',@get('title').trim())
-      #if _.isEmpty(@get('title'))
-        #@set('title_error',true)
-        #false
-      #else
-        #true
-    #_validate_attachment : ->
-      #@_validate_any_attachment() && @_validate_single_attachment()
-    #_validate_any_attachment : ->
-      #unless @_validate_file() || @_validate_link()
-        #@set('attachment_error',true)
-        #false
-      #else
-        #@set('attachment_error',false)
-        #true
-    #_validate_single_attachment : ->
-      #if @_validate_file() && @_validate_link()
-        #@set('single_attachment_error',true)
-        #false
-      #else
-        #@set('single_attachment_error',false)
-        #true
-    #_validate_file : ->
-      ## 3 cases to consider:
-      #if !@get('persisted') # 1. not persisted... creating new, with file attached
-        #!_.isNull(@get('original_filename')) && @validate_file_constraints()
-      #else
-        #if _.isEmpty(@get('fileupload')) # 2. persisted, only original_filename attribute is present
-          #!_.isNull(@get('original_filename'))
-        #else # 3. persisted, changing the attached file, so a fileupload object is present
-          #!_.isNull(@get('original_filename')) && @validate_file_constraints()
-    #_validate_link : ->
-      #!_.isNull(@get('article_link')) && @get('article_link').length > 0
-    #validate_file_constraints : ->
-      #file = @get('fileupload').files[0]
-      #size = file.size
-      #extension = @get('fileupload').files[0].name.split('.').pop()
-      #if permitted_filetypes.indexOf(extension) == -1
-        #@set('filetype_error', true)
-      #else
-        #@set('filetype_error', false)
-      #if size > maximum_filesize
-        #@set('filesize_error', true)
-      #else
-        #@set('filesize_error', false)
-      #!@get('filetype_error') && !@get('filesize_error')
     computed :
       error_vector : ->
         title_error : @get('title_error')
@@ -492,7 +403,6 @@ $ ->
       rule   : 'any'
     permitted_filetypes : permitted_filetypes
     maximum_filesize : maximum_filesize
-
 
   window.options =
     el : '#collection_container'

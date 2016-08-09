@@ -31,16 +31,3 @@
   var Collection = {}
 
 = javascript_include_tag "issues"
-
-:coffeescript
-  $ ->
-    # attachments and links are optional for advisory_council_issues
-    Collection.CollectionItem.prototype._validate_single_attachment = ->
-      # don't care if there are two attachments (file & link) so declare it as valid
-      true
-    Collection.CollectionItem.prototype._validate_any_attachment = ->
-      @set('collection_item_error', !@_validate_file())
-      !@get('collectiom_item_error')
-    Collection.CollectionItem.prototype._validate_file = ->
-      unless _.isEmpty(@get('fileupload'))
-        !_.isNull(@get('original_filename')) && @validate_file_constraints()

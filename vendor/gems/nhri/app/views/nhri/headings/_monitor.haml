@@ -29,7 +29,7 @@
 
 %script#fileMonitorDetailsContent{:type => 'text/ractive'}
   - scope = 'activerecord.attributes.file_monitor'
-  %table#details{:style => 'width:500px'}
+  %table#details{:style => 'width:280px;'}
     %tr
       %td= t('original_filename', :scope => scope)
       %td#name {{ original_filename }}

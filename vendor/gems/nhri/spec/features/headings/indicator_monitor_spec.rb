@@ -182,15 +182,15 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
   scenario "update the file with unpermitted file type" do
     page.attach_file("monitor_file", upload_image, :visible => false)
     expect(page).to have_selector('#selected_file', :text => 'first_upload_image_file.png')
-    expect(page).to have_css('#filetype_error', :text => "Unpermitted file type")
+    expect(page).to have_selector('#original_type_error', :text => "Unpermitted file type")
     expect{ save_monitor.click; sleep(0.3) }.not_to change{Nhri::FileMonitor.first.file_id}
     deselect_file
     expect(page).not_to have_selector('#selected_file', :text => 'first_upload_image_file.png')
-    expect(page).not_to have_css('#filetype_error', :text => "Unpermitted file type")
+    expect(page).not_to have_selector('#original_type_error', :text => "Unpermitted file type")
     # after deselecting, should then be able to re-select a file:
     page.attach_file("monitor_file", upload_image, :visible => false)
     expect(page).to have_selector('#selected_file', :text => 'first_upload_image_file.png')
-    expect(page).to have_css('#filetype_error', :text => "Unpermitted file type")
+    expect(page).to have_selector('#original_type_error', :text => "Unpermitted file type")
   end
 
   scenario "try to upload without selecting a file" do

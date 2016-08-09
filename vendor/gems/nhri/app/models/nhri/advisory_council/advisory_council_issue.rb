@@ -38,20 +38,6 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
   # value comes in from shared js and is ignored
   attr_writer :performance_indicator_ids
 
-  #def file=(file)
-    #if file == "_remove"
-      #self.remove_file = true
-      #self.original_filename = nil
-      #self.filesize = nil
-      #self.original_type = nil
-    #else
-      #self.original_filename = file.original_filename
-      #self.filesize = file.size
-      #self.original_type = file.content_type
-    #end
-    #super
-  #end
-
   def initiator
     user.first_last_name if user
   end

@@ -12,7 +12,7 @@
         %i.fa.fa-info-circle.fa-lg#show_details{:decorator => :popover}
       .col-md-1
         %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()', 'data-toggle'=>'tooltip', :title => t('.download')}
-    .row.fileupload{:decorator => 'file_upload'}
+    .row.fileupload
       .col-md-12
         .row.fileupload_progress
           / The global progress state
@@ -25,9 +25,9 @@
         .row{:style => 'min-height:75px;'}
           .col-md-2#fileinput_button
             %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-            %input#monitor_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"monitor[file]"}
+            %input#monitor_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"monitor[file]", :decorator=>:ractive_fileupload}
           .col-md-10#selected_file_container
-            <selectedFile>
+            <selectedFile />
         .row
           .col-md-2
             %span.btn.btn-success.btn-xs#save_monitor{'on-click' => "save_file()"}= t('.save')
@@ -58,16 +58,15 @@
     .col-md-1{:style => "text-align:center; font-size:14px; width:5%;"}
       %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => 'delete_monitor(event,this)', :style => "position:relative; left:-12px; top:-2px;"}
 
-// jquery fileupload requires this id, it can't be renamed!
-%script#upload_template{:type => 'template/ractive'}
+%script#selected_file_template{:type => 'template/ractive'}
   %span#selected_file {{ name }}
   %span
     %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px; display:{{#name}}inline{{else}}none{{/}}', 'on-click'=>'deselect_file()'}
   %div
   .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
     %span.help-block#filesize_error{:style => "margin-top:0; margin-bottom:0;"}= t('.too_large')
-  .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
-    %span.help-block#filetype_error{:style => "margin-top:0; margin-bottom:0;"}= t('.unpermitted_type')
+  .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
+    %span.help-block#original_type_error{:style => "margin-top:0; margin-bottom:0;"}= t('.unpermitted_type')
   .form-group{:class => "{{#file_error}}has-error{{/}}"}
     %span.help-block#file_error{:style => "margin-top:0; margin-bottom:0;"}= t('.blank_file_msg')
 

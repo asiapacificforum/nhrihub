@@ -1,3 +1,5 @@
+#= require 'ractive_validator'
+#= require 'ractive_local_methods'
 $ ->
   Attribute = Ractive.extend
     template : "<div class='col-md-2' style='width:{{column_width}}%'> {{description}} </div>"
@@ -11,46 +13,61 @@ $ ->
     components :
       attribute : Attribute
 
-  FileUpload = (node)->
-    $(node).fileupload
-      dataType: 'json'
-      type: 'post'
-      add: (e, data) -> # data includes a files property containing added files and also a submit property
-        upload_widget = $(@).data('blueimp-fileupload')
-        ractive = data.ractive = Ractive.
-          getNodeInfo(upload_widget.element[0]).
-          ractive
-        # ractive is the file_monitor ractive instance
-        data.context = upload_widget.element.closest(".monitor")
-        ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-        #ractive.set('original_filename', data.files[0].name)
-        ractive.findComponent("selectedFile").set( _.extend({},data.files[0]) )
-        ractive.validate_file_constraints()
-        return
-      done: (e, data) ->
-        data.ractive.update_file(data.jqXHR.responseJSON)
-        return
-      formData : ->
-        @ractive.formData()
-      uploadTemplateId: '#upload_template'
-      uploadTemplateContainerId: '#selected_file_container'
-      downloadTemplateId: '#download_file_template'
-      permittedFiletypes: permitted_filetypes
-      maxFileSize: parseInt(maximum_filesize)
-    teardown : ->
-      #noop for now
+  FileInput = (node)->
+    $(node).on 'change', (event)->
+      add_file(event,@)
+    add_file = (event,el)->
+      file = el.files[0]
+      ractive = Ractive.getNodeInfo(el).ractive
+      ractive.add_file(file)
+      _reset_input()
+    _reset_input = ->
+      input = $(node)
+      input.wrap('<form></form>').closest('form').get(0).reset()
+      input.unwrap()
+    return {
+      teardown : ->
+        $(node).off 'change'
+      update : ->
+        #noop
+    }
 
-  Ractive.decorators.file_upload = FileUpload
+  Ractive.decorators.ractive_fileupload = FileInput
+
 
   SelectedFile = Ractive.extend
-    #template : "<span id='selected_file'>{{name}}</span>"
-    template : "#upload_template"
+    template : "#selected_file_template"
+    oninit : ->
+      @set
+        validation_criteria :
+          filesize : ['lessThan', @get('maximum_filesize')]
+          original_type : ['match', @get('permitted_filetypes')]
+          file : =>
+            !_.isEmpty(@get('name'))
+      @validator = new Validator(@)
+    computed :
+      original_filename : -> @get('name')
+      permitted_filetypes : -> window.permitted_filetypes
+      maximum_filesize : -> window.maximum_filesize
+    persistent_attributes : ->
+        [ 'filesize', 'original_filename', 'original_type', 'file']
+    formData : ->
+      @asFormData @persistent_attributes()
     deselect_file : ->
-      @parent.remove_selected_file()
       @reset()
-      @set('filetype_error', false)
-      @set('filesize_error', false)
-      @set('file_error', false)
+      @set
+        validation_criteria :
+          filesize : ['lessThan', @get('maximum_filesize')]
+          original_type : ['match', @get('permitted_filetypes')]
+    validate : ->
+      @validator.validate()
+    add_file : (file)->
+      @set
+        filesize: file.size
+        name: file.name
+        original_type: file.type
+        file : file
+      @validate()
 
   MonitorPopover = (node)->
     indicator = @
@@ -91,47 +108,37 @@ $ ->
           'put'
         else
           'post'
+      serialization_key : -> 'monitor'
     decorators :
       popover : MonitorPopover
     components :
       selectedFile : SelectedFile
     formData : ->
-      'monitor[original_filename]' : @findComponent('selectedFile').get('name')
-      'monitor[original_type]' : @findComponent('selectedFile').get('type')
-      'monitor[filesize]' : @findComponent('selectedFile').get('size')
+      @findComponent('selectedFile').formData()
     onModalClose : ->
-      @findComponent('selectedFile').reset()
-      @set
-        'file_error' : false
-        'filesize_error' : false
-        'filetype_error' : false
-    validate_file_constraints : ->
-      if _.isUndefined(@get('fileupload')) || _.isEmpty(@get('fileupload').files)
-        @set('file_error',true)
-        @findComponent('selectedFile').set('file_error',true)
-        !@get('file_error')
-      else
-        @set('file_error',false)
-        @findComponent('selectedFile').set('file_error',false)
-        file = @get('fileupload').files[0]
-        size = file.size
-        extension = file.name.split('.').pop()
-        @set('filetype_error', permitted_filetypes.indexOf(extension) == -1 )
-        @set('filesize_error', size > maximum_filesize )
-        @findComponent('selectedFile').set('filesize_error',@get('filesize_error'))
-        @findComponent('selectedFile').set('filetype_error',@get('filetype_error'))
-        !@get('filetype_error') && !@get('filesize_error')
+      @findComponent('selectedFile').deselect_file()
     save_file : ->
-      if @validate_file_constraints()
-        $('.fileupload').fileupload('option',{method : @get('save_method'), url:@get('url'), formData:@formData()})
-        @get('fileupload').submit()
+      if @validate()
+        $.ajax
+          method : @get('save_method')
+          url : @get('url')
+          data : @formData()
+          dataType : 'json'
+          success : @update_file
+          processData : false
+          contentType : false
+          context : @
+    validate : ->
+      @findComponent('selectedFile').validate()
     update_file : (response)->
       @findComponent('selectedFile').reset()
       @set(response)
     download_file : ->
       window.location = @get('url')
-    remove_selected_file : ->
-      @get('fileupload').files=[]
+    #remove_selected_file : ->
+      #@get('fileupload').files=[]
+    add_file : (file)->
+      @findComponent('selectedFile').add_file(file)
 
   Indicator = Ractive.extend
     template : "#indicator_template"

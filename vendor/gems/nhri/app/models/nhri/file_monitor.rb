@@ -9,6 +9,7 @@ class Nhri::FileMonitor < ActiveRecord::Base
   belongs_to :user
 
   alias_method :author, :user
+  alias_method :author=, :user=
 
   default_scope ->{ order(:created_at => :asc) }
 

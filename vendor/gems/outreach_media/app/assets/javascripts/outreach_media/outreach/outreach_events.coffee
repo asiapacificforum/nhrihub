@@ -117,39 +117,6 @@ $ ->
 
   Ractive.decorators.datepicker = Datepicker
 
-  #FileUpload = (node)->
-    #$(node).fileupload
-      #add: (e, data) -> # data includes a files property containing added files and also a submit property
-        #upload_widget = $(@).data('blueimp-fileupload')
-        #@outreach_event = outreach_event = data.ractive = Ractive.
-          #getNodeInfo(upload_widget.element[0]).
-          #ractive
-        #data.context = upload_widget.element.closest('.outreach_event')
-        #outreach_event.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-        #file = data.files[0]
-        #outreach_event.push('outreach_event_documents', {file : file, file_id : '', url : '', file_filename : file.name, file_size : file.size, file_content_type : file.type})
-        #outreach_event.validator.validate_attribute('files')
-        #return
-      #done: (e, data) ->
-        #ractive = Ractive.getNodeInfo(@).ractive
-        #ractive.update_oe(data.jqXHR.responseJSON)
-        #return
-      #formData : ->
-        #Ractive.getNodeInfo(el[0]).ractive.formData()
-      #uploadTemplateId: '#outreach_event_document_template'
-      #uploadTemplateContainerId: '#outreach_event_documents'
-      #filesContainer: '#outreach_event_documents'
-      #downloadTemplateId: '#show_outreach_event_template'
-      #fileInput: $(node).find('#outreach_event_file')
-      #permittedFiletypes: permitted_filetypes
-      #maxFileSize: parseInt(maximum_filesize)
-    #teardown : ->
-      ## TODO must turn off all event listeners, else they're still enabled!
-      ## else destroy the jquery fileupload instance
-      ##noop for now
-
-  #Ractive.decorators.file_upload = FileUpload
-
   FileInput = (node)->
     $(node).on 'change', (event)->
       add_file = (event,el)->

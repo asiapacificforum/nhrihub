@@ -59,7 +59,6 @@ feature "create a new article", :js => true do
     expect{page.execute_script("scrollTo(0,0)"); edit_save.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(0).to(1)
     ma = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first
     expect(ma.affected_people_count).to eq 100000 # b/c this attribute now returns a hash!
-    sleep(0.4)
     expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 1)
     expect(page.find("#advisory_council_issues .advisory_council_issue .basic_info .title").text).to eq "My new article title"
     expand_all_panels
@@ -89,14 +88,12 @@ feature "create a new article", :js => true do
     expect(chars_remaining).to eq "You have 80 characters left"
     fill_in('advisory_council_issue_article_link', :with => "http://www.example.com")
     expect{edit_save.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(0).to(1)
-    sleep(0.4)
     expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 1)
     expect(page.all("#advisory_council_issues .advisory_council_issue .basic_info .title").first.text).to eq "My new article title"
     add_article_button.click
     fill_in("advisory_council_issue_title", :with => "My second new article title")
     fill_in('advisory_council_issue_article_link', :with => "http://www.example.com")
     expect{edit_save.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(1).to(2)
-    sleep(0.4)
     expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 2)
     expect(page.all("#advisory_council_issues .advisory_council_issue .basic_info .title")[0].text).to eq "My second new article title"
     expect(page.all("#advisory_council_issues .advisory_council_issue .basic_info .title")[1].text).to eq "My new article title"
@@ -123,7 +120,6 @@ feature "attempt to save with errors", :js => true do
   end
 
   scenario "title is blank" do
-    sleep(0.8)
     expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
     expect{edit_save.click; wait_for_ajax}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
@@ -214,7 +210,6 @@ feature "when there are existing articles", :js => true do
       select('4: Serious', :from => 'Violation severity')
       expect{page.execute_script("scrollTo(0,0)"); edit_save.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.title}
       expect(Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.area_ids).to eql [2]
-      sleep(0.4)
       expect(page.all("#advisory_council_issues .advisory_council_issue .basic_info .title").first.text).to eq "My new article title"
       expect(areas).not_to include "Human Rights"
       expect(areas).to include "Good Governance"
@@ -255,7 +250,6 @@ feature "when there are existing articles", :js => true do
       previous_file = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
       fill_in('advisory_council_issue_article_link', :with => "http://www.example.com")
-      sleep(0.2)
       expect(page).not_to have_selector('#single_attachment_error', :text => 'Either file or link, not both')
       expect{edit_save.click; wait_for_ajax }.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
@@ -283,7 +277,6 @@ feature "when there are existing articles", :js => true do
       clear_file_attachment
       expect(page).not_to have_selector('#attachment_error', :text => "A file or link must be included")
       edit_cancel.click
-      sleep(0.2)
       edit_article[0].click
       expect(page).not_to have_selector('#attachment_error', :text => "A file or link must be included")
     end
@@ -295,7 +288,6 @@ feature "when there are existing articles", :js => true do
       expect{edit_save.click; wait_for_ajax}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       edit_cancel.click
-      sleep(0.2)
       edit_article[0].click
       expect(page).not_to have_selector("#title_error", :visible => true)
     end
@@ -312,7 +304,7 @@ feature "when there are existing articles", :js => true do
       check("CRC")
       fill_in('people_affected', :with => " 100000 ")
       select('4: Serious', :from => 'Violation severity')
-      expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click; sleep(0.4)}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.title}
+      expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.title}
       expect(page.all("#advisory_council_issues .advisory_council_issue .basic_info .title").first.text).to eq original_advisory_council_issue.title
       expand_all_panels
       expect(areas).to include "Human Rights"
@@ -321,7 +313,6 @@ feature "when there are existing articles", :js => true do
 
     scenario "title is blank, error should not propagate" do # b/c there was a bug!
       add_article_button.click
-      sleep(0.8)
       expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
       expect{edit_save.click; wait_for_ajax}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
@@ -415,7 +406,6 @@ feature "view attachments", :js => true do
       setup_database(:advisory_council_issue_with_link)
       visit nhri_advisory_council_issues_path(:en)
       click_the_link_icon
-      sleep(0.5)
       page.switch_to_window(page.windows[1])
       expect( page.evaluate_script('window.location.href')).to include first_article_link
     end

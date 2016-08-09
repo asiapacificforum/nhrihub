@@ -38,11 +38,6 @@ class OutreachMedia::MediaAppearancesController < ApplicationController
 
   private
   def media_appearance_params
-    #if (file_param = params[:media_appearance][:file]) && file_param != "_remove"
-      #params["media_appearance"]["original_filename"] = file_param.original_filename
-      #params["media_appearance"]["filesize"] = file_param.size
-      #params["media_appearance"]["original_type"] = file_param.content_type
-      #params[:media_appearance][:article_link] = nil
     if !(params[:media_appearance][:article_link].blank? || params[:media_appearance][:article_link] == "null") || params[:media_appearance][:file] == "_remove"
       params["media_appearance"]["original_filename"] = nil
       params["media_appearance"]["filesize"] = nil
