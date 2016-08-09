@@ -21,29 +21,6 @@
   }
 }
 
-// the display of areas and subareas for a media appearance
-.description .area{
-  margin-left: 15px;
-
-  &:not(:first-child){
-    margin-top : 6px;
-  }
-
-  .name:after{
-    content : ":";
-  }
-  .subareas{
-
-    margin-left : 20px;
-
-    .subarea:not(:first-child){
-      &:before {
-        content : ", ";
-      }
-    }
-  }
-}
-
 // the next two change the icon from a right caret to a down caret
 // in the outreach_media admin page
 [aria-expanded='false'] .fa-caret-right:before {

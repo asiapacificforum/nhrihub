@@ -430,20 +430,15 @@ $ ->
       $('.form input, .form select')
     save : ->
       if @validate()
-        if !_.isUndefined(@get('fileupload')) && !_.isNull(@get('fileupload'))
-          files = _(@findAllComponents('outreachEventDocument')).map (oed)-> oed.get('file')
-          # TODO fix this, should find a way to access fileupload without hard-coding the css class here:
-          $('.fileupload').fileupload('send',{files : _(files).compact()}) # handled by jquery-fileupload
-        else
-          url = @parent.get('create_outreach_event_url')
-          $.ajax
-            method : 'post'
-            url : url
-            data : @formData()
-            dataType : 'json'
-            success : @update_oe
-            processData : false
-            contentType : false
+        url = @parent.get('create_outreach_event_url')
+        $.ajax
+          method : 'post'
+          url : url
+          data : @formData()
+          dataType : 'json'
+          success : @update_oe
+          processData : false
+          contentType : false
     validate : ->
       @validator.validate()
     update_oe : (data,textStatus,jqxhr)->

@@ -14,8 +14,8 @@ Teaspoon.configure do |config|
   #config.asset_paths = ["spec/javascripts", "spec/javascripts/stylesheets"]
   config.asset_paths = [OutreachMedia::Engine.root.join("spec/javascripts"),
                         OutreachMedia::Engine.root.join("spec/support/javascript"),
-                        CorporateServices::Engine.root.join("spec/javascripts"),
-                        CorporateServices::Engine.root.join("spec/support/javascript"),
+                        InternalDocuments::Engine.root.join("spec/javascripts"),
+                        InternalDocuments::Engine.root.join("spec/support/javascript"),
                         Nhri::Engine.root.join("spec/javascripts"),
                         Nhri::Engine.root.join("spec/support/javascript"),
                         Rails.root.join("spec/javascripts"),
@@ -191,9 +191,9 @@ Teaspoon.configure do |config|
     suite.helper = Rails.root.join("vendor","gems","outreach_media","spec","javascripts","spec_helper.js")
     suite.matcher = "vendor/gems/outreach_media/spec/javascripts/**/*_spec.coffee"
   end
-  config.suite :corporate do |suite|
-    suite.helper = Rails.root.join("vendor","gems","corporate_services","spec","javascripts","spec_helper.js")
-    suite.matcher = "vendor/gems/corporate_services/spec/javascripts/**/*_spec.coffee"
+  config.suite :internal_documents do |suite|
+    suite.helper = Rails.root.join("vendor","gems","internal_documents","spec","javascripts","spec_helper.js")
+    suite.matcher = "vendor/gems/internal_documents/spec/javascripts/**/*_spec.coffee"
   end
   config.suite :projects do |suite|
     suite.helper = Rails.root.join("spec","javascripts","spec_helper.js")

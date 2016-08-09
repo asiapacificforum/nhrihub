@@ -102,7 +102,6 @@ en:
 
     media_appearances:
       index:
-        add_article: "Add article"
         heading: "Media Archive"
         date: "Date"
         title_description: "Title/Description"
@@ -145,6 +144,7 @@ en:
         choose_file : "Choose file"
         item_error_message : "A file or link must be included"
         item_double_attachment_error_message : "Either file or link, not both"
+        add_article : "Add article"
 
       media_appearance_templates :
         none_assigned: "none assigned"

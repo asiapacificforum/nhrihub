@@ -41,7 +41,7 @@ feature "create a new article", :js => true do
     add_article_button.click
   end
 
-  scenario "without errors" do
+  scenario "without file and without errors" do
     fill_in("media_appearance_title", :with => "My new article title")
     expect(chars_remaining).to eq "You have 80 characters left"
     expect(page).not_to have_selector("input#people_affected", :visible => true)
@@ -66,7 +66,7 @@ feature "create a new article", :js => true do
     select_first_performance_indicator
     pi = PerformanceIndicator.first
     expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
-    expect{page.execute_script("scrollTo(0,0)"); edit_save.click; sleep(0.5)}.to change{MediaAppearance.count}.from(0).to(1)
+    expect{page.execute_script("scrollTo(0,0)"); edit_save.click; wait_for_ajax}.to change{MediaAppearance.count}.from(0).to(1)
     ma = MediaAppearance.first
     expect(ma.performance_indicator_ids).to eq [pi.id]
     expect(ma.affected_people_count).to eq 100000 # b/c this attribute now returns a hash!
@@ -84,7 +84,8 @@ feature "create a new article", :js => true do
 
   scenario "upload article from file" do
     fill_in("media_appearance_title", :with => "My new article title")
-    page.attach_file("media_appearance_file", upload_document, :visible => false)
+    page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
+    page.attach_file("primary_file", upload_document, :visible => false)
     expect{edit_save.click; sleep(0.4)}.to change{MediaAppearance.count}.from(0).to(1)
     expect(page).to have_css("#media_appearances .media_appearance", :count => 1)
     doc = MediaAppearance.last
@@ -99,14 +100,14 @@ feature "create a new article", :js => true do
     fill_in("media_appearance_title", :with => "My new article title")
     expect(chars_remaining).to eq "You have 80 characters left"
     fill_in('media_appearance_article_link', :with => "http://www.example.com")
-    expect{edit_save.click; sleep(0.4)}.to change{MediaAppearance.count}.from(0).to(1)
+    expect{edit_save.click; wait_for_ajax}.to change{MediaAppearance.count}.from(0).to(1)
     sleep(0.4)
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 1)
     expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq "My new article title"
     add_article_button.click
     fill_in("media_appearance_title", :with => "My second new article title")
     fill_in('media_appearance_article_link', :with => "http://www.example.com")
-    expect{edit_save.click; sleep(0.4)}.to change{MediaAppearance.count}.from(1).to(2)
+    expect{edit_save.click; wait_for_ajax}.to change{MediaAppearance.count}.from(1).to(2)
     sleep(0.4)
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 2)
     expect(page.all("#media_appearances .media_appearance .basic_info .title")[0].text).to eq "My second new article title"
@@ -137,7 +138,7 @@ feature "attempt to save with errors", :js => true do
   scenario "title is blank" do
     sleep(0.8)
     expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
-    expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
+    expect{edit_save.click; wait_for_ajax}.not_to change{MediaAppearance.count}
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
     fill_in("media_appearance_title", :with => "m")
     expect(page).not_to have_selector("#title_error", :visible => true)
@@ -146,52 +147,56 @@ feature "attempt to save with errors", :js => true do
   feature "neither link nor file is included" do
     before do
       fill_in("media_appearance_title", :with => "My new article title")
-      expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
-      expect(page).to have_selector('#collection_item_error', :text => "A file or link must be included")
+      expect{edit_save.click; wait_for_ajax}.not_to change{MediaAppearance.count}
+      expect(page).to have_selector('#attachment_error', :text => "A file or link must be included")
     end
 
     scenario "remove error by adding a file" do
-      page.attach_file("media_appearance_file", upload_document, :visible => false)
-      expect(page).not_to have_selector('#collection_item_error', :text => "A file or link must be included")
+      page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
+      page.attach_file("primary_file", upload_document, :visible => false)
+      expect(page).not_to have_selector('#attachment_error', :text => "A file or link must be included")
     end
 
     scenario "remove error by adding a link" do
       fill_in("media_appearance_article_link", :with => "h")
-      expect(page).not_to have_selector('#collection_item_error', :text => "A file or link must be included")
+      expect(page).not_to have_selector('#attachment_error', :text => "A file or link must be included")
     end
   end
 
   feature "both link and file are included" do
     before do
       fill_in("media_appearance_title", :with => "My new article title")
-      page.attach_file("media_appearance_file", upload_document, :visible => false)
+      page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
+      page.attach_file("primary_file", upload_document, :visible => false)
       fill_in("media_appearance_article_link", :with => "h")
-      expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
-      expect(page).to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
+      expect{edit_save.click; wait_for_ajax}.not_to change{MediaAppearance.count}
+      expect(page).to have_selector('#single_attachment_error', :text => "Either file or link, not both")
     end
 
     scenario "remove error by removing file" do
       clear_file_attachment
-      expect(page).not_to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
+      expect(page).not_to have_selector('#single_attachment_error', :text => "Either file or link, not both")
     end
 
     scenario "remove error by deleting link" do
       delete_article_link_field
-      expect(page).not_to have_selector('#collection_item_attachment_error', :text => "Either file or link, not both")
+      expect(page).not_to have_selector('#single_attachment_error', :text => "Either file or link, not both")
     end
   end
 
   scenario "upload an unpermitted file type and cancel" do
     fill_in("media_appearance_title", :with => "My new article title")
-    page.attach_file("media_appearance_file", upload_image, :visible => false)
-    expect(page).to have_css('#filetype_error', :text => "File type not allowed")
-    expect{edit_save.click; sleep(0.5)}.not_to change{MediaAppearance.count}
+    page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
+    page.attach_file("primary_file", upload_image, :visible => false)
+    expect(page).to have_css('#original_type_error', :text => "File type not allowed")
+    expect{edit_save.click; wait_for_ajax}.not_to change{MediaAppearance.count}
     page.find(".media_appearance i#edit_cancel").click
     expect(page).not_to have_css("#media_appearances .media_appearance")
   end
 
   scenario "upload a file that exceeds size limit" do
-    page.attach_file("media_appearance_file", big_upload_document, :visible => false)
+    page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
+    page.attach_file("primary_file", big_upload_document, :visible => false)
     expect(page).to have_css('#filesize_error', :text => "File is too large")
     page.find(".media_appearance i#edit_cancel").click
     expect(page).not_to have_css("#media_appearances .media_appearance")
@@ -231,7 +236,7 @@ feature "when there are existing articles", :js => true do
       fill_in('people_affected', :with => " 100000 ")
       select('3: Has no bearing on the office', :from => 'Positivity rating')
       select('4: Serious', :from => 'Violation severity')
-      expect{page.execute_script("scrollTo(0,0)"); edit_save.click; sleep(0.4)}.to change{MediaAppearance.first.title}
+      expect{page.execute_script("scrollTo(0,0)"); edit_save.click; wait_for_ajax}.to change{MediaAppearance.first.title}
       expect(MediaAppearance.first.area_ids).to eql [2]
       sleep(0.4)
       expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq "My new article title"
@@ -244,9 +249,10 @@ feature "when there are existing articles", :js => true do
       expect(page.find('#selected_file_container').text).not_to be_blank
       previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
-      page.attach_file("media_appearance_file", upload_document, :visible => false)
+      page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
+      page.attach_file("primary_file", upload_document, :visible => false)
       edit_save.click
-      sleep(0.4)
+      wait_for_ajax
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq false
       new_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',new_file_id))).to eq true
@@ -259,7 +265,7 @@ feature "when there are existing articles", :js => true do
       clear_file_attachment
       fill_in('media_appearance_article_link', :with => "http://www.example.com")
       edit_save.click
-      sleep(0.4)
+      wait_for_ajax
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq false
       expect(MediaAppearance.first.article_link).to eq "http://www.example.com"
       expect(MediaAppearance.first.original_filename).to be_nil
@@ -271,7 +277,7 @@ feature "when there are existing articles", :js => true do
       edit_article[0].click
       fill_in("media_appearance_title", :with => "")
       expect(chars_remaining).to eq "You have 100 characters left"
-      expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
+      expect{edit_save.click; wait_for_ajax}.not_to change{MediaAppearance.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       fill_in("media_appearance_title", :with => "m")
       expect(page).not_to have_selector("#title_error", :visible => true)
@@ -279,21 +285,22 @@ feature "when there are existing articles", :js => true do
 
     scenario "edit an article and add file error" do
       edit_article[0].click
-      page.attach_file("media_appearance_file", upload_image, :visible => false)
-      expect(page).to have_css('#filetype_error', :text => "File type not allowed")
+      page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
+      page.attach_file("primary_file", upload_image, :visible => false)
+      expect(page).to have_css('#original_type_error', :text => "File type not allowed")
       clear_file_attachment
-      expect(page).to have_selector('#collection_item_error', :text => "A file or link must be included")
+      expect(page).to have_selector('#attachment_error', :text => "A file or link must be included")
       edit_cancel.click
       sleep(0.2)
       edit_article[0].click
-      expect(page).not_to have_selector('#collection_item_error', :text => "A file or link must be included")
+      expect(page).not_to have_selector('#attachment_error', :text => "A file or link must be included")
     end
 
     scenario "edit an article, add errors, and cancel" do
       edit_article[0].click
       fill_in("media_appearance_title", :with => "")
       expect(chars_remaining).to eq "You have 100 characters left"
-      expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
+      expect{edit_save.click; wait_for_ajax}.not_to change{MediaAppearance.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       edit_cancel.click
       sleep(0.2)
@@ -314,7 +321,7 @@ feature "when there are existing articles", :js => true do
       fill_in('people_affected', :with => " 100000 ")
       select('3: Has no bearing on the office', :from => 'Positivity rating')
       select('4: Serious', :from => 'Violation severity')
-      expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click; sleep(0.4)}.not_to change{MediaAppearance.first.title}
+      expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click; wait_for_ajax}.not_to change{MediaAppearance.first.title}
       expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq original_media_appearance.title
       expand_all_panels
       expect(areas).to include "Human Rights"
@@ -325,7 +332,7 @@ feature "when there are existing articles", :js => true do
       add_article_button.click
       sleep(0.8)
       expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
-      expect{edit_save.click; sleep(0.4)}.not_to change{MediaAppearance.count}
+      expect{edit_save.click; wait_for_ajax}.not_to change{MediaAppearance.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       page.find(".media_appearance i#edit_cancel").click
       edit_article[0].click
@@ -341,9 +348,11 @@ feature "when there are existing articles", :js => true do
 
     scenario "edit a link article and change to file" do
       edit_article[0].click
-      page.attach_file("media_appearance_file", upload_document, :visible => false)
+      page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
+      page.attach_file("primary_file", upload_document, :visible => false)
+      fill_in('media_appearance_article_link', :with => "")
       edit_save.click
-      sleep(0.4)
+      wait_for_ajax
       expect(MediaAppearance.first.article_link).to be_blank
       expect(MediaAppearance.first.original_filename).to eq "first_upload_file.pdf"
       expect(MediaAppearance.first.filesize).to be > 0
@@ -467,7 +476,7 @@ feature "performance indicator association", :js => true do
     pi = PerformanceIndicator.first
     expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
     page.execute_script("scrollTo(0,0)")
-    expect{edit_save.click; sleep(0.5)}.to change{MediaAppearance.first.performance_indicator_ids}.from([]).to([pi.id])
+    expect{edit_save.click; wait_for_ajax}.to change{MediaAppearance.first.performance_indicator_ids}.from([]).to([pi.id])
   end
 end
 

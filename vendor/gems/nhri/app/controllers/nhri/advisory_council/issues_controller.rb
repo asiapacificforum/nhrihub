@@ -37,6 +37,12 @@ class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
 
   private
   def issue_params
+    if params[:advisory_council_issue][:file] == "_remove"
+      params["advisory_council_issue"]["original_filename"] = nil
+      params["advisory_council_issue"]["filesize"] = nil
+      params["advisory_council_issue"]["original_type"] = nil
+      params[:advisory_council_issue][:remove_file] = true
+    end
     params["advisory_council_issue"]["user_id"] = current_user.id
     params.
       require(:advisory_council_issue).
@@ -51,7 +57,7 @@ class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
              :lastModifiedDate,
              :user_id,
              :article_link,
-             :performance_indicator_ids => [],
+             :performance_indicator_ids => [], # it's from shared js and it's ignored
              :area_ids => [],
              :subarea_ids => [])
   end

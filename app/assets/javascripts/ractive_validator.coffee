@@ -4,14 +4,17 @@
 #      validation_criteria :
 #        name : 'notBlank'
 #        age : ['lessThan', 21]
-#        user_id : numeric
+#        user_id : 'numeric'
 #        email : ['notBlank', {if : =>@get('has_email')}]
 #        recipient : ['match', ['Fred', 'Wilma']}
+#        credit_card : =>
+#          @get('ccn').length == 10
 # here email validation is notBlank, which has no parameters
 #      age validation is lessThan, with a threshold parameter
 #      user_id validation has no parameters, tests numeric
 #      email validation is conditional depending on the value returned in the 'if' function
 #      recipient validation is match against the array of acceptable values. If array is blank an 'unconfigured_validation_parameter' error is set to true
+#      credit_card validation uses passed-in function
 
 class @Validator
   constructor : (validatee)->
@@ -20,7 +23,8 @@ class @Validator
     @validatee = validatee
     attributes = _(validatee.get('validation_criteria')).keys()
     error_attributes = _(attributes).map (attribute)-> attribute+"_error"
-    _(error_attributes).each (attribute)-> validatee.set(attribute,false)
+    _(error_attributes).each (attribute)->
+      validatee.set(attribute,false)
   validation_criteria : ->
     @validatee.get('validation_criteria')
   validate : ->
@@ -33,10 +37,21 @@ class @Validator
       @validatee.set(attribute+"_error", !params())
       !@validatee.get(attribute+"_error")
     else
-      [criterion,param] = if _.isArray(params) then params else [params]
-      if _.isObject(param) && (_(param).keys()[0]== 'if') && !_(param).values()[0]() # condition not met
+      # params could be:
+      #   'notBlank'
+      #   ['lessThan', 44]
+      #   ['notBlank, {if : true}]
+      #   ['lessThan', 44, {if : true}]
+      #   ['match', ['one','two']]
+      #   -> passed in function
+      #[criterion,param] = if _.isArray(params) then params else [params]
+      [criterion, param, condition] = if _.isArray(params) then params else [params]
+      if _.isUndefined(condition) && _.isObject(param) && !_.isArray(param)
+        condition = param
+        param = undefined
+      if _.isObject(condition) && (_(condition).keys()[0]== 'if') && !_(condition).values()[0]() # condition not met
         true
-      else if _.isObject(param) && (_(param).keys()[0]== 'if') && _(param).values()[0]() #condition is met
+      else if _.isObject(condition) && (_(condition).keys()[0]== 'if') && _(condition).values()[0]() #condition is met
         @[criterion].call(@,attribute,param)
       else # no condition
         @[criterion].call(@,attribute,param)

@@ -1,6 +1,7 @@
 = stylesheet_link_tag 'filter_controls'
 = stylesheet_link_tag 'expandable_list'
 = stylesheet_link_tag 'form_errors'
+= stylesheet_link_tag 'media_issues'
 %h1= t('.heading')
 
 .btn.btn-success.btn-sm.add_article{:style => "margin-bottom:12px; color:white;", :onclick => "collection.new_article()"}
@@ -9,8 +10,7 @@
 
 #collection_container
 
--# seems to have been included by mistake, leave it for reference in case it's now removed by mistake!
--#= render :partial => 'shared/performance_indicator_select'
+= render :partial => 'shared/performance_indicator_select'
 = render :partial => 'shared/collection_filter_controls', :locals => {:collection => :advisory_council_issues, :search_heading => t('.search_heading')}
 = render :partial => 'advisory_council_specifics' # overrides the shared view
 = render :partial => 'shared/collection', :locals => {:item => :advisory_council_issue, :i18n_key => "nhri.advisory_council_issues.index"}

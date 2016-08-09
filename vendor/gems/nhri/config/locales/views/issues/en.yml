@@ -44,6 +44,7 @@ en:
           clear : "Clear filter"
           weblink : "Enter web link"
           choose_file : "Choose file"
+          add_issue : "Add issue"
         advisory_council_specifics:
           initiator: "Reported by"
     advisory_council_issues:

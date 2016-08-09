@@ -1,4 +1,5 @@
 #= require 'ractive_validator'
+#= require 'ractive_local_methods'
 $ ->
   Collection.EditInPlace = (node,id)->
     ractive = @
@@ -91,46 +92,86 @@ $ ->
     components :
       'subarea-select' : Collection.SubareaSelect
 
-  Collection.FileUpload = (node)->
-    $(node).fileupload
-      dataType: 'json'
-      type: 'post'
-      add: (e, data) -> # data includes a files property containing added files and also a submit property
-        upload_widget = $(@).data('blueimp-fileupload')
-        ractive = data.ractive = Ractive.
-          getNodeInfo(upload_widget.element[0]).
-          ractive
-        data.context = upload_widget.element.closest(".#{item_name}")
-        ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
-        ractive.set('original_filename', data.files[0].name)
-        ractive.validate_file_constraints()
-        ractive._validate_attachment()
-        return
-      done: (e, data) ->
-        data.ractive.update_collection_item(data.jqXHR.responseJSON)
-        return
-      formData : ->
-        @ractive.formData()
-      uploadTemplateId: '#selected_file_template'
-      uploadTemplateContainerId: '#selected_file_container'
-      downloadTemplateId: '#show_collection_item_template'
-      permittedFiletypes: permitted_filetypes
-      maxFileSize: parseInt(maximum_filesize)
-    teardown : ->
-      #noop for now
+  FileInput = (node)->
+    $(node).on 'change', (event)->
+      add_file(event,@)
+    add_file = (event,el)->
+      file = el.files[0]
+      ractive = Ractive.getNodeInfo(el).ractive
+      ractive.add_file(file)
+      _reset_input()
+    _reset_input = ->
+      input = $(node)
+      input.wrap('<form></form>').closest('form').get(0).reset()
+      input.unwrap()
+    return {
+      teardown : ->
+        $(node).off 'change'
+        $(node).closest('.fileupload').find('.fileinput-button').off 'click'
+      update : ->
+        #noop
+    }
 
-  Ractive.decorators.file_upload = Collection.FileUpload
+  Ractive.decorators.ractive_fileupload = FileInput
+
+  FileSelectTrigger = (node)->
+    $(node).on 'click', (event)->
+      source = Ractive.getNodeInfo(@).ractive # might be an archive doc (has document_group_id) or primary doc (no document_group_id)
+      collection.set('document_target', source)
+      #UserInput.terminate_user_input_request()
+      #UserInput.reset()
+      $('input:file').trigger('click')
+    return {
+      teardown : ->
+        $(node).off 'click'
+      update : ->
+        #noop
+    }
+
+  Ractive.decorators.file_select_trigger = FileSelectTrigger
+
+  #Collection.FileUpload = (node)->
+    #$(node).fileupload
+      #dataType: 'json'
+      #type: 'post'
+      #add: (e, data) -> # data includes a files property containing added files and also a submit property
+        #upload_widget = $(@).data('blueimp-fileupload')
+        #ractive = data.ractive = Ractive.
+          #getNodeInfo(upload_widget.element[0]).
+          #ractive
+        #data.context = upload_widget.element.closest(".#{item_name}")
+        #ractive.set('fileupload', data) # so ractive can configure/control upload with data.submit()
+        #ractive.set('original_filename', data.files[0].name)
+        #ractive.validate_file_constraints()
+        #ractive._validate_attachment()
+        #return
+      #done: (e, data) ->
+        #data.ractive.update_collection_item(data.jqXHR.responseJSON)
+        #return
+      #formData : ->
+        #@ractive.formData()
+      #uploadTemplateId: '#selected_file_template'
+      #uploadTemplateContainerId: '#selected_file_container'
+      #downloadTemplateId: '#show_collection_item_template'
+      #permittedFiletypes: permitted_filetypes
+      #maxFileSize: parseInt(maximum_filesize)
+    #teardown : ->
+      ##noop for now
+
+  #Ractive.decorators.file_upload = Collection.FileUpload
 
   Collection.File = Ractive.extend
     template : "#selected_file_template"
     deselect_file : ->
       @parent.deselect_file()
-    oninit : ->
-      @set
-        validation_criteria:
-          filesize : ['lessThan', @get('maximum_filesize')]
-          filetype : ['match', @get('permitted_filetypes')]
-      @validator = new Validator(@)
+    #oninit : ->
+      #console.log "init File"
+      #@set
+        #validation_criteria:
+          #filesize : ['lessThan', @get('maximum_filesize')]
+          #filetype : ['match', @get('permitted_filetypes')]
+      #@validator = new Validator(@)
+      #@validator.validate()
 
   Collection.CollectionItem = Ractive.extend
     template : '#collection_item_template'
@@ -146,17 +187,31 @@ $ ->
     oninit : ->
       @set
         editing : false
-        collection_item_error:false
-        collection_item_single_attachment_error:false
+        attachment_error:false
+        single_attachment_error:false
         expanded:false
         validation_criteria:
           title : 'notBlank'
+          attachment : =>
+            return true if @get('model_name') == "advisory_council_issue" # attachments are optional and both are allowed
+            valid_link = !_.isNull(@get('article_link')) && @get('article_link').length > 0
+            valid_file = !_.isNull(@get('original_filename'))
+            valid_link || valid_file
+          single_attachment : =>
+            return true if @get('model_name') == "advisory_council_issue" # attachments are optional and both are allowed
+            valid_link = !_.isNull(@get('article_link')) && @get('article_link').length > 0
+            valid_file = !_.isNull(@get('original_filename'))
+            !(valid_link && valid_file)
+          filesize : ['lessThan', @get('maximum_filesize'), {if : => @get('file')}]
+          original_type : ['match', @get('permitted_filetypes'), {if : => @get('file')}]
+        serialization_key : item_name
       @validator = new Validator(@)
     validate : ->
       #vt = @_validate_title()
-      vt = @validator.validate_attribute('title')
-      va = @_validate_attachment()
-      vt && va
+      #vt = @validator.validate_attribute('title')
+      #va = @_validate_attachment()
+      #vt && va
+      @validator.validate()
     #_validate_title : ->
       #@set('title',@get('title').trim())
       #if _.isEmpty(@get('title'))
@@ -164,53 +219,61 @@ $ ->
         #false
       #else
         #true
-    _validate_attachment : ->
-      @_validate_any_attachment() && @_validate_single_attachment()
-    _validate_any_attachment : ->
-      unless @_validate_file() || @_validate_link()
-        @set('collection_item_error',true)
-        false
-      else
-        @set('collection_item_error',false)
-        true
-    _validate_single_attachment : ->
-      if @_validate_file() && @_validate_link()
-        @set('collection_item_single_attachment_error',true)
-        false
-      else
-        @set('collection_item_single_attachment_error',false)
-        true
-    _validate_file : ->
-      # 3 cases to consider:
-      if !@get('persisted') # 1. not persisted... creating new, with file attached
-        !_.isNull(@get('original_filename')) && @validate_file_constraints()
-      else
-        if _.isEmpty(@get('fileupload')) # 2. persisted, only original_filename attribute is present
-          !_.isNull(@get('original_filename'))
-        else # 3. persisted, changing the attached file, so a fileupload object is present
-          !_.isNull(@get('original_filename')) && @validate_file_constraints()
-    _validate_link : ->
-      !_.isNull(@get('article_link')) && @get('article_link').length > 0
-    validate_file_constraints : ->
-      file = @get('fileupload').files[0]
-      size = file.size
-      extension = @get('fileupload').files[0].name.split('.').pop()
-      if permitted_filetypes.indexOf(extension) == -1
-        @set('filetype_error', true)
-      else
-        @set('filetype_error', false)
-      if size > maximum_filesize
-        @set('filesize_error', true)
-      else
-        @set('filesize_error', false)
-      !@get('filetype_error') && !@get('filesize_error')
+    #_validate_attachment : ->
+      #@_validate_any_attachment() && @_validate_single_attachment()
+    #_validate_any_attachment : ->
+      #unless @_validate_file() || @_validate_link()
+        #@set('attachment_error',true)
+        #false
+      #else
+        #@set('attachment_error',false)
+        #true
+    #_validate_single_attachment : ->
+      #if @_validate_file() && @_validate_link()
+        #@set('single_attachment_error',true)
+        #false
+      #else
+        #@set('single_attachment_error',false)
+        #true
+    #_validate_file : ->
+      ## 3 cases to consider:
+      #if !@get('persisted') # 1. not persisted... creating new, with file attached
+        #!_.isNull(@get('original_filename')) && @validate_file_constraints()
+      #else
+        #if _.isEmpty(@get('fileupload')) # 2. persisted, only original_filename attribute is present
+          #!_.isNull(@get('original_filename'))
+        #else # 3. persisted, changing the attached file, so a fileupload object is present
+          #!_.isNull(@get('original_filename')) && @validate_file_constraints()
+    #_validate_link : ->
+      #!_.isNull(@get('article_link')) && @get('article_link').length > 0
+    #validate_file_constraints : ->
+      #file = @get('fileupload').files[0]
+      #size = file.size
+      #extension = @get('fileupload').files[0].name.split('.').pop()
+      #if permitted_filetypes.indexOf(extension) == -1
+        #@set('filetype_error', true)
+      #else
+        #@set('filetype_error', false)
+      #if size > maximum_filesize
+        #@set('filesize_error', true)
+      #else
+        #@set('filesize_error', false)
+      #!@get('filetype_error') && !@get('filesize_error')
     computed :
+      error_vector : ->
+        title_error : @get('title_error')
+        attachment_error : @get('attachment_error')
+        single_attachment_error : @get('single_attachment_error')
+        filesize_error : @get('filesize_error')
+        original_type_error : @get('original_type_error')
       reminders_count : ->
         @get('reminders').length
       notes_count : ->
         @get('notes').length
       model_name : ->
         item_name
+      issue_context : ->
+        item_name == "advisory_council_issue"
       hr_violation : ->
         id = Collection.Subarea.hr_violation().id
         _(@get('subarea_ids')).indexOf(id) != -1
@@ -318,11 +381,17 @@ $ ->
       $('.form input, .form select')
     save : ->
       if @validate()
-        if !_.isUndefined(@get('fileupload'))
-          @get('fileupload').submit() # handled by jquery-fileupload
-        else
-          url = @parent.get('create_collection_item_url')
-          $.post(url, @persisted_attributes(), @update_collection_item, 'json') # handled right here
+        url = @parent.get('create_outreach_event_url')
+        $.ajax
+          method : 'post'
+          url : url
+          data : @formData()
+          dataType : 'json'
+          success : @update_collection_item
+          processData : false
+          contentType : false
+      else
+        #console.log JSON.stringify @get('error_vector')
     update_collection_item : (data,textStatus,jqxhr)->
       collection.set('collection_items.0', data)
       collection.populate_min_max_fields() # to ensure that the newly-added collection_item is included in the filter
@@ -345,47 +414,14 @@ $ ->
     remove_errors : ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
-    _attrs : ->
-      attrs = ['file', 'title', 'affected_people_count', 'violation_severity_id', 'article_link', 'lastModifiedDate']
-      attrs.push('positivity_rating_id') if item_name == "media_appearance"
+    persistent_attributes : ->
+      attrs = ['file', 'title', 'affected_people_count', 'violation_severity_id',
+               'article_link', 'lastModifiedDate', 'area_ids', 'subarea_ids',
+               'filesize', 'original_filename', 'original_type']
+      attrs.push('positivity_rating_id', 'performance_indicator_ids') if item_name == "media_appearance"
       attrs
-    persisted_attributes: ->
-      attrs = _(@get()).pick(@_attrs())
-      if _.isEmpty(@get('performance_indicator_ids'))
-        attrs.performance_indicator_ids = [""]
-      else
-        attrs.performance_indicator_ids = @get('performance_indicator_ids')
-      if _.isEmpty(@get('area_ids'))
-        attrs.area_ids = [""] # hack to workaround jQuery not sending empty arrays
-      else
-        attrs.area_ids = @get('area_ids')
-      if _.isEmpty(@get('subarea_ids'))
-        attrs.subarea_ids = [""]
-      else
-        attrs.subarea_ids = @get('subarea_ids')
-      {"#{item_name}" : attrs }
     formData : ->
-      file = @get('fileupload').files[0]
-      @set
-        lastModifiedDate : file.lastModifiedDate
-      attrs = _(@get()).pick(@_attrs())
-      name_value = _(attrs).keys().map (k)->{name:"#{item_name}["+k+"]", value:attrs[k]}
-      if _.isEmpty(@get('area_ids'))
-        aids = [{name : "#{item_name}[area_ids][]", value: ""}]
-      else
-        aids = _(@get('area_ids')).map (aid)->
-                 {name : "#{item_name}[area_ids][]", value: aid}
-      if _.isEmpty(@get('subarea_ids'))
-        saids = [{name : "#{item_name}[subarea_ids][]", value: ""}]
-      else
-        saids = _(@get('subarea_ids')).map (said)->
-                  {name : "#{item_name}[subarea_ids][]", value: said}
-      if _.isEmpty(@get('performance_indicator_ids'))
-        pids = [{name : "#{item_name}[performance_indicator_ids][]", value: ""}]
-      else
-        pids = _(@get('performance_indicator_ids')).map (pid)->
-                  {name : "#{item_name}[performance_indicator_ids][]", value: pid}
-      _.union(name_value,aids,saids,pids)
+      @asFormData @persistent_attributes()
     stash : ->
       @stashed_instance = $.extend(true,{},_(@get()).omit('expanded','editing'))
     restore : ->
@@ -398,18 +434,16 @@ $ ->
       @set('original_filename',null) # remove all traces!
       @set('file','_remove')
       @validate()
-    update_persist : (success, error, context) ->
-      if _.isEmpty(@get('fileupload')) # handle the update directly
+    update_persist : (success, error, context)->
+      if @validate()
         $.ajax
           url: @get('url')
           method : 'put'
-          data : @persisted_attributes()
+          data : @formData()
           success : success
-          error : error
           context : context
-      else # handle it with jquery fileupload
-        $('.fileupload').fileupload('option',{url:@get('url'), type:'put', formData:@formData()})
-        @get('fileupload').submit()
+          processData : false
+          contentType : false
     download_attachment : ->
       window.location = @get('url')
     fetch_link : ->
@@ -420,6 +454,17 @@ $ ->
         $('.hr_metrics').show(300)
       else if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && !ev.target.checked
         $('.hr_metrics').hide(300)
+    add_file : (file)->
+      @set
+        file : file
+        filesize : file.size
+        original_filename : file.name
+        original_type : file.type
+        lastModifiedDate : file.lastModifiedDate
+      @validator.validate_attribute('filesize')
+      @validator.validate_attribute('original_type')
+      @validator.validate_attribute('attachment')
+      @validator.validate_attribute('single_attachment')
   , PerformanceIndicatorAssociation, Remindable, Notable
 
   window.collection_items_data = -> # an initialization data set so that tests can reset between
@@ -445,6 +490,9 @@ $ ->
       pa_min : 0
       pa_max : null
       rule   : 'any'
+    permitted_filetypes : permitted_filetypes
+    maximum_filesize : maximum_filesize
+
 
   window.options =
     el : '#collection_container'
@@ -554,6 +602,8 @@ $ ->
       @set('filter_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate))
       $('#to').datepicker 'option', 'minDate', selectedDate
       @update()
+    add_file : (file)->
+      @get('document_target').add_file(file)
 
   window.start_page = ->
     window.collection = new Ractive options

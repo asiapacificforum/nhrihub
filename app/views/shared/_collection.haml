@@ -29,10 +29,10 @@
             %span {{ title }}
           .fade.edit{:style => "width: 100%"}
             {{> edit_title}}
-            .row.form-group{:class => "{{#collection_item_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+            .row.form-group{:class => "{{#attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
               .col-md-5
-                %span.help-block{:id => "collection_item_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t("#{i18n_key}.item_error_message")
-            .row.form-group{:class => "{{#collection_item_single_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+                %span.help-block{:id => "attachment_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t("#{i18n_key}.item_error_message")
+            .row.form-group{:class => "{{#single_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
               .col-md-5
                 %span.help-block{:id => "collection_item_attachment_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t("#{i18n_key}.item_double_attachment_error_message")
         .col-md-2.actions{:style => "width:25%"}
@@ -67,25 +67,26 @@
                   %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
                   {{/if}}
                 .edit
-      .row.fileupload{:decorator => 'file_upload', 'data-toggle'=>:edit}
+      .row.fileupload{'data-toggle'=>:edit}
         .fade.no_edit.in
         .fade.edit{:style => "padding-left:20px;"}
           .row{:style => "margin-bottom: 12px;"}
             .col-md-2{:style => "width:15%"}
               %label{:for => "#{item}_article_link"}= t('.weblink')
             .col-md-9{:style => "padding-left:8px"}
-              %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
+              %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "validate()"}
           .row{:style => "margin-bottom: 12px;"}
             .col-md-2#fileinput_button{:style => "width:15%"}
-              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-              %input{:id => "#{item}_file", :type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"#{item}[file]"}
+              %span.btn.btn-success.btn-xs{:decorator => :file_select_trigger}= t('.choose_file')
             .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row; padding-left:8px;"}
               {{#original_filename}}
               <file/>
               {{/original_filename}}
       .collapse.expanded_info{:class => "collapse{{id}}"}
         {{> reported_by}}
+        {{#unless issue_context}}
         <performanceindicatorselect />
+        {{/unless issue_context}}
         .panel.panel-default
           .panel-heading
             .row
@@ -130,7 +131,7 @@
             .nothing{:style => 'visibility:hidden'} nothing
             %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
             %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
-      .row.fileupload{:decorator => 'file_upload'}
+      .row.fileupload
         .col-md-12
           .row.fileupload_progress
             / The global progress state
@@ -142,24 +143,25 @@
               .progress-extended  
           .row
             .col-md-2#fileinput_button
-              %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-              %input{:id => "#{item}_file", :type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"#{item}[file]"}
+              %span.btn.btn-success.btn-xs{:decorator => :file_select_trigger}= t('.choose_file')
             .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
-              {{#fileupload}}
+              {{#original_filename}}
               <file/>
               {{/}}
-      .row.form-group{:class => "{{#collection_item_error}}has-error{{/}}", :style => "padding-bottom:0px"}
+      .row.form-group{:class => "{{#attachment_error}}has-error{{/}}", :style => "padding-bottom:0px"}
         .col-md-2
-          %span.help-block{:id => "collection_item_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t(".collection_item_error_message")
-      .row.form-group{:class => "{{#collection_item_single_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
+          %span.help-block#attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t(".attachment_error_message")
+      .row.form-group{:class => "{{#single_attachment_error}}has-error{{/}}", :style => "margin-bottom:0px"}
         .col-md-2
-          %span.help-block{:id => "collection_item_attachment_error", :style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t(".collection_item_single_attachment_error_message")
+          %span.help-block#single_attachment_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t(".single_attachment_error_message")
       .row
         .col-md-2
           %label{:for => "#{item}_article_link"}= t('.weblink')
         .col-md-2
-          %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "_validate_attachment()"}
+          %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "validate()"}
+      {{#unless issue_context}}
       <performanceindicatorselect />
+      {{/unless issue_context}}
       .panel.panel-default.expanded_info
         .panel-heading
           .row
@@ -217,8 +219,8 @@
     %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px', 'on-click'=>'deselect_file()'}
   .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
     %span.help-block#filesize_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.too_large')
-  .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
-    %span.help-block#filetype_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.unpermitted_type')
+  .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
+    %span.help-block#original_type_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.unpermitted_type')
 
 -# for the "show" item
 %script#collection_item_subarea_template{:type=> 'template/ractive'}
@@ -276,6 +278,7 @@
       %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
 %script#collection{:type => 'template/ractive'}
+  %input.hidden_fileinput{:id => "primary_fileinput", :multiple => "multiple", :name => "primary_file", :type => "file", :decorator=>:ractive_fileupload}
   {{#collection_items}}
   <collectionItem initiator='{{initiator}}' area_ids='{{area_ids}}' areas='{{areas}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' file_id='{{file_id}}' filesize='{{filesize}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' collection_item_areas='{{collection_item_areas}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' performance_indicators='{{performance_indicators}}' planned_results='{{planned_results}}' positivity_rating_id='{{positivity_rating_id}}' positivity_rating_rank_text='{{positivity_rating_rank_text}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' violation_coefficient='{{violation_coefficient}}' violation_severity_id='{{violation_severity_id}}' violation_severity_rank_text='{{violation_severity_rank_text}}' />
   {{/collection_items}}
