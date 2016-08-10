@@ -48,7 +48,7 @@ class ProjectsController < ApplicationController
                         :project_type_ids => [],
                         :agency_ids => [],
                         :convention_ids => [],
-                        :performance_indicator_ids => []]
+                        :performance_indicator_associations_attributes => [:association_id, :performance_indicator_id]]
     params.require(:project).permit(*permitted_params)
   end
 end

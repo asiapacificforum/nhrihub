@@ -1,3 +1,4 @@
+#= require 'string'
 #= require 'ractive_validator'
 #= require 'ractive_local_methods'
 $ ->
@@ -329,7 +330,7 @@ $ ->
       attrs = ['file', 'title', 'affected_people_count', 'violation_severity_id',
                'article_link', 'lastModifiedDate', 'area_ids', 'subarea_ids',
                'filesize', 'original_filename', 'original_type']
-      attrs.push('positivity_rating_id', 'performance_indicator_ids') if item_name == "media_appearance"
+      attrs.push('positivity_rating_id', 'selected_performance_indicators_attributes') if item_name == "media_appearance"
       attrs
     formData : ->
       @asFormData @persistent_attributes()

@@ -381,7 +381,7 @@ $ ->
       no_files_chosen : ->
         @get('outreach_event_documents').length == 0
       persistent_attributes : ->
-        ['outreach_event_documents_attributes', 'performance_indicator_ids', 'subarea_ids', 'area_ids', 'impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count']
+        ['outreach_event_documents_attributes', 'selected_performance_indicators_attributes', 'subarea_ids', 'area_ids', 'impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count']
     expand : ->
       @set('expanded',true)
       $(@find('.collapse')).collapse('show')
@@ -507,6 +507,7 @@ $ ->
     impact_ratings : impact_ratings
     planned_results : planned_results
     all_performance_indicators : performance_indicators
+    performance_indicator_url : Routes.outreach_media_outreach_event_outreach_event_performance_indicator_path(current_locale,'association_id','performance_indicator_id')
     default_selected_audience_type : default_selected_audience_type
     default_selected_impact_rating : default_selected_impact_rating
     permitted_filetypes : permitted_filetypes

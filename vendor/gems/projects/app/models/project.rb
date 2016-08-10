@@ -19,6 +19,9 @@ class Project < ActiveRecord::Base
   has_many :named_project_documents, ->{merge(ProjectDocument.named)}, :class_name => 'ProjectDocument', :dependent => :destroy
   accepts_nested_attributes_for :project_documents
 
+  accepts_nested_attributes_for :project_performance_indicators
+  alias_method :performance_indicator_associations_attributes=, :project_performance_indicators_attributes=
+
   def as_json(options={})
     if options.blank?
       {:id => id,
@@ -36,10 +39,14 @@ class Project < ActiveRecord::Base
        :reminders => reminders,
        :notes => notes,
        :project_documents => project_documents,
-       :performance_indicator_ids => performance_indicator_ids }
+       :performance_indicator_associations => performance_indicator_associations }
     else
       super(options)
     end
+  end
+
+  def performance_indicator_associations
+    project_performance_indicators
   end
 
   def project_mandate_types

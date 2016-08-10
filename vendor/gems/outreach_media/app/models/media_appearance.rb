@@ -15,6 +15,8 @@ class MediaAppearance < ActiveRecord::Base
   has_many :subareas, :through => :media_subareas
   has_many :media_appearance_performance_indicators, :dependent => :destroy
   has_many :performance_indicators, :through => :media_appearance_performance_indicators
+  accepts_nested_attributes_for :media_appearance_performance_indicators
+  alias_method :performance_indicator_associations_attributes=, :media_appearance_performance_indicators_attributes=
 
   attachment :file
 
@@ -42,7 +44,7 @@ class MediaAppearance < ActiveRecord::Base
                        :collection_item_areas,
                        :area_ids,
                        :subarea_ids,
-                       :performance_indicator_ids,
+                       :performance_indicator_associations,
                        :positivity_rating_rank_text,
                        :reminders,
                        :notes,
@@ -53,6 +55,10 @@ class MediaAppearance < ActiveRecord::Base
 
   # assign a generic name so that javascript is reusable for differenct collections
   alias_method :collection_item_areas, :media_areas
+
+  def performance_indicator_associations
+    media_appearance_performance_indicators
+  end
 
   def positivity_rating_rank=(val)
     self.positivity_rating_id = PositivityRating.where(:rank => val).first.id unless val.blank?

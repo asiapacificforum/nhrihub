@@ -1,7 +1,7 @@
 %script#projects_template{:type => 'template/ractive'}
   <filterControls filter_criteria='{{filter_criteria}}' />
   {{#projects}}
-  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' mandate_ids='{{mandate_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_ids='{{performance_indicator_ids}}' project_type_ids='{{project_type_ids}}' all_mandates='{{all_mandates}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' mandates='{{mandates}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
+  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' mandate_ids='{{mandate_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_associations='{{performance_indicator_associations}}' project_type_ids='{{project_type_ids}}' all_mandates='{{all_mandates}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' mandates='{{mandates}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
   {{/projects}}
 
 %script#project_template{:type => 'template/ractive'}
@@ -32,7 +32,7 @@
       <mandatesSelector mandates='{{all_mandates}}' />
       <projectTypesSelector all_mandates='{{all_mandates}}' />
       {{> agency_convention_selector }}
-      <performanceindicatorselect />
+      <performanceindicatorselect planned_results='{{planned_results}}' />
       .panel.panel-default#documents
         .panel-heading= t('.project_documents')
         .panel-body

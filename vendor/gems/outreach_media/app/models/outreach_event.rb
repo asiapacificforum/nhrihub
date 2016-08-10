@@ -15,6 +15,8 @@ class OutreachEvent < ActiveRecord::Base
   belongs_to :audience_type
   has_many :outreach_event_performance_indicators, :dependent => :delete_all
   has_many :performance_indicators, :through => :outreach_event_performance_indicators
+  accepts_nested_attributes_for :outreach_event_performance_indicators
+  alias_method :performance_indicator_associations_attributes=, :outreach_event_performance_indicators_attributes=
 
   delegate :rank, :to => :impact_rating, :prefix => true, :allow_nil => true
 
@@ -27,13 +29,17 @@ class OutreachEvent < ActiveRecord::Base
                        :outreach_event_documents,
                        :area_ids,
                        :subarea_ids,
-                       :performance_indicator_ids,
+                       :performance_indicator_associations,
                        :reminders,
                        :notes,
                        :create_reminder_url,
                        :create_note_url,
                        :impact_rating_rank_text,
                        :url ]})
+  end
+
+  def performance_indicator_associations
+    outreach_event_performance_indicators
   end
 
   def create_url

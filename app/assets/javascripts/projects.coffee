@@ -262,7 +262,7 @@ Project = Ractive.extend
     persistent_attributes : ->
       # the asFormData method knows how to interpret 'project_documents_attributes'
       ['title', 'description', 'mandate_ids', 'project_type_ids',
-       'agency_ids', 'convention_ids', 'performance_indicator_ids', 'project_documents_attributes']
+       'agency_ids', 'convention_ids', 'selected_performance_indicators_attributes', 'project_documents_attributes']
     url : ->
       Routes.project_path(current_locale,@get('id'))
     reminders_count : ->
@@ -282,6 +282,8 @@ Project = Ractive.extend
       window.create_note_url.replace('id',@get('id'))
     create_reminder_url : ->
       window.create_reminder_url.replace('id',@get('id'))
+    #association_id : ->
+      #@get('id')
   components :
     mandatesSelector : MandatesSelector
     projectTypesSelector : ProjectTypesSelector
@@ -393,6 +395,7 @@ projects_options =
   el : "#projects"
   template : '#projects_template'
   data :
+    performance_indicator_url : Routes.project_project_performance_indicator_path(current_locale,'association_id','performance_indicator_id')
     expanded : false
     projects : projects_data
     all_mandates : mandates
@@ -418,7 +421,7 @@ projects_options =
         project_type_ids : []
         agency_ids : []
         convention_ids : []
-        performance_indicator_ids : []
+        performance_indicator_associations : []
         project_documents : []
       UserInput.claim_user_input_request(@,'cancel_add_project')
       @unshift('projects', new_project_attributes)

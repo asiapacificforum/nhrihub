@@ -31,7 +31,7 @@ slide = (t, params) ->
     # make style explicit, so we're not transitioning to 'auto'
     t.setStyle t.getStyle(SlideProps)
     targetStyle = SlideCollapsed
-  t.setStyle 'overflowY', 'hidden'
+  #t.setStyle 'overflowY', 'hidden'
   t.animateStyle(targetStyle, params).then t.complete(true)
   return
 

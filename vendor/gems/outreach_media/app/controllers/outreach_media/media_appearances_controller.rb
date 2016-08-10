@@ -59,7 +59,7 @@ class OutreachMedia::MediaAppearancesController < ApplicationController
              :lastModifiedDate,
              :article_link,
              :user_id,
-             :performance_indicator_ids => [],
+             :performance_indicator_associations_attributes => [:association_id, :performance_indicator_id],
              :area_ids => [],
              :subarea_ids => [])
   end

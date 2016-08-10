@@ -53,7 +53,7 @@ class OutreachMedia::OutreachEventsController < ApplicationController
              :audience_type_id,
              :impact_rating_id,
              :outreach_event_documents_attributes =>['outreach_event_id', 'file', 'file_filename', 'file_size', 'file_content_type'],
-             :performance_indicator_ids => [],
+             :performance_indicator_associations_attributes => [:association_id, :performance_indicator_id],
              :area_ids => [],
              :subarea_ids => [])
   end
