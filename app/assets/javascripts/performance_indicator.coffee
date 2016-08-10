@@ -2,15 +2,19 @@ SelectedPerformanceIndicator = Ractive.extend
   template : '#selected_performance_indicator_template'
   oninit : ->
     @set
-      persistent_attributes : [ 'association_id', 'performance_indicator_id']
       serialization_key : "#{@parent.get('serialization_key')}[performance_indicator_associations_attributes][]"
+  computed :
+    performance_indicator_id : ->
+      @get('performance_indicator.id')
+    persistent_attributes : ->
+      [ 'association_id', 'performance_indicator_id'] unless @get('persisted')
+    persisted : ->
+      !_.isNull(@get('id'))
   remove_indicator : (association_id,id)->
     if _.isUndefined(association_id) # not yet persisted
       @parent.remove_indicator(id)
     else
-      url = @get('performance_indicator_url').
-              replace('association_id',association_id).
-              replace('performance_indicator_id',id)
+      url = @get('performance_indicator_url').replace('id',id)
       data = {"_method" : 'delete'}
       $.ajax
         method : 'post'
@@ -32,20 +36,22 @@ PerformanceIndicatorSelect = Ractive.extend
   remove_indicator : (id)->
     @parent.remove_performance_indicator(id)
   delete_indicator_callback : (data,status,jqxhr)->
-    @parent.remove_performance_indicator(data.performance_indicator_id)
+    @parent.remove_performance_indicator(data.id)
 
 Ractive.components.performanceindicatorselect = PerformanceIndicatorSelect
 
 @PerformanceIndicatorAssociation =
-  remove_performance_indicator : (id)->
+  remove_performance_indicator : (id)-> # it's the id of the join table, e.g. project_performance_indicator.id
     index = @performance_indicator_index(id)
     @get('performance_indicator_associations').splice(index,1)
-  performance_indicator_index : (performance_indicator_id)->
-    @performance_indicator_ids().indexOf(performance_indicator_id)
+  performance_indicator_index : (id)->
+    @performance_indicator_ids().indexOf(id)
   performance_indicator_ids : ->
-    _(@get('performance_indicator_associations')).map (pia)-> pia.performance_indicator.id
-  has_performance_indicator_id : (performance_indicator_id)->
-    @performance_indicator_index(performance_indicator_id) != -1
+    _(@get('performance_indicator_associations')).map (pia)-> pia.id
+
+  has_performance_indicator_id : (performance_indicator_id)-> # it's the id of the performance indicator, i.e. performance_indicator.id
+    ids = _(@get('performance_indicator_associations')).map (pia)-> pia.performance_indicator.id
+    ids.indexOf(performance_indicator_id) != -1
   add_unique_performance_indicator_id : (performance_indicator_id)->
     unless @has_performance_indicator_id(performance_indicator_id)
       performance_indicator_association =

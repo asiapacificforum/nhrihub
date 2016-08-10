@@ -141,6 +141,13 @@ module ProjectsSpecCommonHelpers
     page.all(".dropdown-submenu.planned_result").first.hover
   end
 
+  def select_second_planned_result
+    sleep(0.1)
+    page.execute_script("$('.dropdown-backdrop').remove()") # it's inserted by bootstrap due to phantomjs declaring that it's responds to document.documentElement.ontouch
+    expect(page).to have_selector(".dropdown-submenu.planned_result") # to synchronize the timing
+    page.all(".dropdown-submenu.planned_result")[1].hover
+  end
+
   def select_first_outcome
     sleep(0.1)
     page.all(".dropdown-submenu.outcome").first.hover

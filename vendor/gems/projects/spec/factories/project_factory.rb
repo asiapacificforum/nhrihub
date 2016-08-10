@@ -18,7 +18,7 @@ FactoryGirl.define do
 
     trait :with_performance_indicators do
       after(:build) do |project|
-        project.performance_indicator_ids = PerformanceIndicator.pluck(:id).shuffle.take(3)
+        project.performance_indicator_ids = PerformanceIndicator.pluck(:id).take(3)
       end
     end
 

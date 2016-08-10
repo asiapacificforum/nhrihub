@@ -384,6 +384,7 @@ $ ->
     collection_items: collection_items
     areas : areas
     create_collection_item_url: create_collection_item_url
+    performance_indicator_url : Routes.outreach_media_media_appearance_performance_indicator_path(current_locale, 'id')
     planned_results : planned_results
     all_performance_indicators : performance_indicators
     item_name : item_name

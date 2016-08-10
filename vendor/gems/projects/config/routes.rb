@@ -4,8 +4,8 @@ Rails.application.routes.draw do
       # insert your routes here
     end
     resources :projects
+    resources :project_performance_indicators, :only => :destroy
     resources :projects do
-      resources :project_performance_indicators, :only => :destroy
       resources :reminders, :controller => 'project/reminders'
       resources :notes, :controller => 'project/notes'
     end

@@ -507,7 +507,7 @@ $ ->
     impact_ratings : impact_ratings
     planned_results : planned_results
     all_performance_indicators : performance_indicators
-    performance_indicator_url : Routes.outreach_media_outreach_event_outreach_event_performance_indicator_path(current_locale,'association_id','performance_indicator_id')
+    performance_indicator_url : Routes.outreach_media_outreach_event_performance_indicator_path(current_locale, 'id')
     default_selected_audience_type : default_selected_audience_type
     default_selected_impact_rating : default_selected_impact_rating
     permitted_filetypes : permitted_filetypes

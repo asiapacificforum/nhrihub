@@ -50,7 +50,7 @@
           {{/planned_results }}
     .col-md-8#performance_indicators
       {{#performance_indicator_associations}}
-      <selectedPerformanceIndicator performance_indicator_id='{{performance_indicator_id}}' association_id='{{association_id}}' indexed_description='{{performance_indicator.indexed_description}}' id='{{performance_indicator.id}}' performance_indicator_url='{{performance_indicator_url}}' />
+      <selectedPerformanceIndicator association_id='{{association_id}}' indexed_description='{{performance_indicator.indexed_description}}' id='{{id}}' performance_indicator_url='{{performance_indicator_url}}' />
       {{/performance_indicator_associations}}
       {{^performance_indicator_associations}}
       %div.selected_performance_indicator=t('.none_assigned')

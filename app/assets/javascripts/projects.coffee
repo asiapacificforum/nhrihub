@@ -395,7 +395,7 @@ projects_options =
   el : "#projects"
   template : '#projects_template'
   data :
-    performance_indicator_url : Routes.project_project_performance_indicator_path(current_locale,'association_id','performance_indicator_id')
+    performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')
     expanded : false
     projects : projects_data
     all_mandates : mandates

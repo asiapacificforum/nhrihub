@@ -466,10 +466,12 @@ feature "performance indicator association", :js => true do
     pi = PerformanceIndicator.third
     expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
     expect{edit_save.click; wait_for_ajax}.to change{OutreachEvent.first.performance_indicator_ids}.from([1,2]).to([1,2,pi.id])
+    expect(page).to have_selector("#performance_indicators .performance_indicator", :count => 3)
   end
 
   scenario "remove a performance indicator association" do
     edit_outreach_event[0].click
-    expect{delete_first_performance_indicator; wait_for_ajax}.to change{selected_performance_indicators.count}.from(2).to(1)
+    expect{delete_first_performance_indicator; wait_for_ajax}.to change{OutreachEventPerformanceIndicator.count}.from(2).to(1).
+                                                             and change{selected_performance_indicators.count}.from(2).to(1)
   end
 end
