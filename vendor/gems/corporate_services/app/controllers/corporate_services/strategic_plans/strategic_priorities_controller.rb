@@ -4,7 +4,7 @@ class CorporateServices::StrategicPlans::StrategicPrioritiesController < Applica
     if strategic_priority.save
       render :json => strategic_priority.all_in_plan, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -13,7 +13,7 @@ class CorporateServices::StrategicPlans::StrategicPrioritiesController < Applica
     if strategic_priority.update_attributes(strategic_priority_params)
       render :json => strategic_priority.all_in_plan, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -22,7 +22,7 @@ class CorporateServices::StrategicPlans::StrategicPrioritiesController < Applica
     if strategic_priority.destroy
       render :json => strategic_priority.all_in_plan, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

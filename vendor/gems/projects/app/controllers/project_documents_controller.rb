@@ -2,7 +2,7 @@ class ProjectDocumentsController < ApplicationController
   def destroy
     @project_document = ProjectDocument.find(params[:id])
     @project_document.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   def show

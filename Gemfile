@@ -2,17 +2,17 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.0'
+gem 'rails', '5.0.0'
 # Use postgresql as the database for Active Record
 gem 'pg'
 #gem 'mysql'
 #gem 'mysql2'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails'#, '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails'#, '~> 4.0.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer',  platforms: :ruby
 
@@ -21,9 +21,9 @@ gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.0'
+##gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0',          group: :doc
+##gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
@@ -51,7 +51,7 @@ end
 # Use debugger
 
 gem 'authengine', :path => 'vendor/gems/authengine'
-gem 'haml'
+#gem 'haml'
 gem 'haml-rails'
 
 group :development, :test, :jstest do
@@ -60,7 +60,7 @@ group :development, :test, :jstest do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'database_cleaner'
-  gem 'debugger'
+  #gem 'debugger'
 
   gem 'teaspoon'
   gem 'teaspoon-mocha'
@@ -79,15 +79,18 @@ gem 'poltergeist', group: [:test, :jstest]
 gem 'factory_girl_rails', '~> 4.0'
 gem 'faker'
 
-gem 'quiet_assets', group: :development
-gem "refile", require: "refile/rails"
+###not needed in rails 5
+###gem 'quiet_assets', group: :development
+gem "refile", :git => "git@github.com:refile/refile.git", :ref => "d7a42", require: "refile/rails" # for rails5 compatibility
+gem "sinatra", github: "sinatra/sinatra", :ref => "285275b42fa1bf096a5c9559b6cead2f31b65b66" # for rack 2 compatibility as required for rails5
+gem "rack", github: "rack/rack" # also for sinatra 2.0.0-alpha support
+gem "rack-protection", github: "sinatra/rack-protection"
 gem "rails-settings-cached", '~> 0.4.2'
 gem "underscore-rails"
-gem "transpec"
-gem "human_attribute_values"
+##gem "transpec" #bundler can't resolve dependencies with this included... probably don't need it any more anyway!
 
 
-# NHRI Modules:
+### NHRI Modules:
 gem 'corporate_services', :path => 'vendor/gems/corporate_services'
 gem 'outreach_media', :path => 'vendor/gems/outreach_media'
 gem 'nhri', :path => 'vendor/gems/nhri'
@@ -95,3 +98,7 @@ gem 'siu', :path => 'vendor/gems/siu'
 gem 'complaints', :path => 'vendor/gems/complaints'
 gem 'projects', :path => 'vendor/gems/projects'
 gem 'internal_documents', :path => 'vendor/gems/internal_documents'
+
+# it's required by Authengine, but Rails doesn't seem to load it if it's in the Authengine Gemfile
+# it must be in a Gemfile as it's sourced from github
+gem "rails-observers", :git => "git@github.com:rails/rails-observers.git"

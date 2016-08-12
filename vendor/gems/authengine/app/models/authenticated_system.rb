@@ -48,7 +48,7 @@ protected
   #
   # To skip this in a subclassed controller:
   #
-  #   skip_before_filter :login_required
+  #   skip_before_action :login_required
   #
   def login_required
     authorized? || access_denied
@@ -122,13 +122,13 @@ protected
       end
       format.js do
         logger.info "format.js"
-        render :text => "You don't have permission to complete that action.", :status => '401 Unauthorized'
+        render :plain => "You don't have permission to complete that action.", :status => '401 Unauthorized'
       end
       format.xml do
         logger.info "format.xml"
         headers["Status"]           = "Unauthorized"
         headers["WWW-Authenticate"] = %(Basic realm="Web Password")
-        render :text => "You don't have permission to complete that action.", :status => '401 Unauthorized'
+        render :plain => "You don't have permission to complete that action.", :status => '401 Unauthorized'
       end
     end
   end

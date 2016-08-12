@@ -26,7 +26,7 @@ class ComplaintsController < ApplicationController
     if complaint.save
       render :json => complaint, :status => 200
     else
-      render :text => complaint.errors.full_messages, :status => 500
+      render :plain => complaint.errors.full_messages, :status => 500
     end
   end
 
@@ -36,14 +36,14 @@ class ComplaintsController < ApplicationController
     if complaint.update(complaint_params)
       render :json => complaint, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
   def destroy
     complaint = Complaint.find(params[:id])
     complaint.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   private

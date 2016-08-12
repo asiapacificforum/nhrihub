@@ -21,7 +21,7 @@ class InternalDocumentsController < ApplicationController
       internal_document = DocumentGroup.find(document_group_id).primary
       render :json => internal_document, :status => 200
     else # no doc group (last non-icc file was deleted) or last icc file was deleted
-      render :nothing => true, :status => 205
+      head :reset_content
     end
   end
 
@@ -37,7 +37,7 @@ class InternalDocumentsController < ApplicationController
       @internal_document = internal_document.document_group_primary
       render :json => @internal_document, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

@@ -9,7 +9,7 @@ class Nhri::AdvisoryCouncil::MembersController < ApplicationController
     if member.save
       render :json => member, :status => 200
     else
-      render :text => member.errors.full_messages.first, :status => 422
+      render :plain => member.errors.full_messages.first, :status => 422
     end
   end
 
@@ -18,14 +18,14 @@ class Nhri::AdvisoryCouncil::MembersController < ApplicationController
     if advisory_council_member.update(member_params)
       render :json => advisory_council_member, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
   def destroy
     doc = AdvisoryCouncilMember.find(params[:id])
     doc.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   private

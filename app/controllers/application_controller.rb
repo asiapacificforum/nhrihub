@@ -2,15 +2,11 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_filter :check_permissions, :log_exception_notifier_data
+  before_action :check_permissions, :log_exception_notifier_data
 
   around_action :with_locale
   before_action :set_title
 
-
-  #unless Msdb::Application.config.consider_all_requests_local
-    #rescue_from NoMethodError, :with => :no_method_error
-  #end
 
 private
   def no_method_error(exception)

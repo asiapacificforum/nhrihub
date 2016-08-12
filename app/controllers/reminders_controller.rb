@@ -5,7 +5,7 @@ class RemindersController < ApplicationController
     if reminder.save
       render :json => Reminder.includes(:users, :remindable).where(:remindable_id => reminder.remindable_id, :remindable_type => reminder.remindable_type), :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -14,7 +14,7 @@ class RemindersController < ApplicationController
     if reminder.update_attributes(reminder_params)
       render :json => reminder, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -24,7 +24,7 @@ class RemindersController < ApplicationController
     if reminder.destroy
       render :json => remindable.reload.reminders, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

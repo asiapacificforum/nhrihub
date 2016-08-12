@@ -45,7 +45,7 @@ class Action < ActiveRecord::Base
 
 private
   def self.remove_deleted_actions(actions, controller)
-    destroy_all(:action_name => actions, :controller_id => controller.id)
+    where(:action_name => actions, :controller_id => controller.id).destroy_all
   end
 
   def self.add_new_actions(actions, controller)

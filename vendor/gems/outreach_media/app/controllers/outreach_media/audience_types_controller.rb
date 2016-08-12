@@ -4,7 +4,7 @@ class OutreachMedia::AudienceTypesController < ApplicationController
     if audience_type.save
       render :json => audience_type, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -13,7 +13,7 @@ class OutreachMedia::AudienceTypesController < ApplicationController
     if audience_type.destroy
       render :json => {}, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

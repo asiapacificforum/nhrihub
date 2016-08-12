@@ -17,14 +17,14 @@ class Nhri::IccReferenceDocumentsController < ApplicationController
     if icc_reference_document.update(doc_params)
       render :json => icc_reference_document, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
   def destroy
     doc = IccReferenceDocument.find(params[:id])
     doc.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   def show

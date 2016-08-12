@@ -8,9 +8,9 @@ class Nhri::Heading::IndicatorsController < ApplicationController
   def destroy
     indicator = Nhri::Indicator.find(params[:id])
     if indicator.destroy
-      render :nothing => true, :status => 200
+      head :ok
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -19,7 +19,7 @@ class Nhri::Heading::IndicatorsController < ApplicationController
     if indicator.save!
       render :json => indicator, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -28,7 +28,7 @@ class Nhri::Heading::IndicatorsController < ApplicationController
     if indicator.update_attributes(indicator_params)
       render :json => indicator, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

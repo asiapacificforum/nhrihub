@@ -5,7 +5,7 @@ class NotesController < ApplicationController
     if note.save
       render :json => Note.includes(:author, :editor, :notable).where(:notable_id => note.notable_id, :notable_type => note.notable_type), :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -15,7 +15,7 @@ class NotesController < ApplicationController
     if note.update_attributes(note_params)
       render :json => note, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -25,7 +25,7 @@ class NotesController < ApplicationController
     if note.destroy
       render :json => notable.reload.notes, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

@@ -14,7 +14,7 @@ class OutreachMedia::OutreachEventsController < ApplicationController
     if oe.save
       render :json => oe, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -36,7 +36,7 @@ class OutreachMedia::OutreachEventsController < ApplicationController
   def destroy
     outreach_event = OutreachEvent.find(params[:id])
     outreach_event.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   private

@@ -12,14 +12,14 @@ class OutreachMedia::MediaAppearancesController < ApplicationController
     if ma.save
       render :json => ma, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
   def destroy
     media_appearance = MediaAppearance.find(params[:id])
     media_appearance.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   def update

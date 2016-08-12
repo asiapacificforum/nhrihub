@@ -4,7 +4,7 @@ class CorporateServices::Activities::PerformanceIndicatorsController < Applicati
     if performance_indicator.save
       render :json => performance_indicator, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -14,7 +14,7 @@ class CorporateServices::Activities::PerformanceIndicatorsController < Applicati
     if performance_indicator.destroy
       render :json => PerformanceIndicator.where(:activity_id => performance_indicator.activity_id), :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -23,7 +23,7 @@ class CorporateServices::Activities::PerformanceIndicatorsController < Applicati
     if performance_indicator.update_attributes(performance_indicator_params)
       render :json => performance_indicator, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

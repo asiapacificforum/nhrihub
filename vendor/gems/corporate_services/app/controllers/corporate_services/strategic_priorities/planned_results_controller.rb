@@ -5,7 +5,7 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
       # call to_json here b/c the built in call seems to supply unwanted options!
       render :json => planned_result.to_json, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -14,7 +14,7 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
     if planned_result.destroy
       render :json => PlannedResult.where(:strategic_priority_id => planned_result.strategic_priority_id).to_json, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -23,7 +23,7 @@ class CorporateServices::StrategicPriorities::PlannedResultsController < Applica
     if planned_result.update_attributes(planned_result_params)
       render :json => planned_result.to_json, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

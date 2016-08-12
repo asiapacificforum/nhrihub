@@ -4,7 +4,7 @@ class CorporateServices::PlannedResults::OutcomesController < ApplicationControl
     if outcome.save
       render :json => outcome.to_json, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -13,7 +13,7 @@ class CorporateServices::PlannedResults::OutcomesController < ApplicationControl
     if outcome.destroy
       render :json => Outcome.where(:planned_result_id => outcome.planned_result_id), :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -22,7 +22,7 @@ class CorporateServices::PlannedResults::OutcomesController < ApplicationControl
     if outcome.update_attributes(outcome_params)
       render :json => outcome.to_json, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

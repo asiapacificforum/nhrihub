@@ -2,7 +2,7 @@ class ComplaintDocumentsController < ApplicationController
   def destroy
     @complaint_document = ComplaintDocument.find(params[:id])
     @complaint_document.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   def show

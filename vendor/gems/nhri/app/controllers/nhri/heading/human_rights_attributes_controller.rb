@@ -4,7 +4,7 @@ class Nhri::Heading::HumanRightsAttributesController < ApplicationController
     if attribute.save
       render :json => attribute, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -13,16 +13,16 @@ class Nhri::Heading::HumanRightsAttributesController < ApplicationController
     if attribute.update_attributes(attribute_params)
       render :json => attribute, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
   def destroy
     attribute = Nhri::HumanRightsAttribute.find(params[:id])
     if attribute.destroy
-      render :nothing => true, :status => 200
+      head :ok
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

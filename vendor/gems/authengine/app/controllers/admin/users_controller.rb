@@ -11,7 +11,7 @@ class Admin::UsersController < ApplicationController
 
   # activate is where a user with the correct activation code
   # is redirected to, so they can enter passwords and login name
-  skip_before_filter :check_permissions, :only=>[:activate, :signup, :new_password, :change_password]
+  skip_before_action :check_permissions, :only=>[:activate, :signup, :new_password, :change_password]
 
   def index
     @users = User.

@@ -10,7 +10,7 @@ class Nhri::AdvisoryCouncil::MinutesController < ApplicationController
     if doc.save
       render :json => doc, :status => 200
     else
-      render :text => doc.errors.full_messages.first, :status => 422
+      render :plain => doc.errors.full_messages.first, :status => 422
     end
   end
 
@@ -19,14 +19,14 @@ class Nhri::AdvisoryCouncil::MinutesController < ApplicationController
     if advisory_council_minutes.update(doc_params)
       render :json => advisory_council_minutes, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
   def destroy
     doc = Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.find(params[:id])
     doc.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   def show

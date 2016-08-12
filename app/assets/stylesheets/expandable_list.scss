@@ -15,7 +15,7 @@
     background-color: #DBD2AB;
 
     .panel-heading {
-      @extend h5;
+      //@extend h5;
       background-image: -webkit-linear-gradient(top, #DBD2AB 0%, #D8CD9F 100%);
       background-image: linear-gradient(to bottom, #DBD2AB 0%, #D8CD9F 100%);
       color: #655F44;

@@ -5,7 +5,7 @@ class Nhri::Indicator::FileMonitorsController < ApplicationController
     if monitor.save
       render :json => monitor, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -14,7 +14,7 @@ class Nhri::Indicator::FileMonitorsController < ApplicationController
     if monitor.update_attributes(monitor_params)
       render :json => monitor, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -24,7 +24,7 @@ class Nhri::Indicator::FileMonitorsController < ApplicationController
     if monitor.destroy
       render :json => indicator.reload, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

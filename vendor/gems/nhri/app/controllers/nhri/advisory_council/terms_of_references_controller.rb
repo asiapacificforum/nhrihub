@@ -10,7 +10,7 @@ class Nhri::AdvisoryCouncil::TermsOfReferencesController < ApplicationController
     if doc.save
       render :json => doc, :status => 200
     else
-      render :text => doc.errors.full_messages.first, :status => 422
+      render :plain => doc.errors.full_messages.first, :status => 422
     end
   end
 
@@ -19,14 +19,14 @@ class Nhri::AdvisoryCouncil::TermsOfReferencesController < ApplicationController
     if terms_of_reference_version.update(doc_params)
       render :json => terms_of_reference_version, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
   def destroy
     doc = Nhri::AdvisoryCouncil::TermsOfReferenceVersion.find(params[:id])
     doc.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   def show

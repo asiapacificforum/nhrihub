@@ -11,7 +11,7 @@ class Nhri::HeadingsController < ApplicationController
   def destroy
     heading = Nhri::Heading.find(params[:id])
     heading.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   def update
@@ -19,7 +19,7 @@ class Nhri::HeadingsController < ApplicationController
     if heading.update(heading_params)
       render :json => heading, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

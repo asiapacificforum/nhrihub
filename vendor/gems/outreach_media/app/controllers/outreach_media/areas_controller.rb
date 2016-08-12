@@ -4,7 +4,7 @@ class OutreachMedia::AreasController < ApplicationController
     if area.save
       render :json => Area.all, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -13,7 +13,7 @@ class OutreachMedia::AreasController < ApplicationController
     if area.destroy
       render :json => Area.all, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

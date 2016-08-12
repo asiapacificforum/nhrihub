@@ -1,7 +1,7 @@
 class Authengine::AccountsController < ApplicationController
 
   # because a user cannot login until the account is activated
-  skip_before_filter :check_permissions, :only => [:show]
+  skip_before_action :check_permissions, :only => [:show]
 
   # Activate action
   def show

@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
     if project.save
       render :json => project.to_json, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -27,14 +27,14 @@ class ProjectsController < ApplicationController
     if project.update(project_params)
       render :json => project.to_json, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
   def destroy
     project = Project.find(params[:id])
     project.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   private

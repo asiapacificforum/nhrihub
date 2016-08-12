@@ -5,7 +5,7 @@ class Nhri::Indicator::MonitorsController < ApplicationController
     if monitor.save
       render :json => monitor.indicator.monitors, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -14,7 +14,7 @@ class Nhri::Indicator::MonitorsController < ApplicationController
     if monitor.update_attributes(monitor_params)
       render :json => monitor, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
@@ -23,7 +23,7 @@ class Nhri::Indicator::MonitorsController < ApplicationController
     if monitor.destroy
       render :json => monitor.indicator.monitors, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 

@@ -3,7 +3,7 @@ require "date"
 
 class Authengine::SessionsController < ApplicationController
 
-  skip_before_filter :check_permissions, :only => [:new, :create, :destroy]
+  skip_before_action :check_permissions, :only => [:new, :create, :destroy]
 
   def new
     @title = t('banner.line_1') + ", " + t('banner.line_2')

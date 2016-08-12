@@ -11,14 +11,14 @@ class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
     if issue.save
       render :json => issue, :status => 200
     else
-      render :nothing => true, :status => 500
+      head :internal_server_error
     end
   end
 
   def destroy
     issue = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.find(params[:id])
     issue.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   def update

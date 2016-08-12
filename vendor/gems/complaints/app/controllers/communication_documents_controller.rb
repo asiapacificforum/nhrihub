@@ -2,7 +2,7 @@ class CommunicationDocumentsController < ApplicationController
   def destroy
     @communication_document = CommunicationDocument.find(params[:id])
     @communication_document.destroy
-    render :nothing => true, :status => 200
+    head :ok
   end
 
   def show
