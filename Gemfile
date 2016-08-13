@@ -98,7 +98,3 @@ gem 'siu', :path => 'vendor/gems/siu'
 gem 'complaints', :path => 'vendor/gems/complaints'
 gem 'projects', :path => 'vendor/gems/projects'
 gem 'internal_documents', :path => 'vendor/gems/internal_documents'
-
-# it's required by Authengine, but Rails doesn't seem to load it if it's in the Authengine Gemfile
-# it must be in a Gemfile as it's sourced from github
-gem "rails-observers", :git => "git@github.com:rails/rails-observers.git"

@@ -1,6 +1,4 @@
 source "http://rubygems.org"
 
-# moved from gemspec to here b/c it has to be installed from git for the rails-5 compatible version
-gem "rails-observers", :git => "git@github.com:rails/rails-observers.git"
 # Specify this gem's dependencies in authengine.gemspec
 gemspec

@@ -29,7 +29,4 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("haml")
   s.add_runtime_dependency("factory_girl_rails")
   s.add_runtime_dependency("database_cleaner")
-  # required in Rails4, observers were moved into this gem
-  # it's in Gemspec now b/c it's sourced at github
-  #s.add_runtime_dependency "rails-observers", :git => "git@github.com:rails/rails-observers.git"
 end

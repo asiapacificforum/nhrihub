@@ -10,7 +10,6 @@ module Authengine
     # Config defaults
     config.widget_factory_name = "default factory name"
     config.mount_at = '/'
-    config.active_record.observers = :user_observer
 
     # Load rake tasks
     #rake_tasks do
