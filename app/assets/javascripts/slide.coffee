@@ -1,6 +1,11 @@
-SlideDefaults =
-  duration: 300
-  easing: 'easeInOut'
+if env == 'test'
+  SlideDefaults =
+    duration: 0
+    easing: 'easeInOut'
+else
+  SlideDefaults =
+    duration: 300
+    easing: 'easeInOut'
 
 SlideProps = [
   'height'

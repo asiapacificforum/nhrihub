@@ -142,7 +142,9 @@ class Admin::UsersController < ApplicationController
     @user = User.find(params[:user_id])
     @user.prepare_to_send_reset_email
     @users = User.order("lastName, firstName").all
+    puts "gonna save"
     if @user.save
+      puts "saved"
       flash[:notice] = t('.flash_notice', :name => @user.first_last_name, :email => @user.email )
       redirect_to admin_users_path
     else

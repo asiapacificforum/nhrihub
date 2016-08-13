@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :note do
     text { Faker::Lorem.sentence(10) }
-    author_id { if User.count > 100 then User.pluck(:id).sample else FactoryGirl.create(:user).id end }
-    editor_id { if User.count > 100 then User.pluck(:id).sample else FactoryGirl.create(:user).id end }
+    author_id { if User.count > 100 then User.pluck(:id).sample else FactoryGirl.create(:user, :with_password).id end }
+    editor_id { if User.count > 100 then User.pluck(:id).sample else FactoryGirl.create(:user, :with_password).id end }
 
     trait :media_appearance do
       notable_type "MediaAppearance"

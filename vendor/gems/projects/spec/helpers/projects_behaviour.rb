@@ -430,11 +430,10 @@ RSpec.shared_examples "projects index" do
     it "should edit a project and save when all checkboxes are unchecked" do
       edit_last_project.click # has all associations checked
       uncheck_all_checkboxes
-      project = Project.last
-      expect{ edit_save.click; wait_for_ajax }.to change{project.project_type_ids}.to([]).
-                                            and change{project.agency_ids}.to([]).
-                                            and change{project.convention_ids}.to([]).
-                                            and change{project.mandate_ids}.to([])
+      expect{ edit_save.click; wait_for_ajax }.to change{Project.last.project_type_ids}.to([]).
+                                            and change{Project.last.agency_ids}.to([]).
+                                            and change{Project.last.convention_ids}.to([]).
+                                            and change{Project.last.mandate_ids}.to([])
     end
 
     it "should restore prior values if editing is cancelled" do

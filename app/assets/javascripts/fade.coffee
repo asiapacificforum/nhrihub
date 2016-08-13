@@ -1,7 +1,13 @@
-FadeDefaults =
-  delay: 0
-  duration: 300
-  easing: 'linear'
+if env == 'test'
+  FadeDefaults =
+    delay: 0
+    duration:0
+    easing: 'linear'
+else
+  FadeDefaults =
+    delay: 0
+    duration: 300
+    easing: 'linear'
 
 fade = (t, params) ->
   targetOpacity = undefined

@@ -1,7 +1,7 @@
 [![Code Climate](https://codeclimate.com/github/asiapacificforum/nhridocs/badges/gpa.svg)](https://codeclimate.com/github/asiapacificforum/nhridocs)
 # NHRIDocs
 ## Description
-NHRIDocs is an internal web application for National Human Rights Institutions ("NHRI") and other complaint handling institutions or human rights monitoring civil society organisations. It has a range of functionality designed to improve the efficiency and capacity of your organisation, including:
+NHRIDocs is an internal web application for National Human Rights Institutions ("NHRI") and other complaint handling institutions or human rights monitoring civil society organisations. It comprises a suite of modules that assist in the planning and management of the NHRI's internal processes, accreditation, and performance metrics. It has a range of functionality designed to improve the efficiency and capacity of your organisation, including:
   -  A dynamic human rights indicators monitoring tool aligned to the UN framework of indicators with the ability to download all data and evaluate trends. (ref: http://www.ohchr.org/Documents/Publications/Human_rights_indicators_en.pdf, page 88)
   -  A complaints handling database (set up for complaints relating to human rights or good governance but also customisable)
   -  Strategic plan monitoring – link all of your organisations work to your strategic plan and be able to continuously monitor progress and have a downloadable report available at the click of a button
@@ -12,16 +12,20 @@ NHRIDocs is an internal web application for National Human Rights Institutions (
 All modules of the application have a range of functionality to assist in the course of your work such as the setting of automatic reminders, logging historical versions of all documents, assigning projects, complaints or other matters to registered users and setting different permission levels to protect the confidentiality and integrity of your documents. Each module can be enabled/disabled to reflect the work undertaken by your organisation.
 
 ## Current Status
-At this time NHRIdocs is a work in progress. This first release includes the functionality for managing users, organizations, and access privileges. The basic structure for internationalization is also present. None of the main functionality of the app is yet developed.
+As of Aug 12, 2016 NHRIdocs is a "feature complete", and is being prepared for its first beta test in a live environment.
 
 ## Ruby version
 Configured in the .ruby-version file, to support the RVM version manager, look in that file for the currently-configured version
 
 ## Internationalization
-The basic structure for internationalization has been included, and the test suite tests the French translation of the navigation menu, the new user process, and the ActionMailer views pertaining to new user registration.
-This provides an outline of the locale translation files that need to be added in the config/locales directory and subdirectories.
+The basic structure for internationalization has been included.
+
+For languages other than English, locale translation files need to be added in the config/locales directory and subdirectories, as well as the config/locales directories and subdirectories of all the modules in vendor/gems.
+
 Translations may also be required for javascript, these may be found in lib/assets/javascripts/xx.js
+
 The url format for translated versions are (e.g.) your_domain/fr/admin/users.
+
 The default locale is 'en', a different default may be configured within the config/application.rb file, as indicated by the notes within that file.
 Page titles automatically default to the text in the i18n translation for the page .heading key, unless a translation for .title is provided.
 
@@ -33,7 +37,12 @@ All dates and times are entered and displayed in the timezone configured for the
 Acceptable file types and maximum file size for uploading internal documents are configurable via the user interface.
 
 ## Database creation and initialization
-  Configuring the first user
+When it is first installed, the access privileges must be "bootstrapped" to permit the first user access. After this, the first user may configure further users through the web user interface.
+The first user is configured via a rake command-line utility on the server by running:
+```
+rake "authengine:bootstrap[firstName,lastName,login,password]"
+```
+where firstName, lastName, login and password are replaced by the parameters appropriate for the first user.
 
 ## Access control
 A role-based access control is included. The access is bootstrapped at installation time with a single administrator. This administrator may then define further roles (e.g. "staff", "intern")
@@ -53,7 +62,9 @@ Note that phantomjs 2.0.0 has issues with file uploading (see https://github.com
 Running integration tests with Internet Explorer is a little more complex. A windows computer is required, running IE >= 10.
 This computer also needs to have Java, selenium-server-standalone, and IEDriver loaded. If it has a firewall, permissions must be configured sufficient to support this test configuration.
 On the windows computer, start selenium-server with:
-    java -jar /path/to/selenium-server-standalone-xxx.jar -Dwebdriver.ie.driver=/path/to/IEDriverServer.exe -browser "browserName=internet explorer, version=11"
+```
+java -jar /path/to/selenium-server-standalone-xxx.jar -Dwebdriver.ie.driver=/path/to/IEDriverServer.exe -browser "browserName=internet explorer, version=11"
+```
 
 On the computer (typically a Mac) that is running the tests and the application, the spec_helper file includes Capybara configuration for remote IE testing. Uncomment the configuration as indicated in the file.
 The computer on which Internet Explorer is running should also have pdf files for testing file upload. The following pdf files are required:
@@ -89,7 +100,7 @@ where testname is the name of the test suite you wish to run. The following js t
 * corporate
 * default (runs all other suites)
 
-#### Headless testing (faster, but testing is difficult, use this for regression testing)
+#### Headless testing (faster, but debugging is more difficult, use this for regression testing)
 Requires phantomjs version 2.1.1 or later. From the application directory command line run
     RAILS_ENV=jstest teaspoon --suite media
 or

@@ -385,17 +385,18 @@ feature "internal document management", :js => true do
     before do
       expect(page_heading).to eq "Internal Documents"
       # first doc
+      document_group_id = DocumentGroup.first.id
       attach_file("primary_file", upload_document)
-      page.find("#internal_document_title").set("fancy file")
-      page.find('#internal_document_revision').set("4.3")
+      page.all("input#internal_document_title")[0].set("fancy file")
+      page.find('input#internal_document_revision').set("4.3")
       # second doc
       attach_file("primary_file", upload_document)
-      page.all("#internal_document_title")[0].set("kook file") # forms are prepended, so it's first in the array
-      page.all('#internal_document_revision')[0].set("5.3")
+      page.all("input#internal_document_title")[0].set("kook file") # forms are prepended, so it's first in the array
+      page.all('input#internal_document_revision')[0].set("5.3")
       # third doc
       attach_file("primary_file", upload_document)
-      page.all("#internal_document_title")[0].set("ugly file")
-      page.all('#internal_document_revision')[0].set("6.3")
+      page.all("input#internal_document_title")[0].set("ugly file")
+      page.all('input#internal_document_revision')[0].set("6.3")
     end
 
     scenario "upload with buttonbar action" do

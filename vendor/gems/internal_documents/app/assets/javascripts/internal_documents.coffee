@@ -229,6 +229,7 @@ $ ->
       @set("title_error", false)
       @set("revision_error", false)
     add_file : (file)->
+      console.log "adding a file woohoo"
       attached_document =
         id : null
         file : file

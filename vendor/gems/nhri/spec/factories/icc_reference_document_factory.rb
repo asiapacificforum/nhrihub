@@ -6,8 +6,10 @@ FactoryGirl.define do
     filesize            { rand(1000000) + 10000 }
     original_filename   { Faker::Lorem.words(4).join('_')+'.pdf' }
     original_type       { "application/pdf" }
-    user
 
-    after(:build) { |doc| FileUtils.touch Rails.root.join('tmp','uploads','store',doc.file_id)  }
+    after(:build) { |doc|
+      doc.user = FactoryGirl.create(:user, :with_password)
+      FileUtils.touch Rails.root.join('tmp','uploads','store',doc.file_id)
+    }
   end
 end

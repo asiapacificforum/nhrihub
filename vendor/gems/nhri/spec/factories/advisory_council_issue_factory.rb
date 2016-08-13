@@ -7,7 +7,6 @@ FactoryGirl.define do
     #lastModifiedDate
 
     trait :link do
-      #article_link { Faker::Internet.url }
       article_link { "http://www.example.com" } # so we can actually test it!
     end
 

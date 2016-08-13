@@ -173,6 +173,7 @@ class User < ActiveRecord::Base
   end
 
   def prepare_to_send_reset_email
+    puts "prepare to send"
     @forgotten_password = true
     self.make_password_reset_code
   end

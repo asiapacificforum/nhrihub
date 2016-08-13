@@ -85,7 +85,6 @@ $ ->
       $(node).datepicker( "destroy" )
 
   Ractive.decorators.inpage_edit = EditInPlace
-  #Ractive.decorators.primary_fileupload = PrimaryFileUpload # for the archive file upload
   Ractive.decorators.popover = Popover
 
   UploadDocument = Ractive.extend
@@ -146,6 +145,9 @@ $ ->
 
   Doc = Ractive.extend
     template: '#template-download'
+    computed:
+      url : ->
+        Routes.nhri_advisory_council_minutes_path(current_locale, @get('id'))
     download_file : ->
       window.location = @get('url')
     delete_this : (event) ->

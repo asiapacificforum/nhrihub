@@ -6,7 +6,7 @@ class Nhri::NumericMonitor < ActiveRecord::Base
   default_scope ->{ order(:date => :asc, :created_at => :asc) }
 
   def as_json(options={})
-    super(:except => [:updated_at, :created_at], :methods => [:url, :val, :author, :formatted_date])
+    super(:except => [:updated_at, :created_at], :methods => [:url, :value, :author, :formatted_date])
   end
 
   def formatted_date

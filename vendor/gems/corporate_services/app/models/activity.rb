@@ -15,11 +15,11 @@ class Activity < ActiveRecord::Base
                        :performance_indicators,
                        :url,
                        :description_error,
-                       :reminders,
-                       :create_reminder_url,
-                       :create_performance_indicator_url,
-                       :notes,
-                       :create_note_url]
+                       #:reminders, # shouldn't be here... didn't cause a problem until rails5
+                       #:create_reminder_url,
+                       :create_performance_indicator_url]
+                       #:notes,
+                       #:create_note_url]
          )
   end
 

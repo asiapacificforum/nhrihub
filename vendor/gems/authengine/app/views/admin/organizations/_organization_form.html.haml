@@ -21,7 +21,7 @@
       %td= f.text_field :zip
       %td
     - @organization.contacts.each do |contact|
-      = fields_for "organization[contacts[]]", contact do |contact_fields|
+      = fields_for "organization", contact, :index => "contacts[]", :hidden_field_id => true do |contact_fields|
         %tr
           %td= contact_fields.label :phone, t('.phone')
           %td= contact_fields.text_field :phone
@@ -38,4 +38,4 @@
   - submit_or_return_to admin_organizations_path
 
 %script#new_phone{:type => 'html/template'}
-  = fields_for 'organization[contacts[]]', Contact.new({})  do |contact_form| render(:partial => 'new_phone_template', :locals => {:contact_form => contact_form}); end
+  = fields_for 'organization', Contact.new({:phone => ''}), :index=>'contacts[]', :hidden_field_id => true  do |contact_form| render(:partial => 'new_phone_template', :locals => {:contact_form => contact_form}); end
