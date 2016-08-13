@@ -14,6 +14,33 @@ class User < ActiveRecord::Base
   scope :active, ->{ where("status != 'deleted'") }
   scope :staff, ->{ joins(:roles).where("roles.name = 'staff'") }
 
+  after_create :signup_notify
+  after_save :activate_notify
+  after_save :forgotten_password_notify
+  after_save :reset_password_notify
+
+  def signup_notify
+    Authengine::UserMailer.signup_notification(self).deliver_now
+  end
+
+  def activate_notify
+    if pending?
+      Authengine::UserMailer.activation(self).deliver_now
+    end
+  end
+
+  def forgotten_password_notify
+    if recently_forgot_password?
+      Authengine::UserMailer.forgot_password(self).deliver_now
+    end
+  end
+
+  def reset_password_notify
+    if recently_reset_password?
+      Authengine::UserMailer.reset_password(self).deliver_now
+    end
+  end
+
   # custom validator rather than built-in helper, in order to get custom message
   def create_with_unique_email
     if User.where("email ilike ?", email).exists?
@@ -173,7 +200,6 @@ class User < ActiveRecord::Base
   end
 
   def prepare_to_send_reset_email
-    puts "prepare to send"
     @forgotten_password = true
     self.make_password_reset_code
   end

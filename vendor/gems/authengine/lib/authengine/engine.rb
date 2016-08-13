@@ -2,7 +2,6 @@ require 'authengine'
 require 'rails'
 require 'action_controller'
 require 'application_helper'
-require 'rails-observers'
 
 module Authengine
   class Engine < Rails::Engine

@@ -157,7 +157,7 @@ feature "user account activation" do
     url = email_activation_link
     visit(url)
     expect(flash_message).to have_text("Your account has been activated")
-    expect(page_heading).to match /Welcome \w* \w* to the M & E Database/
+    expect(page_heading).to match /Welcome #{User.last.first_last_name} to the M & E Database/
     fill_in(:user_login, :with => "norm")
     fill_in(:user_password, :with => "sekret")
     fill_in(:user_password_confirmation, :with => "sekret")
