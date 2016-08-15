@@ -63,7 +63,7 @@ namespace :deploy do
     end
   end
 
-  before :finishing, 'linked_files:upload_files'
+  #before :finishing, 'linked_files:upload_files' # beware this clobbers database.yml
 
 
 end

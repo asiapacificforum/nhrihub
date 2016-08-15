@@ -1,3 +1,33 @@
+engines:
+  rubocop:
+    enabled: true
+    #checks:
+    # Rubocop/Metrics/ClassLength:
+    #   enabled: false
+  csslint:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - ruby
+        #mass_threshold: 30
+      - javascript
+  brakeman:
+    enabled: true
+  bundler-audit:
+    enabled: true
+  esling:
+    enabled: true
+
+ratings:
+  paths:
+  - app/**
+  - vendor/gems/**
+  - "**.rb"
+#exclude_paths:
+#- spec/**/*
+#- "**/vendor/**/*"
 exclude_paths:
   - app/assets/javascripts/ractive.js
   - app/assets/javascripts/ractive-bootstrap.js
