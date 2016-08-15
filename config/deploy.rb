@@ -63,4 +63,7 @@ namespace :deploy do
     end
   end
 
+  before :finishing, 'linked_files:upload_files'
+
+
 end
