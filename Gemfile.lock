@@ -151,6 +151,8 @@ GEM
       capistrano (~> 3.1)
       sshkit (~> 1.2)
     capistrano-harrow (0.5.3)
+    capistrano-linked-files (1.2.0)
+      capistrano (~> 3.1)
     capistrano-passenger (0.0.2)
       capistrano (~> 3.0)
     capistrano-rails (1.1.7)
@@ -375,6 +377,7 @@ DEPENDENCIES
   byebug
   capistrano-bundler
   capistrano-faster-assets!
+  capistrano-linked-files
   capistrano-passenger (= 0.0.2)
   capistrano-rails
   capistrano-rvm

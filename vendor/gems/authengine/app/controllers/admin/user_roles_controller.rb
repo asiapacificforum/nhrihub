@@ -14,10 +14,6 @@ class Admin::UserRolesController < ApplicationController
     redirect_to admin_user_user_roles_path(@user)
   end
 
-  def user_role_params
-    params.require(:user_role).permit(:role_id)
-  end
-
   # authengine_user_user_role DELETE /authengine/users/:user_id/user_roles/:id(.:format)
   # remove a user_role for this user
   def destroy
@@ -47,5 +43,11 @@ protected
   def update_session_role(role_id)
     session[:role].current_role_ids = []
     session[:role].create(role_id.to_i)
+  end
+
+private
+
+  def user_role_params
+    params.require(:user_role).permit(:role_id)
   end
 end

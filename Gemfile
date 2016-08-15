@@ -87,7 +87,7 @@ gem "rack", github: "rack/rack" # also for sinatra 2.0.0-alpha support
 gem "rack-protection", github: "sinatra/rack-protection"
 gem "rails-settings-cached", '~> 0.4.2'
 gem "underscore-rails"
-##gem "transpec" #bundler can't resolve dependencies with this included... probably don't need it any more anyway!
+gem "capistrano-linked-files"
 
 
 ### NHRI Modules:
