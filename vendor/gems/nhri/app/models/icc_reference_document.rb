@@ -1,11 +1,12 @@
 class IccReferenceDocument < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
   include FileConstraints
   include DocumentApi
   ConfigPrefix = 'nhri.icc_reference_documents'
 
   belongs_to :user
   alias_method :uploaded_by, :user
-  has_many :reminders, :as => :remindable, :dependent => :delete_all
+  has_many :reminders, :as => :remindable, :dependent => :destroy
 
   attachment :file
 
@@ -35,7 +36,8 @@ class IccReferenceDocument < ActiveRecord::Base
     Rails.application.routes.url_helpers.nhri_icc_reference_document_reminders_path(:en,id) if persisted?
   end
 
-  def namespace
-    :nhri
+  def remindable_url(remindable_id)
+    nhri_icc_reference_document_reminder_path('en',id,remindable_id)
   end
+
 end

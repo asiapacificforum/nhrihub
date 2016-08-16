@@ -1,4 +1,5 @@
 class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
   include FileConstraints
   ConfigPrefix = 'nhri.advisory_council_issue'
   attachment :file
@@ -6,8 +7,8 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
   belongs_to :violation_severity
   delegate :text, :rank, :rank_text, :to => :violation_severity, :prefix => true, :allow_nil => true
   belongs_to :user
-  has_many :reminders, :as => :remindable, :dependent => :delete_all
-  has_many :notes, :as => :notable, :dependent => :delete_all
+  has_many :reminders, :as => :remindable, :dependent => :destroy
+  has_many :notes, :as => :notable, :dependent => :destroy
   has_many :issue_areas, :dependent => :destroy
   has_many :areas, :through => :issue_areas
   has_many :issue_subareas, :dependent => :destroy
@@ -70,8 +71,12 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
     created_at.to_time.to_date.to_s(:default) if persisted? # to_time converts to localtime
   end
 
-  def namespace
-    nil
+  def notable_url(notable_id)
+    nhri_advisory_council_advisory_council_issue_note_path('en',id,notable_id)
+  end
+
+  def remindable_url(remindable_id)
+    nhri_advisory_council_advisory_council_issue_reminder_path('en',id,remindable_id)
   end
 
 end

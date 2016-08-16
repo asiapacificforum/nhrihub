@@ -1,4 +1,5 @@
 class Complaint < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
   has_many :complaint_good_governance_complaint_bases, :dependent => :destroy
   has_many :complaint_special_investigations_unit_complaint_bases, :dependent => :destroy
   has_many :complaint_human_rights_complaint_bases, :dependent => :destroy
@@ -94,7 +95,11 @@ class Complaint < ActiveRecord::Base
     current_assignee.id if current_assignee
   end
 
-  def namespace
-    nil
+  def notable_url(notable_id)
+    complaint_note_path('en',id,notable_id)
+  end
+
+  def remindable_url(remindable_id)
+    complaint_reminder_path('en',id,remindable_id)
   end
 end

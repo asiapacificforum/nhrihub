@@ -63,7 +63,7 @@ namespace :deploy do
     end
   end
 
+  #Beware... this will overwrite critical files
   #before :finishing, 'linked_files:upload_files' # beware this clobbers database.yml
-
 
 end

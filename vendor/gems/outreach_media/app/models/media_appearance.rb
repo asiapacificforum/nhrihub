@@ -1,4 +1,5 @@
 class MediaAppearance < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
   include FileConstraints
   ConfigPrefix = 'media_appearance'
 
@@ -73,23 +74,27 @@ class MediaAppearance < ActiveRecord::Base
   end
 
   def create_url
-    Rails.application.routes.url_helpers.outreach_media_media_appearances_path(:en)
+    outreach_media_media_appearances_path(:en)
   end
 
   def create_note_url
-    Rails.application.routes.url_helpers.outreach_media_media_appearance_notes_path(:en,id) if persisted?
+    outreach_media_media_appearance_notes_path(:en,id) if persisted?
   end
 
   def create_reminder_url
-    Rails.application.routes.url_helpers.outreach_media_media_appearance_reminders_path(:en,id) if persisted?
+    outreach_media_media_appearance_reminders_path(:en,id) if persisted?
   end
 
   def url
-    Rails.application.routes.url_helpers.outreach_media_media_appearance_path(:en,id) if persisted?
+    outreach_media_media_appearance_path(:en,id) if persisted?
   end
 
-  def namespace
-    :outreach_media
+  def notable_url(notable_id)
+    outreach_media_media_appearance_note_path('en',id,notable_id)
+  end
+
+  def remindable_url(remindable_id)
+    outreach_media_media_appearance_reminder_path('en',id,remindable_id)
   end
 
   def date

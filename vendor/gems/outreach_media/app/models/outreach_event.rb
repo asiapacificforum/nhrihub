@@ -1,11 +1,12 @@
 class OutreachEvent < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
   include FileConstraints
   ConfigPrefix = 'outreach_event'
 
   belongs_to :impact_rating
   delegate :text, :rank, :rank_text, :to => :impact_rating, :prefix => true, :allow_nil => true
-  has_many :reminders, :as => :remindable, :dependent => :delete_all
-  has_many :notes, :as => :notable, :dependent => :delete_all
+  has_many :reminders, :as => :remindable, :dependent => :destroy
+  has_many :notes, :as => :notable, :dependent => :destroy
   has_many :outreach_event_areas
   has_many :areas, :through => :outreach_event_areas
   has_many :outreach_event_subareas
@@ -43,19 +44,19 @@ class OutreachEvent < ActiveRecord::Base
   end
 
   def create_url
-    Rails.application.routes.url_helpers.outreach_media_outreach_events_path(:en)
+    outreach_media_outreach_events_path(:en)
   end
 
   def url
-    Rails.application.routes.url_helpers.outreach_media_outreach_event_path(:en,id) if persisted?
+    outreach_media_outreach_event_path(:en,id) if persisted?
   end
 
   def create_note_url
-    Rails.application.routes.url_helpers.outreach_media_outreach_event_notes_path(:en,id) if persisted?
+    outreach_media_outreach_event_notes_path(:en,id) if persisted?
   end
 
   def create_reminder_url
-    Rails.application.routes.url_helpers.outreach_media_outreach_event_reminders_path(:en,id) if persisted?
+    outreach_media_outreach_event_reminders_path(:en,id) if persisted?
   end
 
   # date is stored in as UTC
@@ -69,8 +70,12 @@ class OutreachEvent < ActiveRecord::Base
     write_attribute(:event_date, DateTime.parse(date).utc)
   end
 
-  def namespace
-    :outreach_media
+  def notable_url(notable_id)
+    outreach_media_outreach_event_note_path('en',id,notable_id)
+  end
+
+  def remindable_url(remindable_id)
+    outreach_media_outreach_event_reminder_path('en',id,remindable_id)
   end
 
 end

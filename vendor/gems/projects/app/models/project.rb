@@ -1,4 +1,5 @@
 class Project < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
 
   has_many :project_performance_indicators, :dependent => :destroy
   has_many :performance_indicators, :through => :project_performance_indicators
@@ -55,20 +56,6 @@ class Project < ActiveRecord::Base
 
   # overwrite the AR method for special treatment of named documents
   def save
-    #if project_documents.empty?
-      #super
-    #elsif !persisted?
-      #super
-    #elsif project_documents.reject(&:persisted?).all?(&:not_named?) # no named docs being added
-      #super
-    #elsif named_project_documents.length #there are existing named docs
-      #new_doc_titles = project_documents.reject(&:persisted?).map(&:title)
-      ## delete any existing named docs that are being added with this update
-      #named_project_documents.
-        #select { |doc| new_doc_titles.include? doc.title }.
-        #each { |doc| doc.destroy }
-      #super
-    #end
     if named_project_documents.length #there are existing named docs
       new_doc_titles = project_documents.reject(&:persisted?).map(&:title)
       # delete any existing named docs that are being added with this update
@@ -78,4 +65,13 @@ class Project < ActiveRecord::Base
     end
     super
   end
+
+  def notable_url(notable_id)
+    project_note_path('en',id,notable_id)
+  end
+
+  def remindable_url(remindable_id)
+    project_reminder_path('en',id,remindable_id)
+  end
+
 end

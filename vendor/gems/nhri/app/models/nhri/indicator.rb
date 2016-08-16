@@ -1,4 +1,5 @@
 class Nhri::Indicator < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
   # human_rights_attribute_id heading_id
   #    nil                       n       indicator belongs to a heading, and is associated with all attributes
   #     n                        n       indicator belongs to a particular attribute,
@@ -45,8 +46,12 @@ class Nhri::Indicator < ActiveRecord::Base
     end
   end
 
-  def polymorphic_path
-    OpenStruct.new(:prefix => 'nhri_indicator', :keys => {:indicator_id => id})
+  def notable_url(notable_id)
+    nhri_indicator_note_path('en',id,notable_id)
+  end
+
+  def remindable_url(remindable_id)
+    nhri_indicator_reminder_path('en',id,remindable_id)
   end
 
 end
