@@ -13,16 +13,6 @@ class Note < ActiveRecord::Base
   end
 
   def url
-    #if defined? notable.namespace
-      #puts "notable: #{notable.class.name} namespace #{notable.namespace} url: #{ polymorphic_path([notable.namespace,notable,self], :locale => :en)}"
-      #polymorphic_path([notable.namespace,notable,self], :locale => :en)
-    #elsif notable.respond_to?(:polymorphic_path) && (path = notable.polymorphic_path) # this scheme is used with indicators, due to more complex route nesting
-      #puts "notable #{notable.class.name} path: #{path} url : #{polymorphic_path([path.prefix, self], path.keys.merge!({:locale => :en}))}"
-      #polymorphic_path([path.prefix, self], path.keys.merge!({:locale => :en}))
-    #else
-      #puts "notable #{notable.class.name} #{polymorphic_path([notable.self], :locale => :en)}"
-      #polymorphic_path([notable,self], :locale => :en)
-    #end
     notable.notable_url(id)
   end
 

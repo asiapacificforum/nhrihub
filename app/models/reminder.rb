@@ -35,23 +35,6 @@ class Reminder < ActiveRecord::Base
   end
 
   def url
-    #if defined? remindable.namespace
-      #polymorphic_path([remindable.namespace,remindable,self], :locale => :en)
-    #elsif remindable.respond_to?(:polymorphic_path) && (path = remindable.polymorphic_path) # this scheme is used with indicators, due to more complex route nesting
-      #polymorphic_path([path.prefix, self], path.keys.merge!({:locale => :en}))
-    #else
-      #polymorphic_path([remindable,self], :locale => :en)
-    #end
-    #if defined? remindable.namespace
-      #puts "remindable: #{remindable.class.name} namespace #{remindable.namespace} url: #{ polymorphic_path([remindable.namespace,remindable,self], :locale => :en)}"
-      #polymorphic_path([remindable.namespace,remindable,self], :locale => :en)
-    #elsif remindable.respond_to?(:polymorphic_path) && (path = remindable.polymorphic_path) # this scheme is used with indicators, due to more complex route nesting
-      #puts "remindable #{remindable.class.name} path: #{path} url : #{polymorphic_path([path.prefix, self], path.keys.merge!({:locale => :en}))}"
-      #polymorphic_path([path.prefix, self], path.keys.merge!({:locale => :en}))
-    #else
-      #puts "remindable #{remindable.class.name} #{polymorphic_path([remindable.self], :locale => :en)}"
-      #polymorphic_path([remindable,self], :locale => :en)
-    #end
     remindable.remindable_url(id)
   end
 
