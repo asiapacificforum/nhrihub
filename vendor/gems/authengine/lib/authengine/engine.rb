@@ -14,6 +14,7 @@ module Authengine
     #rake_tasks do
       #load File.join(File.dirname(__FILE__), 'rails/railties/tasks.rake')
     #end
+    config.i18n.load_path += Dir.glob(config.root.join('config','locales','views','**','*.{rb,yml}'))
 
     # Check the gem config
     initializer "check config" do |app|

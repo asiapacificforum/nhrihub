@@ -30,4 +30,7 @@ module UserManagementHelpers
     email_activation_link
   end
 
+  def register_token
+    page.all('.register_token').first
+  end
 end

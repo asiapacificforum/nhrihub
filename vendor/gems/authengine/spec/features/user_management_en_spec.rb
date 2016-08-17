@@ -2,7 +2,7 @@ require "rails_helper"
 require 'application_helpers'
 require 'login_helpers'
 require 'navigation_helpers'
-require 'user_management_helpers'
+require_relative '../helpers/user_management_helpers'
 require 'unactivated_user_helpers'
 require 'async_helper'
 require 'role_presets_helper'
@@ -177,5 +177,23 @@ feature "user account activation" do
     visit url_with_wrong_activation_code
     expect(flash_message).to eq 'Activation code not found. Please contact database administrator.'
     expect(page_heading).to eq 'Please log in'
+  end
+end
+
+feature "user token registration", :js => :true do
+  include UnactivatedUserHelpers # creates unactivated user
+  include UserManagementHelpers
+  include ApplicationHelpers
+  include NavigationHelpers
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+
+  before do
+    toggle_navigation_dropdown("Admin")
+    select_dropdown_menu_item("Manage users")
+  end
+
+  scenario "user activates account by clicking url in registration email", :driver => :chrome do
+    register_token.click
+    expect(page).to have_selector('.token_registration_modal', :text => "Please touch the flashing U2F device now.  You may be prompted to allow the site permission to access your security keys. After granting permission, the device will start to blink.")
   end
 end

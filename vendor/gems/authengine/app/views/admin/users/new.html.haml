@@ -27,6 +27,7 @@
         = f.fields_for :user_roles do |role_form|
           = role_form.collection_select(:role_id, @roles, :id, :name)
 
-  - submit_or_return_to(authengine_users_path)
-%script{:type=>'text/javascript'}
+  - submit_or_return_to(admin_users_path)
+
+:javascript
   document.getElementById('user_firstName').focus()
