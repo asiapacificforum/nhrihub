@@ -116,6 +116,13 @@ Capistrano deployment also symlinks the config/database.yml and lib/constants fi
 These files contain sensitive information and should be manually copied into the 'shared' directory. This is typically done just once when the app is first installed, as the information will typically remain unchanged for the life of the app.
 A list of all the files that the application requires to be present in the shared directory is found in the conifg/deploy_example.rb file.
 
+## Configuring SSL
+Letsencrypt (http://letsencrypt.org) may be used to obtain an ssl certificate. This is facilitated by the letsencrypt_plugin gem (https://github.com/lgromanowski/letsencrypt-plugin). This gem needs a configuration file, and it's stored in the shared/config/letsencrypt_plugin.yml where capistrano symlinks files. Refer to the gem's README for information on the parameters that must be included. The RSA private key is also symlinked by capistrano to shared/key/keyfile.pem.
+
+After following the instructions on the letsencrypt_plugin gem, you will have ssl certificates for your site stored in the certificates directory.
+
+Alternatively you may exclude this gem from Gemfile (and remove it from config/routes.rb) and obtain the site ssl certificate by another means.
+
 ## Customizing the theme
 
 ## Log rotation
