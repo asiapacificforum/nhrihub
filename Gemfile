@@ -79,7 +79,7 @@ gem 'poltergeist', group: [:test, :jstest]
 gem 'factory_girl_rails', '~> 4.0'
 gem 'faker'
 
-#gem 'letsencrypt_plugin'
+gem 'letsencrypt_plugin'
 
 ###not needed in rails 5
 ###gem 'quiet_assets', group: :development
