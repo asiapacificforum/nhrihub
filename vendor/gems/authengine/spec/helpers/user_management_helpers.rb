@@ -29,8 +29,4 @@ module UserManagementHelpers
   def new_password_activation_link
     email_activation_link
   end
-
-  def register_token
-    page.all('.register_token').first
-  end
 end

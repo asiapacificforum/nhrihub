@@ -150,7 +150,7 @@ feature "Edit profile of unactivated user" do
   end
 end
 
-feature "user account activation" do
+feature "user account activation", :js => true do
   include UnactivatedUserHelpers # creates unactivated user
   include UserManagementHelpers
   scenario "user activates account by clicking url in registration email" do
@@ -161,8 +161,11 @@ feature "user account activation" do
     fill_in(:user_login, :with => "norm")
     fill_in(:user_password, :with => "sekret")
     fill_in(:user_password_confirmation, :with => "sekret")
-    click_button("Sign up")
-    email = ActionMailer::Base.deliveries.last
+    #click_button("Sign up")
+    expect{ click_button("Sign up"); wait_for_ajax }.to change{ User.last.crypted_password }.from(nil).to(/[a-f0-9]{40}/).
+                                                    and change{ User.last.salt }.from(nil).to(/[a-f0-9]{40}/).
+                                                    and change{ User.last.public_key }.from(nil).to(/[a-f0-9]{40}/)
+    #email = ActionMailer::Base.deliveries.last
     expect(page_heading).to eq 'Please log in'
     # not normal action, but we test it anyway, user clicks the activation link again
     visit(url)
@@ -177,23 +180,5 @@ feature "user account activation" do
     visit url_with_wrong_activation_code
     expect(flash_message).to eq 'Activation code not found. Please contact database administrator.'
     expect(page_heading).to eq 'Please log in'
-  end
-end
-
-feature "user token registration", :js => :true do
-  include UnactivatedUserHelpers # creates unactivated user
-  include UserManagementHelpers
-  include ApplicationHelpers
-  include NavigationHelpers
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
-
-  before do
-    toggle_navigation_dropdown("Admin")
-    select_dropdown_menu_item("Manage users")
-  end
-
-  scenario "user activates account by clicking url in registration email", :driver => :chrome do
-    register_token.click
-    expect(page).to have_selector('.token_registration_modal', :text => "Please touch the flashing U2F device now.  You may be prompted to allow the site permission to access your security keys. After granting permission, the device will start to blink.")
   end
 end
