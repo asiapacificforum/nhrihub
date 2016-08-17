@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -17,8 +16,8 @@ ActiveRecord::Schema.define(version: 20160805122035) do
   enable_extension "plpgsql"
 
   create_table "action_roles", force: :cascade do |t|
-    t.integer  "role_id",    limit: 8
-    t.integer  "action_id",  limit: 8
+    t.bigint   "role_id"
+    t.bigint   "action_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -29,9 +28,8 @@ ActiveRecord::Schema.define(version: 20160805122035) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "human_name",    limit: 255
+    t.index ["action_name"], name: "index_actions_on_action_name", using: :btree
   end
-
-  add_index "actions", ["action_name"], name: "index_actions_on_action_name", using: :btree
 
   create_table "activities", force: :cascade do |t|
     t.integer  "outcome_id"
@@ -231,9 +229,8 @@ ActiveRecord::Schema.define(version: 20160805122035) do
     t.datetime "last_modified"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["controller_name"], name: "index_controllers_on_controller_name", using: :btree
   end
-
-  add_index "controllers", ["controller_name"], name: "index_controllers_on_controller_name", using: :btree
 
   create_table "conventions", force: :cascade do |t|
     t.string   "name"
@@ -582,9 +579,8 @@ ActiveRecord::Schema.define(version: 20160805122035) do
     t.datetime "logout_date"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.index ["session_id"], name: "index_sessions_on_session_id", using: :btree
   end
-
-  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
 
   create_table "settings", force: :cascade do |t|
     t.string   "var",        limit: 255, null: false
@@ -593,9 +589,8 @@ ActiveRecord::Schema.define(version: 20160805122035) do
     t.string   "thing_type", limit: 30
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
   end
-
-  add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
 
   create_table "status_changes", force: :cascade do |t|
     t.integer  "complaint_id"
@@ -637,8 +632,8 @@ ActiveRecord::Schema.define(version: 20160805122035) do
   end
 
   create_table "user_roles", force: :cascade do |t|
-    t.integer  "role_id",    limit: 8, null: false
-    t.integer  "user_id",    limit: 8, null: false
+    t.bigint   "role_id",    null: false
+    t.bigint   "user_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -670,9 +665,8 @@ ActiveRecord::Schema.define(version: 20160805122035) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "organization_id"
+    t.index ["login"], name: "index_users_on_login", using: :btree
   end
-
-  add_index "users", ["login"], name: "index_users_on_login", using: :btree
 
   create_table "violation_severities", force: :cascade do |t|
     t.integer  "rank"
@@ -681,4 +675,3 @@ ActiveRecord::Schema.define(version: 20160805122035) do
   end
 
 end
-
