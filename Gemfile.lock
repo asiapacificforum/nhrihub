@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/asiapacificforum/letsencrypt-plugin.git
+  revision: 3daa1c523e531fcef50b57a4cf2cce0c5a686524
+  specs:
+    letsencrypt_plugin (0.0.9)
+      acme-client (~> 0.3.0)
+      rails (>= 4.2, < 5.1)
+
+GIT
   remote: git://github.com/rack/rack.git
   revision: 25a549883b85fb33970b4a1530a365c0c9e51f95
   specs:
@@ -236,9 +244,6 @@ GEM
       url_safe_base64
     launchy (2.4.3)
       addressable (~> 2.3)
-    letsencrypt_plugin (0.0.9)
-      acme-client (~> 0.3.0)
-      rails (>= 4.2, < 5.1)
     libv8 (3.16.14.15)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -413,7 +418,7 @@ DEPENDENCIES
   jquery-rails
   js-routes
   launchy
-  letsencrypt_plugin
+  letsencrypt_plugin!
   magic_lamp
   nhri!
   outreach_media!

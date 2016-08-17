@@ -51,7 +51,7 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log',
 #set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
 
 # for hte capistrano-faster-assets gem
-set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb) + Dir.glob('vendor/gems/**/app/assets')
+#set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb) + Dir.glob('vendor/gems/**/app/assets')
 
 namespace :deploy do
 
