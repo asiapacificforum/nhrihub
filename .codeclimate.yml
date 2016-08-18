@@ -26,7 +26,8 @@ ratings:
   - vendor/gems/**
   - "**.rb"
 exclude_paths:
-- spec/**/*
-exclude_paths:
+  - spec/**/*
+  - **/spec/**/*
+  - db/schema.rb
   - app/assets/javascripts/ractive.js
   - app/assets/javascripts/ractive-bootstrap.js
