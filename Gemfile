@@ -89,7 +89,6 @@ gem "rails-settings-cached", '~> 0.4.2'
 gem "underscore-rails"
 gem "capistrano-linked-files"
 
-
 ### NHRI Modules:
 gem 'corporate_services', :path => 'vendor/gems/corporate_services'
 gem 'outreach_media', :path => 'vendor/gems/outreach_media'

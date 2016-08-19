@@ -164,7 +164,8 @@ feature "user account activation", :js => true do
     #click_button("Sign up")
     expect{ click_button("Sign up"); wait_for_ajax }.to change{ User.last.crypted_password }.from(nil).to(/[a-f0-9]{40}/).
                                                     and change{ User.last.salt }.from(nil).to(/[a-f0-9]{40}/).
-                                                    and change{ User.last.public_key }.from(nil).to(/[a-f0-9]{40}/)
+                                                    and change{ User.last.public_key }.from(nil).to(/[a-f0-9]{40}/).
+                                                    and change{ User.last.public_key_handle }.from(nil).to(/[a-f0-9]{40}/)
     #email = ActionMailer::Base.deliveries.last
     expect(page_heading).to eq 'Please log in'
     # not normal action, but we test it anyway, user clicks the activation link again
