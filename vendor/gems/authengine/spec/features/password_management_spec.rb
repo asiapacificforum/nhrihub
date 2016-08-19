@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'login_helpers'
 require 'navigation_helpers'
-require 'user_management_helpers'
+require_relative '../helpers/user_management_helpers'
 #require File.expand_path('../../helpers/unactivated_user_helpers',__FILE__)
 
 feature "Password management" do

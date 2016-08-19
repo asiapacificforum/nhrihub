@@ -16,6 +16,9 @@ Rails.application.configure do
   config.files  = true
   config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=3600' }
 
+  # just for a particular test... remove this REMOVE_ME
+  config.assets.debug = true
+
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false

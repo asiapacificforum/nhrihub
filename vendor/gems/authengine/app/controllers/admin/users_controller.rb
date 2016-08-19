@@ -37,15 +37,6 @@ class Admin::UsersController < ApplicationController
     @roles = Role.except_developer
   end
 
-  def user_params
-    attrs = [ :email,
-              :firstName,
-              :lastName,
-              :organization_id,
-              :user_roles_attributes => [:role_id] ]
-    params.require(:user).permit(attrs)
-  end
-
 # users may only be created by the administrator from the index page
   def create
     cookies.delete :auth_token
@@ -135,6 +126,9 @@ class Admin::UsersController < ApplicationController
 
   def signup
     @user = User.find(params[:id])
+    u2f = U2F::U2F.new(APPLICATION_ID)
+    @user.update_attributes(:challenge => u2f.challenge, :challenge_timestamp => DateTime.now.utc)
+    @app_id = APPLICATION_ID
   end
 
   # when a logged-in admin clicks "reset password"
@@ -201,6 +195,17 @@ protected
     else
       @user = current_user
     end
+  end
+
+private
+
+  def user_params
+    attrs = [ :email,
+              :firstName,
+              :lastName,
+              :organization_id,
+              :user_roles_attributes => [:role_id] ]
+    params.require(:user).permit(attrs)
   end
 
 end

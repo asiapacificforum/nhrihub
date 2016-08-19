@@ -23,6 +23,14 @@ en:
         register_token: 'register access token'
         delete_confirm: 'are you sure you want to delete '
         no_prev: 'no previous login'
+      # partial
+      signup:
+        heading: "Welcome %{firstName} %{lastName} to the %{app_name}"
+        select_name: "Select a login name:"
+        your_email:  "Your email address:"
+        select_password: "Select a login password:"
+        re_enter: "Re-enter your password to confirm:"
+        sign_up: 'Sign up'
       # view
       new:
         page_title: 'Create a new user account'
@@ -40,6 +48,7 @@ en:
         argument_error: 'Activation code not found. Please ask the database administrator to create an account for you.'
         not_found: 'Activation code not found. Please ask the database administrator to create an account for you.'
         already_activated: 'Your account has already been activated. You can log in below.'
+        activated: "Your account has been activated"
       update_self:
         flash_notice: "Your profile has been updated"
       update:

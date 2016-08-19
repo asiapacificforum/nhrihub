@@ -28,5 +28,6 @@ assets = [ 'in_page_edit.js',
            'file_input_decorator.js',
            'remindable.js',
            'notable.js',
-           'media_issues.css']
+           'media_issues.css',
+           'message_block.css']
 Rails.application.config.assets.precompile += assets

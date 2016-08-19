@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160805122035) do
+ActiveRecord::Schema.define(version: 20160819032747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -665,6 +665,10 @@ ActiveRecord::Schema.define(version: 20160805122035) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "organization_id"
+    t.string   "challenge"
+    t.datetime "challenge_timestamp"
+    t.string   "public_key"
+    t.string   "public_key_handle"
     t.index ["login"], name: "index_users_on_login", using: :btree
   end
 

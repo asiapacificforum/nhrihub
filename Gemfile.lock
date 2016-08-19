@@ -391,6 +391,7 @@ DEPENDENCIES
   js-routes
   launchy
   magic_lamp
+  message_block
   nhri!
   outreach_media!
   pg

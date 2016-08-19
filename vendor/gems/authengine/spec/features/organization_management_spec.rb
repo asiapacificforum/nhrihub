@@ -2,7 +2,7 @@ require "rails_helper"
 require 'application_helpers'
 require 'login_helpers'
 require 'navigation_helpers'
-require 'user_management_helpers'
+require_relative '../helpers/user_management_helpers'
 require 'unactivated_user_helpers'
 require 'async_helper'
 require 'role_presets_helper'
