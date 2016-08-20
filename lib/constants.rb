@@ -1,6 +1,6 @@
 # for the mailer
 SITE_URL = "www.ombudsman.gov.ws"
-APPLICATION_ID = "http://#{SITE_URL}"
+APPLICATION_ID = "https://#{SITE_URL}"
 ADMIN_EMAIL = "support@#{SITE_URL}"
 APPLICATION_NAME = "M & E Database"
 ORGANIZATION_NAME = "Office of the Ombudsman"

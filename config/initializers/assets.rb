@@ -29,5 +29,6 @@ assets = [ 'in_page_edit.js',
            'remindable.js',
            'notable.js',
            'media_issues.css',
-           'message_block.css']
+           'message_block.css',
+           'u2f-api.js']
 Rails.application.config.assets.precompile += assets

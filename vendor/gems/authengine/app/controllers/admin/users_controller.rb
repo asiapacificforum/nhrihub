@@ -127,8 +127,10 @@ class Admin::UsersController < ApplicationController
   def signup
     @user = User.find(params[:id])
     u2f = U2F::U2F.new(APPLICATION_ID)
-    @user.update_attributes(:challenge => u2f.challenge, :challenge_timestamp => DateTime.now.utc)
-    @app_id = APPLICATION_ID
+    @user.challenge = u2f.challenge
+    @user.challenge_timestamp = DateTime.now.utc
+    @user.save(:validate => false) # since it's not valid at this point... there's no password
+    @app_id = Rails.env.development? ? "http://localhost:3000" : "https://oodb.railsplayground.net"
   end
 
   # when a logged-in admin clicks "reset password"

@@ -22,9 +22,24 @@
         = f.password_field :password_confirmation, :class => 'form-control'
     .row
       .col-sm-2
-        .btn.btn-default.btn-primary=t('.sign_up')
+        .btn.btn-default.btn-primary#sign_up{:onclick=>'get_2fa_registration()'}=t('.sign_up')
+
+= javascript_include_tag 'u2f-api.js'
 
 :coffeescript
   $('#user_login').focus()
   @challenge = "#{@user.challenge}"
   @app_id = "#{@app_id}"
+
+  register_callback = (response)->
+    console.log "2fa callback: "+JSON.stringify(response)
+
+  opt_timeoutSeconds = 5
+
+  registerRequests = [{version: "U2F_V2" , challenge: challenge, appId: app_id }]
+
+  registeredKeys = []
+
+  @get_2fa_registration = ->
+    console.log "register with app_id: "+@app_id+" registerRequests: "+JSON.stringify(registerRequests)
+    u2f.register(@appId, registerRequests, registeredKeys, register_callback, opt_timeoutSeconds)

@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
   around_action :with_locale
   before_action :set_title
 
-
 private
   def no_method_error(exception)
     render :template => "/errors/404.html.haml", :status => 404

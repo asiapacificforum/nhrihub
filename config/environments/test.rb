@@ -15,9 +15,7 @@ Rails.application.configure do
   # Configure static asset server for tests with Cache-Control for performance.
   config.files  = true
   config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=3600' }
-
-  # just for a particular test... remove this REMOVE_ME
-  config.assets.debug = true
+  config.force_ssl = true
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true

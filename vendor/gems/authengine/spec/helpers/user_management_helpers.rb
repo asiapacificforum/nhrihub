@@ -29,4 +29,9 @@ module UserManagementHelpers
   def new_password_activation_link
     email_activation_link
   end
+
+  def signup
+    page.find('.btn#sign_up').click
+    wait_for_ajax
+  end
 end
