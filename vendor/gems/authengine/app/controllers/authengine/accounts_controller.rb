@@ -9,16 +9,16 @@ class Authengine::AccountsController < ApplicationController
     # self.current_user = User.find_and_activate!(params[:id])
     @user = User.find_with_activation_code(params[:activation_code])
     session[:activation_code] = params[:activation_code]
-    flash[:notice] = "Your account has been activated"
+    flash[:notice] =t('admin.users.activate.activated')
     redirect_to signup_admin_user_path(@user)
   rescue User::ArgumentError
-    flash[:notice] = 'Activation code not found. Please contact database administrator.'
+    flash[:notice] =t('admin.users.activate.not_found')
     redirect_to login_path
   rescue User::ActivationCodeNotFound
-    flash[:notice] = 'Activation code not found. Please contact database administrator.'
+    flash[:notice] =t('admin.users.activate.not_found')
     redirect_to login_path
   rescue User::AlreadyActivated
-    flash[:notice] = 'Your account has already been activated. You can log in below.'
+    flash[:notice] =t('admin.users.activate.already_activated')
     redirect_to login_path
   end
 

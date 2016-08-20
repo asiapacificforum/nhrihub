@@ -90,7 +90,7 @@ gem "rack-protection", github: "sinatra/rack-protection"
 gem "rails-settings-cached", '~> 0.4.2'
 gem "underscore-rails"
 gem "capistrano-linked-files"
-
+gem "message_block"
 
 ### NHRI Modules:
 gem 'corporate_services', :path => 'vendor/gems/corporate_services'
