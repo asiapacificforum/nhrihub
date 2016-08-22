@@ -1,7 +1,7 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base
   # Virtual attribute for the unencrypted password
-  attr_accessor :password
+  attr_accessor :password, :u2f_register_response
 
 # when user account is first created, only firstname, lastname and email are required
   validates_presence_of     :firstName, :lastName, :email
@@ -18,6 +18,12 @@ class User < ActiveRecord::Base
   after_save :activate_notify
   after_save :forgotten_password_notify
   after_save :reset_password_notify
+
+  def u2f_register_response=(json)
+    response = U2F::RegisterResponse.load_from_json(json)
+    self.public_key = response.public_key #base64 encoded
+    self.public_key_handle = response.key_handle #base64 encoded
+  end
 
   def signup_notify
     Authengine::UserMailer.signup_notification(self).deliver_now
@@ -268,7 +274,8 @@ protected
   end
 
   def make_activation_code
-    self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    # change the algorithm so that many can be created in very short time without activation_code collisions
+    self.activation_code = Digest::SHA1.hexdigest( Time.now.advance(:seconds => rand(1000000)).to_s.split(//).sort_by {rand}.join )
   end
 
   def make_password_reset_code

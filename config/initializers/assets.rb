@@ -30,5 +30,7 @@ assets = [ 'in_page_edit.js',
            'notable.js',
            'media_issues.css',
            'message_block.css',
-           'u2f-api.js']
+           'u2f-api.js',
+           'mock_yubikey.js',
+           'jsrsasign/jsrsasign-4.7.0-all-min.js']
 Rails.application.config.assets.precompile += assets

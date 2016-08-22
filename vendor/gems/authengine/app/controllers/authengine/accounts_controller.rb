@@ -9,12 +9,11 @@ class Authengine::AccountsController < ApplicationController
     # self.current_user = User.find_and_activate!(params[:id])
     @user = User.find_with_activation_code(params[:activation_code])
     session[:activation_code] = params[:activation_code]
-    flash[:notice] =t('admin.users.activate.activated')
     redirect_to signup_admin_user_path(@user)
-  rescue User::ArgumentError
-    flash[:notice] =t('admin.users.activate.not_found')
+  rescue User::ArgumentError # activation_code.nil?
+    flash[:notice] =t('admin.users.activate.argument_error')
     redirect_to login_path
-  rescue User::ActivationCodeNotFound
+  rescue User::ActivationCodeNotFound # wrong activation code
     flash[:notice] =t('admin.users.activate.not_found')
     redirect_to login_path
   rescue User::AlreadyActivated

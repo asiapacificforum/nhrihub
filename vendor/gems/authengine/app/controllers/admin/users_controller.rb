@@ -59,13 +59,17 @@ class Admin::UsersController < ApplicationController
     render :template => 'users/edit'
   end
 
-# account was created by admin and now user is entering username/password
+# account was created by admin and now user has entered and submitted username/password, with u2f registration data
   def activate
     # TODO must remember to reset the session[:activation_code]
     # looks as if setting current user (next line) was causing the user to be
     # logged-in after activation
     user = User.find_and_activate!(params[:activation_code])
-    if user.update_attributes(params.require(:user).slice(:login, :email, :password, :password_confirmation).permit(:login, :email, :password, :password_confirmation))
+    if user.
+         update_attributes(params.require(:user).
+         slice(:login, :email, :password, :password_confirmation, :u2f_register_response).
+         permit(:login, :email, :password, :password_confirmation, :u2f_register_response))
+      flash[:notice] =t('admin.users.activate.activated')
       redirect_to root_path
     else
       flash[:warn] = user.errors.full_messages
@@ -130,7 +134,9 @@ class Admin::UsersController < ApplicationController
     @user.challenge = u2f.challenge
     @user.challenge_timestamp = DateTime.now.utc
     @user.save(:validate => false) # since it's not valid at this point... there's no password
-    @app_id = Rails.env.development? ? "http://localhost:3000" : "https://oodb.railsplayground.net"
+    #@app_id = Rails.env.development? ? "http://localhost:3000" : "https://oodb.railsplayground.net"
+    #@app_id = "https://oodb.railsplayground.net"
+    @registerRequest = U2F::RegisterRequest.new(@user.challenge,APPLICATION_ID).to_json
   end
 
   # when a logged-in admin clicks "reset password"

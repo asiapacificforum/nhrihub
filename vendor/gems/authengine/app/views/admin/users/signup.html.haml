@@ -2,7 +2,7 @@
 
 %h1=t('.heading', :firstName => @user.firstName, :lastName => @user.lastName, :app_name => "#{APPLICATION_NAME || 'database'}")
 
-= form_for :user, :url => authengine_activate_path(session[:activation_code]), :method=>:post, :html => {:class => "form-horizontal"} do |f|
+= form_for :user, :url => register_admin_users_path(session[:activation_code]), :method=>:post, :html => {:class => "form-horizontal", :id => :u2f_registration_form} do |f|
   .user_info.form-horizontal
     .form-group
       .col-sm-3.control-label{:for => :login}=t('.select_name')
@@ -20,26 +20,55 @@
       .col-sm-3.control-label{:for => :password_confirmation}=t('.re_enter')
       .col-sm-4
         = f.password_field :password_confirmation, :class => 'form-control'
+    .form-group
+      = f.hidden_field :u2f_register_response
     .row
       .col-sm-2
         .btn.btn-default.btn-primary#sign_up{:onclick=>'get_2fa_registration()'}=t('.sign_up')
 
 = javascript_include_tag 'u2f-api.js'
 
+- unless Rails.env.production?
+  = javascript_include_tag 'jsrsasign/jsrsasign-4.7.0-all-min.js'
+  = javascript_include_tag 'mock_yubikey'
+
 :coffeescript
   $('#user_login').focus()
-  @challenge = "#{@user.challenge}"
-  @app_id = "#{@app_id}"
+  @registerRequest = #{@registerRequest}
+  production_env = #{Rails.env.production?}
+  development_env = #{Rails.env.development?}
+  console.log "registerRequest: "+JSON.stringify(@registerRequest)
+
+  # typical response is:
+  #    {"registrationData":"BQT_k9eoMibtMnYpIFAvE18ZDzbeWu4i9CjYcmU5ZMZcosz_j7DG0i9jhJDHuZEJ861-KN71AiGbBLIMs01Nsn5aQCawHmdijltiBLCBnwZ8xPFBKId6rxIkf0irUtt4EVeI3UF2lLxw7i_aatakYj19RpgRaFv1VUxzKTi6O75xuFEwggJEMIIBLqADAgECAgR4wN8OMAsGCSqGSIb3DQEBCzAuMSwwKgYDVQQDEyNZdWJpY28gVTJGIFJvb3QgQ0EgU2VyaWFsIDQ1NzIwMDYzMTAgFw0xNDA4MDEwMDAwMDBaGA8yMDUwMDkwNDAwMDAwMFowKjEoMCYGA1UEAwwfWXViaWNvIFUyRiBFRSBTZXJpYWwgMjAyNTkwNTkzNDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABLW4cVyD_f4OoVxFd6yFjfSMF2_eh53K9Lg9QNMg8m-t5iX89_XIr9g1GPjbniHsCDsYRYDHF-xKRwuWim-6P2-jOzA5MCIGCSsGAQQBgsQKAgQVMS4zLjYuMS40LjEuNDE0ODIuMS4xMBMGCysGAQQBguUcAgEBBAQDAgUgMAsGCSqGSIb3DQEBCwOCAQEAPvar9kqRawv5lJON3JU04FRAAmhWeKcsQ6er5l2QZf9h9FHOijru2GaJ0ZC5UK8AelTRMe7wb-JrTqe7PjK3kgWl36dgBDRT40r4RMN81KhfjFwthw4KKLK37UQCQf2zeSsgdrDhivqbQy7u_CZYugkFxBskqTxuyLum1W8z6NZT189r1QFUVaJll0D33MUcwDFgnNA-ps3pOZ7KCHYykHY_tMjQD1aQaaElSQBq67BqIaIU5JmYN7Qp6B1-VtM6VJLdOhYcgpOVQIGqfu90nDpWPb3X26OVzEc-RGltQZGFwkN6yDrAZMHL5HIn_3obd8fV6gw2fUX2ML2ZjVmybjBGAiEA24IjQN9wDp8bg5pS6Idgg8rIZBh9UZ9LAAnrBqcJMzUCIQCcxTb1Zmq4w8Jdy1v4vpXssTUSrk4dm8CrcyWmJ9O1ew",
+  #    "version":"U2F_V2",
+  #    "challenge":"JCzFu9L9YF82wtGbYIWaLd-KDFt2iJvnzeb-0g7CEYM",
+  #    "appId":"https://oodb.railsplayground.net",
+  #    "clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZmluaXNoRW5yb2xsbWVudCIsImNoYWxsZW5nZSI6IkpDekZ1OUw5WUY4Mnd0R2JZSVdhTGQtS0RGdDJpSnZuemViLTBnN0NFWU0iLCJvcmlnaW4iOiJodHRwczovL29vZGIucmFpbHNwbGF5Z3JvdW5kLm5ldCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ"}
+  # where the challenge is copied from the u2f.register data
+  # format is described in https://fidoalliance.org/specs/fido-u2f-raw-message-formats-ps-20150514.pdf
+
+  valid = ->
+    true
 
   register_callback = (response)->
     console.log "2fa callback: "+JSON.stringify(response)
+    $('#user_u2f_register_response').val(JSON.stringify(response))
+    if valid()
+      $('#u2f_registration_form').submit()
 
-  opt_timeoutSeconds = 5
-
-  registerRequests = [{version: "U2F_V2" , challenge: challenge, appId: app_id }]
+  timeoutSeconds = 15
 
   registeredKeys = []
 
   @get_2fa_registration = ->
-    console.log "register with app_id: "+@app_id+" registerRequests: "+JSON.stringify(registerRequests)
-    u2f.register(@appId, registerRequests, registeredKeys, register_callback, opt_timeoutSeconds)
+    unless production_env || development_env
+      sender = ""
+      request =
+        appId : @registerRequest.appId
+        registerRequests : [@registerRequest]
+        type : 'u2f_register_request'
+      # it's a js mock of how the yubikey responds
+      @handleRegisterRequest(request,sender,register_callback)
+    else
+      u2f.register(@appId, [@registerRequest], registeredKeys, register_callback, timeoutSeconds)

@@ -23,7 +23,7 @@ FactoryGirl.define do
     trait :with_password do
       after(:create) do |user|
         user.update_attribute(:salt, '1641b615ad281759adf85cd5fbf17fcb7a3f7e87')
-        user.update_attribute(:activation_code, '9bb0db48971821563788e316b1fdd53dd99bc8ff')
+        user.update_attribute(:activation_code, Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join ))
         user.update_attribute(:activated_at, DateTime.new(2011,1,1))
         user.update_attribute(:crypted_password, '660030f1be7289571b0467b9195ff39471c60651')
         user

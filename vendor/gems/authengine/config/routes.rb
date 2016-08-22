@@ -27,7 +27,8 @@ Rails.application.routes.draw do
         collection do
           get 'edit_self'
 
-          post ':activation_code/activate' => 'users#activate'
+          #post ':activation_code/activate' => 'users#activate'
+          post ':activation_code/activate' => 'users#activate', :as => :register
         end
       end
       post '/send_change_password_email(/:user_id)' => "users#send_change_password_email", :as => :send_change_password_email
@@ -68,7 +69,7 @@ Rails.application.routes.draw do
         collection do
           get 'edit_self'
 
-          post ':activation_code/activate' => 'users#activate'
+          #post ':activation_code/activate' => 'users#activate', :as => :register
         end
       end
 
