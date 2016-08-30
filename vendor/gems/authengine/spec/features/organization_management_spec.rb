@@ -8,7 +8,7 @@ require 'async_helper'
 require 'role_presets_helper'
 require 'organization_presets_helper'
 
-feature "Manage organizations:" do
+feature "Manage organizations:", :js => true do
   #include ApplicationHelpers
   #include RolePresetsHelper
   include OrganizationPresetsHelper

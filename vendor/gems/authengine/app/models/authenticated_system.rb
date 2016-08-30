@@ -11,7 +11,8 @@ protected
   # Accesses the current user from the session.  Set it to nil if login fails
   # so that future calls do not hit the database.
   def current_user
-    @current_user ||= (login_from_session || login_from_basic_auth || login_from_cookie || nil)
+    #@current_user ||= (login_from_session || login_from_basic_auth || login_from_cookie || nil)
+    @current_user ||= (login_from_session || nil)
   end
 
   # Store the given user id in the session.
@@ -167,19 +168,19 @@ protected
   end
 
   # Called from #current_user.  Now, attempt to login by basic authentication information.
-  def login_from_basic_auth
-    authenticate_with_http_basic do |username, password|
-      self.current_user = User.authenticate(username, password)
-    end
-  end
+  #def login_from_basic_auth
+    #authenticate_with_http_basic do |username, password|
+      #self.current_user = User.authenticate(username, password)
+    #end
+  #end
 
   # Called from #current_user.  Finaly, attempt to login by an expiring token in the cookie.
-  def login_from_cookie
-    user = cookies[:auth_token] && User.find_by_remember_token(cookies[:auth_token])
-    if user && user.remember_token?
-      user.remember_me
-      cookies[:auth_token] = { :value => user.remember_token, :expires => user.remember_token_expires_at }
-      self.current_user = user
-    end
-  end
+  #def login_from_cookie
+    #user = cookies[:auth_token] && User.find_by_remember_token(cookies[:auth_token])
+    #if user && user.remember_token?
+      #user.remember_me
+      #cookies[:auth_token] = { :value => user.remember_token, :expires => user.remember_token_expires_at }
+      #self.current_user = user
+    #end
+  #end
 end

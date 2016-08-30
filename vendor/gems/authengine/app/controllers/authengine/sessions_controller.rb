@@ -11,8 +11,26 @@ class Authengine::SessionsController < ApplicationController
 
   # user logs in
   def create
-    logger.info "user logging in with #{params[:login]}"
-    authenticate_with_password(params[:login], params[:password])
+    respond_to do |format|
+      # user on the login page requests by ajax a challenge that they will
+      # sign to prove posession of the private key, corresponding with the
+      # public key associated with the account. User is selected
+      # using the username and password supplied
+      format.json do
+        key_handle, challenge = generate_challenge(params[:login])
+        if @failed_challenge_message.present?
+          render :plain => @failed_challenge_message, :status => 406
+        else
+          render :json => U2F::SignRequest.new(key_handle, challenge, APPLICATION_ID), :status => 200
+        end
+      end
+
+      # user submits login, password and signed challenge
+      format.html do
+        logger.info "user logging in with #{params[:login]}"
+        authenticate_and_login(params[:login], params[:password], params[:u2f_sign_response])
+      end
+    end
   end
 
   # user logs out
@@ -56,24 +74,30 @@ protected
     session[:role] = Marshal.dump SessionRole.new
   end
 
-  def authenticate_with_password(login, password)
-    user = User.authenticate(login, password)
+  # TODO should be a class method on User model
+  def generate_challenge(login)
+    User.find_and_generate_challenge(login)
+  rescue User::LoginNotFound
+    failed_challenge t('authengine.sessions.create.bad_credentials')
+  end
+
+  def authenticate_and_login(login, password, u2f_sign_response)
+    user = User.authenticate(login, password, u2f_sign_response)
     if user == nil
-      failed_login(t '.bad_credentials')
+      failed_login t('.bad_credentials')
     elsif user.activated_at.blank?
-      failed_login(t '.account_not_activated')
+      failed_login t('.account_not_activated')
     elsif user.enabled == false
-      failed_login(t '.account_disabled')
+      failed_login t('.account_disabled')
     else
-      self.current_user = user
-      session_role = SessionRole.new
-      session_role.add_roles(user.role_ids)
-      session[:role] = Marshal.dump(session_role)
-      successful_login
+      successful_login(user)
     end
   end
 
 private
+  def failed_challenge(message)
+    @failed_challenge_message = message
+  end
 
   def failed_login(message)
     logger.info "login failed with message: #{message}"
@@ -81,17 +105,18 @@ private
     render :action => 'new'
   end
 
-  def successful_login
+  def successful_login(user)
     # 'remember me' is not used in this application
     #if params[:remember_me] == "1"
       #self.current_user.remember_me
       #cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
     #end
-#   user is already logged-in
-    flash[:notice] = t '.success'
-    #parameters = ActionController::Parameters.new({:session_id => session[:session_id], :user_id => session[:user_id], :login_date => Time.now})
-    #Session.create_or_update(parameters.permit(:session_id, :user_id, :login_date))
+    self.current_user = user
+    session_role = SessionRole.new
+    session_role.add_roles(user.role_ids)
+    session[:role] = Marshal.dump(session_role)
     Session.create_or_update(:session_id => session[:session_id], :user_id => session[:user_id], :login_date => Time.now)
+    flash[:notice] = t('.success')
     return_to = session[:return_to]
     if return_to.nil?
       redirect_to home_path

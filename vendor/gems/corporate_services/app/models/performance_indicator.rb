@@ -1,4 +1,5 @@
 class PerformanceIndicator < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
   belongs_to :activity
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
@@ -72,15 +73,23 @@ class PerformanceIndicator < ActiveRecord::Base
   end
 
   def create_note_url
-    Rails.application.routes.url_helpers.corporate_services_performance_indicator_notes_path(:en,id)
+    corporate_services_performance_indicator_notes_path(:en,id)
   end
 
   def create_reminder_url
-    Rails.application.routes.url_helpers.corporate_services_performance_indicator_reminders_path(:en,id)
+    corporate_services_performance_indicator_reminders_path(:en,id)
   end
 
   def url
-    Rails.application.routes.url_helpers.corporate_services_activity_performance_indicator_path(:en,activity_id,id)
+    corporate_services_activity_performance_indicator_path(:en,activity_id,id)
+  end
+
+  def notable_url(notable_id)
+    corporate_services_performance_indicator_note_path('en',id,notable_id)
+  end
+
+  def remindable_url(remindable_id)
+    corporate_services_performance_indicator_reminder_path('en',id,remindable_id)
   end
 
   # to include this attribute in json

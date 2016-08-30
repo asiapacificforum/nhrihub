@@ -19,6 +19,19 @@ class User < ActiveRecord::Base
   after_save :forgotten_password_notify
   after_save :reset_password_notify
 
+  def self.find_by_password_reset_code(password_reset_code)
+    raise BlankResetCode if password_reset_code.blank?
+    find_by!(:password_reset_code => password_reset_code)
+  end
+
+  def register_request
+    u2f = U2F::U2F.new(APPLICATION_ID)
+    self.challenge = u2f.challenge
+    self.challenge_timestamp = DateTime.now.utc
+    save(:validate => false) # since it may not be valid at this point... there's no password
+    U2F::RegisterRequest.new(challenge,APPLICATION_ID).to_json
+  end
+
   def u2f_register_response=(json)
     response = U2F::RegisterResponse.load_from_json(json)
     self.public_key = response.public_key #base64 encoded
@@ -105,6 +118,7 @@ class User < ActiveRecord::Base
   # TODO in this application, users are trusted, but see how this should be implemented if users are not trusted
   #attr_accessible :login, :email, :password, :password_confirmation, :firstName, :lastName, :user_roles_attributes, :organization_id
 
+  class TokenError < StandardError; end
   class PermissionsNotConfigured < StandardError
     attr_reader :message
     def initialize(controller,action)
@@ -120,6 +134,8 @@ class User < ActiveRecord::Base
     end
   end
   class ResetCodeNotFound < StandardError; end
+  class BlankResetCode < StandardError; end
+  class LoginNotFound < StandardError; end
 
   def org_name
     organization && organization.name
@@ -158,9 +174,12 @@ class User < ActiveRecord::Base
     raise ArgumentError if activation_code.nil?
       user = find_by_activation_code(activation_code)
     raise ActivationCodeNotFound if !user
+    # TODO this (next) exception is raised on normal logins... it shouldn't be
+    # as a workaround the flash message has been changed to eliminate the word 'already'
+    # but this workaround means that the already active exception doesn't have a good error message
     raise AlreadyActivated.new(user) if user.active?
-      user.send(:activate!)
-      user
+    user.send(:activate!)
+    user
   end
 
   def self.find_with_activation_code(activation_code)
@@ -182,9 +201,9 @@ class User < ActiveRecord::Base
   end
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
-  def self.authenticate(login, password)
+  def self.authenticate(login, password, u2f_sign_response)
     u = where("login = ?", login).first
-    u && u.authenticated?(password) ? u : nil
+    u && u.authenticated?(password, u2f_sign_response) ? u : nil
   end
 
   # Encrypts some data with the salt.
@@ -197,10 +216,41 @@ class User < ActiveRecord::Base
     self.class.encrypt(password, salt)
   end
 
-  def authenticated?(password)
+  # Here it is! the two-factors being authenticated
+  def authenticated?(password, u2f_sign_response)
+    authenticated_password?(password) && authenticated_token?(u2f_sign_response)
+  end
+
+  def authenticated_token?(u2f_sign_response)
+    u2f = U2F::U2F.new(APPLICATION_ID)
+    sign_response = U2F::SignResponse.load_from_json(u2f_sign_response)
+    begin
+      # authenticate! generates exceptions for any failure condition
+      u2f.authenticate!(challenge, sign_response, Base64.urlsafe_decode64(public_key), 0)
+      true
+    rescue
+      false
+    end
+  end
+
+  def self.find_and_generate_challenge(login)
+    user = User.where("login = ?", login).first
+    raise LoginNotFound if user.nil?
+    user.generate_challenge
+  end
+
+  def generate_challenge
+    self.challenge = U2F::U2F.new(APPLICATION_ID).challenge
+    save(:validation => false)
+    # TODO if user does not have a public_key_handle -> generate error (exception?)
+    [public_key_handle, challenge]
+  end
+
+  def authenticated_password?(password)
     crypted_password == encrypt(password)
   end
 
+  #TODO eliminate remember_token everywhere!
   def remember_token?
     remember_token_expires_at && Time.now.utc < remember_token_expires_at
   end

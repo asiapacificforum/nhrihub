@@ -1,19 +1,18 @@
 require "rails_helper"
 require 'login_helpers'
 
-feature "Unregistered user tries to log in" do
-  scenario "navigation not available before user logs in" do
+feature "Unregistered user tries to log in", :js => true do
+  scenario "navigation not available before user logs in", :driver => :chrome do
     visit "/en"
     expect(page_heading).to eq "Please log in"
     expect(page).not_to have_selector(".nav")
   end
 
-  scenario "admin logs in" do
+  scenario "admin logs in", :driver => :chrome do
     visit "/en"
-
     fill_in "User name", :with => "admin"
     fill_in "Password", :with => "password"
-    click_button "Log in..."
+    page.find('#sign_up').click
 
     expect(flash_message).to have_text("Your username or password is incorrect.")
     expect(page).not_to have_selector(".nav")
@@ -21,26 +20,29 @@ feature "Unregistered user tries to log in" do
   end
 end
 
-feature "Registered user logs in with valid credentials" do
+feature "Registered user logs in with valid credentials", :js => true do
   include RegisteredUserHelper
   scenario "admin logs in" do
     visit "/en"
+    configure_keystore
 
     fill_in "User name", :with => "admin"
     fill_in "Password", :with => "password"
-    click_button "Log in..."
+    login_button.click
+    wait_for_authentication
 
     expect(flash_message).to have_text("Logged in successfully")
     expect(navigation_menu).to include("Admin")
     expect(navigation_menu).to include("Logout")
   end
 
-  scenario "staff member logs in" do
+  scenario "staff member logs in", :driver => :chrome do
     visit "/en"
+    configure_keystore
 
     fill_in "User name", :with => "staff"
     fill_in "Password", :with => "password"
-    click_button "Log in..."
+    login_button.click
 
     expect(flash_message).to have_text("Logged in successfully")
     expect(navigation_menu).not_to include("Admin")
@@ -48,25 +50,25 @@ feature "Registered user logs in with valid credentials" do
   end
 end
 
-feature "Registered user logs in with invalid credentials" do
+feature "Registered user logs in with invalid credentials", :js => true do
   include RegisteredUserHelper
-  scenario "enters bad password" do
+  scenario "enters bad password", :driver => :chrome do
     visit "/en"
 
     fill_in "User name", :with => "admin"
     fill_in "Password", :with => "badpassword"
-    click_button "Log in..."
+    login_button.click
 
     expect(flash_message).to have_text("Your username or password is incorrect.")
     expect(page_heading).to eq "Please log in"
   end
 
-  scenario "enters bad user name" do
+  scenario "enters bad user name", :driver => :chrome do
     visit "/en"
 
     fill_in "User name", :with => "notavaliduser"
     fill_in "Password", :with => "password"
-    click_button "Log in..."
+    login_button.click
 
     expect(flash_message).to have_text("Your username or password is incorrect.")
     expect(page_heading).to eq "Please log in"
@@ -74,9 +76,9 @@ feature "Registered user logs in with invalid credentials" do
   end
 end
 
-feature "User is not logged in but tries to access a page" do
+feature "User is not logged in but tries to access a page", :js => true do
   include RegisteredUserHelper
-  scenario "visit a protected page" do
+  scenario "visit a protected page", :driver => :chrome do
     visit "/en/nhri/icc"
     expect(page_heading).to eq "Please log in"
   end

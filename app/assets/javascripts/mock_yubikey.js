@@ -263,7 +263,7 @@ var handleRegisterRequest = function (request, sender, sendResponse) {
 
     var sessionID = getSessionIdFromRequest(request);
 
-    //safeToKeyStore(applicationId, keyHandle, keyPair);
+    safeToKeyStore(applicationId, keyHandle, keyPair);
 
     /*
      * fido-u2f-javascript-api-v1.0-rd-20140209.pdf ll. 175-182
@@ -287,9 +287,14 @@ var handleRegisterRequest = function (request, sender, sendResponse) {
  * @param request
  * @param sender
  * @param sendResponse
+ * raw_message_formats doc says request is: {challenge_parameter = sha256(clientData), version, keyhandle, application_parameter = sha256(appId)}
+ * javascript api doc says request is: {version, challenge, keyhandle, appId}
+ * this software assumes request = {signRequests : [signRequest]}, where signRequest = {keyhandle : kh, appId : ai}
+ * U2F gem format is {version, challenge, appId, keyHandle}
  */
 var handleSignRequest = function (request, sender, sendResponse) {
     "use strict";
+    // getKeyHandleFromRequest  = request.signRequests[0].keyHandle;
     if (!isValidKeyHandleForAppId(b64tohex(getKeyHandleFromRequest(request)), getApplicationIdFromRequest(request))) {
         sendResponse({
             errorCode: u2f.ErrorCodes.DEVICE_INELIGIBLE,
@@ -302,31 +307,38 @@ var handleSignRequest = function (request, sender, sendResponse) {
         var applicationIdHash = sha256Digest(applicationId);
         var sessionID = getSessionIdFromRequest(request);
         var challenge = getChallengeFromRequest(request);
+        // counter is stored by token and returned in signResponse
         var counter = getKeyByHandle(b64tohex(getKeyHandleFromRequest(request))).counter;
         var counterHex = counterPadding(counter);
+        var keyHandle = getKeyHandleFromRequest(request)
 
         var signature = signHex(getKeyByHandle(b64tohex(getKeyHandleFromRequest(request))).private, getSignSignatureBaseString(applicationIdHash, counterHex, clientDataHash));
-        
-        var sign = hextob64(USER_PRESENCE_BYTE + counterHex + signature);
-        
+
+        var b64_encoded_signature = hextob64(USER_PRESENCE_BYTE + counterHex + signature);
+        // console.log("clientData: "+clientData);
+        // console.log("clientDataHash: "+clientDataHash);
+        // console.log("applicationId: "+applicationId);
+        // console.log("applicationIdHash: "+applicationIdHash);
+        // console.log("sessionID: "+sessionID);
+        // console.log("challenge: "+challenge);
+        // console.log("counter: "+counter);
+        // console.log("counterHex: "+counterHex);
+        // console.log("keyHandle: "+keyHandle);
+        // console.log("signature: "+signature);
+        // console.log("b64_encoded_signature: "+b64_encoded_signature);
+
         /*
-         * fido-u2f-javascript-api-v1.0-rd-20140209.pdf ll.254 - 265
+         * fido-u2f-javascript-api-v1.0.pdf 4.2.2
          */
         sendResponse({
             // websafe-base64(client data)
-            bd : clientData,
+            clientData : utf8tob64(clientData),
 
             // websafe-base64(raw response from U2F device)
-            sign : sign,
+            signatureData : b64_encoded_signature,
 
-            // challenge originally passed to handleSignRequest
-            challenge : challenge,
-
-            // session id originally passed to handleSignRequest
-            sessionId : sessionID,
-
-            // application id originally passed to handleSignRequest
-            app_id : applicationId
+            // keyHandle originally passed to handleSignRequest
+            keyHandle : keyHandle,
         });
 
         if (counter >= 65535) {
@@ -513,7 +525,7 @@ var signHex = function (privateKey, message) {
     });
 
     sig.updateHex(message);
-    
+
     return sig.sign();
 };
 
@@ -647,7 +659,6 @@ var prepareChallengeSha256 = function (challenge, callback) {
 
 var generateKeyHandle = function () {
     "use strict";
-    //return stohex("dummy_key_handle");
     return stohex("bogus_" + new Date().getTime());
 };
 
@@ -714,18 +725,23 @@ var getSessionIdFromRequest = function (request) {
 
 var getClientDataStringFromRequest = function (request) {
     "use strict";
+    return JSON.stringify(getClientDataFromRequest(request))
+    }
+
+var getClientDataFromRequest = function (request) {
     var challenge, origin, typ
     switch (request.type) {
         case u2f.MessageTypes.U2F_REGISTER_REQUEST:
-            //return JSON.stringify(request.registerRequests[0].challenge);
             challenge = request.registerRequests[0].challenge;
             origin = request.registerRequests[0].appId;
             typ = 'navigator.id.finishEnrollment'
-            return JSON.stringify({typ : typ, challenge : challenge, origin : origin}) ;
+            return {typ : typ, challenge : challenge, origin : origin} ;
             break;
         case u2f.MessageTypes.U2F_SIGN_REQUEST:
-            //return JSON.stringify(request.signRequests[0].challenge);
-            return request.signRequests[0].challenge;
+            challenge = request.signRequests[0].challenge;
+            origin = request.signRequests[0].appId;
+            typ = 'navigator.id.getAssertion'
+            return {typ : typ, challenge : challenge, origin : origin} ;
             break;
         default:
             throw new Error("Invalid Request Type");
@@ -734,7 +750,7 @@ var getClientDataStringFromRequest = function (request) {
 };
 
 var getChallengeFromRequest = function (request) {
-    return getClientDataStringFromRequest(request).challenge;
+    return getClientDataFromRequest(request).challenge;
 };
 
 var getApplicationIdFromRequest = function (request) {

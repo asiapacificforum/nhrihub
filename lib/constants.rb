@@ -1,5 +1,5 @@
 # for the mailer
-SITE_URL = "www.ombudsman.gov.ws"
+SITE_URL = "oodb.railsplayground.net"
 APPLICATION_ID = "https://#{SITE_URL}"
 ADMIN_EMAIL = "support@#{SITE_URL}"
 APPLICATION_NAME = "M & E Database"

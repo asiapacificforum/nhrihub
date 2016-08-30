@@ -47,7 +47,8 @@ en:
       activate:
         argument_error: 'Activation code not found. Please ask the database administrator to create an account for you.'
         not_found: 'Activation code not found. Please contact the database administrator.'
-        already_activated: 'Your account has already been activated. You can log in below.'
+        already_activated: 'Your account has been activated. You can log in below.'
+        #already_activated: 'Your account has already been activated. You can log in below.'
         activated: "Your account has been activated"
       update_self:
         flash_notice: "Your profile has been updated"

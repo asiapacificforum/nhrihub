@@ -34,4 +34,8 @@ module UserManagementHelpers
     page.find('.btn#sign_up').click
     wait_for_ajax
   end
+
+  def submit_button
+    page.find('.btn#submit')
+  end
 end

@@ -2,7 +2,7 @@ require "rails_helper"
 require 'login_helpers'
 require 'navigation_helpers'
 
-feature "Manage users" do
+feature "Manage users", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   before do

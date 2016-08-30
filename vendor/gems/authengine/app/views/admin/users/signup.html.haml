@@ -37,7 +37,7 @@
   @registerRequest = #{@registerRequest}
   production_env = #{Rails.env.production?}
   development_env = #{Rails.env.development?}
-  console.log "registerRequest: "+JSON.stringify(@registerRequest)
+  # console.log "registerRequest: "+JSON.stringify(@registerRequest)
 
   # typical response is:
   #    {"registrationData":"BQT_k9eoMibtMnYpIFAvE18ZDzbeWu4i9CjYcmU5ZMZcosz_j7DG0i9jhJDHuZEJ861-KN71AiGbBLIMs01Nsn5aQCawHmdijltiBLCBnwZ8xPFBKId6rxIkf0irUtt4EVeI3UF2lLxw7i_aatakYj19RpgRaFv1VUxzKTi6O75xuFEwggJEMIIBLqADAgECAgR4wN8OMAsGCSqGSIb3DQEBCzAuMSwwKgYDVQQDEyNZdWJpY28gVTJGIFJvb3QgQ0EgU2VyaWFsIDQ1NzIwMDYzMTAgFw0xNDA4MDEwMDAwMDBaGA8yMDUwMDkwNDAwMDAwMFowKjEoMCYGA1UEAwwfWXViaWNvIFUyRiBFRSBTZXJpYWwgMjAyNTkwNTkzNDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABLW4cVyD_f4OoVxFd6yFjfSMF2_eh53K9Lg9QNMg8m-t5iX89_XIr9g1GPjbniHsCDsYRYDHF-xKRwuWim-6P2-jOzA5MCIGCSsGAQQBgsQKAgQVMS4zLjYuMS40LjEuNDE0ODIuMS4xMBMGCysGAQQBguUcAgEBBAQDAgUgMAsGCSqGSIb3DQEBCwOCAQEAPvar9kqRawv5lJON3JU04FRAAmhWeKcsQ6er5l2QZf9h9FHOijru2GaJ0ZC5UK8AelTRMe7wb-JrTqe7PjK3kgWl36dgBDRT40r4RMN81KhfjFwthw4KKLK37UQCQf2zeSsgdrDhivqbQy7u_CZYugkFxBskqTxuyLum1W8z6NZT189r1QFUVaJll0D33MUcwDFgnNA-ps3pOZ7KCHYykHY_tMjQD1aQaaElSQBq67BqIaIU5JmYN7Qp6B1-VtM6VJLdOhYcgpOVQIGqfu90nDpWPb3X26OVzEc-RGltQZGFwkN6yDrAZMHL5HIn_3obd8fV6gw2fUX2ML2ZjVmybjBGAiEA24IjQN9wDp8bg5pS6Idgg8rIZBh9UZ9LAAnrBqcJMzUCIQCcxTb1Zmq4w8Jdy1v4vpXssTUSrk4dm8CrcyWmJ9O1ew",
@@ -48,13 +48,16 @@
   # where the challenge is copied from the u2f.register data
   # format is described in https://fidoalliance.org/specs/fido-u2f-raw-message-formats-ps-20150514.pdf
 
-  valid = ->
-    true
+  valid = (registerResponse)->
+    token_error = !_.isUndefined(registerResponse.errorCode)
+    if token_error
+      $('.message_block').append("<ul class='error'><li>token error</li></ul>")
+    !token_error
 
-  register_callback = (response)->
-    console.log "2fa callback: "+JSON.stringify(response)
-    $('#user_u2f_register_response').val(JSON.stringify(response))
-    if valid()
+  register_callback = (registerResponse)->
+    # console.log "2fa callback: "+JSON.stringify(registerResponse)
+    $('#user_u2f_register_response').val(JSON.stringify(registerResponse))
+    if valid(registerResponse)
       $('#u2f_registration_form').submit()
 
   timeoutSeconds = 15
@@ -62,7 +65,7 @@
   registeredKeys = []
 
   @get_2fa_registration = ->
-    unless production_env || development_env
+    unless production_env
       sender = ""
       request =
         appId : @registerRequest.appId

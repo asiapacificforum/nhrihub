@@ -59,16 +59,12 @@ class Admin::UsersController < ApplicationController
     render :template => 'users/edit'
   end
 
-# account was created by admin and now user has entered and submitted username/password, with u2f registration data
+  # account was created by admin and now user has entered and submitted username/password, with u2f registration data,
+  # here we capture the user's public_key and public_key_handle
   def activate
     # TODO must remember to reset the session[:activation_code]
-    # looks as if setting current user (next line) was causing the user to be
-    # logged-in after activation
     user = User.find_and_activate!(params[:activation_code])
-    if user.
-         update_attributes(params.require(:user).
-         slice(:login, :email, :password, :password_confirmation, :u2f_register_response).
-         permit(:login, :email, :password, :password_confirmation, :u2f_register_response))
+    if user.update_attributes(activation_params)
       flash[:notice] =t('admin.users.activate.activated')
       redirect_to root_path
     else
@@ -85,6 +81,26 @@ class Admin::UsersController < ApplicationController
     flash[:notice] = t('.already_activated')
     redirect_to login_path
   end
+
+  # after a password reset, show a form in which a user enters new password values, login not required
+  # authentication is based on password_reset_code, cf. original signup based on activation code.
+  # This is the same as the activate method (above), but in the case of password reset, user is already active
+  # and login name is not changed, only password.
+  # response is handled by the admin/users#change_password action
+  # new_password/change_password is analogous to signup/activate
+  def new_password
+    password_reset_code = params[:password_reset_code]
+    @user = User.find_by_password_reset_code(password_reset_code)
+    @registerRequest = @user.register_request
+
+  rescue User::BlankResetCode
+    flash[:notice] = t('.flash_notice.invalid')
+    redirect_to root_path
+  rescue ActiveRecord::RecordNotFound
+    flash[:notice] = t('.flash_notice.not_found')
+    redirect_to root_path
+  end
+
 
   def update_self
     @user = User.find(current_user.id)
@@ -128,15 +144,11 @@ class Admin::UsersController < ApplicationController
     redirect_to admin_users_path
   end
 
+  # we present a form for the user to enter login name and password
+  # also register the user's token
   def signup
     @user = User.find(params[:id])
-    u2f = U2F::U2F.new(APPLICATION_ID)
-    @user.challenge = u2f.challenge
-    @user.challenge_timestamp = DateTime.now.utc
-    @user.save(:validate => false) # since it's not valid at this point... there's no password
-    #@app_id = Rails.env.development? ? "http://localhost:3000" : "https://oodb.railsplayground.net"
-    #@app_id = "https://oodb.railsplayground.net"
-    @registerRequest = U2F::RegisterRequest.new(@user.challenge,APPLICATION_ID).to_json
+    @registerRequest = @user.register_request
   end
 
   # when a logged-in admin clicks "reset password"
@@ -153,33 +165,14 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-  # after a password reset
-  # show a form in which
-  # a user enters new password values,
-  # login not required
-  def new_password
-    password_reset_code = params[:password_reset_code]
-    if password_reset_code.nil?
-      flash[:notice] = t('.flash_notice.invalid')
-      redirect_to root_path
-    else
-      @user = User.find_by_password_reset_code(password_reset_code)
-      if @user.nil?
-        flash[:notice] = t('.flash_notice.not_found')
-        redirect_to root_path
-      end
-    end
-  end
-
   # new password values have been entered and we're going to save them here
   def change_password
     password_reset_code = params[:password_reset_code]
     raise User::ArgumentError if password_reset_code.nil?
 
     @user = User.find_by_password_reset_code(password_reset_code)
-    raise User::ResetCodeNotFound if @user.nil?
 
-    if @user.update_attributes(params.require(:user).permit(:password, :password_confirmation))
+    if @user.update_attributes(params.require(:user).permit(:password, :password_confirmation, :u2f_register_response))
       flash[:notice] = t('.flash_notice.no_errors')
       redirect_to root_path
     else
@@ -189,7 +182,7 @@ class Admin::UsersController < ApplicationController
     rescue User::ArgumentError
       flash[:notice] = t('.flash_notice.invalid')
       redirect_to root_path
-    rescue User::ResetCodeNotFound
+    rescue ActiveRecord::RecordNotFound
       flash[:notice] = t('.flash_notice.not_found')
       redirect_to root_path
   end
@@ -206,6 +199,12 @@ protected
   end
 
 private
+
+  def activation_params
+    params.require(:user).
+             slice(:login, :email, :password, :password_confirmation, :u2f_register_response).
+             permit(:login, :email, :password, :password_confirmation, :u2f_register_response)
+  end
 
   def user_params
     attrs = [ :email,

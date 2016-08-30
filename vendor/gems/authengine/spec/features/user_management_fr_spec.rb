@@ -2,7 +2,7 @@ require "rails_helper"
 require 'login_helpers'
 require 'navigation_helpers'
 
-feature "Manage users -- French translation" do
+feature "Manage users -- French translation", :js => true do
   include LoggedInFrAdminUserHelper # sets up logged in french admin user
   include NavigationHelpers
   before do
