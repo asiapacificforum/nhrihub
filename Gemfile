@@ -50,7 +50,6 @@ end
 
 # Use debugger
 
-gem 'authengine', :path => 'vendor/gems/authengine'
 #gem 'haml'
 gem 'haml-rails'
 
@@ -93,6 +92,7 @@ gem "capistrano-linked-files"
 gem "message_block"
 
 ### NHRI Modules:
+gem 'authengine', :path => 'vendor/gems/authengine'
 gem 'corporate_services', :path => 'vendor/gems/corporate_services'
 gem 'outreach_media', :path => 'vendor/gems/outreach_media'
 gem 'nhri', :path => 'vendor/gems/nhri'

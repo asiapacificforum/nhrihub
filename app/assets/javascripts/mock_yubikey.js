@@ -283,6 +283,24 @@ var handleRegisterRequest = function (request, sender, sendResponse) {
 };
 
 /**
+ * Wrapper for handleRegisterRequest, for compliance with
+ * js-api defined in https://developers.yubico.com/U2F/Protocol_details/fido-u2f-javascript-api-v1.0.pdf
+ * @param appId
+ * @param registerRequest
+ * @param registeredKeys
+ * @param register_callback
+ * @param timeoutSeconds
+ */
+u2f.register = function (appId, registerRequests, registeredKeys, register_callback, timeoutSeconds) {
+  request = {
+    appId : appId,
+    registerRequests : registerRequests,
+    type : 'u2f_register_request',
+  };
+  handleRegisterRequest(request, "", register_callback);
+};
+
+/**
  * Handles a sign request
  * @param request
  * @param sender
@@ -349,6 +367,23 @@ var handleSignRequest = function (request, sender, sendResponse) {
 
 
     }
+};
+
+/*
+ * a wrapper around handleSignRequest
+ * conforming to js-api defined in
+ * https://developers.yubico.com/U2F/Protocol_details/fido-u2f-javascript-api-v1.0.pdf
+ * @param signRequests
+ * @param signRequestCallback
+ * @param opt_timeout_seconds
+ */
+u2f.sign = function(signRequests, signRequestCallback, opt_timeout_seconds){
+  request = {
+    appId : signRequests[0].appId,
+    signRequests : signRequests,
+    type : 'u2f_sign_request',
+  };
+  handleSignRequest(request, "", signRequestCallback);
 };
 
 /**

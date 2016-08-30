@@ -17,7 +17,11 @@
           .btn.btn-default.btn-primary#sign_up{:onclick=>'send_user_params()'}=t('.login')
         %td
 
+- if Rails.env.production?
+  = javascript_include_tag 'u2f-api.js'
+
 - unless Rails.env.production?
+  // cannot use yubikey in development as it requires https
   = javascript_include_tag 'jsrsasign/jsrsasign-4.7.0-all-min.js'
   = javascript_include_tag 'mock_yubikey'
 
@@ -27,11 +31,6 @@
       $('.message_block').empty()
     $('#login').on('keydown',remove_flash)
     $('#password').on('keydown',remove_flash)
-
-  production_env = #{Rails.env.production?}
-  development_env = #{Rails.env.development?}
-  test_env = #{Rails.env.test?}
-  phantom_env = navigator.userAgent.match(/PhantomJS/)
 
   @send_user_params = ->
     @authentication_pending = 1
@@ -47,38 +46,7 @@
   opt_timeout_seconds = 15
 
   u2f_challenge = (signRequest, status, jqxhr)->
-    # console.log "challenge received: "+JSON.stringify(signRequest)
-    # {"version":"U2F_V2","challenge":"IojmbLXFMm35XGADeURevPU9s-IGJJAWMSPNDxCBwZ8","appId":"https://oodb.railsplayground.net","keyHandle":null}
-    if development_env
-      sender = ""
-      request =
-        #appId : signRequest.appId
-        appId : "https://oodb.railsplayground.net"
-        signRequests : [signRequest]
-        type : 'u2f_sign_request'
-      # it's a js mock of how the yubikey responds
-      handleSignRequest(request, sender, signRequestCallback)
-    if test_env && navigator.userAgent.match(/Chrome/)
-      sender = ""
-      request =
-        #appId : signRequest.appId
-        appId : "https://oodb.railsplayground.net"
-        signRequests : [signRequest]
-        type : 'u2f_sign_request'
-      # it's a js mock of how the yubikey responds
-      handleSignRequest(request, sender, signRequestCallback)
-    else if phantom_env # test environment with phantomjs headless browser TODO SECURITY VULNERABILITY... this MUST be done on the server not the client
-      sender = ""
-      request =
-        #appId : signRequest.appId
-        appId : "https://oodb.railsplayground.net"
-        signRequests : [signRequest]
-        type : 'u2f_sign_request'
-      # it's a js mock of how the yubikey responds
-      handleSignRequest(request, sender, signRequestCallback)
-    else
-      # javascript api to the real chrome u2f interface
-      u2f.sign([signRequest], signRequestCallback, opt_timeout_seconds)
+    u2f.sign([signRequest], signRequestCallback, opt_timeout_seconds)
 
   signRequestCallback = (signResponse)->
     $('#u2f_sign_response').val(JSON.stringify(signResponse))
