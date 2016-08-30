@@ -29,6 +29,13 @@ The url format for translated versions are (e.g.) your_domain/fr/admin/users.
 The default locale is 'en', a different default may be configured within the config/application.rb file, as indicated by the notes within that file.
 Page titles automatically default to the text in the i18n translation for the page .heading key, unless a translation for .title is provided.
 
+## Security
+Two-factor authentication is supported, using the [emerging FIDO standard](https://fidoalliance.org/). The second authentication factor is provided by the [Yubico FIDO U2F Security Key](https://www.yubico.com/products/yubikey-hardware/fido-u2f-security-key).
+
+At the this time (September 2016), only the Chrome browser supports this protocol, therefore this is the requirement for this application. Furthermore, the https transport layer protocol is required, necessitating a public-key certificate on the server, issued by a Chrome-recognized certification authority. Future support in other browsers has been announced.
+
+For convenience, the [letsencrypt_plugin](https://github.com/lgromanowski/letsencrypt-plugin) is bundled with the application, facilitating a command-line certificate request to the [Let's Encrypt](https://letsencrypt.org/) certification authority API. However there is no requirement to use Let's Encrypt certificates.
+
 ## Configuration
 email
 app-specific constants (orgname etc)
