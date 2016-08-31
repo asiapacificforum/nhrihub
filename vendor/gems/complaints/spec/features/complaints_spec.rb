@@ -381,6 +381,7 @@ feature "complaints index", :js => true do
       #check_basis(:special_investigations_unit, "Unreasonable delay")
     end
     edit_cancel
+    sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
     edit_complaint
     within first_complaint do
       expect(page.find('#complainant').value).to eq original_complaint.complainant
@@ -426,6 +427,7 @@ feature "complaints index", :js => true do
     add_complaint
     expect(page.evaluate_script("_.chain(complaints.findAllComponents('complaint')).map(function(c){return c.get('editing')}).filter(function(c){return c}).value().length")).to eq 0
     cancel_add
+    sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
     edit_first_complaint
     within first_complaint do
       expect(page.find('#complainant').value).to eq original_complaint.complainant

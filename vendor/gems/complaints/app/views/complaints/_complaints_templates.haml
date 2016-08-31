@@ -466,7 +466,7 @@
               .no_edit.in
                 %span.complainant_village {{ village }}
               .edit
-                %input.form-control#village{:value => '{{village}}', 'on-change'=>"remove_attribute_error('village')"}
+                %input.form-control#village{:value => '{{village}}', 'on-keydown'=>"remove_attribute_error('village')"}
                 %span.help-block.error#village_error= t('.village_error_message')
       .row.collapse.expanded_info
         .col-md-7.col-md-offset-2{'data-toggle'=>:edit}

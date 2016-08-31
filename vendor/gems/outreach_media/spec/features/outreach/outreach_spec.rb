@@ -328,6 +328,7 @@ feature "when there are existing outreach events", :js => true do
       fill_in('people_affected', :with => " 100000 ")
       expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click; wait_for_ajax}.not_to change{OutreachEvent.first.title}
       expect(page.all("#outreach_events .outreach_event .basic_info .title").first.text).to eq original_outreach_event.title
+      sleep(0.3) # seems to be necessary for chrome
       expand_all_panels
       expect(areas).to include "Human Rights"
       expect(areas).not_to include "Good Governance"

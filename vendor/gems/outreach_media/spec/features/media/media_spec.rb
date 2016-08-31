@@ -323,6 +323,7 @@ feature "when there are existing articles", :js => true do
       select('4: Serious', :from => 'Violation severity')
       expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click; wait_for_ajax}.not_to change{MediaAppearance.first.title}
       expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq original_media_appearance.title
+      sleep(0.3) # seems to be required for test passing in chrome
       expand_all_panels
       expect(areas).to include "Human Rights"
       expect(areas).not_to include "Good Governance"

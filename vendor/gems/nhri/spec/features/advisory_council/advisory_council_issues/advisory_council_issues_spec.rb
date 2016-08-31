@@ -306,6 +306,7 @@ feature "when there are existing articles", :js => true do
       select('4: Serious', :from => 'Violation severity')
       expect{page.execute_script("scrollTo(0,0)"); edit_cancel.click}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.title}
       expect(page.all("#advisory_council_issues .advisory_council_issue .basic_info .title").first.text).to eq original_advisory_council_issue.title
+      sleep(0.3) # seems to be required for proper operation in chrome
       expand_all_panels
       expect(areas).to include "Human Rights"
       expect(areas).not_to include "Good Governance"
