@@ -31,7 +31,8 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml',
                                                  'config/locales/site_specific/en.yml',
                                                  'config/locales/site_specific/fr.yml',
                                                  'key/keyfile.pem',
-                                                 'config/letsencrypt_plugin.yml')
+                                                 'config/letsencrypt_plugin.yml',
+                                                 'config/env.yml')
 
 # Default value for linked_dirs is []
 # set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')

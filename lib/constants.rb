@@ -1,4 +1,5 @@
 # for the mailer
+TWO_FACTOR_AUTHENTICATION = 'enabled'
 SITE_URL = "oodb.railsplayground.net"
 APPLICATION_ID = "https://#{SITE_URL}"
 ADMIN_EMAIL = "support@#{SITE_URL}"

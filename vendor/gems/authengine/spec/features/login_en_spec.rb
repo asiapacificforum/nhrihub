@@ -21,32 +21,73 @@ feature "Unregistered user tries to log in", :js => true do
 end
 
 feature "Registered user logs in with valid credentials", :js => true do
-  include RegisteredUserHelper
-  scenario "admin logs in" do
-    visit "/en"
-    configure_keystore
+  context "two factor authentication is required" do
+    include RegisteredUserHelper
+    before do
+      allow(ENV).to receive(:fetch)
+      allow(ENV).to receive(:fetch).with("two_factor_authentication").and_return("enabled")
+    end
 
-    fill_in "User name", :with => "admin"
-    fill_in "Password", :with => "password"
-    login_button.click
-    wait_for_authentication
+    scenario "admin logs in" do
+      visit "/en"
+      configure_keystore
 
-    expect(flash_message).to have_text("Logged in successfully")
-    expect(navigation_menu).to include("Admin")
-    expect(navigation_menu).to include("Logout")
+      fill_in "User name", :with => "admin"
+      fill_in "Password", :with => "password"
+      login_button.click
+      wait_for_authentication
+
+      expect(flash_message).to have_text("Logged in successfully")
+      expect(navigation_menu).to include("Admin")
+      expect(navigation_menu).to include("Logout")
+    end
+
+    scenario "staff member logs in", :driver => :chrome do
+      visit "/en"
+      configure_keystore
+
+      fill_in "User name", :with => "staff"
+      fill_in "Password", :with => "password"
+      login_button.click
+
+      expect(flash_message).to have_text("Logged in successfully")
+      expect(navigation_menu).not_to include("Admin")
+      expect(navigation_menu).to include("Logout")
+    end
   end
 
-  scenario "staff member logs in", :driver => :chrome do
-    visit "/en"
-    configure_keystore
+  context "two factor authentication is disabled" do
+    include RegisteredUserHelper
+    before do
+      allow(ENV).to receive(:fetch)
+      allow(ENV).to receive(:fetch).with("two_factor_authentication").and_return("disabled")
+      remove_user_two_factor_authentication_credentials('admin')
+      remove_user_two_factor_authentication_credentials('staff')
+    end
 
-    fill_in "User name", :with => "staff"
-    fill_in "Password", :with => "password"
-    login_button.click
+    scenario "admin logs in" do
+      visit "/en"
 
-    expect(flash_message).to have_text("Logged in successfully")
-    expect(navigation_menu).not_to include("Admin")
-    expect(navigation_menu).to include("Logout")
+      fill_in "User name", :with => "admin"
+      fill_in "Password", :with => "password"
+      login_button.click
+
+      expect(flash_message).to have_text("Logged in successfully")
+      expect(navigation_menu).to include("Admin")
+      expect(navigation_menu).to include("Logout")
+    end
+
+    scenario "staff member logs in", :driver => :chrome do
+      visit "/en"
+
+      fill_in "User name", :with => "staff"
+      fill_in "Password", :with => "password"
+      login_button.click
+
+      expect(flash_message).to have_text("Logged in successfully")
+      expect(navigation_menu).not_to include("Admin")
+      expect(navigation_menu).to include("Logout")
+    end
   end
 end
 

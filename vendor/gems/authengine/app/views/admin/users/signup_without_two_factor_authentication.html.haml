@@ -1,0 +1,32 @@
+= message_block
+- scope = 'admin.users.signup'
+
+%h1=t('heading', :firstName => @user.firstName, :lastName => @user.lastName, :app_name => "#{APPLICATION_NAME || 'database'}", :scope => scope)
+
+= form_for :user, :url => register_admin_users_path(session[:activation_code]), :method=>:post, :html => {:class => "form-horizontal", :id => :u2f_registration_form} do |f|
+  .user_info.form-horizontal
+    .form-group
+      .col-sm-3.control-label{:for => :login}=t('select_name', :scope => scope)
+      .col-sm-4
+        = f.text_field :login, :class => 'form-control'
+    .form-group
+      .col-sm-3.control-label{:for => :email}=t('your_email', :scope => scope)
+      .col-sm-4
+        = f.text_field :email, :class => 'form-control'
+    .form-group
+      .col-sm-3.control-label{:for => :password}=t('select_password', :scope => scope)
+      .col-sm-4
+        = f.password_field :password, :class => 'form-control'
+    .form-group
+      .col-sm-3.control-label{:for => :password_confirmation}=t('re_enter', :scope => scope)
+      .col-sm-4
+        = f.password_field :password_confirmation, :class => 'form-control'
+    .row
+      .col-sm-2
+        .btn.btn-default.btn-primary#sign_up{:onclick=>'submit_form()'}=t('sign_up', :scope => scope)
+
+:coffeescript
+  $('#user_login').focus()
+
+  @submit_form = ->
+    $('#u2f_registration_form').submit()

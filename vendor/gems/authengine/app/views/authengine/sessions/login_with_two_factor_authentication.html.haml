@@ -1,20 +1,21 @@
 - focus('login')
+- scope = 'authengine.sessions.new'
 = message_block
 - unless logged_in?
-  %h1=t '.heading'
+  %h1=t('heading', :scope => scope)
   =form_tag authengine_sessions_path do
     %table.table{:style => 'width:300px'}
       %tr
-        %td= label_tag :login, t(".user_name")
+        %td= label_tag :login, t("user_name", :scope => scope)
         %td=text_field_tag "login"
       %tr
-        %td= label_tag :password, t(".password")
+        %td= label_tag :password, t("password", :scope => scope)
         %td
           =password_field_tag "password"
           =hidden_field_tag :u2f_sign_response
       %tr
         %td
-          .btn.btn-default.btn-primary#sign_up{:onclick=>'send_user_params()'}=t('.login')
+          .btn.btn-default.btn-primary#sign_up{:onclick=>'send_user_params()'}=t('login', :scope => scope)
         %td
 
 - if Rails.env.production?

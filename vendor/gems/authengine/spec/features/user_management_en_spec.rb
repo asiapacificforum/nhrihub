@@ -155,36 +155,65 @@ end
 feature "user account activation", :js => true do
   include UnactivatedUserHelpers # creates unactivated user
   include UserManagementHelpers
-  scenario "user activates account by clicking url in registration email" do
-    url = email_activation_link
-    visit(url)
-    expect(page_heading).to match /Welcome #{User.last.first_last_name} to the M & E Database/
-    fill_in(:user_login, :with => "norm")
-    fill_in(:user_password, :with => "sekret")
-    fill_in(:user_password_confirmation, :with => "sekret")
-    base64_strict = /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/
-    base64_urlsafe = /^(?:[A-Za-z0-9+\/])*?$/
-    expect{ signup }.to change{ User.last.crypted_password }.from(nil).to(/[a-f0-9]{40}/).
-                                                    and change{ User.last.salt }.from(nil).to(/[a-f0-9]{40}/).
-                                                    and change{ User.last.public_key }.from(nil).to(base64_strict).
-                                                    and change{ User.last.public_key_handle }.from(nil).to(base64_urlsafe)
-    #email = ActionMailer::Base.deliveries.last
-    expect(flash_message).to have_text("Your account has been activated")
-    expect(page_heading).to eq 'Please log in'
-    # not normal action, but we test it anyway, user clicks the activation link again
-    visit(url)
-    #this is what the message SHOULD say TODO, fix this
-    #expect(flash_message).to eq 'Your account has already been activated. You can log in below.'
-    expect(flash_message).to eq 'Your account has been activated. You can log in below.'
-    expect(page_heading).to eq 'Please log in'
-    # not normal action, but we test it anyway, user clicks the activation link again
-    url_without_activation_code = url.gsub(/[^\/]*$/,'')
-    visit(url_without_activation_code )
-    expect(flash_message).to eq 'Activation code not found. Please ask the database administrator to create an account for you.'
-    expect(page_heading).to eq 'Please log in'
-    url_with_wrong_activation_code = url.gsub(/[^\/]*$/,'abc123')
-    visit url_with_wrong_activation_code
-    expect(flash_message).to eq 'Activation code not found. Please contact the database administrator.'
-    expect(page_heading).to eq 'Please log in'
+  context "environment variable requires 2-factor authentication" do
+    before do
+      allow(ENV).to receive(:fetch)
+      allow(ENV).to receive(:fetch).with("two_factor_authentication").and_return("enabled")
+    end
+
+    scenario "user activates account by clicking url in registration email" do
+      url = email_activation_link
+      visit(url)
+      expect(page_heading).to match /Welcome #{User.last.first_last_name} to the M & E Database/
+      fill_in(:user_login, :with => "norm")
+      fill_in(:user_password, :with => "sekret")
+      fill_in(:user_password_confirmation, :with => "sekret")
+      base64_strict = /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/
+      base64_urlsafe = /^(?:[A-Za-z0-9+\/])*?$/
+      expect{ signup }.to change{ User.last.crypted_password }.from(nil).to(/[a-f0-9]{40}/).
+                                                      and change{ User.last.salt }.from(nil).to(/[a-f0-9]{40}/).
+                                                      and change{ User.last.public_key }.from(nil).to(base64_strict).
+                                                      and change{ User.last.public_key_handle }.from(nil).to(base64_urlsafe)
+      #email = ActionMailer::Base.deliveries.last
+      expect(flash_message).to have_text("Your account has been activated")
+      expect(page_heading).to eq 'Please log in'
+      # not normal action, but we test it anyway, user clicks the activation link again
+      visit(url)
+      #this is what the message SHOULD say TODO, fix this
+      #expect(flash_message).to eq 'Your account has already been activated. You can log in below.'
+      expect(flash_message).to eq 'Your account has been activated. You can log in below.'
+      expect(page_heading).to eq 'Please log in'
+      # not normal action, but we test it anyway, user clicks the activation link again
+      url_without_activation_code = url.gsub(/[^\/]*$/,'')
+      visit(url_without_activation_code )
+      expect(flash_message).to eq 'Activation code not found. Please ask the database administrator to create an account for you.'
+      expect(page_heading).to eq 'Please log in'
+      url_with_wrong_activation_code = url.gsub(/[^\/]*$/,'abc123')
+      visit url_with_wrong_activation_code
+      expect(flash_message).to eq 'Activation code not found. Please contact the database administrator.'
+      expect(page_heading).to eq 'Please log in'
+    end
+  end
+
+  context "environment variable disables 2-factor authentication" do
+    before do
+      allow(ENV).to receive(:fetch)
+      allow(ENV).to receive(:fetch).with("two_factor_authentication").and_return("disabled")
+    end
+
+    scenario "user activates account by clicking url in registration email" do
+      url = email_activation_link
+      visit(url)
+      expect(page_heading).to match /Welcome #{User.last.first_last_name} to the M & E Database/
+      fill_in(:user_login, :with => "norm")
+      fill_in(:user_password, :with => "sekret")
+      fill_in(:user_password_confirmation, :with => "sekret")
+      expect{ signup }.to change{ User.last.crypted_password }.from(nil).to(/[a-f0-9]{40}/).
+                      and change{ User.last.salt }.from(nil).to(/[a-f0-9]{40}/)
+      expect( User.last.public_key ).to be_nil
+      expect( User.last.public_key_handle ).to be_nil
+      expect(flash_message).to have_text("Your account has been activated")
+      expect(page_heading).to eq 'Please log in'
+    end
   end
 end

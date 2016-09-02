@@ -1,3 +1,4 @@
+//Source: https://github.com/google/u2f-ref-code/blob/master/u2f-gae-demo/war/js/u2f-api.js
 //Copyright 2014-2015 Google Inc. All rights reserved.
 
 //Use of this source code is governed by a BSD-style

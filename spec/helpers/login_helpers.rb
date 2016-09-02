@@ -11,6 +11,11 @@ module RegisteredUserHelper
     assign_permissions(staff, 'staff', staff_roles)
   end
 
+  def remove_user_two_factor_authentication_credentials(user)
+    user = User.where(:login => user).first
+    user.update_attributes(:public_key => nil, :public_key_handle => nil)
+  end
+
   def login_button
     page.find('.btn#sign_up')
   end

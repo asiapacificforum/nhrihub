@@ -149,6 +149,10 @@ class Admin::UsersController < ApplicationController
   def signup
     @user = User.find(params[:id])
     @registerRequest = @user.register_request
+    # depends on two_factor_authentication configuration
+    # it's for convenience, when we're running a demo and
+    # tokens are not possible, for example
+    render signup_template
   end
 
   # when a logged-in admin clicks "reset password"
@@ -199,6 +203,18 @@ protected
   end
 
 private
+  def signup_template
+    if two_factor_authentication_required?
+      'signup_with_two_factor_authentication'
+    else
+      'signup_without_two_factor_authentication'
+    end
+  end
+
+  def two_factor_authentication_required?
+    ENV.fetch("two_factor_authentication").blank? ||
+      ENV.fetch("two_factor_authentication") == 'enabled'
+  end
 
   def activation_params
     params.require(:user).

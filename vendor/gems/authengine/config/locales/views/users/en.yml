@@ -23,7 +23,7 @@ en:
         register_token: 'register access token'
         delete_confirm: 'are you sure you want to delete '
         no_prev: 'no previous login'
-      # partial
+      # view
       signup:
         heading: "Welcome %{firstName} %{lastName} to the %{app_name}"
         select_name: "Select a login name:"

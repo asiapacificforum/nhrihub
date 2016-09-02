@@ -36,6 +36,8 @@ At the this time (September 2016), only the Chrome browser supports this protoco
 
 For convenience, the [letsencrypt_plugin](https://github.com/lgromanowski/letsencrypt-plugin) is bundled with the application, facilitating a command-line certificate request to the [Let's Encrypt](https://letsencrypt.org/) certification authority API. However there is no requirement to use Let's Encrypt certificates.
 
+In some scenarios it is desirable to temporarily, or even permanently, disable the two-factor authentication feature. This is achieved by configuration of an environment variable from the config/env.yml file. This file is symlinked to the file of the same name in the shared/config directory in the capistrano file structure. If the file does not exist, two-factor authentication defaults to "enabled".
+
 ## Configuration
 email
 app-specific constants (orgname etc)
