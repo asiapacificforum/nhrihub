@@ -91,10 +91,66 @@ feature "Registered user logs in with valid credentials", :js => true do
   end
 end
 
+feature "user logs in", :js => true do
+  include RegisteredUserHelper
+
+  context "without registering their token" do
+    before do
+      User.where(:login => 'admin').first.update_attributes(:public_key_handle => nil)
+    end
+
+    scenario "admin logs in" do
+      visit "/en"
+
+      fill_in "User name", :with => "admin"
+      fill_in "Password", :with => "password"
+      login_button.click
+      sleep(0.1) # javascript renders the flash message
+
+      expect(flash_message).to eq "You must have a registered key token to log in"
+    end
+  end
+
+  context "without activating their account" do
+    before do
+      User.where(:login => 'admin').first.update_attributes(:activated_at => nil)
+    end
+
+    scenario "admin logs in" do
+      visit "/en"
+
+      fill_in "User name", :with => "admin"
+      fill_in "Password", :with => "password"
+      login_button.click
+      sleep(0.1) # javascript renders the flash message
+
+      expect(flash_message).to eq "Your account is not active, please check your email for the activation code."
+    end
+  end
+
+  context "when their account has been disabled" do
+    before do
+      User.where(:login => 'admin').first.update_attributes(:enabled => false)
+    end
+
+    scenario "admin logs in" do
+      visit "/en"
+
+      fill_in "User name", :with => "admin"
+      fill_in "Password", :with => "password"
+      login_button.click
+      sleep(0.1) # javascript renders the flash message
+
+      expect(flash_message).to eq "Your account has been disabled, please contact administrator."
+    end
+  end
+end
+
 feature "Registered user logs in with invalid credentials", :js => true do
   include RegisteredUserHelper
   scenario "enters bad password", :driver => :chrome do
     visit "/en"
+    configure_keystore
 
     fill_in "User name", :with => "admin"
     fill_in "Password", :with => "badpassword"

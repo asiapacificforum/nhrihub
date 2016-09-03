@@ -81,21 +81,15 @@ protected
   # TODO should be a class method on User model
   def generate_challenge(login)
     User.find_and_generate_challenge(login)
-  rescue User::LoginNotFound
-    failed_challenge t('authengine.sessions.create.bad_credentials')
+  rescue User::AuthenticationError => message
+    failed_challenge message
   end
 
   def authenticate_and_login(login, password, u2f_sign_response)
     user = User.authenticate(login, password, u2f_sign_response)
-    if user == nil
-      failed_login t('.bad_credentials')
-    elsif user.activated_at.blank?
-      failed_login t('.account_not_activated')
-    elsif user.enabled == false
-      failed_login t('.account_disabled')
-    else
-      successful_login(user)
-    end
+    successful_login user
+  rescue User::AuthenticationError => message
+    failed_login message
   end
 
 private
@@ -119,15 +113,10 @@ private
   def failed_login(message)
     logger.info "login failed with message: #{message}"
     flash[:error] = message
-    render :action => 'new'
+    render login_template
   end
 
   def successful_login(user)
-    # 'remember me' is not used in this application
-    #if params[:remember_me] == "1"
-      #self.current_user.remember_me
-      #cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
-    #end
     self.current_user = user
     session_role = SessionRole.new
     session_role.add_roles(user.role_ids)

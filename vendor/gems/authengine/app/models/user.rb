@@ -135,7 +135,15 @@ class User < ActiveRecord::Base
   end
   class ResetCodeNotFound < StandardError; end
   class BlankResetCode < StandardError; end
-  class LoginNotFound < StandardError; end
+  class AuthenticationError < StandardError
+    def initialize
+      super I18n.t("exceptions.#{self.class.name.underscore}")
+    end
+  end
+  class LoginNotFound < AuthenticationError; end
+  class TokenNotRegistered < AuthenticationError; end
+  class AccountNotActivated < AuthenticationError; end
+  class AccountDisabled < AuthenticationError; end
 
   def org_name
     organization && organization.name
@@ -202,8 +210,16 @@ class User < ActiveRecord::Base
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password, u2f_sign_response)
-    u = where("login = ?", login).first
-    u && u.authenticated?(password, u2f_sign_response) ? u : nil
+    user= where("login = ?", login).first
+    if user.nil?
+      raise LoginNotFound.new
+    elsif user.activated_at.blank?
+      raise AccountNotActivated.new
+    elsif user.enabled == false
+      raise AccountDisabled.new
+    elsif user.authenticated?(password, u2f_sign_response)
+      user
+    end
   end
 
   # Encrypts some data with the salt.
@@ -236,19 +252,29 @@ class User < ActiveRecord::Base
 
   def self.find_and_generate_challenge(login)
     user = User.where("login = ?", login).first
-    raise LoginNotFound if user.nil?
-    user.generate_challenge
+    # password is not checked until challenge response is verified
+    # at this point we only see if there's a matching login
+    if user.nil?
+      raise LoginNotFound.new
+    else
+      user.generate_challenge
+    end
   end
 
   def generate_challenge
-    self.challenge = U2F::U2F.new(APPLICATION_ID).challenge
-    save(:validation => false)
-    # TODO if user does not have a public_key_handle -> generate error (exception?)
-    [public_key_handle, challenge]
+    if public_key.nil? or public_key_handle.nil?
+      raise TokenNotRegistered.new
+    else
+      self.challenge = U2F::U2F.new(APPLICATION_ID).challenge
+      save(:validation => false)
+      # TODO if user does not have a public_key_handle -> generate error (exception?)
+      [public_key_handle, challenge]
+    end
   end
 
   def authenticated_password?(password)
-    crypted_password == encrypt(password)
+    raise LoginNotFound unless crypted_password == encrypt(password)
+    true
   end
 
   #TODO eliminate remember_token everywhere!

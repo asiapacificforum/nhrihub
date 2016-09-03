@@ -5,8 +5,6 @@ class Authengine::AccountsController < ApplicationController
 
   # Activate action
   def show
-    # Uncomment and change paths to have user logged in after activation - not recommended
-    # self.current_user = User.find_and_activate!(params[:id])
     @user = User.find_with_activation_code(params[:activation_code])
     session[:activation_code] = params[:activation_code]
     redirect_to signup_admin_user_path(@user) # admin/users#signup
@@ -34,7 +32,6 @@ class Authengine::AccountsController < ApplicationController
         current_user.password = params[:password]
         if current_user.save
           flash[:notice] = "Password updated."
-          # redirect_to user_path(current_user)
           redirect_to :controller=>session[:referer][:controller], :action=>session[:referer][:action]
         else
           flash[:error] = "An error occured, your password was not changed."
