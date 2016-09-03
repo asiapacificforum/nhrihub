@@ -5,6 +5,15 @@ class Reminder < ActiveRecord::Base
   has_and_belongs_to_many :users, :validate => false # we will only be adding/removing users by id, not changing their attributes. So performance is improved by not validating.
   default_scope ->{ order(:id) }
 
+  Increments = {
+    'weekly'       => {:days  => 7},
+    'monthly'      => {:months=> 1},
+    'quarterly'    => {:months=> 3},
+    'semi-annually'=> {:months=> 6},
+    'annually'     => {:years => 1},
+    'one-time'     => {}
+    }
+
   def as_json(options = {})
     super(:except => [:updated_at, :created_at], :methods => [ :recipients, :next, :previous, :user_ids, :url, :start_year, :start_month, :start_day ])
   end
@@ -89,20 +98,7 @@ class Reminder < ActiveRecord::Base
   end
 
   def increment
-    case reminder_type
-    when 'weekly'
-      {:days => 7}
-    when 'monthly'
-      {:months => 1}
-    when 'quarterly'
-      {:months => 3}
-    when 'semi-annually'
-      {:months => 6}
-    when 'annually'
-      {:years => 1}
-    when 'one-time'
-      {}
-    end
+    Increments[reminder_type]
   end
 
   def decrement
