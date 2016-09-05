@@ -18,28 +18,31 @@ class Reminder < ActiveRecord::Base
     super(:except => [:updated_at, :created_at], :methods => [ :recipients, :next, :previous, :user_ids, :url, :start_year, :start_month, :start_day ])
   end
 
+  before_save :calculate_next
+
   def start_year
-    if send(:next) == "none"
+    unless self.next
       Date.today.strftime("%Y")
     else
-      send(:next).split(', ')[1]
+      self.next.to_date.year
     end
   end
 
   def start_month
-    if send(:next) == "none"
+    unless self.next
       month = Date.today.strftime("%b")
     else
-      month = send(:next).split(' ')[0]
+      self.next.to_date.month
     end
     Date::ABBR_MONTHNAMES.index(month)
   end
 
   def start_day
-    if send(:next) == "none"
+    unless self.next
+      month = Date.today.strftime("%b")
       Date.today.strftime("%e")
     else
-      send(:next).split(",")[0].split(" ")[1]
+      self.next.to_date.day
     end
   end
 
@@ -51,30 +54,54 @@ class Reminder < ActiveRecord::Base
     remindable.page_data
   end
 
-  def next
-    if one_time? && start_date.future?
-      date = start_date
-    elsif !one_time?
-      date = @next || next_reminder_date
+  def calculate_next
+    date=start_date
+    unless one_time?
+      until(date.future?) do
+        date = date.advance(increment)
+      end
     end
-
-    if date
-      date.to_formatted_s(:short)
-    else
-      "none"
-    end
+    self.next = date unless date.past?
   end
 
   def one_time?
     reminder_type == "one-time"
   end
 
+  # returns nil if one_time and start_date is in the future
+  # returns nil if not one_time, but start_date is far enough in the future that
+  # decrementing next is still in the future
+  # otherwise returns a time object
   def previous
-    if start_date.future?
-      "none"
-    else
-      previous_reminder_date.to_formatted_s(:short)
+    if one_time? and start_date.past?
+      previous = start_date
+    elsif reminder_prior_to_next.past?
+      previous = reminder_prior_to_next
     end
+
+    def previous.to_s
+      unless self.blank?
+        self.to_formatted_s(:short)
+      else
+        "none"
+      end
+    end
+
+    previous
+  end
+
+  def next
+    next_reminder_date = read_attribute('next')
+
+    def next_reminder_date.to_s
+      if self
+        self.to_formatted_s(:short)
+      else
+        "none"
+      end
+    end
+
+    next_reminder_date
   end
 
   def recipients
@@ -82,19 +109,8 @@ class Reminder < ActiveRecord::Base
   end
 
   private
-  def next_reminder_date
-    date=start_date
-    unless one_time?
-      until(date.future?) do
-        date = date.advance(increment)
-      end
-    end
-    @next = date
-  end
-
-  def previous_reminder_date
-    next_date = @next || next_reminder_date
-    next_date.advance(decrement)
+  def reminder_prior_to_next
+    self.next.advance(decrement)
   end
 
   def increment

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160819032747) do
+ActiveRecord::Schema.define(version: 20160903035238) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -552,11 +552,12 @@ ActiveRecord::Schema.define(version: 20160819032747) do
   create_table "reminders", force: :cascade do |t|
     t.string   "text",            limit: 255
     t.string   "reminder_type",   limit: 255
-    t.date     "start_date"
     t.integer  "remindable_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "remindable_type"
+    t.datetime "start_date"
+    t.datetime "next"
   end
 
   create_table "reminders_users", id: false, force: :cascade do |t|
@@ -679,79 +680,3 @@ ActiveRecord::Schema.define(version: 20160819032747) do
   end
 
 end
-
-  create_table "action_roles", force: :cascade do |t|
-  create_table "actions", force: :cascade do |t|
-  create_table "activities", force: :cascade do |t|
-  create_table "advisory_council_documents", force: :cascade do |t|
-  create_table "advisory_council_issues", force: :cascade do |t|
-  create_table "advisory_council_members", force: :cascade do |t|
-  create_table "agencies", force: :cascade do |t|
-  create_table "areas", force: :cascade do |t|
-  create_table "assigns", force: :cascade do |t|
-  create_table "audience_types", force: :cascade do |t|
-  create_table "communicants", force: :cascade do |t|
-  create_table "communication_communicants", force: :cascade do |t|
-  create_table "communication_documents", force: :cascade do |t|
-  create_table "communications", force: :cascade do |t|
-  create_table "complaint_agencies", force: :cascade do |t|
-  create_table "complaint_bases", force: :cascade do |t|
-  create_table "complaint_categories", force: :cascade do |t|
-  create_table "complaint_complaint_bases", force: :cascade do |t|
-  create_table "complaint_complaint_categories", force: :cascade do |t|
-  create_table "complaint_conventions", force: :cascade do |t|
-  create_table "complaint_documents", force: :cascade do |t|
-  create_table "complaint_mandates", force: :cascade do |t|
-  create_table "complaints", force: :cascade do |t|
-  create_table "controllers", force: :cascade do |t|
-  create_table "conventions", force: :cascade do |t|
-  create_table "document_groups", force: :cascade do |t|
-  create_table "file_monitors", force: :cascade do |t|
-  create_table "headings", force: :cascade do |t|
-  create_table "human_rights_attributes", force: :cascade do |t|
-  create_table "icc_reference_documents", force: :cascade do |t|
-  create_table "impact_ratings", force: :cascade do |t|
-  create_table "indicators", force: :cascade do |t|
-  create_table "internal_documents", force: :cascade do |t|
-  create_table "issue_areas", force: :cascade do |t|
-  create_table "issue_subareas", force: :cascade do |t|
-  create_table "mandates", force: :cascade do |t|
-  create_table "media_appearance_performance_indicators", force: :cascade do |t|
-  create_table "media_appearances", force: :cascade do |t|
-  create_table "media_areas", force: :cascade do |t|
-  create_table "media_subareas", force: :cascade do |t|
-  create_table "notes", force: :cascade do |t|
-  create_table "numeric_monitors", force: :cascade do |t|
-  create_table "organizations", force: :cascade do |t|
-  create_table "outcomes", force: :cascade do |t|
-  create_table "outreach_event_areas", force: :cascade do |t|
-  create_table "outreach_event_documents", force: :cascade do |t|
-  create_table "outreach_event_performance_indicators", force: :cascade do |t|
-  create_table "outreach_event_subareas", force: :cascade do |t|
-  create_table "outreach_events", force: :cascade do |t|
-  create_table "performance_indicators", force: :cascade do |t|
-  create_table "planned_results", force: :cascade do |t|
-  create_table "positivity_ratings", force: :cascade do |t|
-  create_table "project_agencies", force: :cascade do |t|
-  create_table "project_conventions", force: :cascade do |t|
-  create_table "project_documents", force: :cascade do |t|
-  create_table "project_mandates", force: :cascade do |t|
-  create_table "project_named_documents", force: :cascade do |t|
-  create_table "project_performance_indicators", force: :cascade do |t|
-  create_table "project_project_types", force: :cascade do |t|
-  create_table "project_types", force: :cascade do |t|
-  create_table "projects", force: :cascade do |t|
-  create_table "reminders", force: :cascade do |t|
-  create_table "reminders_users", id: false, force: :cascade do |t|
-  create_table "roles", force: :cascade do |t|
-  create_table "sessions", force: :cascade do |t|
-  create_table "settings", force: :cascade do |t|
-  create_table "status_changes", force: :cascade do |t|
-  create_table "strategic_plans", force: :cascade do |t|
-  create_table "strategic_priorities", force: :cascade do |t|
-  create_table "subareas", force: :cascade do |t|
-  create_table "text_monitors", force: :cascade do |t|
-  create_table "user_roles", force: :cascade do |t|
-  create_table "useractions", force: :cascade do |t|
-  create_table "users", force: :cascade do |t|
-  create_table "violation_severities", force: :cascade do |t|
