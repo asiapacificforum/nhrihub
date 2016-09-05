@@ -24,6 +24,19 @@ describe "#next" do
         expect(reminder_previous.to_s).to eq "none"
       end
     end
+
+    context "and next is today" do
+      let(:start_date){ 7.days.ago }
+      before do
+        reminder.save
+        reminder.update_columns(:next => Time.now) 
+      end
+      it "should update next to one week from now" do
+        # so when a reminder is sent, re-save it and the next reminder date will be saved
+        expect(reminder.next.to_date).to eq Date.today
+        expect{reminder.save}.to change{reminder.next.to_date}.to 1.week.from_now.to_date
+      end
+    end
   end
 
   context "when reminder_type is monthly" do
