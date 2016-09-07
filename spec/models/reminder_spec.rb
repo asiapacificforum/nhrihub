@@ -96,8 +96,8 @@ describe "#next" do
     end
   end
 
-  context "when reminder_type is semi-annually" do
-    let(:reminder){ Reminder.new(:reminder_type => 'semi-annually', :start_date => start_date)}
+  context "when reminder_type is semi-annual" do
+    let(:reminder){ Reminder.new(:reminder_type => 'semi-annual', :start_date => start_date)}
     let(:reminder_next){ reminder.calculate_next; reminder.next }
     let(:reminder_next_date){ reminder.calculate_next; reminder.next_date }
     let(:reminder_previous){ reminder.calculate_next; reminder.previous }
@@ -124,8 +124,8 @@ describe "#next" do
     end
   end
 
-  context "when reminder_type is annually" do
-    let(:reminder){ Reminder.new(:reminder_type => 'annually', :start_date => start_date)}
+  context "when reminder_type is annual" do
+    let(:reminder){ Reminder.new(:reminder_type => 'annual', :start_date => start_date)}
     let(:reminder_next){ reminder.calculate_next; reminder.next }
     let(:reminder_next_date){ reminder.calculate_next; reminder.next_date }
     let(:reminder_previous){ reminder.calculate_next; reminder.previous }

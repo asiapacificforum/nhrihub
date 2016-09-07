@@ -15,8 +15,8 @@ class Reminder < ActiveRecord::Base
     'weekly'       => {:days  => 7},
     'monthly'      => {:months=> 1},
     'quarterly'    => {:months=> 3},
-    'semi-annually'=> {:months=> 6},
-    'annually'     => {:years => 1},
+    'semi-annual'=> {:months=> 6},
+    'annual'     => {:years => 1},
     'one-time'     => {}
     }
 

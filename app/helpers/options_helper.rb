@@ -4,8 +4,8 @@ module OptionsHelper
      t(".weekly"),
      t(".monthly"),
      t(".quarterly"),
-     t(".semi-annually"),
-     t(".annually")]
+     t(".semi-annual"),
+     t(".annual")]
   end
 
   def recipients_options

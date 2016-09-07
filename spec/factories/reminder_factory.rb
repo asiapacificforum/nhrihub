@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :reminder do
     text { Faker::Lorem.sentences(2).join(' ') }
-    reminder_type {["one-time", "weekly", "monthly", "quarterly", "semi-annually", "annually"].sample}
+    reminder_type {["one-time", "weekly", "monthly", "quarterly", "semi-annual", "annual"].sample}
     start_date { Date.today.advance(:days => rand(365)) }
 
     after(:create) do |reminder|
