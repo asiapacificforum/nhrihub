@@ -89,7 +89,7 @@ gem "rack-protection", github: "sinatra/rack-protection"
 gem "rails-settings-cached", '~> 0.4.2'
 gem "underscore-rails"
 gem "capistrano-linked-files"
-gem "message_block"
+gem "message_block", github: "lazylester/message_block"
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'

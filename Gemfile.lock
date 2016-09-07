@@ -7,6 +7,13 @@ GIT
       rails (>= 4.2, < 5.1)
 
 GIT
+  remote: git://github.com/lazylester/message_block.git
+  revision: cb7dc71a9f2ae71be8940788f43632c9b1057318
+  specs:
+    message_block (1.0.4)
+      rails (>= 3.0.0)
+
+GIT
   remote: git://github.com/rack/rack.git
   revision: 25a549883b85fb33970b4a1530a365c0c9e51f95
   specs:
@@ -249,8 +256,6 @@ GEM
       rake
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
-    message_block (2.0.3)
-      rails (>= 3.1.0)
     method_source (0.8.2)
     mime-types (2.99.2)
     mini_portile2 (2.1.0)
@@ -416,7 +421,7 @@ DEPENDENCIES
   launchy
   letsencrypt_plugin!
   magic_lamp
-  message_block
+  message_block!
   nhri!
   outreach_media!
   pg
