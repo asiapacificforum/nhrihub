@@ -14,7 +14,8 @@ class User < ActiveRecord::Base
   scope :active, ->{ where("status != 'deleted'") }
   scope :staff, ->{ joins(:roles).where("roles.name = 'staff'") }
 
-  after_create :signup_notify
+  #after_create :signup_notify
+  after_commit :signup_notify, :on => :create # don't send email if user is not valid
   after_save :activate_notify
   after_save :forgotten_password_notify
   after_save :reset_password_notify
