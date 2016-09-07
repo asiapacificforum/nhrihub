@@ -3,7 +3,7 @@ module <%= camelized %>
     config.mount_at = '/'
 
     # include the locales translations from the module
-    config.i18n.load_path += Dir.glob(config.root.join('config','locales','views','**','*.{rb,yml}'))
+    config.i18n.load_path += Dir.glob(config.root.join('config','locales','**','*.{rb,yml}'))
 
     # append module migrations to the main app
     initializer :append_migrations do |app|

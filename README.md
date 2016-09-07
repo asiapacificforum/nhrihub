@@ -39,11 +39,16 @@ For convenience, the [letsencrypt_plugin](https://github.com/lgromanowski/letsen
 In some scenarios it is desirable to temporarily, or even permanently, disable the two-factor authentication feature. This is achieved by configuration of an environment variable from the config/env.yml file. This file is symlinked to the file of the same name in the shared/config directory in the capistrano file structure. If the file does not exist, two-factor authentication defaults to "enabled".
 
 ## Configuration
-email
-app-specific constants (orgname etc)
-timezone
-All dates and times are entered and displayed in the timezone configured for the application.
-Acceptable file types and maximum file size for uploading internal documents are configurable via the user interface.
+### TimeZone
+Internally, dates are stored in UTC. The timezone for interpreting all user input dates is configured by the TIME_ZONE parameter in the lib/constants file, which is symlinked on the server to the Capistrano shared directory.
+
+The permitted values for the application's TIME_ZONE parameter are those values defined in Rails' [ActiveSupport::TimeZone](http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html)
+
+### Email
+The configuration file for configuring access to the server's smtp daemon is config/initializers/action_mailer.rb. Due to the sensitive information, and because it is required to persist through software updates, the file is symlinked to a copy in the Capistrano shared directory. A file called config/initializers/action_mailer_example.rb is included as a guide on how to configure the real configuration file. Consult [Rails Guides: Action Mailer Basics](http://guides.rubyonrails.org/action_mailer_basics.html) for further information on mailer configuration.
+
+### Application Constants
+  TODO
 
 ## Database creation and initialization
 When it is first installed, the access privileges must be "bootstrapped" to permit the first user access. After this, the first user may configure further users through the web user interface.

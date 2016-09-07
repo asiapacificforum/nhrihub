@@ -4,6 +4,21 @@ FactoryGirl.define do
     reminder_type {["one-time", "weekly", "monthly", "quarterly", "semi-annually", "annually"].sample}
     start_date { Date.today.advance(:days => rand(365)) }
 
+    after(:create) do |reminder|
+      user_count = 1 + rand(3)
+      users = User.all.sample(user_count)
+      reminder.users << users
+    end
+
+    trait :due_today do
+      reminder_type "one-time"
+      start_date { DateTime.now }
+      after(:create) do |reminder|
+        reminder.users = [User.first]
+        reminder.save
+      end
+    end
+
     trait :media_appearance do
       remindable_type "MediaAppearance"
     end
@@ -25,7 +40,7 @@ FactoryGirl.define do
     end
 
     trait :project do
-      remindable_type "Siu::Project"
+      remindable_type "Project"
     end
 
     trait :complaint do

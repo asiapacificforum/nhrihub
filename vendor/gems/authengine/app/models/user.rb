@@ -282,6 +282,10 @@ class User < ActiveRecord::Base
     remember_token_expires_at && Time.now.utc < remember_token_expires_at
   end
 
+  def email_with_name
+    "#{first_last_name} <#{email}>"
+  end
+
   def prepare_to_send_reset_email
     @forgotten_password = true
     self.make_password_reset_code

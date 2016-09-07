@@ -51,7 +51,7 @@ namespace :outreach_media do
     MediaAppearance.destroy_all
 
     20.times do
-      ma = FactoryGirl.create(:media_appearance, :with_reminders, :with_notes, [:file, :link].sample, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
+      FactoryGirl.create(:media_appearance, :with_reminders, :with_notes, [:file, :link].sample, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
     end
 
   end
@@ -62,7 +62,7 @@ namespace :outreach_media do
     OutreachEvent.destroy_all
 
     20.times do
-      oe = FactoryGirl.create(:outreach_event, :with_reminders, :with_notes, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
+      FactoryGirl.create(:outreach_event, :with_reminders, :with_notes, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
     end
   end
 

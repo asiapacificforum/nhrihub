@@ -20,14 +20,22 @@ FactoryGirl.define do
       association :organization, strategy: :create
     end
 
+    after(:create) do |user|
+      user.update_attribute(:salt, '1641b615ad281759adf85cd5fbf17fcb7a3f7e87')
+      user.update_attribute(:activation_code, Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join ))
+      user.update_attribute(:activated_at, DateTime.new(2011,1,1))
+      user.update_attribute(:crypted_password, '660030f1be7289571b0467b9195ff39471c60651')
+      user
+    end
+
     trait :with_password do
-      after(:create) do |user|
-        user.update_attribute(:salt, '1641b615ad281759adf85cd5fbf17fcb7a3f7e87')
-        user.update_attribute(:activation_code, Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join ))
-        user.update_attribute(:activated_at, DateTime.new(2011,1,1))
-        user.update_attribute(:crypted_password, '660030f1be7289571b0467b9195ff39471c60651')
-        user
-      end
+      #after(:create) do |user|
+        #user.update_attribute(:salt, '1641b615ad281759adf85cd5fbf17fcb7a3f7e87')
+        #user.update_attribute(:activation_code, Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join ))
+        #user.update_attribute(:activated_at, DateTime.new(2011,1,1))
+        #user.update_attribute(:crypted_password, '660030f1be7289571b0467b9195ff39471c60651')
+        #user
+      #end
     end
 
     trait :admin do

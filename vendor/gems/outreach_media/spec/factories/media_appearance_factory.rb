@@ -65,18 +65,17 @@ FactoryGirl.define do
     end
 
     trait :with_notes do
-      after(:create) do |oe|
+      after(:create) do |ma|
         rand(3).times do
-          FactoryGirl.create(:note, :media_appearance, :notable_id => oe.id)
+          FactoryGirl.create(:note, :media_appearance, :notable_id => ma.id)
         end
-        puts "total: #{Note.count} nil_author: #{Note.where(:author_id => nil).count}"
       end
     end
 
     trait :with_reminders do
-      after(:create) do |oe|
+      after(:create) do |ma|
         rand(3).times do
-          FactoryGirl.create(:reminder, :media_appearance, :remindable_id => oe.id)
+          FactoryGirl.create(:reminder, :media_appearance, :remindable_id => ma.id)
         end
       end
     end

@@ -1,5 +1,11 @@
 desc "populate the entire application"
-task :populate => ["corporate_services:populate", "outreach_media:populate", "nhri:populate"]
+task :populate => :environment do
+  Note.destroy_all
+  Reminder.destroy_all
+  ["projects:populate", "complaints:populate", "corporate_services:populate", "outreach_media:populate", "nhri:populate"].each do |task|
+    Rake::Task[task].invoke
+  end
+end
 
 namespace :projects do
   desc "populates all projects-related tables"
@@ -71,7 +77,7 @@ namespace :complaints do
       if User.count > 20
         assignees = User.all.sample(2)
       else
-        assignees = [FactoryGirl.create(:assignee), FactoryGirl.create(:assignee)]
+        assignees = [FactoryGirl.create(:assignee, :with_password), FactoryGirl.create(:assignee, :with_password)]
       end
       assigns = assignees.map do |user|
         date = DateTime.now.advance(:days => -rand(365))

@@ -119,7 +119,11 @@ RSpec.shared_examples "reminders" do
         edit_reminder_icon.click
         all("select#reminder_reminder_type option").first.select_option
         fill_in(:reminder_text, :with => " ")
-        unselect(User.first.first_last_name, :from => :reminder_user_ids)
+        selected_users = Reminder.first.users.map(&:first_last_name)
+        selected_users.each do |user|
+          unselect(user, :from => :reminder_user_ids)
+        end
+
         expect{ edit_reminder_save_icon.click; wait_for_ajax}.not_to change{Reminder.first.text}
         expect(page).to have_selector(".reminder .reminder_type.has-error")
         expect(page).to have_selector(".reminder .recipients.has-error")

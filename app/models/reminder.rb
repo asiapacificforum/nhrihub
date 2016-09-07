@@ -5,7 +5,10 @@ class Reminder < ActiveRecord::Base
   has_and_belongs_to_many :users, :validate => false # we will only be adding/removing users by id, not changing their attributes. So performance is improved by not validating.
   default_scope ->{ order(:id) }
 
-  scope :due_today, ->{ where("next = ?", Date.today) }
+  # include reminder when date in the application's timezone is equal to the
+  # reminder's next value translated into the local timezone and converted to a date
+  # to understand this very ugly time zone weirdness see http://stackoverflow.com/a/21278339/451893
+  scope :due_today, ->{ where("date(next AT TIME ZONE 'utc' AT TIME ZONE '#{ActiveSupport::TimeZone::MAPPING[TIME_ZONE]}') = ?", Time.zone.now.to_date) }
 
   # reminder_type => block passed to the date#advance method
   Increments = {
@@ -18,35 +21,29 @@ class Reminder < ActiveRecord::Base
     }
 
   def as_json(options = {})
-    super(:except => [:updated_at, :created_at], :methods => [ :recipients, :next, :previous, :user_ids, :url, :start_year, :start_month, :start_day ])
+    super(:except => [:updated_at, :created_at], :methods => [ :recipients, :next_date, :previous_date, :user_ids, :url, :start_year, :start_month, :start_day ])
   end
 
   before_save :calculate_next
 
-  def start_year
-    unless self.next
-      Date.today.strftime("%Y")
+  def next_or_today
+    if self.next
+      self.next.to_date
     else
-      self.next.to_date.year
+      Date.today
     end
+  end
+
+  def start_year
+    next_or_today.year
   end
 
   def start_month
-    unless self.next
-      month = Date.today.strftime("%b")
-    else
-      self.next.to_date.month
-    end
-    Date::ABBR_MONTHNAMES.index(month)
+    next_or_today.month
   end
 
   def start_day
-    unless self.next
-      month = Date.today.strftime("%b")
-      Date.today.strftime("%e")
-    else
-      self.next.to_date.day
-    end
+    next_or_today.day
   end
 
   def url
@@ -64,7 +61,7 @@ class Reminder < ActiveRecord::Base
         date = date.advance(increment)
       end
     end
-    self.next = date unless date.past?
+    self.next = date unless date.to_date.past?
   end
 
   def one_time?
@@ -82,33 +79,49 @@ class Reminder < ActiveRecord::Base
       previous = reminder_prior_to_next
     end
 
-    def previous.to_s
-      unless self.blank?
-        self.to_formatted_s(:short)
-      else
-        "none"
-      end
-    end
+    #def previous.to_s
+      #unless self.blank?
+        #self.to_formatted_s(:short)
+      #else
+        #"none"
+      #end
+    #end
 
     previous
   end
 
-  def next
-    next_reminder_date = read_attribute('next')
-
-    def next_reminder_date.to_s
-      if self
-        self.to_formatted_s(:short)
-      else
-        "none"
-      end
+  def previous_date
+    unless self.previous.blank?
+      self.previous.to_date.to_formatted_s(:short)
+    else
+      "none"
     end
+  end
 
-    next_reminder_date
+  #def next
+    #next_reminder_date = read_attribute('next')
+
+    #def next_reminder_date.to_s
+      #if self
+        #self.to_formatted_s(:short)
+      #else
+        #"none"
+      #end
+    #end
+
+    #next_reminder_date
+  #end
+
+  def next_date
+    if self.next
+      self.next.to_date.to_formatted_s(:short)
+    else
+      "none"
+    end
   end
 
   def recipients
-    users
+    users.sort_by{|u| [u.lastName, u.firstName]}
   end
 
   private

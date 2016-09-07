@@ -17,12 +17,12 @@
         %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.reminder_type_error_message')
     .col-md-1.tight.next.form-group{:style => "width:18%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'["start_month","start_day","start_year"]'}
       .fade.no_edit.in
-        %span {{ next }}
+        %span {{ next_date }}
       .fade.edit{:style => "height:140px;"}
         =select :reminder, "start_date_2i", start_month_options,{},{:name => "reminder[start_date(2i)]", :style=>"height:22px; width:4.5em; display:inline-block;", :class=>'form-control', :value => "{{start_month}}"}
         =select :reminder, "start_date_3i", (1..31),{},{:name => "reminder[start_date(3i)]", :style=>"height:22px; width:3.5em; display:inline-block;", :class=>'form-control', :value => "{{start_day}}"}
         =select :reminder, "start_date_1i", (Date.today.year..Date.today.year+5),{},{:name => "reminder[start_date(1i)]", :style=>"height:22px; width:5em; display:inline-block;", :class=>'form-control', :value => "{{start_year}}"}
-    .col-md-1.tight.previous{:style => "width:9%"}{{ previous }}
+    .col-md-1.tight.previous{:style => "width:9%"}{{ previous_date }}
     .col-md-6.tight.text.form-group{:class => '{{#text_error}}has-error{{/}}', :style => "width:40%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'text'}
       %div
         .fade.no_edit.in
@@ -98,7 +98,7 @@
       %h5.col-md-1.tight{:style => "width:3%;"}
       %h5.col-md-1.tight{:style => "width:3%;"}
     {{#reminders}}
-    <reminder reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next="{{next}}" previous="{{previous}}" recipients="{{recipients}}"/>
+    <reminder reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next_date="{{next_date}}" previous_date="{{previous_date}}" recipients="{{recipients}}"/>
     {{/reminders}}
   </modal-body>
   </modal-custom>
@@ -154,6 +154,8 @@
       onModalClose : ->
         if @_new_reminder_is_active()
           @pop('reminders')
+        _(@findAllComponents('reminder')).each (reminder)->
+          reminder.terminate_edit()
 
     Reminder = Ractive.extend
       template : '#reminder_template'
@@ -213,6 +215,10 @@
           _(error_attrs).each (a)=> @set(a,false)
         else # user types into input or changes select
           @set(field+"_error",false)
+      terminate_edit : ->
+        el = @find('*')
+        if @editor
+          @editor.edit_cancel($(el))
 
     Ractive.components.reminder = Reminder
     Ractive.components.recipient = Recipient

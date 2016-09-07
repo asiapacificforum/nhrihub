@@ -66,17 +66,17 @@ FactoryGirl.define do
     end
 
     trait :with_notes do
-      after(:create) do |oe|
+      after(:create) do |aci|
         rand(3).times do
-          FactoryGirl.create(:note, :media_appearance, :notable_id => oe.id)
+          FactoryGirl.create(:note, :advisory_council_issue, :notable_id => aci.id)
         end
       end
     end
 
     trait :with_reminders do
-      after(:create) do |oe|
+      after(:create) do |aci|
         rand(3).times do
-          FactoryGirl.create(:reminder, :media_appearance, :remindable_id => oe.id)
+          FactoryGirl.create(:reminder, :advisory_council_issue, :remindable_id => aci.id)
         end
       end
     end
