@@ -4,3 +4,4 @@ en:
     user/login_not_found: 'Your username or password is incorrect.'
     user/account_not_activated: 'Your account is not active, please check your email for the activation code.'
     user/account_disabled: 'Your account has been disabled, please contact administrator.'
+    user/token_error: 'There is a problem with your token'

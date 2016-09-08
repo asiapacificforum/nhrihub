@@ -119,7 +119,6 @@ class User < ActiveRecord::Base
   # TODO in this application, users are trusted, but see how this should be implemented if users are not trusted
   #attr_accessible :login, :email, :password, :password_confirmation, :firstName, :lastName, :user_roles_attributes, :organization_id
 
-  class TokenError < StandardError; end
   class PermissionsNotConfigured < StandardError
     attr_reader :message
     def initialize(controller,action)
@@ -141,6 +140,7 @@ class User < ActiveRecord::Base
       super I18n.t("exceptions.#{self.class.name.underscore}")
     end
   end
+  class TokenError < AuthenticationError; end
   class LoginNotFound < AuthenticationError; end
   class TokenNotRegistered < AuthenticationError; end
   class AccountNotActivated < AuthenticationError; end
@@ -209,7 +209,7 @@ class User < ActiveRecord::Base
     @activated
   end
 
-  # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
+  # Authenticates a user by their login name, unencrypted password, and u2f_sign_response.  Returns the user or nil.
   def self.authenticate(login, password, u2f_sign_response)
     user= where("login = ?", login).first
     if user.nil?
@@ -241,6 +241,8 @@ class User < ActiveRecord::Base
   def authenticated_token?(u2f_sign_response)
     return true if ENV.fetch('two_factor_authentication') == 'disabled'
     u2f = U2F::U2F.new(APPLICATION_ID)
+    response = JSON.parse(u2f_sign_response)
+    raise TokenError if response.has_key?("errorCode")
     sign_response = U2F::SignResponse.load_from_json(u2f_sign_response)
     begin
       # authenticate! generates exceptions for any failure condition
