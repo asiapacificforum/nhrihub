@@ -22,11 +22,11 @@
   = javascript_include_tag 'u2f-api.js'
 
 - unless Rails.env.production?
- // cannot use yubikey in development as it requires https
- // also for test env, https not available and user presence detection not possible
- // so mock the token
- = javascript_include_tag 'jsrsasign/jsrsasign-4.7.0-all-min.js'
- = javascript_include_tag 'mock_yubikey'
+  // cannot use yubikey in development as it requires https
+  // also for test env, https not available and user presence detection not possible
+  // so mock the token
+  = javascript_include_tag 'jsrsasign/jsrsasign-4.7.0-all-min.js'
+  = javascript_include_tag 'mock_yubikey'
 
 :coffeescript
   $ ->
