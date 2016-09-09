@@ -78,7 +78,7 @@ gem 'poltergeist', group: [:test, :jstest]
 gem 'factory_girl_rails', '~> 4.0'
 gem 'faker'
 
-gem 'letsencrypt_plugin', :github => "asiapacificforum/letsencrypt-plugin"
+gem 'letsencrypt_plugin', :github => "lgromanowski/letsencrypt-plugin", :ref => "6ef3a2ea450af2cec4be906842ebcbf809b5fc46"
 
 ###not needed in rails 5
 ###gem 'quiet_assets', group: :development
