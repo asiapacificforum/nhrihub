@@ -1,8 +1,8 @@
 namespace :authengine do
   desc 'create an admin access account. Call rake "authengine:bootstrap[firstname,lastname,email_address]" (no spaces, quote the entire command)'
   task :bootstrap, [:firstName, :lastName, :email] => :environment do |t, args|
-    if args.to_hash.keys.length < 3
-      puts "Please specify firstname, lastname and email address"
+    if args.to_hash.keys.length != 3
+      puts "command is: rake \"authengine:bootstrap[firstname,lastname,email_address]\" (no spaces, quotes as shown)"
     else
       attributes = {:firstName => args[:firstName],
                     :lastName  => args[:lastName],

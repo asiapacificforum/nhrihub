@@ -38,7 +38,7 @@
   production_env = #{Rails.env.production?}
 
   @send_user_params = ->
-    @authentication_pending = 1
+    @authentication_pending = 1 # it's used as a flag in the test suite
     $.post
       url : "#{authengine_sessions_path}"
       data : $('form').serialize()
@@ -51,6 +51,8 @@
   opt_timeout_seconds = 15
 
   u2f_challenge = (signRequest, status, jqxhr)->
+    # TODO harmonize the mock_yubikey u2f_sign arguments with the u2f_api.js arguments
+    # and eliminate the conditional here
     if production_env
       appId = signRequest.appId
       challenge = signRequest.challenge
