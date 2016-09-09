@@ -30,6 +30,7 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml',
                                                  'app/assets/images/banner_logo.png',
                                                  'config/locales/site_specific/en.yml',
                                                  'config/locales/site_specific/fr.yml',
+                                                 'certificates',
                                                  'key/keyfile.pem',
                                                  'config/letsencrypt_plugin.yml',
                                                  'config/env.yml')
