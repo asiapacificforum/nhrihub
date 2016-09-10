@@ -34,6 +34,9 @@ gem 'spring',        group: :development
 # Use unicorn as the app server
 # gem 'unicorn'
 
+# to control crontab from ruby
+gem 'whenever', :require => false
+
 group :development do
   # Use Capistrano for deployment
   gem 'capistrano-rails'
