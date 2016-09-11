@@ -39,13 +39,6 @@ GIT
       tilt (~> 2.0)
 
 GIT
-  remote: git@github.com:lazylester/capistrano-faster-assets.git
-  revision: 02baf68fda796ef3526b58ad2c6d64bca568aa71
-  specs:
-    capistrano-faster-assets (1.0.2)
-      capistrano (>= 3.1)
-
-GIT
   remote: git@github.com:refile/refile.git
   revision: d7a42dcd7cf631ba94b01231f535bda061f6af92
   ref: d7a42
@@ -166,6 +159,8 @@ GEM
     capistrano-bundler (1.1.4)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
+    capistrano-faster-assets (1.0.2)
+      capistrano (>= 3.1)
     capistrano-harrow (0.5.3)
     capistrano-linked-files (1.2.0)
       capistrano (~> 3.1)
@@ -405,7 +400,7 @@ DEPENDENCIES
   bootstrap-sass
   byebug
   capistrano-bundler
-  capistrano-faster-assets!
+  capistrano-faster-assets
   capistrano-linked-files
   capistrano-passenger (= 0.0.2)
   capistrano-rails
