@@ -63,6 +63,28 @@ A role-based access control is included. The access is bootstrapped at installat
 Users with the role "admin" have access to the configuration of access permissions for each of the other roles.
 When new users are added, they are assigned to the appropriate role in order to limit access to sensitive information.
 
+## Log files
+### Log rotation
+The log rotation is assumed to be handled by the unix logrotate facility, specified in /etc/logrotate.d/rails. A typical configuration might be:
+```
+/var/www/nhri_docs/shared/log/production.log {
+  daily
+  rotate 14
+  notifempty
+  missingok
+  compress
+  sharedscripts
+  copytruncate
+  endscript
+}
+```
+### Tagged log messages
+The production log file entries are tagged with the ip address of the request and the user_id of the currently logged-in user (if there is a currently logged-in user). So a typical log entry might be:
+```
+I, [2016-09-12T03:19:36.432118 #22021]  INFO -- : [72.35.204.5] [731]   Rendering vendor/gems/projects/app/views/projects/index.haml within layouts/application
+```
+where 72.35.204.5 is the ip address and 731 is the user_id.
+
 ## Running the test suite
 Integration testing uses Rspec with poltergeist/phantomjs as the headless client.
 The tests are in spec/features.

@@ -1,8 +1,2 @@
 Description:
-    Explain the generator
-
-Example:
-    rails generate nhridocs_module Thing
-
-    This will create:
-        what/will/it/create
+    see the README file

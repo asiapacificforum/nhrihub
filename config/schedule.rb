@@ -19,6 +19,6 @@
 
 set :output, 'log/cron_log.log'
 
-every 2.days, :at => '1:00 am' do
+every 1.days, :at => '1:00 am' do
   rake "nhri_docs:mail_reminders"
 end
