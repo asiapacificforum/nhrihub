@@ -1,11 +1,6 @@
 module OptionsHelper
   def reminder_type_options
-    [t(".one-time"),
-     t(".weekly"),
-     t(".monthly"),
-     t(".quarterly"),
-     t(".semi-annual"),
-     t(".annual")]
+    Reminder::Increments.keys.collect{|k| t(".#{k}")}
   end
 
   def recipients_options

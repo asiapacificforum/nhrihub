@@ -1,6 +1,7 @@
 en:
   reminders:
     reminder:
+      daily: "daily"
       one-time: "one-time"
       weekly: "weekly"
       monthly: "monthly"

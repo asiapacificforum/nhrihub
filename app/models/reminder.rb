@@ -12,12 +12,13 @@ class Reminder < ActiveRecord::Base
 
   # reminder_type => block passed to the date#advance method
   Increments = {
+    'one-time'     => {},
+    'daily'        => {:days => 1},
     'weekly'       => {:days  => 7},
     'monthly'      => {:months=> 1},
     'quarterly'    => {:months=> 3},
     'semi-annual'=> {:months=> 6},
-    'annual'     => {:years => 1},
-    'one-time'     => {}
+    'annual'     => {:years => 1}
     }
 
   def as_json(options = {})
