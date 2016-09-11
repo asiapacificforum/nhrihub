@@ -23,6 +23,8 @@
       = javascript_tag "window.env = 'test'"
     - if Rails.env.development?
       = javascript_tag "window.env = 'dev'"
+    - if Rails.env.production?
+      = javascript_tag "window.env = 'production'"
 
     = csrf_meta_tags
   %body{:role => :document, :class => ("no-animation" if Rails.env.test? || Rails.env.jstest?), :style => 'padding-top:80px;'}
