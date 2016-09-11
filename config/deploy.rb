@@ -58,8 +58,8 @@ set :linked_dirs, fetch(:linked_dirs, []).push('certificates',
 
 namespace :deploy do
 
-  after 'deploy:updated', 'whenever:update_crontab'
-  after 'deploy:reverted', 'whenever:update_crontab'
+  after :updated, 'whenever:update_crontab'
+  after :reverted, 'whenever:update_crontab'
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
