@@ -47,6 +47,13 @@ Rails.application.configure do
 
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
+  config.log_tags = [ :remote_ip, ->(req){
+    if user_id = TaggedLogger.extract_user_id_from_request(req)
+      user_id.to_s
+    else
+      "anon"
+    end
+  } ]
 
   # Use a different logger for distributed setups.
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)

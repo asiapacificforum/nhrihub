@@ -41,6 +41,14 @@ Rails.application.configure do
   # Disable quiet_assets gem and allow asset requests to be reported in the log
   # config.quiet_assets = false
 
+  config.log_tags = [ :remote_ip, ->(req){
+    if user_id = TaggedLogger.extract_user_id_from_request(req)
+      user_id.to_s
+    else
+      "anon"
+    end
+  } ]
+
   # autoload vendor/gems files for every request
   config.autoload_paths += Dir.glob(Rails.root.join("vendor", "gems", "**", "app", "**", "{models,views,controllers}"))
   config.autoload_paths += Dir.glob(Rails.root.join( "app", "domain_models"))
