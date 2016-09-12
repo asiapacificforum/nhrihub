@@ -69,6 +69,11 @@ PATH
     corporate_services (0.0.1)
 
 PATH
+  remote: vendor/gems/dashboard
+  specs:
+    dashboard (0.0.1)
+
+PATH
   remote: vendor/gems/internal_documents
   specs:
     internal_documents (0.0.1)
@@ -409,6 +414,7 @@ DEPENDENCIES
   coffee-rails
   complaints!
   corporate_services!
+  dashboard!
   database_cleaner
   factory_girl_rails (~> 4.0)
   faker

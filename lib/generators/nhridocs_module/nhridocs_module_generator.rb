@@ -77,6 +77,6 @@ end
 
 class NhridocsModuleGenerator < Rails::Generators::NamedBase
   Rails::Generators::PluginGenerator.source_paths << File.expand_path('../templates', __FILE__)
-  args = ["vendor/gems/"+ARGV[0], "--skip-bundle", "--skip-test-unit", "--skip-gemfile", "--full"]
+  args = ["vendor/gems/"+ARGV[0], "--skip-bundle", "--skip-test", "--skip-gemfile", "--full"]
   Rails::Generators::PluginGenerator.start(args)
 end
