@@ -37,3 +37,5 @@ occasional_suite_errors.txt
 config/letsencrypt_plugin.yml
 .byebug_history
 config/env.yml
+certificates.*
+cert_test.rb

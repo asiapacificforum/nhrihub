@@ -32,6 +32,7 @@ SimpleNavigation::Configuration.run do |navigation|
       ad.item :or_media, t('layout.nav.outreach_media'), outreach_media_admin_path
       ad.item :compl, t('layout.nav.complaints'), complaint_admin_path
       ad.item :doc, t('layout.nav.int_docs'), internal_document_admin_path
+      ad.item :dash, t('layout.nav.dashboard'), dashboard_index_path
     end
     primary.item :logout, t('layout.nav.logout'), logout_path
     primary.dom_class = 'nav navbar-nav'
