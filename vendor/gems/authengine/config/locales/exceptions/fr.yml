@@ -1,0 +1,7 @@
+fr:
+  exceptions:
+    user/token_not_registered: "Vous devez disposer d'un jeton de clé enregistré pour vous connecter"
+    user/login_not_found: "Votre nom d'utilisateur ou mot de passe est incorrect."
+    user/account_not_activated: "Votre compte est inactif, S'il vous plaît vérifier votre e-mail pour le code d'activation."
+    user/account_disabled: "Votre compte a-été désactivé, S'il vous plaît contacter l'administrateur."
+    user/token_error: "Il y a un problème avec votre jeton."

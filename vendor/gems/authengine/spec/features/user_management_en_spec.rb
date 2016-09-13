@@ -164,7 +164,7 @@ feature "user account activation", :js => true do
     scenario "user activates account by clicking url in registration email" do
       url = email_activation_link
       visit(url)
-      expect(page_heading).to match /Welcome #{User.last.first_last_name} to the M & E Database/
+      expect(page_heading).to match /Welcome #{User.last.first_last_name} to the #{APPLICATION_NAME}/
       fill_in(:user_login, :with => "norm")
       fill_in(:user_password, :with => "sekret")
       fill_in(:user_password_confirmation, :with => "sekret")
@@ -204,7 +204,7 @@ feature "user account activation", :js => true do
     scenario "user activates account by clicking url in registration email" do
       url = email_activation_link
       visit(url)
-      expect(page_heading).to match /Welcome #{User.last.first_last_name} to the M & E Database/
+      expect(page_heading).to match /Welcome #{User.last.first_last_name} to the #{APPLICATION_NAME}/
       fill_in(:user_login, :with => "norm")
       fill_in(:user_password, :with => "sekret")
       fill_in(:user_password_confirmation, :with => "sekret")

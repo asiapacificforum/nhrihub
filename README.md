@@ -192,5 +192,8 @@ The root application includes models, controllers and views that appear in multi
 2. Notes
 Each of these shared elements has a feature test spec implemented as an rspec shared behaviour. So the behaviour can be tested when the shared model is incorporated into a module.
 
+### Sending Reminders
+A rake task is provided that should be run each day, exactly once per day, to send any reminders that are due on that day. This is done by the server's cron daemon. The configuration of the cron daemon is accomplished with the NHRIDocs app using the [whenever gem](https://github.com/javan/whenever). The configuration file is config/schedule.rb.
+
 ## License
 GPL V3, see LICENSE.txt

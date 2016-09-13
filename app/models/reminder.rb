@@ -125,6 +125,11 @@ class Reminder < ActiveRecord::Base
     users.sort_by{|u| [u.lastName, u.firstName]}
   end
 
+  def send
+    ReminderMailer.reminder(self).deliver_now
+    save # updates the next date
+  end
+
   private
   def reminder_prior_to_next
     self.next.advance(decrement)

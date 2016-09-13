@@ -1,10 +1,7 @@
 namespace :nhri_docs do
   desc "task to invoke daily from cron. Mails reminders that are due today"
   task :mail_reminders => :environment do
-    Reminder.due_today.each do |reminder|
-      ReminderMailer.reminder(reminder).deliver_now
-      reminder.save # updates the next date
-    end
+    Reminder.due_today.each(&:send)
   end
 end
 

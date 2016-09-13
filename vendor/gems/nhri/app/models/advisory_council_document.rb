@@ -17,7 +17,8 @@ class AdvisoryCouncilDocument < ActiveRecord::Base
   end
 
   def date=(val)
-    self.created_at = val.blank? ? DateTime.now : DateTime.parse(val)
+    # date is entered by the user in their local time
+    self.created_at = val.blank? ? DateTime.now : Time.zone.parse(val)
   end
 
   def as_json(options={})

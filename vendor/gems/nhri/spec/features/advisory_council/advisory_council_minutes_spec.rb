@@ -14,9 +14,9 @@ feature "advisory council minutes document", :js => true do
   before do
     Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.maximum_filesize = 5
     Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.permitted_filetypes = ['pdf']
-    FactoryGirl.create(:advisory_council_minutes, :created_at => DateTime.new(2014,8,19))
-    FactoryGirl.create(:advisory_council_minutes, :created_at => DateTime.new(2015,8,19))
-    FactoryGirl.create(:advisory_council_minutes, :created_at => DateTime.new(2013,8,19))
+    FactoryGirl.create(:advisory_council_minutes, :created_at => Date.new(2014,8,19).to_time.utc)
+    FactoryGirl.create(:advisory_council_minutes, :created_at => Date.new(2015,8,19).to_time.utc)
+    FactoryGirl.create(:advisory_council_minutes, :created_at => Date.new(2013,8,19).to_time.utc)
     visit nhri_advisory_council_minutes_index_path(:en)
   end
 
