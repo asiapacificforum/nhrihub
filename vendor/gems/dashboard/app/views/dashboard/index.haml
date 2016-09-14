@@ -3,3 +3,9 @@
 
 SSL Certificate expiry date: 
 = SslCertificate.new.expires_on
+
+%h2 Security testing services:
+%ul
+  %li= link_to_without_permission_check "GlobalSign SSL report", "https://globalsign.ssllabs.com/analyze.html?d=#{SITE_URL}&hideResults=on&clearCache=on", :target => "_blank"
+  %li= link_to_without_permission_check "Mozilla Observatory scanner", "https://observatory.mozilla.org/analyze.html?host=#{SITE_URL}", :target => "_blank"
+
