@@ -48,6 +48,14 @@ GIT
       rest-client (~> 1.8)
       sinatra (>= 1.4.5)
 
+GIT
+  remote: https://github.com/twitter/secureheaders
+  revision: 0fd8e694fd5c7ac5ed3759712495ab48f979051b
+  branch: master
+  specs:
+    secure_headers (3.5.0.pre)
+      useragent
+
 PATH
   remote: vendor/gems/authengine
   specs:
@@ -388,6 +396,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.2)
     url_safe_base64 (0.2.2)
+    useragent (0.16.8)
     websocket (1.2.3)
     websocket-driver (0.6.4)
       websocket-extensions (>= 0.1.0)
@@ -439,6 +448,7 @@ DEPENDENCIES
   refile!
   rspec-rails
   sass-rails
+  secure_headers!
   selenium-webdriver
   simple-navigation (~> 3.14.0)
   simple-navigation-bootstrap

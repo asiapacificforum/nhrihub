@@ -17,7 +17,10 @@ FactoryGirl.define do
     if Organization.count > 20 # arbitrary number, but some threshold here prevents organization name collisions
       organization_id { Organization.pluck(:id).sample }
     else
-      association :organization, strategy: :create
+      until (organization = FactoryGirl.create(:organization)).valid?
+        organization_id organization.id
+        #association :organization, strategy: :create
+      end
     end
 
     after(:create) do |user|

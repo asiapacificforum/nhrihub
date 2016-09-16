@@ -37,6 +37,9 @@ gem 'spring',        group: :development
 # to control crontab from ruby
 gem 'whenever', :require => false
 
+# ruby configuration of content security policy
+gem 'secure_headers', :git => 'https://github.com/twitter/secureheaders', :branch => 'master', :require => 'secure_headers'
+
 group :development do
   # Use Capistrano for deployment
   gem 'capistrano-rails'

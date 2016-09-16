@@ -68,5 +68,6 @@ Rails.application.routes.draw do
       resource :filesize, :only => :update
     end
     resources :communication_documents, :only => [:destroy, :show]
+    resources :csp_reports, :only => [:create, :index]
   end
 end
