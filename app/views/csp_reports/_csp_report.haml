@@ -1,0 +1,31 @@
+%table
+  %tr
+    %td document_uri
+    %td= csp_report.document_uri
+  %tr
+    %td referrer
+    %td= csp_report.referrer
+  %tr
+    %td violated_directive
+    %td= csp_report.violated_directive
+  %tr
+    %td effective_directive
+    %td= csp_report.effective_directive
+  %tr
+    %td source_file
+    %td= csp_report.source_file
+  %tr
+    %td original_policy
+    %td= csp_report.original_policy
+  %tr
+    %td blocked_uri
+    %td= csp_report.blocked_uri
+  %tr
+    %td status_code
+    %td= csp_report.status_code
+  %tr
+    %td line_number
+    %td= csp_report.line_number
+  %tr
+    %td created_at
+    %td= csp_report.created_at

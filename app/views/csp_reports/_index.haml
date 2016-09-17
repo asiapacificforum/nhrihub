@@ -1,0 +1,5 @@
+%h2 CSP Reports:
+- if @csp_reports.length.zero?
+  none
+- else
+  = render :partial => :csp_report, :collection => @csp_reports

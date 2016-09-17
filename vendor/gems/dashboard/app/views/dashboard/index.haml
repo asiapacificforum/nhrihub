@@ -8,4 +8,12 @@ SSL Certificate expiry date:
 %ul
   %li= link_to_without_permission_check "GlobalSign SSL report", "https://globalsign.ssllabs.com/analyze.html?d=#{SITE_URL}&hideResults=on&clearCache=on", :target => "_blank"
   %li= link_to_without_permission_check "Mozilla Observatory scanner", "https://observatory.mozilla.org/analyze.html?host=#{SITE_URL}", :target => "_blank"
+  %li
+    %p{:onclick=>"fetch_csp_reports()"} CSP reports
+
+#csp_reports
+
+:coffeescript
+  @fetch_csp_reports = ->
+    $('#csp_reports').load("#{csp_reports_path}")
 
