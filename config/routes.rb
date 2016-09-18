@@ -68,6 +68,7 @@ Rails.application.routes.draw do
       resource :filesize, :only => :update
     end
     resources :communication_documents, :only => [:destroy, :show]
-    resources :csp_reports, :only => [:create, :index]
+    resources :csp_reports, :only => [:index, :create]
+    get 'csp_reports/clear_all', :to => 'csp_reports#clear_all', :via => :get
   end
 end

@@ -1,5 +1,8 @@
-%h2 CSP Reports:
-- if @csp_reports.length.zero?
-  none
-- else
-  = render :partial => :csp_report, :collection => @csp_reports
+#csp_reports_heading{:style => "display:flex;"}
+  %h4 CSP Reports:
+  %a#delete_all{:style => "margin-left:20px; position:relative; top:11px;"} delete all
+#csp_reports_list
+  - if @csp_reports.length.zero?
+    none
+  - else
+    = render :partial => :csp_report, :collection => @csp_reports

@@ -7,9 +7,6 @@ class Authengine::SessionsController < ApplicationController
 
   def new
     @title = t('banner.line_1') + ", " + t('banner.line_2')
-    # depends on two_factor_authentication configuration
-    # it's for convenience, when we're running a demo and
-    # tokens are not possible, for example
     render login_template
   end
 
@@ -94,6 +91,9 @@ protected
 
 private
   def login_template
+    # depends on two_factor_authentication configuration
+    # it's for convenience, when we're running a demo and
+    # tokens are not possible, for example
     if two_factor_authentication_required?
       'login_with_two_factor_authentication'
     else

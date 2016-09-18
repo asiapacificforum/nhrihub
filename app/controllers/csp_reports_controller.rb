@@ -14,5 +14,10 @@ class CspReportsController < ApplicationController
 
     head :ok
   end
+
+  def clear_all
+    CspReport.destroy_all
+    render :index
+  end
 end
 

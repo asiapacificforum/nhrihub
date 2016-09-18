@@ -36,3 +36,9 @@ SSL Certificate expiry date:
       $('#csp_reports *').hide()
       csp_reports_visible = false
 
+  $ ->
+    delete_all = ->
+      $('#csp_reports').load("#{csp_reports_clear_all_path}")
+
+    $('body').on 'click', '#csp_reports #delete_all', delete_all
+
