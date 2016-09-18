@@ -5,7 +5,7 @@ FactoryGirl.define do
     violated_directive { "default-src https: 'self'" }
     effective_directive { "script-src"}
     source_file { "string"}
-    original_policy { "default-src https: 'self'; style-src 'self' 'unsafe-inline'; report-uri /en/csp_reports"}
+    original_policy { "default-src https: 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-sntJzNwglklLZC2ydV0DbBSdEbAVUyph8CKjdkevyJY='; style-src 'self' 'unsafe-inline' 'nonce-sntJzNwglklLZC2ydV0DbBSdEbAVUyph8CKjdkevyJY='; report-uri /en/csp_reports" }
     blocked_uri { "inline" }
     status_code { 200 }
     line_number { 57 }
