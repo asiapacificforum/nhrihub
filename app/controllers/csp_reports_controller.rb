@@ -17,7 +17,8 @@ class CspReportsController < ApplicationController
 
   def clear_all
     CspReport.destroy_all
-    render :index
+    @csp_reports = []
+    render :partial => "index"
   end
 end
 
