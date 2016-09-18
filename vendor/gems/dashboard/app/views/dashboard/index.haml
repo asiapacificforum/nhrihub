@@ -1,5 +1,16 @@
 %h1=t('.heading')
 
+:css
+  #csp_link {
+    color: #337ab7;
+    text-decoration: none;
+    cursor : pointer;
+  }
+  #csp_link:hover {
+    color: #23527c;
+    text-decoration: underline;
+    cursor : pointer;
+  }
 
 SSL Certificate expiry date: 
 = SslCertificate.new.expires_on
@@ -8,12 +19,20 @@ SSL Certificate expiry date:
 %ul
   %li= link_to_without_permission_check "GlobalSign SSL report", "https://globalsign.ssllabs.com/analyze.html?d=#{SITE_URL}&hideResults=on&clearCache=on", :target => "_blank"
   %li= link_to_without_permission_check "Mozilla Observatory scanner", "https://observatory.mozilla.org/analyze.html?host=#{SITE_URL}", :target => "_blank"
-  %li
-    %p{:onclick=>"fetch_csp_reports()"} CSP reports
+
+%h2 Content Security Policy
+%ul
+  %li#csp_link{:onclick=>"fetch_csp_reports()"} CSP reports
 
 #csp_reports
 
 :coffeescript
+  csp_reports_visible = false
   @fetch_csp_reports = ->
-    $('#csp_reports').load("#{csp_reports_path}")
+    unless csp_reports_visible
+      $('#csp_reports').load("#{csp_reports_path}")
+      csp_reports_visible = true
+    else
+      $('#csp_reports *').hide()
+      csp_reports_visible = false
 

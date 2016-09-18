@@ -1,31 +1,16 @@
-%table
-  %tr
-    %td document_uri
-    %td= csp_report.document_uri
-  %tr
-    %td referrer
-    %td= csp_report.referrer
-  %tr
-    %td violated_directive
-    %td= csp_report.violated_directive
-  %tr
-    %td effective_directive
-    %td= csp_report.effective_directive
-  %tr
-    %td source_file
-    %td= csp_report.source_file
-  %tr
-    %td original_policy
-    %td= csp_report.original_policy
-  %tr
-    %td blocked_uri
-    %td= csp_report.blocked_uri
-  %tr
-    %td status_code
-    %td= csp_report.status_code
-  %tr
-    %td line_number
-    %td= csp_report.line_number
-  %tr
-    %td created_at
-    %td= csp_report.created_at
+.row.csp_report{:style=>"margin-bottom:16px;"}
+  .col-md-3
+    .row
+      .col-md-12= csp_report.created_at
+    .row
+      .col-md-12= csp_report.document_uri
+  .col-md-9
+    .row
+      .col-md-3 Violated directive
+      .col-md-9= csp_report.violated_directive
+    .row
+      .col-md-3 Effective directive
+      .col-md-9= csp_report.effective_directive
+    .row
+      .col-md-3 Original policy
+      .col-md-9= csp_report.original_policy
