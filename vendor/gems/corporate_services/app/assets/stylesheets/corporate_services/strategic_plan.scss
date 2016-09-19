@@ -111,7 +111,7 @@ select.priority_level {
   background-color : $grey3;
 
   >.performance_indicator_progress > .title >span:before{
-    color : red;
+    color : #337ab7;
     margin-right : 10px;
   }
   >.performance_indicator_progress > .title.media >span:before{

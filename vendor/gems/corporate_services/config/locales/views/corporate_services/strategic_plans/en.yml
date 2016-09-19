@@ -39,3 +39,9 @@ en:
         recipient_s: "Recipient(s)"
         date: "Date"
         start_date: "Start date"
+        outreach_event: "outreach event"
+        media_appearance: "media appearance"
+        add_planned_result: 'add planned result'
+        add_performance_indicator: 'add performance indicator'
+        add_outcome: 'add outcome'
+        add_activity: 'add activity'

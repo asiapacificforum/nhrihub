@@ -44,7 +44,7 @@
         {{/planned_results}}
         .row.planned_result_control
           .col-md-2{:style=>"width:14.2857%"}
-            %i.fa.fa-plus.fa-sm.new_planned_result{'on-click' => 'new_planned_result()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add planned result"}
+            %i.fa.fa-plus.fa-sm.new_planned_result{'on-click' => 'new_planned_result()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_planned_result')}
           .col-md-2{:style=>"width:81.7143%"}
 
 %script#new_strategic_priority_template{:type => 'text/ractive'}
@@ -106,14 +106,14 @@
       {{^outcomes}}
       .row.outcome_control{:style => "display:flex; width:110%"}
         .col-md-2{:style=>"width:16.6667%"}
-          %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add outcome"}
+          %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_outcome')}
         .col-md-2{:style=>"width:83.3333%"}
       {{/outcomes}}
   {{#if outcomes.length != 0}}
   .row.outcome_control{:style => "display:flex"}
     .col-md-2{:style=>"width:14.2857%"}
     .col-md-2{:style=>"width:14.2857%"}
-      %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add outcome"}
+      %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_outcome')}
     .col-md-2{:style=>"width:71.4285%"}
   {{/if}}
 
@@ -177,13 +177,13 @@
       {{^activities}}
       .row.activity
         .col-md-2{:style=>"width:100%"}
-          %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9; top:6px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add activity"}
+          %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9; top:6px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_activity')}
       {{/activities}}
   {{#if activities.length != 0}}
   .row.activity_control
     .col-md-2{:style=>"width:16.6667%"}
     .col-md-2{:style=>"width:83.3335%"}
-      %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add activity"}
+      %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_activity')}
   {{/if}}
 
 %script#activity_template{:type => 'text/ractive'}
@@ -227,13 +227,13 @@
       {{^performance_indicators}}
       .row.performance_indicator
         .col-md-2{:style=>"width:100%"}
-          %i.fa.fa-plus.fa-sm.new_performance_indicator{'on-click' => 'new_performance_indicator()', :style => 'position:relative; z-index:9;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add performance indicator"}
+          %i.fa.fa-plus.fa-sm.new_performance_indicator{'on-click' => 'new_performance_indicator()', :style => 'position:relative; z-index:9;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_performance_indicator')}
       {{/performance_indicators}}
   {{#if performance_indicators.length != 0}}
   .row.performance_indicator_control
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:80%"}
-      %i.fa.fa-plus.fa-sm.new_performance_indicator{'on-click' => 'new_performance_indicator()', :style => 'position:relative; z-index:9;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add performance indicator"}
+      %i.fa.fa-plus.fa-sm.new_performance_indicator{'on-click' => 'new_performance_indicator()', :style => 'position:relative; z-index:9;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_performance_indicator')}
   {{/if}}
 
 %script#performance_indicator_template{:type => 'text/ractive'}
@@ -289,21 +289,21 @@
       %div.rule{'on-click' => "show_rules_panel()"}
 
 %script#outreach_events_template{:type => 'text/ractive'}
-  {{#outreach_events}}
+  {{#outreach_event_titles}}
   <outreachevent title='{{.}}' />
-  {{/outreach_events}}
+  {{/outreach_event_titles}}
 
 %script#outreach_event_template{:type => 'text/ractive'}
-  .title.outreach
+  .title.outreach{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.outreach_event')}
     %span {{title}}
 
 %script#media_appearances_template{:type => 'text/ractive'}
-  {{#media_appearances}}
+  {{#media_appearance_titles}}
   <mediaappearance title='{{.}}' />
-  {{/media_appearances}}
+  {{/media_appearance_titles}}
 
 %script#media_appearance_template{:type => 'text/ractive'}
-  .title.media
+  .title.media{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.media_appearance')}
     %span {{title}}
 
 = render :partial => 'reminders/reminder' # it's in the main app
