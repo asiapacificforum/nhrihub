@@ -30,4 +30,10 @@ module SetupHelpers
     ma.performance_indicators = [@performance_indicator]
     ma.save
   end
+
+  def setup_projects
+    p = FactoryGirl.build(:project)
+    p.performance_indicators = [@performance_indicator]
+    p.save
+  end
 end

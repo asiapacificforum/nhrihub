@@ -18,6 +18,7 @@ feature "performance indicators outreach events and media appearances", :js => t
     setup_strategic_plan
     setup_outreach_events
     setup_media_appearances
+    setup_projects
     visit corporate_services_strategic_plan_path(:en, "current")
     open_accordion_for_strategic_priority_one
   end
@@ -25,7 +26,9 @@ feature "performance indicators outreach events and media appearances", :js => t
   scenario "associated outreach_events and media_appearances should be shown" do
     outreach_text = OutreachEvent.first.title
     media_text = MediaAppearance.first.title
-    expect(page).to have_selector(progress_selector + ".title.media span", :text => media_text)
-    expect(page).to have_selector(progress_selector + ".title.outreach span", :text => outreach_text)
+    project_text = Project.first.title
+    expect(page).to have_selector(progress_selector + ".title.media_appearance span", :text => media_text)
+    expect(page).to have_selector(progress_selector + ".title.outreach_event span", :text => outreach_text)
+    expect(page).to have_selector(progress_selector + ".title.project span", :text => project_text)
   end
 end

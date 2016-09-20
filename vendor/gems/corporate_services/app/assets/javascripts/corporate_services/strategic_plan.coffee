@@ -18,11 +18,20 @@ $ ->
     components :
       'outreachevent' : OutreachEvent
 
+  Project = Ractive.extend
+    template: "#project_template"
+
+  Projects = Ractive.extend
+    template : "#projects_template"
+    components :
+      'project' : Project
+
   PerformanceIndicator = Ractive.extend
     template : '#performance_indicator_template'
     components :
       outreachevents : OutreachEvents
       mediaappearances : MediaAppearances
+      projects : Projects
     computed :
       persisted : ->
         !isNaN(parseInt(@get('id')))

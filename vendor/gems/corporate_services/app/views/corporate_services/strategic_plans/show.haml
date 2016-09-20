@@ -11,7 +11,7 @@
 = javascript_include_tag "corporate_services/strategic_plan"
 
 :coffeescript
-  window.strategic_plan_data = #{@strategic_plan.to_json}
+  @strategic_plan_data = #{@strategic_plan.to_json}
 
 :coffeescript
   $ ->

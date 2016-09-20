@@ -27,6 +27,7 @@ class PerformanceIndicator < ActiveRecord::Base
                                     :notes,
                                     :outreach_event_titles,
                                     :media_appearance_titles,
+                                    :project_titles,
                                     :create_note_url]}
     super(default_options)
   end
@@ -70,6 +71,10 @@ class PerformanceIndicator < ActiveRecord::Base
 
   def media_appearance_titles
     media_appearances.map(&:title)
+  end
+
+  def project_titles
+    projects.map(&:title)
   end
 
   def create_note_url

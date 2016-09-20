@@ -222,7 +222,7 @@
           %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2{:style=>"width:80%;", :class => "{{^performance_indicators}}empty{{/performance_indicators}}"}
       {{#performance_indicators}}
-      <pi activity_id="{{activity_id}}" create_note_url="{{create_note_url}}" create_reminder_url="{{create_reminder_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" indexed_target="{{indexed_target}}" media_appearance_titles="{{media_appearance_titles}}" notes="{{notes}}" outreach_event_titles="{{outreach_event_titles}}" reminders="{{reminders}}" target="{{target}}" url="{{url}}" />
+      <pi activity_id="{{activity_id}}" create_note_url="{{create_note_url}}" create_reminder_url="{{create_reminder_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" indexed_target="{{indexed_target}}" media_appearance_titles="{{media_appearance_titles}}" notes="{{notes}}" outreach_event_titles="{{outreach_event_titles}}" project_titles="{{project_titles}}" reminders="{{reminders}}" target="{{target}}" url="{{url}}" />
       {{/performance_indicators}}
       {{^performance_indicators}}
       .row.performance_indicator
@@ -283,10 +283,20 @@
     .col-md-2.performance_indicator_progress{:style=>"width:25%"}
       <outreachevents />
       <mediaappearances />
+      <projects />
     .col-md-2.actions{:style=>"width:25%"}
       %div.alarm_icon.counter{'data-count'=>'{{reminders_count}}', 'on-click' => "show_reminders_panel()", :style => "position:relative; float:left; width:20px; top:3px; margin-left:20px;"}
       %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "margin-left:28px; position:relative; float:left; top:3px;"}
       %div.rule{'on-click' => "show_rules_panel()"}
+
+%script#projects_template{:type => 'text/ractive'}
+  {{#project_titles}}
+  <project title='{{.}}' />
+  {{/project_titles}}
+
+%script#project_template{:type => 'text/ractive'}
+  .title.project{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.project')}
+    %span {{title}}
 
 %script#outreach_events_template{:type => 'text/ractive'}
   {{#outreach_event_titles}}
@@ -294,7 +304,7 @@
   {{/outreach_event_titles}}
 
 %script#outreach_event_template{:type => 'text/ractive'}
-  .title.outreach{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.outreach_event')}
+  .title.outreach_event{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.outreach_event')}
     %span {{title}}
 
 %script#media_appearances_template{:type => 'text/ractive'}
@@ -303,7 +313,7 @@
   {{/media_appearance_titles}}
 
 %script#media_appearance_template{:type => 'text/ractive'}
-  .title.media{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.media_appearance')}
+  .title.media_appearance{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.media_appearance')}
     %span {{title}}
 
 = render :partial => 'reminders/reminder' # it's in the main app
