@@ -52,15 +52,21 @@ The configuration file for configuring access to the server's smtp daemon is con
 
 ## Database creation and initialization
 When it is first installed, the access privileges must be "bootstrapped" to permit the first user access. After this, the first user may configure further users through the web user interface.
+
 The first user is configured via a rake command-line utility on the server by running:
+
 ```
-rake "authengine:bootstrap[firstName,lastName,login,password]"
+rake "authengine:bootstrap[firstName,lastName,email]"
 ```
-where firstName, lastName, login and password are replaced by the parameters appropriate for the first user.
+where firstName, lastName, and email are replaced by the parameters appropriate for the first user. A registration email is sent to the user at the configured email address. If two-factor authentication is enabled, the user will be required to have an access token in order to be able to complete the registration procedure.
 
 ## Access control
-A role-based access control is included. The access is bootstrapped at installation time with a single administrator. This administrator may then define further roles (e.g. "staff", "intern")
+A role-based access control is included. The access is bootstrapped at installation time with a single administrator. This administrator may then define further roles (e.g. "staff", "intern").
+
+For convenience a "developer" role is automatically created, granted full access privileges, and not revealed in the role managment or access management pages.
+
 Users with the role "admin" have access to the configuration of access permissions for each of the other roles.
+
 When new users are added, they are assigned to the appropriate role in order to limit access to sensitive information.
 
 ## Log files
