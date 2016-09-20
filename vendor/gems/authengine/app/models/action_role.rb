@@ -17,7 +17,7 @@ class ActionRole < ActiveRecord::Base
   end
 
   def self.assign_developer_access
-    dev_role = Role.developer.first
+    dev_role = Role.find_or_create_by(:name => 'developer')
     Action.not_enabled_for_developer.each do |action|
       create(:action => action, :role => dev_role)
     end
