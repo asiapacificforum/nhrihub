@@ -17,14 +17,14 @@ class Authengine::SessionsController < ApplicationController
       # sign to prove posession of the private key, corresponding with the
       # public key associated with the account. User is selected
       # using the username and password supplied
-      format.json do
-        key_handle, challenge = generate_challenge(params[:login])
-        if @failed_challenge_message.present?
-          render :plain => @failed_challenge_message, :status => 406
-        else
-          render :json => U2F::SignRequest.new(key_handle, challenge, APPLICATION_ID), :status => 200
-        end
-      end
+      #format.json do
+        #key_handle, challenge = generate_challenge(params[:login])
+        #if @failed_challenge_message.present?
+          #render :plain => @failed_challenge_message, :status => 406
+        #else
+          #render :json => U2F::SignRequest.new(key_handle, challenge, APPLICATION_ID), :status => 200
+        #end
+      #end
 
       # user submits login, password and signed challenge
       format.html do
@@ -75,12 +75,12 @@ protected
     session[:role] = Marshal.dump SessionRole.new
   end
 
-  # TODO should be a class method on User model
-  def generate_challenge(login)
-    User.find_and_generate_challenge(login)
-  rescue User::AuthenticationError => message
-    failed_challenge message
-  end
+  ## TODO should be a class method on User model
+  #def generate_challenge(login)
+    #User.find_and_generate_challenge(login)
+  #rescue User::AuthenticationError => message
+    #failed_challenge message
+  #end
 
   def authenticate_and_login(login, password, u2f_sign_response)
     user = User.authenticate(login, password, u2f_sign_response)
