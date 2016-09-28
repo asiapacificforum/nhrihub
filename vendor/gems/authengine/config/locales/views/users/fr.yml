@@ -19,6 +19,8 @@ fr:
         edit_roles: 'modifier les rôles'
         edit_profile: 'editer le profil'
         reset_password: 'réinitialiser le mot de passe'
+        lost_token: "jeton d'accès perdu"
+        register_token: "enregistrer jeton d'accès"
         delete_confirm: 'êtes-vous sûr que vous voulez effacer'
         no_prev: 'aucune connexion précédente'
       new:

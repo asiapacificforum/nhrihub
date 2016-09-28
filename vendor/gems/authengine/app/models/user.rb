@@ -19,10 +19,16 @@ class User < ActiveRecord::Base
   after_save :activate_notify
   after_save :forgotten_password_notify
   after_save :reset_password_notify
+  after_save :lost_token_notify
 
   def self.find_by_password_reset_code(password_reset_code)
     raise BlankResetCode if password_reset_code.blank?
     find_by!(:password_reset_code => password_reset_code)
+  end
+
+  def self.find_by_replacement_token_registration_code(replacement_token_registration_code)
+    raise BlankReplacementTokenRegistrationCode if replacement_token_registration_code.blank?
+    find_by!(:replacement_token_registration_code => replacement_token_registration_code)
   end
 
   def register_request
@@ -61,6 +67,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def lost_token_notify
+    if @lost_token
+      Authengine::UserMailer.lost_token(self).deliver_now
+    end
+  end
+
   # custom validator rather than built-in helper, in order to get custom message
   def create_with_unique_email
     if User.where("email ilike ?", email).exists?
@@ -89,9 +101,9 @@ class User < ActiveRecord::Base
 # at this time, login and password must be present and valid
   validates_presence_of     :login,                      :on => :update
   validates_presence_of     :password,                   :if => :password_required?, :on=>:update
-  validates_presence_of     :password_confirmation,      :if => :password_required?, :on=>:update
   validates_length_of       :password, :within => 4..40, :if => :password_required?, :on=>:update
-  validates_confirmation_of :password,                   :if => :password_required?, :on=>:update
+  validates_confirmation_of :password,                   :if => :password_confirmation_required?, :on=>:update
+  validates_presence_of     :password_confirmation,      :if => :password_confirmation_required?, :on=>:update
   validates_length_of       :login,    :within => 3..40, :on => :update
   validates_uniqueness_of   :login, :case_sensitive => false, :on => :update
 
@@ -133,13 +145,13 @@ class User < ActiveRecord::Base
       @message, @user = message, user
     end
   end
-  class ResetCodeNotFound < StandardError; end
   class BlankResetCode < StandardError; end
   class AuthenticationError < StandardError
     def initialize
       super I18n.t("exceptions.#{self.class.name.underscore}")
     end
   end
+  class BlankReplacementTokenRegistrationCode < AuthenticationError; end
   class TokenError < AuthenticationError; end
   class LoginNotFound < AuthenticationError; end
   class TokenNotRegistered < AuthenticationError; end
@@ -223,6 +235,19 @@ class User < ActiveRecord::Base
     end
   end
 
+  def self.find_and_authenticate_by_login_params(login, password)
+    user= where("login = ?", login).first
+    if user.nil?
+      raise LoginNotFound.new
+    elsif user.activated_at.blank?
+      raise AccountNotActivated.new
+    elsif user.enabled == false
+      raise AccountDisabled.new
+    elsif user.authenticated_password?(password)
+      user
+    end
+  end
+
   # Encrypts some data with the salt.
   def self.encrypt(password, salt)
     Digest::SHA1.hexdigest("--#{salt}--#{password}--")
@@ -289,6 +314,16 @@ class User < ActiveRecord::Base
     "#{first_last_name} <#{email}>"
   end
 
+  def prepare_to_send_lost_token_email
+    @lost_token = true
+    nullify_public_key_params
+    make_replacement_token_registration_code
+  end
+
+  def nullify_public_key_params
+    update_attributes(:public_key => nil, :public_key_handle => nil)
+  end
+
   def prepare_to_send_reset_email
     @forgotten_password = true
     self.make_password_reset_code
@@ -301,7 +336,6 @@ class User < ActiveRecord::Base
     @reset_password = true
   end
 
-  #used in user_observer
   def recently_forgot_password?
     @forgotten_password
   end
@@ -354,16 +388,24 @@ protected
 
   def password_required?
     crypted_password.blank? || # validate the password field if there's no crypted password
+      # this doesn't make sense... don't validate presence of password if it's blank! TODO fix this
       !password.blank? # validate the password field if it's being provided
   end
 
+  def password_confirmation_required?
+    password_required?
+  end
+
   def make_activation_code
-    # change the algorithm so that many can be created in very short time without activation_code collisions
-    self.activation_code = Digest::SHA1.hexdigest( Time.now.advance(:seconds => rand(1000000)).to_s.split(//).sort_by {rand}.join )
+    self.activation_code = AccessNonce.create
   end
 
   def make_password_reset_code
-    self.password_reset_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    self.password_reset_code = AccessNonce.create
+  end
+
+  def make_replacement_token_registration_code
+    self.replacement_token_registration_code = AccessNonce.create
   end
 
 private

@@ -28,6 +28,15 @@ class Authengine::UserMailer < ActionMailer::Base
         )
   end
 
+  def lost_token(user)
+    setup_email(user)
+    @url  = "http://#{SITE_URL}/#{I18n.locale}/admin/register_replacement_token_request/#{user.replacement_token_registration_code}"
+    mail( :to => @recipients,
+          :date => @sent_on,
+          :from => @from
+        )
+  end
+
   def reset_password(user)
     setup_email(user)
     @subject    += 'Your password has been reset.'

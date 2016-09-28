@@ -12,22 +12,15 @@ module UserManagementHelpers
   end
 
   def email_activation_link
-    visit("/") # else there's no current_session yet from which to derive the url
-    email = ActionMailer::Base.deliveries.last
-    url = Nokogiri::HTML(email.body.to_s).xpath(".//p/a").attr('href').value
-    if Capybara.current_session.server # real browser
-      host = Capybara.current_session.server.host
-      port = Capybara.current_session.server.port
-    else # capybara-webkit
-      host = Capybara.current_session.driver.request.host
-      port = Capybara.current_session.driver.request.port
-    end
-    local_url = url.gsub(/^http:\/\/[^\/]*/,"#{host}:#{port}")
-    "http://"+local_url
+    link_from_last_email
   end
 
   def new_password_activation_link
-    email_activation_link
+    link_from_last_email
+  end
+
+  def replacement_token_registration_link
+    link_from_last_email
   end
 
   def signup
@@ -38,4 +31,34 @@ module UserManagementHelpers
   def submit_button
     page.find('.btn#submit')
   end
+
+  def register_button
+    page.find('.btn#register')
+  end
+
+private
+  def link_from_last_email
+    visit("/") # else there's no current_session yet from which to derive the url
+    url = find_url_in_email
+    host, port = get_url_params
+    local_url = url.gsub(/^http:\/\/[^\/]*/,"#{host}:#{port}")
+    "http://"+local_url
+  end
+
+  def find_url_in_email
+    email = ActionMailer::Base.deliveries.last
+    Nokogiri::HTML(email.body.to_s).xpath(".//p/a").attr('href').value
+  end
+
+  def get_url_params
+    if Capybara.current_session.server # real browser
+      host = Capybara.current_session.server.host
+      port = Capybara.current_session.server.port
+    else # capybara-webkit
+      host = Capybara.current_session.driver.request.host
+      port = Capybara.current_session.driver.request.port
+    end
+    [host, port]
+  end
+
 end

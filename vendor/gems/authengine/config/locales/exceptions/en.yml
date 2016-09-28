@@ -5,3 +5,4 @@ en:
     user/account_not_activated: 'Your account is not active, please check your email for the activation code.'
     user/account_disabled: 'Your account has been disabled, please contact administrator.'
     user/token_error: 'There is a problem with your token'
+    user/blank_replacement_token_registration_code: 'replacement token registration code missing'

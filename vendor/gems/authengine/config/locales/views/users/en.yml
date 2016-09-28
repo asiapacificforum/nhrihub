@@ -20,6 +20,7 @@ en:
         edit_roles: 'edit roles'
         edit_profile: 'edit profile'
         reset_password: 'reset password'
+        lost_token: 'lost access token'
         register_token: 'register access token'
         delete_confirm: 'are you sure you want to delete '
         no_prev: 'no previous login'
@@ -61,6 +62,9 @@ en:
       send_change_password_email:
         flash_notice: "A password reset email has been sent to %{name}, %{email}"
         flash_error: "Failed to send password reset email to %{name}, %{email}"
+      send_lost_token_email :
+        flash_notice: "A token registration email has been sent to %{name}, %{email}"
+        flash_error: "Failed to send token registration email to %{name}, %{email}"
       new_password:
         flash_notice:
           invalid: 'Invalid password reset.'
@@ -73,3 +77,10 @@ en:
           no_errors: "Your new password has been saved, you may login below."
           invalid: 'Invalid password reset.'
           not_found: 'Invalid password reset.'
+      register_new_token_request:
+        heading: "Register new token for %{user_name}"
+        user_name: "User name"
+        password: "Password"
+        register: "Register token"
+      register_new_token_response:
+        registered: "Your new token has been registered, you may login below."

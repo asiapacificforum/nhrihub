@@ -24,10 +24,12 @@ For languages other than English, locale translation files need to be added in t
 
 Translations may also be required for javascript, these may be found in lib/assets/javascripts/xx.js
 
-The url format for translated versions are (e.g.) your_domain/fr/admin/users.
+The url format for translated versions are (e.g. French version) your_domain/fr/admin/users.
 
 The default locale is 'en', a different default may be configured within the config/application.rb file, as indicated by the notes within that file.
 Page titles automatically default to the text in the i18n translation for the page .heading key, unless a translation for .title is provided.
+
+The text of emails is contained in the localized files in the vendor/gems/authengine/app/views/authengine/user_mailer directory. Each of the files is localized to English with the .en extension, if another locale is to be supported, the appropriately-localized email files must be added to this directory.
 
 ## Security
 Two-factor authentication is supported, using the [emerging FIDO standard](https://fidoalliance.org/). The second authentication factor is provided by the [Yubico FIDO U2F Security Key](https://www.yubico.com/products/yubikey-hardware/fido-u2f-security-key).

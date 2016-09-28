@@ -53,3 +53,53 @@ describe "staff scope" do
     expect(User.staff).not_to include @admin_user
   end
 end
+
+describe "password confirmation" do
+  before do
+    @user = FactoryGirl.create(:user)
+  end
+
+  context "when account is activated" do
+    it "should validate password when password confirmation matches" do
+      @user.update_attributes(:password => "sekret", :password_confirmation => "sekret")
+      expect(@user.errors).to be_empty
+      expect(@user.activation_code).to be_blank
+    end
+
+    it "should not validate password when password confirmation does not match" do
+      @user.update_attributes(:password => "sekret", :password_confirmation => "another_word")
+      expect(@user.errors).not_to be_empty
+      expect(@user.activation_code).not_to be_blank
+    end
+  end
+
+  context "when a password reset has been initiated" do
+    before do
+      @user.update_attributes(:password => "sekret", :password_confirmation => "sekret", :password_reset_code => "abc23234fab")
+    end
+
+    it "should validate password when password confirmation matches" do
+      @user.update_attributes(:password => "sekret", :password_confirmation => "sekret")
+      expect(@user.errors).to be_empty
+      expect(@user.password_reset_code).to be_blank
+    end
+
+    it "should not validate password when password confirmation does not match" do
+      @user.update_attributes(:password => "sekret", :password_confirmation => "another_word")
+      expect(@user.errors).not_to be_empty
+      expect(@user.password_reset_code).not_to be_blank
+    end
+  end
+
+  context "when a replacement token registration has been initiated" do
+    before do
+      @user.update_attributes(:password => "sekret", :password_confirmation => "sekret", :replacement_token_registration_code => "abc23234fab")
+    end
+
+    it "should not validate password for public key update" do
+      @user.update_attributes(:public_key => "aosifakdf134qef", :public_key_handle => "efoip;lkqwr21")
+      expect(@user.errors).to be_empty
+      expect(@user.replacement_token_registration_code).to be_blank
+    end
+  end
+end

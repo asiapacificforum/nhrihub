@@ -1,7 +1,7 @@
 class Authengine::FidoController < ApplicationController
-  skip_before_action :check_permissions, :only => [:new]
+  skip_before_action :check_permissions, :only => [:challenge_request]
 
-  def new
+  def challenge_request
     respond_to do |format|
       # user on the login page requests by ajax a challenge that they will
       # sign to prove posession of the private key, corresponding with the

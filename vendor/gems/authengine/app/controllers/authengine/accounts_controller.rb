@@ -24,8 +24,6 @@ class Authengine::AccountsController < ApplicationController
 
   # Change password action
   def update
-# removed to make restful (should actually be put)
-#    return unless request.post?
     if User.authenticate(current_user.login, params[:old_password])
       if ((params[:password] == params[:password_confirmation]) && !params[:password_confirmation].blank?)
         current_user.password_confirmation = params[:password_confirmation]

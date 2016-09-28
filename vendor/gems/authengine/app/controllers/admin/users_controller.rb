@@ -11,7 +11,7 @@ class Admin::UsersController < ApplicationController
 
   # activate is where a user with the correct activation code
   # is redirected to, so they can enter passwords and login name
-  skip_before_action :check_permissions, :only=>[:activate, :signup, :new_password, :change_password]
+  skip_before_action :check_permissions, :only=>[:activate, :signup, :new_password, :change_password, :register_new_token_request, :register_new_token_response]
 
   def index
     @users = User.
@@ -82,7 +82,7 @@ class Admin::UsersController < ApplicationController
     redirect_to login_path
   end
 
-  # after a password reset, show a form in which a user enters new password values, login not required
+  # after a password reset, show a form in which a user enters new password/password_confirmation values, login not required
   # authentication is based on password_reset_code, cf. original signup based on activation code.
   # This is the same as the activate method (above), but in the case of password reset, user is already active
   # and login name is not changed, only password.
@@ -92,7 +92,6 @@ class Admin::UsersController < ApplicationController
     password_reset_code = params[:password_reset_code]
     @user = User.find_by_password_reset_code(password_reset_code)
     @registerRequest = @user.register_request
-
   rescue User::BlankResetCode
     flash[:notice] = t('.flash_notice.invalid')
     redirect_to root_path
@@ -101,6 +100,57 @@ class Admin::UsersController < ApplicationController
     redirect_to root_path
   end
 
+  # new password values have been entered and we're going to save them here
+  def change_password
+    password_reset_code = params[:password_reset_code]
+    raise User::ArgumentError if password_reset_code.nil?
+
+    @user = User.find_by_password_reset_code(password_reset_code)
+
+    if @user.update_attributes(params.require(:user).permit(:password, :password_confirmation, :u2f_register_response))
+      flash[:notice] = t('.flash_notice.no_errors')
+      redirect_to root_path
+    else
+      render :new_password
+    end
+
+    rescue User::ArgumentError
+      flash[:notice] = t('.flash_notice.invalid')
+      redirect_to root_path
+    rescue ActiveRecord::RecordNotFound
+      flash[:notice] = t('.flash_notice.not_found')
+      redirect_to root_path
+  end
+
+  # authentication by replacement_token_registration_code attached to url
+  # and by username/password login parameters
+  # cf. UsersController#signup, where username and login are not known
+  # user responds to the UsersController#register_new_token_response method
+  def register_new_token_request
+    @user = User.find_by_replacement_token_registration_code( params[:replacement_token_registration_code])
+    @registerRequest = @user.register_request
+  rescue ActiveRecord::RecordNotFound => message
+    flash[:notice] = message
+    redirect_to root_path
+  rescue User::AuthenticationError => message
+    flash[:notice] = message
+    redirect_to root_path
+  end
+
+  def register_new_token_response
+    #find by login params username/pw
+    user = User.find_and_authenticate_by_login_params(params[:user][:login], params[:user][:password])
+    if user.update_attributes(activation_params.slice(:u2f_register_response).merge(:replacement_token_registration_code => nil))
+      flash[:notice] =t('admin.users.register_new_token_response.registered')
+      redirect_to root_path
+    else
+      flash[:warn] = user.errors.full_messages
+      redirect_to root_path
+    end
+  rescue User::AuthenticationError => message
+    flash[:error] = message
+    redirect_to root_path
+  end
 
   def update_self
     @user = User.find(current_user.id)
@@ -146,10 +196,11 @@ class Admin::UsersController < ApplicationController
 
   # we present a form for the user to enter login name and password
   # also register the user's token
+  # user responds to the UsersController#activate method
   def signup
     @user = User.find(params[:id])
     @registerRequest = @user.register_request
-    # depends on two_factor_authentication configuration
+    # template depends on two_factor_authentication enabled/disabled
     # it's for convenience, when we're running a demo and
     # tokens are not possible, for example
     render signup_template
@@ -169,27 +220,20 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-  # new password values have been entered and we're going to save them here
-  def change_password
-    password_reset_code = params[:password_reset_code]
-    raise User::ArgumentError if password_reset_code.nil?
-
-    @user = User.find_by_password_reset_code(password_reset_code)
-
-    if @user.update_attributes(params.require(:user).permit(:password, :password_confirmation, :u2f_register_response))
-      flash[:notice] = t('.flash_notice.no_errors')
-      redirect_to root_path
+  # when a logged-in admin clicks "lost token"
+  def send_lost_token_email
+    @user = User.find(params[:user_id])
+    @user.prepare_to_send_lost_token_email
+    @users = User.order("lastName, firstName").all
+    if @user.save
+      flash[:notice] = t('.flash_notice', :name => @user.first_last_name, :email => @user.email )
+      redirect_to admin_users_path
     else
-      render :new_password
+      flash[:error] = t('.flash_error', :name => @user.first_last_name, :email => @user.email)
+      redirect_to admin_users_path
     end
-
-    rescue User::ArgumentError
-      flash[:notice] = t('.flash_notice.invalid')
-      redirect_to root_path
-    rescue ActiveRecord::RecordNotFound
-      flash[:notice] = t('.flash_notice.not_found')
-      redirect_to root_path
   end
+
 
 
 protected

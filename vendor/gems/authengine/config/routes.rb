@@ -27,13 +27,15 @@ Rails.application.routes.draw do
         collection do
           get 'edit_self'
 
-          #post ':activation_code/activate' => 'users#activate'
           post ':activation_code/activate' => 'users#activate', :as => :register
         end
       end
       post '/send_change_password_email(/:user_id)' => "users#send_change_password_email", :as => :send_change_password_email
+      post '/send_lost_token_email(/:user_id)' => "users#send_lost_token_email", :as => :send_lost_token_email
       get '/new_password(/:password_reset_code)' => "users#new_password", :as => :new_password
       post '/change_password(/:password_reset_code)' => "users#change_password", :as => :change_password
+      get '/register_replacement_token_request/(/:replacement_token_registration_code)' => "users#register_new_token_request", :as => "register_new_token_request"
+      post '/register_replacement_token_response/(/:replacement_token_registration_code)' => "users#register_new_token_response", :as => "register_new_token_response"
     end
 
     namespace :authengine do
@@ -68,10 +70,10 @@ Rails.application.routes.draw do
 
         collection do
           get 'edit_self'
-
-          #post ':activation_code/activate' => 'users#activate', :as => :register
         end
       end
+
+      get '/fido' => 'fido#challenge_request', :as => 'challenge_request'
 
       get '/activate(/:activation_code)' => "accounts#show", :as => :activate # actually activation_code is always required, but handling it as optional permits its absence to be communicated to the user as a flash message
     end

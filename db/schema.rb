@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160915141929) do
+ActiveRecord::Schema.define(version: 20160921143002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -663,20 +663,20 @@ ActiveRecord::Schema.define(version: 20160915141929) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "login",                     limit: 255
-    t.string   "email",                     limit: 255
-    t.string   "crypted_password",          limit: 40
-    t.string   "salt",                      limit: 40
-    t.string   "remember_token",            limit: 255
+    t.string   "login",                               limit: 255
+    t.string   "email",                               limit: 255
+    t.string   "crypted_password",                    limit: 40
+    t.string   "salt",                                limit: 40
+    t.string   "remember_token",                      limit: 255
     t.datetime "remember_token_expires_at"
-    t.string   "activation_code",           limit: 40
+    t.string   "activation_code",                     limit: 40
     t.datetime "activated_at"
-    t.string   "password_reset_code",       limit: 40
-    t.boolean  "enabled",                               default: true
-    t.string   "firstName",                 limit: 255
-    t.string   "lastName",                  limit: 255
-    t.string   "type",                      limit: 255
-    t.string   "status",                    limit: 255, default: "created"
+    t.string   "password_reset_code",                 limit: 40
+    t.boolean  "enabled",                                         default: true
+    t.string   "firstName",                           limit: 255
+    t.string   "lastName",                            limit: 255
+    t.string   "type",                                limit: 255
+    t.string   "status",                              limit: 255, default: "created"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "organization_id"
@@ -684,6 +684,7 @@ ActiveRecord::Schema.define(version: 20160915141929) do
     t.datetime "challenge_timestamp"
     t.string   "public_key"
     t.string   "public_key_handle"
+    t.string   "replacement_token_registration_code"
     t.index ["login"], name: "index_users_on_login", using: :btree
   end
 

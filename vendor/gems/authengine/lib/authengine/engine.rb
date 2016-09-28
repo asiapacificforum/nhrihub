@@ -33,12 +33,16 @@ module Authengine
       app.middleware.use ::ActionDispatch::Static, "#{root}/public"
     end
 
-    initializer "authengine.application_controller" do |app|
-      ActiveSupport.on_load(:action_controller) do
-        include AuthenticatedSystem
-        include AuthorizedSystem
-      end
-    end
+    # this causes problems in Rails5 in development environment:
+    # since action_controller is not reloaded, changes to AuthenticatedSystem or AuthorizedSystem
+    # cause problems and server must be restarted
+    # so include these modules in ApplicationController directly
+    #initializer "authengine.application_controller" do |app|
+      #ActiveSupport.on_load(:action_controller) do
+        #include AuthenticatedSystem
+        #include AuthorizedSystem
+      #end
+    #end
 
     initializer :append_migrations do |app|
       unless app.root.to_s.match root.to_s

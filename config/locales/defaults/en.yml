@@ -1,0 +1,4 @@
+en:
+  activerecord:
+    exceptions:
+      not_found: "Not found"
