@@ -234,7 +234,7 @@ class User < ActiveRecord::Base
   end
 
   def authenticated_token?(u2f_sign_response)
-    return true if ENV.fetch('two_factor_authentication') == 'disabled'
+    return true if TwoFactorAuthentication.disabled?
     u2f = U2F::U2F.new(APPLICATION_ID)
     response = JSON.parse(u2f_sign_response)
     raise TokenError if response.has_key?("errorCode")

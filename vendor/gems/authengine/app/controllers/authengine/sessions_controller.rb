@@ -74,17 +74,17 @@ private
     # depends on two_factor_authentication configuration
     # it's for convenience, when we're running a demo and
     # tokens are not possible, for example
-    if two_factor_authentication_required?
+    if TwoFactorAuthentication.enabled?
       'login_with_two_factor_authentication'
     else
       'login_without_two_factor_authentication'
     end
   end
 
-  def two_factor_authentication_required?
-    ENV.fetch("two_factor_authentication").blank? ||
-      ENV.fetch("two_factor_authentication") == 'enabled'
-  end
+  #def two_factor_authentication_required?
+    #ENV.fetch("two_factor_authentication").blank? ||
+      #ENV.fetch("two_factor_authentication") == 'enabled'
+  #end
 
   def failed_challenge(message)
     @failed_challenge_message = message

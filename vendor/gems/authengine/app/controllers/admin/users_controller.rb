@@ -234,8 +234,6 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-
-
 protected
 
   def user_or_current_user
@@ -248,17 +246,17 @@ protected
 
 private
   def signup_template
-    if two_factor_authentication_required?
+    if TwoFactorAuthentication.enabled?
       'signup_with_two_factor_authentication'
     else
       'signup_without_two_factor_authentication'
     end
   end
 
-  def two_factor_authentication_required?
-    ENV.fetch("two_factor_authentication").blank? ||
-      ENV.fetch("two_factor_authentication") == 'enabled'
-  end
+  #def two_factor_authentication_required?
+    #ENV.fetch("two_factor_authentication").blank? ||
+      #ENV.fetch("two_factor_authentication") == 'enabled'
+  #end
 
   def activation_params
     params.require(:user).

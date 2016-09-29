@@ -173,7 +173,8 @@ feature "user account activation", :js => true do
       expect{ signup }.to change{ User.last.crypted_password }.from(nil).to(/[a-f0-9]{40}/).
                                                       and change{ User.last.salt }.from(nil).to(/[a-f0-9]{40}/).
                                                       and change{ User.last.public_key }.from(nil).to(base64_strict).
-                                                      and change{ User.last.public_key_handle }.from(nil).to(base64_urlsafe)
+                                                      and change{ User.last.public_key_handle }.from(nil).to(base64_urlsafe).
+                                                      and change{ ActionMailer::Base.deliveries.count }.by 1
       #email = ActionMailer::Base.deliveries.last
       expect(flash_message).to have_text("Your account has been activated")
       expect(page_heading).to eq 'Please log in'
