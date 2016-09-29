@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160921143002) do
+ActiveRecord::Schema.define(version: 20160929133652) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -667,8 +667,6 @@ ActiveRecord::Schema.define(version: 20160921143002) do
     t.string   "email",                               limit: 255
     t.string   "crypted_password",                    limit: 40
     t.string   "salt",                                limit: 40
-    t.string   "remember_token",                      limit: 255
-    t.datetime "remember_token_expires_at"
     t.string   "activation_code",                     limit: 40
     t.datetime "activated_at"
     t.string   "password_reset_code",                 limit: 40

@@ -275,11 +275,6 @@ class User < ActiveRecord::Base
     true
   end
 
-  #TODO eliminate remember_token everywhere!
-  def remember_token?
-    remember_token_expires_at && Time.now.utc < remember_token_expires_at
-  end
-
   def email_with_name
     "#{first_last_name} <#{email}>"
   end
@@ -314,12 +309,6 @@ class User < ActiveRecord::Base
     @reset_password
   end
 
-  def forget_me
-    self.remember_token_expires_at = nil
-    self.remember_token            = nil
-    save(:validate => false)
-  end
-
   def has_role?(name)
     self.roles.find_by_name(name) ? true : false
   end
@@ -339,9 +328,9 @@ class User < ActiveRecord::Base
     now = DateTime.now.to_formatted_s(:db)
     query = <<-SQL
     INSERT INTO users
-        (activated_at, activation_code, created_at, crypted_password, email, enabled, "firstName", "lastName", login, password_reset_code, remember_token, remember_token_expires_at, salt, status, type, updated_at)
+        (activated_at, activation_code, created_at, crypted_password, email, enabled, "firstName", "lastName", login, password_reset_code, salt, status, type, updated_at)
         VALUES
-        ( '#{now}','#{user.activation_code}','#{now}', '#{user.crypted_password}', NULL, true, '#{user.firstName}', '#{user.lastName}', '#{user.login}', NULL, NULL, NULL, '#{user.salt}', NULL, NULL,'#{now}')
+        ( '#{now}','#{user.activation_code}','#{now}', '#{user.crypted_password}', NULL, true, '#{user.firstName}', '#{user.lastName}', '#{user.login}', NULL, '#{user.salt}', NULL, NULL,'#{now}')
     SQL
     #can't use ActiveRecord#create here as it would trigger a notification email
     ActiveRecord::Base.connection.insert_sql(query)
