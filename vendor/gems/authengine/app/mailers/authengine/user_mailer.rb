@@ -10,7 +10,7 @@ class Authengine::UserMailer < ActionMailer::Base
         )
   end
 
-  def activation(user)
+  def activate_notification(user)
     setup_email(user)
     @url = login_url(:locale => I18n.locale)
     mail( :to => @recipients,
@@ -19,7 +19,7 @@ class Authengine::UserMailer < ActionMailer::Base
         )
   end
 
-  def forgot_password(user)
+  def forgotten_password_notification(user)
     setup_email(user)
     @url  = "http://#{SITE_URL}/#{I18n.locale}/admin/new_password/#{user.password_reset_code}"
     mail( :to => @recipients,
@@ -28,18 +28,18 @@ class Authengine::UserMailer < ActionMailer::Base
         )
   end
 
-  def lost_token(user)
+  def reset_password_notification(user)
+    setup_email(user)
+    @subject    += 'Your password has been reset.'
+  end
+
+  def lost_token_notification(user)
     setup_email(user)
     @url  = "http://#{SITE_URL}/#{I18n.locale}/admin/register_replacement_token_request/#{user.replacement_token_registration_code}"
     mail( :to => @recipients,
           :date => @sent_on,
           :from => @from
         )
-  end
-
-  def reset_password(user)
-    setup_email(user)
-    @subject    += 'Your password has been reset.'
   end
 
   def message_to_admin(subject,body)
