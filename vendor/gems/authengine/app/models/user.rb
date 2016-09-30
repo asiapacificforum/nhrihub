@@ -91,7 +91,7 @@ class User < ActiveRecord::Base
   has_many :complaints, :through => :assigns
 
   before_save :encrypt_password
-  before_create :make_activation_code
+  before_create {|user| user.make_access_nonce('activation_code') }
 
 
   # prevents a user from submitting a crafted form that bypasses activation
@@ -282,7 +282,8 @@ class User < ActiveRecord::Base
   def prepare_to_send_lost_token_email
     @lost_token = true
     nullify_public_key_params
-    make_replacement_token_registration_code
+    make_access_nonce('replacement_token_registration_code')
+    #make_replacement_token_registration_code
   end
 
   def nullify_public_key_params
@@ -291,7 +292,8 @@ class User < ActiveRecord::Base
 
   def prepare_to_send_reset_email
     @forgotten_password = true
-    self.make_password_reset_code
+    make_access_nonce('password_reset_code')
+    #self.make_password_reset_code
   end
 
   def reset_password
@@ -324,7 +326,7 @@ class User < ActiveRecord::Base
   def self.create_by_sql(attributes)
     user = User.new(attributes)
     user.send('encrypt_password')
-    user.send('make_activation_code')
+    user.send('make_access_nonce','activation_code')
     now = DateTime.now.to_formatted_s(:db)
     query = <<-SQL
     INSERT INTO users
@@ -355,16 +357,8 @@ protected
     password_required?
   end
 
-  def make_activation_code
-    self.activation_code = AccessNonce.create
-  end
-
-  def make_password_reset_code
-    self.password_reset_code = AccessNonce.create
-  end
-
-  def make_replacement_token_registration_code
-    self.replacement_token_registration_code = AccessNonce.create
+  def make_access_nonce(type)
+    send("#{type}=", AccessNonce.create)
   end
 
 private
