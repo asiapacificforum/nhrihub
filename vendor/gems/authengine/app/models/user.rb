@@ -323,21 +323,6 @@ class User < ActiveRecord::Base
     has_role?("admin")
   end
 
-  def self.create_by_sql(attributes)
-    user = User.new(attributes)
-    user.send('encrypt_password')
-    user.send('make_access_nonce','activation_code')
-    now = DateTime.now.to_formatted_s(:db)
-    query = <<-SQL
-    INSERT INTO users
-        (activated_at, activation_code, created_at, crypted_password, email, enabled, "firstName", "lastName", login, password_reset_code, salt, status, type, updated_at)
-        VALUES
-        ( '#{now}','#{user.activation_code}','#{now}', '#{user.crypted_password}', NULL, true, '#{user.firstName}', '#{user.lastName}', '#{user.login}', NULL, '#{user.salt}', NULL, NULL,'#{now}')
-    SQL
-    #can't use ActiveRecord#create here as it would trigger a notification email
-    ActiveRecord::Base.connection.insert_sql(query)
-  end
-
 protected
 
   # before filter
