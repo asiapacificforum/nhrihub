@@ -8,7 +8,7 @@ class Authengine::AccountsController < ApplicationController
     @user = User.find_with_activation_code(params[:activation_code])
     session[:activation_code] = params[:activation_code]
     redirect_to signup_admin_user_path(@user) # admin/users#signup
-  rescue User::ArgumentError # activation_code.nil?
+  rescue User::BlankActivationCode
     flash[:notice] =t('admin.users.activate.argument_error')
     redirect_to login_path
   rescue User::ActivationCodeNotFound # wrong activation code
@@ -17,33 +17,6 @@ class Authengine::AccountsController < ApplicationController
   rescue User::AlreadyActivated
     flash[:notice] =t('admin.users.activate.already_activated')
     redirect_to login_path
-  end
-
-  def edit
-  end
-
-  # Change password action
-  def update
-    if User.authenticate(current_user.login, params[:old_password])
-      if ((params[:password] == params[:password_confirmation]) && !params[:password_confirmation].blank?)
-        current_user.password_confirmation = params[:password_confirmation]
-        current_user.password = params[:password]
-        if current_user.save
-          flash[:notice] = "Password updated."
-          redirect_to :controller=>session[:referer][:controller], :action=>session[:referer][:action]
-        else
-          flash[:error] = "An error occured, your password was not changed."
-          render :action => 'edit'
-        end
-      else
-        flash[:error] = "New password does not match the password confirmation."
-        @old_password = params[:old_password]
-        render :action => 'edit'
-      end
-    else
-      flash[:error] = "Your old password is incorrect."
-      render :action => 'edit'
-    end
   end
 
 end

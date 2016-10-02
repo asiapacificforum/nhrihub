@@ -24,10 +24,7 @@ private
   def generate_challenge(login)
     User.find_and_generate_challenge(login)
   rescue User::AuthenticationError => message
-    failed_challenge message
-  end
-
-  def failed_challenge(message)
     @failed_challenge_message = message
   end
+
 end

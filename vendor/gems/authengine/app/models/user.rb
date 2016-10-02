@@ -20,12 +20,14 @@ class User < ActiveRecord::Base
   end
 
   def self.find_by_password_reset_code(password_reset_code)
-    raise BlankResetCode if password_reset_code.blank?
+    raise BlankPasswordResetCode if password_reset_code.blank?
+    # find_by! raises ActiveRecord::RecordNotFound if not found
     find_by!(:password_reset_code => password_reset_code)
   end
 
   def self.find_by_replacement_token_registration_code(replacement_token_registration_code)
     raise BlankReplacementTokenRegistrationCode if replacement_token_registration_code.blank?
+    # find_by! raises ActiveRecord::RecordNotFound if not found
     find_by!(:replacement_token_registration_code => replacement_token_registration_code)
   end
 
@@ -108,14 +110,15 @@ class User < ActiveRecord::Base
     end
   end
   class ActivationCodeNotFound < StandardError; end
-  class ArgumentError < StandardError; end
+  class BlankActivationCode < StandardError; end
+  class BlankPasswordResetCode < StandardError; end
   class AlreadyActivated < StandardError
     attr_reader :user, :message;
     def initialize(user, message=nil)
       @message, @user = message, user
     end
   end
-  class BlankResetCode < StandardError; end
+  class BlankPasswordResetCode < StandardError; end
   class AuthenticationError < StandardError
     def initialize
       super I18n.t("exceptions.#{self.class.name.underscore}")
@@ -162,23 +165,47 @@ class User < ActiveRecord::Base
   end
 
   def self.find_and_activate!(activation_code)
-    raise ArgumentError if activation_code.nil?
-      user = find_by_activation_code(activation_code)
-    raise ActivationCodeNotFound if !user
-    # TODO this (next) exception is raised on normal logins... it shouldn't be
-    # as a workaround the flash message has been changed to eliminate the word 'already'
-    # but this workaround means that the already active exception doesn't have a good error message
-    raise AlreadyActivated.new(user) if user.active?
+    user = find_with_activation_code(activation_code)
     user.send(:activate!)
     user
   end
 
   def self.find_with_activation_code(activation_code)
-    raise ArgumentError if activation_code.nil?
-      user = find_by_activation_code(activation_code)
+    raise BlankActivationCode if activation_code.nil?
+    user = find_by_activation_code(activation_code)
     raise ActivationCodeNotFound if !user
+    # TODO this (next) exception is raised on normal logins... it shouldn't be
+    # as a workaround the flash message has been changed to eliminate the word 'already'
+    # but this workaround means that the already active exception doesn't have a good error message
     raise AlreadyActivated.new(user) if user.active?
     user
+  end
+
+  def self.find_by_login(login)
+    raise LoginNotFound if login.blank?
+    user = find_by(:login => login)
+    raise LoginNotFound if user.nil?
+    raise AccountNotActivated.new unless user.active?
+    raise AccountDisabled.new unless user.enabled?
+    user
+  end
+
+  def self.find_and_generate_challenge(login)
+    # password is not checked until challenge response is verified
+    # at this point we only see if there's a matching login
+    user = User.find_by_login(login)
+    user.generate_challenge
+  end
+
+  # Authenticates a user by their login name, unencrypted password, and u2f_sign_response.  Returns the user or nil.
+  def self.authenticate(login, password, u2f_sign_response)
+    user = User.find_by_login(login)
+    return user if user.authenticated?(password, u2f_sign_response)
+  end
+
+  def self.find_and_authenticate_by_login_params(login, password)
+    user = User.find_by_login(login)
+    return user if user.authenticated_password?(password)
   end
 
   def active?
@@ -189,33 +216,6 @@ class User < ActiveRecord::Base
   # Returns true if the user has just been activated.
   def pending?
     @activated
-  end
-
-  # Authenticates a user by their login name, unencrypted password, and u2f_sign_response.  Returns the user or nil.
-  def self.authenticate(login, password, u2f_sign_response)
-    user= where("login = ?", login).first
-    if user.nil?
-      raise LoginNotFound.new
-    elsif user.activated_at.blank?
-      raise AccountNotActivated.new
-    elsif user.enabled == false
-      raise AccountDisabled.new
-    elsif user.authenticated?(password, u2f_sign_response)
-      user
-    end
-  end
-
-  def self.find_and_authenticate_by_login_params(login, password)
-    user= where("login = ?", login).first
-    if user.nil?
-      raise LoginNotFound.new
-    elsif user.activated_at.blank?
-      raise AccountNotActivated.new
-    elsif user.enabled == false
-      raise AccountDisabled.new
-    elsif user.authenticated_password?(password)
-      user
-    end
   end
 
   # Encrypts some data with the salt.
@@ -248,17 +248,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.find_and_generate_challenge(login)
-    user = User.where("login = ?", login).first
-    # password is not checked until challenge response is verified
-    # at this point we only see if there's a matching login
-    if user.nil?
-      raise LoginNotFound.new
-    else
-      user.generate_challenge
-    end
-  end
-
   def generate_challenge
     if public_key.nil? or public_key_handle.nil?
       raise TokenNotRegistered.new
@@ -283,7 +272,6 @@ class User < ActiveRecord::Base
     @lost_token = true
     nullify_public_key_params
     make_access_nonce('replacement_token_registration_code')
-    #make_replacement_token_registration_code
   end
 
   def nullify_public_key_params
@@ -293,7 +281,6 @@ class User < ActiveRecord::Base
   def prepare_to_send_reset_email
     @forgotten_password = true
     make_access_nonce('password_reset_code')
-    #self.make_password_reset_code
   end
 
   def reset_password
@@ -344,6 +331,10 @@ protected
 
   def make_access_nonce(type)
     send("#{type}=", AccessNonce.create)
+  end
+
+  def destroy_access_nonce(type)
+    send("#{type}=", nil)
   end
 
 private

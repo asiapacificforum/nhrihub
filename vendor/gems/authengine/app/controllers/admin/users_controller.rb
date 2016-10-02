@@ -71,7 +71,7 @@ class Admin::UsersController < ApplicationController
       flash[:warn] = user.errors.full_messages
       redirect_to signup_admin_user_path(user)
     end
-  rescue User::ArgumentError
+  rescue User::BlankActivationCode
     flash[:notice] = t('.argument_error')
     redirect_to new_admin_user_path
   rescue User::ActivationCodeNotFound
@@ -92,7 +92,7 @@ class Admin::UsersController < ApplicationController
     password_reset_code = params[:password_reset_code]
     @user = User.find_by_password_reset_code(password_reset_code)
     @registerRequest = @user.register_request
-  rescue User::BlankResetCode
+  rescue User::BlankPasswordResetCode
     flash[:notice] = t('.flash_notice.invalid')
     redirect_to root_path
   rescue ActiveRecord::RecordNotFound
@@ -103,8 +103,6 @@ class Admin::UsersController < ApplicationController
   # new password values have been entered and we're going to save them here
   def change_password
     password_reset_code = params[:password_reset_code]
-    raise User::ArgumentError if password_reset_code.nil?
-
     @user = User.find_by_password_reset_code(password_reset_code)
 
     if @user.update_attributes(params.require(:user).permit(:password, :password_confirmation, :u2f_register_response))
@@ -114,7 +112,7 @@ class Admin::UsersController < ApplicationController
       render :new_password
     end
 
-    rescue User::ArgumentError
+    rescue User::BlankPasswordResetCode
       flash[:notice] = t('.flash_notice.invalid')
       redirect_to root_path
     rescue ActiveRecord::RecordNotFound
@@ -139,6 +137,7 @@ class Admin::UsersController < ApplicationController
 
   def register_new_token_response
     #find by login params username/pw
+    #todo better to include replacement_token_registration_code as an additional auth param
     user = User.find_and_authenticate_by_login_params(params[:user][:login], params[:user][:password])
     if user.update_attributes(activation_params.slice(:u2f_register_response).merge(:replacement_token_registration_code => nil))
       flash[:notice] =t('admin.users.register_new_token_response.registered')
