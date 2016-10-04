@@ -107,6 +107,7 @@ $ ->
           dataType : 'json'
           context : @
     create_callback : (response, status, jqxhr)->
+      UserInput.reset()
       @set(response)
     cancel_new_heading : ->
       UserInput.reset()
@@ -135,7 +136,7 @@ $ ->
       # we will allow adding heading and adding attribute simultaneously
       @_add_attribute_in('attribute')
     add_attribute_to_existing_heading : ->
-      UserInput.claim_user_input_request(@,'remove_attribute_from_existing_heading')
+      #UserInput.claim_user_input_request(@,'remove_attribute_from_existing_heading')
       @_add_attribute_in('editHumanRightsAttribute')
     _add_attribute_in : (collection)->
       attributes = @findAllComponents(collection)
@@ -155,7 +156,6 @@ $ ->
       @splice('human_rights_attributes',index,1)
     toggle_attributes : ->
       UserInput.terminate_user_input_request()
-      UserInput.reset()
       @set('expanded',!@get('expanded'))
       $("#edit_attributes#{@get('id')}").collapse('toggle')
 
