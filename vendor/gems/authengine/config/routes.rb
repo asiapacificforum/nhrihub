@@ -73,7 +73,7 @@ Rails.application.routes.draw do
         end
       end
 
-      get '/fido' => 'fido#challenge_request', :as => 'challenge_request'
+      get '/fido(/:password_reset_code)' => 'fido#challenge_request', :as => 'challenge_request'
 
       get '/activate(/:activation_code)' => "accounts#show", :as => :activate # actually activation_code is always required, but handling it as optional permits its absence to be communicated to the user as a flash message
     end

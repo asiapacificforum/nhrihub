@@ -29,6 +29,7 @@ feature "Password management, admin resets user password", :js => true do
     fill_in(:user_password_confirmation, :with => "shinynewsecret")
     original_public_key = User.last.public_key
     submit_button.click
+    sleep(3)
     expect(flash_message).to eq "Your new password has been saved, you may login below."
     expect(User.last.public_key).to eq original_public_key
     fill_in "User name", :with => "staff"

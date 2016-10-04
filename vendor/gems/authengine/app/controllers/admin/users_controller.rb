@@ -91,7 +91,6 @@ class Admin::UsersController < ApplicationController
   def new_password
     password_reset_code = params[:password_reset_code]
     @user = User.find_by_password_reset_code(password_reset_code)
-    @registerRequest = @user.register_request
   rescue User::BlankPasswordResetCode
     flash[:notice] = t('.flash_notice.invalid')
     redirect_to root_path
@@ -103,15 +102,26 @@ class Admin::UsersController < ApplicationController
   # new password values have been entered and we're going to save them here
   def change_password
     password_reset_code = params[:password_reset_code]
+    u2f_sign_response = params[:user][:u2f_sign_response]
     @user = User.find_by_password_reset_code(password_reset_code)
 
-    if @user.update_attributes(params.require(:user).permit(:password, :password_confirmation, :u2f_register_response))
+    #authenticate_and_login(params[:login], params[:password], params[:u2f_sign_response])
+    #@user = user.authenticate(login, password, u2f_sign_response)
+    
+    #successful_login user
+  #rescue User::AuthenticationError => message
+    #failed_login message
+
+    if @user.authenticated_token?( u2f_sign_response) && @user.update_attributes(params.require(:user).permit(:password, :password_confirmation))
       flash[:notice] = t('.flash_notice.no_errors')
       redirect_to root_path
     else
       render :new_password
     end
 
+    rescue User::AuthenticationError => message
+      flash[:notice] = message
+      redirect_to root_path
     rescue User::BlankPasswordResetCode
       flash[:notice] = t('.flash_notice.invalid')
       redirect_to root_path
