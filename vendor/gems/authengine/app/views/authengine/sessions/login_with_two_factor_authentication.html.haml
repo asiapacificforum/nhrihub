@@ -40,7 +40,7 @@
   @send_user_params = ->
     @authentication_pending = 1 # it's used as a flag in the test suite
     $.post
-      url : "#{authengine_sessions_path}"
+      url : "#{authengine_challenge_request_path}"
       data : $('form').serialize()
       success : u2f_challenge
       error : u2f_challenge_fail

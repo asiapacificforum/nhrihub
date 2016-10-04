@@ -42,6 +42,15 @@ feature "show headings index page", :js => true do
     expect(page).to have_selector('#headings_container .heading .title', :text => "Some new heading text")
   end
 
+  it "can add new headings with no human_rights_attributes and then add attributes" do
+    add_heading.click
+    fill_in('heading_title', :with => "Some new heading text")
+    expect{save_heading.click; sleep(0.3)}.to change{Nhri::Heading.count}.by(1)
+    expect(Nhri::Heading.first.title).to eq "Some new heading text"
+    expect(page).to have_selector('#headings_container .heading', :count => 1)
+    expect(page).to have_selector('#headings_container .heading .title', :text => "Some new heading text")
+  end
+
   it "removes title error when heading title is typed" do
     add_heading.click
     fill_in('heading_title', :with => "   ")
@@ -262,5 +271,4 @@ feature "attributes behaviour on headings index page", :js => true do
     expect(page).not_to have_selector("#description_error")
     expect(page).to have_selector("#attributes .attribute", :count => 3)
   end
-
 end
