@@ -9,6 +9,7 @@ class CspReportsController < ApplicationController
   def create
     data = request.body.read
     attrs = JSON.parse(data)["csp-report"]
+    attrs.slice!(*CspReport.new.attributes.keys.map(&:dasherize))
     report = CspReport.new(attrs)
     report.save!
 
