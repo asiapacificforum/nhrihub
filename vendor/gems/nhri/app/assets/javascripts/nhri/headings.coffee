@@ -55,6 +55,7 @@ $ ->
           success : @create_attribute_callback
           context : @
     create_attribute_callback : (response, status, jqxhr)->
+      UserInput.reset()
       @set(response)
     validate : ->
       @set('description', @get('description').trim())
@@ -136,7 +137,7 @@ $ ->
       # we will allow adding heading and adding attribute simultaneously
       @_add_attribute_in('attribute')
     add_attribute_to_existing_heading : ->
-      #UserInput.claim_user_input_request(@,'remove_attribute_from_existing_heading')
+      UserInput.claim_user_input_request(@,'remove_attribute_from_existing_heading')
       @_add_attribute_in('editHumanRightsAttribute')
     _add_attribute_in : (collection)->
       attributes = @findAllComponents(collection)
