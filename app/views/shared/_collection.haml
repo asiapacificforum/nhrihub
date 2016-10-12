@@ -230,7 +230,7 @@
 %script#collection_item_area_template{:type=> 'template/ractive'}
   .area
     .name {{ name }}
-    .subareas
+    .subareas.comma-list
       {{#subarea_ids:i}}
       <collectionitemsubarea id={{subarea_ids[i]}}>
       {{/subarea_ids}}
