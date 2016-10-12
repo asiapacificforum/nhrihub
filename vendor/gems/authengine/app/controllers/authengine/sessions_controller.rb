@@ -37,7 +37,6 @@ class Authengine::SessionsController < ApplicationController
   # user logs out
   def destroy
     record_logout
-    self.current_user.forget_me if logged_in?
     remove_session_user_roles
     cookies.delete :auth_token
     reset_session
