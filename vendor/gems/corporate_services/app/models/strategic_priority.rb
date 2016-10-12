@@ -11,7 +11,7 @@ class StrategicPriority < ActiveRecord::Base
   end
 
   after_destroy do |strategic_priority|
-    lower_priorities = StrategicPriority.where("priority_level > #{strategic_priority.priority_level}")
+    lower_priorities = StrategicPriority.where("priority_level > ? and strategic_plan_id = ?", strategic_priority.priority_level, strategic_priority.strategic_plan_id)
     lower_priorities.each{|sp| sp.decrement_priority_level}
   end
 

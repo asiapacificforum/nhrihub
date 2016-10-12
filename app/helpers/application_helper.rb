@@ -21,7 +21,12 @@ module ApplicationHelper
   #end
 
   def current_user_permitted?(path)
-    user_is_developer? || permissions_granted?(path)
+    is_logout?(path) || user_is_developer? || permissions_granted?(path)
+  end
+
+  # even user with no privileges can logout!
+  def is_logout?(path)
+    path[:controller] == 'authengine/sessions' && path[:action] == 'destroy'
   end
 
   def user_is_developer?

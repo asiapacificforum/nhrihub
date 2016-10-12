@@ -14,7 +14,10 @@ class StrategicPlan < ActiveRecord::Base
   end
 
   def self.ensure_current
-    unless (last_strategic_plan = most_recent).current?
+    last_strategic_plan = most_recent
+    if last_strategic_plan.nil?
+      create(:start_date => StrategicPlanStartDate.most_recent)
+    elsif !last_strategic_plan.current?
       strategic_priorities = last_strategic_plan.strategic_priorities.map(&:copy)
       create(:start_date => StrategicPlanStartDate.most_recent,
              :strategic_priorities => strategic_priorities )

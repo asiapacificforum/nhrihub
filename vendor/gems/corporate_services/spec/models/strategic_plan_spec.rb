@@ -20,8 +20,8 @@ describe ".ensure_current" do
 
   context "when there is a non-current strategic plan in the database" do
     before do
-      strategic_plan = FactoryGirl.create(:strategic_plan, :populated, :start_date => 13.months.ago.to_date)
-      @strategic_priority = strategic_plan.strategic_priorities.first
+      @previous_strategic_plan = FactoryGirl.create(:strategic_plan, :populated, :start_date => 13.months.ago.to_date)
+      @strategic_priority = @previous_strategic_plan.strategic_priorities.first
       @planned_result = @strategic_priority.planned_results.first
       @outcome = @planned_result.outcomes.first
       @activity = @outcome.activities.first
@@ -33,6 +33,16 @@ describe ".ensure_current" do
     it "should add a plan" do
       expect(StrategicPlan.count).to eq 2
       expect(StrategicPlan.last.current?).to be true
+    end
+
+    context "when the most recent strategic plan is deleted" do # b/c there was a bug!
+      before do
+        StrategicPlan.current.first.destroy
+      end
+
+      it "should not change previous strategic plan associations" do
+        expect(@previous_strategic_plan.strategic_priorities.map(&:priority_level).sort).to eq [1,2]
+      end
     end
 
     it "should copy the associations" do
