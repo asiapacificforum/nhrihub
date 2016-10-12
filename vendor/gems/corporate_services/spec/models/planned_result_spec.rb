@@ -124,3 +124,19 @@ describe "destroy" do
     end
   end
 end
+
+describe ".all_with_associations scope" do
+  before do
+    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year-1,1,1))
+    sp = FactoryGirl.create(:strategic_priority, :priority_level => 1, :strategic_plan_id => previous_strategic_plan.id)
+    pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
+    @current_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year,1,1))
+    sp = FactoryGirl.create(:strategic_priority, :priority_level => 1, :strategic_plan_id => @current_strategic_plan.id)
+    pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
+  end
+
+  it "should include only planned results from current strategic plan" do
+    expect(PlannedResult.all_with_associations.count).to eq 1
+    expect(PlannedResult.all_with_associations.first.strategic_priority.strategic_plan).to eq @current_strategic_plan
+  end
+end

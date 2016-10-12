@@ -50,4 +50,10 @@ class StrategicPriority < ActiveRecord::Base
     StrategicPriority.where(:strategic_plan_id => strategic_plan_id)
   end
 
+  def copy
+    strategic_priority = StrategicPriority.new(attributes.slice("priority_level", "description"))
+    strategic_priority.planned_results = planned_results.map(&:copy)
+    strategic_priority
+  end
+
 end

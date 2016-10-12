@@ -117,4 +117,8 @@ class PerformanceIndicator < ActiveRecord::Base
       [index, target].join(' ')
     end
   end
+
+  def copy
+    PerformanceIndicator.new(attributes.slice("index", "description", "target"))
+  end
 end
