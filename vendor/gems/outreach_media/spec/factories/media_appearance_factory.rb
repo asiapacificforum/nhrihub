@@ -22,7 +22,8 @@ FactoryGirl.define do
         path = Rails.env.production? ?
           Rails.root.join('..','..','shared') :
           Rails.root.join('tmp')
-        FileUtils.touch path.join('uploads','store',media_appearance.file_id) 
+        original_file_path = OutreachMedia::Engine.root.join('lib','sample.pdf')
+        FileUtils.copy_file original_file_path, path.join('uploads','store',media_appearance.file_id) 
       end
     end
 
