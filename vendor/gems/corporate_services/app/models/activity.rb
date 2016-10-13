@@ -81,4 +81,11 @@ class Activity < ActiveRecord::Base
       [index, description].join(' ')
     end
   end
+
+  def copy
+    activity = Activity.new(attributes.slice("index", "description"))
+    activity.performance_indicators = performance_indicators.map(&:copy)
+    activity
+  end
+
 end

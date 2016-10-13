@@ -39,3 +39,4 @@ config/letsencrypt_plugin.yml
 config/env.yml
 certificates.*
 cert_test.rb
+tags

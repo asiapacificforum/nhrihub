@@ -11,7 +11,7 @@ class StrategicPriority < ActiveRecord::Base
   end
 
   after_destroy do |strategic_priority|
-    lower_priorities = StrategicPriority.where("priority_level > #{strategic_priority.priority_level}")
+    lower_priorities = StrategicPriority.where("priority_level > ? and strategic_plan_id = ?", strategic_priority.priority_level, strategic_priority.strategic_plan_id)
     lower_priorities.each{|sp| sp.decrement_priority_level}
   end
 
@@ -48,6 +48,12 @@ class StrategicPriority < ActiveRecord::Base
 
   def all_in_plan
     StrategicPriority.where(:strategic_plan_id => strategic_plan_id)
+  end
+
+  def copy
+    strategic_priority = StrategicPriority.new(attributes.slice("priority_level", "description"))
+    strategic_priority.planned_results = planned_results.map(&:copy)
+    strategic_priority
   end
 
 end

@@ -66,4 +66,11 @@ class Outcome < ActiveRecord::Base
       [index, description].join(' ')
     end
   end
+
+  def copy
+    outcome = Outcome.new(attributes.slice("index", "description"))
+    outcome.activities = activities.map(&:copy)
+    outcome
+  end
+
 end

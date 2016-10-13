@@ -55,6 +55,7 @@ $ ->
           success : @create_attribute_callback
           context : @
     create_attribute_callback : (response, status, jqxhr)->
+      UserInput.reset()
       @set(response)
     validate : ->
       @set('description', @get('description').trim())
@@ -107,6 +108,7 @@ $ ->
           dataType : 'json'
           context : @
     create_callback : (response, status, jqxhr)->
+      UserInput.reset()
       @set(response)
     cancel_new_heading : ->
       UserInput.reset()
@@ -155,7 +157,6 @@ $ ->
       @splice('human_rights_attributes',index,1)
     toggle_attributes : ->
       UserInput.terminate_user_input_request()
-      UserInput.reset()
       @set('expanded',!@get('expanded'))
       $("#edit_attributes#{@get('id')}").collapse('toggle')
 

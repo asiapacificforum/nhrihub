@@ -42,6 +42,18 @@ feature "show headings index page", :js => true do
     expect(page).to have_selector('#headings_container .heading .title', :text => "Some new heading text")
   end
 
+  it "can add new headings with no human_rights_attributes and then add attributes" do
+    add_heading.click
+    fill_in('heading_title', :with => "Some new heading text")
+    expect{save_heading.click; sleep(0.3)}.to change{Nhri::Heading.count}.by(1)
+    expect(Nhri::Heading.first.title).to eq "Some new heading text"
+    expect(page).to have_selector('#headings_container .heading', :count => 1)
+    expect(page).to have_selector('#headings_container .heading .title', :text => "Some new heading text")
+    headings_count = page.all('#headings_container .heading').length
+    open_first_attributes_dropdown
+    expect( page.all('#headings_container .heading').length).to eq headings_count # b/c there was a bug
+  end
+
   it "removes title error when heading title is typed" do
     add_heading.click
     fill_in('heading_title', :with => "   ")
@@ -199,6 +211,19 @@ feature "attributes behaviour on headings index page", :js => true do
     expect(page).to have_selector('input#attribute_description', :count => 1)
   end
 
+  it "can add attributes in succession" do # b/c there was a bug
+    add_attribute.click
+    page.find('#attribute_description').set('HumanRightsAttribute text')
+    expect{edit_save.click; sleep(0.3)}.to change{Nhri::HumanRightsAttribute.count}.by 1
+    expect(page.all('.attribute .description .no_edit span').length).to eq 4
+    expect(page.all('.attribute .description .no_edit span').first.text).to eq "HumanRightsAttribute text"
+    add_attribute.click
+    page.find('#attribute_description').set('AnotherHumanRightsAttribute text')
+    expect{edit_save.click; sleep(0.3)}.to change{Nhri::HumanRightsAttribute.count}.by 1
+    expect(page.all('.attribute .description .no_edit span').length).to eq 5
+    expect(page.all('.attribute .description .no_edit span').first.text).to eq "AnotherHumanRightsAttribute text"
+  end
+
   it "shows an error and does not persist the attribute when saving with blank description" do
     add_attribute.click
     expect{edit_save.click; sleep(0.3)}.not_to change{Nhri::HumanRightsAttribute.count}
@@ -262,5 +287,4 @@ feature "attributes behaviour on headings index page", :js => true do
     expect(page).not_to have_selector("#description_error")
     expect(page).to have_selector("#attributes .attribute", :count => 3)
   end
-
 end

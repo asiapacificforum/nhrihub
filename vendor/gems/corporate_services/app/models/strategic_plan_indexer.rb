@@ -1,3 +1,4 @@
+# Manages the automatic indexing of PlannedResult, Outcome, Activity, PerformanceIndicator
 class StrategicPlanIndexer
   attr_accessor :object, :parent
   def initialize(object,parent)
@@ -24,6 +25,7 @@ class StrategicPlanIndexer
   end
 
   def previous_instance
-    parent.send(object.class.name.tableize.to_sym).last
+    instances = parent.send(object.class.name.tableize.to_sym).reload
+    instances.last unless instances.blank?
   end
 end

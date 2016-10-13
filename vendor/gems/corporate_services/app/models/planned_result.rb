@@ -4,6 +4,7 @@ class PlannedResult < ActiveRecord::Base
   accepts_nested_attributes_for :outcomes
 
   default_scope ->{ order(:index) }
+  scope :in_current_strategic_plan, ->{ joins(:strategic_priority => :strategic_plan).merge(StrategicPlan.current) }
 
   # strip index if user has entered it
   before_create do
@@ -19,11 +20,11 @@ class PlannedResult < ActiveRecord::Base
   end
 
   def self.all_with_associations
-    collection = includes(:outcomes => {:activities => :performance_indicators}).all.sort_by(&:index)
+    collection = in_current_strategic_plan.includes(:outcomes => {:activities => :performance_indicators}).all.sort_by(&:index)
       def collection.as_json(options = {})
-        performance_indicators = {:performance_indicators => {:only => :id, :methods => :indexed_description}}
-        activities = {:activities => {:only => [], :methods => :indexed_description, :include => performance_indicators}}
-        outcomes = {:outcomes => {:only => [], :methods => :indexed_description, :include => activities}}
+        performance_indicators = { :performance_indicators => { :only => :id, :methods => :indexed_description}}
+        activities             = { :activities =>             { :only => [],  :methods => :indexed_description, :include => performance_indicators}}
+        outcomes               = { :outcomes =>               { :only => [],  :methods => :indexed_description, :include => activities}}
         planned_result_options = {:only => [], :methods => :indexed_description, :include => outcomes }
         super(planned_result_options)
       end
@@ -77,5 +78,11 @@ class PlannedResult < ActiveRecord::Base
 
   def url
     Rails.application.routes.url_helpers.corporate_services_strategic_priority_planned_result_path(:en, strategic_priority_id, id)
+  end
+
+  def copy
+    planned_result = PlannedResult.new(attributes.slice("index", "description"))
+    planned_result.outcomes = outcomes.map(&:copy)
+    planned_result
   end
 end
