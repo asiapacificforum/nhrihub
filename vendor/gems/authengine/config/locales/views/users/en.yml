@@ -11,7 +11,6 @@ en:
         enabled: 'Enabled?'
         manage: 'Manage'
         new_user: 'New User'
-        delete_confirm: 'are you sure you want to delete '
       # partial
       user:
         disable: 'disable'
@@ -24,6 +23,7 @@ en:
         lost_token: 'lost access token'
         register_token: 'register access token'
         no_prev: 'no previous login'
+        delete_confirm: 'are you sure you want to delete '
       # view
       signup:
         heading: "Welcome %{firstName} %{lastName} to the %{app_name}"

@@ -1,0 +1,35 @@
+.modal.fade#confirm-delete
+  .modal-dialog.modal-sm
+    .modal-content
+      .modal-body
+      .modal-footer
+        %a.btn.btn-sm.btn-default#cancel{:type => :button, 'data-dismiss'=>'modal'}= t('cancel')
+        %a.btn.btn-sm.btn-danger.btn-ok#confirm= t('delete')
+
+:coffeescript
+  $ ->
+    delete_callback = (data, status, jqxhr)->
+      $('#confirm-delete').modal('hide')
+      window.unrender(@)
+
+    error_callback = ->
+      console.log "error"
+
+    $('#confirm-delete').on 'show.bs.modal', (event)->
+      event.stopPropagation()
+      button = $(event.relatedTarget)
+      message = button.data('message')
+      url = button.data('href')
+      modal = $(@)
+      modal.find('.modal-body').text(message)
+      modal.find('.btn-ok').on 'click', (event)->
+        data =
+          _method : 'delete'
+          authenticity_token : "#{form_authenticity_token}"
+        $.ajax
+          method : 'post'
+          url : url
+          data : data
+          success : delete_callback
+          error : error_callback
+          context : button

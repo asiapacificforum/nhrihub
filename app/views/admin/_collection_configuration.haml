@@ -13,7 +13,9 @@
 %script{:type => 'template/html', :id => "#{item_name}_item_template"}
   %tr
     %td.type{:class => "#{item_name}"} {{ attribute }}
-    %td= link_to t('defaults.delete'), nil, :class => "delete_#{item_name}"
+    %td
+      = link_to t('defaults.delete'), nil, :class => "delete_#{item_name}"
+      %a{:class => "delete_#{item_name}"}=t('defaults.delete')
 
 :coffeescript
   $ ->
