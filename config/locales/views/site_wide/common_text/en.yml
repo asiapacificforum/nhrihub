@@ -3,7 +3,8 @@ en:
   add_document: "Add document"
   add_another_file: "Add another file"
   save : "Save"
-  cancel : "Cancel"
+  cancel : "cancel"
+  delete : "delete"
   icon :
     note : "note"
     documents: "documents"

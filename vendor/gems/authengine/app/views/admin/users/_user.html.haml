@@ -1,4 +1,4 @@
-%tr{:class => "user #{cycle('odd', 'even')}"}
+%tr{:class => "user #{cycle('odd', 'even')} fade in"}
   %td= user.firstName
   %td= user.lastName
   %td= user.roles.map(&:name).join(', ')
@@ -13,7 +13,7 @@
   %td{:style => "padding-left:10px"}= link_to t('.show'), admin_user_path(user)
   %td
     - unless user == current_user
-      = link_to t('.delete'), [:admin, user], :data => {:confirm => t('.delete_confirm')+user.first_last_name+'?'}, :method => :delete
+      %a{:href=>'#', 'data-href'=>admin_user_path(user), 'data-toggle'=>'modal', 'data-target'=>'#confirm-delete', 'data-username' => user.first_last_name }= t('.delete')
   %td{:style => "padding-left:10px"}
     - unless user == current_user
       = link_to t('.edit_roles'), admin_user_user_roles_path(user)

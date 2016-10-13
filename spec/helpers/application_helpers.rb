@@ -49,4 +49,8 @@ module ApplicationHelpers
       page.driver.render(path)
     end
   end
+
+  def confirm_deletion
+    page.find('.modal#confirm-delete a#confirm').click
+  end
 end

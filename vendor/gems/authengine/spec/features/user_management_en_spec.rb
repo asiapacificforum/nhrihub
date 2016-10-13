@@ -80,7 +80,7 @@ feature "Manage users", :js => true do
     within(:xpath, ".//tr[contains(td[3],'staff')]") do
       click_link("delete")
     end
-    page.accept_confirm # requires javascript, but poltergeist ignores modal dialogs!
+    confirm_deletion
     eventually do
       expect(page.all(".user").count).to eq 2
     end

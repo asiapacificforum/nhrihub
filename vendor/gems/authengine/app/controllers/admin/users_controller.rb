@@ -178,7 +178,7 @@ class Admin::UsersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     @user.update_attribute(:status, "deleted")
-    redirect_to admin_users_path
+    render :plain=> 'ok', :status => 200
   end
 
   def disable

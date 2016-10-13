@@ -10,3 +10,41 @@
     %th{:colspan=>"5"}= t '.manage'
   = render :partial => 'user', :collection => @users
 %p= link_to t('.new_user'), new_admin_user_path
+
+.modal.fade#confirm-delete
+  .modal-dialog.modal-sm
+    .modal-content
+      .modal-body
+      .modal-footer
+        %a.btn.btn-sm.btn-default#cancel{:type => :button, 'data-dismiss'=>'modal'}= t('cancel')
+        %a.btn.btn-sm.btn-danger.btn-ok#confirm= t('delete')
+
+:coffeescript
+  $ ->
+    $('tr.user').on('bsTransitionEnd', -> @remove())
+
+    remove_user = (data, status, jqxhr)->
+      $('#confirm-delete').modal('hide')
+      $(@).closest('tr').removeClass('in')
+
+    error = ->
+      console.log "error"
+
+    $('#confirm-delete').on 'show.bs.modal', (event)->
+      event.stopPropagation()
+      button = $(event.relatedTarget)
+      recipient = button.data('username')
+      url = button.data('href')
+      modal = $(@)
+      modal.find('.modal-body').text("#{t('.delete_confirm')}"+recipient+'?')
+      modal.find('.btn-ok').on 'click', (event)->
+        data =
+          _method : 'delete'
+          authenticity_token : "#{form_authenticity_token}"
+        $.ajax
+          method : 'post'
+          url : url
+          data : data
+          success : remove_user
+          error : error
+          context : button
