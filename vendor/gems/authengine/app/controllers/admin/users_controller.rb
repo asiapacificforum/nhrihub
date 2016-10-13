@@ -84,6 +84,7 @@ class Admin::UsersController < ApplicationController
 
   # after a password reset, show a form in which a user enters new password/password_confirmation values, login not required
   # authentication is based on password_reset_code, cf. original signup based on activation code.
+  # if two-factor authentication is required, then a challenge is requested and response verified
   # This is the same as the activate method (above), but in the case of password reset, user is already active
   # and login name is not changed, only password.
   # response is handled by the admin/users#change_password action
@@ -105,29 +106,22 @@ class Admin::UsersController < ApplicationController
     u2f_sign_response = params[:user][:u2f_sign_response]
     @user = User.find_by_password_reset_code(password_reset_code)
 
-    #authenticate_and_login(params[:login], params[:password], params[:u2f_sign_response])
-    #@user = user.authenticate(login, password, u2f_sign_response)
-    
-    #successful_login user
-  #rescue User::AuthenticationError => message
-    #failed_login message
-
-    if @user.authenticated_token?( u2f_sign_response) && @user.update_attributes(params.require(:user).permit(:password, :password_confirmation))
+    if @user.authenticated_token?( u2f_sign_response) && @user.update_attributes(params.require(:user).slice(:password, :password_confirmation).permit(:password, :password_confirmation))
       flash[:notice] = t('.flash_notice.no_errors')
       redirect_to root_path
     else
       render :new_password
     end
 
-    rescue User::AuthenticationError => message
-      flash[:notice] = message
-      redirect_to root_path
-    rescue User::BlankPasswordResetCode
-      flash[:notice] = t('.flash_notice.invalid')
-      redirect_to root_path
-    rescue ActiveRecord::RecordNotFound
-      flash[:notice] = t('.flash_notice.not_found')
-      redirect_to root_path
+  rescue User::AuthenticationError => message
+    flash[:notice] = message
+    redirect_to root_path
+  rescue User::BlankPasswordResetCode
+    flash[:notice] = t('.flash_notice.invalid')
+    redirect_to root_path
+  rescue ActiveRecord::RecordNotFound
+    flash[:notice] = t('.flash_notice.not_found')
+    redirect_to root_path
   end
 
   # authentication by replacement_token_registration_code attached to url

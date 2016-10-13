@@ -27,7 +27,6 @@ private
     elsif password_reset_code = params[:password_reset_code] # password reset procedure
       user = User.find_by_password_reset_code(password_reset_code)
       user.generate_challenge
-      user
     end
   rescue User::AuthenticationError => message
     @failed_challenge_message = message
