@@ -152,7 +152,7 @@ RSpec.shared_examples "reminders" do
     end
 
     scenario "delete a reminder" do
-      expect{reminder_delete_icon.click; wait_for_ajax}.to change{Reminder.count}.from(1).to(0)
+      expect{reminder_delete_icon.click; confirm_deletion; wait_for_ajax}.to change{Reminder.count}.from(1).to(0)
       close_reminders_modal
       expect(reminders_icon['data-count']).to eq "0"
     end
