@@ -49,7 +49,7 @@
       .fade.no_edit.in{:style => "left:-14px;"}
         %i.fa.fa-pencil-square-o.fa-lg{:id => "reminder_editable{{id}}_edit_start"}
     .col-md-1{:style => "text-align:center; font-size:14px; width:3%;"}
-      %i.fa.fa-trash-o.fa-lg#delete_reminder{'on-click' => 'delete_reminder(event,this)', :style => "position:relative; left:-12px; top:-2px;"}
+      %i.fa.fa-trash-o.fa-lg#delete_reminder{'on-click' => 'show_confirm_delete_modal()', :style => "position:relative; left:-12px; top:-2px;"}
 
 %script#new_reminder_template{:type => 'text/ractive'}
   .form-horizontal#new_reminder
@@ -162,6 +162,8 @@
       computed :
         persisted : ->
           !isNaN(parseInt(@get('id')))
+        delete_confirmation_message : ->
+          "#{t('.confirm_delete')}"
       save_reminder : ->
         url = @parent.get('create_reminder_url')
         data = $(@find('#new_reminder')).find(':input').serializeArray()
@@ -175,18 +177,7 @@
             context : @
       cancel_reminder : ->
         @parent.pop('reminders')
-      delete_reminder : (event,obj)->
-        ev = $.Event(event)
-        ev.stopPropagation()
-        data = [{name:'_method', value: 'delete'}]
-        $.ajax
-          url : @get('url')
-          data : data
-          method : 'post'
-          dataType : 'json'
-          context : @
-          success : @update_reminder
-      update_reminder : (response, statusText, jqxhr)->
+      delete_callback : (response, statusText, jqxhr)->
         @parent.set('reminders',response) # the global reminders
         @get('parent').set('reminders',response) # the parent object
       validate : ->
@@ -219,8 +210,10 @@
         el = @find('*')
         if @editor
           @editor.edit_cancel($(el))
+      , @ConfirmDeleteModal
 
     Ractive.components.reminder = Reminder
     Ractive.components.recipient = Recipient
+    return
 
 = javascript_include_tag 'remindable'

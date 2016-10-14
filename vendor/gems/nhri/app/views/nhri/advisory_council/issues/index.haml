@@ -14,6 +14,7 @@
 = render :partial => 'shared/collection_filter_controls', :locals => {:collection => :advisory_council_issues, :search_heading => t('.search_heading')}
 = render :partial => 'advisory_council_specifics' # overrides the shared view
 = render :partial => 'shared/collection', :locals => {:item => :advisory_council_issue, :i18n_key => "nhri.advisory_council_issues.index"}
+= render :partial => 'shared/confirm_delete_modal'
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note' # it's in the main app
 

@@ -1,11 +1,3 @@
-%script#confirm_delete_modal_template{:type => 'template/ractive'}
-  .modal.fade#confirm-delete
-    .modal-dialog.modal-sm
-      .modal-content
-        .modal-body
-        .modal-footer
-          %a.btn.btn-sm.btn-default#cancel{:type => :button, 'data-dismiss'=>'modal'}= t('cancel')
-          %a.btn.btn-sm.btn-danger.btn-ok#confirm{'on-click' => 'delete_item()'}= t('delete')
 
 %script#notes_template{:type => 'ractive/template'}
   <modal-custom id="notes_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
@@ -65,8 +57,7 @@
       .fade.no_edit.in{:style => "left:-14px;"}
         %i.fa.fa-pencil-square-o.fa-lg{:id => "note_editable{{id}}_edit_start"}
     .col-md-1{:style => "text-align:center; font-size:14px; width:5%;"}
-      -#%i.fa.fa-trash-o.fa-lg#delete_note{'on-click' => 'delete_note(event,this)', :style => "position:relative; left:-12px; top:-2px;"}
-      %i.fa.fa-trash-o.fa-lg#delete_note{'on-click' => 'show_confirm_delete_modal(id)'}
+      %i.fa.fa-trash-o.fa-lg#delete_note{'on-click' => 'show_confirm_delete_modal()', :style => "position:relative; left:-12px; top:-2px;"}
 
 %script#detailsContent{:type => 'text/ractive'}
   %table#details{:style => 'width:200px'}
@@ -93,7 +84,6 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 #note
-#confirm_delete_modal_container
 
 :coffeescript
   $ ->
@@ -124,6 +114,8 @@
           !isNaN(parseInt(@get('id')))
         truncated_text : ->
           @get('text').split(' ').slice(0,4).join(' ')+"..."
+        delete_confirmation_message : ->
+          "#{t('.confirm_delete')}"+"'"+@get('truncated_text')+"'"+"?"
       save_note : ->
         url = @parent.get('create_note_url')
         data = $(@find('#new_note')).find(':input').serializeArray()
@@ -137,7 +129,7 @@
             context : @
       cancel_note : ->
         @parent.pop('notes')
-      update_note : (response, statusText, jqxhr)->
+      delete_callback : (response, statusText, jqxhr)->
         @parent.set('notes',response)
         @get('parent').set('notes',response)
       validate : ->
@@ -163,13 +155,7 @@
           _(error_attrs).each (a)=> @set(a,false)
         else # user types into input or changes select
           @set(field+"_error",false)
-      show_confirm_delete_modal : (id)->
-        confirm_delete_modal.set
-          note_id : id
-          url : @get('url')
-          note : @
-          message : "#{t('.confirm_delete')}"+"'"+@get('truncated_text')+"'"+"?"
-        confirm_delete_modal.show(id)
+      , @ConfirmDeleteModal
 
     window.notes = new Ractive
       el: '#note'
@@ -201,35 +187,6 @@
         trigger: 'hover'
       teardown: ->
         $(node).off('mouseenter')
-
-    confirm_delete_modal = new Ractive
-      el : '#confirm_delete_modal_container'
-      template : '#confirm_delete_modal_template'
-      data :
-        note_id : null
-        url : null
-        parent : null
-        message : null
-      show : ->
-        $(@el).find('.modal#confirm-delete').modal('show')
-        $(@el).find('.modal#confirm-delete').find('.modal-body').html(@get('message'))
-      hide : ->
-        $(@el).find('.modal#confirm-delete').modal('hide')
-      update_note : (response, statusText, jqxhr)->
-        @hide()
-        note = @get('note')
-        note.update_note(response, statusText, jqxhr)
-      delete_item : ->
-        -#ev = $.Event(event)
-        -#ev.stopPropagation()
-        data = [{name:'_method', value: 'delete'}]
-        $.ajax
-          url : @get('url')
-          data : data
-          method : 'post'
-          dataType : 'json'
-          context : @
-          success : @update_note
 
     Ractive.decorators.popover = Popover
     Ractive.components.note = Note
