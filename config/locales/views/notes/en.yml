@@ -10,3 +10,4 @@ en:
       author: "Created by"
       updated_on: "Updated on"
       updated_by: "Updated by"
+      confirm_delete: "Are you sure you want to delete the note "

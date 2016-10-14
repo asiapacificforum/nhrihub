@@ -50,7 +50,7 @@ RSpec.shared_examples "notes" do
     end
 
     scenario "delete a note" do
-      expect{ delete_note.first.click; wait_for_ajax }.to change{Note.count}.from(2).to(1)
+      expect{ delete_note.first.click; confirm_deletion; wait_for_ajax }.to change{Note.count}.from(2).to(1)
       expect(notes_icon['data-count']).to eq "1"
     end
 

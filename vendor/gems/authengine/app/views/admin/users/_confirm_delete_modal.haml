@@ -6,6 +6,8 @@
         %a.btn.btn-sm.btn-default#cancel{:type => :button, 'data-dismiss'=>'modal'}= t('cancel')
         %a.btn.btn-sm.btn-danger.btn-ok#confirm= t('delete')
 
+
+// %a{:href=>'#', 'data-href'=>admin_user_path(user), 'data-toggle'=>'modal', 'data-target'=>'#confirm-delete', 'data-message' => t('.delete_confirm')+user.first_last_name+'?' }= t('.delete')
 :coffeescript
   $ ->
     delete_callback = (data, status, jqxhr)->
