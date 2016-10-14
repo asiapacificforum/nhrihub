@@ -1,5 +1,5 @@
-= render :partial => 'projects/index'
 = render :partial => 'shared/confirm_delete_modal'
+= render :partial => 'projects/index'
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note' # it's in the main app
 
@@ -35,6 +35,7 @@
     project_type_ids : []
     project_type_rule : 'any'
     performance_indicator_id : null
+  window.delete_confirmation_message = "#{t('.delete_confirm')}"
 
 
 =javascript_include_tag 'projects'

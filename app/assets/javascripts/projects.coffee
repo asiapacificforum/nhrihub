@@ -140,18 +140,7 @@ ProjectDocuments = Ractive.extend
     index = _(guids).indexOf(guid)
     @splice('project_documents',index,1)
 
-Persistence =
-  delete_project : (event)->
-    data = {'_method' : 'delete'}
-    url = Routes.project_path(current_locale, @get('id'))
-    # TODO if confirm
-    $.ajax
-      method : 'post'
-      url : url
-      data : data
-      success : @delete_callback
-      dataType : 'json'
-      context : @
+Persistence = $.extend
   delete_callback : (data,textStatus,jqxhr)->
     @parent.remove(@_guid)
   formData : ->
@@ -192,6 +181,7 @@ Persistence =
     @set(response)
   progress_bar_create : ->
     @findComponent('progressBar').start()
+  , ConfirmDeleteModal
 
 FilterMatch =
   include : ->
@@ -265,6 +255,12 @@ Project = Ractive.extend
        'agency_ids', 'convention_ids', 'selected_performance_indicators_attributes', 'project_documents_attributes']
     url : ->
       Routes.project_path(current_locale,@get('id'))
+    truncated_title : ->
+      words = @get('title').split(' ').slice(0,4)
+      words[4] = "..."
+      words.join(' ')
+    delete_confirmation_message : ->
+      window.delete_confirmation_message + @get('truncated_title')+"?"
     reminders_count : ->
       @get('reminders').length
     notes_count : ->

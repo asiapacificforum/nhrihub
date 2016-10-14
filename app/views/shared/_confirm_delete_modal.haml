@@ -10,43 +10,40 @@
           %a.btn.btn-sm.btn-danger.btn-ok#confirm{'on-click' => 'delete_item()'}= t('delete')
 
 :coffeescript
-  $ ->
-    confirm_delete_modal = new Ractive
-      el : '#confirm_delete_modal_container'
-      template : '#confirm_delete_modal_template'
-      data :
-        deletable : null
-        url : null
-        message : null
-        callback : null
-      show : ->
-        $(@el).find('.modal#confirm-delete').modal('show')
-        $(@el).find('.modal#confirm-delete').find('.modal-body').html(@get('message'))
-      hide : ->
-        $(@el).find('.modal#confirm-delete').modal('hide')
-      success_callback : (response, statusText, jqxhr)->
-        @hide()
-        @get('callback').apply(@get('deletable'),[response, statusText, jqxhr])
-      delete_item : ->
-        -#ev = $.Event(event)
-        -#ev.stopPropagation()
-        data = [{name:'_method', value: 'delete'}]
-        $.ajax
-          url : @get('url')
-          data : data
-          method : 'post'
-          dataType : 'json'
-          context : @
-          success : @success_callback
+  confirm_delete_modal = new Ractive
+    el : '#confirm_delete_modal_container'
+    template : '#confirm_delete_modal_template'
+    data :
+      deletable : null
+      url : null
+      message : null
+      callback : null
+    show : ->
+      $(@el).find('.modal#confirm-delete').modal('show')
+      $(@el).find('.modal#confirm-delete').find('.modal-body').html(@get('message'))
+    hide : ->
+      $(@el).find('.modal#confirm-delete').modal('hide')
+    success_callback : (response, statusText, jqxhr)->
+      @hide()
+      @get('callback').apply(@get('deletable'),[response, statusText, jqxhr])
+    delete_item : ->
+      -#ev = $.Event(event)
+      -#ev.stopPropagation()
+      data = [{name:'_method', value: 'delete'}]
+      $.ajax
+        url : @get('url')
+        data : data
+        method : 'post'
+        dataType : 'json'
+        context : @
+        success : @success_callback
 
-    @ConfirmDeleteModal =
-      show_confirm_delete_modal : ()->
-        confirm_delete_modal.set
-          deletable : @
-          url : @get('url')
-          message : @get('delete_confirmation_message')
-          callback : @delete_callback
-        confirm_delete_modal.show()
-        return
-
-    return
+  @ConfirmDeleteModal =
+    show_confirm_delete_modal : ()->
+      confirm_delete_modal.set
+        deletable : @
+        url : @get('url')
+        message : @get('delete_confirmation_message')
+        callback : @delete_callback
+      confirm_delete_modal.show()
+      return

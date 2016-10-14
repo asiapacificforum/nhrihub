@@ -325,8 +325,8 @@ RSpec.shared_examples "projects index" do
     end
 
     it "should delete a project" do
-      expect{ delete_project_icon.click; wait_for_ajax }.to change{ Project.count }.by(-1).
-                                                     and change{ projects_count }.by(-1)
+      expect{ delete_project_icon.click; confirm_deletion; wait_for_ajax }.to change{ Project.count }.by(-1).
+                                                                           and change{ projects_count }.by(-1)
     end
   end
 
