@@ -123,18 +123,7 @@ Mandates = Ractive.extend
 ComplaintCategoriesSelector = Ractive.extend
   template : '#complaint_categories_selector'
 
-Persistence =
-  delete_complaint : (event)->
-    data = {'_method' : 'delete'}
-    url = Routes.complaint_path(current_locale, @get('id'))
-    # TODO if confirm
-    $.ajax
-      method : 'post'
-      url : url
-      data : data
-      success : @delete_callback
-      dataType : 'json'
-      context : @
+Persistence = $.extend
   delete_callback : (data,textStatus,jqxhr)->
     @parent.remove(@_guid)
   save_complaint: ->
@@ -170,6 +159,7 @@ Persistence =
         context : context
         processData : false
         contentType : false # jQuery correctly sets the contentType and boundary values
+  , ConfirmDeleteModal
 
 ComplaintDocuments = Ractive.extend
   oninit : ->
@@ -294,6 +284,8 @@ FilterMatch =
 Complaint = Ractive.extend
   template : '#complaint_template'
   computed :
+    delete_confirmation_message : ->
+      i18n.delete_complaint_confirmation_message
     include : ->
       @include()
     reminders_count : ->
@@ -310,7 +302,7 @@ Complaint = Ractive.extend
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
         'complaint_category_ids', 'agency_ids', 'attached_documents_attributes']
     url : ->
-      Routes.complaint_path('en', @get('id'))
+      Routes.complaint_path(current_locale, @get('id'))
     formatted_date :
       get: ->
         $.datepicker.formatDate("yy, M d", new Date(@get('date')) )

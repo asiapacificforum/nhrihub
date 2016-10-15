@@ -47,7 +47,7 @@
       .col-md-1.download
         %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
       .col-md-1.delete
-        %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_document()'}
+        %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()'}
 
 %script#new_attached_document_template{:type => 'template/ractive'}
   .row.document

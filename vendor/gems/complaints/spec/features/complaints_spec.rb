@@ -352,7 +352,7 @@ feature "complaints index", :js => true do
 
   it "edits a complaint, deleting a file" do
     edit_complaint
-    expect{delete_document; wait_for_ajax}.to change{ Complaint.first.complaint_documents.count }.by(-1).
+    expect{delete_document; confirm_deletion; wait_for_ajax}.to change{ Complaint.first.complaint_documents.count }.by(-1).
                                           and change{ documents.count }.by(-1)
   end
 
