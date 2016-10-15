@@ -6,8 +6,6 @@
   <modal-body>
   <i class="fa fa-plus fa-sm" id="add_communication" on-click='new_communication()' data-toggle="tooltip" data-placement="bottom" title="add communication"/>
   #communications{:style => "margin-bottom:80px;"}
-    .row
-      %h5.col-md-2{:style => "width:15%;"}= t('.date')
     {{#communications}}
     <communication maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' complaint_id='{{complaint_id}}' user_id='{{user_id}}' direction='{{direction}}' mode='{{mode}}' note='{{note}}' user='{{user}}' date='{{date}}' attached_documents='{{attached_documents}}' complaint_id='{{complaint_id}}' />
     {{/communications}}
@@ -151,12 +149,12 @@
             <modeIcon />
           .direction{:style => "padding-left:15px;"}
             <directionIcon />
-        .col-md-2{'data-toggle'=>:edit}
+        .col-md-3{'data-toggle'=>:edit}
           <communicants communicants='{{communicants}}' />
         .col-md-1.note{'data-toggle'=>:edit}
           .note_icon{'data-toggle' => :tooltip, :title => t('icon.note'), 'on-click'=>'show_note()'}
         .col-md-1.documents
-          .fa.fa-file-text-o.counter#show_document_modal{'on-click'=>"show_document_modal()", 'data-count' => '{{document_count}}', 'data-toggle' => :tooltip, :title => t('icon.documents')}
+          .fa.fa-file-text-o.counter#show_document_modal{'on-click'=>"show_document_modal()", 'data-count' => '{{document_count}}', 'data-toggle' => :tooltip, :title => t('icon.documents'), :style => "position:relative;"}
         .col-md-1.delete
           %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_communication(event)', 'data-toggle' => :tooltip, :title => t('icon.delete')}
 

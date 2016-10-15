@@ -150,7 +150,7 @@ Persistence = $.extend
       data = @formData()
       $.ajax
         # thanks to http://stackoverflow.com/a/22987941/451893
-        xhr: @progress_bar_create.bind(@)
+        #xhr: @progress_bar_create.bind(@)
         method : 'put'
         data : data
         url : Routes.project_path(current_locale, @get('id'))
@@ -168,7 +168,7 @@ Persistence = $.extend
       data = @formData()
       $.ajax
         # thanks to http://stackoverflow.com/a/22987941/451893
-        xhr: @progress_bar_create.bind(@)
+        #xhr: @progress_bar_create.bind(@)
         method : 'post'
         data : data
         url : Routes.projects_path(current_locale)

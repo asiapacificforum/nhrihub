@@ -81,7 +81,6 @@ feature "complaint bases admin", :js => true do
     expect{ delete_complaint_basis("A thing").click; wait_for_ajax }.to change{ GoodGovernance::ComplaintBasis.count }.by -1
     expect(page).to have_selector '#gg_bases #empty'
   end
-
 end
 
 feature "complaint categories admin", :js => true do
@@ -122,7 +121,6 @@ feature "complaint categories admin", :js => true do
     expect{ delete_complaint_basis("A thing").click; wait_for_ajax }.to change{ ComplaintCategory.count }.by -1
     expect(page).to have_selector '#complaint_categories #empty'
   end
-
 end
 
 feature "complaint file admin", :js => true do

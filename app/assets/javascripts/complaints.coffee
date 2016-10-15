@@ -142,7 +142,7 @@ Persistence =
       data = @formData()
       $.ajax
         # thanks to http://stackoverflow.com/a/22987941/451893
-        xhr: @progress_bar_create.bind(@)
+        #xhr: @progress_bar_create.bind(@)
         method : 'post'
         data : data
         url : Routes.complaints_path(current_locale)
@@ -162,7 +162,7 @@ Persistence =
       data = @formData()
       $.ajax
         # thanks to http://stackoverflow.com/a/22987941/451893
-        xhr: @progress_bar_create.bind(@)
+        #xhr: @progress_bar_create.bind(@)
         method : 'put'
         data : data
         url : Routes.complaint_path(current_locale, @get('id'))
@@ -170,22 +170,6 @@ Persistence =
         context : context
         processData : false
         contentType : false # jQuery correctly sets the contentType and boundary values
-
-#ProgressBar = Ractive.extend
-  #template : '#progress_bar_template'
-  #progressbar_start : ->
-    ## this is called for each file being uploaded
-    #$('.fileupload-progress.fade').addClass('in')
-  #progress_evaluate : (evt)->
-    #if evt.lengthComputable
-      #percentComplete = evt.loaded / evt.total
-      #percentComplete = parseInt(percentComplete * 100)
-      #$('.progress-bar').css('width',"#{percentComplete}%")
-  #start : ->
-    #xhr = new XMLHttpRequest()
-    #xhr.upload.addEventListener 'loadstart', @progressbar_start , false
-    #xhr.upload.addEventListener 'progress', @progress_evaluate , false
-    #xhr
 
 ComplaintDocuments = Ractive.extend
   oninit : ->
@@ -316,6 +300,8 @@ Complaint = Ractive.extend
       @get('reminders').length
     notes_count : ->
       @get('notes').length
+    communications_count : ->
+      @get('communications').length
     persisted : ->
       !_.isNull(@get('id'))
     persistent_attributes : ->
