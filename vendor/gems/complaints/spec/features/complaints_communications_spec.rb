@@ -257,7 +257,7 @@ feature "complaints communications", :js => true do
   end
 
   it "should delete a communication" do
-    expect{ delete_communication }.to change{ Communication.count }.from(1).to(0).
+    expect{ delete_communication; confirm_deletion; wait_for_ajax }.to change{ Communication.count }.from(1).to(0).
                                   and change{ communications.count }.from(1).to(0)
   end
 

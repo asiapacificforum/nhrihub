@@ -97,19 +97,7 @@ Persistence =
         context : context
         processData : false
         contentType : false # jQuery correctly sets the contentType and boundary values
-  delete_communication : (event)->
-    ev = $.Event(event)
-    ev.stopPropagation()
-    data = [{name:'_method', value: 'delete'}]
-    url = Routes.complaint_communication_path(current_locale,@get('complaint_id'),@get('id'))
-    $.ajax
-      url : url
-      data : data
-      method : 'post'
-      dataType : 'json'
-      context : @
-      success : @update_communication
-  update_communication : (response, statusText, jqxhr)->
+  delete_callback : (response, statusText, jqxhr)->
     @parent.set('communications',response)
     @get('parent').set('communications',response) # @get('parent') is the complaint instance
   create_communication : (response, statusText, jqxhr)->
@@ -166,6 +154,8 @@ Communication = Ractive.extend
       @get('mode') == 'letter'
     received_direction : ->
       @get('direction') == 'received'
+    delete_confirmation_message : ->
+      delete_confirmation_message
   persisted_attributes : ->
     { communication : _.chain(@get()).pick(@get('persistent_attributes')).value() }
   data : ->
@@ -205,7 +195,7 @@ Communication = Ractive.extend
   validate_direction : ->
     @validator.validate_attribute('direction')
     @validator.validate_attribute('multiple_sender')
-  , Note, Persistence
+  , Note, Persistence, ConfirmDeleteModal
 
 @communications = new Ractive
   el : '#communication'

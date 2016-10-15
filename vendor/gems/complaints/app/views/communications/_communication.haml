@@ -156,9 +156,12 @@
         .col-md-1.documents
           .fa.fa-file-text-o.counter#show_document_modal{'on-click'=>"show_document_modal()", 'data-count' => '{{document_count}}', 'data-toggle' => :tooltip, :title => t('icon.documents'), :style => "position:relative;"}
         .col-md-1.delete
-          %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_communication(event)', 'data-toggle' => :tooltip, :title => t('icon.delete')}
+          %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()', 'data-toggle' => :tooltip, :title => t('icon.delete')}
 
 #communication
+
+:coffeescript
+  @delete_confirmation_message = "#{I18n.t('communications.communication.delete_confirmation_message')}"
 
 =javascript_include_tag 'communication'
 

@@ -1,3 +1,10 @@
+// Use it like this:
+// 1. extend a ractive component with ConfirmDeleteModal to add the show_confirm_delete_modal method
+// 2. make the 'on-click' handler for the delete icon 'show_confirm_delete_modal()'
+// 3. add a computed attribute to the object called delete_confirmation_message
+// 4. ensure that the object has a url attribute as a rack endpoint for delete
+// 5. ensure that the callback action for the delete method is called "delete_callback"
+// 6. ensure that the object does not have its own delete method
 #confirm_delete_modal_container
 
 %script#confirm_delete_modal_template{:type => 'template/ractive'}
@@ -26,6 +33,8 @@
     success_callback : (response, statusText, jqxhr)->
       @hide()
       @get('callback').apply(@get('deletable'),[response, statusText, jqxhr])
+    error_callback : ->
+      console.log "error callback"
     delete_item : ->
       -#ev = $.Event(event)
       -#ev.stopPropagation()
@@ -37,6 +46,7 @@
         dataType : 'json'
         context : @
         success : @success_callback
+        error : @error_callback
 
   @ConfirmDeleteModal =
     show_confirm_delete_modal : ()->
