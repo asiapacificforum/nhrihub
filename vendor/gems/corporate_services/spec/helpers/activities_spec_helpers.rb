@@ -3,6 +3,10 @@ require 'rspec/core/shared_context'
 module ActivitiesSpecHelpers
   extend RSpec::Core::SharedContext
 
+  def click_delete_activity
+    page.find(activity_selector + "span.delete_icon").click
+  end
+
   def first_activity_description
     page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[0]
   end

@@ -2,6 +2,9 @@ require 'rspec/core/shared_context'
 
 module PerformanceIndicatorsSpecHelpers
   extend RSpec::Core::SharedContext
+  def click_delete_icon
+    page.find(performance_indicator_selector + "span.delete_icon").click
+  end
 
   def first_performance_indicator_description
     page.all(performance_indicator_selector + ".description div.no_edit span:nth-of-type(1)")[0]

@@ -6,6 +6,11 @@ en:
         current_year: "Strategic Plan: Current reporting year %{start} - %{end}"
         other_years: "Strategic Plan: Starting %{start}, ending %{end}"
         add_priority: "Add strategic priority"
+        delete_performance_indicator_confirmation_message: "Are you sure you want to delete performance indicator "
+        delete_activity_confirmation_message: "Are you sure you want to delete activity "
+        delete_outcome_confirmation_message: "Are you sure you want to delete outcome "
+        delete_planned_result_confirmation_message: "Are you sure you want to delete planned result "
+        delete_strategic_priority_confirmation_message : "Are you sure you want to delete strategic priority "
       strategic_plan_templates:
         new_strategic_priority: "New strategic priority"
         priority: "Priority level"

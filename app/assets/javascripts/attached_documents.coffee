@@ -24,16 +24,6 @@
       i18n.delete_document_confirmation_message + @get('truncated_title') + "?"
   remove_file : ->
     @parent.remove(@_guid)
-  #delete_document : ->
-    #data = {'_method' : 'delete'}
-    ## TODO if confirm
-    #$.ajax
-      #method : 'post'
-      #url : @get('url')
-      #data : data
-      #success : @delete_callback
-      #dataType : 'json'
-      #context : @
   delete_callback : (data,textStatus,jqxhr)->
     @parent.remove(@_guid)
   download_attachment : ->

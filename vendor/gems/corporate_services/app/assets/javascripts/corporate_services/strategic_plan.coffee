@@ -39,6 +39,10 @@ $ ->
         @get('reminders').length
       notes_count : ->
         @get('notes').length
+      truncated_description : ->
+        @get('description').split(' ').slice(0,4).join(' ')+"... etc."
+      delete_confirmation_message : ->
+        i18n.delete_performance_indicator_confirmation_message + "\""+@get('truncated_description')+"\"" + "?"
     remove_description_errors : ->
       @set("description_error","")
     create_save : ->
@@ -64,18 +68,7 @@ $ ->
     create_performance_indicator : (response, statusText, jqxhr)->
       UserInput.reset()
       @set(response)
-    delete_this : (event,object)->
-      ev = $.Event(event)
-      ev.stopPropagation()
-      data = [{name:'_method', value: 'delete'}]
-      $.ajax
-        url : @get('url')
-        data : data
-        method : 'post'
-        dataType : 'json'
-        context : @
-        success : @update_performance_indicator
-    update_performance_indicator : (resp, statusText, jqxhr)->
+    delete_callback : (resp, statusText, jqxhr)->
       UserInput.reset()
       @parent.set('performance_indicators',resp)
     remove_errors : ->
@@ -87,7 +80,7 @@ $ ->
       @parent.remove_performance_indicator_form()
     edit_update : (performance_indicator) ->
       @set(performance_indicator)
-  , Remindable, Notable
+  , Remindable, Notable, ConfirmDeleteModal
 
   Activity = Ractive.extend
     template : '#activity_template'
@@ -96,6 +89,10 @@ $ ->
     computed :
       persisted : ->
         !isNaN(parseInt(@get('id')))
+      truncated_description : ->
+        @get('description').split(' ').slice(0,4).join(' ')+"... etc."
+      delete_confirmation_message : ->
+        i18n.delete_activity_confirmation_message + "\""+@get('truncated_description')+"\"" + "?"
     create_stop : ->
       UserInput.reset()
       @parent.remove_activity_form()
@@ -122,18 +119,18 @@ $ ->
     create_activity : (response, statusText, jqxhr)->
       UserInput.reset()
       @set(response)
-    delete_this : (event,object)->
-      ev = $.Event(event)
-      ev.stopPropagation()
-      data = [{name:'_method', value: 'delete'}]
-      $.ajax
-        url : @get('url')
-        data : data
-        method : 'post'
-        dataType : 'json'
-        context : @
-        success : @update_activity
-    update_activity : (resp, statusText, jqxhr)->
+    #delete_this : (event,object)->
+      #ev = $.Event(event)
+      #ev.stopPropagation()
+      #data = [{name:'_method', value: 'delete'}]
+      #$.ajax
+        #url : @get('url')
+        #data : data
+        #method : 'post'
+        #dataType : 'json'
+        #context : @
+        #success : @update_activity
+    delete_callback : (resp, statusText, jqxhr)->
       UserInput.reset()
       @parent.set('activities', resp)
     remove_errors : ->
@@ -158,12 +155,17 @@ $ ->
         @pop('performance_indicators')
     edit_update : (activity)->
       @set(activity)
+  , ConfirmDeleteModal
 
   Outcome = Ractive.extend
     template : '#outcome_template'
     computed :
       persisted : ->
         !isNaN(parseInt(@get('id')))
+      truncated_description : ->
+        @get('description').split(' ').slice(0,4).join(' ')+"... etc."
+      delete_confirmation_message : ->
+        i18n.delete_outcome_confirmation_message + "\""+@get('truncated_description')+"\"" + "?"
     components :
       activity : Activity
     create_stop : ->
@@ -197,18 +199,7 @@ $ ->
       @set("description_error","")
     remove_errors : ->
       @remove_description_errors()
-    delete_this : (event,object)->
-      ev = $.Event(event)
-      ev.stopPropagation()
-      data = [{name:'_method', value: 'delete'}]
-      $.ajax
-        url : @get('url')
-        data : data
-        method : 'post'
-        dataType : 'json'
-        context : @
-        success : @update_outcomes
-    update_outcomes : (resp, statusText, jqxhr)->
+    delete_callback : (resp, statusText, jqxhr)->
       UserInput.reset()
       @parent.set('outcomes',resp)
     new_activity : ->
@@ -230,12 +221,17 @@ $ ->
         @pop('activities')
     edit_update : (outcome)->
       @set(outcome)
+  , ConfirmDeleteModal
 
   PlannedResult = Ractive.extend
     template : '#planned_result_template'
     computed :
       persisted : ->
         !isNaN(parseInt(@get('id')))
+      truncated_description : ->
+        @get('description').split(' ').slice(0,4).join(' ')+"... etc."
+      delete_confirmation_message : ->
+        i18n.delete_planned_result_confirmation_message + "\""+@get('truncated_description')+"\"" + "?"
     components :
       outcome : Outcome
     oninit : ->
@@ -272,20 +268,9 @@ $ ->
       UserInput.reset()
       @set(response)
       @parent.show_add_planned_result()
-    delete_this : (event)->
-      ev = $.Event(event)
-      ev.stopPropagation()
-      data = [{name:'id', value:@get('id')}, {name:'_method', value: 'delete'}]
-      $.ajax
-        url : @get('url')
-        data : data
-        method : 'post'
-        dataType : 'json'
-        context : @
-        success : @update_all_pr
     update_pr : (response, statusText, jqxhr)->
       @set(response)
-    update_all_pr : (response, statusText, jqxhr)->
+    delete_callback : (response, statusText, jqxhr)->
       UserInput.reset()
       @parent.set('planned_results',response)
     new_outcome : ->
@@ -316,6 +301,7 @@ $ ->
       @_add_outcome().show()
     edit_update : (planned_result)->
       @set(planned_result)
+  , ConfirmDeleteModal
 
   # response to save is assumed to be an array of all
   # the strategic priorities on the page
@@ -374,6 +360,8 @@ $ ->
         window.strategic_plan.get('id')
       persisted : ->
         !isNaN(parseInt(@get('id')))
+      delete_confirmation_message : ->
+        i18n.delete_strategic_priority_confirmation_message + @get('priority_level')+ "?"
     new_planned_result: ->
       UserInput.claim_user_input_request(@,'remove_planned_result_form')
       new_planned_result_attributes = 
@@ -400,10 +388,8 @@ $ ->
     update_sp : (data,textStatus,jqxhr)->
       UserInput.reset()
       strategic_plan.set('strategic_priorities', data)
-    delete : ->
-      data = {'_method' : 'delete'}
-      # TODO if confirm
-      $.post(@get('url'), data, @update_sp, 'json')
+    delete_callback : (data,textStatus,jqxhr)->
+      @update_sp(data,textStatus,jqxhr)
     validate : ->
       pl = @._validate('priority_level')
       desc = @._validate('description')
@@ -439,6 +425,7 @@ $ ->
       @show_add_planned_result()
     edit_update : (strategic_priorities)->
       @parent.set('strategic_priorities',strategic_priorities) # different from other components, b/c user may update the priority level. In others, index is not user-settable
+  , ConfirmDeleteModal
 
   window.strategic_plan = new Ractive
     el : "#strategic_plan"

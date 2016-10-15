@@ -2,6 +2,10 @@ require 'rspec/core/shared_context'
 
 module PlannedResultHelpers
   extend RSpec::Core::SharedContext
+  def click_delete_planned_result
+    page.find(".row.planned_result .col-md-2.description span.delete_icon").click
+  end
+
   def edit_planned_result
     planned_results_descriptions.first
   end

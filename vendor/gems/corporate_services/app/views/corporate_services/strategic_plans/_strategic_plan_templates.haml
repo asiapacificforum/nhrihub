@@ -28,7 +28,7 @@
             .fade.no_edit.in
               %i.fa.fa-pencil-square-o.fa-lg{:id => "strategic_priority_editable{{id}}_edit_start"}
           .col-md-1{:style => "text-align:center; font-size:14px;"}
-            %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'delete()'}
+            %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'show_confirm_delete_modal()'}
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
       .panel-body.table#planned_results
         .row.heading
@@ -91,7 +91,7 @@
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event)'}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
           %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]', 'on-keydown' => "remove_description_errors()"}
@@ -161,7 +161,7 @@
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "outcome_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
           %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
@@ -211,7 +211,7 @@
     .col-md-2.description.form-group{'data-toggle' => 'edit', :style=>"width:20%; padding-top:6px;", :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>'description'}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
           %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
@@ -265,7 +265,7 @@
     .col-md-2.description.form-group{'data-toggle'=>'edit', :class => "{{#description_error}}has-error{{/}}", :style=>"width:25%", 'data-attribute'=>'description'}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'delete_this(event,this)'}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
           %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_description', :placeholder => "Enter performance indicator",

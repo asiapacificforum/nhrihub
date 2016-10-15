@@ -95,13 +95,13 @@ feature "actions on existing activities", :js => true do
 
   scenario "delete the first of multiple activities" do
     page.all(activity_selector + ".description")[0].hover
-    expect{ page.find(activity_selector + "span.delete_icon").click; wait_for_ajax}.to change{Activity.count}.from(2).to(1)
+    expect{ click_delete_activity; confirm_deletion; wait_for_ajax}.to change{Activity.count}.from(2).to(1)
     expect(page.find(activity_selector + ".description").text).to eq "1.1.1.1 do the right thing"
   end
 
   scenario "delete one of multiple activities, not the first" do
     page.all(activity_selector + ".description")[1].hover
-    expect{ page.find(activity_selector + "span.delete_icon").click; wait_for_ajax}.to change{Activity.count}.from(2).to(1)
+    expect{ click_delete_activity; confirm_deletion; wait_for_ajax}.to change{Activity.count}.from(2).to(1)
     expect(page.find(activity_selector + ".description").text).to eq "1.1.1.1 work hard"
   end
 

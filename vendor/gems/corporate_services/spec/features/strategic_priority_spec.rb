@@ -99,7 +99,7 @@ feature "editing strategic priorities", :js => true do
     select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
     fill_in "strategic_priority_description", :with => "edited description"
     strategic_priority_edit_save_icon.click
-    sleep(0.2)
+    wait_for_ajax
 
     expect(page).to have_selector(".strategic_priority_title .priority_level .no_edit span", :text => "Strategic Priority 2:")
     expect(page).to have_selector(".strategic_priority_title .description .no_edit span", :text => "edited description")
@@ -109,7 +109,7 @@ feature "editing strategic priorities", :js => true do
     strategic_priority_edit_icon.click
     select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
     fill_in "strategic_priority_description", :with => ""
-    expect{ strategic_priority_edit_save_icon.click; sleep(0.2) }.not_to change{StrategicPriority.first.description}
+    expect{ strategic_priority_edit_save_icon.click; wait_for_ajax }.not_to change{StrategicPriority.first.description}
     expect(page).to have_selector('#description_error', :text => "You must enter a description")
   end
 
@@ -126,7 +126,7 @@ feature "editing strategic priorities", :js => true do
     select "Strategic Priority 2", :from => 'strategic_priority_priority_level'
     fill_in "strategic_priority_description", :with => ""
     strategic_priority_edit_save_icon.click
-    sleep(0.2)
+    wait_for_ajax
     expect(page).to have_selector('#description_error', :text => "You must enter a description")
     strategic_priority_cancel_edit_icon.click
     expect(page).to have_selector(".strategic_priority_title .description .no_edit span", :text => "Gonna do things betta")
@@ -145,7 +145,7 @@ feature "deleting strategic priorities", :js => true do
     end
 
     scenario "delete a strategic priority" do
-      expect{ strategic_priority_delete_icon.click; sleep(0.2) }.to change{StrategicPriority.count}.from(1).to(0)
+      expect{ strategic_priority_delete_icon.click; confirm_deletion; wait_for_ajax }.to change{StrategicPriority.count}.from(1).to(0)
       expect(page).not_to have_selector('.strategic_priority')
     end
   end
@@ -162,7 +162,7 @@ feature "deleting strategic priorities", :js => true do
     end
 
     scenario "delete a strategic priority" do
-      expect{ second_strategic_priority_delete_icon.click; sleep(0.2) }.to change{StrategicPriority.count}.from(3).to(2)
+      expect{ second_strategic_priority_delete_icon.click; confirm_deletion; wait_for_ajax }.to change{StrategicPriority.count}.from(3).to(2)
       expect(page).to have_selector('.strategic_priority', :count => 2)
       second_strategic_priority_edit_icon.click
       expect(page).to have_selector('div.edit.in input#strategic_priority_description')

@@ -2,6 +2,10 @@ require 'rspec/core/shared_context'
 
 module OutcomesSpecHelpers
   extend RSpec::Core::SharedContext
+  def click_delete_outcome
+    page.find(".row.planned_result .row.outcome .col-md-2.description span.delete_icon").click
+  end
+
   def outcome_edit_cancel
     page.all('.row.outcome .description i').detect{|el| el['id'].match(/outcome_editable\d*_edit_cancel/)}
   end

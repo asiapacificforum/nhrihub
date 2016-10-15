@@ -25,7 +25,7 @@ feature "populate plannned result outcomes", :js => true do
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       save_outcome.click
-      sleep(0.3)
+      wait_for_ajax
       expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.1 Achieve nirvana")
       expect(Outcome.count).to eq 1
     end
@@ -33,7 +33,7 @@ feature "populate plannned result outcomes", :js => true do
     scenario "try to save outcome with blank description field" do
       add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
-      expect{save_outcome.click; sleep(0.2)}.not_to change{Outcome.count}
+      expect{save_outcome.click; wait_for_ajax}.not_to change{Outcome.count}
       expect(page).to have_selector(".description #description_error", :text => "You must enter a description")
     end
 
@@ -41,7 +41,7 @@ feature "populate plannned result outcomes", :js => true do
       add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => " "
-      expect{save_outcome.click; sleep(0.2)}.not_to change{Outcome.count}
+      expect{save_outcome.click; wait_for_ajax}.not_to change{Outcome.count}
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
@@ -50,14 +50,14 @@ feature "populate plannned result outcomes", :js => true do
       #expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       save_outcome.click
-      sleep(0.3)
+      wait_for_ajax
       expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.1 Achieve nirvana")
       expect(Outcome.count).to eq 1
       add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Total enlightenment"
       save_outcome.click
-      sleep(0.2)
+      wait_for_ajax
       expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Total enlightenment")
       expect(Outcome.count).to eq 2
     end
@@ -78,20 +78,18 @@ feature "populate plannned result outcomes", :js => true do
     scenario "add outcomes item" do
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
-      expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
+      expect{save_outcome.click; wait_for_ajax}.to change{Outcome.count}.from(1).to(2)
       expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Achieve nirvana")
       # now can we delete it?
       page.all(".row.outcome .col-md-2.description div.no_edit")[1].hover
-      page.find(".row.outcome .col-md-2.description span.delete_icon").click
-      sleep(0.4)
-      expect(Outcome.count).to eq 1
+      expect{ click_delete_outcome; confirm_deletion; wait_for_ajax }.to change{ Outcome.count }.from(2).to(1)
       expect(page.find(".row.planned_result .row.outcome .col-md-2.description").text).to eq "1.1.1 Smarter thinking"
       expect(page.all(".row.planned_result .row.outcome").count).to eq 1
       # now check that we can still add an outcome
       add_outcome.click
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
-      expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
+      expect{save_outcome.click; wait_for_ajax}.to change{Outcome.count}.from(1).to(2)
       expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Achieve nirvana")
     end
   end
@@ -115,13 +113,13 @@ feature "actions on existing single outcome", :js => true do
 
   scenario "delete the first and only outcome" do
     page.find(".row.planned_result .row.outcome .col-md-2.description div.no_edit").hover
-    expect{ page.find(".row.planned_result .row.outcome .col-md-2.description span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(1).to(0)
+    expect{ click_delete_outcome; confirm_deletion; wait_for_ajax}.to change{Outcome.count}.from(1).to(0)
     expect(page).not_to have_selector(".row.planned_result .row.outcome")
     # now check that we can still add an outcome
     add_outcome.click
     expect(page).not_to have_selector("i.new_outcome")
     fill_in 'new_outcome_description', :with => "Achieve nirvana"
-    expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(0).to(1)
+    expect{save_outcome.click; wait_for_ajax}.to change{Outcome.count}.from(0).to(1)
     expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.1 Achieve nirvana")
   end
 
@@ -129,7 +127,7 @@ feature "actions on existing single outcome", :js => true do
     page.find(".row.planned_result .row.outcome .col-md-2.description span").click
     outcome_description_field.set("new description")
     outcome_save_icon.click
-    sleep(0.4)
+    wait_for_ajax
     expect( Outcome.first.reload.description ).to eq "new description"
     expect(page.find(".planned_result.editable_container .outcome .no_edit span:first-of-type").text ).to eq "1.1.1 new description"
   end
@@ -153,38 +151,37 @@ feature "actions on existing multiple outcomes", :js => true do
 
   scenario "delete the first of multiple outcomes" do
     page.all(".row.planned_result .row.outcome .col-md-2.description div.no_edit")[0].hover
-    expect{ page.find(".row.planned_result .row.outcome .col-md-2.description span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
+    expect{ click_delete_outcome; confirm_deletion; wait_for_ajax}.to change{Outcome.count}.from(2).to(1)
     expect(page.find(".row.planned_result  .row.outcome .col-md-2.description").text).to eq "1.1.1 cosmic harmony"
     # now check that we can still add an outcome
     add_outcome.click
     expect(page).not_to have_selector("i.new_outcome")
     fill_in 'new_outcome_description', :with => "Achieve nirvana"
-    expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
+    expect{save_outcome.click; wait_for_ajax}.to change{Outcome.count}.from(1).to(2)
     expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Achieve nirvana")
   end
 
   scenario "delete one of multiple outcomes, not the first" do
     page.all(".row.outcome .col-md-2.description div.no_edit")[1].hover
-    expect{ page.find(".row.outcome .col-md-2.description span.delete_icon").click; sleep(0.2)}.to change{Outcome.count}.from(2).to(1)
+    expect{ click_delete_outcome; confirm_deletion; wait_for_ajax}.to change{Outcome.count}.from(2).to(1)
     expect(page.find(".row.planned_result .row.outcome .col-md-2.description").text).to eq "1.1.1 whirled peas"
     # now check that we can still add an outcome
     add_outcome.click
     expect(page).not_to have_selector("i.new_outcome")
     fill_in 'new_outcome_description', :with => "Achieve nirvana"
-    expect{save_outcome.click; sleep(0.2)}.to change{Outcome.count}.from(1).to(2)
+    expect{save_outcome.click; wait_for_ajax}.to change{Outcome.count}.from(1).to(2)
     expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .col-md-2:nth-of-type(1)", :text => "1.1.2 Achieve nirvana")
   end
 
   scenario "edit the first of multiple outcomes" do
     outcome_descriptions[0].click
     outcome_description_field.set("new description")
-    expect{ outcome_save_icon.click; sleep(0.3) }.to change{ Outcome.first.reload.description }.to "new description"
+    expect{ outcome_save_icon.click; wait_for_ajax }.to change{ Outcome.first.reload.description }.to "new description"
     expect(page.all(".row.outcome .col-md-2.description")[0].text ).to eq "1.1.1 new description"
   end
 
   scenario "edit and cancel without making any changes" do
     outcome_descriptions[0].click
-    sleep(0.3)
     outcome_edit_cancel.click
     expect(page).to have_selector(".table#planned_results .row.planned_result .row.outcome .description .in", :text => "1.1.1 whirled peas")
   end
@@ -192,7 +189,7 @@ feature "actions on existing multiple outcomes", :js => true do
   scenario "edit to blank description and cancel" do
     outcome_descriptions[0].click
     outcome_description_field.set("")
-    expect{ outcome_save_icon.click; sleep(0.3) }.not_to change{ Outcome.first.reload.description }
+    expect{ outcome_save_icon.click; wait_for_ajax }.not_to change{ Outcome.first.reload.description }
     expect(page).to have_selector(".outcome #description_error", :text => "You must enter a description")
     outcome_edit_cancel.click
     expect(page).not_to have_selector(".outcome #description_error", :text => "You must enter a description")
@@ -205,7 +202,7 @@ feature "actions on existing multiple outcomes", :js => true do
   scenario "edit one of multiple outcomes, not the first" do
     outcome_descriptions[1].click
     outcome_description_field.set("new description")
-    expect{ outcome_save_icon.click; sleep(0.2) }.to change{ Outcome.last.description }.to "new description"
+    expect{ outcome_save_icon.click; wait_for_ajax }.to change{ Outcome.last.description }.to "new description"
     expect(page.all(".row.outcome .col-md-2.description")[1].text ).to eq "1.1.2 new description"
   end
 end

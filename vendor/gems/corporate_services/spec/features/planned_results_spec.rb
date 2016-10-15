@@ -94,9 +94,7 @@ feature "actions on existing planned results", :js => true do
     expect(page.all('.row.planned_result .col-md-2.description .no_edit span:first-of-type')[0].text).to eq "1.1 Something profound"
     expect(page.all('.row.planned_result .col-md-2.description .no_edit span:first-of-type')[1].text).to eq "1.2 Something not so profound"
     page.all(".row.planned_result .col-md-2.description")[0].hover
-    page.find(".row.planned_result .col-md-2.description span.delete_icon").click
-    wait_for_ajax
-    expect(PlannedResult.count).to eq 1
+    expect{ click_delete_planned_result; confirm_deletion; wait_for_ajax}.to change{ PlannedResult.count }.to(1)
     expect(page.find('.row.planned_result .col-md-2.description .no_edit span:first-of-type').text).to eq "1.1 Something not so profound"
   end
 
