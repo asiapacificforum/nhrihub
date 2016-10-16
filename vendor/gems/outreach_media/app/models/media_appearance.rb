@@ -32,6 +32,8 @@ class MediaAppearance < ActiveRecord::Base
     end
   end
 
+  before_save NullStringConvert
+
   def is_hr_violation?
     subarea_ids.include? Subarea.hr_violation_id
   end

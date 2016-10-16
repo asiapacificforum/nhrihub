@@ -16,6 +16,8 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
 
   default_scope {order(:created_at => :desc)}
 
+  before_save NullStringConvert
+
   def as_json(options={})
     super({:except => [:updated_at,
                        :created_at],
@@ -78,5 +80,10 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
   def remindable_url(remindable_id)
     nhri_advisory_council_advisory_council_issue_reminder_path('en',id,remindable_id)
   end
+
+  #def article_link=(value)
+    #value = nil if "null" == value
+    #write_attribute(:article_link, value)
+  #end
 
 end
