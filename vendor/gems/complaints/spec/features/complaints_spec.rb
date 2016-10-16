@@ -437,7 +437,7 @@ feature "complaints index", :js => true do
   end
 
   it "deletes a complaint" do
-    expect{delete_complaint; wait_for_ajax}.to change{ Complaint.count }.by(-1).
+    expect{delete_complaint; confirm_deletion; wait_for_ajax}.to change{ Complaint.count }.by(-1).
                                            and change{ complaints.count }.by(-1)
   end
 

@@ -155,7 +155,7 @@
           _(error_attrs).each (a)=> @set(a,false)
         else # user types into input or changes select
           @set(field+"_error",false)
-      , @ConfirmDeleteModal
+    , ConfirmDeleteModal
 
     window.notes = new Ractive
       el: '#note'
