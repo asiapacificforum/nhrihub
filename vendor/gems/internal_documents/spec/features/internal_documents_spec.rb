@@ -99,24 +99,18 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete a file from database" do
-    page.find('.template-download .delete').click
-    wait_for_ajax
-    expect(InternalDocument.count).to eq 1
+    expect{ click_delete_document; confirm_deletion; wait_for_ajax }.to change{ InternalDocument.count }.to 1
   end
 
   scenario "delete the last file in a document group" do
-    page.find('.template-download .delete').click
-    wait_for_ajax
-    expect(InternalDocument.count).to eq 1
-    wait_for_ajax
-    page.find('.template-download .delete').click
-    wait_for_ajax
-    expect(InternalDocument.count).to eq 0
+    expect{ click_delete_document; confirm_deletion; wait_for_ajax }.to change{ InternalDocument.count }.to 1
+    sleep(0.5) # javascript
+    expect{ click_delete_document; confirm_deletion; wait_for_ajax }.to change{ InternalDocument.count }.to 0
     expect(DocumentGroup.count).to eq 5 # the 5 icc doc groups
   end
 
   scenario "delete a file from filesystem" do
-    expect{ page.find('.template-download .delete').click; wait_for_ajax}.to change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
+    expect{ click_delete_document; confirm_deletion; wait_for_ajax}.to change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
   end
 
   scenario "view file details", :js => true do
@@ -362,7 +356,7 @@ feature "internal document management", :js => true do
   scenario "delete an archive file" do
     visit index_path
     click_the_archive_icon
-    expect{ click_the_archive_delete_icon; wait_for_ajax }.to change{ InternalDocument.count }.by -1
+    expect{ click_the_archive_delete_icon; confirm_deletion; wait_for_ajax }.to change{ InternalDocument.count }.by -1
     expect( archive_panel ).to have_selector("p", :text => 'empty')
   end
 
@@ -424,6 +418,7 @@ feature "internal document management", :js => true do
     expect(page_heading).to eq "Internal Documents"
     click_the_archive_icon
     page.find('.panel-heading .delete').click # that's the primary file
+    confirm_deletion
     wait_for_ajax # ajax, javascript
     # the previous highest rev archive file becomes primary:
     expect(page.find('.panel-heading td.revision .no_edit').text).to eq "2.9"
@@ -543,11 +538,11 @@ feature "sequential operations", :js => true do
   it "should correctly follow the sequence of operations" do # b/c there was a bug!
     expect(InternalDocument.count).to eq 5
     #delete a primary that has some archive files
-    expect{page.find('.template-download .delete').click; wait_for_ajax}.to change{InternalDocument.count}.by(-1)
+    expect{click_delete_document; confirm_deletion; wait_for_ajax}.to change{InternalDocument.count}.by(-1)
     click_the_archive_icon
     expect(page).to have_selector('table.internal_document.editable_container', :count => 4)
     #again delete a primary file
-    expect{page.all('.template-download .delete')[0].click; wait_for_ajax}.to change{InternalDocument.count}.by(-1)
+    expect{click_delete_first_document; confirm_deletion; wait_for_ajax}.to change{InternalDocument.count}.by(-1)
     expect(page).to have_selector('table.internal_document.editable_container', :count => 3)
     # try to upload an archive file
     page.find('.internal_document .fileinput-button').click

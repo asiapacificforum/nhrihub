@@ -2,6 +2,13 @@ require 'rspec/core/shared_context'
 
 module InternalDocumentsSpecCommonHelpers
   extend RSpec::Core::SharedContext
+  def click_delete_document
+    page.find('.template-download .delete').click
+  end
+
+  def click_delete_first_document
+    page.all('.template-download .delete')[0].click
+  end
 
   def attach_file(locator,file)
     page.attach_file("primary_file", file)

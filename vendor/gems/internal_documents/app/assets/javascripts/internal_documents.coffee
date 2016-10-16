@@ -189,27 +189,19 @@ $ ->
         _(icc_titles).any (title)=>
           re = new RegExp(title)
           re.test @get('title')
+      delete_confirmation_message : ->
+        i18n.delete_confirmation_message
     remove_errors : ->
       @set
         title_error: false
         revision_error: false
         icc_title_error:false
-    delete_document : ->
-      data = {'_method' : 'delete'}
-      url = Routes.internal_document_path(current_locale, @get('id'))
-      # TODO if confirm
-      $.ajax
-        method : 'post'
-        url : url
-        data : data
-        success : @delete_callback
-        dataType : 'json'
-        context : @
     delete_callback : (data,textStatus,jqxhr)->
       # the whole document group is replaced
       @get('document_group').replace(data)
     validate : ->
       @validator.validate()
+  , ConfirmDeleteModal
 
   Doc = Ractive.extend
     template: '#document_group_template'
@@ -221,6 +213,8 @@ $ ->
       archive_file : -> false
       stripped_title : -> @get('title').replace(/\s/g,"").toLowerCase()
       title_edit_permitted : -> true
+      delete_confirmation_message : ->
+        i18n.delete_confirmation_message
     components :
       archivedoc : ArchiveDoc
     download_file : ->
@@ -243,21 +237,12 @@ $ ->
         document_group_id : @get('document_group_id')
         revision : null
       internal_document_uploader.unshift('upload_documents', attached_document)
-    delete_document : ->
-      data = {'_method' : 'delete'}
-      # TODO if confirm
-      $.ajax
-        method : 'post'
-        url : @get('url')
-        data : data
-        success : @delete_callback
-        dataType : 'json'
-        context : @
     delete_callback : (data,textStatus,jqxhr)->
       if _.isUndefined(data) # last doc in the group, so nothing returned
         @parent.remove(@)
       else
         @parent.replace(data)
+  , ConfirmDeleteModal
 
   Docs = Ractive.extend
     template: '#document_groups_template'
