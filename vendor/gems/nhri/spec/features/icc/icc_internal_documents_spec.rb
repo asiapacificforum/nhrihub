@@ -101,7 +101,7 @@ feature "delete documents", :js => true do
       expect(page.all('.files .internal_document .title .no_edit span')[0].text).to eq "Statement of Compliance"
       expect(page.all('.files .internal_document .title .no_edit span')[1].text).to eq "Annual Report"
       expect(page.all('.files .internal_document .title .no_edit span')[2].text).to eq "Budget"
-      expect{delete_first_document; wait_for_ajax}.to change{page.all('.files .internal_document').count}.from(3).to(2)
+      expect{delete_first_document; confirm_deletion; wait_for_ajax}.to change{page.all('.files .internal_document').count}.from(3).to(2)
       expect(page.all('.files .internal_document .title .no_edit span')[0].text).to eq "Annual Report"
       expect(page.all('.files .internal_document .title .no_edit span')[1].text).to eq "Budget"
     end
