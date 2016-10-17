@@ -24,3 +24,4 @@ en:
           alternate_email: "Alternate email"
           first_name_error_message : "First name can't be blank"
           last_name_error_message : "Last name can't be blank"
+          delete_confirmation_message: "Are you sure you want to delete member "

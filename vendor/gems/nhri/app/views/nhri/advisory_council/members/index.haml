@@ -3,6 +3,8 @@
 
 #membership
 
+= render :partial => 'shared/confirm_delete_modal'
+
 %script#membership_template{:type => 'template/ractive'}
   .btn.btn-success#add_member{'on-click'=>'add_member()'}
     %i.fa.fa-plus.fa-lg{:style => "color:white"}
@@ -129,7 +131,7 @@
         %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
       .icon.edit{'on-click'=>'edit_this()', :style=>'margin-left:18px;'}
         %i.fa.fa-lg.fa-pencil-square-o
-      .icon.delete{'on-click'=>'delete_this()', :style=>'margin-left:18px;'}
+      .icon.delete{'on-click'=>'show_confirm_delete_modal()', :style=>'margin-left:18px;'}
         %i.fa.fa-trash-o.fa-lg
   <editmember />
 
@@ -169,9 +171,10 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 :coffeescript
-  window.members = #{@members.to_json}
-  window.new_member = #{@new_member.to_json}
-  window.create_url = "#{AdvisoryCouncilMember.create_url}"
+  @members = #{@members.to_json}
+  @new_member = #{@new_member.to_json}
+  @create_url = "#{AdvisoryCouncilMember.create_url}"
+  @delete_confirmation_message = "#{t('.delete_confirmation_message')}"
 
   $ ->
     Ractive.DEBUG = false
@@ -211,7 +214,7 @@
       oninit : ->
         @copy_parent_attrs()
       save_member : ->
-        url = @get('url').replace(/id$/,@get('id'))
+        url = Routes.nhri_advisory_council_member_path(current_locale, @get('id'))
         data = {member : _(@get()).omit(['url', 'id', 'first_name_error', 'last_name_error']), '_method':'put'}
         context = @
         $.ajax
@@ -234,24 +237,19 @@
       components :
         contact : Contact
         editmember : EditMember
-      delete_this : ->
-        data = {id : @get('id'), '_method':'delete'}
-        url = @get('url').replace(/id/,@get('id'))
-        context = @
-        $.ajax
-          type: "POST"
-          url: url
-          data: data
-          success: @delete_callback
-          dataType: 'json'
-          context: context
+      computed :
+        url : ->
+          Routes.nhri_advisory_council_member_path(current_locale, @get('id'))
+        delete_confirmation_message : ->
+          delete_confirmation_message + @get('first_name') + " " +@get('last_name') + "?"
       edit_this : ->
         $("#edit_member"+@get('id')+"_modal").modal('show')
       delete_callback : ->
         @parent.remove(@get('id'))
+    , ConfirmDeleteModal
 
     Members = Ractive.extend
-      template : "{{#members}}<member alternate_email='{{alternate_email}}' bio='{{bio}}' created_at='{{created_at}}' department='{{department}}' email='{{email}}' first_name='{{first_name}}' home_phone='{{home_phone}}' id='{{id}}' last_name='{{last_name}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' organization='{{organization}}' title='{{title}}' url='{{url}}' />{{/}}"
+      template : "{{#members}}<member alternate_email='{{alternate_email}}' bio='{{bio}}' created_at='{{created_at}}' department='{{department}}' email='{{email}}' first_name='{{first_name}}' home_phone='{{home_phone}}' id='{{id}}' last_name='{{last_name}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' organization='{{organization}}' title='{{title}}' />{{/}}"
       components :
         member : Member
       remove : (id)->
