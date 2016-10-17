@@ -19,7 +19,6 @@ class IccReferenceDocument < ActiveRecord::Base
   def as_json(options = {})
     super(:except  => [:created_at, :updated_at],
           :methods => [:uploaded_by,
-                       :url,
                        :formatted_creation_date,
                        :formatted_filesize,
                        :reminders,

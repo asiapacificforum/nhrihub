@@ -174,7 +174,7 @@ $ ->
       $('#reminders_modal').modal('show')
     delete_callback : (data,textStatus,jqxhr)->
       @parent.remove(@get('id'))
-    , Remindable, ConfirmDeleteModal
+  , Remindable, ConfirmDeleteModal
 
   Docs = Ractive.extend
     template: '#files'
