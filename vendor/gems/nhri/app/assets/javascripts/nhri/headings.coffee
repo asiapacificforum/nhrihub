@@ -85,6 +85,10 @@ $ ->
           [{description: ""}] # hack to workaround jQuery not sending empty arrays
         else
           _(@get('human_rights_attributes')).map (o)-> _(o).pick('id','description')
+      truncated_title : ->
+        @get('title').split(' ').slice(0,4).join(' ')+'...'
+      delete_confirmation_message : ->
+        "#{delete_heading_confirmation_message} \"#{@get('truncated_title')}\"?"
     components :
       attribute : HumanRightsAttribute
       editHumanRightsAttribute : EditHumanRightsAttribute
@@ -111,16 +115,6 @@ $ ->
     validate : ->
       @set('title_error',_.isEmpty(@get('title').trim()))
       !@get('title_error')
-    delete_this : ->
-      data = {'_method' : 'delete'}
-      # TODO if confirm
-      $.ajax
-        method : 'post'
-        url : @get('url')
-        data : data
-        success : @delete_callback
-        dataType : 'json'
-        context : @
     delete_callback : (data,textStatus,jqxhr)->
       @parent.remove(@)
     remove_errors : ->
@@ -154,6 +148,7 @@ $ ->
       UserInput.terminate_user_input_request()
       @set('expanded',!@get('expanded'))
       $("#edit_attributes#{@get('id')}").collapse('toggle')
+  , ConfirmDeleteModal
 
   Headings = Ractive.extend
     template : "{{#headings}}<heading id='{{id}}' title='{{title}}' human_rights_attributes='{{human_rights_attributes}}'/>{{/headings}}"

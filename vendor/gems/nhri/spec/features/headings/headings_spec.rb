@@ -68,8 +68,8 @@ feature "show headings index page", :js => true do
     fill_in('heading_title', :with => "Some new heading text")
     expect{save_heading.click; sleep(0.3)}.to change{Nhri::Heading.count}.by(1)
     expect(page).to have_selector('#headings_container .heading .title', :text => "Some new heading text")
-    expect{delete_heading.click; sleep(0.3)}.to change{Nhri::Heading.count}.by(-1).
-                                             and change{page.all('#headings_container .heading').count}.by(-1)
+    expect{delete_heading.click; confirm_deletion; wait_for_ajax}.to change{Nhri::Heading.count}.by(-1).
+                                                                 and change{page.all('#headings_container .heading').count}.by(-1)
   end
 
   it "does not persist empty human_rights_attributes" do
@@ -144,7 +144,7 @@ feature "index page behaviour with existing headings", :js => true do
   end
 
   it "can delete a heading" do
-    expect{delete_heading.click; sleep(0.3)}.to change{Nhri::Heading.count}.by(-1).
+    expect{delete_heading.click; confirm_deletion; wait_for_ajax}.to change{Nhri::Heading.count}.by(-1).
                                              and change{page.all('#headings_container .heading').count}.by(-1)
   end
 
