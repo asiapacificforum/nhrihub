@@ -160,6 +160,12 @@ $ ->
         Routes.nhri_indicator_reminders_path(current_locale,@get('id'))
       create_note_url : ->
         Routes.nhri_indicator_notes_path(current_locale,@get('id'))
+      url : ->
+        Routes.nhri_heading_indicator_path(current_locale,@get('heading_id'),@get('id'))
+      truncated_title : ->
+        @get('title').split(' ').slice(0,4).join(' ')+"..."
+      delete_confirmation_message : ->
+        "#{delete_indicator_confirmation_message} \"#{@get('truncated_title')}\"?"
     show_monitors_panel : ->
       type = @get('monitor_format')
       if type == 'file'
@@ -177,22 +183,13 @@ $ ->
           indicator_id : @get('id')
           source : @
         $("##{type}_monitors_modal").modal('show')
-    delete_indicator : (event,obj)->
-      data = [{name:'_method', value: 'delete'}]
-      url = Routes.nhri_heading_indicator_path(current_locale,@get('heading_id'),@get('id'))
-      $.ajax
-        method: 'post'
-        url: url
-        data: data
-        success: @delete_callback
-        context: @
     delete_callback : ->
       @parent.remove_indicator(@get('id'))
     edit_indicator : ->
       new_indicator.set(@get())
       new_indicator.set('source',@)
       $('#new_indicator_modal').modal('show')
-    , Remindable, Notable
+    , Remindable, Notable, ConfirmDeleteModal
 
   NatureHumanRightsAttribute = Ractive.extend
     template : "#nature_attribute_template"

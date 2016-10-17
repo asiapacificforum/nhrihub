@@ -20,6 +20,7 @@ en:
         process: "Process"
         outcomes: "Outcomes"
         add_indicator: "Add indicator"
+        delete_indicator_confirmation_message: "Are you sure you want to delete indicator "
       indicators_templates:
         attribute: "Attribute"
         nature: "Nature"

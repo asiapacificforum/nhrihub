@@ -10,7 +10,7 @@ feature "indicators behaviour", :js => true do
 
   it "should delete indicators" do
     expect(page).to have_selector("#indicators .indicator", :count => 2)
-    expect{delete_indicator.click; sleep(0.3)}.to change{Nhri::Indicator.count}.by(-1)
+    expect{delete_indicator.click; confirm_deletion; wait_for_ajax}.to change{Nhri::Indicator.count}.by(-1)
     expect(page).to have_selector("#indicators .indicator", :count => 1)
   end
 
@@ -53,7 +53,7 @@ feature "indicators behaviour", :js => true do
 
   it "should not add invalid indicator" do
     add_indicator
-    expect{save_indicator.click; sleep(0.2)}.not_to change{Nhri::Indicator.count}
+    expect{save_indicator.click; wait_for_ajax}.not_to change{Nhri::Indicator.count}
     expect(page).to have_selector('#title_error', :text => "Title can't be blank")
     expect(page).to have_selector('#monitor_format_error', :text => "You must select a monitor format")
     select("Numeric", :from => "indicator_monitor_format")
@@ -64,7 +64,7 @@ feature "indicators behaviour", :js => true do
     expect(page).not_to have_selector('#numeric_monitor_explanation_error', :text => "Explanation text can't be blank")
     fill_in("indicator_title", :with => "Some arbitrary indicator title")
     expect(page).not_to have_selector('#title_error', :text => "Title can't be blank")
-    expect{save_indicator.click; sleep(0.2)}.to change{Nhri::Indicator.count}.by 1
+    expect{save_indicator.click; wait_for_ajax}.to change{Nhri::Indicator.count}.by 1
   end
 
   it "should edit indicators" do
@@ -74,7 +74,7 @@ feature "indicators behaviour", :js => true do
     fill_in('indicator_title', :with => "Changed title")
     select("Text", :from => "indicator_monitor_format")
     expect(page).not_to have_selector("#indicator_numeric_monitor_explanation")
-    expect{save_indicator.click; sleep(0.2)}.not_to change{Nhri::Indicator.count}
+    expect{save_indicator.click; wait_for_ajax}.not_to change{Nhri::Indicator.count}
     indicator = Nhri::Indicator.first
     expect(indicator.monitor_format).to eq "text"
     expect(indicator.numeric_monitor_explanation).to be_blank
@@ -86,7 +86,7 @@ feature "indicators behaviour", :js => true do
   it "should show a warning when an indicator is edited to blank description" do
     edit_first_indicator
     fill_in('indicator_title', :with => "")
-    expect{save_indicator.click; sleep(0.2)}.not_to change{Nhri::Indicator.count}
+    expect{save_indicator.click; wait_for_ajax}.not_to change{Nhri::Indicator.count}
     expect(page).to have_selector('#title_error', :text => "Title can't be blank")
   end
 
