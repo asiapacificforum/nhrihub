@@ -13,8 +13,8 @@
 = render :partial => 'shared/performance_indicator_select'
 = render :partial => 'shared/collection_filter_controls', :locals => {:collection => :advisory_council_issues, :search_heading => t('.search_heading')}
 = render :partial => 'advisory_council_specifics' # overrides the shared view
-= render :partial => 'shared/collection', :locals => {:item => :advisory_council_issue, :i18n_key => "nhri.advisory_council_issues.index"}
 = render :partial => 'shared/confirm_delete_modal'
+= render :partial => 'shared/collection', :locals => {:item => :advisory_council_issue, :i18n_key => "nhri.advisory_council_issues.index"}
 = render :partial => 'reminders/reminder' # it's in the main app
 = render :partial => 'notes/note' # it's in the main app
 
@@ -30,5 +30,6 @@
   var planned_results = null //variables need to be defined in shared js
   var performance_indicators = null //variables need to be defined in shared js
   var Collection = {}
+  var delete_confirmation_message = "#{t('.delete_confirmation_message')}"
 
 = javascript_include_tag "issues"

@@ -53,9 +53,8 @@ module AdvisoryCouncilIssueSpecHelper
     page.find(".editable_container .basic_info .actions .fa-remove")
   end
 
-  def delete_article
+  def click_delete_article
     page.find('.advisory_council_issue .delete_icon').click
-    sleep(0.4)
   end
 
   def advisory_council_issues

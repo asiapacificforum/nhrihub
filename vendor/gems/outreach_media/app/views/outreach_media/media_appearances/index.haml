@@ -26,6 +26,7 @@
   var permitted_filetypes = #{OutreachEvent.permitted_filetypes }
   var planned_results = #{@planned_results.to_json }
   var Collection = {}
+  var delete_confirmation_message = "#{t('.delete_confirmation_message')}"
 
 :coffeescript
   window.performance_indicators = _.chain(planned_results).

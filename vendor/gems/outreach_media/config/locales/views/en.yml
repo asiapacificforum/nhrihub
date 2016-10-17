@@ -145,6 +145,7 @@ en:
         item_error_message : "A file or link must be included"
         item_double_attachment_error_message : "Either file or link, not both"
         add_article : "Add article"
+        delete_confirmation_message : "Are you sure you want to delete media appearance "
 
       media_appearance_templates :
         none_assigned: "none assigned"

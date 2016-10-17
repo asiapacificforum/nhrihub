@@ -53,9 +53,8 @@ module MediaSpecHelper
     page.find(".editable_container .basic_info .actions .fa-remove")
   end
 
-  def delete_article
+  def click_delete_article
     page.find('.media_appearance .delete_icon').click
-    sleep(0.4)
   end
 
   def media_appearances

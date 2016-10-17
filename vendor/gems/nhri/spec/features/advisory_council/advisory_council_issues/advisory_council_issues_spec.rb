@@ -192,7 +192,7 @@ feature "when there are existing articles", :js => true do
     scenario "delete an article" do
       saved_file_path = File.join('tmp','uploads','store',Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.file.id)
       expect(File.exists?(saved_file_path)).to eq true
-      expect{ delete_article }.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(1).to(0)
+      expect{ click_delete_article; confirm_deletion; wait_for_ajax }.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(1).to(0)
       expect(advisory_council_issues.length).to eq 0
       expect(File.exists?(saved_file_path)).to eq false
     end

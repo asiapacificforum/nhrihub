@@ -45,6 +45,7 @@ en:
           weblink : "Enter web link"
           choose_file : "Choose file"
           add_issue : "Add issue"
+          delete_confirmation_message : "Are you sure you want to delete issue "
         advisory_council_specifics:
           initiator: "Reported by"
     advisory_council_issues:

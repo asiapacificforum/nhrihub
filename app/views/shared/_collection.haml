@@ -56,7 +56,7 @@
                 %i.fa.fa-pencil-square-o{:id => "#{item}_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'delete_this(event)'}
+                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()'}
               .edit
             .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
               %div{'data-toggle'=>:edit}

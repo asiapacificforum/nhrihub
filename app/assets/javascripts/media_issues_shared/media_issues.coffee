@@ -172,6 +172,10 @@ $ ->
     validate : ->
       @validator.validate()
     computed :
+      truncated_title : ->
+        "\""+@get('title').split(' ').slice(0,4).join(' ') + "...\""
+      delete_confirmation_message : ->
+        delete_confirmation_message+@get('truncated_title')+"?"
       error_vector : ->
         title_error : @get('title_error')
         attachment_error : @get('attachment_error')
@@ -310,17 +314,17 @@ $ ->
       UserInput.reset()
       if !_.isUndefined(@edit)
         @edit.load() # terminate edit, if it was active, but don't try to restore stashed instance
-    delete_this : (event) ->
-      data = {'_method' : 'delete'}
-      url = @get('url')
-      # TODO if confirm
-      $.ajax
-        method : 'post'
-        url : url
-        data : data
-        success : @delete_callback
-        dataType : 'json'
-        context : @
+    #delete_this : (event) ->
+      #data = {'_method' : 'delete'}
+      #url = @get('url')
+      ## TODO if confirm
+      #$.ajax
+        #method : 'post'
+        #url : url
+        #data : data
+        #success : @delete_callback
+        #dataType : 'json'
+        #context : @
     delete_callback : (data,textStatus,jqxhr)->
       @parent.delete(@)
     remove_errors : ->
@@ -377,7 +381,7 @@ $ ->
       @validator.validate_attribute('original_type')
       @validator.validate_attribute('attachment')
       @validator.validate_attribute('single_attachment')
-  , PerformanceIndicatorAssociation, Remindable, Notable
+  , PerformanceIndicatorAssociation, Remindable, Notable, ConfirmDeleteModal
 
   window.collection_items_data = -> # an initialization data set so that tests can reset between
     expanded : false
