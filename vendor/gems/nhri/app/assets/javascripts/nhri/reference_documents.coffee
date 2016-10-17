@@ -150,6 +150,12 @@ $ ->
         true
       reminders_count : ->
         @get('reminders').length
+      url : ->
+        Routes.nhri_icc_reference_document_path(current_locale, @get('id'))
+      truncated_title : ->
+        @get('title').split(' ').slice(0,4).join(' ')+"..."
+      delete_confirmation_message : ->
+        "#{delete_confirmation_message} \"#{@get('truncated_title')}\"?"
     download_file : ->
       window.location = @get('url')
     remove_errors : ->
@@ -166,20 +172,9 @@ $ ->
     add_file : (file)->
       @set(file)
       $('#reminders_modal').modal('show')
-    delete_document : ->
-      data = {'_method' : 'delete'}
-      url = Routes.nhri_icc_reference_document_path(current_locale, @get('id'))
-      # TODO if confirm
-      $.ajax
-        method : 'post'
-        url : url
-        data : data
-        success : @delete_callback
-        dataType : 'json'
-        context : @
     delete_callback : (data,textStatus,jqxhr)->
       @parent.remove(@get('id'))
-    , Remindable
+    , Remindable, ConfirmDeleteModal
 
   Docs = Ractive.extend
     template: '#files'

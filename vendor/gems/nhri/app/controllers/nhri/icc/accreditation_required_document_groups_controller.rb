@@ -1,3 +1,5 @@
+# admin function, manages document titles that define whether an internal document
+# is an accreditation required document, e.g. budget, statement of compliance etc.
 module Nhri
   module Icc
     class AccreditationRequiredDocumentGroupsController < ApplicationController

@@ -22,6 +22,14 @@ module IccReferenceDocumentsSpecHelpers
     end
   end
 
+  def uploaded_files_count
+    Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length
+  end
+
+  def click_delete_icon
+    page.find('.template-download .delete').click
+  end
+
   def click_edit_save_icon(context)
     context.find('.fa-check').click
     sleep(0.1)

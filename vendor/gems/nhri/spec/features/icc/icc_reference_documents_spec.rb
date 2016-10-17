@@ -89,12 +89,12 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete a file from database" do
-    expect{page.find('.template-download .delete').click; wait_for_ajax}.to change{IccReferenceDocument.count}.to(0)
+    expect{click_delete_icon; confirm_deletion; wait_for_ajax}.to change{IccReferenceDocument.count}.to(0)
     expect(page.all('.template-download').count).to eq 0
   end
 
   scenario "delete a file from filesystem" do
-    expect{ page.find('.template-download .delete').click; wait_for_ajax}.to change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
+    expect{ click_delete_icon; confirm_deletion; wait_for_ajax}.to change{uploaded_files_count}.by(-1)
   end
 
   scenario "view file details", :js => true do

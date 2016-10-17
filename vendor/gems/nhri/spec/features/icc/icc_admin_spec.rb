@@ -31,10 +31,10 @@ feature "icc reference document admin titles configuration", :js => true do
     within page.find('#doc_groups') do
       expect(page).to have_selector '#empty'
       page.find('#doc_group_title').set('Annual Report')
-      expect{ new_doc_group_button.click; sleep(0.2) }.to change{ AccreditationDocumentGroup.count }.from(0).to(1)
+      expect{ new_doc_group_button.click; wait_for_ajax }.to change{ AccreditationDocumentGroup.count }.from(0).to(1)
       expect(page).not_to have_selector '#empty'
       page.find('#doc_group_title').set('Implementation Plan')
-      expect{ new_doc_group_button.click; sleep(0.2) }.to change{ AccreditationDocumentGroup.count }.from(1).to(2)
+      expect{ new_doc_group_button.click; wait_for_ajax }.to change{ AccreditationDocumentGroup.count }.from(1).to(2)
     end
   end
 
@@ -44,7 +44,7 @@ feature "icc reference document admin titles configuration", :js => true do
     sleep(0.1)
     within page.find('#doc_groups') do
       page.find('#doc_group_title').set('Statement of Compliance')
-      expect{ new_doc_group_button.click; sleep(0.2) }.not_to change{ AccreditationDocumentGroup.count }
+      expect{ new_doc_group_button.click; wait_for_ajax }.not_to change{ AccreditationDocumentGroup.count }
     end
     expect( flash_message ).to eq "Title already exists, must be unique."
   end
@@ -54,7 +54,7 @@ feature "icc reference document admin titles configuration", :js => true do
     sleep(0.1)
     within page.find('#doc_groups') do
       page.find('#doc_group_title').set('')
-      expect{ new_doc_group_button.click; sleep(0.2) }.not_to change{ AccreditationDocumentGroup.count }
+      expect{ new_doc_group_button.click; wait_for_ajax }.not_to change{ AccreditationDocumentGroup.count }
     end
     expect( flash_message ).to eq "Cannot be blank."
   end
@@ -64,9 +64,9 @@ feature "icc reference document admin titles configuration", :js => true do
     FactoryGirl.create(:accreditation_document_group, :title => "Annual Report")
     visit nhri_admin_path('en')
     within page.find('#doc_groups') do
-      expect{ delete_title("Statement of Compliance"); sleep(0.2) }.to change{AccreditationDocumentGroup.count}.by(-1)
+      expect{ delete_title("Statement of Compliance"); wait_for_ajax }.to change{AccreditationDocumentGroup.count}.by(-1)
       expect(AccreditationDocumentGroup.all.map(&:title).first).to eq "Annual Report"
-      expect{ delete_title("Annual Report"); sleep(0.2) }.to change{AccreditationDocumentGroup.count}.to(0)
+      expect{ delete_title("Annual Report"); wait_for_ajax }.to change{AccreditationDocumentGroup.count}.to(0)
       expect(page).to have_selector '#empty'
     end
   end
