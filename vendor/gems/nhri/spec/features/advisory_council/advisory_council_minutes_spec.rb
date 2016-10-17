@@ -40,7 +40,7 @@ feature "advisory council minutes document", :js => true do
   end
 
   it "can be deleted" do
-    expect{first_delete_icon.click;sleep(0.2)}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.count}.by(-1).
+    expect{first_delete_icon.click; confirm_deletion; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.count}.by(-1).
                                                and change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1).
                                                and change{page.all('.advisory_council_minutes').count}.by(-1)
   end

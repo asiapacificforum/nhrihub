@@ -148,21 +148,13 @@ $ ->
     computed:
       url : ->
         Routes.nhri_advisory_council_minutes_path(current_locale, @get('id'))
+      delete_confirmation_message : ->
+        delete_confirmation_message + @get('date')
     download_file : ->
       window.location = @get('url')
-    delete_this : (event) ->
-      data = {'_method' : 'delete'}
-      url = @get('url')
-      # TODO if confirm
-      $.ajax
-        method : 'post'
-        url : url
-        data : data
-        success : @delete_callback
-        dataType : 'json'
-        context : @
     delete_callback : (data,textStatus,jqxhr)->
       @parent.delete(@)
+  , ConfirmDeleteModal
 
   Docs = Ractive.extend
     template: '#files'

@@ -158,6 +158,8 @@ $ ->
       @validator = new Validator(@)
     computed :
       url : -> Routes.nhri_advisory_council_terms_of_reference_path(current_locale,@get('id'))
+      delete_confirmation_message : ->
+        "#{delete_confirmation_message} \"#{@get('title')}\"?"
     download_file : ->
       window.location = @get('url')
     remove_errors : ->
@@ -165,19 +167,9 @@ $ ->
       @set("revision_format_error", false)
     validate : ->
       @validator.validate_attribute('revision_format') && @validator.validate_attribute('unique_revision')
-    delete_this : (event) ->
-      data = {'_method' : 'delete'}
-      url = @get('url')
-      # TODO if confirm
-      $.ajax
-        method : 'post'
-        url : url
-        data : data
-        success : @delete_callback
-        dataType : 'json'
-        context : @
     delete_callback : (data,textStatus,jqxhr)->
       @parent.delete(@)
+  , ConfirmDeleteModal
 
   Docs = Ractive.extend
     template: '#files'

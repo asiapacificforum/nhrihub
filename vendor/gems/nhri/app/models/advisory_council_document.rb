@@ -26,7 +26,6 @@ class AdvisoryCouncilDocument < ActiveRecord::Base
           :methods => [:title,
                        :revision,
                        :uploaded_by,
-                       #:url,
                        :date,
                        :formatted_modification_date,
                        :formatted_creation_date,

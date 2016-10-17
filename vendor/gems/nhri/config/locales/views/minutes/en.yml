@@ -7,6 +7,7 @@ en:
           add: "Add minutes"
           flash:
             no_files_error: "You must select a file to upload."
+          delete_confirmation_message: "Are you sure you want to delete advisory council meeting minutes for "
         advisory_council_minutes_templates:
           add: "Add files..."
           start: "Start upload"

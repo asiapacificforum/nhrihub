@@ -92,7 +92,7 @@ feature "terms of reference document", :js => true do
   end
 
   it "revision can be deleted" do
-    expect{first_delete_icon.click;wait_for_ajax}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(-1).
+    expect{first_delete_icon.click; confirm_deletion; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(-1).
                                                and change{Dir.new(Rails.root.join('tmp', 'uploads', 'store')).entries.length}.by(-1)
     expect(page.all('.terms_of_reference_version').count).to eq 1
   end

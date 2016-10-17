@@ -6,6 +6,7 @@ en:
           heading: "Advisory Council Terms of Reference"
           flash:
             no_files_error: "You must select a file to upload."
+          delete_confirmation_message: "Are you sure you want to delete "
         terms_of_reference_templates:
           unique_revision_error_message: "Duplicate revision not allowed."
           revision_format_error_message: "Invalid revision."

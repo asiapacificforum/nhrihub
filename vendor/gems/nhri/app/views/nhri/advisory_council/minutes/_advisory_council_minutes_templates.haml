@@ -67,7 +67,7 @@
         .icon
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
       %td{:style => "text-align:center; width:8%"}
-        %div.icon.delete{'on-click'=>'delete_this()'}
+        %div.icon.delete{'on-click'=>'show_confirm_delete_modal()'}
           %i.fa.fa-trash-o.fa-lg
 
 %script#files{:type => 'ractive/template'}
