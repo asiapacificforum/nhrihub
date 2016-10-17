@@ -233,8 +233,8 @@ feature "attributes behaviour on headings index page", :js => true do
   end
 
   it "can delete attributes" do
-    expect{delete_first_attribute.click; sleep(0.2)}.to change{Nhri::HumanRightsAttribute.count}.by(-1).
-                                                   and change{page.all('.attribute').count}.by(-1)
+    expect{delete_first_attribute.click; confirm_deletion; wait_for_ajax}.to change{Nhri::HumanRightsAttribute.count}.by(-1).
+                                                                         and change{page.all('.attribute').count}.by(-1)
   end
 
   it "can edit attributes" do

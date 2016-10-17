@@ -37,6 +37,8 @@ $ ->
         !_.isNull @get('id')
       url : ->
         Routes.nhri_heading_human_rights_attribute_path(current_locale, @get('heading_id'), @get('id'))
+      delete_confirmation_message : ->
+        "#{delete_attribute_confirmation_message} \"#{@get('description')}\"?"
     validate : ->
       @set('description', @get('description').trim())
       @set('description_error', _.isEmpty(@get('description')))
@@ -63,20 +65,13 @@ $ ->
       !@get('description_error')
     remove_errors : ->
       @set('description_error', false)
-    delete_attribute : ->
-      data = {_method : 'delete'}
-      $.ajax
-        method : 'post'
-        url : @get('url')
-        data : data
-        success : @delete_callback
-        context : @
     delete_callback : ->
       @parent.remove_edit_attribute(@_guid)
     persisted_attributes : ->
       {human_rights_attribute : {description : @get('description')}}
     remove_description_error : ->
       @set('description_error', false)
+  , ConfirmDeleteModal
 
   Heading = Ractive.extend
     template : "#heading_template"

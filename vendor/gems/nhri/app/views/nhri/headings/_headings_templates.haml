@@ -33,7 +33,7 @@
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
         .fade.no_edit.in
-          .delete_heading{'on-click'=>'delete_this()'}
+          .delete_heading{'on-click'=>'show_confirm_delete_modal()'}
             %i.fa.fa-trash-o.fa-lg
   .row.collapse{:id => "edit_attributes{{id}}"}
     .col-md-12#attributes
@@ -77,7 +77,7 @@
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
         .fade.no_edit.in
-          .delete_attribute{'on-click'=>'delete_attribute()'}
+          .delete_attribute{'on-click'=>'show_confirm_delete_modal()'}
             %i.fa.fa-trash-o.fa-lg
 
 %script#new_heading_template{:type => 'template/ractive'}

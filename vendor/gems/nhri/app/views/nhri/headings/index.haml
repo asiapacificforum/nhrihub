@@ -8,10 +8,13 @@
 
 #headings_container{:style => "width:900px;"}
 
-:javascript
-  var headings_data = #{@headings.to_json(:only =>[:title, :id],
-                                          :include => {:human_rights_attributes=>{:only => [:heading_id, :id, :description]}})}
+:coffeescript
+  @headings_data = #{@headings.to_json(:only =>[:title, :id],
+                                       :include => {:human_rights_attributes=>{:only => [:heading_id, :id, :description]}})}
+  @delete_attribute_confirmation_message = "#{t('.delete_attribute_confirmation_message')}"
+  @delete_heading_confirmation_message = "#{t('.delete_heading_confirmation_message')}"
 
 = render :partial => 'nhri/headings/headings_templates'
+= render :partial => 'shared/confirm_delete_modal'
 
 = javascript_include_tag 'nhri/headings'

@@ -4,6 +4,8 @@ en:
       index:
         heading: "Human Rights Indicators: Headings"
         add_heading: "Add heading"
+        delete_attribute_confirmation_message: "Are you sure you want to delete attribute "
+        delete_heading_confirmation_message: "Are you sure you want to delete heading "
       headings_templates:
         blank_title_error: "Title can't be blank."
         blank_description_error: "Description can't be blank."
