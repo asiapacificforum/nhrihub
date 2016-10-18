@@ -25,14 +25,14 @@ class IccReferenceDocument < ActiveRecord::Base
                        :create_reminder_url ] )
   end
 
-  def url
-    if persisted?
-      Rails.application.routes.url_helpers.nhri_icc_reference_document_path(I18n.locale, self)
-    end
-  end
+  #def url
+    #if persisted?
+      #Rails.application.routes.url_helpers.nhri_icc_reference_document_path(I18n.locale, self)
+    #end
+  #end
 
   def create_reminder_url
-    Rails.application.routes.url_helpers.nhri_icc_reference_document_reminders_path(:en,id) if persisted?
+    nhri_icc_reference_document_reminders_path(:en,id) if persisted?
   end
 
   def remindable_url(remindable_id)

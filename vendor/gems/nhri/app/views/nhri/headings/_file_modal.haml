@@ -9,9 +9,9 @@
       .col-md-2{:style => "font-weight:bold;"}= t('.file_name')
       .col-md-5#filename {{ original_filename }}
       .col-md-1
-        %i.fa.fa-info-circle.fa-lg#show_details{:decorator => :popover}
+        %i.fa.fa-info-circle.fa-lg#show_details{:decorator => :popover, :style=>"display:{{#unless original_filename}}none{{/unless}}"}
       .col-md-1
-        %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()', 'data-toggle'=>'tooltip', :title => t('.download')}
+        %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()', 'data-toggle'=>'tooltip', :title => t('.download'), :style=>"display:{{#unless original_filename}}none{{/unless}}"}
     .row.fileupload
       .col-md-12
         .row.fileupload_progress

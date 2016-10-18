@@ -21,3 +21,21 @@ module IndicatorsFileMonitorSpecSetupHelpers
     sleep(0.3) # css transition
   end
 end
+
+module IndicatorsUnpopulatedFileMonitorSpecSetupHelpers
+  extend RSpec::Core::SharedContext
+
+  before do
+    FactoryGirl.create(:heading)
+    FactoryGirl.create(:human_rights_attribute)
+    FactoryGirl.create(:indicator,
+                       :monitor_format => 'file')
+
+    Nhri::FileMonitor.permitted_filetypes = ["pdf"]
+    Nhri::FileMonitor.maximum_filesize = 5
+
+    visit nhri_heading_path(:en, Nhri::Heading.first.id)
+    show_monitors.click
+    sleep(0.3) # css transition
+  end
+end

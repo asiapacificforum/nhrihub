@@ -17,12 +17,12 @@ feature "monitors behaviour when indicator is configured to monitor with numeric
   scenario "add monitor" do
     expect(page).to have_selector('h4', :text => "Monitor: Numeric monitor explanation text")
     add_monitor.click
-    sleep(0.2)
+    
     expect(page).to have_selector("#new_monitor #monitor_value")
     fill_in(:monitor_value, :with =>555)
     set_date_to("August 19, 2025")
     save_monitor.click
-    sleep(0.2)
+    wait_for_ajax
     expect(Nhri::NumericMonitor.count).to eq 3
     expect(monitor_value.last.text).to eq "555"
     expect(monitor_date.last.text).to eq "Aug 19, 2025"
@@ -43,7 +43,7 @@ feature "monitors behaviour when indicator is configured to monitor with numeric
     add_monitor.click
     # skip setting the value
     #sleep(0.2)
-    expect{ save_monitor.click; sleep(0.2) }.not_to change{Nhri::NumericMonitor.count}
+    expect{ save_monitor.click; wait_for_ajax }.not_to change{Nhri::NumericMonitor.count}
     expect(monitor_value_error.first.text).to eq "Value cannot be blank"
   end
 
@@ -51,8 +51,8 @@ feature "monitors behaviour when indicator is configured to monitor with numeric
     add_monitor.click
     fill_in(:monitor_value, :with => " ")
     save_monitor.click
-    sleep(0.2)
-    expect{ save_monitor.click; sleep(0.2) }.not_to change{Nhri::NumericMonitor.count}
+    wait_for_ajax
+    expect{ save_monitor.click; wait_for_ajax }.not_to change{Nhri::NumericMonitor.count}
     expect(monitor_value_error.first.text).to eq "Value cannot be blank"
   end
 
@@ -62,7 +62,7 @@ feature "monitors behaviour when indicator is configured to monitor with numeric
 
   scenario "start to add, and then cancel" do
     add_monitor.click
-    sleep(0.2)
+    
     expect(page).to have_selector("#new_monitor #monitor_value")
     fill_in(:monitor_value, :with =>555)
     set_date_to("August 19, 2025")
@@ -90,12 +90,12 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
   scenario "add monitor" do
     expect(page).to have_selector('h4', :text => "Monitors: text format")
     add_monitor.click
-    sleep(0.2)
+    
     expect(page).to have_selector("#new_monitor #monitor_description")
     fill_in(:monitor_description, :with => "Some monitor description text")
     set_date_to("August 19, 2025")
     save_monitor.click
-    sleep(0.2)
+    wait_for_ajax
     expect(Nhri::TextMonitor.count).to eq 3
     expect(monitor_description.last.text).to eq "Some monitor description text"
     expect(monitor_date.last.text).to eq "Aug 19, 2025"
@@ -115,8 +115,8 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
   scenario "try to save monitor with blank description field" do
     add_monitor.click
     # skip setting the description
-    sleep(0.2)
-    expect{ save_monitor.click; sleep(0.2) }.not_to change{Nhri::TextMonitor.count}
+    
+    expect{ save_monitor.click; wait_for_ajax }.not_to change{Nhri::TextMonitor.count}
     expect(monitor_description_error.first.text).to eq "Description cannot be blank"
   end
 
@@ -124,8 +124,8 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
     add_monitor.click
     fill_in(:monitor_description, :with => " ")
     save_monitor.click
-    sleep(0.2)
-    expect{ save_monitor.click; sleep(0.2) }.not_to change{Nhri::TextMonitor.count}
+    wait_for_ajax
+    expect{ save_monitor.click; wait_for_ajax }.not_to change{Nhri::TextMonitor.count}
     expect(monitor_description_error.first.text).to eq "Description cannot be blank"
   end
 
@@ -135,7 +135,7 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
 
   scenario "start to add, and then cancel" do
     add_monitor.click
-    sleep(0.2)
+    
     expect(page).to have_selector("#new_monitor #monitor_description")
     fill_in(:monitor_description, :with =>555)
     set_date_to("August 19, 2025")
@@ -155,10 +155,25 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
   scenario "edit a monitor" do
     edit_monitor.click
     fill_in(:text_monitor_description, :with => "some new text")
-    expect{edit_save_monitor.click; sleep(0.5)}.to change{Nhri::TextMonitor.all.first.description}.to "some new text"
+    expect{edit_save_monitor.click; wait_for_ajax}.to change{Nhri::TextMonitor.all.first.description}.to "some new text"
   end
 
 end
+
+feature "monitors behaviour when indicator is configured to monitor with file format, with no file present", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include IndicatorFileMonitorSpecHelpers
+  include IndicatorsUnpopulatedFileMonitorSpecSetupHelpers
+  include UploadFileHelpers
+
+  scenario "file information and download icons should not be visible" do
+    expect(page.find('#selected_file').text).to be_blank
+    expect(page).not_to have_selector("i#show_details")
+    expect(page).not_to have_selector('.download')
+  end
+
+end
+
 
 feature "monitors behaviour when indicator is configured to monitor with file format", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
@@ -171,7 +186,7 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
     expect(page).to have_selector('.template-upload #filename', :text => Nhri::FileMonitor.first.original_filename)
     page.attach_file("monitor_file", upload_document, :visible => false)
     expect(page).to have_selector('#selected_file', :text => 'first_upload_file.pdf')
-    expect{ save_monitor.click; sleep(0.2) }.not_to change{Nhri::FileMonitor.count}
+    expect{ save_monitor.click; wait_for_ajax }.not_to change{Nhri::FileMonitor.count}
     expect(Nhri::FileMonitor.first.original_filename).to eq 'first_upload_file.pdf'
     expect(page.find('#filename').text).to eq 'first_upload_file.pdf'
     hover_over_info_icon
@@ -183,7 +198,7 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
     page.attach_file("monitor_file", upload_image, :visible => false)
     expect(page).to have_selector('#selected_file', :text => 'first_upload_image_file.png')
     expect(page).to have_selector('#original_type_error', :text => "Unpermitted file type")
-    expect{ save_monitor.click; sleep(0.3) }.not_to change{Nhri::FileMonitor.first.file_id}
+    expect{ save_monitor.click; wait_for_ajax }.not_to change{Nhri::FileMonitor.first.file_id}
     deselect_file
     expect(page).not_to have_selector('#selected_file', :text => 'first_upload_image_file.png')
     expect(page).not_to have_selector('#original_type_error', :text => "Unpermitted file type")
@@ -194,7 +209,7 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
   end
 
   scenario "try to upload without selecting a file" do
-    expect{ save_monitor.click; sleep(0.3) }.not_to change{Nhri::FileMonitor.first.file_id}
+    expect{ save_monitor.click; wait_for_ajax }.not_to change{Nhri::FileMonitor.first.file_id}
     expect(page).to have_css('#file_error', :text => "You must select a file")
   end
 
@@ -202,7 +217,7 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
     page.attach_file("monitor_file", big_upload_document, :visible => false)
     expect(page).to have_selector('#selected_file', :text => 'big_upload_file.pdf')
     expect(page).to have_css('#filesize_error', :text => "File is too large")
-    expect{ save_monitor.click; sleep(0.3) }.not_to change{Nhri::FileMonitor.first.file_id}
+    expect{ save_monitor.click; wait_for_ajax }.not_to change{Nhri::FileMonitor.first.file_id}
   end
 
   scenario "closing the monitor modal resets the selected file" do
