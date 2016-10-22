@@ -3,7 +3,7 @@ require 'rspec/core/shared_context'
 module IndicatorFileMonitorSpecHelpers
   extend RSpec::Core::SharedContext
 
-  def file_monitor_icon_count
+  def monitor_icon_count
     # you'd think that $('.show_monitors.counter').data('count') would work, but it gets fixed at the page-load value
     page.evaluate_script("parseInt($('.show_monitors.counter').attr('data-count'))")
   end

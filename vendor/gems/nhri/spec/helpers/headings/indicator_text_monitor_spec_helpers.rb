@@ -3,6 +3,11 @@ require 'rspec/core/shared_context'
 module IndicatorTextMonitorSpecHelpers
   extend RSpec::Core::SharedContext
 
+  def monitor_icon_count
+    # you'd think that $('.show_monitors.counter').data('count') would work, but it gets fixed at the page-load value
+    page.evaluate_script("parseInt($('.show_monitors.counter').attr('data-count'))")
+  end
+
   def edit_monitor
     page.all('#monitors .monitor i.fa-pencil-square-o')[0]
   end
