@@ -109,6 +109,8 @@ $ ->
         else
           'post'
       serialization_key : -> 'monitor'
+      delete_confirmation_message : ->
+        delete_file_monitor_confirmation_message
     decorators :
       popover : MonitorPopover
     components :
@@ -133,12 +135,23 @@ $ ->
     update_file : (response)->
       @findComponent('selectedFile').reset()
       @set(response)
+      indicator_id = @get('indicator_id')
+      indicator = _(heading.findAllComponents('indicator')).find (i)-> i.get('id')==indicator_id
+      indicator.set('file_monitor.id',@get('id'))
     download_file : ->
       window.location = @get('url')
     #remove_selected_file : ->
       #@get('fileupload').files=[]
     add_file : (file)->
       @findComponent('selectedFile').add_file(file)
+    delete_callback : (response, statusText, jqxhr) ->
+      indicator_id = @get('indicator_id')
+      @reset({indicator_id : indicator_id})
+      @findComponent('selectedFile').reset()
+      indicator = _(heading.findAllComponents('indicator')).find (i)-> i.get('id')==indicator_id
+      indicator.set('file_monitor',null)
+
+  $.extend window.file_monitor, ConfirmDeleteModal
 
   Indicator = Ractive.extend
     template : "#indicator_template"

@@ -3,6 +3,19 @@ require 'rspec/core/shared_context'
 module IndicatorFileMonitorSpecHelpers
   extend RSpec::Core::SharedContext
 
+  def file_monitor_icon_count
+    # you'd think that $('.show_monitors.counter').data('count') would work, but it gets fixed at the page-load value
+    page.evaluate_script("parseInt($('.show_monitors.counter').attr('data-count'))")
+  end
+
+  def number_of_file_monitors
+    page.all('#monitors .monitor').count
+  end
+
+  def delete_monitor
+    page.find("#delete_monitor")
+  end
+
   def deselect_file
     page.find('#deselect_file').click
   end
@@ -25,9 +38,9 @@ module IndicatorFileMonitorSpecHelpers
     sleep(0.2) # css transition
   end
 
-  def delete_monitor
-    page.all(".monitor #delete_monitor")
-  end
+  #def delete_monitor
+    #page.all(".monitor #delete_monitor")
+  #end
 
   def monitor_description_error
     page.all("#new_monitor #description span.help-block")

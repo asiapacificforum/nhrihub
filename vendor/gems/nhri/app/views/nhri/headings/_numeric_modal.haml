@@ -44,4 +44,4 @@
     .col-md-2.icon.monitor_info{:style => "text-align:center;"}
       %i.fa.fa-info-circle.fa-lg{:decorator => 'popover'}
     .col-md-2{:style => "text-align:center; font-size:14px;"}
-      %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => 'delete_monitor(event,this)', :style => "position:relative; top:-2px;"}
+      %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => "show_confirm_delete_modal({type:'NumericMonitor'})", :style => "position:relative; top:-2px;"}

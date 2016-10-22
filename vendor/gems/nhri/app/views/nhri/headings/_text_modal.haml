@@ -59,4 +59,4 @@
       .fade.no_edit.in{:style => "left:-14px;"}
         %i.fa.fa-pencil-square-o.fa-lg{:id => "monitor_editable{{id}}_edit_start"}
     .col-md-1{:style => "text-align:center; font-size:14px; width:5%;"}
-      %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => 'delete_monitor(event,this)', :style => "position:relative; left:-12px; top:-2px;"}
+      %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => "show_confirm_delete_modal({type:'TextMonitor'})", :style => "position:relative; left:-12px; top:-2px;"}

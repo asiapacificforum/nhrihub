@@ -9,9 +9,13 @@
       .col-md-2{:style => "font-weight:bold;"}= t('.file_name')
       .col-md-5#filename {{ original_filename }}
       .col-md-1
+      .col-md-1
+      .col-md-1
         %i.fa.fa-info-circle.fa-lg#show_details{:decorator => :popover, :style=>"display:{{#unless original_filename}}none{{/unless}}"}
       .col-md-1
         %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()', 'data-toggle'=>'tooltip', :title => t('.download'), :style=>"display:{{#unless original_filename}}none{{/unless}}"}
+      .col-md-1
+        %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => "show_confirm_delete_modal({type:'FileMonitor'})", :style => "position:relative; top:-2px; display:{{#unless original_filename}}none{{/unless}}"}
     .row.fileupload
       .col-md-12
         .row.fileupload_progress
@@ -34,30 +38,6 @@
   </modal-body>
   </modal-custom>
 
-%script#file_monitor_template{:type => 'text/ractive'}
-  .monitor.row.editable_container{:id => "monitor_editable{{id}}", :decorator => 'monitor_edit:{{id}}'}
-    .col-md-1.date.form-group{:style => "width:15%"}
-      %span {{ formatted_date }}
-    .col-md-6.description.form-group{:class => '{{#description_error}}has-error{{/}}', :style => "width:65%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'description'}
-      %div
-        .fade.no_edit.in
-          %span {{description}}
-        .fade.edit{:style => "height:140px;"}
-          %textarea#file_monitor_description.form-control{:name => 'monitor[description]', :cols=>78, :rows=>4, :value => '{{description}}', 'on-keydown'=>"remove_errors('description')"}
-          %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"} foo
-    .col-md-1.icon.monitor_info{:style => "width:5%"}
-      %i.fa.fa-info-circle.fa-lg{:decorator => 'popover'}
-    .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px; width:5%", 'data-toggle' => 'edit'}
-      .fade.edit
-        %i.fa.fa-remove.fa-lg{:style => "position:relative;", :id => "monitor_editable{{id}}_edit_cancel"}
-    .col-md-1.icon{:style => "text-align:center; font-size:14px; width:5%", 'data-toggle' => 'edit'}
-      .fade.edit
-        %i.fa.fa-check.fa-lg{:id => "monitor_editable{{id}}_edit_save"}
-      .fade.no_edit.in{:style => "left:-14px;"}
-        %i.fa.fa-pencil-square-o.fa-lg{:id => "monitor_editable{{id}}_edit_start"}
-    .col-md-1{:style => "text-align:center; font-size:14px; width:5%;"}
-      %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => 'delete_monitor(event,this)', :style => "position:relative; left:-12px; top:-2px;"}
-
 %script#selected_file_template{:type => 'template/ractive'}
   %span#selected_file {{ name }}
   %span
@@ -69,13 +49,3 @@
     %span.help-block#original_type_error{:style => "margin-top:0; margin-bottom:0;"}= t('.unpermitted_type')
   .form-group{:class => "{{#file_error}}has-error{{/}}"}
     %span.help-block#file_error{:style => "margin-top:0; margin-bottom:0;"}= t('.blank_file_msg')
-
-%script#download_file_template{:type => 'template/ractive'}
-  //.row.fileupload{:decorator => 'file_upload', 'data-toggle'=>:edit}
-  //  .col-md-2#fileinput_button{:style => "width:15%"}
-  //    %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-  //    %input{:id => "monitor_file", :type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"monitor[file]"}
-  //  .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row; padding-left:8px;"}
-  //    {{#original_filename}}
-  //    <file/>
-  //    {{/original_filename}}

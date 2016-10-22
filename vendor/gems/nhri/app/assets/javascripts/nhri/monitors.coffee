@@ -21,7 +21,7 @@ $ ->
   Ractive.DEBUG = false
 
   # applies to text and numeric monitors only, file_monitors have the FileMonitor ractive component
-  Monitor =
+  Monitor = $.extend
     computed :
       persisted : ->
         !isNaN(parseInt(@get('id')))
@@ -30,6 +30,8 @@ $ ->
           $.datepicker.formatDate("M d, yy", new Date(@get('date')) )
         set: (val)-> 
           @set('date', $.datepicker.parseDate( "M d, yy", val))
+      delete_confirmation_message : ->
+        "you want to what?"
     persisted_attributes : ->
       {monitor : _.chain(@get()).pick(@get('params')).extend({type:@get('type')}).value() }
     save_monitor : ->
@@ -45,18 +47,19 @@ $ ->
           context : @
     cancel_monitor : ->
       @parent.pop(@parent.get('collection'))
-    delete_monitor : (event)->
-      ev = $.Event(event)
-      ev.stopPropagation()
-      # data = [{name:'_method', value: 'delete'},{name : 'type', value : @get('type')}]
-      data = {'_method': 'delete', monitor : {type: @get('type')}}
-      $.ajax
-        url : @get('url')
-        data : data
-        method : 'post'
-        dataType : 'json'
-        context : @
-        success : @update_monitor
+    #delete_monitor : (event)->
+      #ev = $.Event(event)
+      #ev.stopPropagation()
+      #data = {'_method': 'delete', monitor : {type: @get('type')}}
+      #$.ajax
+        #url : @get('url')
+        #data : data
+        #method : 'post'
+        #dataType : 'json'
+        #context : @
+        #success : @update_monitor
+    delete_callback : (response, statusText, jqxhr)->
+      @update_monitor(response, statusText, jqxhr)
     update_monitor : (response, statusText, jqxhr)->
       @parent.update_monitors(response)
     remove_errors : (field)->
@@ -67,6 +70,7 @@ $ ->
         @set(field+"_error",false)
     set_date_from_datepicker : (selectedDate)->
       @set('date',$.datepicker.parseDate("yy, M d",selectedDate))
+  , ConfirmDeleteModal
 
   NumericMonitor = Ractive.extend
     template : '#numeric_monitor_template'

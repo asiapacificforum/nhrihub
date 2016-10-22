@@ -25,6 +25,7 @@
       url : null
       message : null
       callback : null
+      local_data : null
     show : ->
       $(@el).find('.modal#confirm-delete').modal('show')
       $(@el).find('.modal#confirm-delete').find('.modal-body').html(@get('message'))
@@ -38,7 +39,11 @@
     delete_item : ->
       -#ev = $.Event(event)
       -#ev.stopPropagation()
-      data = [{name:'_method', value: 'delete'}]
+      if _.isEmpty(@get('local_data'))
+        data = [{name:'_method', value: 'delete'}]
+      else
+        # this should be generalized
+        data = [{name:'_method', value: 'delete'},{name:'monitor[type]', value:@get('local_data').type}]
       $.ajax
         url : @get('url')
         data : data
@@ -49,11 +54,12 @@
         error : @error_callback
 
   @ConfirmDeleteModal =
-    show_confirm_delete_modal : ()->
+    show_confirm_delete_modal : (local_data={})->
       confirm_delete_modal.set
         deletable : @
         url : @get('url')
         message : @get('delete_confirmation_message')
         callback : @delete_callback
+        local_data : local_data
       confirm_delete_modal.show()
       return

@@ -21,6 +21,9 @@ en:
         outcomes: "Outcomes"
         add_indicator: "Add indicator"
         delete_indicator_confirmation_message: "Are you sure you want to delete indicator "
+        delete_numeric_monitor_confirmation_message : "Are you sure you want to delete the numeric monitor"
+        delete_text_monitor_confirmation_message : "Are you sure you want to delete the text monitor"
+        delete_file_monitor_confirmation_message : "Are you sure you want to delete the file monitor"
       indicators_templates:
         attribute: "Attribute"
         nature: "Nature"

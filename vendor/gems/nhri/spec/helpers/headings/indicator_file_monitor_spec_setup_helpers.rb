@@ -35,7 +35,5 @@ module IndicatorsUnpopulatedFileMonitorSpecSetupHelpers
     Nhri::FileMonitor.maximum_filesize = 5
 
     visit nhri_heading_path(:en, Nhri::Heading.first.id)
-    show_monitors.click
-    sleep(0.3) # css transition
   end
 end
