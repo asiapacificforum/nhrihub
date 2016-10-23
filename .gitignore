@@ -40,4 +40,3 @@ config/env.yml
 certificates.*
 cert_test.rb
 tags
-destroy.txt

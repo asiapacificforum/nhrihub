@@ -3,7 +3,8 @@ en:
     index:
       heading: "Projects"
       add_project: "Add Project"
-      delete_confirm: "Are you sure you want to delete project "
+      delete_project_confirmation_message: "Are you sure you want to delete project "
+      delete_project_document_confirmation_message: "Are you sure you want to delete project document "
     projects_templates:
       title: "Title"
       title_error_message: "Title cannot be blank"

@@ -113,23 +113,22 @@ ProjectDocument = Ractive.extend
       !_.isNull(@get('id'))
     url : ->
       Routes.project_document_path(current_locale, @get('id'))
+    truncated_title : ->
+      @get('title').split(' ').slice(0,4).join(' ')+"..."
+    truncated_title_or_filename : ->
+      unless _.isEmpty(@get('title'))
+        @get('truncated_title')
+      else
+        @get('filename')
+    delete_confirmation_message : ->
+      "#{delete_project_document_confirmation_message} \"#{@get('truncated_title_or_filename')}\"?"
   remove_file : ->
     @parent.remove(@_guid)
-  delete_project_document : ->
-    data = {'_method' : 'delete'}
-    # TODO if confirm
-    $.ajax
-      method : 'post'
-      url : @get('url')
-      data : data
-      success : @delete_callback
-      dataType : 'json'
-      context : @
   delete_callback : (data,textStatus,jqxhr)->
     @parent.remove(@_guid)
   download_attachment : ->
     window.location = @get('url')
-  , ProjectDocumentValidator
+  , ProjectDocumentValidator, ConfirmDeleteModal
 
 ProjectDocuments = Ractive.extend
   template : "#project_documents_template"
@@ -256,11 +255,9 @@ Project = Ractive.extend
     url : ->
       Routes.project_path(current_locale,@get('id'))
     truncated_title : ->
-      words = @get('title').split(' ').slice(0,4)
-      words[4] = "..."
-      words.join(' ')
+      @get('title').split(' ').slice(0,4).join(' ')+"..."
     delete_confirmation_message : ->
-      window.delete_confirmation_message + @get('truncated_title')+"?"
+      "#{delete_project_confirmation_message} \"#{@get('truncated_title')}\"?"
     reminders_count : ->
       @get('reminders').length
     notes_count : ->

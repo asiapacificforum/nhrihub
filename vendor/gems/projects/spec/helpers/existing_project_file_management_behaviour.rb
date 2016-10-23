@@ -65,8 +65,8 @@ RSpec.shared_examples "existing project file management" do
 
   it "should delete files" do
     edit_last_project.click
-    expect{ delete_file.click; wait_for_ajax }.to change{ ProjectDocument.count }.by(-1).
-                                               and change{ project_documents.all('.project_document').count }.by(-1)
+    expect{ delete_file.click; confirm_deletion; wait_for_ajax }.to change{ ProjectDocument.count }.by(-1).
+                                                                and change{ project_documents.all('.project_document').count }.by(-1)
   end
 
   # can't test download in chrome or firefox
