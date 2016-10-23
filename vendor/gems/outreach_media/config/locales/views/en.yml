@@ -32,6 +32,8 @@ en:
         search_heading: "Search for outreach events by:"
         select_audience_type: "Select audience type"
         select_impact_rating: "Select impact rating"
+        delete_outreach_event_confirmation_message : "Are you sure you want to delete outreach event "
+        delete_outreach_event_document_confirmation_message : "Are you sure you want to delete document "
 
       outreach_event_templates:
         too_large : "File is too large"

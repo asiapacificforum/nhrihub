@@ -63,7 +63,6 @@ module OutreachSpecHelper
 
   def delete_outreach_event
     page.find('.outreach_event .delete_icon').click
-    sleep(0.4)
   end
 
   def outreach_events

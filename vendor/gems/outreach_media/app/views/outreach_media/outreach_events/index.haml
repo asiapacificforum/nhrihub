@@ -1,20 +1,22 @@
 = stylesheet_link_tag 'outreach_media'
 = render :partial => 'index' # b/c the partial is used for the javascript test suite
 
-:javascript
-  var outreach_events = #{@outreach_events.to_json}
-  var areas = #{@areas.to_json}
-  var subareas = #{@subareas.to_json}
-  var new_outreach_event = #{@outreach_event.to_json}
-  var create_outreach_event_url = "#{@outreach_event.create_url}"
-  var maximum_filesize = #{OutreachEvent.maximum_filesize * 1000000}
-  var permitted_filetypes = #{OutreachEvent.permitted_filetypes }
-  var audience_types = #{@audience_types.to_json}
-  var impact_ratings = #{@impact_ratings.to_json}
-  var default_selected_audience_type = "#{t('.select_audience_type')}"
-  var default_selected_impact_rating = "#{t('.select_impact_rating')}"
-  var planned_results = #{@planned_results.to_json }
-  var Collection = {}
+:coffeescript
+  @outreach_events = #{@outreach_events.to_json}
+  @areas = #{@areas.to_json}
+  @subareas = #{@subareas.to_json}
+  @new_outreach_event = #{@outreach_event.to_json}
+  @create_outreach_event_url = "#{@outreach_event.create_url}"
+  @maximum_filesize = #{OutreachEvent.maximum_filesize * 1000000}
+  @permitted_filetypes = #{OutreachEvent.permitted_filetypes }
+  @audience_types = #{@audience_types.to_json}
+  @impact_ratings = #{@impact_ratings.to_json}
+  @default_selected_audience_type = "#{t('.select_audience_type')}"
+  @default_selected_impact_rating = "#{t('.select_impact_rating')}"
+  @planned_results = #{@planned_results.to_json }
+  @Collection = {}
+  @delete_outreach_event_confirmation_message = "#{t('.delete_outreach_event_confirmation_message')}"
+  @delete_outreach_event_document_confirmation_message = "#{t('.delete_outreach_event_document_confirmation_message')}"
 
 :coffeescript
   window.performance_indicators = _.chain(planned_results).
@@ -28,4 +30,5 @@
     object().
     value()
 
+= render :partial => 'shared/confirm_delete_modal'
 = javascript_include_tag "outreach"

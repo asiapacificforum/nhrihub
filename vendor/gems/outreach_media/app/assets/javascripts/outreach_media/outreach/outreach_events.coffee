@@ -154,7 +154,6 @@ $ ->
 
   Ractive.decorators.file_select_trigger = FileSelectTrigger
 
-
   OutreachEventDocument = Ractive.extend
     template : "#outreach_event_document_template"
     oninit : ->
@@ -173,7 +172,8 @@ $ ->
       @set('file_size_error',false)
     deselect_file : ->
       if @get('persisted')
-        @remove_file()
+        #@remove_file()
+        @show_confirm_delete_modal()
       else
         file_input = $(@findParent('oe').find('#outreach_event_file'))
         # see http://stackoverflow.com/questions/1043957/clearing-input-type-file-using-jquery
@@ -193,18 +193,13 @@ $ ->
           true
         else
           @validator.validate()
-    remove_file : ->
-      $.ajax
-        method : 'post'
-        url : @get('url')
-        data :
-          _method : 'delete'
-        success : @update_event_document
-        context : @
-    update_event_document : ->
+      delete_confirmation_message : ->
+        "#{delete_outreach_event_document_confirmation_message} \"#{@get('file_filename')}\"?"
+    delete_callback : ->
       @parent.remove(@)
     download_attachment : ->
       window.location = @get('url')
+  , ConfirmDeleteModal
 
   OutreachEventDocuments = Ractive.extend
     template : "#outreach_event_documents_template"
@@ -382,6 +377,10 @@ $ ->
         @get('outreach_event_documents').length == 0
       persistent_attributes : ->
         ['outreach_event_documents_attributes', 'selected_performance_indicators_attributes', 'subarea_ids', 'area_ids', 'impact_rating_id', 'title', 'date', 'affected_people_count', 'audience_type_id', 'description', 'audience_name', 'participant_count']
+      truncated_title : ->
+        @get('title').split(' ').slice(0,4).join(' ')+"..."
+      delete_confirmation_message : ->
+        "#{delete_outreach_event_confirmation_message} \"#{@get('truncated_title')}\"?"
     expand : ->
       @set('expanded',true)
       $(@find('.collapse')).collapse('show')
@@ -414,17 +413,6 @@ $ ->
       UserInput.reset()
       if !_.isUndefined(@edit)
         @edit.load() # terminate edit, if it was active, but don't try to restore stashed instance
-    delete_this : (event) ->
-      data = {'_method' : 'delete'}
-      url = @get('url')
-      # TODO if confirm
-      $.ajax
-        method : 'post'
-        url : url
-        data : data
-        success : @delete_callback
-        dataType : 'json'
-        context : @
     delete_callback : (data,textStatus,jqxhr)->
       @parent.delete(@)
     remove_errors : ->
@@ -496,7 +484,7 @@ $ ->
       attached_documents = @get('outreach_event_documents')
       attached_documents.unshift(attached_document)
       @set('outreach_event_documents', attached_documents)
-    , PerformanceIndicatorAssociation, Remindable, Notable
+    , PerformanceIndicatorAssociation, Remindable, Notable, ConfirmDeleteModal
 
   window.outreach_page_data = -> # an initialization data set so that tests can reset between
     expanded : false

@@ -253,11 +253,9 @@ feature "when there are existing outreach events", :js => true do
     end
 
     scenario "delete an outreach event" do
-      saved_file_path = File.join('tmp','uploads','store',OutreachEvent.first.outreach_event_documents.first.file_id)
-      expect(File.exists?(saved_file_path)).to eq true
-      expect{ delete_outreach_event }.to change{OutreachEvent.count}.from(1).to(0)
-      expect(outreach_events.length).to eq 0
-      expect(File.exists?(saved_file_path)).to eq false
+      expect{ delete_outreach_event; confirm_deletion; wait_for_ajax }.to change{OutreachEvent.count}.from(1).to(0).
+                                                    and change{outreach_events.length}.from(1).to(0).
+                                                    and change{ File.exists?(file_path) }.from(true).to(false)
     end
 
     scenario "edit an outreach event without introducing errors" do
@@ -335,13 +333,12 @@ feature "when there are existing outreach events", :js => true do
     end
 
     scenario "delete an attached file" do
-      file_id = page.evaluate_script("outreach.findAllComponents('oe')[0].findAllComponents('outreachEventDocuments')[0].findAllComponents('outreachEventDocument')[0].get('file_id')")
-      expect(File.exists?(File.join('tmp','uploads','store',file_id))).to eq true
+      expect(File.exists?(file_path)).to eq true
       edit_outreach_event[0].click
       expect(page.find('#outreach_event_documents #selected_file').text).not_to be_blank
-      expect{ remove_file.click; wait_for_ajax}.to change{OutreachEventDocument.count}.from(1).to(0)
+      expect{ remove_file.click; confirm_deletion; wait_for_ajax}.to change{OutreachEventDocument.count}.from(1).to(0)
       expect(page).not_to have_selector('#outreach_event_documents #selected_file')
-      expect(File.exists?(File.join('tmp','uploads','store',file_id))).to eq false
+      expect(File.exists?(file_path)).to eq false
     end
 
     scenario "add a second file" do
@@ -350,7 +347,7 @@ feature "when there are existing outreach events", :js => true do
       page.attach_file("outreach_event_file", upload_document, :visible => false)
       expect{edit_save.click; wait_for_ajax}.to change{OutreachEventDocument.count}.from(1).to(2)
       expect(OutreachEvent.count).to eq 1
-      expect{ remove_file.click; wait_for_ajax}.to change{OutreachEventDocument.count}.from(2).to(1)
+      expect{ remove_file.click; confirm_deletion; wait_for_ajax}.to change{OutreachEventDocument.count}.from(2).to(1)
       expect(OutreachEvent.count).to eq 1
     end
 

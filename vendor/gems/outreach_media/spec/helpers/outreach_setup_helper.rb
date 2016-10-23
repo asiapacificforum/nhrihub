@@ -5,13 +5,14 @@ module OutreachSetupHelper
   def setup_database(type = nil)
     setup_impact_ratings
     setup_areas
-    FactoryGirl.create(:outreach_event,
-                       :hr_area,
-                       :with_two_performance_indicators,
-                       :impact_rating => ImpactRating.first,
-                       :participant_count => 1000,
-                       :event_date => DateTime.now,
-                       :reminders=>[] )
+    outreach_event = FactoryGirl.create(:outreach_event,
+                                        :hr_area,
+                                        :with_two_performance_indicators,
+                                        :impact_rating => ImpactRating.first,
+                                        :participant_count => 1000,
+                                        :event_date => DateTime.now,
+                                        :reminders=>[] )
+    @file_id = outreach_event.outreach_event_documents.first.file_id
 
     if type == :multiple
       FactoryGirl.create(:outreach_event,
@@ -22,6 +23,10 @@ module OutreachSetupHelper
                          :reminders=>[] )
     end
     add_reminder
+  end
+
+  def file_path
+    File.join('tmp','uploads','store',@file_id)
   end
 
   def setup_audience_types
