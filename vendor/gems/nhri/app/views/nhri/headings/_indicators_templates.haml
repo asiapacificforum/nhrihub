@@ -38,7 +38,7 @@
         {{/human_rights_attributes}}
 
 %script#nature_all_attributes_template{:type => 'ractive/template'}
-  .col-md-12{:style => "padding-left: 30%;"}
+  .col-md-12{:style => "padding-left: 30%;", :class =>"all_attribute_indicators"}
     %i.fa.fa-plus.fa-sm.new_indicator{'on-click'=>'new_indicator()', :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_indicator')}
     %div{:style => "display:inline-block;"}
       %ul{:style => "padding-left:10px"}
@@ -47,8 +47,8 @@
         {{/all_attribute_indicators}}
 
 %script#nature_attribute_template{:type => 'ractive/template'}
-  .col-md-2{:style => "width:{{100/human_rights_attributes.length}}%"}
-    %i.fa.fa-plus.fa-sm.new_planned_result{ 'on-click'=>'new_indicator()', :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add indicator"}
+  .col-md-2{:style => "width:{{100/human_rights_attributes.length}}%", :class => "single_attribute_indicators"}
+    %i.fa.fa-plus.fa-sm.new_indicator{ 'on-click'=>'new_indicator()', :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add indicator"}
     %ul{:style => "padding-left:10px"}
       {{#this[name+'_indicators']}}
       <indicator heading_id='{{heading_id}}' monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' numeric_monitors='{{numeric_monitors}}' text_monitors='{{text_monitors}}' file_monitor='{{file_monitor}}' title='{{title}}' />

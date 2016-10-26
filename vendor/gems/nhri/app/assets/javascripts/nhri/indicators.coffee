@@ -34,7 +34,6 @@ $ ->
 
   Ractive.decorators.ractive_fileupload = FileInput
 
-
   SelectedFile = Ractive.extend
     template : "#selected_file_template"
     oninit : ->
@@ -228,6 +227,11 @@ $ ->
     template : "#nature_all_attributes_template"
     components :
       indicator : Indicator
+    computed :
+      indicators : ->
+        @get("all_attribute_#{@get('name')}_indicators")
+      indicator_ids : ->
+        _(@get('indicators')).map (i)-> i.id
     new_indicator : ->
       new_indicator.set
         title : ""
@@ -238,11 +242,8 @@ $ ->
         id : null
       $('#new_indicator_modal').modal('show')
     remove_indicator : (id)->
-      nature = @get('nature')
-      indicators = 'all_human_rights_attribute_'+nature+'_indicators'
-      indicator_ids = _(@get(indicators)).map (i)-> i.id
-      index = indicator_ids.indexOf(id)
-      @splice(indicators,index,1)
+      index = @get('indicator_ids').indexOf(id)
+      @splice("all_attribute_#{@get('name')}_indicators",index,1)
 
   Nature = Ractive.extend
     template : "#nature_template"

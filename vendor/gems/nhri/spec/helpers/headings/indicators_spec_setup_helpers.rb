@@ -5,6 +5,7 @@ module IndicatorsSpecSetupHelpers
   before do
     heading = FactoryGirl.create(:heading)
     attribute = FactoryGirl.create(:human_rights_attribute, :description => "First attribute")
+    another_attribute = FactoryGirl.create(:human_rights_attribute, :description => "Second attribute")
     2.times do
       FactoryGirl.create(:indicator,
                          :monitor_format => 'numeric',
@@ -15,7 +16,6 @@ module IndicatorsSpecSetupHelpers
                          :reminders=>[FactoryGirl.create(:reminder, :indicator)],
                          :notes => [FactoryGirl.create(:note, :indicator, :created_at => 3.days.ago.to_datetime)])
     end
-    #resize_browser_window
     visit nhri_heading_path(:en, Nhri::Heading.first.id)
     sleep(0.3) # css transition
   end

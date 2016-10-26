@@ -7,11 +7,14 @@ module IndicatorsSpecHelpers
     page.all('.indicator .delete_indicator')[0]
   end
 
-  def add_indicator
-    #page.driver.resize_window_to(page.driver.current_window_handle,1280,1024) if page.driver.is_a? Capybara::Selenium::Driver
-    #page.driver.resize_window(2224,1024) if page.driver.is_a? Capybara::Poltergeist::Driver
-    page.all('.new_indicator').first.click
-    sleep(0.3)
+  def add_all_attribute_indicator
+    page.all('.all_attribute_indicators .new_indicator')[0].click
+    #sleep(0.3)
+  end
+
+  def add_single_attribute_indicator
+    page.all('.single_attribute_indicators .new_indicator')[0].click
+    #sleep(0.3)
   end
 
   def save_indicator
