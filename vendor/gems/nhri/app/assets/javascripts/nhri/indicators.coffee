@@ -211,7 +211,7 @@ $ ->
       new_indicator.set
         title : ""
         nature : @get('nature')
-        human_rights_attribute_id : @get('human_rights_attribute_id')
+        human_rights_attribute_id : @get('attribute_id')
         heading_id : @get('heading_id')
         monitor_format : ""
         id : null
@@ -274,11 +274,11 @@ $ ->
     components :
       attributes : Attributes
       natures : Natures
-    add_indicator : (indicator)->
+    add_indicator : (indicator)-> # it's the create_heading callback
       nature = indicator.nature
-      if _.isNull(indicator.human_rights_attribute_id)
+      if _.isNull(indicator.human_rights_attribute_id) # all-attributes indicator
         @push("all_attribute_#{nature}_indicators",indicator)
-      else
+      else # single-attribute indicator
         attribute_index = _(@get('human_rights_attributes').map (o)->o.id).indexOf(indicator.human_rights_attribute_id)
         @push("human_rights_attributes.#{attribute_index}.#{nature}_indicators",indicator)
 

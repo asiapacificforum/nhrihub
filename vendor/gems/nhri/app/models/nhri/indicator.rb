@@ -4,7 +4,6 @@ class Nhri::Indicator < ActiveRecord::Base
   #    nil                       n       indicator belongs to a heading, and is associated with all attributes
   #     n                        n       indicator belongs to a particular attribute,
   #                                      heading_id included for routing after an indicator is created
-  #                                      it is created in the context of an indicator
   belongs_to :human_rights_attribute
   belongs_to :heading
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy

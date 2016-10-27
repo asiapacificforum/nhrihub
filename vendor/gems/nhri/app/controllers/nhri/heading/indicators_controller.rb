@@ -34,6 +34,6 @@ class Nhri::Heading::IndicatorsController < ApplicationController
 
   private
   def indicator_params
-    params.require(:indicator).permit(:numeric_monitor_explanation, :attribute_id, :title, :nature, :monitor_format, :heading_id)
+    params.require(:indicator).permit(:numeric_monitor_explanation, :human_rights_attribute_id, :title, :nature, :monitor_format, :heading_id)
   end
 end

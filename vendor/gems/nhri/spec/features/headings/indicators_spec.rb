@@ -57,10 +57,8 @@ feature "indicators behaviour", :js => true do
     select("Numeric", :from => "indicator_monitor_format")
     expect(page).to have_selector("#indicator_numeric_monitor_explanation")
     fill_in("indicator_numeric_monitor_explanation", :with => "% of people who like me")
-    expect{save_indicator.click; wait_for_ajax }.to change{Nhri::Indicator.count}.by(1)#.
-                                                #and change{ page.all("#indicators .single_attribute_indicators .indicator").length }.by(1)
-    debugger
-    expect(1).to eq 1
+    expect{save_indicator.click; wait_for_ajax }.to change{Nhri::Indicator.count}.by(1).
+                                                and change{ page.all("#indicators .single_attribute_indicators .indicator").length }.by(1)
   end
 
   it "should reset the new indicator form when add is canceled" do
