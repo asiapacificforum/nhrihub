@@ -86,6 +86,8 @@ $ ->
           'value_error':false
           'value':value
       !@get('value_error')
+    onrender : ->
+      $(@find('#monitor_value')).focus()
   , Monitor
 
   TextMonitor = Ractive.extend
@@ -108,6 +110,8 @@ $ ->
         false
       else
         true
+    onrender : ->
+      $(@find('#monitor_description')).focus()
   , Monitor
 
   window.monitors = new Ractive

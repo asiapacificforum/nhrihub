@@ -9,12 +9,10 @@ module IndicatorsSpecHelpers
 
   def add_all_attribute_indicator
     page.all('.all_attribute_indicators .new_indicator')[0].click
-    #sleep(0.3)
   end
 
   def add_single_attribute_indicator
     page.all('.single_attribute_indicators .new_indicator')[0].click
-    #sleep(0.3)
   end
 
   def save_indicator
