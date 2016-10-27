@@ -39,6 +39,7 @@ SecureHeaders::Configuration.default do |config|
   config.csp = {
     :default_src => %w(https: 'self'),
     :script_src => %w('self' 'unsafe-inline' 'unsafe-eval'),
+    :img_src => %w('self' data:),
     :style_src => %w('self' 'unsafe-inline'),
     :report_uri => %W(/#{Rails.application.config.i18n.default_locale.to_s}/csp_reports)
   }
