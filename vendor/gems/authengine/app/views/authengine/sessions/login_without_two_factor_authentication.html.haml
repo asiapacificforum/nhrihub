@@ -13,15 +13,18 @@
         %td= password_field_tag "password"
       %tr
         %td
-          .btn.btn-default.btn-primary#sign_up{:onclick=>'send_user_params()'}=t('login', :scope => scope)
+          .btn.btn-default.btn-primary#sign_up{:onclick=>'submit_form()'}=t('login', :scope => scope)
         %td
 
 :coffeescript
   $ ->
     remove_flash= ->
       $('.message_block').empty()
+    check_for_return_key= (event)->
+      submit_form() if event.which == 13
     $('#login').on('keydown',remove_flash)
     $('#password').on('keydown',remove_flash)
+    $('body').on('keydown',check_for_return_key)
 
-  @send_user_params = ->
+  @submit_form = ->
     $('form').submit()

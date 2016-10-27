@@ -32,8 +32,11 @@
   $ ->
     remove_flash= ->
       $('.message_block').empty()
+    check_for_return_key= (event)->
+      send_user_params() if event.which == 13
     $('#login').on('keydown',remove_flash)
     $('#password').on('keydown',remove_flash)
+    $('body').on('keydown',check_for_return_key)
 
   production_env = #{Rails.env.production?}
 
