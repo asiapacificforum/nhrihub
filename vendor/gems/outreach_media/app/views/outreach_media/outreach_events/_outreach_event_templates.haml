@@ -145,11 +145,11 @@
           .row{:style => "margin-left:0px;"}
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
+                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()"}
               .edit
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+                .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
               .edit
             .col-md-1.icon{ 'data-toggle' => 'edit'}
               .fade.edit

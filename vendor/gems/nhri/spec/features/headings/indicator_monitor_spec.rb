@@ -3,6 +3,7 @@ require 'login_helpers'
 require_relative '../../helpers/headings/indicator_numeric_monitor_spec_helpers'
 require_relative '../../helpers/headings/indicator_text_monitor_spec_helpers'
 require_relative '../../helpers/headings/indicator_file_monitor_spec_helpers'
+require_relative '../../helpers/headings/indicator_monitor_spec_common_helpers'
 require_relative '../../helpers/headings/indicators_numeric_monitor_spec_setup_helpers'
 require_relative '../../helpers/headings/indicator_text_monitor_spec_setup_helpers'
 require_relative '../../helpers/headings/indicator_file_monitor_spec_setup_helpers'
@@ -11,6 +12,7 @@ require 'upload_file_helpers'
 feature "monitors behaviour when indicator is configured to monitor with numeric format", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include IndicatorNumericMonitorSpecHelpers
+  include IndicatorMonitorSpecCommonHelpers
   include IndicatorsNumericMonitorSpecSetupHelpers
 
   scenario "add monitor" do
@@ -71,7 +73,7 @@ feature "monitors behaviour when indicator is configured to monitor with numeric
   end
 
   scenario "delete a monitor" do
-    expect{ delete_monitor.first.click; confirm_deletion; wait_for_ajax }.to change{Nhri::NumericMonitor.count}.from(2).to(1)
+    expect{ delete_monitor.click; confirm_deletion; wait_for_ajax }.to change{Nhri::NumericMonitor.count}.from(2).to(1)
     close_monitors_modal
     wait_for_modal_close
     expect( monitor_icon_count ).to eq 1
@@ -86,6 +88,7 @@ end
 feature "monitors behaviour when indicator is configured to monitor with text format", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include IndicatorTextMonitorSpecHelpers
+  include IndicatorMonitorSpecCommonHelpers
   include IndicatorsTextMonitorSpecSetupHelpers
 
   scenario "add monitor" do
@@ -148,7 +151,7 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
   end
 
   scenario "delete a monitor" do
-    expect{ delete_monitor.first.click; confirm_deletion; wait_for_ajax }.to change{Nhri::TextMonitor.count}.from(2).to(1)
+    expect{ delete_monitor.click; confirm_deletion; wait_for_ajax }.to change{Nhri::TextMonitor.count}.from(2).to(1)
     close_monitors_modal
     wait_for_modal_close
     expect( monitor_icon_count ).to eq 1
@@ -168,6 +171,7 @@ end
 feature "monitors behaviour when indicator is configured to monitor with file format, with no file present", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include IndicatorFileMonitorSpecHelpers
+  include IndicatorMonitorSpecCommonHelpers
   include IndicatorsUnpopulatedFileMonitorSpecSetupHelpers
   include UploadFileHelpers
 
@@ -208,6 +212,7 @@ end
 feature "monitors behaviour when indicator is configured to monitor with file format", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include IndicatorFileMonitorSpecHelpers
+  include IndicatorMonitorSpecCommonHelpers
   include IndicatorsFileMonitorSpecSetupHelpers
   include UploadFileHelpers
 

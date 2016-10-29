@@ -482,7 +482,7 @@ describe 'media_appearance attachment validation', ->
                                            })
     collection.set({'collection_items': [media_appearance]})
     expect(collection.findComponent('collectionItem').validate()).to.equal false
-    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal true
+    expect(collection.findComponent('collectionItem').get('single_attachment_error')).to.equal true
 
   it 'does not validate persisted media_appearance with both link and attachment', ->
     media_appearance = _.extend(@page.new_media_appearance(), {
@@ -494,7 +494,7 @@ describe 'media_appearance attachment validation', ->
                                            })
     collection.set({'collection_items': [media_appearance]})
     expect(collection.findComponent('collectionItem').validate()).to.equal false
-    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal true
+    expect(collection.findComponent('collectionItem').get('single_attachment_error')).to.equal true
 
   it 'does not validate persisted media_appearance with a link and no attachment but with an original_filename', ->
     media_appearance = _.extend(@page.new_media_appearance(), {
@@ -504,7 +504,7 @@ describe 'media_appearance attachment validation', ->
                                             original_filename : "some_file_name.pdf" })
     collection.set({'collection_items': [media_appearance]})
     expect(collection.findComponent('collectionItem').validate()).to.equal false
-    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal true
+    expect(collection.findComponent('collectionItem').get('single_attachment_error')).to.equal true
 
   it 'does not validate unpersisted media_appearance with no link and no attachment', ->
     media_appearance = _.extend(@page.new_media_appearance(), {
@@ -513,7 +513,7 @@ describe 'media_appearance attachment validation', ->
                                            })
     collection.set({'collection_items': [media_appearance]})
     expect(collection.findComponent('collectionItem').validate()).to.equal false
-    expect(collection.findComponent('collectionItem').get('collection_item_error')).to.equal true
+    expect(collection.findComponent('collectionItem').get('attachment_error')).to.equal true
 
   it 'does not validate persisted media_appearance with no link and no attachment', ->
     media_appearance = _.extend(@page.new_media_appearance(), {
@@ -522,29 +522,29 @@ describe 'media_appearance attachment validation', ->
                                            })
     collection.set({'collection_items': [media_appearance]})
     expect(collection.findComponent('collectionItem').validate()).to.equal false
-    expect(collection.findComponent('collectionItem').get('collection_item_error')).to.equal true
+    expect(collection.findComponent('collectionItem').get('attachment_error')).to.equal true
 
   it 'does not validate attachment which is too big', ->
     media_appearance = _.extend(@page.new_media_appearance(), {
                                             id : null, # unpersisted!
-                                            title: "bar",
-                                            original_filename : "some_file_name.pdf",
-                                            fileupload : {files:[{size:50000000,name:"filename.pdf"}]},
+                                            title: "bar"
                                            })
     collection.set({'collection_items': [media_appearance]})
+    file = {size:50000000,name:"filename.pdf"}
+    collection.findComponent('collectionItem').add_file(file)
     expect(collection.findComponent('collectionItem').validate()).to.equal false
     expect(collection.findComponent('collectionItem').get('filesize_error')).to.equal true
 
   it 'does not validate attachment of an unpermitted type', ->
     media_appearance = _.extend(@page.new_media_appearance(), {
                                             id : null, # unpersisted!
-                                            title: "bar",
-                                            original_filename : "some_file_name.pdf",
-                                            fileupload : {files:[{size:500000,name:"filename.xyz"}]},
+                                            title: "bar"
                                            })
     collection.set({'collection_items': [media_appearance]})
+    file = {size:50000000,name:"filename.xyz"}
+    collection.findComponent('collectionItem').add_file(file)
     expect(collection.findComponent('collectionItem').validate()).to.equal false
-    expect(collection.findComponent('collectionItem').get('filetype_error')).to.equal true
+    expect(collection.findComponent('collectionItem').get('original_type_error')).to.equal true
 
 describe 'advisory_council_issue attachment validation', ->
   before (done)->
@@ -627,7 +627,7 @@ describe 'advisory_council_issue attachment validation', ->
                                            })
     collection.set({'collection_items': [advisory_council_issue]})
     expect(collection.findComponent('collectionItem').validate()).to.equal true
-    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal false
+    expect(collection.findComponent('collectionItem').get('single_attachment_error')).to.equal false
 
   it 'validates persisted advisory_council_issue with both link and attachment', ->
     advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
@@ -639,7 +639,7 @@ describe 'advisory_council_issue attachment validation', ->
                                            })
     collection.set({'collection_items': [advisory_council_issue]})
     expect(collection.findComponent('collectionItem').validate()).to.equal true
-    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal false
+    expect(collection.findComponent('collectionItem').get('single_attachment_error')).to.equal false
 
   it 'validates persisted advisory_council_issue with a link and no attachment but with an original_filename', ->
     advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
@@ -649,7 +649,7 @@ describe 'advisory_council_issue attachment validation', ->
                                             original_filename : "some_file_name.pdf" })
     collection.set({'collection_items': [advisory_council_issue]})
     expect(collection.findComponent('collectionItem').validate()).to.equal true
-    expect(collection.findComponent('collectionItem').get('collection_item_single_attachment_error')).to.equal false
+    expect(collection.findComponent('collectionItem').get('single_attachment_error')).to.equal false
 
   # problem test
   it 'validates unpersisted advisory_council_issue with no link and no attachment', ->
@@ -659,7 +659,7 @@ describe 'advisory_council_issue attachment validation', ->
                                            })
     collection.set({'collection_items': [advisory_council_issue]})
     expect(collection.findComponent('collectionItem').validate()).to.equal true
-    expect(collection.findComponent('collectionItem').get('collection_item_error')).to.equal false
+    expect(collection.findComponent('collectionItem').get('attachment_error')).to.equal false
 
   # problem test
   it 'validates persisted advisory_council_issue with no link and no attachment', ->
@@ -669,7 +669,7 @@ describe 'advisory_council_issue attachment validation', ->
                                            })
     collection.set({'collection_items': [advisory_council_issue]})
     expect(collection.findComponent('collectionItem').validate()).to.equal true
-    expect(collection.findComponent('collectionItem').get('collection_item_error')).to.equal false
+    expect(collection.findComponent('collectionItem').get('attachment_error')).to.equal false
 
   it 'does not validate attachment which is too big', ->
     advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {

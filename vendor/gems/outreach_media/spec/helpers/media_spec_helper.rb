@@ -54,7 +54,7 @@ module MediaSpecHelper
   end
 
   def click_delete_article
-    page.find('.media_appearance .delete_icon').click
+    page.find('.media_appearance .delete_icon_sm').click
   end
 
   def media_appearances

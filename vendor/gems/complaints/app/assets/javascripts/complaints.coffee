@@ -6,6 +6,7 @@
 //= require 'string'
 //= require 'jquery_datepicker'
 //= require 'filter_criteria_datepicker'
+//= require 'confirm_delete_modal'
 //= require 'attached_documents'
 //= require 'communication'
 

@@ -1,4 +1,6 @@
 //= require 'in_page_edit'
+//= require 'confirm_delete_modal'
+
 $ ->
   Ractive.DEBUG = false
 

@@ -23,6 +23,7 @@ Rails.application.configure do
   config.autoload_paths += Dir.glob(Rails.root.join("vendor", "gems", "**", "app", "**", "{models,views,controllers}"))
 
   #config.logger = Logger.new(STDOUT)
+  config.logger = Logger.new('log/jstest.log')
 
   # no sprockets caching in jstest environment
   #config.assets.cache_store = ActiveSupport::Cache.lookup_store(:null_store)

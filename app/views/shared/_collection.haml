@@ -39,11 +39,11 @@
           .row{:style => "margin-left:0px;"}
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; width:16px;"}
+                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()"}
               .edit
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+                .note_icon.counter.show_notes{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
               .edit
             {{>attachments_icons}}
             .col-md-1.icon{ 'data-toggle' => 'edit'}
@@ -56,7 +56,7 @@
                 %i.fa.fa-pencil-square-o{:id => "#{item}_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()'}
+                .delete_icon_sm.delete_indicator{'on-click' => 'show_confirm_delete_modal()'}
               .edit
             .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
               %div{'data-toggle'=>:edit}

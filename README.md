@@ -20,9 +20,9 @@ Configured in the .ruby-version file, to support the RVM version manager, look i
 ## Internationalization
 The basic structure for internationalization has been included.
 
-For languages other than English, locale translation files need to be added in the config/locales directory and subdirectories, as well as the config/locales directories and subdirectories of all the modules in vendor/gems.
+For languages other than English, locale translation files need to be added in the config/locales directory and subdirectories, as well as the config/locales directories and subdirectories of all the modules in vendor/gems. Translations may also be required for javascript, these may be found in lib/assets/javascripts/xx.js
 
-Translations may also be required for javascript, these may be found in lib/assets/javascripts/xx.js
+Each module also includes translation files in its config/locales directory, and for javascript in lib/assets/javascripts/locales
 
 The url format for translated versions are (e.g. French version) your_domain/fr/admin/users.
 
@@ -98,15 +98,18 @@ I, [2016-09-12T03:19:36.432118 #22021]  INFO -- : [72.35.204.5] [731]   Renderin
 where 72.35.204.5 is the ip address and 731 is the user_id.
 
 ## Running the test suite
-Integration testing uses Rspec with poltergeist/phantomjs as the headless client.
-The tests are in spec/features.
+Integration testing uses Rspec with poltergeist/phantomjs as the headless client. The tests are in spec/features.
+
 Run the main application integration test suite with:
-    rspec spec/features
-Each of the modules includes its own integration tests. The rails_helper from the main app is included
-Each module also includes translation files in its config/locales directory, and for javascript in lib/assets/javascripts/locales
-in the module spec/features tests, so the same testing environment applies.
+```
+rspec spec/features
+```
+
+Each of the modules includes its own integration tests. The rails_helper from the main app is included in the module spec/features tests, so the same testing environment applies.
+
 Note that phantomjs 2.0.0 has issues with file uploading (see https://github.com/teampoltergeist/poltergeist/issues/594). So use phantomjs 1.9.2 for headless testing.
 
+## Testing with Internet Explorer
 Running integration tests with Internet Explorer is a little more complex. A windows computer is required, running IE >= 10.
 This computer also needs to have Java, selenium-server-standalone, and IEDriver loaded. If it has a firewall, permissions must be configured sufficient to support this test configuration.
 On the windows computer, start selenium-server with:
@@ -131,18 +134,24 @@ A couple of windows configurations must be set in order to support this test sce
 
 ### Javascript testing
 In some cases test coverage of the javascript is achieved with integration testing by means of rspec features.
+
 In other cases, dedicated javscript tests have been used. These use a suite of javascript test libraries, including:
-* Teaspoon (https://github.com/modeset/teaspoon)
-* MagicLamp (https://github.com/crismali/magic_lamp)
-* Mocha (https://mochajs.org/)
-* Chai (http://chaijs.com/)
+
+* [Teaspoon](https://github.com/modeset/teaspoon)
+* [MagicLamp](https://github.com/crismali/magic_lamp)
+* [Mocha](https://mochajs.org/)
+* [Chai](http://chaijs.com/)
 
 #### Browser testing (slower, but facilitates debugging)
 To run the javascript test suite, first start a rails server up in the special environment configured for javascript testing:
-  rails s -e jstest -p 5000 -P `pwd`/tmp/pids/jstestserver.pid
+```
+rails s -e jstest -p 5000 -P `pwd`/tmp/pids/jstestserver.pid
+```
 This environment is configured for no asset caching, as in development environment. It has its own database, so that objects can be created and destroyed without affecting the development database, and also its own log (log/jstest.log).
 Then point the browser to the teaspoon rack endpoint on that server:
-  localhost:5000/en/teaspoon/testname
+```
+localhost:5000/teaspoon/testname
+```
 where testname is the name of the test suite you wish to run. The following js test suites are included:
 * media
 * corporate

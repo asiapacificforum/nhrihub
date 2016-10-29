@@ -262,7 +262,7 @@
 
 %script#show_performance_indicator_template{:type => 'text/ractive'}
   .row.performance_indicator.editable_container{:id => "performance_indicator_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "padding-top:6px;"}
-    .col-md-2.description.form-group{'data-toggle'=>'edit', :class => "{{#description_error}}has-error{{/}}", :style=>"width:25%", 'data-attribute'=>'description'}
+    .col-md-3.description.form-group{'data-toggle'=>'edit', :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>'description'}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
@@ -274,20 +274,22 @@
         .icon{'data-toggle' => 'edit', :style => 'height:20px; top:0px'}
           %i.fa.fa-remove.fa-lg{:id => "performance_indicator_editable{{id}}_edit_cancel", :style => "margin-left:15%"}
           %i.fa.fa-check.fa-lg{:id => "performance_indicator_editable{{id}}_edit_save", :style => "margin-left:40%"}
-    .col-md-2.target{'data-toggle'=>'edit', :style=>"width:25%", 'data-attribute'=>'target'}
+    .col-md-3.target{'data-toggle'=>'edit', 'data-attribute'=>'target'}
       .fade.no_edit.in
         %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_target }}
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_target', :placeholder => "Enter target",
             :name => "performance_indicator[target]", :value => "{{ target }}", :style => "width:initial; height:45px;"}
-    .col-md-2.performance_indicator_progress{:style=>"width:25%"}
+    .col-md-3.performance_indicator_progress
       <outreachevents />
       <mediaappearances />
       <projects />
-    .col-md-2.actions{:style=>"width:25%"}
-      %div.alarm_icon.counter{'data-count'=>'{{reminders_count}}', 'on-click' => "show_reminders_panel()", :style => "position:relative; float:left; width:20px; top:3px; margin-left:20px;"}
-      %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "margin-left:28px; position:relative; float:left; top:3px;"}
-      %div.rule{'on-click' => "show_rules_panel()"}
+    .col-md-1.actions{:style=>"padding-top:4px;"}
+      .alarm_icon.counter{'data-count'=>'{{reminders_count}}', 'on-click' => "show_reminders_panel()"}
+    .col-md-1.actions{:style=>"padding-top:4px;"}
+      .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()"}
+    .col-md-1.actions{:style=>"padding-top:4px;"}
+      .rule{'on-click' => "show_rules_panel()"}
 
 %script#projects_template{:type => 'text/ractive'}
   {{#project_titles}}

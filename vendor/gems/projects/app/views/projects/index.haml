@@ -1,3 +1,4 @@
+= javascript_include_tag 'confirm_delete_modal'
 = render :partial => 'shared/confirm_delete_modal'
 = render :partial => 'projects/index'
 = render :partial => 'reminders/reminder' # it's in the main app
@@ -37,6 +38,5 @@
     performance_indicator_id : null
   window.delete_project_confirmation_message = "#{t('.delete_project_confirmation_message')}"
   window.delete_project_document_confirmation_message = "#{t('.delete_project_document_confirmation_message')}"
-
 
 =javascript_include_tag 'projects'

@@ -3,6 +3,7 @@
 //= require 'media_issues_shared/subarea'
 //= require 'performance_indicator'
 //= require 'in_page_edit'
+//= require 'confirm_delete_modal'
 //= require 'remindable'
 //= require 'notable'
 //= require 'media_issues_shared/media_issues'

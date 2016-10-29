@@ -314,17 +314,6 @@ $ ->
       UserInput.reset()
       if !_.isUndefined(@edit)
         @edit.load() # terminate edit, if it was active, but don't try to restore stashed instance
-    #delete_this : (event) ->
-      #data = {'_method' : 'delete'}
-      #url = @get('url')
-      ## TODO if confirm
-      #$.ajax
-        #method : 'post'
-        #url : url
-        #data : data
-        #success : @delete_callback
-        #dataType : 'json'
-        #context : @
     delete_callback : (data,textStatus,jqxhr)->
       @parent.delete(@)
     remove_errors : ->

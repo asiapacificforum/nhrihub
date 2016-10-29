@@ -1,3 +1,4 @@
+//= require 'confirm_delete_modal'
 //= require 'performance_indicator'
 //= require 'fade'
 //= require 'slide'

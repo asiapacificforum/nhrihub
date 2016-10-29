@@ -2,6 +2,7 @@
 #= require in_page_edit
 #= require ractive_validator
 #= require ractive_local_methods
+#= require confirm_delete_modal
 
 $ ->
   FileInput = (node)->

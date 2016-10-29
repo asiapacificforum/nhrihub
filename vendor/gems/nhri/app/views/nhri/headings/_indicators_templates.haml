@@ -12,12 +12,12 @@
 %script#indicator_template{:type => 'ractive/template'}
   %li.indicator
     {{title}}
-    .indicator_actions.actions{:style => "display:flex; flex-direction:row; margin-left:-15px; margin-bottom:12px;"}
-      %i.fa.fa-pencil-square-o.fa-lg.edit_indicator{'on-click'=>'edit_indicator()', :style=>'top:5px; position:relative;'}
-      %i.fa.fa-eye.show_monitors.counter{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => "position:relative; top:4px; margin-left:28px;"}
-      .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:3px; width:16px; margin-left:30px;"}
-      %i.fa.fa-file-text-o.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "position:relative; top:4px; margin-left:30px;"}
-      %i.fa.fa-trash-o.fa-lg.delete_indicator{'on-click' => 'show_confirm_delete_modal()', :style => "position:relative; top:4px; left:28px;"}
+    .indicator_actions.actions{:style => "display:flex; flex-direction:row; margin-left:-15px; margin-bottom:12px; padding-top:5px;"}
+      .edit_icon.edit_indicator{'on-click'=>'edit_indicator()', :style => "line-height:initial;"}
+      .monitor_icon.show_monitors{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => " margin-left:28px;"}
+      .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "margin-left:30px;"}
+      .note_icon.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "margin-left:30px;"}
+      .delete_icon.delete_indicator{'on-click' => 'show_confirm_delete_modal()', :style => "position:relative;left:28px;line-height:initial;"}
   <fileMonitor />
 
 %script#natures_template{:type => 'ractive/template'}

@@ -19,7 +19,9 @@ Teaspoon.configure do |config|
                         Nhri::Engine.root.join("spec/javascripts"),
                         Nhri::Engine.root.join("spec/support/javascript"),
                         Rails.root.join("spec/javascripts"),
-                        Rails.root.join("spec/support/javascripts")]
+                        Rails.root.join("spec/support/javascripts"),
+                        Complaints::Engine.root.join("spec/javascripts"),
+                        Projects::Engine.root.join("spec/javascripts")]
 
   # Fixtures are rendered through a controller, which allows using HAML, RABL/JBuilder, etc. Files in these paths will
   # be rendered as fixtures.
@@ -204,7 +206,7 @@ Teaspoon.configure do |config|
     suite.matcher = Rails.root.join("vendor/gems/nhri/spec/javascripts/**/*_spec.coffee")
   end
   config.suite :complaints do |suite|
-    suite.helper = Rails.root.join("spec","javascripts","spec_helper.js")
-    suite.matcher = "spec/javascripts/complaints_spec.coffee"
+    suite.helper = Rails.root.join("vendor","gems","complaints","spec","javascripts","spec_helper.js")
+    suite.matcher = Rails.root.join("vendor/gems/complaints/spec/javascripts/complaints_spec.coffee")
   end
 end

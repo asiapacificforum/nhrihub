@@ -60,7 +60,7 @@ module NotesSpecCommonHelpers
 
   def show_notes
     sleep(0.3)
-    page.find('i.show_notes')
+    page.find('.show_notes')
   end
 
   def add_note
