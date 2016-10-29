@@ -54,7 +54,7 @@ module AdvisoryCouncilIssueSpecHelper
   end
 
   def click_delete_article
-    page.find('.advisory_council_issue .delete_icon').click
+    page.find('.advisory_council_issue .delete_icon_sm').click
   end
 
   def advisory_council_issues
