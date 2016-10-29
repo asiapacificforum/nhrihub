@@ -31,10 +31,14 @@ div[id$='_complaint_bases'] {
   display : flex;
 }
 
+// othwise pointer is the default
 .inactive-icon {
   cursor : default;
 }
 
+// the face_to_face icon is comprised of 3 overlapping fontawesome icons
+// displaced, and with black/white/black colours
+// used in the template for the ractive <modeIcon \> component, specified in ModeIcon
 .face_to_face div:nth-child(1):before {
   cursor : default;
   content: "\f007";
@@ -51,13 +55,4 @@ div[id$='_complaint_bases'] {
   content: "\f007";
   position: relative;
   left: -17px;
-}
-
-.note_icon {
-  cursor : pointer;
-  background-image : asset-url("note.png");
-  background-size : 17px;
-  background-repeat : no-repeat;
-  width : 20px;
-  height : 20px;
 }

@@ -1,3 +1,4 @@
+// the item-count in a circle as a superscript to the icon with .counter class
 .counter:after{
   content: attr(data-count);
   position: absolute;
@@ -26,6 +27,8 @@
   background-repeat: no-repeat;
   height: 16px;
   cursor: pointer;
+  position: relative;
+  width: 16px;
 }
 
 // the "rules" icon
@@ -34,12 +37,7 @@
   background-repeat: no-repeat;
   background-size: 16px;
   cursor: pointer;
-  position: relative;
-  float: left;
   height: 16px;
-  width: 16px;
-  margin-left: 28px;
-  top: 3px;
 }
 
 // ICONS
@@ -87,4 +85,39 @@ div[aria-expanded='false'] .fa-folder-o:before {
 .editable { /* so that switch to edit leaves text in precise same position */
   padding-left:3px;
   padding-top:3px;
+}
+
+.note_icon {
+  cursor : pointer;
+  background-image : asset-url("note.png");
+  background-size : 17px;
+  background-repeat : no-repeat;
+  width : 20px;
+  height : 20px;
+  position : relative;
+}
+
+.edit_icon {
+  @extend .fa;
+  @extend .fa-pencil-square-o;
+  @extend .fa-lg;
+}
+
+.monitor_icon {
+  @extend .fa;
+  @extend .fa-eye;
+  @extend .counter;
+  position : relative;
+}
+
+.delete_icon {
+  @extend .fa;
+  @extend .fa-trash-o;
+  @extend .fa-lg;
+}
+
+.delete_icon_sm {
+  @extend .fa;
+  @extend .fa-trash-o;
+  font-size : 16px;
 }
