@@ -1,6 +1,10 @@
 #= require 'string'
 #= require 'ractive_validator'
 #= require 'ractive_local_methods'
+#= require 'performance_indicator'
+#= require 'remindable'
+#= require 'notable'
+#= require 'confirm_delete_modal'
 $ ->
   Collection.EditInPlace = (node,id)->
     ractive = @

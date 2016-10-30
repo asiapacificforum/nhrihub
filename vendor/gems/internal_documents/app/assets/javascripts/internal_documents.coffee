@@ -81,6 +81,9 @@ $ ->
         unconfigured_validation_parameter_error:false
         serialization_key:'internal_document'
         document_group_id: @parent.get('document_group_id')
+      if @get('is_icc_doc')
+        document_group = _(required_files_titles).find (req_doc)=>req_doc.document_group_id == @get('document_group_id')
+        @set('title',document_group.title)
       @validator = new Validator(@)
       @validate_file() unless @get('persisted')
     validate_file : ->
@@ -99,6 +102,10 @@ $ ->
         _(required_files_titles).select (title)-> title.empty
       icc_context : ->
         context == 'icc'
+      is_icc_doc : -> # see if a document is being added to an icc required document group
+        document_group_id = @get('document_group_id')
+        required_document_ids = _(required_files_titles).pluck('document_group_id')
+        _(required_document_ids).any (id)-> id == document_group_id
     remove_file : ->
       @parent.remove(@_guid)
     validate : ->
@@ -215,7 +222,7 @@ $ ->
       stripped_title : -> @get('title').replace(/\s/g,"").toLowerCase()
       title_edit_permitted : -> true
       delete_confirmation_message : ->
-        i18n.delete_confirmation_message
+        "#{delete_confirmation_message} \"#{@get('title')}\"?"
     components :
       archivedoc : ArchiveDoc
     download_file : ->
@@ -224,7 +231,6 @@ $ ->
       @set("title_error", false)
       @set("revision_error", false)
     add_file : (file)->
-      console.log "adding a file woohoo"
       attached_document =
         id : null
         file : file
@@ -273,7 +279,6 @@ $ ->
       type : window.type
     components :
       docs : Docs
-      #uploadfiles : UploadFiles
       uploadDocuments : UploadDocuments
     computed :
       stripped_titles : ->

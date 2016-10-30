@@ -35,7 +35,7 @@ describe "edit project", ->
     get_script_under_test(done)
 
   it "loads all fixtures", ->
-    expect($("h1",'.magic-lamp').text()).to.equal "Good Governance Projects"
+    expect($("h1",'.magic-lamp').text()).to.equal "Projects"
     expect($(".project", '.magic-lamp').length).to.equal 1
     expect(typeof(simulant)).to.not.equal("undefined")
     return
@@ -93,7 +93,6 @@ describe "matching title", ->
     expect(project.matches_title()).to.be.true
     expect(project.include()).to.be.true
     expect(project.get('include')).to.be.true
-
 
 describe "matching mandate", ->
   before (done)->

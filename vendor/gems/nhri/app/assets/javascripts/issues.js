@@ -1,6 +1,7 @@
 //= require 'jquery_datepicker'
 //= require 'filter_criteria_datepicker'
 //= require 'media_issues_shared/subarea'
+//= require 'confirm_delete_modal'
 //= require 'media_issues_shared/media_issues'
 //= require 'in_page_edit'
 //= require 'performance_indicator'

@@ -154,8 +154,11 @@ $ ->
         Routes.nhri_icc_reference_document_path(current_locale, @get('id'))
       truncated_source_url : ->
         [prefix, path] = @get('source_url').split('//')
-        path = path.split('/')[0]
-        "#{prefix}//#{path}..."
+        truncated_path = path.split('/')[0]
+        if truncated_path == path
+          "#{prefix}//#{path}" 
+        else
+          "#{prefix}//#{path}..."
       truncated_title : ->
         @get('title').split(' ').slice(0,4).join(' ')+"..."
       delete_confirmation_message : ->

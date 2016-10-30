@@ -679,16 +679,18 @@ describe 'advisory_council_issue attachment validation', ->
                                             fileupload : {files:[{size:50000000,name:"filename.pdf"}]},
                                            })
     collection.set({'collection_items': [advisory_council_issue]})
+    file = {size:50000000,name:"filename.pdf"}
+    collection.findComponent('collectionItem').add_file(file)
     expect(collection.findComponent('collectionItem').validate()).to.equal false
     expect(collection.findComponent('collectionItem').get('filesize_error')).to.equal true
 
   it 'does not validate attachment of an unpermitted type', ->
     advisory_council_issue = _.extend(@page.new_advisory_council_issue(), {
                                             id : null, # unpersisted!
-                                            title: "bar",
-                                            original_filename : "some_file_name.pdf",
-                                            fileupload : {files:[{size:500000,name:"filename.xyz"}]},
+                                            title: "bar"
                                            })
     collection.set({'collection_items': [advisory_council_issue]})
+    file = {size:50000000,name:"filename.xyz"}
+    collection.findComponent('collectionItem').add_file(file)
     expect(collection.findComponent('collectionItem').validate()).to.equal false
-    expect(collection.findComponent('collectionItem').get('filetype_error')).to.equal true
+    expect(collection.findComponent('collectionItem').get('original_type_error')).to.equal true

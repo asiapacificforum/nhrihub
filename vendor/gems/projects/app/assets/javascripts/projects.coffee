@@ -10,6 +10,9 @@
 //= require 'progress_bar'
 //= require 'jquery_datepicker'
 //= require 'filter_criteria_datepicker'
+//= require 'confirm_delete_modal'
+//= require 'remindable'
+//= require 'notable'
 
 Ractive.DEBUG = false
 
