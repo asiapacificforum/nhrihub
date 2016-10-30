@@ -21,7 +21,8 @@ Teaspoon.configure do |config|
                         Rails.root.join("spec/javascripts"),
                         Rails.root.join("spec/support/javascripts"),
                         Complaints::Engine.root.join("spec/javascripts"),
-                        Projects::Engine.root.join("spec/javascripts")]
+                        Projects::Engine.root.join("spec/javascripts"),
+                        CorporateServices::Engine.root.join("spec/javascripts")]
 
   # Fixtures are rendered through a controller, which allows using HAML, RABL/JBuilder, etc. Files in these paths will
   # be rendered as fixtures.
@@ -209,4 +210,9 @@ Teaspoon.configure do |config|
     suite.helper = Rails.root.join("vendor","gems","complaints","spec","javascripts","spec_helper.js")
     suite.matcher = Rails.root.join("vendor/gems/complaints/spec/javascripts/complaints_spec.coffee")
   end
+  config.suite :strategic_plan do |suite|
+    suite.helper = Rails.root.join("vendor","gems","corporate_services","spec","javascripts","spec_helper.js")
+    suite.matcher = Rails.root.join("vendor/gems/corporate_services/spec/javascripts/strategic_plan_spec.coffee")
+  end
+
 end

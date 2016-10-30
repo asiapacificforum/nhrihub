@@ -1,4 +1,8 @@
 //= require 'in_page_edit'
+//= require 'remindable'
+//= require 'notable'
+//= require 'confirm_delete_modal'
+//= require 'ractive_validator'
 $ ->
   Ractive.DEBUG = false
 
@@ -28,6 +32,11 @@ $ ->
 
   PerformanceIndicator = Ractive.extend
     template : '#performance_indicator_template'
+    oninit : ->
+      @set
+        validation_criteria :
+          description : 'notBlank'
+      @validator = new Validator(@)
     components :
       outreachevents : OutreachEvents
       mediaappearances : MediaAppearances
@@ -59,12 +68,7 @@ $ ->
           success : @create_performance_indicator
           context : @
     validate : ->
-      @set('description', @get('description').trim())
-      if @get('description') == ""
-        @set("description_error",true)
-        false
-      else
-        true
+      @validator.validate()
     create_performance_indicator : (response, statusText, jqxhr)->
       UserInput.reset()
       @set(response)
@@ -84,6 +88,11 @@ $ ->
 
   Activity = Ractive.extend
     template : '#activity_template'
+    oninit : ->
+      @set
+        validation_criteria :
+          description : 'notBlank'
+      @validator = new Validator(@)
     components :
       pi : PerformanceIndicator
     computed :
@@ -110,26 +119,10 @@ $ ->
           success : @create_activity
           context : @
     validate : ->
-      @set('description', @get('description').trim())
-      if @get('description') == ""
-        @set("description_error",true)
-        false
-      else
-        true
+      @validator.validate()
     create_activity : (response, statusText, jqxhr)->
       UserInput.reset()
       @set(response)
-    #delete_this : (event,object)->
-      #ev = $.Event(event)
-      #ev.stopPropagation()
-      #data = [{name:'_method', value: 'delete'}]
-      #$.ajax
-        #url : @get('url')
-        #data : data
-        #method : 'post'
-        #dataType : 'json'
-        #context : @
-        #success : @update_activity
     delete_callback : (resp, statusText, jqxhr)->
       UserInput.reset()
       @parent.set('activities', resp)
@@ -159,6 +152,11 @@ $ ->
 
   Outcome = Ractive.extend
     template : '#outcome_template'
+    oninit : ->
+      @set
+        validation_criteria :
+          description : 'notBlank'
+      @validator = new Validator(@)
     computed :
       persisted : ->
         !isNaN(parseInt(@get('id')))
@@ -185,12 +183,7 @@ $ ->
           success : @create_outcome
           context : @
     validate : ->
-      @set('description', @get('description').trim())
-      if @get('description') == ""
-        @set("description_error",true)
-        false
-      else
-        true
+      @validator.validate()
     create_outcome : (response, statusText, jqxhr)->
       UserInput.reset()
       @set(response)
@@ -225,6 +218,13 @@ $ ->
 
   PlannedResult = Ractive.extend
     template : '#planned_result_template'
+    oninit : ->
+      if !@get('persisted')
+        @parent.hide_add_planned_result()
+      @set
+        validation_criteria :
+          description : 'notBlank'
+      @validator = new Validator(@)
     computed :
       persisted : ->
         !isNaN(parseInt(@get('id')))
@@ -234,9 +234,6 @@ $ ->
         i18n.delete_planned_result_confirmation_message + "\""+@get('truncated_description')+"\"" + "?"
     components :
       outcome : Outcome
-    oninit : ->
-      if !@get('persisted')
-        @parent.hide_add_planned_result()
     create_stop : ->
       UserInput.reset()
       @parent.remove_planned_result_form()
@@ -254,12 +251,7 @@ $ ->
           success : @create_pr
           context : @
     validate : ->
-      @set('description', @get('description').trim())
-      if @get('description') == ""
-        @set("description_error",true)
-        false
-      else
-        true
+      @validator.validate()
     remove_description_errors : ->
       @set("description_error",false)
     remove_errors : ->
@@ -342,6 +334,12 @@ $ ->
   Ractive.decorators.inpage_edit = EditInPlace
 
   StrategicPriority = Ractive.extend
+    oninit : ->
+      @set
+        validation_criteria :
+          description : 'notBlank'
+          priority_level : 'numeric'
+      @validator = new Validator(@)
     onconfig : ->
       @set('original_description', @get('description'))
       @set('original_priority_level', @get('priority_level'))
@@ -391,18 +389,7 @@ $ ->
     delete_callback : (data,textStatus,jqxhr)->
       @update_sp(data,textStatus,jqxhr)
     validate : ->
-      pl = @._validate('priority_level')
-      desc = @._validate('description')
-      pl && desc
-    _validate : (field)->
-      if _.isString(@get(field))
-        @set(field, @get(field).trim())
-      value = @get(field)
-      if value == "" || _.isNull(value)
-        @set(field+"_error",true)
-        false
-      else
-        true
+      @validator.validate()
     remove_priority_level_errors : ->
       @set("priority_level_error",false)
     remove_description_errors : ->

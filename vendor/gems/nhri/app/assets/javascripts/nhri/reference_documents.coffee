@@ -156,7 +156,7 @@ $ ->
         [prefix, path] = @get('source_url').split('//')
         truncated_path = path.split('/')[0]
         if truncated_path == path
-          "#{prefix}//#{path}" 
+          "#{prefix}//#{path}"
         else
           "#{prefix}//#{path}..."
       truncated_title : ->
