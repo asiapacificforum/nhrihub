@@ -1,7 +1,7 @@
 %script#fileuploadButtonbar{:type => 'template/ractive'}
   .row.fileupload-buttonbar
     .col-lg-9
-      %input.hidden_fileinput{:id => "primary_fileinput", :multiple => "multiple", :name => "primary_file", :type => "file", :decorator=>:ractive_fileupload}
+      %input.hidden_fileinput{:id => "primary_fileinput", :multiple => "multiple", :name => "primary_file", :type => "file", :decorator=>:ractive_fileupload, :style => "position:absolute; left:1000px;"}
       %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()', :decorator => :file_select_trigger}
         %i.fa.fa-plus.fa-lg{ :style => "color:white"}
         %span= t('.add')
