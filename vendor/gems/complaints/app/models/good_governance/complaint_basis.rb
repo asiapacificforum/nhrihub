@@ -1,4 +1,5 @@
 class GoodGovernance::ComplaintBasis < ComplaintBasis
+  has_many :complaint_good_governance_complaint_bases
   include NamedList
   # included as a reference, and as source for complaint_basis_factory.rb
   # actual names are user-configured via admin
