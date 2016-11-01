@@ -25,10 +25,12 @@ class Note < ActiveRecord::Base
   end
 
   def author_name
-    author.first_last_name
+    # normally there should always be an author, but imported data may not have one
+    author && author.first_last_name
   end
 
   def editor_name
-    editor.first_last_name
+    # normally there should always be an editor, but imported data may not have one
+    editor && editor.first_last_name
   end
 end

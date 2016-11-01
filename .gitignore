@@ -40,3 +40,5 @@ config/env.yml
 certificates.*
 cert_test.rb
 tags
+lib/import_data
+lib/tasks/import.rake

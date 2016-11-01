@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160929133652) do
+ActiveRecord::Schema.define(version: 20161031205855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -215,6 +215,12 @@ ActiveRecord::Schema.define(version: 20160929133652) do
     t.datetime "updated_at"
   end
 
+  create_table "complaint_statuses", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "complaints", force: :cascade do |t|
     t.string   "case_reference"
     t.string   "complainant"
@@ -222,6 +228,8 @@ ActiveRecord::Schema.define(version: 20160929133652) do
     t.string   "phone"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "desired_outcome"
+    t.boolean  "complained_to_subject_agency"
   end
 
   create_table "controllers", force: :cascade do |t|
@@ -610,9 +618,9 @@ ActiveRecord::Schema.define(version: 20160929133652) do
   create_table "status_changes", force: :cascade do |t|
     t.integer  "complaint_id"
     t.integer  "user_id"
-    t.boolean  "new_value",    default: true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "complaint_status_id"
   end
 
   create_table "strategic_plans", force: :cascade do |t|

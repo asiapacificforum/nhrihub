@@ -15,7 +15,8 @@ class Complaint < ActiveRecord::Base
   has_many :complaint_categories, :through => :complaint_complaint_categories
   has_many :complaint_mandates, :dependent => :destroy
   has_many :mandates, :through => :complaint_mandates
-  has_many :status_changes
+  has_many :status_changes, :dependent => :destroy
+  has_many :complaint_statuses, :through => :status_changes
   has_many :complaint_agencies, :dependent => :destroy
   has_many :agencies, :through => :complaint_agencies
   has_many :complaint_documents, :dependent => :destroy
@@ -65,7 +66,7 @@ class Complaint < ActiveRecord::Base
   end
 
   def current_status
-    status_changes.last.new_value
+    status_changes.last.complaint_status.name
   end
 
   def current_status_humanized
