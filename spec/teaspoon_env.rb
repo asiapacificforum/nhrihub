@@ -200,7 +200,7 @@ Teaspoon.configure do |config|
   end
   config.suite :projects do |suite|
     suite.helper = Rails.root.join("spec","javascripts","spec_helper.js")
-    suite.matcher = "spec/javascripts/projects_spec.coffee"
+    suite.matcher = Rails.root.join("vendor/gems/projects/spec/javascripts/projects_spec.coffee")
   end
   config.suite :nhri do |suite|
     suite.helper = Rails.root.join("vendor","gems","nhri","spec","javascripts","spec_helper.js")

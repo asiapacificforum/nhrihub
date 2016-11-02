@@ -8,13 +8,13 @@ FactoryGirl.define do
 
     trait :open do
       after(:build) do |complaint|
-        complaint.status_changes = [FactoryGirl.create(:status_change)]
+        complaint.status_changes = [FactoryGirl.create(:status_change, :open)]
       end
     end
 
     trait :closed do
       after(:build) do |complaint|
-        complaint.status_changes = [FactoryGirl.create(:status_change, :new_value => 0)]
+        complaint.status_changes = [FactoryGirl.create(:status_change, :closed)]
       end
     end
   end

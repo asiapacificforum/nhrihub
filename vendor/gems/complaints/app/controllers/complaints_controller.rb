@@ -1,6 +1,17 @@
 class ComplaintsController < ApplicationController
   def index
-    @complaints = Complaint.all
+    #@complaints = Complaint.all
+    @complaints = Complaint.includes(:assigns,
+                                     :mandates,
+                                     {:status_changes => :complaint_status},
+                                     {:complaint_good_governance_complaint_bases=>:good_governance_complaint_basis},
+                                     {:complaint_special_investigations_unit_complaint_bases => :special_investigations_unit_complaint_basis},
+                                     {:complaint_human_rights_complaint_bases=>:human_rights_complaint_basis},
+                                     {:complaint_agencies => :agency},
+                                     :communications,
+                                     :complaint_categories,
+                                     :complaint_documents,
+                                     :reminders,:notes).limit(20)
     @mandates = Mandate.all
     @agencies = Agency.all
     @complaint_bases = [ GoodGovernance::ComplaintBasis.named_list,
