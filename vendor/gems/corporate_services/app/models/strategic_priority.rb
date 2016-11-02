@@ -4,10 +4,24 @@ class StrategicPriority < ActiveRecord::Base
 
   default_scope { order(:priority_level) }
 
-  before_save do
+  before_create do
+    all_in_plan.
+      select{|sp| sp.priority_level == priority_level}.
+      each do |sp|
+        priority_level = sp.priority_level
+        sp.update_attribute(:priority_level, sp.priority_level.succ )
+        sp.planned_results.each { |pr| pr.increment_index_root }
+    end
+  end
+
+  before_update do
     all_in_plan.
       select{|sp| (sp.id != id) && (sp.priority_level == priority_level)}.
-      each{|sp| sp.increment!(:priority_level)}
+      each do |sp|
+        priority_level = sp.priority_level
+        sp.update_attribute(:priority_level, sp.priority_level.succ )
+        sp.planned_results.each { |pr| pr.increment_index_root }
+    end
   end
 
   after_destroy do |strategic_priority|

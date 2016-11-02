@@ -68,18 +68,28 @@ feature "strategic plan multiple strategic priorities", :js => true do
 
   scenario "add second/lower strategic priority, it's inserted below" do
     add_strategic_priority({:priority_level => "Strategic Priority 2", :description => "We gotta improve"})
-    sleep(0.1)
+    wait_for_ajax
     expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).first).to eq "Gonna do things betta"
     expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).last).to eq "We gotta improve"
   end
 
   scenario "add a second strategic priority that re-orders existing priorities" do
     add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "We gotta improve"})
-    sleep(0.1)
+    wait_for_ajax
     expect(page.all(".strategic_priority_title .priority_level .no_edit span").map(&:text).first).to eq "Strategic Priority 1:"
     expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).first).to eq "We gotta improve"
     expect(page.all(".strategic_priority_title .priority_level .no_edit span").map(&:text).last).to eq "Strategic Priority 2:"
     expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).last).to eq "Gonna do things betta"
+    expect(page.all(".strategic_priority_title .description .no_edit span").count).to eq 2
+    add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "A cauliflower in every pot"})
+    wait_for_ajax
+    expect(page.all(".strategic_priority_title .priority_level .no_edit span").map(&:text).first).to eq "Strategic Priority 1:"
+    expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).first).to eq "A cauliflower in every pot"
+    expect(page.all(".strategic_priority_title .priority_level .no_edit span").map(&:text).second).to eq "Strategic Priority 2:"
+    expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).second).to eq "We gotta improve"
+    expect(page.all(".strategic_priority_title .priority_level .no_edit span").map(&:text).third).to eq "Strategic Priority 3:"
+    expect(page.all(".strategic_priority_title .description .no_edit span").map(&:text).third).to eq "Gonna do things betta"
+    expect(page.all(".strategic_priority_title .description .no_edit span").count).to eq 3
   end
 end
 

@@ -42,7 +42,7 @@ module StrategicPrioritySpecHelpers
       select attrs[:priority_level].to_s, :from => 'strategic_priority_priority_level' if attrs[:priority_level]
       fill_in "strategic_priority_description", :with => attrs[:description] if attrs[:description]
       page.find('#edit-save').click
-      sleep(0.2)
+      wait_for_ajax
     end
   end
 end

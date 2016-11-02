@@ -44,6 +44,14 @@ class Outcome < ActiveRecord::Base
     nil
   end
 
+  def increment_index_root
+    ar = index.split('.')
+    ar[0] = ar[0].to_i.succ.to_s
+    new_index = ar.join('.')
+    update_attribute(:index, new_index)
+    activities.each{|a| a.increment_index_root}
+  end
+
   def decrement_index_prefix(new_prefix)
     ar = index.split('.')
     new_index = [new_prefix,ar[2]].join('.')

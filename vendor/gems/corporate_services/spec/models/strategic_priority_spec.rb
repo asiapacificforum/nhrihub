@@ -31,23 +31,42 @@ describe ".create!" do
   context "when there are existing strategic priorities with the various priority level" do
     before do
       @sp = StrategicPlan.create()
-      StrategicPriority.create!(:priority_level => 1, :description => "blah blah blah", :strategic_plan_id => @sp.id)
-      StrategicPriority.create!(:priority_level => 2, :description => "blah blah bloo", :strategic_plan_id => @sp.id)
-      StrategicPriority.create!(:priority_level => 3, :description => "blah blah blank", :strategic_plan_id => @sp.id)
+      FactoryGirl.create(:strategic_priority, :populated, :priority_level => 1, :description => "blah blah blah", :strategic_plan_id => @sp.id)
+      FactoryGirl.create(:strategic_priority, :populated, :priority_level => 2, :description => "blah blah bloo", :strategic_plan_id => @sp.id)
+      FactoryGirl.create(:strategic_priority, :populated, :priority_level => 3, :description => "blah blah blank", :strategic_plan_id => @sp.id)
     end
 
     it "should increment the priority level of the existing strategic priority with lower priority" do
-      StrategicPriority.create!(:priority_level => 2, :description => "bish bash bosh", :strategic_plan_id => @sp.id)
+      FactoryGirl.create(:strategic_priority, :populated, :priority_level => 2, :description => "bish bash bosh", :strategic_plan_id => @sp.id)
 
       expect(StrategicPriority.count).to eq 4
       expect(StrategicPriority.all.sort[0].priority_level).to eq 1
       expect(StrategicPriority.all.sort[0].description).to eq "blah blah blah"
+      expect(StrategicPriority.all.sort[0].planned_results.sort[0].index).to eq "1.1"
+      expect(StrategicPriority.all.sort[0].planned_results.sort[0].outcomes.sort[0].index).to eq "1.1.1"
+      expect(StrategicPriority.all.sort[0].planned_results.sort[0].outcomes.sort[0].activities.sort[0].index).to eq "1.1.1.1"
+      expect(StrategicPriority.all.sort[0].planned_results.sort[0].outcomes.sort[0].activities.sort[0].performance_indicators.sort[0].index).to eq "1.1.1.1.1"
+
       expect(StrategicPriority.all.sort[1].priority_level).to eq 2
       expect(StrategicPriority.all.sort[1].description).to eq "bish bash bosh"
+      expect(StrategicPriority.all.sort[1].planned_results.sort[0].index).to eq "2.1"
+      expect(StrategicPriority.all.sort[1].planned_results.sort[0].outcomes.sort[0].index).to eq "2.1.1"
+      expect(StrategicPriority.all.sort[1].planned_results.sort[0].outcomes.sort[0].activities.sort[0].index).to eq "2.1.1.1"
+      expect(StrategicPriority.all.sort[1].planned_results.sort[0].outcomes.sort[0].activities.sort[0].performance_indicators.sort[0].index).to eq "2.1.1.1.1"
+
       expect(StrategicPriority.all.sort[2].priority_level).to eq 3
       expect(StrategicPriority.all.sort[2].description).to eq "blah blah bloo"
+      expect(StrategicPriority.all.sort[2].planned_results.sort[0].index).to eq "3.1"
+      expect(StrategicPriority.all.sort[2].planned_results.sort[0].outcomes.sort[0].index).to eq "3.1.1"
+      expect(StrategicPriority.all.sort[2].planned_results.sort[0].outcomes.sort[0].activities.sort[0].index).to eq "3.1.1.1"
+      expect(StrategicPriority.all.sort[2].planned_results.sort[0].outcomes.sort[0].activities.sort[0].performance_indicators.sort[0].index).to eq "3.1.1.1.1"
+
       expect(StrategicPriority.all.sort[3].priority_level).to eq 4
       expect(StrategicPriority.all.sort[3].description).to eq "blah blah blank"
+      expect(StrategicPriority.all.sort[3].planned_results.sort[0].index).to eq "4.1"
+      expect(StrategicPriority.all.sort[3].planned_results.sort[0].outcomes.sort[0].index).to eq "4.1.1"
+      expect(StrategicPriority.all.sort[3].planned_results.sort[0].outcomes.sort[0].activities.sort[0].index).to eq "4.1.1.1"
+      expect(StrategicPriority.all.sort[3].planned_results.sort[0].outcomes.sort[0].activities.sort[0].performance_indicators.sort[0].index).to eq "4.1.1.1.1"
     end
   end # /context
 

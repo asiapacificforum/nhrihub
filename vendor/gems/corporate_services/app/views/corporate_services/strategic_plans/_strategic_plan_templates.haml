@@ -92,7 +92,6 @@
         %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
-          %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]', 'on-keydown' => "remove_description_errors()"}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
@@ -162,7 +161,6 @@
         %span{:id => "outcome_editable{{id}}_edit_start", :style => 'cursor:pointer'}
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
-          %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
             :name => "outcome[description]", :value => "{{ description }}", "on-keydown"=>"remove_description_errors()"}
@@ -212,7 +210,6 @@
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
-          %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
             :name => "activity[description]", :value => "{{ description }}", :style => "width:initial; height:45px"}
@@ -266,7 +263,6 @@
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
-          %i.fa.fa-sm.fa-trash-o
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_description', :placeholder => "Enter performance indicator",
             :name => "performance_indicator[description]", :value => "{{ description }}", :style => "width:initial; height:45px;"}

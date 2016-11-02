@@ -50,6 +50,14 @@ class PlannedResult < ActiveRecord::Base
     nil
   end
 
+  def increment_index_root
+    ar = index.split('.')
+    ar[0] = ar[0].to_i.succ.to_s
+    new_index = ar.join('.')
+    update_attribute(:index, new_index)
+    outcomes.each{|o| o.increment_index_root}
+  end
+
   # e.g. 2.1 -> 1.1
   def decrement_index_prefix(new_prefix)
     ar = index.split('.')
