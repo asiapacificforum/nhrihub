@@ -140,6 +140,24 @@ $ ->
     deselect_file : ->
       @parent.deselect_file()
 
+  EditBackup =
+    stash : ->
+      @stashed_instance = $.extend(true,{},_(@get()).omit('expanded','editing'))
+    restore : ->
+      @restore_checkboxes()
+      @set(@stashed_instance)
+    restore_checkboxes : ->
+      # major hack to circumvent ractive bug,
+      # it will not be necessary in ractive 0.8.0
+      _(['area','subarea']).
+        each (association)=>
+          @restore_checkboxes_for(association)
+    restore_checkboxes_for : (association)->
+      ids = @get("#{association}_ids")
+      _(@findAll(".edit .#{association} input")).each (checkbox)->
+        is_checked = ids.indexOf(parseInt($(checkbox).attr('value'))) != -1
+        $(checkbox).prop('checked',is_checked)
+
   Collection.CollectionItem = Ractive.extend
     template : '#collection_item_template'
     components :
@@ -331,10 +349,6 @@ $ ->
       attrs
     formData : ->
       @asFormData @persistent_attributes()
-    stash : ->
-      @stashed_instance = $.extend(true,{},_(@get()).omit('expanded','editing'))
-    restore : ->
-      @set(@stashed_instance)
     deselect_file : ->
       file_input = $(@find("##{item_name}_file"))
       # see http://stackoverflow.com/questions/1043957/clearing-input-type-file-using-jquery
@@ -374,7 +388,7 @@ $ ->
       @validator.validate_attribute('original_type')
       @validator.validate_attribute('attachment')
       @validator.validate_attribute('single_attachment')
-  , PerformanceIndicatorAssociation, Remindable, Notable, ConfirmDeleteModal
+  , PerformanceIndicatorAssociation, Remindable, Notable, ConfirmDeleteModal, EditBackup
 
   window.collection_items_data = -> # an initialization data set so that tests can reset between
     expanded : false

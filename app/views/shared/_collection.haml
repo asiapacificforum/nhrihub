@@ -179,7 +179,7 @@
       {{#areas:i}}
       /* this component will work when the ractive bug is fixed and version 0.8 is stable */
       /* <area-select id='{{id}}' area_id='{{id}}' area_ids='{{area_ids}}' name='{{name}}' subareas='{{subareas}}'/> */
-      .checkbox
+      .checkbox.area
         %label
           %input{:type=>:checkbox, :id => "#{item}_area_ids_{{id}}", :name => '{{area_ids}}', :value => '{{id}}'}
           {{ name }}
