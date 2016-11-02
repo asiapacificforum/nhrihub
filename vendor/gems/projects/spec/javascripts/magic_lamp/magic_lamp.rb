@@ -1,4 +1,4 @@
-require_relative './projects_seed_data'
+require_relative './seed_data/projects_seed_data'
 
 MagicLamp.define do
   fixture(:name => "projects") do

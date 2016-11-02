@@ -387,24 +387,42 @@ FilterControls = Ractive.extend
     @parent.expand()
   compact : ->
     @parent.compact()
+  clear_filter : ->
+    @set('filter_criteria', window.projects_data().filter_criteria)
 
-projects_options =
+
+window.projects_data = ->
+  performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')
+  expanded : false
+  projects : projects_data
+  all_mandates : mandates
+  all_agencies : agencies
+  all_conventions : conventions
+  planned_results : planned_results
+  all_performance_indicators : performance_indicators
+  all_mandate_project_types : project_types
+  project_named_documents_titles : project_named_documents_titles
+  permitted_filetypes : permitted_filetypes
+  maximum_filesize : maximum_filesize
+  filter_criteria : filter_criteria
+
+projects_options = ->
   el : "#projects"
   template : '#projects_template'
-  data :
-    performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')
-    expanded : false
-    projects : projects_data
-    all_mandates : mandates
-    all_agencies : agencies
-    all_conventions : conventions
-    planned_results : planned_results
-    all_performance_indicators : performance_indicators
-    all_mandate_project_types : project_types
-    project_named_documents_titles : project_named_documents_titles
-    permitted_filetypes : permitted_filetypes
-    maximum_filesize : maximum_filesize
-    filter_criteria : filter_criteria
+  data : $.extend(true,{},projects_data())
+    #performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')
+    #expanded : false
+    #projects : projects_data
+    #all_mandates : mandates
+    #all_agencies : agencies
+    #all_conventions : conventions
+    #planned_results : planned_results
+    #all_performance_indicators : performance_indicators
+    #all_mandate_project_types : project_types
+    #project_named_documents_titles : project_named_documents_titles
+    #permitted_filetypes : permitted_filetypes
+    #maximum_filesize : maximum_filesize
+    #filter_criteria : filter_criteria
   components :
     project : Project
     filterControls : FilterControls
@@ -443,7 +461,7 @@ projects_options =
 Ractive.decorators.inpage_edit = EditInPlace
 
 window.start_page = ->
-  window.projects = new Ractive projects_options
+  window.projects = new Ractive projects_options()
 
 $ ->
   start_page()

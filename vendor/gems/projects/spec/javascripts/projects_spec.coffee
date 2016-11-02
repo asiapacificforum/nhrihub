@@ -427,3 +427,18 @@ describe "matching performance indicator", ->
       project = projects.findComponent('project')
       expect(project.matches_performance_indicator(),"matches_performance_indicator()").to.be.false
       expect(project.get('include')).to.be.false
+
+describe "filter reset", ->
+  before (done)->
+    load_variables()
+    get_script_under_test(done)
+
+  after ->
+    projects.set('filter_criteria', window.filter_criteria)
+    projects.set('projects',[])
+
+  it "should reset the title input filter value", ->
+    $('input#title').val("blerky schmoo")
+    simulant.fire($('input#title')[0],'change')
+    $('i.erase').trigger('click')
+    expect($('input#title').val()).to.equal ""
