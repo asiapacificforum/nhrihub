@@ -11,7 +11,7 @@ class ComplaintsController < ApplicationController
                                      :communications,
                                      :complaint_categories,
                                      :complaint_documents,
-                                     :reminders,:notes).limit(1)
+                                     :reminders,:notes).limit(15)
     @mandates = Mandate.all
     @agencies = Agency.all
     @complaint_bases = [ GoodGovernance::ComplaintBasis.named_list,

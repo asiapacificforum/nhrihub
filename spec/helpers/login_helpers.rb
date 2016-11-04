@@ -22,7 +22,7 @@ module RegisteredUserHelper
 
   def configure_keystore
     js = <<-JS.squish
-      record = {"626f6775735f31343732303131363138353438":{ appId : "https://oodb.railsplayground.net", counter : 26, generated : "2016-08-24T04:11:36.812Z", keyHandle : "626f6775735f31343732303131363138353438", private : "219c8b4c622a837e981d7aef8ca7fe360d662203b051d3e430705c4e84289562", public : "04c43e43bc88b589cd610a735c99b412ef9eb1f2039773e4c500cd2bffdfd081750b26d9c85632d95ace37c778ae2577856633949427fe1447c37996146f4d8f73"}};
+      record = {"626f6775735f31343732303131363138353438":{ appId : "https://#{SITE_URL}", counter : 26, generated : "2016-08-24T04:11:36.812Z", keyHandle : "626f6775735f31343732303131363138353438", private : "219c8b4c622a837e981d7aef8ca7fe360d662203b051d3e430705c4e84289562", public : "04c43e43bc88b589cd610a735c99b412ef9eb1f2039773e4c500cd2bffdfd081750b26d9c85632d95ace37c778ae2577856633949427fe1447c37996146f4d8f73"}};
       replaceKeyStore (record);
     JS
     page.execute_script(js)
