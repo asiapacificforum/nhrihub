@@ -62,7 +62,7 @@ When it is first installed, the access privileges must be "bootstrapped" to perm
 The first user is configured via a rake command-line utility on the server by running:
 
 ```
-rake "authengine:bootstrap[firstName,lastName,email]"
+RAILS_ENV=production bundle exec rake "authengine:bootstrap[firstName,lastName,email]"
 ```
 where firstName, lastName, and email are replaced by the parameters appropriate for the first user. A registration email is sent to the user at the configured email address. If two-factor authentication is enabled, the user will be required to have an access token in order to be able to complete the registration procedure.
 
@@ -167,12 +167,14 @@ or
 Development updates are pushed manually to a git repository, using the normal git push procedure.
 
 Deployment is automated using the Capistrano gem using:
+
 ```
-    cap production deploy
+cap production deploy
 ```
+
 This pulls from the git repo to a cached copy on the server, copies the update to a into the 'releases' directory, and symlinks the 'current' directory to point to the most recent release. As configured in config/deploy.rb, capistrano pulls from the main repo of the application, if you have forked the app, you will need to point capistrano to your own fork.
 
-The 5 most recent releases are kept on the server.
+The 5 most recent releases are kept on the server (Capistrano configuration).
 
 Capistrano deployment also symlinks the config/database.yml and lib/constants files to copies in the 'shared' directory.
 These files contain sensitive information and should be manually copied into the 'shared' directory. This is typically done just once when the app is first installed, as the information will typically remain unchanged for the life of the app.
@@ -187,7 +189,7 @@ The letsencrypt_plugin gem provides a rake task to issue certificates:
 RAILS_ENV=production bundle exec rake letsencrypt_plugin
 ```
 
-If the letsencryptpolugin.yml was correctly configured, the command above should insert ssl certificates for your site stored in the certificates directory.
+If the letsencrypt_plugin.yml was correctly configured, the command above should insert ssl certificates for your site stored in the certificates directory.
 
 Alternatively you may exclude this gem from Gemfile (and remove it from config/routes.rb) and obtain the site ssl certificate by another means.
 
