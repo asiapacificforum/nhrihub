@@ -8,7 +8,9 @@ module ComplaintsSpecSetupHelpers
     create_mandates
     create_agencies
     create_staff
+    create_complaint_statuses
     FactoryGirl.create(:complaint, :case_reference => "c12/34",
+                       :date_received => DateTime.now,
                        :village => Faker::Address.city,
                        :phone => Faker::PhoneNumber.phone_number,
                        :human_rights_complaint_bases => hr_complaint_bases,
@@ -18,7 +20,7 @@ module ComplaintsSpecSetupHelpers
                        :complaint_documents => complaint_docs,
                        :complaint_categories => complaint_cats,
                        :status_changes => _status_changes,
-                       :mandates => _mandates,
+                       :mandate_id => _mandate_id,
                        :agencies => _agencies,
                        :communications => _communications)
     set_file_defaults
@@ -42,12 +44,18 @@ module ComplaintsSpecSetupHelpers
     end
   end
 
+  def create_complaint_statuses
+     ["Active", "Complete", "No further action", "Presumed Resolved", "Suspended", "Under Evaluation"].each do |status_name|
+       FactoryGirl.create(:complaint_status, :name => status_name)
+     end
+  end
+
   def _communications
     [ FactoryGirl.create(:communication) ]
   end
 
-  def _mandates
-    [ Mandate.find_by(:key => 'human_rights' ) ]
+  def _mandate_id
+    Mandate.find_by(:key => 'human_rights' ).id
   end
 
   def _agencies
@@ -56,8 +64,16 @@ module ComplaintsSpecSetupHelpers
 
   def _status_changes
     # open 100 days ago, closed 50 days ago
-    [FactoryGirl.build(:status_change, :created_at => DateTime.now.advance(:days => -100), :new_value => 1, :user_id => User.staff.pluck(:id).first),
-     FactoryGirl.build(:status_change, :created_at => DateTime.now.advance(:days => -50), :new_value => 0, :user_id => User.staff.pluck(:id).second )]
+    [FactoryGirl.build(:status_change,
+                       :created_at => DateTime.now.advance(:days => -100),
+                       :complaint_status_id => FactoryGirl.create(:complaint_status, :name => "Under Evaluation").id,
+                       :change_date => DateTime.now.advance(:days => -100),
+                       :user_id => User.staff.pluck(:id).first),
+     FactoryGirl.build(:status_change,
+                       :created_at => DateTime.now.advance(:days => -50),
+                       :complaint_status_id => FactoryGirl.create(:complaint_status, :name => "Complete").id,
+                       :change_date => DateTime.now.advance(:days => -50),
+                       :user_id => User.staff.pluck(:id).second )]
   end
 
   def create_categories

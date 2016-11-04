@@ -3,8 +3,8 @@ class Mandate < ActiveRecord::Base
   has_many :projects, :through => :project_mandates
   has_many :project_types, :dependent => :destroy
 
-  has_many :complaint_mandates, :dependent => :destroy
-  has_many :complaints, :through => :complaint_mandates
+  #has_many :complaint_mandates, :dependent => :destroy
+  has_many :complaints #, :through => :complaint_mandates
 
   scope :good_governance, ->{ where(:key => "good_governance") }
   scope :human_rights,    ->{ where(:key => "human_rights") }

@@ -47,8 +47,8 @@ Agencies = Ractive.extend
 MandatesSelector = Ractive.extend
   template : '#mandates_selector_template'
   remove_error : ->
-    if !_.isEmpty @get('mandate_ids')
-      @parent.remove_attribute_error('mandate_ids')
+    if !_.isEmpty @get('mandate_name')
+      @parent.remove_attribute_error('mandate_name')
 
 ComplaintBasesSelector = Ractive.extend
   template : '#complaint_bases_selector_template'
@@ -100,7 +100,7 @@ EditBackup =
   restore_checkboxes : ->
     # major hack to circumvent ractive bug,
     # it will not be necessary in ractive 0.8.0
-    _(['good_governance_complaint_basis','human_rights_complaint_basis','mandate','special_investigations_unit_complaint_basis', 'agency']).
+    _(['good_governance_complaint_basis','human_rights_complaint_basis','special_investigations_unit_complaint_basis', 'agency', 'mandate_name']).
       each (association)=>
         @restore_checkboxes_for(association)
   restore_checkboxes_for : (association)->
@@ -286,7 +286,7 @@ Complaint = Ractive.extend
   template : '#complaint_template'
   computed :
     delete_confirmation_message : ->
-      i18n.delete_complaint_confirmation_message
+      "#{i18n.delete_complaint_confirmation_message} #{@get('case_reference')}?"
     include : ->
       @include()
     reminders_count : ->
@@ -298,7 +298,7 @@ Complaint = Ractive.extend
     persisted : ->
       !_.isNull(@get('id'))
     persistent_attributes : ->
-      ['case_reference','complainant','village','phone','mandate_ids',
+      ['case_reference','complainant','village','phone','mandate_name', 'imported',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
         'complaint_category_ids', 'agency_ids', 'attached_documents_attributes']
@@ -306,7 +306,10 @@ Complaint = Ractive.extend
       Routes.complaint_path(current_locale, @get('id'))
     formatted_date :
       get: ->
-        $.datepicker.formatDate("yy, M d", new Date(@get('date')) )
+        if _.isEmpty(@get('date'))
+          ""
+        else
+          $.datepicker.formatDate("yy, M d", new Date(@get('date')) )
       set: (val)-> @set('date', $.datepicker.parseDate( "yy, M d", val))
     create_reminder_url : ->
       Routes.complaint_reminders_path('en', @get('id'))
@@ -316,17 +319,17 @@ Complaint = Ractive.extend
       @get('good_governance_complaint_basis_ids').length +
       @get('special_investigations_unit_complaint_basis_ids').length +
       @get('human_rights_complaint_basis_ids').length
-    validation_criteria : -> # this MUST be a computed attribute and not data, so that it depends on mandate_ids
+    validation_criteria : ->
       if @get('editing')
-        complainant : 'notBlank'
-        village : 'notBlank'
-        mandate_ids : ['nonEmpty',@get('mandate_ids')]
-        complaint_basis_id_count : 'nonZero'
+        complainant : ['notBlank', {if : =>!@get('imported') }]
+        village : ['notBlank', {if : =>!@get('imported')}]
+        mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
+        complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
       else
-        complainant : 'notBlank'
-        village : 'notBlank'
-        mandate_ids : ['nonEmpty',@get('mandate_ids')]
-        complaint_basis_id_count : 'nonZero'
+        complainant : ['notBlank', {if : =>!@get('imported') }]
+        village : ['notBlank', {if : =>!@get('imported')}]
+        mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
+        complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
         new_assignee_id : 'numeric'
   oninit : ->
     @set
@@ -334,7 +337,7 @@ Complaint = Ractive.extend
       complainant_error: false
       village_error : false
       current_assignee_id_error : false
-      mandate_error : false
+      mandate_name_error : false
       complaint_basis_id_count_error : false
       filetype_error: false
       filesize_error: false
@@ -577,7 +580,7 @@ complaints_options =
         human_rights_complaint_basis_ids : []
         special_investigations_unit_complaint_basis_ids : []
         id : null
-        mandate_ids : []
+        mandate_id : null
         agency_ids : []
         notes : []
         opened_by_id : null
@@ -585,6 +588,7 @@ complaints_options =
         reminders : []
         status_humanized : "open"
         village : ""
+        imported : false
       UserInput.claim_user_input_request(@,'cancel_add_complaint')
       @unshift('complaints',new_complaint)
   cancel_add_complaint : ->

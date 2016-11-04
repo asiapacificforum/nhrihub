@@ -5,18 +5,6 @@ log = (str)->
 
 describe 'Headings page', ->
   before (done)->
-    #window.Collection = {}
-    #window.outreach_events = MagicLamp.loadJSON('outreach_event_data')
-    #window.new_outreach_event = MagicLamp.loadJSON('new_outreach_event')
-    #window.create_outreach_event_url = MagicLamp.loadRaw('create_outreach_event_url')
-    #window.maximum_filesize = MagicLamp.loadJSON('maximum_filesize')
-    #window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
-    #window.default_selected_audience_type = MagicLamp.loadRaw('selected_audience_type')
-    #window.audience_types = MagicLamp.loadJSON('audience_types')
-    #window.default_selected_impact_rating = MagicLamp.loadRaw('selected_impact_rating')
-    #window.impact_ratings = MagicLamp.loadJSON('impact_ratings')
-    #window.planned_results = []
-    #window.performance_indicators = []
     window.headings_data = MagicLamp.loadJSON('headings_data')
     MagicLamp.load("headings_page") # that's the _index partial being loaded
     $.getScript("/assets/nhri/headings.js").

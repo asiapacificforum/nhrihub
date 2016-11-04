@@ -2,7 +2,7 @@ class ComplaintsController < ApplicationController
   def index
     #@complaints = Complaint.all
     @complaints = Complaint.includes(:assigns,
-                                     :mandates,
+                                     :mandate,
                                      {:status_changes => :complaint_status},
                                      {:complaint_good_governance_complaint_bases=>:good_governance_complaint_basis},
                                      {:complaint_special_investigations_unit_complaint_bases => :special_investigations_unit_complaint_basis},
@@ -11,7 +11,7 @@ class ComplaintsController < ApplicationController
                                      :communications,
                                      :complaint_categories,
                                      :complaint_documents,
-                                     :reminders,:notes).limit(20)
+                                     :reminders,:notes).limit(1)
     @mandates = Mandate.all
     @agencies = Agency.all
     @complaint_bases = [ GoodGovernance::ComplaintBasis.named_list,
@@ -33,7 +33,7 @@ class ComplaintsController < ApplicationController
   def create
     params[:complaint].delete(:current_status_humanized)
     complaint = Complaint.new(complaint_params)
-    complaint.status_changes_attributes = [{:user_id => @current_user.id, :status_humanized => "open"}]
+    complaint.status_changes_attributes = [{:user_id => @current_user.id, :name => "Under Evaluation"}]
     if complaint.save
       render :json => complaint, :status => 200
     else
@@ -43,7 +43,7 @@ class ComplaintsController < ApplicationController
 
   def update
     complaint = Complaint.find(params[:id])
-    params[:complaint][:status_changes_attributes] = [{:user_id => @current_user.id, :status_humanized => params[:complaint].delete(:current_status_humanized)}]
+    params[:complaint][:status_changes_attributes] = [{:user_id => @current_user.id, :name => params[:complaint].delete(:current_status_humanized)}]
     if complaint.update(complaint_params)
       render :json => complaint, :status => 200
     else
@@ -60,12 +60,11 @@ class ComplaintsController < ApplicationController
   private
   def complaint_params
     params.require(:complaint).permit( :case_reference, :complainant, :village, :phone, :new_assignee_id,
-                                       :mandate_ids => [], :good_governance_complaint_basis_ids => [],
+                                       :mandate_name, :imported, :good_governance_complaint_basis_ids => [],
                                        :special_investigations_unit_complaint_basis_ids => [],
                                        :human_rights_complaint_basis_ids => [],
-                                       :status_changes_attributes => [:user_id, :status_humanized],
-                                       :complaint_category_ids => [],
-                                       :agency_ids => [],
+                                       :status_changes_attributes => [:user_id, :name],
+                                       :complaint_category_ids => [], :agency_ids => [],
                                        :complaint_documents_attributes => [:file, :title, :filename, :original_type, :filesize, :lastModifiedDate],
                                      )
   end

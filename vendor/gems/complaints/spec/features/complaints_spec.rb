@@ -26,8 +26,56 @@ feature "complaints index", :js => true do
   it "shows basic information for each complaint" do
     within first_complaint do
       expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
+      expect(find('.date_received').text).to eq Complaint.first.date_received.to_date.to_s
       expect(all('#status_changes .status_change').first.text).to match /#{Complaint.first.status_changes.first.status_humanized}/
+      expect(all('#status_changes .status_change .user_name').first.text).to match /#{Complaint.first.status_changes.first.user.first_last_name}/
+      expect(all('#status_changes .status_change .date').first.text).to match /#{Complaint.first.status_changes.first.change_date.to_date.strftime("%b %-d, %Y")}/
       expect(all('#status_changes .status_change').last.text).to match /#{Complaint.first.status_changes.last.status_humanized}/
+      expect(all('#status_changes .status_change .user_name').last.text).to match /#{Complaint.first.status_changes.last.user.first_last_name}/
+      expect(all('#status_changes .status_change .date').last.text).to match /#{Complaint.first.status_changes.last.change_date.to_date.strftime("%b %-d, %Y")}/
+      expect(find('.complainant').text).to eq Complaint.first.complainant
+    end
+  end
+
+  it "does not show status date if the date is missing" do
+    Complaint.first.status_changes.last.update_attribute(:change_date, nil)
+    visit complaints_path('en')
+    within first_complaint do
+      expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
+      status = Complaint.first.status_changes.first.status_humanized
+      name =   Complaint.first.status_changes.first.user.first_last_name
+      date =   Complaint.first.status_changes.first.change_date.to_date.strftime("%b %-d, %Y")
+      expect(all('#status_changes .status_change').first.text.gsub(/\s/,'')).to match "#{status} ( by #{name} , on #{date} )".gsub(/\s/,'')
+      status = Complaint.first.status_changes.last.status_humanized
+      name =   Complaint.first.status_changes.last.user.first_last_name
+      expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to match  "#{status} ( by #{name} )".gsub(/\s/,'')
+      expect(find('.complainant').text).to eq Complaint.first.complainant
+    end
+  end
+
+  it "does not show attribution name if the user name is missing" do
+    Complaint.first.status_changes.last.update_attribute(:user_id, nil)
+    visit complaints_path('en')
+    within first_complaint do
+      expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
+      status = Complaint.first.status_changes.first.status_humanized
+      name =   Complaint.first.status_changes.first.user.first_last_name
+      date =   Complaint.first.status_changes.first.change_date.to_date.strftime("%b %-d, %Y")
+      expect(all('#status_changes .status_change').first.text.gsub(/\s/,'')).to match "#{status} ( by #{name}, on #{date} )".gsub(/\s/,'')
+      status = Complaint.first.status_changes.last.status_humanized
+      date =   Complaint.first.status_changes.last.change_date.to_date.strftime("%b %-d, %Y")
+      expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to match "#{status} ( on #{date} )".gsub(/\s/,'')
+      expect(find('.complainant').text).to eq Complaint.first.complainant
+    end
+  end
+
+  it "does not show attribution name or date if the both are missing" do
+    Complaint.first.status_changes.last.update_attributes({:user_id => nil, :change_date => nil})
+    visit complaints_path('en')
+    within first_complaint do
+      expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
+      status = Complaint.first.status_changes.last.status_humanized
+      expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to eq "#{status}".gsub(/\s/,'')
       expect(find('.complainant').text).to eq Complaint.first.complainant
     end
   end
@@ -53,8 +101,8 @@ feature "complaints index", :js => true do
         expect(all('.status_change .user_name')[1].text).to eq User.staff.second.first_last_name
         expect(all('.status_change .date')[0].text).to eq Complaint.first.status_changes[0].created_at.localtime.to_date.to_s(:short)
         expect(all('.status_change .date')[1].text).to eq Complaint.first.status_changes[1].created_at.localtime.to_date.to_s(:short)
-        expect(all('.status_change .status_humanized')[0].text).to eq "open"
-        expect(all('.status_change .status_humanized')[1].text).to eq "closed"
+        expect(all('.status_change .status_humanized')[0].text).to eq "Under Evaluation"
+        expect(all('.status_change .status_humanized')[1].text).to eq "Complete"
       end
 
       within complaint_documents do
@@ -87,9 +135,7 @@ feature "complaints index", :js => true do
         end
       end
 
-      within mandates do
-        expect(find('.mandate').text).to eq "Human Rights"
-      end
+      expect(find('#mandate').text).to eq "Human Rights"
 
       within agencies do
         expect(all('.agency').map(&:text)).to include "SAA"
@@ -104,7 +150,7 @@ feature "complaints index", :js => true do
       fill_in('complainant', :with => "Norman Normal")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
-      check('special_investigations_unit')
+      choose('special_investigations_unit')
       check_basis(:good_governance, "Delayed action")
       check_basis(:human_rights, "CAT")
       check_basis(:special_investigations_unit, "Unreasonable delay")
@@ -127,13 +173,13 @@ feature "complaints index", :js => true do
     expect(Complaint.last.complainant).to eq "Norman Normal"
     expect(Complaint.last.village).to eq "Normaltown"
     expect(Complaint.last.phone).to eq "555-1212"
-    expect(Complaint.last.mandates.map(&:key)).to include 'special_investigations_unit'
+    expect(Complaint.last.mandate.key).to eq 'special_investigations_unit'
     expect(Complaint.last.good_governance_complaint_bases.map(&:name)).to include "Delayed action"
     expect(Complaint.last.human_rights_complaint_bases.map(&:name)).to include "CAT"
     expect(Complaint.last.special_investigations_unit_complaint_bases.map(&:name)).to include "Unreasonable delay"
     expect(Complaint.last.current_assignee_name).to eq User.staff.first.first_last_name
     expect(Complaint.last.status_changes.count).to eq 1
-    expect(Complaint.last.status_changes.first.new_value).to eq true
+    expect(Complaint.last.status_changes.first.complaint_status.name).to eq "Under Evaluation"
     expect(Complaint.last.complaint_categories.map(&:name)).to include "Formal"
     expect(Complaint.last.agencies.map(&:name)).to include "SAA"
     expect(Complaint.last.agencies.map(&:name)).to include "ACC"
@@ -144,7 +190,7 @@ feature "complaints index", :js => true do
     expect(first_complaint.find('.case_reference').text).to eq next_ref
     expect(first_complaint.find('.current_assignee').text).to eq User.staff.first.first_last_name
     expect(first_complaint.find('.complainant').text).to eq "Norman Normal"
-    expect(first_complaint.find('#status_changes .status_change .status_humanized').text).to eq 'open'
+    expect(first_complaint.find('#status_changes .status_change .status_humanized').text).to eq 'Under Evaluation'
     expand
     expect(first_complaint.find('.complainant_village').text).to eq "Normaltown"
     expect(first_complaint.find('.complainant_phone').text).to eq "555-1212"
@@ -180,6 +226,9 @@ feature "complaints index", :js => true do
       expect(page.all('#complaint_documents .complaint_document')[0].find('.filename').text).to eq "first_upload_file.pdf"
       expect(page.all('#complaint_documents .complaint_document')[0].find('.title').text).to eq "Complaint Document"
     end
+
+    expect(page.find('#mandate').text).to eq "Special Investigations Unit"
+
   end
 
   it "does not add a new complaint that is invalid" do
@@ -189,7 +238,7 @@ feature "complaints index", :js => true do
       expect(page).to have_selector('#complainant_error', :text => "You must enter a complainant")
       expect(page).to have_selector('#village_error', :text => 'You must enter a village')
       expect(page).to have_selector('#new_assignee_id_error', :text => 'You must designate an assignee')
-      expect(page).to have_selector('#mandate_ids_error', :text => 'You must select at least one mandate')
+      expect(page).to have_selector('#mandate_name_error', :text => 'You must select a mandate')
       expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
       fill_in('complainant', :with => "Norman Normal")
       expect(page).not_to have_selector('#complainant_error', :text => "You must enter a complainant")
@@ -197,8 +246,8 @@ feature "complaints index", :js => true do
       expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
       select(User.staff.first.first_last_name, :from => "assignee")
       expect(page).not_to have_selector('#new_assignee_id_error', :text => 'You must designate an assignee')
-      check('special_investigations_unit')
-      expect(page).not_to have_selector('#mandate_ids_error', :text => 'You must select at least one mandate')
+      choose('special_investigations_unit')
+      expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select a mandate')
       check_basis(:special_investigations_unit, "Unreasonable delay")
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
     end
@@ -234,7 +283,7 @@ feature "complaints index", :js => true do
       fill_in('complainant', :with => "Norman Normal")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
-      check('special_investigations_unit')
+      choose('special_investigations_unit')
       check_basis(:good_governance, "Delayed action")
       check_basis(:human_rights, "CAT")
       check_basis(:special_investigations_unit, "Unreasonable delay")
@@ -256,11 +305,11 @@ feature "complaints index", :js => true do
   it "changes complaint current status by adding a status_change" do
     edit_complaint
     within current_status do
-      expect(page).to have_checked_field "close"
-      choose "open"
+      expect(page).to have_checked_field "complete"
+      choose "active"
     end
-    expect{ edit_save }.to change{ Complaint.first.current_status }.from(false).to(true)
-    expect( first_complaint.all('#status_changes .status_change').last.text ).to match "open"
+    expect{ edit_save }.to change{ Complaint.first.current_status }.from("Complete").to("Active")
+    expect( first_complaint.all('#status_changes .status_change').last.text ).to match "Active"
     expect( first_complaint.all('#status_changes .date').last.text ).to match /#{Date.today.to_s(:short)}/
     user = User.find_by(:login => 'admin')
     expect( first_complaint.all('#status_changes .user_name').last.text ).to match /#{user.first_last_name}/
@@ -279,7 +328,7 @@ feature "complaints index", :js => true do
       # ASSIGNEE
       select(User.staff.last.first_last_name, :from => "assignee")
       # MANDATE
-      check('special_investigations_unit') # originally had human rights mandate, now should have both
+      choose('special_investigations_unit') # originally had human rights mandate
       # BASIS
       uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
       uncheck_basis(:human_rights, "CAT") # originall had "CAT" "ICESCR"
@@ -299,8 +348,7 @@ feature "complaints index", :js => true do
                                       and change{ Complaint.first.complaint_documents.count }.by(1).
                                       and change{ (`\ls tmp/uploads/store | wc -l`).to_i }.by 1
 
-    expect( Complaint.first.mandates.map(&:key) ).to include "special_investigations_unit"
-    expect( Complaint.first.mandates.map(&:key) ).to include "human_rights"
+    expect( Complaint.first.mandate_name ).to eq "Special Investigations Unit"
     expect( Complaint.first.good_governance_complaint_bases.count ).to eq 1
     expect( Complaint.first.good_governance_complaint_bases.first.name ).to eq "Failure to act"
     expect( Complaint.first.human_rights_complaint_bases.count ).to eq 1
@@ -451,7 +499,7 @@ feature "complaints index", :js => true do
       # CATEGORY
       uncheck_category("Formal")
       # MANDATE
-      uncheck_mandate('human_rights') # originally had human rights mandate, now should have both
+      choose('special_investigations_unit') # originally had human rights mandate
       # BASIS
       uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
       uncheck_basis(:good_governance, "Failure to act") # originally had "Delayed action" and "Failure to Act"
@@ -466,15 +514,14 @@ feature "complaints index", :js => true do
 
     expect(page).to have_selector('#complainant_error', :text => "You must enter a complainant")
     expect(page).to have_selector('#village_error', :text => 'You must enter a village')
-    expect(page).to have_selector('#mandate_ids_error', :text => 'You must select at least one mandate')
     expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
     within first_complaint do
       fill_in('complainant', :with => "Norman Normal")
       expect(page).not_to have_selector('#complainant_error', :text => "You must enter a complainant")
       fill_in('village', :with => "Leaden Roding")
       expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
-      check('special_investigations_unit')
-      expect(page).not_to have_selector('#mandate_ids_error', :text => 'You must select at least one mandate')
+      choose('special_investigations_unit')
+      expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select a mandate')
       check_basis(:special_investigations_unit, "Unreasonable delay")
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
     end

@@ -15,7 +15,7 @@ en:
       phone: 'Phone'
       complainant_error_message : "You must enter a complainant"
       mandate: "Mandate"
-      mandate_error_message: "You must select at least one mandate"
+      mandate_name_error_message: "You must select a mandate"
       complaint_basis: "Basis of Complaint"
       complaint_basis_error_message : "You must select at least one complaint basis"
       agency: "Agency"
@@ -58,5 +58,5 @@ en:
       sent: "Sent"
       received: "Received"
       delete_communication_confirmation_message: "Are you sure you want to delete this communication?"
-      delete_complaint_confirmation_message: "Are you sure you want to delete this complaint?"
+      delete_complaint_confirmation_message: "Are you sure you want to delete complaint "
       delete_document_confirmation_message: "Are you sure you want to delete the document "

@@ -18,10 +18,6 @@ module ComplaintsSpecHelpers
     page.all('#complaint_documents .complaint_document i.delete_icon').first.click
   end
 
-  def mandates
-    page.find('#mandates')
-  end
-
   def cancel_add
     page.execute_script("scrollTo(0,0)")
     page.find('#cancel_complaint').click

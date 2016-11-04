@@ -202,9 +202,9 @@ Teaspoon.configure do |config|
     suite.helper = Rails.root.join("spec","javascripts","spec_helper.js")
     suite.matcher = Rails.root.join("vendor/gems/projects/spec/javascripts/projects_spec.coffee")
   end
-  config.suite :nhri do |suite|
-    suite.helper = Rails.root.join("vendor","gems","nhri","spec","javascripts","spec_helper.js")
-    suite.matcher = Rails.root.join("vendor/gems/nhri/spec/javascripts/**/*_spec.coffee")
+  config.suite :headings do |suite|
+    suite.helper = Rails.root.join("vendor","gems","nhri","spec","javascripts","headings","spec_helper.js")
+    suite.matcher = Rails.root.join("vendor/gems/nhri/spec/javascripts/headings/headings_spec.coffee")
   end
   config.suite :complaints do |suite|
     suite.helper = Rails.root.join("vendor","gems","complaints","spec","javascripts","spec_helper.js")
@@ -213,6 +213,10 @@ Teaspoon.configure do |config|
   config.suite :strategic_plan do |suite|
     suite.helper = Rails.root.join("vendor","gems","corporate_services","spec","javascripts","spec_helper.js")
     suite.matcher = Rails.root.join("vendor/gems/corporate_services/spec/javascripts/strategic_plan_spec.coffee")
+  end
+  config.suite :advisory_council_issues do |suite|
+    suite.helper = Rails.root.join("vendor","gems","corporate_services","spec","javascripts","advisory_council_issues","spec_helper.js")
+    suite.matcher = Rails.root.join("vendor/gems/corporate_services/spec/javascripts/advisory_council_issues/issues_spec.coffee")
   end
 
 end

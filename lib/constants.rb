@@ -1,10 +1,10 @@
 # for the mailer
 TWO_FACTOR_AUTHENTICATION = 'enabled'
-SITE_URL = "oodb.railsplayground.net"
+SITE_URL = "db.ombudsman.gov.ws"
 APPLICATION_ID = "https://#{SITE_URL}"
 ADMIN_EMAIL = "support@#{SITE_URL}"
 NO_REPLY_EMAIL = "no_reply@#{SITE_URL}"
-APPLICATION_NAME = "NHRIDocs Database"
+APPLICATION_NAME = "NHRI Hub"
 ORGANIZATION_NAME = "Office of the Ombudsman"
 TIME_ZONE = "Pacific Time (US & Canada)"
 CONVENTIONS = {

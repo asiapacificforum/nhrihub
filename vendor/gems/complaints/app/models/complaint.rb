@@ -13,10 +13,12 @@ class Complaint < ActiveRecord::Base
   belongs_to :opened_by, :class_name => 'User', :foreign_key => :opened_by_id
   has_many :complaint_complaint_categories, :dependent => :destroy
   has_many :complaint_categories, :through => :complaint_complaint_categories
-  has_many :complaint_mandates, :dependent => :destroy
-  has_many :mandates, :through => :complaint_mandates
+  #has_many :complaint_mandates, :dependent => :destroy
+  belongs_to :mandate #, :through => :complaint_mandates
   has_many :status_changes, :dependent => :destroy
+  accepts_nested_attributes_for :status_changes
   has_many :complaint_statuses, :through => :status_changes
+  #accepts_nested_attributes_for :complaint_statuses
   has_many :complaint_agencies, :dependent => :destroy
   has_many :agencies, :through => :complaint_agencies
   has_many :complaint_documents, :dependent => :destroy
@@ -26,11 +28,19 @@ class Complaint < ActiveRecord::Base
   def status_changes_attributes=(attrs)
     # only create a status_change object if this is a new complaint
     # or if the status is changing
-    attrs.each do |attr|
-      if status_changes.empty? || !(current_status && attr[:status_humanized] == "open"  )
-        status_changes.build(attr)
-      end
+    if !persisted?
+      complaint_statuses.build(:name => "Under Evaluation")
+    elsif !attrs[0][:name].nil?
+      change_date = attrs[0]["change_date"].nil? ? DateTime.now : DateTime.new(attrs[0]["change_date"])
+      status_changes.build({:user_id => attrs[0][:user_id],
+                            :change_date => change_date,
+                            :complaint_status_id => ComplaintStatus.where(:name => attrs[0]["name"]).first.id})
     end
+    #attrs.each do |attr|
+      #if status_changes.empty? # || !(current_status && attr[:status_humanized] == "open"  )
+        #status_changes.build(attr)
+      #end
+    #end
   end
 
 
@@ -40,12 +50,20 @@ class Complaint < ActiveRecord::Base
                         :new_assignee_id,
                         :current_assignee_name, :date,
                         :current_status_humanized, :attached_documents,
-                        :complaint_categories, :mandate_ids,
+                        :complaint_categories, :mandate_name,
                         :good_governance_complaint_basis_ids,
                         :special_investigations_unit_complaint_basis_ids,
                         :human_rights_complaint_basis_ids, :status_changes,
                         :agency_ids,
                         :communications])
+  end
+
+  def mandate_name
+    mandate && mandate.name
+  end
+
+  def mandate_name=(name)
+    self.mandate_id = Mandate.where(:key => name.gsub(/\s/,'').underscore).first.id
   end
 
   def attached_documents
@@ -74,7 +92,7 @@ class Complaint < ActiveRecord::Base
   end
 
   def date
-    created_at.to_datetime.to_s
+    date_received.to_datetime.to_s unless date_received.nil?
   end
 
   def current_assignee_name

@@ -388,10 +388,10 @@ FilterControls = Ractive.extend
   compact : ->
     @parent.compact()
   clear_filter : ->
-    @set('filter_criteria', window.projects_data().filter_criteria)
+    @set('filter_criteria', window.projects_page_data().filter_criteria)
 
 
-window.projects_data = ->
+window.projects_page_data = ->
   performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')
   expanded : false
   projects : projects_data
@@ -409,7 +409,7 @@ window.projects_data = ->
 projects_options = ->
   el : "#projects"
   template : '#projects_template'
-  data : $.extend(true,{},projects_data())
+  data : $.extend(true,{},projects_page_data())
     #performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')
     #expanded : false
     #projects : projects_data

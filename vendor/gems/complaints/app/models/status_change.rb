@@ -2,6 +2,7 @@ class StatusChange < ActiveRecord::Base
   belongs_to :user
   belongs_to :complaint
   belongs_to :complaint_status
+  accepts_nested_attributes_for :complaint_status
 
   def as_json(options={})
     super(:only => [], :methods => [:user_name, :date, :status_humanized])
@@ -13,7 +14,7 @@ class StatusChange < ActiveRecord::Base
   end
 
   def date
-    created_at.localtime.to_date.to_s(:short)
+    change_date.localtime.to_date.to_s(:short) unless change_date.nil?
   end
 
   def status_humanized

@@ -179,9 +179,15 @@ These files contain sensitive information and should be manually copied into the
 A list of all the files that the application requires to be present in the shared directory is found in the conifg/deploy_example.rb file.
 
 ## Configuring SSL
-Letsencrypt (http://letsencrypt.org) may be used to obtain an ssl certificate. This is facilitated by the letsencrypt_plugin gem (https://github.com/lgromanowski/letsencrypt-plugin). This gem needs a configuration file, and it's stored in the shared/config/letsencrypt_plugin.yml where capistrano symlinks files. Refer to the gem's README for information on the parameters that must be included. The RSA private key is also symlinked by capistrano to shared/key/keyfile.pem.
+[Letsencrypt](http://letsencrypt.org) may be used to obtain an ssl certificate. This is facilitated by the [letsencrypt_plugin gem](https://github.com/lgromanowski/letsencrypt-plugin). This gem needs a configuration file, and it's stored in the shared/config/letsencrypt_plugin.yml where capistrano symlinks files. Refer to the gem's README for information on the parameters that must be included. Keys, certificates and other files issued by Letsencrypt are loaded into the certificates directory which is symlinked by Capistrano to shared/certificates.
 
-After following the instructions on the letsencrypt_plugin gem, you will have ssl certificates for your site stored in the certificates directory.
+The letsencrypt_plugin gem provides a rake task to issue certificates:
+
+```
+RAILS_ENV=production bundle exec rake letsencrypt_plugin
+```
+
+If the letsencryptpolugin.yml was correctly configured, the command above should insert ssl certificates for your site stored in the certificates directory.
 
 Alternatively you may exclude this gem from Gemfile (and remove it from config/routes.rb) and obtain the site ssl certificate by another means.
 
