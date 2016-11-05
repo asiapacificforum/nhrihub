@@ -33,6 +33,7 @@
   @maximum_filesize = #{@maximum_filesize}
   @communication_permitted_filetypes = #{@communication_permitted_filetypes}
   @communication_maximum_filesize = #{@communication_maximum_filesize}
+  @statuses = #{@statuses.to_json}
   @filter_criteria =
     complainant : ""
     from : null
@@ -46,11 +47,10 @@
     selected_agency_ids : []
     current_assignee_id : ""
     selected_assignee_id : ""
-    selected_closed_status : ["true"]
-    selected_open_status : ["true"]
     selected_human_rights_complaint_basis_ids : []
     selected_special_investigations_unit_complaint_basis_ids : []
     selected_good_governance_complaint_basis_ids : []
+    selected_statuses : []
   @i18n =
     tooltip_messages:
       face_to_face : "#{t('.face_to_face')}"

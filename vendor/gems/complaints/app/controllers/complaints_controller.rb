@@ -23,11 +23,12 @@ class ComplaintsController < ApplicationController
     @good_governance_complaint_bases = GoodGovernance::ComplaintBasis.all
     @human_rights_complaint_bases = Nhri::ComplaintBasis.all
     @special_investigations_unit_complaint_bases = Siu::ComplaintBasis.all
-    @staff = User.staff
+    @staff = User.staff.order(:lastName,:firstName).select(:id,:firstName,:lastName)
     @maximum_filesize = ComplaintDocument.maximum_filesize * 1000000
     @permitted_filetypes = ComplaintDocument.permitted_filetypes.to_json
     @communication_maximum_filesize    = CommunicationDocument.maximum_filesize * 1000000
     @communication_permitted_filetypes = CommunicationDocument.permitted_filetypes.to_json
+    @statuses = ComplaintStatus.select(:id, :name).all
   end
 
   def create

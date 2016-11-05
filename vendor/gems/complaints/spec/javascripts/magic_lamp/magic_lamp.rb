@@ -19,7 +19,8 @@ MagicLamp.define do
     :selected_open_status => ["true"],
     :selected_human_rights_complaint_basis_ids => [],
     :selected_special_investigations_unit_complaint_basis_ids => [],
-    :selected_good_governance_complaint_basis_ids => []}
+    :selected_good_governance_complaint_basis_ids => [],
+    :selected_statuses => []}
   end
 
   fixture(:name => 'complaints_page') do
@@ -49,5 +50,10 @@ MagicLamp.define do
   fixture(:name => 'complaints_data') do
     ComplaintsSeedData.initialize(:complaints_data)
     Complaint.all
+  end
+
+  fixture(:name => 'statuses') do
+    ComplaintsSeedData.initialize(:statuses)
+    ComplaintStatus.select(:id, :name).all
   end
 end

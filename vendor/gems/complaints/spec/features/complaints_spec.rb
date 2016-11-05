@@ -393,6 +393,11 @@ feature "complaints index", :js => true do
     end
   end
 
+  it "edits a complaint with no changes to the status" do # b/c there was a bug
+    edit_complaint
+    expect{ edit_save }.not_to change{ Complaint.first.status_changes.count }
+  end
+
   it "edits a complaint with no change of assignee" do
     edit_complaint
     expect{ edit_save }.not_to change{ Complaint.first.assignees.count }

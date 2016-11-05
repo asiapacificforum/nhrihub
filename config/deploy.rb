@@ -41,7 +41,8 @@ set :linked_dirs, fetch(:linked_dirs, []).push('certificates',
                                                'tmp/pids',
                                                'tmp/cache',
                                                'tmp/sockets',
-                                               'vendor/bundle')
+                                               'vendor/bundle',
+                                               'lib/import_data')
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }

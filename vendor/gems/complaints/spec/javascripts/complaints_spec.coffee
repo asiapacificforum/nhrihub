@@ -1,8 +1,4 @@
 log = (str)->
-  re = new RegExp('phantomjs','gi')
-  unless re.test navigator.userAgent
-    console.log str
-
 load_variables = ->
   window.complaints_data = []
   window.all_mandates = []
@@ -13,10 +9,11 @@ load_variables = ->
   window.all_categories = []
   window.permitted_filetypes = []
   window.maximum_filesize = 5
-  window.filter_criteria        = MagicLamp.loadJSON("complaint_filter_criteria")
+  window.filter_criteria = MagicLamp.loadJSON("complaint_filter_criteria")
   window.all_good_governance_complaint_bases = MagicLamp.loadJSON("all_good_governance_complaint_bases")
   window.all_human_rights_complaint_bases = MagicLamp.loadJSON("all_human_rights_complaint_bases")
   window.all_special_investigations_unit_complaint_bases = MagicLamp.loadJSON("all_special_investigations_unit_complaint_bases")
+  window.statuses = MagicLamp.loadJSON("statuses")
   window.all_staff = MagicLamp.loadJSON("all_staff")
   MagicLamp.load("complaints_page") # that's the index.haml file being loaded
 
@@ -712,81 +709,21 @@ describe "complaints index page", ->
     after ->
       reset_page()
 
-    it "UI should set the filter criterion value for the open status", ->
-      $('.filter_control_box #true_status').prop('checked',true)
-      simulant.fire($('.filter_control_box #true_status')[0],'change')
-      expect(complaints.get('filter_criteria.selected_open_status')).to.include "true"
-      expect(complaints.get('filter_criteria.open')).to.be.true
-      $('.filter_control_box #true_status').prop('checked',false)
-      simulant.fire($('.filter_control_box #true_status')[0],'change')
-      expect(complaints.get('filter_criteria.selected_open_status')).to.be.empty
-      expect(complaints.get('filter_criteria.open')).to.be.false
+    it "should match when status_ids includes the complaint status_id", ->
+      complaints.set('filter_criteria.selected_statuses',["Under Evaluation"])
+      complaints.set('complaints', [{current_status_humanized : "Under Evaluation"}])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_status()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
 
-    it "UI should set the filter criterion value for the closed status", ->
-      $('.filter_control_box #false_status').prop('checked',true)
-      simulant.fire($('.filter_control_box #false_status')[0],'change')
-      expect(complaints.get('filter_criteria.selected_closed_status')).to.include "true"
-      expect(complaints.get('filter_criteria.closed')).to.be.true
-      $('.filter_control_box #false_status').prop('checked',false)
-      simulant.fire($('.filter_control_box #false_status')[0],'change')
-      expect(complaints.get('filter_criteria.selected_closed_status')).to.be.empty
-      expect(complaints.get('filter_criteria.closed')).to.be.false
-
-    describe "when current_status is open", ->
-      before ->
-        complaints.set('complaints',[{current_status_humanized : 'open'}])
-
-      it "should not match when filter selects closed", ->
-        complaints.set('filter_criteria.selected_closed_status',["true"])
-        complaints.set('filter_criteria.selected_open_status',[])
-        complaint = complaints.findAllComponents('complaint')[0]
-        expect(complaint.matches_status()).to.be.false
-        expect(complaint.include()).to.be.false
-        expect(complaint.get('include')).to.be.false
-
-      it "should match when filter selects open", ->
-        complaints.set('filter_criteria.selected_closed_status',[])
-        complaints.set('filter_criteria.selected_open_status',["true"])
-        complaint = complaints.findAllComponents('complaint')[0]
-        expect(complaint.matches_status()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "should match when filter selects open and closed", ->
-        complaints.set('filter_criteria.selected_closed_status',[])
-        complaints.set('filter_criteria.selected_open_status',["true"])
-        complaint = complaints.findAllComponents('complaint')[0]
-        expect(complaint.matches_status()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-    describe "when current_status is closed", ->
-      before ->
-        complaints.set('complaints',[{current_status_humanized : 'closed'}])
-
-      it "should match when filter selects closed", ->
-        complaints.set('filter_criteria.selected_closed_status',["true"])
-        complaints.set('filter_criteria.selected_open_status',[])
-        complaint = complaints.findAllComponents('complaint')[0]
-        expect(complaint.matches_status()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "should not match when filter selects open", ->
-        complaints.set('filter_criteria.selected_closed_status',[])
-        complaints.set('filter_criteria.selected_open_status',["true"])
-        complaint = complaints.findAllComponents('complaint')[0]
-        expect(complaint.matches_status()).to.be.false
-        expect(complaint.include()).to.be.false
-        expect(complaint.get('include')).to.be.false
-
-      it "should match when filter selects open and closed", ->
-        complaints.set('filter_criteria.selected_closed_status',["true"])
-        complaints.set('filter_criteria.selected_open_status',["true"])
-        complaint = complaints.findAllComponents('complaint')[0]
-        expect(complaint.matches_status()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
+    it "should not match when status_ids does not include complaint status_id", ->
+      complaints.set('filter_criteria.selected_statuses',["Under Evaluation", "Active"])
+      complaints.set('complaints', [{current_status_humanized : "Completed"}])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_status()).to.be.false
+      expect(complaint.include()).to.be.false
+      expect(complaint.get('include')).to.be.false
 
   describe "reset filter criteria", ->
     before (done)->
@@ -898,14 +835,15 @@ describe "complaints index page", ->
       expect($('#complaints .complaint:visible').length).to.equal 4
 
     it "should show complaints matching status", ->
-      complaints.set('filter_criteria.selected_closed_status',["true"])
-      complaints.set('filter_criteria.selected_open_status',[])
-      expect($('#complaints .complaint:visible').length).to.equal 1
-      complaints.set('filter_criteria.selected_closed_status',["true"])
-      complaints.set('filter_criteria.selected_open_status',["true"])
+      complaints.set('filter_criteria.selected_statuses',["Active", "Completed"])
       expect($('#complaints .complaint:visible').length).to.equal 4
-      complaints.set('filter_criteria.selected_closed_status',["true"])
-      complaints.set('filter_criteria.selected_open_status',[])
+
+      complaints.set('filter_criteria.selected_statuses',["Completed"])
+      expect($('#complaints .complaint:visible').length).to.equal 2
+
+      complaints.set('filter_criteria.selected_statuses',["Active"])
+      expect($('#complaints .complaint:visible').length).to.equal 2
+
       $('.fa-refresh').trigger('click')
       expect($('#complaints .complaint:visible').length).to.equal 4
 
@@ -979,43 +917,43 @@ describe "complaints index page", ->
       reset_page()
 
     it "should validate a well-formed complaint, excluding assignee when editing", ->
-      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_ids:[1],complaint_basis_ids:[2]}])
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name : "Good Governance",complaint_basis_ids:[2]}])
       complaints.findAllComponents('complaint')[0].set('editing',true)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a well-formed complaint, including assignee when not editing", ->
-      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_ids:[1],complaint_basis_ids:[2]}])
+      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_name : "Good Governance",complaint_basis_ids:[2]}])
       complaints.findAllComponents('complaint')[0].set('new_assignee_id', 8)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a complaint with no complainant if it is imported", ->
-      complaints.set('complaints',[{ village : "Bar", mandate_ids: [1], complaint_basis_ids:[2], new_assignee_id:8, imported:true}])
+      complaints.set('complaints',[{ village : "Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:true}])
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a complaint with no village if it is imported", ->
-      complaints.set('complaints',[{ complainant : "Foo", mandate_ids: [1], complaint_basis_ids:[2], new_assignee_id:8, imported:true}])
+      complaints.set('complaints',[{ complainant : "Foo", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:true}])
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should not validate a complaint with no complainant if it is not imported", ->
-      complaints.set('complaints',[{ village : "Bar", mandate_ids: [1], complaint_basis_ids:[2], new_assignee_id:8, imported:false}])
+      complaints.set('complaints',[{ village : "Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:false}])
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
 
     it "should not validate a complaint with no village if it is not imported", ->
-      complaints.set('complaints',[{ complainant : "Foo", mandate_ids: [1], complaint_basis_ids:[2], new_assignee_id:8, imported:false}])
+      complaints.set('complaints',[{ complainant : "Foo", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:false}])
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
 
-    it "should validate a complaint missing mandate_ids, excluding assignee when editing", ->
-      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_ids:[],complaint_basis_ids:[2], imported:true}])
+    it "should validate an imported complaint missing village, excluding assignee when editing", ->
+      complaints.set('complaints',[{ complainant:"Foo", mandate_name : "Good Governance", complaint_basis_ids:[2], imported:true}])
       complaints.findAllComponents('complaint')[0].set('editing',true)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
-    it "should validate a complaint missing mandate_ids, including assignee when not editing", ->
-      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_ids:[],complaint_basis_ids:[2], imported:true}])
+    it "should validate an imported complaint missing complaint_basis_ids, including assignee when not editing", ->
+      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_name : "Good Governance", complaint_basis_ids:[], imported:true}])
       complaints.findAllComponents('complaint')[0].set('new_assignee_id', 8)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a complaint missing complaint_basis_ids, excluding assignee when editing, when not imported", ->
-      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_ids:[1],complaint_basis_ids:[], imported:false}])
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name : "Good Governance" ,complaint_basis_ids:[], imported:false}])
       complaints.findAllComponents('complaint')[0].set('good_governance_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('human_rights_complaint_basis_ids', [])
@@ -1023,7 +961,7 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
 
     it "should validate a complaint missing complaint_basis_ids, including assignee when not editing, when not imported", ->
-      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_ids:[8], good_governance_complaint_basis_ids: [], special_investigations_unit_complaint_basis_ids: [], human_rights_complaint_basis_ids: [], imported:true}])
+      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_name : "Good Governance", good_governance_complaint_basis_ids: [], special_investigations_unit_complaint_basis_ids: [], human_rights_complaint_basis_ids: [], imported:true}])
       complaints.findAllComponents('complaint')[0].set('good_governance_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('human_rights_complaint_basis_ids', [])
@@ -1031,7 +969,7 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a complaint missing complaint_basis_ids, excluding assignee when editing, when imported", ->
-      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_ids:[1], imported:true}])
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name:"Good Governance", imported:true}])
       complaints.findAllComponents('complaint')[0].set('good_governance_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('human_rights_complaint_basis_ids', [])

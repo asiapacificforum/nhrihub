@@ -28,13 +28,16 @@ class Complaint < ActiveRecord::Base
   def status_changes_attributes=(attrs)
     # only create a status_change object if this is a new complaint
     # or if the status is changing
+    attrs = attrs[0]
     if !persisted?
       complaint_statuses.build(:name => "Under Evaluation")
-    elsif !attrs[0][:name].nil?
-      change_date = attrs[0]["change_date"].nil? ? DateTime.now : DateTime.new(attrs[0]["change_date"])
-      status_changes.build({:user_id => attrs[0][:user_id],
+    elsif !(attrs[:name].nil? || attrs[:name] == "null") && attrs[:name] != current_status_humanized
+      change_date = attrs["change_date"].nil? ? DateTime.now : DateTime.new(attrs["change_date"])
+      user_id = attrs["user_id"]
+      complaint_status_id = ComplaintStatus.where(:name => attrs["name"]).first.id
+      status_changes.build({:user_id => user_id,
                             :change_date => change_date,
-                            :complaint_status_id => ComplaintStatus.where(:name => attrs[0]["name"]).first.id})
+                            :complaint_status_id => complaint_status_id})
     end
     #attrs.each do |attr|
       #if status_changes.empty? # || !(current_status && attr[:status_humanized] == "open"  )
@@ -43,6 +46,12 @@ class Complaint < ActiveRecord::Base
     #end
   end
 
+  before_save do |complaint|
+    string_columns = Complaint.columns.select{|c| c.type == :string}.map(&:name)
+    string_columns.each do |column_name|
+      complaint.send("#{column_name}=", nil) if complaint.send(column_name) == "null"
+    end
+  end
 
   def as_json(options = {})
     super( :methods => [:reminders, :notes, :assigns,

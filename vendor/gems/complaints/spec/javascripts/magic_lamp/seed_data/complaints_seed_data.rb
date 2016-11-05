@@ -3,6 +3,12 @@ class ComplaintsSeedData
     self.send("init_#{model.to_s}")
   end
 
+  def self.init_statuses
+    ["Active", "Complete", "No further action", "Presumed Resolved", "Suspended", "Under Evaluation"].each do |status|
+      FactoryGirl.create(:complaint_status, :name => status)
+    end
+  end
+
   def self.init_special_investigations_unit_complaint_bases
     #Siu::ComplaintBasis.all
     Siu::ComplaintBasis::DefaultNames.each do |name|
@@ -43,49 +49,64 @@ class ComplaintsSeedData
       Agency.create(:name => name)
     end
 
-    FactoryGirl.create(:complaint, :open,
+    active_complaint_status = FactoryGirl.create(:complaint_status, :id => 1, :name => "Active")
+    completed_complaint_status = FactoryGirl.create(:complaint_status, :id => 2, :name => "Completed")
+
+    FactoryGirl.create(:complaint,
                        :complainant => "Camilla Lebsack",
                        :village => "Katherineborough",
                        :phone => "802-850-1615 x1496",
                        :case_reference => "c16/31",
-                       :created_at => DateTime.new(2016,1,1),
+                       :date_received => DateTime.new(2016,1,1),
                        :good_governance_complaint_basis_ids => [1,2],
                        :human_rights_complaint_basis_ids => [1,2],
                        :special_investigations_unit_complaint_basis_ids => [5,6],
                        :agency_ids => [1],
-                       :assignees => [FactoryGirl.create(:user, :with_password, :staff, :firstName => "Peyton", :lastName => "Krajcik")])
-    FactoryGirl.create(:complaint, :open,
-                        :complainant => "Bo McCullough",
-                        :village => "Conroytown",
-                        :phone => "(567) 894-1478 x4153",
-                        :case_reference => "c16/32",
-                        :created_at => DateTime.new(2016,1,1),
-                        :good_governance_complaint_basis_ids => [3,4],
-                        :human_rights_complaint_basis_ids => [1,2],
-                        :special_investigations_unit_complaint_basis_ids => [5,6],
-                        :agency_ids => [2],
-                        :assignees => [FactoryGirl.create(:user, :with_password, :staff, :firstName => "Angelina", :lastName => "Ward")])
-    FactoryGirl.create(:complaint, :open,
-                        :complainant => "Ned Kessler",
-                        :village => "Port Janiya",
-                        :phone => "1-862-553-8009 x835",
-                        :case_reference => "c16/33",
-                        :created_at => DateTime.new(2016,1,1),
-                        :good_governance_complaint_basis_ids => [3,4],
-                        :human_rights_complaint_basis_ids => [1,2],
-                        :special_investigations_unit_complaint_basis_ids => [5,6],
-                        :agency_ids => [2],
-                        :assignees => [FactoryGirl.create(:user, :with_password, :staff, :firstName => "Hosea", :lastName => "O'Connor")])
-    FactoryGirl.create(:complaint, :closed,
-                        :complainant => "Marissa Yost",
-                        :village => "Parkerfurt",
-                        :phone => "150-042-4712" ,
-                        :case_reference => "c16/34",
-                        :created_at => DateTime.new(2016,9,17),
-                        :good_governance_complaint_basis_ids => [3,4],
-                        :human_rights_complaint_basis_ids => [1,2],
-                        :special_investigations_unit_complaint_basis_ids => [5,6],
-                        :agency_ids => [2],
-                        :assignees => [FactoryGirl.create(:user, :with_password, :staff, :firstName => "Delbert", :lastName => "Brown")])
+                       :assignees => [FactoryGirl.create(:user, :with_password, :staff, :firstName => "Peyton", :lastName => "Krajcik")],
+                       :status_changes => [FactoryGirl.create(:status_change,
+                                                              :complaint_status_id => active_complaint_status.id)])
+
+    FactoryGirl.create(:complaint,
+                       :complainant => "Bo McCullough",
+                       :village => "Conroytown",
+                       :phone => "(567) 894-1478 x4153",
+                       :case_reference => "c16/32",
+                       :date_received => DateTime.new(2016,1,1),
+                       :good_governance_complaint_basis_ids => [3,4],
+                       :human_rights_complaint_basis_ids => [1,2],
+                       :special_investigations_unit_complaint_basis_ids => [5,6],
+                       :agency_ids => [2],
+                       :assignees => [FactoryGirl.create(:user, :with_password, :staff, :firstName => "Angelina", :lastName => "Ward")],
+                       :status_changes => [FactoryGirl.create(:status_change,
+                                                              :complaint_status_id => active_complaint_status.id)])
+
+    FactoryGirl.create(:complaint,
+                       :complainant => "Ned Kessler",
+                       :village => "Port Janiya",
+                       :phone => "1-862-553-8009 x835",
+                       :case_reference => "c16/33",
+                       :date_received => DateTime.new(2016,1,1),
+                       :good_governance_complaint_basis_ids => [3,4],
+                       :human_rights_complaint_basis_ids => [1,2],
+                       :special_investigations_unit_complaint_basis_ids => [5,6],
+                       :agency_ids => [2],
+                       :assignees => [FactoryGirl.create(:user, :with_password, :staff, :firstName => "Hosea", :lastName => "O'Connor")],
+                       :status_changes => [FactoryGirl.create(:status_change,
+                                                              :complaint_status_id => completed_complaint_status.id)])
+
+    FactoryGirl.create(:complaint,
+                       :complainant => "Marissa Yost",
+                       :village => "Parkerfurt",
+                       :phone => "150-042-4712" ,
+                       :case_reference => "c16/34",
+                       :date_received => DateTime.new(2016,9,17),
+                       :good_governance_complaint_basis_ids => [3,4],
+                       :human_rights_complaint_basis_ids => [1,2],
+                       :special_investigations_unit_complaint_basis_ids => [5,6],
+                       :agency_ids => [2],
+                       :assignees => [FactoryGirl.create(:user, :with_password, :staff, :firstName => "Delbert", :lastName => "Brown")],
+                       :status_changes => [FactoryGirl.create(:status_change,
+                                                              :complaint_status_id => completed_complaint_status.id)])
+
   end
 end

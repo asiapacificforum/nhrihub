@@ -4,6 +4,7 @@ class CaseReference
     if ref
       @ref = ref
       @year, @sequence = @ref[1,8].split('-').map(&:to_i)
+      # TODO fix the references so this isn't necessary
       @sequence = 0 if @sequence.nil? # imported malformed case ref
       @year = 00 if @year.nil? # ditto
     else
@@ -14,7 +15,6 @@ class CaseReference
   end
 
   def <=>(other)
-    puts "#{year} #{ref} #{other.year} #{other.ref}"
     [year,ref] <=> [other.year, other.ref]
   end
 

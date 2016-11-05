@@ -171,7 +171,7 @@ ComplaintDocuments = Ractive.extend
 
 FilterMatch =
   include : ->
-    #console.log JSON.stringify "matches_complainant" : @matches_complainant(), "matches_case_reference" : @matches_case_reference(), "matches_village" : @matches_village(), "matches_date" : @matches_date(), "matches_phone" : @matches_phone(), "matches_agencies" : @matches_agencies(), "matches_assignee" : @matches_assignee(), "matches_status" : @matches_status()
+    #console.log JSON.stringify "matches_complainant" : @matches_complainant(), "matches_case_reference" : @matches_case_reference(), "matches_village" : @matches_village(), "matches_date" : @matches_date(), "matches_phone" : @matches_phone(), "matches_agencies" : @matches_agencies(), "matches_assignee" : @matches_assignee(), "matches_status" : @matches_status(), "matches_basis" : @matches_basis
     #console.log JSON.stringify "matches_good_governance_complaint_basis" : @matches_good_governance_complaint_basis(), "matches_human_rights_complaint_basis" : @matches_human_rights_complaint_basis(), "matches_special_investigations_unit_complaint_basis" : @matches_special_investigations_unit_complaint_basis(), "basis_rule" : @get('filter_criteria.basis_rule'), "matches_basis" : @matches_basis(), "basis_requirement_is_specified" : @basis_requirement_is_specified(), "good_governance_basis_requirement_is_specified" : @good_governance_basis_requirement_is_specified(), "human_rights_basis_requirement_is_specified" : @human_rights_basis_requirement_is_specified(), "special_investigations_unit_basis_requirement_is_specified" : @special_investigations_unit_basis_requirement_is_specified()
     @matches_complainant() &&
     @matches_case_reference() &&
@@ -272,15 +272,37 @@ FilterMatch =
     assignee_id = @get('current_assignee_id')
     _.isNaN(parseInt(selected_assignee_id)) || (assignee_id == selected_assignee_id)
   matches_status : ->
-    closed = @get('filter_criteria.closed')
-    open = @get('filter_criteria.open')
-    status = @get('current_status_humanized')
-    return true if closed && open
-    return true if closed && status == "closed"
-    return true if open && status == "open"
-    return false if !closed && !open
-    return false if closed && status == "open"
-    return false if open && status == "closed"
+    selected_statuses = @get('filter_criteria.selected_statuses')
+    status_name = @get('current_status_humanized')
+    (selected_statuses.indexOf(status_name) != -1) || _.isEmpty(selected_statuses)
+
+Toggle =
+  oninit : ->
+    @unselect()
+  toggle : ->
+    @event.original.preventDefault()
+    @event.original.stopPropagation()
+    if @get('selected')
+      @unselect()
+    else
+      @select()
+  select : ->
+    @set('selected',true)
+  unselect : ->
+    @set('selected',false)
+
+StatusSelector = Ractive.extend
+  template : '#status_selector_template'
+  computed :
+    selected :
+      get : ->
+        @get('filter_criteria.selected_statuses').indexOf(@get('name')) != -1
+      set : (val)->
+        if val
+          @push('filter_criteria.selected_statuses', @get('name'))
+        else
+          @remove_from_array('filter_criteria.selected_statuses', @get('name'))
+  , Toggle
 
 Complaint = Ractive.extend
   template : '#complaint_template'
@@ -390,8 +412,6 @@ Complaint = Ractive.extend
 
 GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
   template : "#good_governance_complaint_basis_filter_select_template"
-  oninit : ->
-    @unselect()
   computed :
     selected :
       get : ->
@@ -401,22 +421,10 @@ GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
           @push('filter_criteria.selected_good_governance_complaint_basis_ids', @get('id'))
         else
           @remove_from_array('filter_criteria.selected_good_governance_complaint_basis_ids', @get('id'))
-  toggle : ->
-    @event.original.preventDefault()
-    @event.original.stopPropagation()
-    if @get('selected')
-      @unselect()
-    else
-      @select()
-  select : ->
-    @set('selected',true)
-  unselect : ->
-    @set('selected',false)
+  , Toggle
 
 HumanRightsComplaintBasisFilterSelect = Ractive.extend
   template : "#human_rights_complaint_basis_filter_select_template"
-  oninit : ->
-    @unselect()
   computed :
     selected :
       get : ->
@@ -426,22 +434,10 @@ HumanRightsComplaintBasisFilterSelect = Ractive.extend
           @push('filter_criteria.selected_human_rights_complaint_basis_ids', @get('id'))
         else
           @remove_from_array('filter_criteria.selected_human_rights_complaint_basis_ids', @get('id'))
-  toggle : ->
-    @event.original.preventDefault()
-    @event.original.stopPropagation()
-    if @get('selected')
-      @unselect()
-    else
-      @select()
-  select : ->
-    @set('selected',true)
-  unselect : ->
-    @set('selected',false)
+  , Toggle
 
 SpecialInvestigationsUnitComplaintBasisFilterSelect = Ractive.extend
   template : "#special_investigations_unit_complaint_basis_filter_select_template"
-  oninit : ->
-    @unselect()
   computed :
     selected :
       get : ->
@@ -451,22 +447,10 @@ SpecialInvestigationsUnitComplaintBasisFilterSelect = Ractive.extend
           @push('filter_criteria.selected_special_investigations_unit_complaint_basis_ids', @get('id'))
         else
           @remove_from_array('filter_criteria.selected_special_investigations_unit_complaint_basis_ids', @get('id'))
-  toggle : ->
-    @event.original.preventDefault()
-    @event.original.stopPropagation()
-    if @get('selected')
-      @unselect()
-    else
-      @select()
-  select : ->
-    @set('selected',true)
-  unselect : ->
-    @set('selected',false)
+  , Toggle
 
 AgencyFilterSelect = Ractive.extend
   template : "#agency_filter_select_template"
-  oninit : ->
-    @unselect()
   computed :
     selected :
       get : ->
@@ -476,22 +460,10 @@ AgencyFilterSelect = Ractive.extend
           @push('filter_criteria.selected_agency_ids', @get('id'))
         else
           @remove_from_array('filter_criteria.selected_agency_ids', @get('id'))
-  toggle : ->
-    @event.original.preventDefault()
-    @event.original.stopPropagation()
-    if @get('selected')
-      @unselect()
-    else
-      @select()
-  select : ->
-    @set('selected',true)
-  unselect : ->
-    @set('selected',false)
+  , Toggle
 
 AssigneeFilterSelect = Ractive.extend
   template : "#assignee_filter_select_template"
-  oninit : ->
-    @unselect()
   computed :
     selected :
       get : ->
@@ -501,17 +473,7 @@ AssigneeFilterSelect = Ractive.extend
           @set('filter_criteria.selected_assignee_id',@get('id'))
         else
           @set('filter_criteria.selected_assignee_id',null)
-  toggle : ->
-    @event.original.preventDefault()
-    @event.original.stopPropagation()
-    if @get('selected')
-      @unselect()
-    else
-      @select()
-  select : ->
-    @set('selected',true)
-  unselect : ->
-    @set('selected',false)
+  , Toggle
 
 FilterControls = Ractive.extend
   template : "#filter_controls_template"
@@ -521,6 +483,7 @@ FilterControls = Ractive.extend
     specialInvestigationsUnitComplaintBasisFilterSelect : SpecialInvestigationsUnitComplaintBasisFilterSelect
     agencyFilterSelect : AgencyFilterSelect
     assigneeFilterSelect : AssigneeFilterSelect
+    statusSelector : StatusSelector
   filter_rule : (type,rule)->
     @event.original.preventDefault()
     @event.original.stopPropagation()
@@ -549,6 +512,7 @@ window.complaints_page_data = ->
   all_staff : all_staff
   permitted_filetypes : permitted_filetypes
   maximum_filesize : maximum_filesize
+  statuses : statuses
   #complaint_named_documents_titles : ["bish", "bash", "bosh"] # shown as an example for future reference
 
 complaints_options =
@@ -563,8 +527,6 @@ complaints_options =
     filterControls : FilterControls
   computed :
     selected_agency_ids : -> @findComponent('filterControls').get('agency_ids')
-    'filter_criteria.open' : -> _.isEqual @get('filter_criteria.selected_open_status'), ['true']
-    'filter_criteria.closed' : -> _.isEqual @get('filter_criteria.selected_closed_status'), ['true']
   new_complaint : ->
     unless @add_complaint_active()
       new_complaint =
@@ -586,7 +548,7 @@ complaints_options =
         opened_by_id : null
         phone : ""
         reminders : []
-        status_humanized : "open"
+        current_status_humanized : "Under Evaluation"
         village : ""
         imported : false
       UserInput.claim_user_input_request(@,'cancel_add_complaint')

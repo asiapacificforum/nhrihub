@@ -34,6 +34,7 @@ en:
       select_assignee: 'Select assignee'
       reassign: 'Reassign to...'
       select_basis: 'Select complaint basis'
+      select_status: 'Select status'
       select_agency: 'Select agency'
       assignee: 'Assignee'
       complaint_documents : 'Complaint documents'

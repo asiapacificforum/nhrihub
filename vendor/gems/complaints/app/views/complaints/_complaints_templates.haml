@@ -1,5 +1,5 @@
 %script#complaints_template{:type => 'template/ractive'}
-  <filterControls filter_criteria='{{filter_criteria}}' all_good_governance_complaint_bases='{{all_good_governance_complaint_bases}}' all_human_rights_complaint_bases='{{all_human_rights_complaint_bases}}' all_special_investigations_unit_complaint_bases='{{all_special_investigations_unit_complaint_bases}}' />
+  <filterControls filter_criteria='{{filter_criteria}}' all_good_governance_complaint_bases='{{all_good_governance_complaint_bases}}' all_human_rights_complaint_bases='{{all_human_rights_complaint_bases}}' all_special_investigations_unit_complaint_bases='{{all_special_investigations_unit_complaint_bases}}' statuses='{{statuses}}' />
   {{#complaints}}
   <complaint all_agencies='{{all_agencies}}' all_categories='{{all_categories}}' all_mandates='{{all_mandates}}' all_users='{{all_users}}' assigns='{{assigns}}' case_reference='{{case_reference}}' communications='{{communications}}' complaint_category_ids='{{complaint_category_ids}}' complainant='{{complainant}}' complaint_bases='{{complaint_bases}}' complaint_categories='{{complaint_categories}}' complaint_named_documents_titles='{{complaint_named_documents_titles}}' attached_documents='{{attached_documents}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' date='{{date}}' filter_criteria='{{filter_criteria}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' imported='{{imported}}' mandate_id='{{mandate_id}}' mandate_name='{{mandate_name}}' new_assignee_id='{{new_assignee_id}}' notes='{{notes}}' opened_by_id='{{opened_by_id}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}'/>
   {{/complaints}}
@@ -34,6 +34,12 @@
       %span {{name}}
       %span.fa.fa-check
 
+%script#status_selector_template{:type => 'template/ractive'}
+  %li{:class =>'status_filter {{#if selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle()'}
+      %span {{name}}
+      %span.fa.fa-check
+
 %script#filter_controls_template{:type => 'template/ractive'}
   .row.filter_control_box#complaints_controls
     .row
@@ -63,13 +69,15 @@
       .col-md-2= t('.date_to')
       .col-md-2= t('.basis')
     .row{:style => "margin-bottom:12px;"}
-      .col-md-2{:style => 'padding-top:7px;'}
-        %label.checkbox-inline{:style => 'color:#f0f8ff; font-weight:300;'}
-          <input type='checkbox' id='true_status' name='{{filter_criteria.selected_open_status}}' value='true' style='width:initial;'> <!-- html, workaround for ractive bug https://github.com/ractivejs/ractive/issues/1968 -->
-          = t('.open')
-        %label.checkbox-inline{:style => 'color:#f0f8ff; font-weight:300;'}
-          <input type='checkbox' id='false_status' name='{{filter_criteria.selected_closed_status}}' value='true' style='width:initial;'>
-          = t('.closed')
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_status')
+            %span.caret
+          %ul.dropdown-menu
+            {{#statuses}}
+            <statusSelector filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
+            {{/statuses}}
       .col-md-2
         %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.date_from'), :value => "{{filter_criteria.from}}"}
       .col-md-2
