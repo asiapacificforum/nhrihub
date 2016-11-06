@@ -183,7 +183,7 @@
 
 %script#complaint_bases_selector_template{:type => 'template/ractive'}
   {{#complaint_bases.0}}
-  .col-md-4{:id => '{{key}}_bases', :style => "padding-top:0;"}
+  .col-md-4{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
     %label {{name}}:
     {{#complaint_bases}}
     .row.complaint_basis
@@ -194,7 +194,7 @@
     {{/complaint_bases}}
   {{/complaint_bases.0}}
   {{#complaint_bases.1}}
-  .col-md-4{:id => '{{key}}_bases', :style => "padding-top:0;"}
+  .col-md-4{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
     %label {{name}}:
     {{#complaint_bases}}
     .row.complaint_basis
@@ -205,7 +205,7 @@
     {{/complaint_bases}}
   {{/complaint_bases.1}}
   {{#complaint_bases.2}}
-  .col-md-4{:id => '{{key}}_bases', :style => "padding-top:0;"}
+  .col-md-4{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
     %label {{name}}:
     {{#complaint_bases}}
     .row.complaint_basis

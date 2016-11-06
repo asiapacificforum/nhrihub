@@ -95,12 +95,13 @@ EditBackup =
     stashed_attributes = _(@get()).pick(@get('persistent_attributes'))
     @stashed_instance = $.extend(true,{},stashed_attributes)
   restore : ->
-    @restore_checkboxes()
     @set(@stashed_instance)
+    @restore_checkboxes()
+    @restore_radio_checkboxes()
   restore_checkboxes : ->
     # major hack to circumvent ractive bug,
     # it will not be necessary in ractive 0.8.0
-    _(['good_governance_complaint_basis','human_rights_complaint_basis','special_investigations_unit_complaint_basis', 'agency', 'mandate_name']).
+    _(['good_governance_complaint_basis','human_rights_complaint_basis','special_investigations_unit_complaint_basis', 'agency']).
       each (association)=>
         @restore_checkboxes_for(association)
   restore_checkboxes_for : (association)->
@@ -108,6 +109,10 @@ EditBackup =
     _(@findAll(".edit .#{association} input")).each (checkbox)->
       is_checked = ids.indexOf(parseInt($(checkbox).attr('value'))) != -1
       $(checkbox).prop('checked',is_checked)
+  restore_radio_checkboxes : ->
+    selected_mandate = @get('mandate_name')
+    $("input:radio[value='#{selected_mandate}']",@find('*')).prop('checked',true)
+
 
 Mandate = Ractive.extend
   template : '#mandate_template'
