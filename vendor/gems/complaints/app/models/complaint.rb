@@ -29,21 +29,22 @@ class Complaint < ActiveRecord::Base
     # only create a status_change object if this is a new complaint
     # or if the status is changing
     attrs = attrs[0]
+    attrs.symbolize_keys
+    change_date = attrs[:change_date].nil? ? DateTime.now : DateTime.new(attrs[:change_date])
+    user_id = attrs[:user_id]
     if !persisted?
-      complaint_statuses.build(:name => "Under Evaluation")
+      complaint_status = ComplaintStatus.find_or_create_by(:name => "Under Evaluation")
+      complaint_status_id = complaint_status.id
+      status_changes.build({:user_id => user_id,
+                            :change_date => change_date,
+                            :complaint_status_id => complaint_status_id})
     elsif !(attrs[:name].nil? || attrs[:name] == "null") && attrs[:name] != current_status_humanized
-      change_date = attrs["change_date"].nil? ? DateTime.now : DateTime.new(attrs["change_date"])
-      user_id = attrs["user_id"]
-      complaint_status_id = ComplaintStatus.where(:name => attrs["name"]).first.id
+      complaint_status = ComplaintStatus.find_or_create_by(:name => attrs[:name])
+      complaint_status_id = complaint_status.id
       status_changes.build({:user_id => user_id,
                             :change_date => change_date,
                             :complaint_status_id => complaint_status_id})
     end
-    #attrs.each do |attr|
-      #if status_changes.empty? # || !(current_status && attr[:status_humanized] == "open"  )
-        #status_changes.build(attr)
-      #end
-    #end
   end
 
   before_save do |complaint|
