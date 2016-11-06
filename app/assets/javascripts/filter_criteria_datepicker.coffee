@@ -6,7 +6,7 @@ window.filter_criteria_datepicker =
       changeMonth: true
       changeYear: true
       numberOfMonths: 3
-      dateFormat: "dd/mm/yy"
+      dateFormat: "yy, M dd"
       onClose: (selectedDate) ->
         unless selectedDate == ""
           collection.set_filter_criteria_from_date(selectedDate)
@@ -17,7 +17,7 @@ window.filter_criteria_datepicker =
       changeMonth: true
       changeYear: true
       numberOfMonths: 3
-      dateFormat: "dd/mm/yy"
+      dateFormat: "yy, M dd"
       onClose: (selectedDate) ->
         unless selectedDate == ""
           collection.set_filter_criteria_to_date(selectedDate)

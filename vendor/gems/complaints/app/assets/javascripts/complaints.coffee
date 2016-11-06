@@ -200,10 +200,10 @@ FilterMatch =
     @matches_from() && @matches_to()
   matches_from : ->
     return true if _.isNull(@get('date')) || _.isEmpty(@get('filter_criteria.from'))
-    (new Date(@get('date'))).valueOf() >= (new Date(@get('filter_criteria.from'))).valueOf()
+    (new Date(@get('date'))).valueOf() >= Date.parse(@get('filter_criteria.from'))
   matches_to : ->
     return true if _.isNull(@get('date')) || _.isEmpty(@get('filter_criteria.to'))
-    new Date(@get('date')) <= new Date(@get('filter_criteria.to'))
+    (new Date(@get('date'))).valueOf() <= Date.parse(@get('filter_criteria.to'))
   matches_phone : ->
     return true if _.isEmpty(@get('filter_criteria.phone'))
     criterion_digits = @get('filter_criteria.phone').replace(/\D/g,'')
