@@ -79,9 +79,9 @@
             <statusSelector filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
             {{/statuses}}
       .col-md-2
-        %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.date_from'), :value => "{{filter_criteria.from}}"}
+        %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.date_from'), :value => "{{filter_criteria.from}}", :style => 'position:relative; z-index:12;'}
       .col-md-2
-        %input.form-control#to{:type=>"text", :name=>"to", :placeholder => t('.date_to'), :value => "{{filter_criteria.to}}"}
+        %input.form-control#to{:type=>"text", :name=>"to", :placeholder => t('.date_to'), :value => "{{filter_criteria.to}}", :style => 'position:relative; z-index:12;'}
       .col-md-2
         .btn-group.select
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
