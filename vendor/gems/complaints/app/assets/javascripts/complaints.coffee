@@ -113,7 +113,6 @@ EditBackup =
     selected_mandate = @get('mandate_name')
     $("input:radio[value='#{selected_mandate}']",@find('*')).prop('checked',true)
 
-
 Mandate = Ractive.extend
   template : '#mandate_template'
   computed :

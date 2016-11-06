@@ -34,7 +34,12 @@ class ComplaintsController < ApplicationController
   def create
     params[:complaint].delete(:current_status_humanized)
     complaint = Complaint.new(complaint_params)
-    complaint.status_changes_attributes = [{:user_id => @current_user.id, :name => "Under Evaluation"}]
+    if params[:complaint][:date]
+      date = params[:complaint][:date]
+    else
+      date = DateTime.now
+    end
+    complaint.status_changes_attributes = [{:user_id => current_user.id, :name => "Under Evaluation"}]
     if complaint.save
       render :json => complaint, :status => 200
     else
@@ -44,7 +49,7 @@ class ComplaintsController < ApplicationController
 
   def update
     complaint = Complaint.find(params[:id])
-    params[:complaint][:status_changes_attributes] = [{:user_id => @current_user.id, :name => params[:complaint].delete(:current_status_humanized)}]
+    params[:complaint][:status_changes_attributes] = [{:user_id => current_user.id, :name => params[:complaint].delete(:current_status_humanized)}]
     if complaint.update(complaint_params)
       render :json => complaint, :status => 200
     else

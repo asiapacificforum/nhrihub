@@ -54,6 +54,12 @@ class Complaint < ActiveRecord::Base
     end
   end
 
+  before_create do |complaint|
+    if complaint.date_received.nil?
+      complaint.date_received = DateTime.now
+    end
+  end
+
   def as_json(options = {})
     super( :methods => [:reminders, :notes, :assigns,
                         :current_assignee_id,
