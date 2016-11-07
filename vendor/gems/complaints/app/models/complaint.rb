@@ -48,11 +48,16 @@ class Complaint < ActiveRecord::Base
   end
 
   before_save do |complaint|
-    string_columns = Complaint.columns.select{|c| c.type == :string}.map(&:name)
-    string_columns.each do |column_name|
+    string_or_text_columns = Complaint.columns.select{|c| (c.type == :string) || (c.type == :text)}.map(&:name)
+    string_or_text_columns.each do |column_name|
       complaint.send("#{column_name}=", nil) if complaint.send(column_name) == "null"
     end
     complaint.gender = nil if complaint.gender == 'undefined'
+    integer_columns = Complaint.columns.select{|c| c.type == :integer}.map(&:name)
+    # it's a hack... TODO there must be a better way!
+    integer_columns.each do |column_name|
+      complaint.send("#{column_name}=",nil) if complaint.send(column_name).zero?
+    end
   end
 
   before_create do |complaint|
@@ -65,11 +70,6 @@ class Complaint < ActiveRecord::Base
     val = read_attribute(:complained_to_subject_agency)
     val ? "Y" : "N"
   end
-
-  #def complained_to_subject_agency=(val)
-    #persisted_val = val=="Y" ? true : false
-    #write_attribute(:complained_to_subject_agency, persisted_val)
-  #end
 
   def as_json(options = {})
     super( :methods => [:reminders, :notes, :assigns,

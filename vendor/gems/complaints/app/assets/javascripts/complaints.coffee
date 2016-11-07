@@ -112,6 +112,15 @@ EditBackup =
   restore_radio_checkboxes : ->
     selected_mandate = @get('mandate_name')
     $("input:radio[value='#{selected_mandate}']",@find('*')).prop('checked',true)
+    selected_gender = @get('gender')
+    if _.isNull(selected_gender)
+      $("input:radio#m", @find('*')).prop('checked',false)
+      $("input:radio#f", @find('*')).prop('checked',false)
+    else if selected_gender == "M"
+      $("input:radio#m", @find('*')).prop('checked',true)
+    else if selected_gender == "F"
+      $("input:radio#f", @find('*')).prop('checked',true)
+    return
 
 Mandate = Ractive.extend
   template : '#mandate_template'
