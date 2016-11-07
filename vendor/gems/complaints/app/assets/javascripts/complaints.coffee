@@ -327,7 +327,8 @@ Complaint = Ractive.extend
       ['case_reference','complainant','village','phone','mandate_name', 'imported',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
-        'complaint_category_ids', 'agency_ids', 'attached_documents_attributes']
+        'complaint_category_ids', 'agency_ids', 'attached_documents_attributes',
+        'age', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender']
     url : ->
       Routes.complaint_path(current_locale, @get('id'))
     formatted_date :
@@ -351,12 +352,14 @@ Complaint = Ractive.extend
         village : ['notBlank', {if : =>!@get('imported')}]
         mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
         complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
+        age : ['numeric', {if : =>!@get('imported')}]
       else
         complainant : ['notBlank', {if : =>!@get('imported') }]
         village : ['notBlank', {if : =>!@get('imported')}]
         mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
         complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
         new_assignee_id : 'numeric'
+        age : ['numeric', {if : =>!@get('imported')}]
   oninit : ->
     @set
       editing : false
@@ -507,6 +510,7 @@ window.complaints_page_data = ->
   all_mandates : all_mandates
   complaint_bases : complaint_bases
   all_agencies : all_agencies
+  all_agencies_in_threes : all_agencies_in_threes
   all_users : all_users
   all_categories : all_categories
   filter_criteria : filter_criteria
@@ -555,6 +559,7 @@ complaints_options =
         current_status_humanized : "Under Evaluation"
         village : ""
         imported : false
+        complained_to_subject_agency : false
       UserInput.claim_user_input_request(@,'cancel_add_complaint')
       @unshift('complaints',new_complaint)
   cancel_add_complaint : ->

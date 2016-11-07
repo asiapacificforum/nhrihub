@@ -56,6 +56,11 @@ module ComplaintsSpecHelpers
     edit_first_complaint
   end
 
+  def select_male_gender
+    page.execute_script("scrollTo(0,0)")
+    choose('m')
+  end
+
   def edit_save
     page.execute_script("scrollTo(0,0)")
     page.find('.fa-check').click

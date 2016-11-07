@@ -148,9 +148,14 @@ feature "complaints index", :js => true do
     add_complaint
     within new_complaint do
       fill_in('complainant', :with => "Norman Normal")
+      fill_in('age', :with => "55")
+      fill_in('email', :with => "norm@acme.co.ws")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
+      fill_in('desired_outcome', :with => "Life gets better")
       choose('special_investigations_unit')
+      select_male_gender
+      check('complained_to_subject_agency')
       check_basis(:good_governance, "Delayed action")
       check_basis(:human_rights, "CAT")
       check_basis(:special_investigations_unit, "Unreasonable delay")
@@ -171,8 +176,13 @@ feature "complaints index", :js => true do
     # on the server
     expect(Complaint.last.case_reference).to eq next_ref
     expect(Complaint.last.complainant).to eq "Norman Normal"
+    expect(Complaint.last.age).to eq 55
+    expect(Complaint.last.gender).to eq 'M'
+    expect(Complaint.last.email).to eq "norm@acme.co.ws"
+    expect(Complaint.last.complained_to_subject_agency).to eq "Y"
     expect(Complaint.last.village).to eq "Normaltown"
     expect(Complaint.last.phone).to eq "555-1212"
+    expect(Complaint.last.desired_outcome).to eq "Life gets better"
     expect(Complaint.last.mandate.key).to eq 'special_investigations_unit'
     expect(Complaint.last.good_governance_complaint_bases.map(&:name)).to include "Delayed action"
     expect(Complaint.last.human_rights_complaint_bases.map(&:name)).to include "CAT"
@@ -186,14 +196,20 @@ feature "complaints index", :js => true do
     expect(Complaint.last.complaint_documents.count).to eq 1
     expect(Complaint.last.complaint_documents[0].filename).to eq "first_upload_file.pdf"
     expect(Complaint.last.complaint_documents[0].title).to eq "Complaint Document"
+
     # on the client
     expect(first_complaint.find('.case_reference').text).to eq next_ref
     expect(first_complaint.find('.current_assignee').text).to eq User.staff.first.first_last_name
     expect(first_complaint.find('.complainant').text).to eq "Norman Normal"
     expect(first_complaint.find('#status_changes .status_change .status_humanized').text).to eq 'Under Evaluation'
     expand
+    expect(first_complaint.find('.complainant_age').text).to eq "55"
+    expect(first_complaint.find('.email').text).to eq "norm@acme.co.ws"
+    expect(first_complaint.find('.desired_outcome').text).to eq "Life gets better"
     expect(first_complaint.find('.complainant_village').text).to eq "Normaltown"
     expect(first_complaint.find('.complainant_phone').text).to eq "555-1212"
+    expect(first_complaint.find('.gender').text).to eq "M"
+    expect(first_complaint.find('.complained_to_subject_agency').text).to eq "Y"
 
     within good_governance_complaint_bases do
       Complaint.last.good_governance_complaint_bases.map(&:name).each do |complaint_basis_name|
@@ -228,7 +244,6 @@ feature "complaints index", :js => true do
     end
 
     expect(page.find('#mandate').text).to eq "Special Investigations Unit"
-
   end
 
   it "does not add a new complaint that is invalid" do
@@ -320,8 +335,11 @@ feature "complaints index", :js => true do
     # COMPLAINANT
     within first_complaint do
       fill_in('complainant', :with => "Norman Normal")
+      fill_in('age', :with => "88")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
+      fill_in('desired_outcome', :with => "Things are more better")
+      uncheck('complained_to_subject_agency')
       # CATEGORY
       check_category("Informal")
       uncheck_category("Formal")
@@ -348,6 +366,9 @@ feature "complaints index", :js => true do
                                       and change{ Complaint.first.complaint_documents.count }.by(1).
                                       and change{ (`\ls tmp/uploads/store | wc -l`).to_i }.by 1
 
+    expect( Complaint.first.complained_to_subject_agency ).to eq "N"
+    expect( Complaint.first.age ).to eq 88
+    expect( Complaint.first.desired_outcome ).to eq "Things are more better"
     expect( Complaint.first.mandate_name ).to eq "Special Investigations Unit"
     expect( Complaint.first.good_governance_complaint_bases.count ).to eq 1
     expect( Complaint.first.good_governance_complaint_bases.first.name ).to eq "Failure to act"
@@ -360,6 +381,10 @@ feature "complaints index", :js => true do
     expect( Complaint.first.assignees ).to include User.staff.last
     expect( Complaint.first.agencies.map(&:name) ).to include "ACC"
     expect( Complaint.first.agencies.count ).to eq 1
+
+    expect(page).to have_selector('.complainant_age', :text => "88")
+    expect(page).to have_selector('.desired_outcome', :text => "Things are more better")
+    expect(page).to have_selector('.complained_to_subject_agency', :text => "N")
 
     within good_governance_complaint_bases do
       Complaint.last.good_governance_complaint_bases.map(&:name).each do |complaint_basis_name|
@@ -477,6 +502,7 @@ feature "complaints index", :js => true do
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
     end
+    page.execute_script("scrollTo(0,0)")
     add_complaint
     expect(page.evaluate_script("_.chain(complaints.findAllComponents('complaint')).map(function(c){return c.get('editing')}).filter(function(c){return c}).value().length")).to eq 0
     cancel_add

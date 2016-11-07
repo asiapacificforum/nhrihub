@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161103072654) do
+ActiveRecord::Schema.define(version: 20161106231332) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,8 +224,11 @@ ActiveRecord::Schema.define(version: 20161103072654) do
     t.text     "desired_outcome"
     t.boolean  "complained_to_subject_agency"
     t.datetime "date_received"
-    t.boolean  "imported",                     default: false
+    t.boolean  "imported",                               default: false
     t.integer  "mandate_id"
+    t.integer  "age"
+    t.string   "email"
+    t.string   "gender",                       limit: 1
   end
 
   create_table "controllers", force: :cascade do |t|

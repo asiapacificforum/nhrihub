@@ -52,6 +52,7 @@ class Complaint < ActiveRecord::Base
     string_columns.each do |column_name|
       complaint.send("#{column_name}=", nil) if complaint.send(column_name) == "null"
     end
+    complaint.gender = nil if complaint.gender == 'undefined'
   end
 
   before_create do |complaint|
@@ -59,6 +60,16 @@ class Complaint < ActiveRecord::Base
       complaint.date_received = DateTime.now
     end
   end
+
+  def complained_to_subject_agency
+    val = read_attribute(:complained_to_subject_agency)
+    val ? "Y" : "N"
+  end
+
+  #def complained_to_subject_agency=(val)
+    #persisted_val = val=="Y" ? true : false
+    #write_attribute(:complained_to_subject_agency, persisted_val)
+  #end
 
   def as_json(options = {})
     super( :methods => [:reminders, :notes, :assigns,
