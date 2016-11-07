@@ -1,0 +1,64 @@
+<w:tr w:rsidR="00384779" w14:paraId="3B49326E" w14:textId="77777777" w:rsidTr="00384779">
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="4250694F" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00384779">
+      <w:r>
+        <w:t>1.1</w:t>
+      </w:r>
+    </w:p>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="21E4CD00" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00384779">
+      <w:r>
+        <w:t>1.1.1</w:t>
+      </w:r>
+    </w:p>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="61992F8C" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00384779">
+      <w:r>
+        <w:t>1.1.1.1</w:t>
+      </w:r>
+    </w:p>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="4CC1F0B0" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00384779">
+      <w:r>
+        <w:t>1.1.1.1.1</w:t>
+      </w:r>
+    </w:p>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="473B802E" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00AB50F4">
+      <w:r>
+        <w:t>Target</w:t>
+      </w:r>
+    </w:p>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="50B1424C" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00384779">
+      <w:proofErr w:type="spellStart"/>
+      <w:r>
+        <w:t>Prog</w:t>
+      </w:r>
+      <w:proofErr w:type="spellEnd"/>
+    </w:p>
+  </w:tc>
+</w:tr>
