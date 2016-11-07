@@ -56,7 +56,7 @@ class Complaint < ActiveRecord::Base
     integer_columns = Complaint.columns.select{|c| c.type == :integer}.map(&:name)
     # it's a hack... TODO there must be a better way!
     integer_columns.each do |column_name|
-      complaint.send("#{column_name}=",nil) if complaint.send(column_name).zero?
+      complaint.send("#{column_name}=",nil) if complaint.send(column_name).nil? || complaint.send(column_name).zero?
     end
   end
 
