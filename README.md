@@ -62,7 +62,7 @@ When it is first installed, the access privileges must be "bootstrapped" to perm
 The first user is configured via a rake command-line utility on the server by running:
 
 ```
-RAILS_ENV=production bundle exec rake "authengine:bootstrap[firstName,lastName,email]"
+rake "authengine:bootstrap[firstName,lastName,email]"
 ```
 where firstName, lastName, and email are replaced by the parameters appropriate for the first user. A registration email is sent to the user at the configured email address. If two-factor authentication is enabled, the user will be required to have an access token in order to be able to complete the registration procedure.
 
@@ -154,12 +154,7 @@ localhost:5000/teaspoon/testname
 ```
 where testname is the name of the test suite you wish to run. The following js test suites are included:
 * media
-* internal_documents
-* projects
-* headings
-* complaints
-* strategic_plan
-* advisory_council_issues
+* corporate
 * default (runs all other suites)
 
 #### Headless testing (faster, but debugging is more difficult, use this for regression testing)
@@ -172,29 +167,21 @@ or
 Development updates are pushed manually to a git repository, using the normal git push procedure.
 
 Deployment is automated using the Capistrano gem using:
-
 ```
-cap production deploy
+    cap production deploy
 ```
-
 This pulls from the git repo to a cached copy on the server, copies the update to a into the 'releases' directory, and symlinks the 'current' directory to point to the most recent release. As configured in config/deploy.rb, capistrano pulls from the main repo of the application, if you have forked the app, you will need to point capistrano to your own fork.
 
-The 5 most recent releases are kept on the server (Capistrano configuration).
+The 5 most recent releases are kept on the server.
 
 Capistrano deployment also symlinks the config/database.yml and lib/constants files to copies in the 'shared' directory.
 These files contain sensitive information and should be manually copied into the 'shared' directory. This is typically done just once when the app is first installed, as the information will typically remain unchanged for the life of the app.
 A list of all the files that the application requires to be present in the shared directory is found in the conifg/deploy_example.rb file.
 
 ## Configuring SSL
-[Letsencrypt](http://letsencrypt.org) may be used to obtain an ssl certificate. This is facilitated by the [letsencrypt_plugin gem](https://github.com/lgromanowski/letsencrypt-plugin). This gem needs a configuration file, and it's stored in the shared/config/letsencrypt_plugin.yml where capistrano symlinks files. Refer to the gem's README for information on the parameters that must be included. Keys, certificates and other files issued by Letsencrypt are loaded into the certificates directory which is symlinked by Capistrano to shared/certificates.
+Letsencrypt (http://letsencrypt.org) may be used to obtain an ssl certificate. This is facilitated by the letsencrypt_plugin gem (https://github.com/lgromanowski/letsencrypt-plugin). This gem needs a configuration file, and it's stored in the shared/config/letsencrypt_plugin.yml where capistrano symlinks files. Refer to the gem's README for information on the parameters that must be included. The RSA private key is also symlinked by capistrano to shared/key/keyfile.pem.
 
-The letsencrypt_plugin gem provides a rake task to issue certificates:
-
-```
-RAILS_ENV=production bundle exec rake letsencrypt_plugin
-```
-
-If the letsencrypt_plugin.yml was correctly configured, the command above should insert ssl certificates for your site stored in the certificates directory.
+After following the instructions on the letsencrypt_plugin gem, you will have ssl certificates for your site stored in the certificates directory.
 
 Alternatively you may exclude this gem from Gemfile (and remove it from config/routes.rb) and obtain the site ssl certificate by another means.
 
