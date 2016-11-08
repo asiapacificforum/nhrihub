@@ -20,24 +20,61 @@ CONVENTIONS = {
     }
 AGENCIES = {
     "ACC" => "Accident Compensation Corporation",
+    "CBS" => "Central Bank of Samoa",
+    "DBS" => "Development Bank of Samoa",
+    "EPC" => "Electric Power Corporation",
+    "FESA" => "Fire and Emergency Services Authority",
     "LTA" => "Land Transport Authority",
     "MAF" => "Ministry of Agriculture and Fisheries",
     "MCIL" => "Ministry of Commerce Industry and Labour",
     "MCIT" => "Ministry of Communications and Information Technology",
     "MESC" => "Ministry of Education, Sports and Culture",
     "MFAT" => "Ministry of Foreign Affairs and Trade",
+    "MFAT" => "Ministry of Foreign Affairs and Trade",
     "MJCA" => "Ministry of Justice and Courts Administration",
     "MNRE" => "Ministry of Natural Resources and Environment",
     "MOP" => "Minister of Police",
+    "MOPPS" => "Ministry of Police and Prisons, Samoa",
     "MOR" => "Ministry of Revenue",
     "MPE" => "Ministry of Public Enterprises",
     "MPMC" => "Ministry of the Prime Minister and Cabinet",
-    "MoF" => "Ministry of Finance",
-    "MoH" => "Ministry of Health",
     "MWCSD" => "Ministry of Women, Community and Social Development",
     "MWTI" => "Ministry of Works, Transport and Infrastructure",
+    "MoF" => "Ministry of Finance",
+    "MoFA" => "Ministry of Foreign Affairs",
+    "MoH" => "Ministry of Health",
+    "NHS" => "National Health Service",
+    "NUS" => "National University of Samoa",
+    "PSC" => "Public Services Commission",
+    "PTO" => "Public Trust Office",
     "SAA" => "Samoa Airport Authority",
-    "SFESA" => "Fire and Emergency Services Authority",
-    "SNPF" => "Samoa National Provident Fund"
+    "SAO" => "Samoa Audit Office",
+    "SBS" => "Samoa Bureau of Statistics",
+    "SFESA" => "Samoa Fire and Emergency Services Authority",
+    "SHC" => "Samoa Housing Corporateion",
+    "SIFA" => "Samoa International Finance Authority",
+    "SLAC" => "Samoa Life Assurance Corporation",
+    "SLC" => "Samoa Land Corporation",
+    "SLRC" => "Samoa Law Reform Commission",
+    "SNKF" => "Samoa National Kidney Foundation",
+    "SNPF" => "Samoa National Provident Fund",
+    "SPA" => "Samoa Ports Authority",
+    "SQA" => "Samoa Qualifications Authority"
+    "SROS" => "Scientific Research Organization of Samoa",
+    "SSC" => "Samoa Shipping Corporation",
+    "SSFA" => "Samoa Sports and Facilities Authority",
+    "SSS" => "Samoa Shipping Services",
+    "STA" => "Samoa Tourism Authority",
+    "STEC" => "Samoa Trust Estates Corporation",
+    "SWA" => "Samoa Water Authority",
+    "UTS" => "Unit Trust of Samoa"
+#   "AC"
+#   "ASC"
+#   "EC"
+#   "LA"
+#   "LB"
+#   "OR"
+#   "SBB"
+#   "SPL"
     }
 ComplaintCategories = ["Informal", "Out of Jurisdiction", "Formal"]
