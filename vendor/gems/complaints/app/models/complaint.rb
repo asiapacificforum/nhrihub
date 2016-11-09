@@ -66,11 +66,6 @@ class Complaint < ActiveRecord::Base
     end
   end
 
-  def complained_to_subject_agency
-    val = read_attribute(:complained_to_subject_agency)
-    val ? "Y" : "N"
-  end
-
   def as_json(options = {})
     super( :methods => [:reminders, :notes, :assigns,
                         :current_assignee_id,

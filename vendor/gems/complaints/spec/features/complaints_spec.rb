@@ -155,7 +155,7 @@ feature "complaints index", :js => true do
       fill_in('desired_outcome', :with => "Life gets better")
       choose('special_investigations_unit')
       select_male_gender
-      check('complained_to_subject_agency')
+      choose('complained_to_subject_agency_yes')
       check_basis(:good_governance, "Delayed action")
       check_basis(:human_rights, "CAT")
       check_basis(:special_investigations_unit, "Unreasonable delay")
@@ -179,7 +179,7 @@ feature "complaints index", :js => true do
     expect(Complaint.last.age).to eq 55
     expect(Complaint.last.gender).to eq 'M'
     expect(Complaint.last.email).to eq "norm@acme.co.ws"
-    expect(Complaint.last.complained_to_subject_agency).to eq "Y"
+    expect(Complaint.last.complained_to_subject_agency).to eq true
     expect(Complaint.last.village).to eq "Normaltown"
     expect(Complaint.last.phone).to eq "555-1212"
     expect(Complaint.last.desired_outcome).to eq "Life gets better"
@@ -209,7 +209,7 @@ feature "complaints index", :js => true do
     expect(first_complaint.find('.complainant_village').text).to eq "Normaltown"
     expect(first_complaint.find('.complainant_phone').text).to eq "555-1212"
     expect(first_complaint.find('.gender').text).to eq "M"
-    expect(first_complaint.find('.complained_to_subject_agency').text).to eq "Y"
+    expect(first_complaint.find('.complained_to_subject_agency').text).to eq "yes"
 
     within good_governance_complaint_bases do
       Complaint.last.good_governance_complaint_bases.map(&:name).each do |complaint_basis_name|
@@ -339,7 +339,7 @@ feature "complaints index", :js => true do
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
       fill_in('desired_outcome', :with => "Things are more better")
-      uncheck('complained_to_subject_agency')
+      choose('complained_to_subject_agency_no')
       # CATEGORY
       check_category("Informal")
       uncheck_category("Formal")
@@ -366,7 +366,7 @@ feature "complaints index", :js => true do
                                       and change{ Complaint.first.complaint_documents.count }.by(1).
                                       and change{ (`\ls tmp/uploads/store | wc -l`).to_i }.by 1
 
-    expect( Complaint.first.complained_to_subject_agency ).to eq "N"
+    expect( Complaint.first.complained_to_subject_agency ).to eq false
     expect( Complaint.first.age ).to eq 88
     expect( Complaint.first.desired_outcome ).to eq "Things are more better"
     expect( Complaint.first.mandate_name ).to eq "Special Investigations Unit"
@@ -384,7 +384,7 @@ feature "complaints index", :js => true do
 
     expect(page).to have_selector('.complainant_age', :text => "88")
     expect(page).to have_selector('.desired_outcome', :text => "Things are more better")
-    expect(page).to have_selector('.complained_to_subject_agency', :text => "N")
+    expect(page).to have_selector('.complained_to_subject_agency', :text => "no")
 
     within good_governance_complaint_bases do
       Complaint.last.good_governance_complaint_bases.map(&:name).each do |complaint_basis_name|

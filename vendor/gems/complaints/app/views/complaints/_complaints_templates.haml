@@ -146,7 +146,7 @@
           %label{:for => 'agency_{{0.id}}'}
             %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{0.full_name}}'} {{0.name}}
         .col-md-1
-          %input{:id=>'agency_{{0.id}}', :type => :checkbox, :name => '{{agency_ids}}', :value => '{{0id}}'}
+          %input{:id=>'agency_{{0.id}}', :type => :checkbox, :name => '{{agency_ids}}', :value => '{{0.id}}'}
 
         .col-md-3
           %label{:for => 'agency_{{1.id}}'}
@@ -284,7 +284,13 @@
         .col-md-2
           %span= t('.complained_to_subject_agency')
         .col-md-2
-          %input#complained_to_subject_agency{:type => :checkbox, :name => "complained_to_subject_agency", :checked => "{{complained_to_subject_agency}}"}
+          %form
+            %label
+              =t('yes')
+              %input#complained_to_subject_agency_yes{:type => :radio, :name => "{{complained_to_subject_agency}}", :value => 'true'}
+            %label
+              =t('no')
+              %input#complained_to_subject_agency_no{:type => :radio, :name => "{{complained_to_subject_agency}}", :value => 'false'}
       .row.form-group{:class => "{{#new_assignee_id_error}}has-error{{/}}"}
         .col-md-2
           %label=t('.assignee')
@@ -516,9 +522,15 @@
               %label= t('.complained_to_subject_agency')
             .col-md-9
               .no_edit.in
-                %span.complained_to_subject_agency {{ complained_to_subject_agency }}
+                %span.complained_to_subject_agency {{#if complained_to_subject_agency }} yes {{else}} no {{/if}}
               .edit
-                %input.form-control#complained_to_subject_agency{:type => :checkbox, :name => "complained_to_subject_agency", :checked => '{{complained_to_subject_agency}}'}
+                %form
+                  %label
+                    =t('yes')
+                    %input#complained_to_subject_agency_yes{:type => :radio, :name => "{{complained_to_subject_agency}}", :value => 'true'}
+                  %label
+                    =t('no')
+                    %input#complained_to_subject_agency_no{:type => :radio, :name => "{{complained_to_subject_agency}}", :value => 'false'}
       .row.collapse
         .col-md-2=t('.assignees_history')
         .col-md-5{'data-toggle'=>:edit}
