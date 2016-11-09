@@ -1,9 +1,12 @@
 = stylesheet_link_tag 'corporate_services/strategic_plan'
 = select :strategic_plan, :start_date, start_date_options, {}, {:class => "form-control h1_select", :style => "background-color:inherit;height:50px"}
 
-.btn.btn-success.btn-sm.add_strategic_priority{:style => "margin-bottom:12px; color:white;"}
-  %i.fa.fa-plus.fa-lg{:style => "color:white"}
-  %span= t('.add_priority')
+%div
+  .btn.btn-success.btn-sm.add_strategic_priority{:style => "margin-bottom:12px; color:white;"}
+    %i.fa.fa-plus.fa-lg{:style => "color:white"}
+    %span= t('.add_priority')
+  .btn.btn-primary.btn-sm.ms_word{:style => "margin-bottom:12px; color:white; float:right;"}
+    %span= t('.ms_word')
 
 .panel-group#strategic_plan
 
@@ -35,3 +38,6 @@
     # add the new_strategic_priority form
     $('.add_strategic_priority').on 'click', ->
       strategic_plan.new_strategic_priority()
+
+    $('.ms_word').on 'click', ->
+      window.location="#{corporate_services_strategic_plan_path(StrategicPlan.most_recent)}.docx"

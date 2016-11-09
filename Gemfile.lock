@@ -108,6 +108,11 @@ PATH
   specs:
     siu (0.0.1)
 
+PATH
+  remote: vendor/gems/strategic_plan_reporter
+  specs:
+    strategic_plan_reporter (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -457,6 +462,7 @@ DEPENDENCIES
   siu!
   spring
   sshkit (~> 1.5)
+  strategic_plan_reporter!
   teaspoon
   teaspoon-mocha
   therubyracer
