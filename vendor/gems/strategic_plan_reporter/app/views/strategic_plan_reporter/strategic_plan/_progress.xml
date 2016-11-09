@@ -1,0 +1,44 @@
+<w:tr w:rsidR="00AB50F4" w14:paraId="237F9D1B" w14:textId="77777777" w:rsidTr="00384779">
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="7F59E17C" w14:textId="77777777" w:rsidR="00AB50F4" w:rsidRDefault="00AB50F4"/>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="362C595E" w14:textId="77777777" w:rsidR="00AB50F4" w:rsidRDefault="00AB50F4"/>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="5E6D46C9" w14:textId="77777777" w:rsidR="00AB50F4" w:rsidRDefault="00AB50F4"/>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="21416C7B" w14:textId="77777777" w:rsidR="00AB50F4" w:rsidRDefault="00AB50F4"/>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="65EB6DE4" w14:textId="77777777" w:rsidR="00AB50F4" w:rsidRDefault="00AB50F4"/>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="13E3C169" w14:textId="77777777" w:rsidR="00AB50F4" w:rsidRDefault="00AB50F4">
+      <w:proofErr w:type="spellStart"/>
+      <w:r>
+        <w:t>progress</w:t>
+      </w:r>
+      <w:proofErr w:type="spellEnd"/>
+    </w:p>
+  </w:tc>
+</w:tr>

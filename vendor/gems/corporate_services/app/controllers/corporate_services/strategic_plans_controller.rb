@@ -11,6 +11,9 @@ class CorporateServices::StrategicPlansController < ApplicationController
     respond_to do |format|
       format.html
       format.json {render :json => @strategic_plan }
+      format.docx do
+        send_file StrategicPlanReport.new(StrategicPlan.most_recent).docfile
+      end
     end
   end
 end

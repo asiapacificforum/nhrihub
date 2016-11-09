@@ -1,0 +1,56 @@
+<w:tr w:rsidR="00384779" w14:paraId="52F63964" w14:textId="77777777" w:rsidTr="00384779">
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="47BEDD98" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00384779"/>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="0047F347" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00384779"/>
+  </w:tc>
+  <w:tc>
+    <w:tcPr>
+      <w:tcW w:w="2196" w:type="dxa"/>
+    </w:tcPr>
+    <w:p w14:paraId="634CA336" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00AB50F4">
+      <w:r>
+        <w:t>activity</w:t>
+      </w:r>
+    </w:p>
+  </w:tc>
+  <!--<w:tc>-->
+    <!--<w:tcPr>-->
+      <!--<w:tcW w:w="2196" w:type="dxa"/>-->
+    <!--</w:tcPr>-->
+    <!--<w:p w14:paraId="0E1E4635" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00AB50F4">-->
+      <!--<w:r>-->
+        <!--<w:t>performance_indicator</w:t>-->
+      <!--</w:r>-->
+    <!--</w:p>-->
+  <!--</w:tc>-->
+  <!--<w:tc>-->
+    <!--<w:tcPr>-->
+      <!--<w:tcW w:w="2196" w:type="dxa"/>-->
+    <!--</w:tcPr>-->
+    <!--<w:p w14:paraId="3A781D38" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00AB50F4">-->
+      <!--<w:r>-->
+        <!--<w:t>target</w:t>-->
+      <!--</w:r>-->
+    <!--</w:p>-->
+  <!--</w:tc>-->
+  <!--<w:tc>-->
+    <!--<w:tcPr>-->
+      <!--<w:tcW w:w="2196" w:type="dxa"/>-->
+    <!--</w:tcPr>-->
+    <!--<w:p w14:paraId="2D05CF80" w14:textId="77777777" w:rsidR="00384779" w:rsidRDefault="00AB50F4">-->
+      <!--<w:proofErr w:type="spellStart"/>-->
+      <!--<w:r>-->
+        <!--<w:t>progress</w:t>-->
+      <!--</w:r>-->
+      <!--<w:proofErr w:type="spellEnd"/>-->
+    <!--</w:p>-->
+  <!--</w:tc>-->
+<!--</w:tr>-->

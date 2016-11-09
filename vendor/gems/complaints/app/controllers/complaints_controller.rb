@@ -51,7 +51,6 @@ class ComplaintsController < ApplicationController
     complaint = Complaint.find(params[:id])
     params[:complaint][:status_changes_attributes] = [{:user_id => current_user.id, :name => params[:complaint].delete(:current_status_humanized)}]
     if complaint.update(complaint_params)
-      debugger
       render :json => complaint, :status => 200
     else
       head :internal_server_error
