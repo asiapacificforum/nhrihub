@@ -1,5 +1,7 @@
 class Complaint::CommunicationsController < ApplicationController
   def create
+    # date comes in here from javascript, which is in the timezone of the browser
+    # in javascript, need to provide utc datetime based on the application's timezone
     communication = Communication.new(communication_params)
     if communication.save
       render :json => communication.complaint.communications, :status => 200

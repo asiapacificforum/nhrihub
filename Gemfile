@@ -84,6 +84,8 @@ gem 'poltergeist', group: [:test, :jstest]
 gem 'factory_girl_rails', '~> 4.0'
 gem 'faker'
 
+gem 'tzinfo-data' # so that we use the ruby tzinfo vs what is installed on the machine e.g. /usr/share/zoneinfo
+
 gem 'letsencrypt_plugin', :github => "lgromanowski/letsencrypt-plugin", :ref => "6ef3a2ea450af2cec4be906842ebcbf809b5fc46"
 
 ###not needed in rails 5

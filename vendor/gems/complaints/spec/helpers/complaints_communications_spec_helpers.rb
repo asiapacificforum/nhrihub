@@ -47,7 +47,9 @@ module ComplaintsCommunicationsSpecHelpers
   end
 
   def local_offset
-    (DateTime.now.utc_offset/60/60).to_s
+    Time.now.zone # the zone string for the machine on which the test is running
+    #(Time.zone.utc_offset/60/60).to_s
+    #(DateTime.now.utc_offset/60/60).to_s
   end
 
   def remove_first_document
