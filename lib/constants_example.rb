@@ -19,7 +19,7 @@ BANNER_LINE2 = "NHRI Database"
 
 # configure the time zone for displaying times on the user interface
 # internally, all times are stored in UTC
-TIME_ZONE = "Samoa"
+#TIME_ZONE = "Samoa"
 
 # choose the timezone from one of the keys here
 # these are understood by Rails

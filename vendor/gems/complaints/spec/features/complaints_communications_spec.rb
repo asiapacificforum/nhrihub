@@ -99,13 +99,10 @@ feature "complaints communications", :js => true do
     # on the server
     communication = Communication.last
     expect(communication.mode).to eq "email"
-    debugger
-    # date is sent to the server formatted with the timezone of the machine on which browser and javascript are running
-    # model converts and saves the date as a UTC date
-    # communication.date => Thu, 19 May 2016 20:00:00 WSST +13:00
-    # communication.date.utc => 2016-05-19 07:00:00 UTC
-    # DateTime.civil_from_format(:local, 2016,5,19,0,0,0).utc => 2016-05-19 07:00:00 UTC
-    expect(communication.date.utc).to eq DateTime.civil_from_format(:local,2016,5,19,0,0,0).utc
+    # ActiveRecord stores the date field as Postgres "timestamp without time zone" type, with UTC being assumed
+    raw_persisted_date = ActiveRecord::Base.connection.execute("select date from communications where note='Some note text'")[0]["date"]
+    expect(raw_persisted_date).to eq "2016-05-19 07:00:00"
+    expect(communication.date.inspect).to eq "Thu, 19 May 2016 07:00:00 UTC +00:00"
     expect(communication.direction).to eq "sent"
     expect(communication.user.first_last_name).to eq "Hailee Ortiz"
     expect(communication.note).to eq "Some note text"

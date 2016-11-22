@@ -10,15 +10,11 @@ class AdvisoryCouncilDocument < ActiveRecord::Base
 
   before_save do |doc|
     doc.receives_next_major_rev if doc.revision.blank?
+    doc.date = DateTime.now if doc.date.blank?
   end
 
-  def date
-    created_at.to_date.to_s(:short)
-  end
-
-  def date=(val)
-    # date is entered by the user in their local time
-    self.created_at = val.blank? ? DateTime.now : Time.zone.parse(val)
+  def formatted_date
+    date.to_date.to_s if date
   end
 
   def as_json(options={})
@@ -26,9 +22,9 @@ class AdvisoryCouncilDocument < ActiveRecord::Base
           :methods => [:title,
                        :revision,
                        :uploaded_by,
-                       :date,
                        :formatted_modification_date,
                        :formatted_creation_date,
+                       :formatted_date,
                        :formatted_filesize ] )
   end
 

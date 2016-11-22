@@ -5,10 +5,7 @@ class Reminder < ActiveRecord::Base
   has_and_belongs_to_many :users, :validate => false # we will only be adding/removing users by id, not changing their attributes. So performance is improved by not validating.
   default_scope ->{ order(:id) }
 
-  # include reminder when date in the application's timezone is equal to the
-  # reminder's next value translated into the local timezone and converted to a date
-  # to understand this very ugly time zone weirdness see http://stackoverflow.com/a/21278339/451893
-  scope :due_today, ->{ where("date(next AT TIME ZONE 'utc' AT TIME ZONE '#{ActiveSupport::TimeZone::MAPPING[TIME_ZONE]}') = ?", Time.zone.now.to_date) }
+  scope :due_today, ->{ where("date(next) = ?", Time.now.to_date) }
 
   # reminder_type => block passed to the date#advance method
   Increments = {
