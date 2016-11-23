@@ -35,7 +35,7 @@ describe "#next" do
       end
       it "should update next to one week from now" do
         # so when a reminder is sent, re-save it and the next reminder date will be saved
-        expect(reminder.next.to_date).to eq Date.today
+        expect(reminder.next.getlocal.to_date).to eq Date.today
         expect{reminder.save}.to change{reminder.next.to_date}.to 1.week.from_now.to_date
       end
     end
@@ -181,7 +181,7 @@ end
 describe "due_today scope" do
   let(:reminder){ Reminder.create(:reminder_type => 'weekly', :start_date => 1.month.ago)}
   it "should include reminders with next value today" do
-    reminder.update_columns(:next => Time.now)
+    reminder.update_columns(:next => Time.now) # it's created in localtime but saved as utc
     expect(Reminder.due_today).to include reminder
   end
 end
