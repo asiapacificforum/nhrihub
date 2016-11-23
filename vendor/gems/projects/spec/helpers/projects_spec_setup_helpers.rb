@@ -4,8 +4,7 @@ module ProjectsSpecSetupHelpers
   extend RSpec::Core::SharedContext
 
   def populate_mandates
-    #["good_governance", "human_rights", "special_investigations_unit"].each do |key|
-    ["good_governance"].each do |key|
+    ["good_governance", "human_rights", "special_investigations_unit", "corporate_services"].each do |key|
       Mandate.create(:key => key)
     end
   end

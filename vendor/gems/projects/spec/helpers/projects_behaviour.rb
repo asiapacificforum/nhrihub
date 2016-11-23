@@ -486,6 +486,7 @@ RSpec.shared_examples "projects index" do
       expect(page.find('#project_description').value).to eq project.description
       expect(checkbox('good_governance')).not_to be_checked
       expect(checkbox('human_rights')).not_to be_checked
+      expect(checkbox('corporate_services')).not_to be_checked
       expect(checkbox('project_type_1')).not_to be_checked
       expect(checkbox('project_type_2')).not_to be_checked
       expect(checkbox('project_type_3')).not_to be_checked

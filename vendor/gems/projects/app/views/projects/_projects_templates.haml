@@ -144,11 +144,10 @@
     .col-md-10
       .row
         {{#mandates}}
-        .col-md-3{:style => "padding-top:0;"}
-          %label{:for => '{{key}}'}
+        .col-md-3.mandate{:style => "padding-top:0;"}
+          %label
             %span {{name}}
-        .col-md-1.mandate{:style => "padding-top:0;"}
-          %input{:id=>'{{key}}', :type => :checkbox, :name => '{{mandate_ids}}', :value => '{{id}}'}
+            %input{:id=>'{{key}}', :type => :checkbox, :name => '{{mandate_ids}}', :value => '{{id}}', :style => "margin-left:20px;"}
         {{/mandates}}
 
 %script#edit_title{:type => 'template/ractive'}

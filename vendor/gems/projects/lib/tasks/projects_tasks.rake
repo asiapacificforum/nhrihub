@@ -24,6 +24,7 @@ namespace :projects do
     gg = Mandate.find_or_create_by(:key => 'good_governance')
     hr = Mandate.find_or_create_by(:key => 'human_rights')
     siu = Mandate.find_or_create_by(:key => 'special_investigations_unit')
+    corp = Mandate.find_or_create_by(:key => 'corporate_services')
 
     gg_types = ["Own motion investigation", "Consultation", "Awareness raising", "Other"]
     gg_types.each do |type|

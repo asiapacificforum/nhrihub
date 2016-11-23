@@ -6,9 +6,10 @@ class Mandate < ActiveRecord::Base
   #has_many :complaint_mandates, :dependent => :destroy
   has_many :complaints #, :through => :complaint_mandates
 
-  scope :good_governance, ->{ where(:key => "good_governance") }
-  scope :human_rights,    ->{ where(:key => "human_rights") }
-  scope :siu,             ->{ where(:key => "special_investigations_unit") }
+  scope :good_governance,    ->{ where(:key => "good_governance") }
+  scope :human_rights,       ->{ where(:key => "human_rights") }
+  scope :siu,                ->{ where(:key => "special_investigations_unit") }
+  scope :corporate_services, ->{ where(:key => "corporate_services") }
 
   scope :project_types_for_project, ->(id){
     # alias the name attribute to avoid collision with the Mandate#name method
