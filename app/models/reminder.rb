@@ -5,7 +5,7 @@ class Reminder < ActiveRecord::Base
   has_and_belongs_to_many :users, :validate => false # we will only be adding/removing users by id, not changing their attributes. So performance is improved by not validating.
   default_scope ->{ order(:id) }
 
-  scope :due_today, ->{ where("date(next) = ?", Time.now.to_date) }
+  scope :due_today, ->{ where("date(next) = ?", Time.now.utc.to_date) }
 
   # reminder_type => block passed to the date#advance method
   Increments = {
