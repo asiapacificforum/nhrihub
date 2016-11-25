@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   def index
     @projects = Project.all
-    @mandates = Mandate.all
+    @areas = Mandate.all
     @agencies = Agency.all
     @conventions = Convention.all
     @planned_results = PlannedResult.all_with_associations
@@ -44,7 +44,7 @@ class ProjectsController < ApplicationController
                         :type,
                         :file,
                         :project_documents_attributes => [:file, :title, :filename, :original_type],
-                        :mandate_ids => [],
+                        :area_ids => [],
                         :project_type_ids => [],
                         :agency_ids => [],
                         :convention_ids => [],

@@ -24,6 +24,9 @@ Rails.application.routes.draw do
     namespace :human_rights do
       resources :project_types, :only => [:create, :destroy]
     end
+    namespace :corporate_services do
+      resources :project_types, :only => [:create, :destroy]
+    end
 
 
   end

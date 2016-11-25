@@ -23,6 +23,11 @@ class Project < ActiveRecord::Base
   accepts_nested_attributes_for :project_performance_indicators
   alias_method :performance_indicator_associations_attributes=, :project_performance_indicators_attributes=
 
+  # name was changed in the UI, but model name was not changed as there is an Area model already
+  alias_method :area_ids=, :mandate_ids=
+  alias_method :area_ids, :mandate_ids
+  alias_method :areas, :mandates
+
   def as_json(options={})
     if options.blank?
       {:id => id,
@@ -30,8 +35,8 @@ class Project < ActiveRecord::Base
        :description => description,
        :project_types => project_mandate_types, # this is why I can't use the normal as_json technique!
                                                 # [{"name"=>"mandate name", "project_types"=>[{"id"=>1, "name"=>"type name"}]}]
-       :mandate_ids => mandate_ids,
-       :mandates => mandates,
+       :area_ids => area_ids,
+       :areas => areas,
        :agencies => agencies,
        :agency_ids => agency_ids,
        :conventions => conventions,

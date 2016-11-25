@@ -58,6 +58,19 @@
                 :param_name => 'name',
                 :placeholder => ''}
 
+%h4
+  = t('.corporate_services')
+  = t('.project_types')
+#corporate_services_project_types
+  = render :partial => 'admin/collection_configuration',
+   :locals => { :new_item => @corporate_services_project_type,
+                :create_url => corporate_services_project_types_path('en'),
+                :delete_url => corporate_services_project_type_path('en','id'),
+                :collection => @corporate_services_project_types.to_json,
+                :item_name => 'corporate_services_project_type',
+                :param_name => 'name',
+                :placeholder => ''}
+
 :coffeescript
   $ ->
     _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }

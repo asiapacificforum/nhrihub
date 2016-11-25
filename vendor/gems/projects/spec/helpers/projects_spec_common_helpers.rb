@@ -64,8 +64,8 @@ module ProjectsSpecCommonHelpers
     page.all('#projects .project')[1]
   end
 
-  def mandates
-    find('#mandates')
+  def areas
+    find('#areas')
   end
 
   def edit_documents
@@ -73,11 +73,11 @@ module ProjectsSpecCommonHelpers
   end
 
   def project_types
-    find('#mandate_project_types')
+    find('#area_project_types')
   end
 
-  def good_governance_mandate
-    page.find(:xpath, ".//div[contains(@class,'mandate_project_type')][div[contains(.,'Good Governance')]]")
+  def good_governance_area
+    page.find(:xpath, ".//div[contains(@class,'area_project_type')][div[contains(.,'Good Governance')]]")
   end
 
   def agencies

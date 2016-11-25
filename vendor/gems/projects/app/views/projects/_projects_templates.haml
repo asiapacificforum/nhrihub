@@ -1,7 +1,7 @@
 %script#projects_template{:type => 'template/ractive'}
   <filterControls filter_criteria='{{filter_criteria}}' />
   {{#projects}}
-  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' mandate_ids='{{mandate_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_associations='{{performance_indicator_associations}}' project_type_ids='{{project_type_ids}}' all_mandates='{{all_mandates}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' mandates='{{mandates}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
+  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' area_ids='{{area_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_associations='{{performance_indicator_associations}}' project_type_ids='{{project_type_ids}}' all_areas='{{all_areas}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' areas='{{areas}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
   {{/projects}}
 
 %script#project_template{:type => 'template/ractive'}
@@ -29,8 +29,8 @@
         .col-md-7
           %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"remove_attribute_error('description')"}
           %span.help-block.error#description_error= t('.description_error_message')
-      <mandatesSelector mandates='{{all_mandates}}' />
-      <projectTypesSelector all_mandates='{{all_mandates}}' />
+      <areasSelector areas='{{all_areas}}' />
+      <projectTypesSelector all_areas='{{all_areas}}' />
       {{> agency_convention_selector }}
       <performanceindicatorselect planned_results='{{planned_results}}' />
       .panel.panel-default#documents
@@ -124,8 +124,8 @@
       %label=t('.project_type')
     .col-md-10
       .row
-        {{#all_mandates}}
-        .col-md-4{:id => '{{key}}_types', :style => "padding-top:0;"}
+        {{#all_areas}}
+        .col-md-3{:id => '{{key}}_types', :style => "padding-top:0;"}
           %label {{name}}:
           {{#project_types}}
           .row.project_type
@@ -135,20 +135,20 @@
             .col-md-3
               %input{:id=>'project_type_{{id}}', :type => :checkbox, :name => '{{project_type_ids}}', :value => '{{id}}'}
           {{/project_types}}
-        {{/all_mandates}}
+        {{/all_areas}}
 
-%script#mandates_selector_template{:type => 'template/ractive'}
+%script#areas_selector_template{:type => 'template/ractive'}
   .row
     .col-md-2
-      %label=t('.mandate')
+      %label=t('.area')
     .col-md-10
       .row
-        {{#mandates}}
-        .col-md-3.mandate{:style => "padding-top:0;"}
+        {{#areas}}
+        .col-md-3.area{:style => "padding-top:0;"}
           %label
             %span {{name}}
-            %input{:id=>'{{key}}', :type => :checkbox, :name => '{{mandate_ids}}', :value => '{{id}}', :style => "margin-left:20px;"}
-        {{/mandates}}
+            %input{:id=>'{{key}}', :type => :checkbox, :name => '{{area_ids}}', :value => '{{id}}', :style => "margin-left:20px;"}
+        {{/areas}}
 
 %script#edit_title{:type => 'template/ractive'}
   .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
@@ -210,13 +210,13 @@
         .panel.panel-default
           .panel-body{'data-toggle'=>'edit'}
             .fade.no_edit.in
-              <mandates mandates='{{mandates}}' />
+              <areas areas='{{areas}}' />
               <projectTypes projectTypes='{{projectTypes}}' />
               <agencies agencies='{{agencies}}' />
               <conventions conventions='{{conventions}}' />
             .fade.edit
-              <mandatesSelector mandates='{{all_mandates}}' />
-              <projectTypesSelector all_mandates='{{all_mandates}}'/>
+              <areasSelector areas='{{all_areas}}' />
+              <projectTypesSelector all_areas='{{all_areas}}'/>
               {{> agency_convention_selector }}
         .panel.panel-default.documents
           .panel-heading
@@ -245,29 +245,29 @@
       {{/agencies}}
 
 %script#project_types_template{:type => 'template/ractive'}
-  .row#mandate_project_types{:style => "margin-left:0px;"}
+  .row#area_project_types{:style => "margin-left:0px;"}
     .col-md-2=t('.project_types')
     .col-md-10
       .row
         {{#project_types}}
-        .col-md-12.mandate_project_type
-          .mandate_name {{name}}
+        .col-md-12.area_project_type
+          .area_name {{name}}
           #project_types.comma-list{:style => "padding-left:1.5em;"}
             {{#types}}
             %span.project_type {{name}}
             {{/types}}
         {{/project_types}}
 
-%script#mandates_template{:type => 'template/ractive'}
-  .row#mandates{:style => "margin-left:0px;"}
-    .col-md-2=t('.mandates')
+%script#areas_template{:type => 'template/ractive'}
+  .row#areas{:style => "margin-left:0px;"}
+    .col-md-2=t('.areas')
     .col-md-10.comma-list
-      {{#mandates}}
-      %span.mandate {{name}}
-      {{/mandates}}
+      {{#areas}}
+      %span.area {{name}}
+      {{/areas}}
 
-%script#mandate_filter_select_template{:type => 'template/ractive'}
-  %li{:class => 'dropdown-header mandate_filter {{#if selected}}selected{{/if}}'}
+%script#area_filter_select_template{:type => 'template/ractive'}
+  %li{:class => 'dropdown-header area_filter {{#if selected}}selected{{/if}}'}
     %a{'on-click'=>'toggle(id)'}
       %span {{name}}
       %span.fa.fa-check
@@ -325,26 +325,26 @@
         %h4= t('.search')
     .row.labels
       .col-md-3= t('.title')
-      .col-md-3= t('.mandate')
+      .col-md-3= t('.area')
       .col-md-3= t('.agency_convention')
     .row{:style => "margin-bottom:12px;"}
       .col-md-3= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_text'), :style=>"width:240px; position:relative; top:-2px; height:27px;", :class => 'form-control'
       .col-md-3
         .btn-group.select{:style=>"width:240px;"}
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
-            %span.filter-option.pull-left= t('.select_mandate')
+            %span.filter-option.pull-left= t('.select_area')
             %span.caret
           %ul.dropdown-menu
             %li.filter_rule
-              %a{'on-click'=>"filter_rule('mandate','all')", :class => "{{#if filter_criteria.mandate_rule == 'all'}}selected{{/if}}"}
+              %a{'on-click'=>"filter_rule('area','all')", :class => "{{#if filter_criteria.area_rule == 'all'}}selected{{/if}}"}
                 %span=t('.all')
                 %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('mandate','any')", :class => "{{#if filter_criteria.mandate_rule == 'any'}}selected{{/if}}"}
+              %a{'on-click'=>"filter_rule('area','any')", :class => "{{#if filter_criteria.area_rule == 'any'}}selected{{/if}}"}
                 %span=t('.any')
                 %span.fa.fa-check
-            {{#all_mandates}}
-            <mandateFilterSelect id='{{id}}' name='{{name}}'/>
-            {{/all_mandates}}
+            {{#all_areas}}
+            <areaFilterSelect id='{{id}}' name='{{name}}'/>
+            {{/all_areas}}
       .col-md-3
         .btn-group.select{:style=>"width:240px;"}
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
@@ -395,14 +395,14 @@
               %a{'on-click'=>"filter_rule('project_type','any')", :class => "{{#if filter_criteria.project_type_rule == 'any'}}selected{{/if}}"}
                 %span=t('.any')
                 %span.fa.fa-check
-            {{#all_mandate_project_types:mandate_name}}
+            {{#all_area_project_types:area_name}}
             %li.dropdown-header{:style => "padding: 3px 0px 3px 20px;"}
-              {{mandate_name}}
+              {{area_name}}
               %ul{:style => "list-style:none; padding-left:18px;"}
                 {{#.}}
                 <projectTypeFilterSelect />
                 {{/.}}
-            {{/all_mandate_project_types}}
+            {{/all_area_project_types}}
       .col-md-3
         .btn-group.performance_indicator_select.select{:style=>"width:240px;"}
           %button.btn.btn-default.dropdown-toggle{:type => :button, 'data-toggle'=>'dropdown'}

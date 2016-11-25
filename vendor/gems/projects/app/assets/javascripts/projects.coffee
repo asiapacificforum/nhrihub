@@ -47,8 +47,8 @@ ProjectValidator = _.extend
       description : 'notBlank'
   , Validator
 
-MandatesSelector = Ractive.extend
-  template : '#mandates_selector_template'
+AreasSelector = Ractive.extend
+  template : '#areas_selector_template'
 
 ProjectTypesSelector = Ractive.extend
   template : '#project_types_selector_template'
@@ -59,8 +59,8 @@ AgenciesSelector = Ractive.extend
 ConventionsSelector = Ractive.extend
   template : '#conventions_selector_template'
 
-Mandates = Ractive.extend
-  template : '#mandates_template'
+Areas = Ractive.extend
+  template : '#areas_template'
 
 ProjectTypes = Ractive.extend
   template : '#project_types_template'
@@ -81,7 +81,7 @@ EditBackup =
   restore_checkboxes : ->
     # major hack to circumvent ractive bug,
     # it will not be necessary in ractive 0.8.0
-    _(['mandate','agency','convention','project_type']).
+    _(['area','agency','convention','project_type']).
       each (association)=>
         @restore_checkboxes_for(association)
   restore_checkboxes_for : (association)->
@@ -189,17 +189,17 @@ Persistence = $.extend
 FilterMatch =
   include : ->
     @matches_title() &&
-    @matches_mandate() &&
+    @matches_area() &&
     @matches_agency_convention() &&
     @matches_project_type() &&
     @matches_performance_indicator()
   matches_title : ->
     re = new RegExp(@get('filter_criteria.title').trim(),"i")
     re.test @get('title')
-  matches_mandate : ->
-    rule = @get('filter_criteria.mandate_rule')
-    criterion = @get('filter_criteria.mandate_ids')
-    value = @get('mandate_ids')
+  matches_area : ->
+    rule = @get('filter_criteria.area_rule')
+    criterion = @get('filter_criteria.area_ids')
+    value = @get('area_ids')
     @contains(rule,criterion,value)
   matches_agency_convention : ->
     rule = @get('filter_criteria.agency_convention_rule')
@@ -254,7 +254,7 @@ Project = Ractive.extend
   computed :
     persistent_attributes : ->
       # the asFormData method knows how to interpret 'project_documents_attributes'
-      ['title', 'description', 'mandate_ids', 'project_type_ids',
+      ['title', 'description', 'area_ids', 'project_type_ids',
        'agency_ids', 'convention_ids', 'selected_performance_indicators_attributes', 'project_documents_attributes']
     url : ->
       Routes.project_path(current_locale,@get('id'))
@@ -282,11 +282,11 @@ Project = Ractive.extend
     #association_id : ->
       #@get('id')
   components :
-    mandatesSelector : MandatesSelector
+    areasSelector : AreasSelector
     projectTypesSelector : ProjectTypesSelector
     agenciesSelector : AgenciesSelector
     conventionsSelector : ConventionsSelector
-    mandates : Mandates
+    areas : Areas
     projectTypes : ProjectTypes
     agencies : Agencies
     conventions : Conventions
@@ -335,11 +335,11 @@ FilterSelect = Ractive.extend
   unselect : ->
     @set("filter_criteria.#{@get('collection')}", _(@get("filter_criteria.#{@get('collection')}")).without(@get('id')))
 
-MandateFilterSelect = Ractive.extend
-  template : "#mandate_filter_select_template"
+AreaFilterSelect = Ractive.extend
+  template : "#area_filter_select_template"
   computed :
     collection : ->
-      "mandate_ids"
+      "area_ids"
   , FilterSelect
 
 AgencyFilterSelect = Ractive.extend
@@ -374,7 +374,7 @@ PerformanceIndicatorFilterSelect = Ractive.extend
 FilterControls = Ractive.extend
   template : "#filter_controls_template"
   components :
-    mandateFilterSelect : MandateFilterSelect
+    areaFilterSelect : AreaFilterSelect
     agencyFilterSelect : AgencyFilterSelect
     conventionFilterSelect : ConventionFilterSelect
     projectTypeFilterSelect : ProjectTypeFilterSelect
@@ -395,12 +395,12 @@ window.projects_page_data = ->
   performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')
   expanded : false
   projects : projects_data
-  all_mandates : mandates
+  all_areas : areas
   all_agencies : agencies
   all_conventions : conventions
   planned_results : planned_results
   all_performance_indicators : performance_indicators
-  all_mandate_project_types : project_types
+  all_area_project_types : project_types
   project_named_documents_titles : project_named_documents_titles
   permitted_filetypes : permitted_filetypes
   maximum_filesize : maximum_filesize
@@ -413,12 +413,12 @@ projects_options = ->
     #performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')
     #expanded : false
     #projects : projects_data
-    #all_mandates : mandates
+    #all_areas : areas
     #all_agencies : agencies
     #all_conventions : conventions
     #planned_results : planned_results
     #all_performance_indicators : performance_indicators
-    #all_mandate_project_types : project_types
+    #all_area_project_types : project_types
     #project_named_documents_titles : project_named_documents_titles
     #permitted_filetypes : permitted_filetypes
     #maximum_filesize : maximum_filesize
@@ -432,7 +432,7 @@ projects_options = ->
         id : null
         title : ""
         description : ""
-        mandate_ids : []
+        area_ids : []
         project_type_ids : []
         agency_ids : []
         convention_ids : []

@@ -23,10 +23,10 @@ RSpec.shared_examples "projects index" do
         expect(find('.basic_info .title').text).to eq last_project.title
         expect(find('.description .no_edit span').text).to eq last_project.description
         last_project.mandates.each do |mandate|
-          expect(all('#mandates .mandate').map(&:text)).to include mandate.name
+          expect(all('#areas .area').map(&:text)).to include mandate.name
         end
         within project_types do
-          within good_governance_mandate do
+          within good_governance_area do
             last_project.good_governance_project_types.each do |project_type|
               expect(all('.project_type').map(&:text)).to include project_type.name
             end
@@ -62,6 +62,7 @@ RSpec.shared_examples "projects index" do
       fill_in('project_title', :with => "new project title")
       fill_in('project_description', :with => "new project description")
       check('Good Governance')
+      check('Corporate Services')
 
       within good_governance_types do
         check('Consultation')
@@ -94,16 +95,19 @@ RSpec.shared_examples "projects index" do
       expect(project.title).to eq "new project title"
       expect(project.description).to eq "new project description"
       mandate = Mandate.find_by(:key => "good_governance")
-      expect(project.mandate_ids).to include mandate.id
+      expect(project.area_ids).to include mandate.id
+      mandate = Mandate.find_by(:key => "corporate_services")
+      expect(project.area_ids).to include mandate.id
 
       # CHECK CLIENT
       expand_first_project
       within first_project do
         expect(find('.project .basic_info .title').text).to eq "new project title"
         expect(find('.description .no_edit span').text).to eq "new project description"
-        expect(all('#mandates .mandate').map(&:text)).to include 'Good Governance'
+        expect(all('#areas .area').map(&:text)).to include 'Good Governance'
+        expect(all('#areas .area').map(&:text)).to include 'Corporate Services'
         within project_types do
-          within good_governance_mandate do
+          within good_governance_area do
             expect(all('.project_type').map(&:text)).to include 'Consultation'
           end
         end
@@ -169,7 +173,7 @@ RSpec.shared_examples "projects index" do
       expect(project.title).to eq "new project title"
       expect(project.description).to eq "new project description"
       mandate = Mandate.find_by(:key => "good_governance")
-      expect(project.mandate_ids).to include mandate.id
+      expect(project.area_ids).to include mandate.id
 
       expect(project.project_documents.count).to eq 2
       expect(project.project_documents.map(&:title)).to include "Project Document"
@@ -180,9 +184,9 @@ RSpec.shared_examples "projects index" do
       within first_project do
         expect(find('.basic_info .title').text).to eq "new project title"
         expect(find('.description .no_edit span').text).to eq "new project description"
-        expect(all('#mandates .mandate').map(&:text)).to include 'Good Governance'
+        expect(all('#areas .area').map(&:text)).to include 'Good Governance'
         within project_types do
-          within good_governance_mandate do
+          within good_governance_area do
             expect(all('.project_type').map(&:text)).to include 'Consultation'
           end
         end
@@ -387,9 +391,9 @@ RSpec.shared_examples "projects index" do
       within first_project do
         expect(find('.basic_info .title').text).to eq "new project title"
         expect(find('.description .no_edit span').text).to eq "new project description"
-        expect(all('.mandate').map(&:text)).to include 'Good Governance'
+        expect(all('.area').map(&:text)).to include 'Good Governance'
         within project_types do
-          within good_governance_mandate do
+          within good_governance_area do
             expect(all('.project_type').map(&:text)).to include 'Consultation'
           end
         end
@@ -433,7 +437,7 @@ RSpec.shared_examples "projects index" do
       expect{ edit_save.click; wait_for_ajax }.to change{Project.last.project_type_ids}.to([]).
                                             and change{Project.last.agency_ids}.to([]).
                                             and change{Project.last.convention_ids}.to([]).
-                                            and change{Project.last.mandate_ids}.to([])
+                                            and change{Project.last.area_ids}.to([])
     end
 
     it "should restore prior values if editing is cancelled" do
@@ -473,7 +477,7 @@ RSpec.shared_examples "projects index" do
       within first_project do
         expect(find('.basic_info .title').text).to eq project.title
         expect(find('.description .no_edit span').text).to eq project.description
-        expect(all('.mandate .name').count).to eq 0
+        expect(all('.area .name').count).to eq 0
         expect(all('#project_types .project_type').count).to eq 0
         expect(all('#agencies .agency').count).to eq 0
         expect(all('#conventions .convention').count).to eq 0

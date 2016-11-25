@@ -33,6 +33,8 @@ en:
         add: "Add project type"
       special_investigations_unit_project_type:
         add: "Add project type"
+      corporate_services_project_type:
+        add: "Add project type"
       complaint_document_filetype:
         add: "Add file type"
       communication_document_filetype:
@@ -40,15 +42,6 @@ en:
     document_filesize_configuration:
       current_val: "Current value"
       change: "Change to"
-  project_admin:
-    show:
-      heading: "Projects Configuration"
-      filetypes: "Filetypes permitted for projects"
-      filesize_max: "Maximum permitted project file size"
-      good_governance: "Good Governance"
-      human_rights: "Human Rights"
-      siu: "Special Investigations Unit"
-      project_types : "Project Types"
   complaint_admin:
     show:
       heading: "Complaints Configuration"

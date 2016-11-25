@@ -5,7 +5,7 @@
 
 :coffeescript
   window.projects_data = #{@projects.to_json}
-  window.mandates = #{@mandates.to_json}
+  window.areas = #{@areas.to_json}
   window.agencies = #{@agencies.to_json}
   window.conventions = #{@conventions.to_json}
   window.planned_results = #{@planned_results.to_json }
@@ -27,8 +27,8 @@
   window.create_note_url     = "#{@create_note_url}"
   window.filter_criteria =
     title : ""
-    mandate_ids : []
-    mandate_rule   : 'any'
+    area_ids : []
+    area_rule   : 'any'
     agency_ids : []
     convention_ids : []
     agency_convention_rule : 'any'
