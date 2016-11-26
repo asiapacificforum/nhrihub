@@ -27,6 +27,7 @@ class Project < ActiveRecord::Base
   alias_method :area_ids=, :mandate_ids=
   alias_method :area_ids, :mandate_ids
   alias_method :areas, :mandates
+  alias_method :areas=, :mandates=
 
   def as_json(options={})
     if options.blank?

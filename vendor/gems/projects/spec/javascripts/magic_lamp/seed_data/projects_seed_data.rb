@@ -6,7 +6,7 @@ class ProjectsSeedData
   def self.init_projects
     FactoryGirl.create(:project)
     project = Project.first
-    project.mandates = [FactoryGirl.create(:mandate, :key => 'human_rights')]
+    project.areas = [FactoryGirl.create(:mandate, :key => 'human_rights')]
     project.save
     project
   end

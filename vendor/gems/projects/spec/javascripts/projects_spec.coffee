@@ -6,7 +6,7 @@ log = (str)->
 load_variables = ->
   window.projects_data          = MagicLamp.loadJSON("projects").projects
   window.model_name             = MagicLamp.loadRaw ("model_name")
-  window.mandates               = MagicLamp.loadJSON("projects").mandates
+  window.areas                  = MagicLamp.loadJSON("projects").areas
   window.agencies               = MagicLamp.loadJSON("agencies")
   window.conventions            = MagicLamp.loadJSON("conventions")
   window.project_types          = MagicLamp.loadJSON("project_types")
@@ -41,16 +41,16 @@ describe "edit project", ->
     return
 
   it "restores pre-edit checkbox values", ->
-    expect(projects.findAllComponents('project')[0].get('mandate_ids')).to.eql [1]
+    expect(projects.findAllComponents('project')[0].get('area_ids')).to.eql [1]
     edit_start = $("#projects .project i[id $='edit_start']").first()
     projects.findAllComponents('project')[0].editor.edit_start(edit_start) # start edit
-    expect($('.mandate input:checkbox').first().prop('checked')).to.be.true
-    _($('.mandate input:checkbox')).each (el)-> $(el).prop('checked',false) # uncheck the checkbox
-    expect($('.mandate input:checkbox').first().prop('checked')).to.be.false
+    expect($('.area input:checkbox').first().prop('checked')).to.be.true
+    _($('.area input:checkbox')).each (el)-> $(el).prop('checked',false) # uncheck the checkbox
+    expect($('.area input:checkbox').first().prop('checked')).to.be.false
     edit_cancel = $("#projects .project i[id $='edit_cancel']").first()
     projects.findAllComponents('project')[0].editor.edit_cancel(edit_cancel) # cancel edit
     projects.findAllComponents('project')[0].editor.edit_start(edit_start) # start edit again
-    expect($('.mandate input:checkbox').first().prop('checked')).to.be.true
+    expect($('.area input:checkbox').first().prop('checked')).to.be.true
     return
 
 describe "matching title", ->
@@ -94,7 +94,7 @@ describe "matching title", ->
     expect(project.include()).to.be.true
     expect(project.get('include')).to.be.true
 
-describe "matching mandate", ->
+describe "matching area", ->
   before (done)->
     load_variables()
     get_script_under_test(done)
@@ -103,88 +103,88 @@ describe "matching mandate", ->
     projects.set('filter_criteria', window.filter_criteria)
     projects.set('projects',[])
 
-  describe "when filter_criteria.mandate_ids is empty", ->
+  describe "when filter_criteria.area_ids is empty", ->
     before ->
-      projects.set('filter_criteria.mandate_ids',[])
+      projects.set('filter_criteria.area_ids',[])
 
-    describe "when mandate rule is 'all'", ->
+    describe "when area rule is 'all'", ->
       before ->
-        projects.set('filter_criteria.mandate_rule','all')
+        projects.set('filter_criteria.area_rule','all')
 
-      it "when project mandate_ids is empty", ->
-        projects.set('projects',[{mandate_ids : [] }])
+      it "when project area_ids is empty", ->
+        projects.set('projects',[{area_ids : [] }])
         project = projects.findComponent('project')
-        expect(project.matches_mandate()).to.be.true
+        expect(project.matches_area()).to.be.true
         expect(project.get('include')).to.be.true
 
-      it "when project mandate_ids is not empby", ->
-        projects.set('projects',[{mandate_ids : [3,4] }])
+      it "when project area_ids is not empby", ->
+        projects.set('projects',[{area_ids : [3,4] }])
         project = projects.findComponent('project')
-        expect(project.matches_mandate()).to.be.true
+        expect(project.matches_area()).to.be.true
         expect(project.get('include')).to.be.true
 
-    describe "when mandate rule is 'any'", ->
+    describe "when area rule is 'any'", ->
       before ->
-        projects.set('filter_criteria.mandate_rule','any')
+        projects.set('filter_criteria.area_rule','any')
 
-      it "when project mandate_ids is empty", ->
-        projects.set('projects',[{mandate_ids : [] }])
+      it "when project area_ids is empty", ->
+        projects.set('projects',[{area_ids : [] }])
         project = projects.findComponent('project')
-        expect(project.matches_mandate()).to.be.true
+        expect(project.matches_area()).to.be.true
         expect(project.get('include')).to.be.true
 
-      it "when project mandate_ids is not empby", ->
-        projects.set('projects',[{mandate_ids : [3,4] }])
+      it "when project area_ids is not empby", ->
+        projects.set('projects',[{area_ids : [3,4] }])
         project = projects.findComponent('project')
-        expect(project.matches_mandate()).to.be.true
+        expect(project.matches_area()).to.be.true
         expect(project.get('include')).to.be.true
 
-  describe "when filter_criteria.mandate_ids is not empty", ->
+  describe "when filter_criteria.area_ids is not empty", ->
     before ->
-      projects.set('filter_criteria.mandate_ids',[3,4])
+      projects.set('filter_criteria.area_ids',[3,4])
 
-    describe "when mandate rule is 'all'", ->
+    describe "when area rule is 'all'", ->
       before ->
-        projects.set('filter_criteria.mandate_rule','all')
+        projects.set('filter_criteria.area_rule','all')
 
-      it "when project mandate_ids is empty", ->
-        projects.set('projects',[{mandate_ids : [] }])
+      it "when project area_ids is empty", ->
+        projects.set('projects',[{area_ids : [] }])
         project = projects.findComponent('project')
-        expect(project.matches_mandate()).to.be.false
+        expect(project.matches_area()).to.be.false
         expect(project.get('include')).to.be.false
 
-      it "when project mandate_ids has matching ids", ->
-        projects.set('projects',[{mandate_ids : [3,4] }])
+      it "when project area_ids has matching ids", ->
+        projects.set('projects',[{area_ids : [3,4] }])
         project = projects.findComponent('project')
-        expect(project.matches_mandate()).to.be.true
+        expect(project.matches_area()).to.be.true
         expect(project.get('include')).to.be.true
 
-      it "when project mandate_ids has partially matching ids", ->
-        projects.set('projects',[{mandate_ids : [4] }])
+      it "when project area_ids has partially matching ids", ->
+        projects.set('projects',[{area_ids : [4] }])
         project = projects.findComponent('project')
-        expect(project.matches_mandate()).to.be.false
+        expect(project.matches_area()).to.be.false
         expect(project.get('include')).to.be.false
 
-    describe "when mandate rule is 'any'", ->
+    describe "when area rule is 'any'", ->
       before ->
-        projects.set('filter_criteria.mandate_rule','any')
+        projects.set('filter_criteria.area_rule','any')
 
-      it "when project mandate_ids is empty", ->
-        projects.set('projects',[{mandate_ids : [] }])
+      it "when project area_ids is empty", ->
+        projects.set('projects',[{area_ids : [] }])
         project = projects.findComponent('project')
-        expect(project.matches_mandate()).to.be.false
+        expect(project.matches_area()).to.be.false
         expect(project.get('include')).to.be.false
 
-      it "when project mandate_ids has matching ids", ->
-        projects.set('projects',[{mandate_ids : [3,4] }])
+      it "when project area_ids has matching ids", ->
+        projects.set('projects',[{area_ids : [3,4] }])
         project = projects.findComponent('project')
-        expect(project.matches_mandate()).to.be.true
+        expect(project.matches_area()).to.be.true
         expect(project.get('include')).to.be.true
 
-      it "when project mandate_ids has partially matching ids", ->
-        projects.set('projects',[{mandate_ids : [4] }])
+      it "when project area_ids has partially matching ids", ->
+        projects.set('projects',[{area_ids : [4] }])
         project = projects.findComponent('project')
-        expect(project.matches_mandate()).to.be.true
+        expect(project.matches_area()).to.be.true
         expect(project.get('include')).to.be.true
 
 describe "matching agencies and conventions", ->

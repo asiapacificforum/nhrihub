@@ -3,7 +3,7 @@ require_relative './seed_data/projects_seed_data'
 MagicLamp.define do
   fixture(:name => "projects") do
     ProjectsSeedData.initialize(:projects)
-    {:projects => Project.all, :mandates => Mandate.all}
+    {:projects => Project.all, :areas => Mandate.all}
   end
 
   fixture(:name => "model_name") do
@@ -35,8 +35,8 @@ MagicLamp.define do
 
   fixture(:name => 'project_filter_criteria') do
     { :title => "",
-      :mandate_ids => [],
-      :mandate_rule => 'any',
+      :area_ids => [],
+      :area_rule => 'any',
       :agency_ids => [],
       :convention_ids => [],
       :agency_convention_rule => 'any',
