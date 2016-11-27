@@ -197,47 +197,35 @@ FilterMatch =
     re = new RegExp(@get('filter_criteria.title').trim(),"i")
     re.test @get('title')
   matches_area : ->
-    rule = @get('filter_criteria.area_rule')
     criterion = @get('filter_criteria.area_ids')
     value = @get('area_ids')
-    @contains(rule,criterion,value)
+    @contains(criterion,value)
   matches_agency_convention : ->
-    rule = @get('filter_criteria.agency_convention_rule')
     criterion = @get('filter_criteria.agency_ids')
     value = @get('agency_ids')
-    agency_match = @contains(rule,criterion,value)
+    agency_match = @contains(criterion,value)
+    agency_requirement = !_.isEmpty(criterion)
 
     criterion = @get('filter_criteria.convention_ids')
     value = @get('convention_ids')
-    convention_match = @contains(rule,criterion,value)
+    convention_match = @contains(criterion,value)
+    convention_requirement = !_.isEmpty(criterion)
 
-    if rule == "any"
-      agency_match || convention_match
-    else
-      agency_match && convention_match
+    (agency_match && convention_match) || (agency_requirement && convention_requirement && (agency_match || convention_match))
   matches_project_type : ->
-    rule = @get('filter_criteria.project_type_rule')
     criterion = @get('filter_criteria.project_type_ids')
     value = @get('project_type_ids')
-    @contains(rule,criterion,value)
+    @contains(criterion,value)
   matches_performance_indicator : ->
     criterion = parseInt(@get('filter_criteria.performance_indicator_id'))
     value = parseInt(@get('performance_indicator_id'))
     return true if _.isUndefined(criterion) || _.isNaN(criterion)
     _.isEqual(criterion, value)
-  contains : (rule, criterion, value) ->
+  contains : ( criterion, value) ->
     return true if _.isEmpty(criterion)
-    if rule == "any"
-      common_elements = _.intersection(criterion, value)
-      # must have some common elements
-      !_.isEmpty(common_elements)
-    else if rule == "all"
-      # difference is values in criterion NOT PRESENT in value
-      diff = _.difference(criterion, value)
-      # all values in criterion should be present in value, so diff s/b empty
-      _.isEmpty(diff)
-    else # ? can't happen! so make test fail
-      undefined
+    common_elements = _.intersection(criterion, value)
+    # must have some common elements
+    !_.isEmpty(common_elements)
 
 Project = Ractive.extend
   template : '#project_template'
@@ -379,17 +367,12 @@ FilterControls = Ractive.extend
     conventionFilterSelect : ConventionFilterSelect
     projectTypeFilterSelect : ProjectTypeFilterSelect
     performanceIndicatorFilterSelect : PerformanceIndicatorFilterSelect
-  filter_rule : (type,rule)->
-    @event.original.preventDefault()
-    @event.original.stopPropagation()
-    @set("filter_criteria.#{type}_rule", rule)
   expand : ->
     @parent.expand()
   compact : ->
     @parent.compact()
   clear_filter : ->
     @set('filter_criteria', window.projects_page_data().filter_criteria)
-
 
 window.projects_page_data = ->
   performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')

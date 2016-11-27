@@ -335,13 +335,6 @@
             %span.filter-option.pull-left= t('.select_area')
             %span.caret
           %ul.dropdown-menu
-            %li.filter_rule
-              %a{'on-click'=>"filter_rule('area','all')", :class => "{{#if filter_criteria.area_rule == 'all'}}selected{{/if}}"}
-                %span=t('.all')
-                %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('area','any')", :class => "{{#if filter_criteria.area_rule == 'any'}}selected{{/if}}"}
-                %span=t('.any')
-                %span.fa.fa-check
             {{#all_areas}}
             <areaFilterSelect id='{{id}}' name='{{name}}'/>
             {{/all_areas}}
@@ -351,13 +344,6 @@
             %span.filter-option.pull-left= t('.select_agency_convention')
             %span.caret
           %ul.dropdown-menu
-            %li.filter_rule
-              %a{'on-click'=>"filter_rule('agency_convention','all')", :class => "{{#if filter_criteria.agency_convention_rule == 'all'}}selected{{/if}}"}
-                %span=t('.all')
-                %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('agency_convention','any')", :class => "{{#if filter_criteria.agency_convention_rule == 'any'}}selected{{/if}}"}
-                %span=t('.any')
-                %span.fa.fa-check
             %li.dropdown-header
               =t('.agencies')
               %ul{:style => "list-style:none; padding-left:18px;"}
@@ -388,13 +374,6 @@
             %span.filter-option.pull-left= t('.select_project_type')
             %span.caret
           %ul.dropdown-menu
-            %li.filter_rule
-              %a{'on-click'=>"filter_rule('project_type','all')", :class => "{{#if filter_criteria.project_type_rule == 'all'}}selected{{/if}}"}
-                %span=t('.all')
-                %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('project_type','any')", :class => "{{#if filter_criteria.project_type_rule == 'any'}}selected{{/if}}"}
-                %span=t('.any')
-                %span.fa.fa-check
             {{#all_area_project_types:area_name}}
             %li.dropdown-header{:style => "padding: 3px 0px 3px 20px;"}
               {{area_name}}
