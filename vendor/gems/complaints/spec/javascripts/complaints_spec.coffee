@@ -1,8 +1,13 @@
 log = (str)->
+  re = new RegExp('phantomjs','gi')
+  unless re.test navigator.userAgent
+    console.log str
+
 load_variables = ->
   window.complaints_data = []
   window.all_mandates = []
   window.all_agencies = []
+  window.all_agencies_in_threes = _.chain(all_agencies).groupBy((el,i)->Math.floor(i/3)).toArray().value()
   window.complaint_bases = []
   window.next_case_reference = ""
   window.all_users = []
