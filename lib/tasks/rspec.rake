@@ -24,7 +24,14 @@ RSpec::Core::RakeTask.module_eval do
     end
     modules.each do |dir|
       extras << File.join( dir, 'spec', 'features', '**', '*_spec.rb' ).to_s
+      extras << File.join( dir, 'spec', 'models', '**', '*_spec.rb' ).to_s
     end
     [@pattern] | extras
   end
+end
+
+desc "javascript test shortcut"
+task :js do
+  `rm -rf tmp/cache/assets/sprockets/v3.0/`
+  puts `RAILS_ENV=jstest rake teaspoon suite=default`
 end
