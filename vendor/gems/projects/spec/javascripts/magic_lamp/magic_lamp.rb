@@ -12,7 +12,9 @@ MagicLamp.define do
 
   fixture(:name => "agencies") do
     ProjectsSeedData.initialize(:agencies)
-    Agency.all
+    all = Agency.all
+    in_threes = all.in_groups_of(3)
+    { :all => all, :in_threes => in_threes }
   end
 
   fixture(:name => "conventions") do

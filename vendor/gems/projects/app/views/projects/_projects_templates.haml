@@ -1,7 +1,7 @@
 %script#projects_template{:type => 'template/ractive'}
   <filterControls filter_criteria='{{filter_criteria}}' />
   {{#projects}}
-  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' area_ids='{{area_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_associations='{{performance_indicator_associations}}' project_type_ids='{{project_type_ids}}' all_areas='{{all_areas}}' all_agencies='{{all_agencies}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' areas='{{areas}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
+  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' area_ids='{{area_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_associations='{{performance_indicator_associations}}' project_type_ids='{{project_type_ids}}' all_areas='{{all_areas}}' all_agencies='{{all_agencies}}' all_agencies_in_threes='{{all_agencies_in_threes}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' areas='{{areas}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
   {{/projects}}
 
 %script#project_template{:type => 'template/ractive'}
@@ -100,20 +100,7 @@
     .col-md-2
       %label=t('.agency')
     .col-md-10
-      .row
-        .col-md-4#agencies{:style => "padding-top:0;"}
-          <agenciesSelector />
-
-%script#agencies_selector_template{:type => 'template/ractive'}
-  %label=t('.good_governance')
-  {{#all_agencies}}
-  .row.agency
-    .col-md-9
-      %label{:for => 'agency_{{id}}'}
-        %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
-    .col-md-3
-      %input{:id=>'agency_{{id}}', :type => :checkbox, :name => '{{agency_ids}}', :value => '{{id}}'}
-  {{/all_agencies}}
+      <agenciesSelector />
 
 %script#conventions_selector_template{:type => 'template/ractive'}
   %label=t('.human_rights')
@@ -379,7 +366,7 @@
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left= t('.select_agency')
             %span.caret
-          %ul.dropdown-menu{:style => "list-style:none; padding-left:18px;"}
+          %ul.dropdown-menu.scrolling_dropdown{:style => "list-style:none; padding-left:18px;"}
             {{#all_agencies}}
             <agencyFilterSelect id='{{id}}' name='{{name}}'/>
             {{/all_agencies}}

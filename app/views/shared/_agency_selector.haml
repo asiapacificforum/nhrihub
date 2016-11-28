@@ -1,0 +1,24 @@
+%script#agencies_selector_template{:type => 'template/ractive'}
+  .row
+    .col-md-12#agencies{:style => "padding-top:0;"}
+      {{#all_agencies_in_threes}}
+      .row.agency
+        .col-md-3
+          %label{:for => 'agency_{{0.id}}'}
+            %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{0.full_name}}'} {{0.name}}
+        .col-md-1
+          %input{:id=>'agency_{{0.id}}', :type => :checkbox, :name => '{{agency_ids}}', :value => '{{0.id}}'}
+
+        .col-md-3
+          %label{:for => 'agency_{{1.id}}'}
+            %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{1.full_name}}'} {{1.name}}
+        .col-md-1
+          %input{:id=>'agency_{{1.id}}', :type => :checkbox, :name => '{{agency_ids}}', :value => '{{1.id}}'}
+
+        .col-md-3
+          %label{:for => 'agency_{{2.id}}'}
+            %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{2.full_name}}'} {{2.name}}
+        .col-md-1
+          %input{:id=>'agency_{{2.id}}', :type => :checkbox, :name => '{{agency_ids}}', :value => '{{2.id}}'}
+      {{/all_agencies_in_threes}}
+

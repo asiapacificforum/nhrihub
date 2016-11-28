@@ -377,6 +377,7 @@ window.projects_page_data = ->
   projects : projects_data
   all_areas : areas
   all_agencies : agencies
+  all_agencies_in_threes : all_agencies_in_threes
   all_conventions : conventions
   planned_results : planned_results
   all_performance_indicators : performance_indicators
