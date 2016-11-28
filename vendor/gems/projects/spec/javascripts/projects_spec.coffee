@@ -141,7 +141,7 @@ describe "matching area", ->
       expect(project.matches_area()).to.be.true
       expect(project.get('include')).to.be.true
 
-describe "matching agencies and conventions", ->
+describe "matching agencies", ->
   before (done)->
     load_variables()
     get_script_under_test(done)
@@ -150,67 +150,61 @@ describe "matching agencies and conventions", ->
     projects.set('filter_criteria', window.filter_criteria)
     projects.set('projects',[])
 
-  describe "when filter_criteria.agency_ids and filter_criteria_convention_ids are both empty", ->
+  describe "when filter_criteria.agency_ids is empty", ->
     before ->
       projects.set('filter_criteria.agency_ids',[])
-      projects.set('filter_criteria.convention_ids',[])
 
-      it "when project agency_ids is empty", ->
+      it "matches when project agency_ids is empty", ->
         projects.set('projects',[{agency_ids : [] }])
         project = projects.findComponent('project')
-        expect(project.matches_agency_convention()).to.be.true
+        expect(project.matches_agency()).to.be.true
         expect(project.get('include')).to.be.true
 
-      it "when project agency_ids and convention_ids are not empby", ->
-        projects.set('projects',[{agency_ids : [3,4], convention_ids : [5,7] }])
+      it "matches when project agency_ids is not empby", ->
+        projects.set('projects',[{agency_ids : [3,4]}])
         project = projects.findComponent('project')
-        expect(project.matches_agency_convention()).to.be.true
+        expect(project.matches_agency()).to.be.true
         expect(project.get('include')).to.be.true
 
   describe "when filter_criteria.agency_ids is not empty", ->
     before ->
       projects.set('filter_criteria.agency_ids',[3,4])
-      projects.set('filter_criteria.convention_ids',[7,9])
 
-    it "when project agency_ids and convention_ids are both empty", ->
-      projects.set('projects',[{agency_ids : [], convention_ids : [] }])
+    it "does not match when project agency_ids is empty", ->
+      projects.set('projects',[{agency_ids : [] }])
       project = projects.findComponent('project')
-      expect(project.matches_agency_convention()).to.be.false
+      expect(project.matches_agency()).to.be.false
       expect(project.get('include')).to.be.false
 
-    it "when project agency_ids has all matching ids and conventions_ids aren't all matching", ->
-      projects.set('projects',[{agency_ids : [3], convention_ids : [5] }])
+    it "matches when project agency_ids has all matching ids", ->
+      projects.set('projects',[{agency_ids : [3] }])
       project = projects.findComponent('project')
-      expect(project.matches_agency_convention()).to.be.true
+      expect(project.matches_agency()).to.be.true
       expect(project.get('include')).to.be.true
 
-    it "when project agency_ids has partially matching ids", ->
-      projects.set('projects',[{agency_ids : [4] }, convention_ids : [] ])
-      project = projects.findComponent('project')
-      expect(project.matches_agency_convention()).to.be.true
-      expect(project.get('include')).to.be.true
+describe "matching conventions", ->
+  before (done)->
+    load_variables()
+    get_script_under_test(done)
 
-  describe "when filter_criteria.agency_ids is not empty and filter_criteria.convention_ids is empty", ->
+  after ->
+    projects.set('filter_criteria', window.filter_criteria)
+    projects.set('projects',[])
+
+  describe "when filter_criteria.convention_ids is empty", ->
     before ->
-      projects.set('filter_criteria.agency_ids',[3,4])
       projects.set('filter_criteria.convention_ids',[])
 
-    it "when project agency_ids and convention_ids are both empty", ->
-      projects.set('projects',[{agency_ids : [], convention_ids : [] }])
+    it "matches when project convention_ids is empty", ->
+      projects.set('projects',[{ convention_ids : [] }])
       project = projects.findComponent('project')
-      expect(project.matches_agency_convention()).to.be.false
-      expect(project.get('include')).to.be.false
-
-    it "when project agency_ids has all matching ids and conventions_ids aren't all matching", ->
-      projects.set('projects',[{agency_ids : [3], convention_ids : [5] }])
-      project = projects.findComponent('project')
-      expect(project.matches_agency_convention()).to.be.true
+      expect(project.matches_convention()).to.be.true
       expect(project.get('include')).to.be.true
 
-    it "when project agency_ids has partially matching ids", ->
-      projects.set('projects',[{agency_ids : [4] , convention_ids : [] }])
+    it "matches when project conventions_ids is not empty", ->
+      projects.set('projects',[{ convention_ids : [5] }])
       project = projects.findComponent('project')
-      expect(project.matches_agency_convention()).to.be.true
+      expect(project.matches_convention()).to.be.true
       expect(project.get('include')).to.be.true
 
 describe "matching project_type", ->
