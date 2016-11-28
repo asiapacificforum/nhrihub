@@ -31,7 +31,8 @@
           %span.help-block.error#description_error= t('.description_error_message')
       <areasSelector areas='{{all_areas}}' />
       <projectTypesSelector all_areas='{{all_areas}}' />
-      {{> agency_convention_selector }}
+      {{> agency_selector }}
+      {{> convention_selector }}
       <performanceindicatorselect planned_results='{{planned_results}}' />
       .panel.panel-default#documents
         .panel-heading= t('.project_documents')
@@ -85,16 +86,23 @@
     .col-md-2
       %i.fa.fa-remove.remove{'on-click' => 'remove_file()'}
 
-%script#agency_convention_selector{:type => 'template/ractive'}
+%script#convention_selector{:type => 'template/ractive'}
   .row
     .col-md-2
-      %label=t('.agency_convention')
+      %label=t('.convention')
+    .col-md-10
+      .row
+        .col-md-4#conventions{:style => "padding-top:0;"}
+          <conventionsSelector />
+
+%script#agency_selector{:type => 'template/ractive'}
+  .row
+    .col-md-2
+      %label=t('.agency')
     .col-md-10
       .row
         .col-md-4#agencies{:style => "padding-top:0;"}
           <agenciesSelector />
-        .col-md-4#conventions{:style => "padding-top:0;"}
-          <conventionsSelector />
 
 %script#agencies_selector_template{:type => 'template/ractive'}
   %label=t('.good_governance')
@@ -217,7 +225,8 @@
             .fade.edit
               <areasSelector areas='{{all_areas}}' />
               <projectTypesSelector all_areas='{{all_areas}}'/>
-              {{> agency_convention_selector }}
+              {{> agency_selector }}
+              {{> convention_selector }}
         .panel.panel-default.documents
           .panel-heading
             .row
@@ -326,9 +335,9 @@
     .row.labels
       .col-md-3= t('.title')
       .col-md-3= t('.area')
-      .col-md-3= t('.agency_convention')
+      .col-md-3= t('.project_type')
     .row{:style => "margin-bottom:12px;"}
-      .col-md-3= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_text'), :style=>"width:240px; position:relative; top:-2px; height:27px;", :class => 'form-control'
+      .col-md-3= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_text'), :style=>"width:240px; position:relative; height:34px;", :class => 'form-control'
       .col-md-3
         .btn-group.select{:style=>"width:240px;"}
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
@@ -338,36 +347,6 @@
             {{#all_areas}}
             <areaFilterSelect id='{{id}}' name='{{name}}'/>
             {{/all_areas}}
-      .col-md-3
-        .btn-group.select{:style=>"width:240px;"}
-          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
-            %span.filter-option.pull-left= t('.select_agency_convention')
-            %span.caret
-          %ul.dropdown-menu
-            %li.dropdown-header
-              =t('.agencies')
-              %ul{:style => "list-style:none; padding-left:18px;"}
-                {{#all_agencies}}
-                <agencyFilterSelect id='{{id}}' name='{{name}}'/>
-                {{/all_agencies}}
-            %li.dropdown-header
-              =t('.conventions')
-              %ul{:style => "list-style:none; padding-left:18px;"}
-                {{#all_conventions}}
-                <conventionFilterSelect id='{{id}}' name='{{name}}'/>
-                {{/all_conventions}}
-      .col-md-1.col-md-offset-1
-        %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
-      .col-md-1
-        {{#if expanded}}
-        %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all')}
-        {{else}}
-        %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
-        {{/if}}
-    .row.labels
-      .col-md-3= t('.project_type')
-      .col-md-3= t('.performance_indicators')
-    .row
       .col-md-3
         .btn-group.select{:style=>"width:240px;"}
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
@@ -382,9 +361,41 @@
                 <projectTypeFilterSelect />
                 {{/.}}
             {{/all_area_project_types}}
+      .col-md-1.col-md-offset-1
+        %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
+      .col-md-1
+        {{#if expanded}}
+        %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all')}
+        {{else}}
+        %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
+        {{/if}}
+    .row.labels
+      .col-md-3= t('.agency')
+      .col-md-3= t('.convention')
+      .col-md-3= t('.performance_indicators')
+    .row
+      .col-md-3
+        .btn-group.select{:style=>"width:240px;"}
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_agency')
+            %span.caret
+          %ul.dropdown-menu{:style => "list-style:none; padding-left:18px;"}
+            {{#all_agencies}}
+            <agencyFilterSelect id='{{id}}' name='{{name}}'/>
+            {{/all_agencies}}
+      .col-md-3
+        .btn-group.select{:style=>"width:240px;"}
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_convention')
+            %span.caret
+          %ul.dropdown-menu{:style => "list-style:none; padding-left:18px;"}
+            {{#all_conventions}}
+            <conventionFilterSelect id='{{id}}' name='{{name}}'/>
+            {{/all_conventions}}
       .col-md-3
         .btn-group.performance_indicator_select.select{:style=>"width:240px;"}
           %button.btn.btn-default.dropdown-toggle{:type => :button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left= t('.select_performance_indicators')
             %span.caret
           <performanceIndicatorFilterSelect />
+

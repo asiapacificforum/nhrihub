@@ -190,7 +190,8 @@ FilterMatch =
   include : ->
     @matches_title() &&
     @matches_area() &&
-    @matches_agency_convention() &&
+    @matches_agency() &&
+    @matches_convention() &&
     @matches_project_type() &&
     @matches_performance_indicator()
   matches_title : ->
@@ -200,18 +201,14 @@ FilterMatch =
     criterion = @get('filter_criteria.area_ids')
     value = @get('area_ids')
     @contains(criterion,value)
-  matches_agency_convention : ->
+  matches_agency : ->
     criterion = @get('filter_criteria.agency_ids')
     value = @get('agency_ids')
     agency_match = @contains(criterion,value)
-    agency_requirement = !_.isEmpty(criterion)
-
+  matches_convention : ->
     criterion = @get('filter_criteria.convention_ids')
     value = @get('convention_ids')
     convention_match = @contains(criterion,value)
-    convention_requirement = !_.isEmpty(criterion)
-
-    (agency_match && convention_match) || (agency_requirement && convention_requirement && (agency_match || convention_match))
   matches_project_type : ->
     criterion = @get('filter_criteria.project_type_ids')
     value = @get('project_type_ids')

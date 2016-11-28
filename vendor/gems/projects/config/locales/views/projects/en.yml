@@ -5,6 +5,7 @@ en:
       add_project: "Add Project"
       delete_project_confirmation_message: "Are you sure you want to delete project "
       delete_project_document_confirmation_message: "Are you sure you want to delete project document "
+
     projects_templates:
       title: "Title"
       title_error_message: "Title cannot be blank"
@@ -30,8 +31,10 @@ en:
       title: "Title"
       enter_text: "All or part of title text"
       select_area: "Select area"
-      agency_convention: "Agency/Convention"
-      select_agency_convention: "Select agency and convention"
+      agency: "Agency"
+      convention: "Convention"
+      select_agency: "Select agency"
+      select_convention: "Select convention"
       project_type: "Project type"
       select_project_type: "Select project type"
       performance_indicators: "Performance indicators"
@@ -58,6 +61,7 @@ en:
       activity : "Activity"
       performance_indicator : "Performance indicator"
       outcome : "Outcome"
+
   project_admin:
     show:
       heading: "Projects Configuration"
