@@ -10,5 +10,5 @@ class ViolationSeverity < ActiveRecord::Base
                     OpenStruct.new(:rank => 6),
                     OpenStruct.new(:rank => 7) ]
 
-  include OutreachMediaMetric
+  include MediaMetric
 end

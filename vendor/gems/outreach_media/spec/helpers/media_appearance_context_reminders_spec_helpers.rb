@@ -7,7 +7,8 @@ module MediaAppearanceContextRemindersSpecHelpers
 
   before do
     setup_database(nil)
-    visit outreach_media_media_appearances_path(:en)
+    setup_file_constraints
+    visit media_appearances_path(:en)
     expect(reminders_icon['data-count']).to eq "1"
     open_reminders_panel
   end

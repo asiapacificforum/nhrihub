@@ -1,0 +1,25 @@
+.admin.well
+  =form_tag media_appearance_filesize_path, :method => :put, :remote => true, :id => :update_filesize do
+    %table.table.borderless.filesize{:style => "width:200px;"}
+      %tbody
+        %tr
+          %td= t('.value')
+          %td
+            %span#filesize #{@filesize}
+            %span MB
+        %tr
+          %td
+            %button.btn.btn-success.btn-xs#change_filesize{:style => 'line-height:1.8;', :type => 'submit'}= t('.change')
+          %td
+            = text_field_tag :filesize, nil, :size => 6, :placeholder => "e.g. #{@filesize.to_i+2}"
+            %span MB
+
+:coffeescript
+  $ ->
+    $('#update_filesize').bind "ajax:success", (e,data,status,xhr)->
+      if !_.isEmpty(data.trim())
+        $('span#filesize').text(data)
+      $('input#filesize').val("")
+
+    $('#update_filesize').bind "ajax:error", (e,data,status,xhr)->
+      $('.message_block').html window.flash_error_template({message : data.responseText})

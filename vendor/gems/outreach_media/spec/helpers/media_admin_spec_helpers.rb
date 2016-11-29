@@ -43,7 +43,7 @@ module MediaAdminSpecHelpers
     ActionRole.
       joins(:action => :controller).
       where('actions.action_name' => ['create', 'destroy', 'update'],
-            'controllers.controller_name' => ['outreach_media/filetypes','outreach_media/filesizes']).
+            'controllers.controller_name' => ['media_appearance/filetypes','media_appearance/filesizes']).
       destroy_all
   end
 
@@ -86,11 +86,11 @@ module MediaAdminSpecHelpers
   end
 
   def model
-    OutreachEvent
+    MediaAppearance
   end
 
   def filesize_selector
-    '#outreach_event_filesize'
+    '#media_appearance_filesize'
   end
 
   def filesize_context
@@ -102,10 +102,10 @@ module MediaAdminSpecHelpers
   end
 
   def filetypes_selector
-    '#outreach_event_filetypes'
+    '#media_appearance_filetypes'
   end
 
   def admin_page
-    outreach_media_admin_path('en')
+    media_appearance_admin_path('en')
   end
 end

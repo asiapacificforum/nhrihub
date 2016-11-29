@@ -9,7 +9,7 @@ class ImpactRating < ActiveRecord::Base
                     OpenStruct.new(:rank => 4),
                     OpenStruct.new(:rank => 5) ]
 
-  include OutreachMediaMetric
+  include MediaMetric
 
   def as_json(options = {})
     super(:methods => [:rank_text], :except => [:rank, :created_at, :updated_at])

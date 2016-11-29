@@ -1,0 +1,57 @@
+.admin.well
+  %table.table.borderless.filetypes{:style => "width:200px;"}
+    %tbody
+
+  = form_for @filetype, :url => media_appearance_filetypes_path, :remote => true do |f|
+    %table.table.borderless{:style => "width:200px;"}
+      %tr
+        %td
+          %button.btn.btn-success.btn-xs{:style => 'line-height:1.8;', :type => 'submit'}= t('.add')
+        %td= f.text_field :ext, :size => 8, :placeholder => 'e.g. ppt'
+
+%script{:type => 'template/html', :id => :filetype_template}
+  %tr
+    %td.type {{ type }}
+    %td= link_to t('defaults.delete'), nil, :class => 'delete_filetype'
+
+:coffeescript
+  $ ->
+    _.templateSettings = {
+      interpolate: /\{\{(.+?)\}\}/g
+    }
+
+    filetype_template = _.template($("#filetype_template").html())
+
+    filetypes = #{@media_appearance_filetypes.to_json}
+    if filetypes.length == 0
+      $('.filetypes tbody').append "<tr><td id='empty'>#{t('.empty')}</td></tr>"
+    else
+      _.each filetypes, (filetype)->
+        $('.filetypes tbody').append filetype_template({type : filetype})
+
+    $('#new_media_appearance_filetype').bind "ajax:success", (e,data,status,xhr)->
+      $('.filetypes tbody').append filetype_template({type : data})
+      $('#media_appearance_filetype_ext').val('')
+      $('td#empty').closest('tr').remove()
+      $('.message_block').html ''
+
+    $('#new_media_appearance_filetype').bind "ajax:error", (e,data,status,xhr)->
+      $('.message_block').html window.flash_error_template({message : data.responseText})
+
+    $('table.filetypes').on 'click', 'a.delete_filetype', (e)->
+      e.preventDefault()
+      context = $(@).closest('tr')
+      id = context.find('.type').html()
+      url = "#{media_appearance_filetype_path('id')}".replace("id",id)
+      $.ajax
+        url: url
+        method: 'delete'
+        dataType: 'json'
+        context: context # becomes 'this' in the callback
+        success: (data, status, xhr)->
+          @remove()
+          if $('.type').length == 0
+            $('.filetypes tbody').append "<tr><td id='empty'>#{t('.empty')}</td></tr>"
+          $('.message_block').html('')
+        error: (data,status,xhr) ->
+          $('.message_block').html window.flash_error_template({message : data.responseText})

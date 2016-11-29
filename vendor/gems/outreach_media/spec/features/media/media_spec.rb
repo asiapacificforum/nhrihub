@@ -12,10 +12,11 @@ feature "show media archive", :js => true do
 
   before do
     setup_positivity_ratings
+    setup_file_constraints
     setup_areas
     FactoryGirl.create(:media_appearance, :hr_area, :positivity_rating => PositivityRating.first, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
     resize_browser_window
-    visit outreach_media_media_appearances_path(:en)
+    visit media_appearances_path(:en)
   end
 
   scenario "lists media appearances" do
@@ -37,7 +38,7 @@ feature "create a new article", :js => true do
     setup_file_constraints
     setup_strategic_plan
     resize_browser_window
-    visit outreach_media_media_appearances_path(:en)
+    visit media_appearances_path(:en)
     add_article_button.click
   end
 
@@ -131,7 +132,7 @@ feature "attempt to save with errors", :js => true do
     setup_violation_severities
     setup_file_constraints
     resize_browser_window
-    visit outreach_media_media_appearances_path(:en)
+    visit media_appearances_path(:en)
     add_article_button.click
   end
 
@@ -208,12 +209,16 @@ feature "when there are existing articles", :js => true do
   include MediaSpecHelper
   include MediaSetupHelper
 
+  before do
+    setup_file_constraints
+  end
+
   feature "and existing article has file attachment" do
     before do
       setup_database(:media_appearance_with_file)
       setup_file_constraints
       resize_browser_window
-      visit outreach_media_media_appearances_path(:en)
+      visit media_appearances_path(:en)
     end
 
     scenario "delete an article" do
@@ -344,7 +349,7 @@ feature "when there are existing articles", :js => true do
   feature "and existing article has link attachment" do
     before do
       setup_database(:media_appearance_with_link)
-      visit outreach_media_media_appearances_path(:en) # again, b/c setup changed
+      visit media_appearances_path(:en) # again, b/c setup changed
     end
 
     scenario "edit a link article and change to file" do
@@ -364,7 +369,7 @@ feature "when there are existing articles", :js => true do
   feature "panel expansion and editing" do
     before do
       setup_database(:media_appearance_with_link)
-      visit outreach_media_media_appearances_path(:en) # again, b/c setup changed
+      visit media_appearances_path(:en) # again, b/c setup changed
     end
 
     it "panel expanding should behave" do
@@ -390,9 +395,10 @@ feature "enforce single user add or edit action", :js => true do
 
   before do
     setup_database(:media_appearance_with_file)
+    setup_file_constraints
     add_a_second_article
     resize_browser_window
-    visit outreach_media_media_appearances_path(:en)
+    visit media_appearances_path(:en)
   end
 
   scenario "user tries to edit two articles" do
@@ -424,11 +430,15 @@ feature "view attachments", :js => true do
   include MediaSpecHelper
   include MediaSetupHelper
 
+  before do
+    setup_file_constraints
+  end
+
   scenario "download attached file" do
     unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
       setup_database(:media_appearance_with_file)
       @doc = MediaAppearance.first
-      visit outreach_media_media_appearances_path(:en)
+      visit media_appearances_path(:en)
       click_the_download_icon
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
       filename = @doc.original_filename
@@ -444,7 +454,7 @@ feature "view attachments", :js => true do
       expect(1).to eq 1
     else
       setup_database(:media_appearance_with_link)
-      visit outreach_media_media_appearances_path(:en)
+      visit media_appearances_path(:en)
       click_the_link_icon
       sleep(0.5)
       page.switch_to_window(page.windows[1])
@@ -462,8 +472,9 @@ feature "performance indicator association", :js => true do
   before do
     setup_database(:media_appearance_with_file)
     setup_strategic_plan
+    setup_file_constraints
     resize_browser_window
-    visit outreach_media_media_appearances_path(:en)
+    visit media_appearances_path(:en)
     sleep(0.4)
   end
 

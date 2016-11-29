@@ -1,6 +1,0 @@
-//= require 'jquery_datepicker'
-//= require 'filter_criteria_datepicker'
-//= require 'media_issues_shared/subarea'
-//= require 'performance_indicator'
-//= require 'in_page_edit'
-//= require './outreach_media/outreach/outreach_events'

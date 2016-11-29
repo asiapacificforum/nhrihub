@@ -5,6 +5,6 @@ class Area < ActiveRecord::Base
   end
 
   def url
-    Rails.application.routes.url_helpers.outreach_media_area_path(:en,id) if persisted?
+    Rails.application.routes.url_helpers.media_appearance_area_path(:en,id) if persisted?
   end
 end

@@ -5,7 +5,7 @@ class Subarea < ActiveRecord::Base
   end
 
   def url
-    Rails.application.routes.url_helpers.outreach_media_area_subarea_path(:en,area_id,id) if persisted?
+    Rails.application.routes.url_helpers.media_appearance_area_subarea_path(:en,area_id,id) if persisted?
   end
 
   def extended_name

@@ -9,5 +9,5 @@ class PositivityRating < ActiveRecord::Base
                     OpenStruct.new(:rank => 4),
                     OpenStruct.new(:rank => 5) ]
 
-  include OutreachMediaMetric
+  include MediaMetric
 end

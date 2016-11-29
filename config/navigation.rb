@@ -17,10 +17,7 @@ SimpleNavigation::Configuration.run do |navigation|
       end
     end
     primary.item :corporate_services, t('layout.nav.strat_plan'), corporate_services_strategic_plan_path("current")
-    primary.item :outreach_media, t('layout.nav.outreach_media') do |om|
-      om.item :outreach, t('layout.nav.outreach'), outreach_media_outreach_events_path
-      om.item :media, t('layout.nav.media'), outreach_media_media_appearances_path
-    end
+    primary.item :media, t('layout.nav.media'), media_appearances_path
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path
       ad.item :roles, t('layout.nav.role'), authengine_roles_path
@@ -29,7 +26,7 @@ SimpleNavigation::Configuration.run do |navigation|
       ad.item :nhri, t('layout.nav.nhri'), nhri_admin_path
       ad.item :gg, t('layout.nav.projects'), project_admin_path
       ad.item :corp_svcs, t('layout.nav.corporate_services'), corporate_services_admin_path
-      ad.item :or_media, t('layout.nav.outreach_media'), outreach_media_admin_path
+      ad.item :or_media, t('layout.nav.media'), media_appearance_admin_path
       ad.item :compl, t('layout.nav.complaints'), complaint_admin_path
       ad.item :doc, t('layout.nav.int_docs'), internal_document_admin_path
       ad.item :dash, t('layout.nav.dashboard'), dashboard_index_path

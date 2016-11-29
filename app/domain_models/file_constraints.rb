@@ -20,7 +20,7 @@ module FileConstraints
     end
 
     def permitted_filetypes
-      SiteConfig[filetypes_config_param]
+      SiteConfig[filetypes_config_param] || []
     end
 
     def permitted_filetypes=(val)
