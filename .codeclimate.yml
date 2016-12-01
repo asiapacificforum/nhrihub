@@ -22,12 +22,12 @@ engines:
 
 ratings:
   paths:
-  - app/**
-  - vendor/gems/**
+  - "app/**"
+  - "vendor/gems/**"
   - "**.rb"
 exclude_paths:
-  - spec/**/*
-  - **/spec/**/*
-  - db/schema.rb
-  - app/assets/javascripts/ractive.js
-  - app/assets/javascripts/ractive-bootstrap.js
+  - "spec/**/*"
+  - "**/spec/**/*"
+  - "db/schema.rb"
+  - "app/assets/javascripts/ractive.js"
+  - "app/assets/javascripts/ractive-bootstrap.js"
