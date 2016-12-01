@@ -47,7 +47,7 @@ end
 describe ".application_files" do
   it "should be an array of absolute file paths" do
     expect(ControllerFile.all_files).to be_a Array
-    expect(ControllerFile.all_files).to include(Rails.root.join("app/controllers/admin_controller.rb"))
+    expect(ControllerFile.all_files).to include(Rails.root.join("app/controllers/csp_reports_controller.rb"))
   end
 end
 

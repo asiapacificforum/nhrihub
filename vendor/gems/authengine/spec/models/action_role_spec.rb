@@ -15,7 +15,7 @@ describe 'permits_access_for class method' do
       UserRole.create(:role_id => role.id, :user_id => @user.id)
     end
 
-    let(:access_permitted){ ActionRole.permits_access_for(controller.controller_name, action.action_name, @user.roles(true).map(&:id)) }
+    let(:access_permitted){ ActionRole.permits_access_for(controller.controller_name, action.action_name, @user.roles.reload.map(&:id)) }
 
     context "user accesses a permitted action" do
       it { is_expected.to eq(true) }

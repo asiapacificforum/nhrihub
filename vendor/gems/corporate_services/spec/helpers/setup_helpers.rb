@@ -19,12 +19,6 @@ module SetupHelpers
     @performance_indicator = setup_performance_indicator
   end
 
-  def setup_outreach_events
-    oe = FactoryGirl.build(:outreach_event)
-    oe.performance_indicators = [@performance_indicator]
-    oe.save
-  end
-
   def setup_media_appearances
     ma = FactoryGirl.build(:media_appearance)
     ma.performance_indicators = [@performance_indicator]

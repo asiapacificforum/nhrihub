@@ -24,13 +24,13 @@ describe 'to_json' do
     expect(@project_ruby.keys).to include "id"
     expect(@project_ruby.keys).to include "title"
     expect(@project_ruby.keys).to include "description"
-    expect(@project_ruby.keys).to include "mandates"
-    expect(@project_ruby["mandates"]).to be_a Array
+    expect(@project_ruby.keys).to include "areas"
+    expect(@project_ruby["areas"]).to be_a Array
   end
 
   it "includes project types nested in the first mandate" do
-    expect(@project_ruby["mandates"][0].keys).to include "project_types"
-    expect(@project_ruby["mandates"][0].keys).to include "name"
+    expect(@project_ruby["areas"][0].keys).to include "project_types"
+    expect(@project_ruby["areas"][0].keys).to include "name"
   end
 
   it "includes project_types and not mandate_types inside the mandate" do

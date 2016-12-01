@@ -140,10 +140,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def register_new_token_response
-    #find by login params username/pw
-    #todo better to include replacement_token_registration_code as an additional auth param
-    user = User.find_and_authenticate_by_login_params(params[:user][:login], params[:user][:password])
-    if user.update_attributes(activation_params.slice(:u2f_register_response).merge(:replacement_token_registration_code => nil))
+    if User.register_new_token(activation_params)
       flash[:notice] =t('admin.users.register_new_token_response.registered')
       redirect_to root_path
     else

@@ -5,8 +5,6 @@ class PerformanceIndicator < ActiveRecord::Base
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
   has_many :media_appearance_performance_indicators, :dependent => :destroy
   has_many :media_appearances, :through => :media_appearance_performance_indicators
-  has_many :outreach_event_performance_indicators, :dependent => :destroy
-  has_many :outreach_events, :through => :outreach_event_performance_indicators
   has_many :project_performance_indicators, :dependent => :destroy
   has_many :projects, :through => :project_performance_indicators
   default_scope ->{ order(:index) }
@@ -25,7 +23,6 @@ class PerformanceIndicator < ActiveRecord::Base
                                     :reminders,
                                     :create_reminder_url,
                                     :notes,
-                                    :outreach_event_titles,
                                     :media_appearance_titles,
                                     :project_titles,
                                     :create_note_url]}
@@ -70,10 +67,6 @@ class PerformanceIndicator < ActiveRecord::Base
     ar = index.split('.')
     new_index = [new_prefix,ar[4]].join('.')
     update_attribute(:index, new_index)
-  end
-
-  def outreach_event_titles
-    outreach_events.map(&:title)
   end
 
   def media_appearance_titles

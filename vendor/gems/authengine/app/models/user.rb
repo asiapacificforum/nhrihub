@@ -19,6 +19,13 @@ class User < ActiveRecord::Base
     @lost_token
   end
 
+  def self.register_new_token(activation_params)
+    #find by login params username/pw
+    #todo better to include replacement_token_registration_code as an additional auth param
+    user = find_and_authenticate_by_login_params(activation_params[:login], activation_params[:password])
+    user.update_attributes(activation_params.slice(:u2f_register_response).merge(:replacement_token_registration_code => nil))
+  end
+
   def self.find_by_password_reset_code(password_reset_code)
     raise BlankPasswordResetCode if password_reset_code.blank?
     # find_by! raises ActiveRecord::RecordNotFound if not found
@@ -94,6 +101,7 @@ class User < ActiveRecord::Base
 
   before_save :encrypt_password
   before_create {|user| user.make_access_nonce('activation_code') }
+
 
 
   # prevents a user from submitting a crafted form that bypasses activation
@@ -336,6 +344,7 @@ protected
   def destroy_access_nonce(type)
     send("#{type}=", nil)
   end
+
 
 private
 

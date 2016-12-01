@@ -11,7 +11,6 @@ protected
   # Accesses the current user from the session.  Set it to nil if login fails
   # so that future calls do not hit the database.
   def current_user
-    #@current_user ||= (login_from_session || login_from_basic_auth || login_from_cookie || nil)
     @current_user ||= (login_from_session || nil)
   end
 
