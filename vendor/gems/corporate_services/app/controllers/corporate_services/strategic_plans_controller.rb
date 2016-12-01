@@ -4,7 +4,7 @@ class CorporateServices::StrategicPlansController < ApplicationController
     @strategic_priority = StrategicPriority.new
     if params[:id] == "current"
       #@strategic_plan = @strategic_plans.last # the current strategic plan
-      @strategic_plan = StrategicPlan.where("strategic_plans.start_date >= ? and strategic_plans.start_date < ?",Date.today.advance(:years => -1),Date.today).includes(:strategic_priorities => {:planned_results => {:outcomes => {:activities => {:performance_indicators => [:media_appearances, :projects, :notes, :reminders]}}}}).first
+      @strategic_plan = StrategicPlan.current.includes(:strategic_priorities => {:planned_results => {:outcomes => {:activities => {:performance_indicators => [:media_appearances, :projects, :notes, :reminders]}}}}).first
     else
       @strategic_plan = StrategicPlan.where(:id => params[:id]).includes(:strategic_priorities => {:planned_results => {:outcomes => {:activities => {:performance_indicators => [:media_appearances, :projects, :notes, :reminders]}}}}).first
     end
