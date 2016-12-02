@@ -3,6 +3,7 @@ class StrategicPlan < ActiveRecord::Base
 
   # an ActiveRecord::Relation is returned so that it can be merged, see PlannedResult.in_current_strategic_plan
   scope :current, ->{ where("strategic_plans.start_date >= ? and strategic_plans.start_date < ?",Date.today.advance(:years => -1),Date.today) }
+  scope :eager_loaded_associations, ->{includes(:strategic_priorities => {:planned_results => {:outcomes => {:activities => {:performance_indicators => [:media_appearances, :projects, :notes, :reminders]}}}})}
 
   def self.all_with_current
     ensure_current
