@@ -1,11 +1,11 @@
 class ProgressReport
   include ViewPath
 
-  attr_accessor :media_appearances, :outreach_events, :projects, :progress_items, :xml
+  attr_accessor :media_appearances, :projects, :progress_items, :xml
 
-  def initialize(media_appearances, outreach_events, projects)
-    @media_appearances, @outreach_events, @projects = [media_appearances, outreach_events, projects]
-    @progress_items = [media_appearances, outreach_events, projects].flatten
+  def initialize(media_appearances, projects)
+    @media_appearances, @projects = [media_appearances, projects]
+    @progress_items = [media_appearances, projects].flatten
     generate_xml
   end
 

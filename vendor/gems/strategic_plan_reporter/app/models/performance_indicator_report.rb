@@ -14,7 +14,7 @@ class PerformanceIndicatorReport
     @xml += blank_performance_indicator if performance_indicators.length.zero?
     performance_indicators.each do |pi|
       @xml += performance_indicator(i==0,pi)
-      @xml += ProgressReport.new(pi.media_appearances, pi.outreach_events, pi.projects).to_xml
+      @xml += ProgressReport.new(pi.media_appearances, pi.projects).to_xml
       i+=1
     end
   end
