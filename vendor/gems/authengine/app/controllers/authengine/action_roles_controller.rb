@@ -27,7 +27,7 @@ class Authengine::ActionRolesController < ApplicationController
          elsif val=="0" && a # a newly-unchecked checkbox
            to_be_deleted = ActionRole.find_by_role_id_and_action_id(role_id,action_id)
            to_be_deleted.delete_corresponding_create_and_update
-           to_be_deleted.delete
+           to_be_deleted.destroy
          end
       end
     end

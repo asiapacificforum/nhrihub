@@ -1,5 +1,5 @@
 class ActionRole < ActiveRecord::Base
-  belongs_to :role
+  belongs_to :role, :touch => true
   belongs_to :action
 
   scope :for_developer, -> { joins(:role).merge(Role.developer) }
