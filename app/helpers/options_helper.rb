@@ -4,7 +4,8 @@ module OptionsHelper
   end
 
   def recipients_options
-    User.all.sort_by{|u| [u.lastName, u.firstName]}.collect{|u| [u.first_last_name,u.id]}
+    #User.all.sort_by{|u| [u.lastName, u.firstName]}.collect{|u| [u.first_last_name,u.id]}
+    User.pluck(:lastName,:firstName,:id).sort.collect{|u| [[u[1],u[0]].join(" "), u[2]]}
   end
 
   def start_month_options
