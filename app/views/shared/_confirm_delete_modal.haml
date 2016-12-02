@@ -15,6 +15,3 @@
         .modal-footer
           %a.btn.btn-sm.btn-default#cancel{:type => :button, 'data-dismiss'=>'modal'}= t('cancel')
           %a.btn.btn-sm.btn-danger.btn-ok#confirm{'on-click' => 'delete_item()'}= t('delete')
-
-
-= javascript_include_tag 'confirm_delete_modal'
