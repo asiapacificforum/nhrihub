@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/asiapacificforum/surus.git
+  revision: 36cb18a62a207dcc0755c44de48f8f3adb2a3add
+  ref: 36cb18a
+  specs:
+    surus (0.6.4)
+      activerecord (> 4.1)
+
+GIT
   remote: git://github.com/lazylester/message_block.git
   revision: cb7dc71a9f2ae71be8940788f43632c9b1057318
   specs:
@@ -465,6 +473,7 @@ DEPENDENCIES
   spring
   sshkit (~> 1.5)
   strategic_plan_reporter!
+  surus!
   teaspoon
   teaspoon-mocha
   therubyracer

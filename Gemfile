@@ -98,6 +98,7 @@ gem "rails-settings-cached", '~> 0.4.2'
 gem "underscore-rails"
 gem "capistrano-linked-files"
 gem "message_block", github: "lazylester/message_block"
+gem "surus", github: "asiapacificforum/surus", :ref => "36cb18a" # postgres direct to json
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'

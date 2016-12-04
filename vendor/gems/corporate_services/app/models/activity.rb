@@ -10,16 +10,12 @@ class Activity < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super(:except =>  [:updated_at, :created_at],
+    super(:except =>  [:updated_at, :created_at, :progress], #progress shouldn't even be in the schema!
           :methods => [:indexed_description,
                        :performance_indicators,
                        :url,
                        :description_error,
-                       #:reminders, # shouldn't be here... didn't cause a problem until rails5
-                       #:create_reminder_url,
                        :create_performance_indicator_url]
-                       #:notes,
-                       #:create_note_url]
          )
   end
 

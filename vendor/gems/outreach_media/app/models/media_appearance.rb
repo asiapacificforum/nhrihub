@@ -21,7 +21,7 @@ class MediaAppearance < ActiveRecord::Base
 
   attachment :file
 
-  default_scope { order('created_at desc') }
+  default_scope { order('media_appearances.created_at desc') }
 
   before_save do |media_appearance|
     if !media_appearance.is_hr_violation?
