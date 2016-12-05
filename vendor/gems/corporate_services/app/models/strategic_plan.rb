@@ -5,6 +5,9 @@ class StrategicPlan < ActiveRecord::Base
   scope :current, ->{ where("strategic_plans.start_date >= ? and strategic_plans.start_date < ?",Date.today.advance(:years => -1),Date.today) }
   scope :eager_loaded_associations, ->{includes(:strategic_priorities => {:planned_results => {:outcomes => {:activities => {:performance_indicators => [:media_appearances, :projects, :notes, :reminders]}}}})}
 
+  # leave this here as something to investigate in the future, At the moment it does not seem to improve
+  # TTFB, but benchmark shows it's 10x faster than instantiating AR objects
+  # it uses the surus gem, patched for has_many through associations
   def self.load_sql
     media_appearances = {:media_appearances => {:columns => [:title]}}
     projects = {:projects => {:columns => [:title]}}
