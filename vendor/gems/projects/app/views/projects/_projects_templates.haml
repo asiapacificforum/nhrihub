@@ -140,9 +140,12 @@
       .row
         {{#areas}}
         .col-md-3.area{:style => "padding-top:0;"}
-          %label
-            %span {{name}}
-            %input{:id=>'{{key}}', :type => :checkbox, :name => '{{area_ids}}', :value => '{{id}}', :style => "margin-left:20px;"}
+          .row
+            .col-md-9
+              %label
+                %span {{name}}
+            .col-md-3
+              %input{:id=>'{{key}}', :type => :checkbox, :name => '{{area_ids}}', :value => '{{id}}'}
         {{/areas}}
 
 %script#edit_title{:type => 'template/ractive'}
