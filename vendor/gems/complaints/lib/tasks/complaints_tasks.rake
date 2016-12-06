@@ -30,8 +30,8 @@ namespace :complaints do
       complaint.good_governance_complaint_bases << GoodGovernance::ComplaintBasis.all.sample(2)
       complaint.human_rights_complaint_bases << Nhri::ComplaintBasis.all.sample(2)
       complaint.special_investigations_unit_complaint_bases << Siu::ComplaintBasis.all.sample(2)
-      complaint.status_changes << FactoryGirl.create(:status_change, :user_id => User.all.sample.id)
-      complaint.mandate_ids = Mandate.pluck(:id).sample
+      complaint.status_changes << FactoryGirl.create(:status_change, :open, :user_id => User.all.sample.id)
+      complaint.mandate_id = Mandate.pluck(:id).sample(1)
       complaint.agency_ids = Agency.pluck(:id).sample(2)
     end
   end

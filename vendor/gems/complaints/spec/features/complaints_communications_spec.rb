@@ -56,7 +56,6 @@ feature "complaints communications", :js => true do
       choose("Sent")
       expect(page).to have_selector("#email_address")
       fill_in("email_address", :with => "norm@normco.com")
-      select("Hailee Ortiz", :from => "communication_by")
 
       # cannot add another until the last was filled in with a value
       expect(all('input.communicant').count).to eq 1
@@ -104,7 +103,7 @@ feature "complaints communications", :js => true do
     expect(raw_persisted_date).to eq "2016-05-19 07:00:00"
     expect(communication.date.inspect).to eq "Thu, 19 May 2016 07:00:00 UTC +00:00"
     expect(communication.direction).to eq "sent"
-    expect(communication.user.first_last_name).to eq "Hailee Ortiz"
+    expect(communication.user.first_last_name).to eq User.first.first_last_name
     expect(communication.note).to eq "Some note text"
     expect(communication.communication_documents.first.title).to eq "random stuff"
     expect(communication.communicants[0].name).to eq "Harry Harker"
@@ -116,7 +115,7 @@ feature "complaints communications", :js => true do
     communication = page.all('#communications .communication')[1]
     within communication do
       expect(find('.date').text).to eq "2016, May 19"
-      expect(find('.by').text).to eq "Hailee Ortiz"
+      expect(find('.by').text).to eq User.first.first_last_name
       expect(all('.with')[0].text).to eq "Harry Harker"
       expect(all('.with')[1].text).to eq "Harriet Harker"
       expect(all('.with')[2].text).to eq "Margarita Cormier"
@@ -133,12 +132,9 @@ feature "complaints communications", :js => true do
     add_communication
     expect{ save_communication }.not_to change{ Communication.count }
     expect(page).to have_selector('#mode .help-block', :text => 'You must select a method')
-    expect(page).to have_selector('#communication_by .help-block', :text => 'You must select a user')
     within new_communication do
       choose("Email")
       expect(page).not_to have_selector('#mode .help-block', :text => 'You must select a method')
-      select("Hailee Ortiz", :from => "communication_by")
-      expect(page).not_to have_selector('#communication_by .help-block', :text => 'You must select a user')
     end
   end
 
@@ -149,12 +145,9 @@ feature "complaints communications", :js => true do
     end
     expect{ save_communication }.not_to change{ Communication.count }
     expect(page).to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
-    expect(page).to have_selector('#communication_by .help-block', :text => 'You must select a user')
     within new_communication do
       choose("Received")
       expect(page).not_to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
-      select("Hailee Ortiz", :from => "communication_by")
-      expect(page).not_to have_selector('#communication_by .help-block', :text => 'You must select a user')
     end
   end
 
@@ -162,15 +155,12 @@ feature "complaints communications", :js => true do
     add_communication
     expect{ save_communication }.not_to change{ Communication.count }
     expect(page).not_to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
-    expect(page).to have_selector('#communication_by .help-block', :text => 'You must select a user')
     expect(page).to have_selector('#mode .help-block', :text => 'You must select a method')
     within new_communication do
       choose("Email")
       expect(page).not_to have_selector('#mode .help-block', :text => 'You must select a method')
       choose("Received")
       expect(page).not_to have_selector('#sent_or_received .help-block', :text => 'You must select sent or received')
-      select("Hailee Ortiz", :from => "communication_by")
-      expect(page).not_to have_selector('#communication_by .help-block', :text => 'You must select a user')
     end
   end
 
@@ -180,7 +170,6 @@ feature "complaints communications", :js => true do
       choose("Email")
       choose("Received")
       fill_in("email_address", :with => "norm@normco.com")
-      select("Hailee Ortiz", :from => "communication_by")
     end
     expect{ save_communication }.not_to change{ Communication.count }
     expect(page).to have_selector('.name_error', :text => "Name can't be blank")
@@ -195,7 +184,6 @@ feature "complaints communications", :js => true do
       choose("Email")
       choose("Received")
       expect(page).to have_selector("#email_address")
-      select("Hailee Ortiz", :from => "communication_by")
     end
     expect{ save_communication }.not_to change{ Communication.count }
     expect(page).to have_selector('.email_error', :text => "Email can't be blank")
@@ -210,7 +198,6 @@ feature "complaints communications", :js => true do
       choose("Phone")
       choose("Received")
       expect(page).to have_selector("#phone")
-      select("Hailee Ortiz", :from => "communication_by")
     end
     expect{ save_communication }.not_to change{ Communication.count }
     expect(page).to have_selector('.phone_error', :text => "Phone number can't be blank")
@@ -225,7 +212,6 @@ feature "complaints communications", :js => true do
       choose("Letter")
       choose("Received")
       expect(page).to have_selector("#address")
-      select("Hailee Ortiz", :from => "communication_by")
     end
     expect{ save_communication }.not_to change{ Communication.count }
     expect(page).to have_selector('.address_error', :text => "Address can't be blank")
@@ -240,7 +226,6 @@ feature "complaints communications", :js => true do
       choose("Email")
       set_datepicker('new_communication_date',"2016, May 19")
       choose("Received")
-      select("Hailee Ortiz", :from => "communication_by")
       fill_in("note", :with => "Some note text")
       attach_file('communication_document_file', upload_document)
       fill_in("attached_document_title", :with => "random stuff")
@@ -250,7 +235,6 @@ feature "complaints communications", :js => true do
     add_communication
     expect(page).to have_selector('#new_communication')
     expect(page.find('#new_communication_date').value).to eq DateTime.now.to_date.to_s
-    expect(page.find('select#communication_by').value).to be_blank
     expect(page).not_to have_checked_field('#email_mode')
     expect(page).not_to have_checked_field('#phone_mode')
     expect(page).not_to have_checked_field('#letter_mode')

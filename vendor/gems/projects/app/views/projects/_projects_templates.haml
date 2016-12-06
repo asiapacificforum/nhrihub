@@ -142,7 +142,7 @@
         .col-md-3.area{:style => "padding-top:0;"}
           .row
             .col-md-9
-              %label
+              %label{:for => '{{key}}'}
                 %span {{name}}
             .col-md-3
               %input{:id=>'{{key}}', :type => :checkbox, :name => '{{area_ids}}', :value => '{{id}}'}

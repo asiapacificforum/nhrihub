@@ -1,5 +1,8 @@
 #= require 'ractive_validator'
 #= require 'ractive_local_methods'
+#= require 'confirm_delete_modal'
+#= require 'remindable'
+#= require 'notable'
 $ ->
   Attribute = Ractive.extend
     template : "<div class='col-md-2' style='width:{{column_width}}%'> {{description}} </div>"

@@ -9,12 +9,3 @@
         .modal-body
           <attachedDocuments parent='{{parent}}' attached_documents='{{attached_documents}}' key='communication_document'>
         .modal-footer
-
-:coffeescript
-  @documents = new Ractive
-    el : '#documents'
-    template : '#documents_modal_template'
-    components :
-      attachedDocuments : AttachedDocuments
-    showModal : ->
-      $(@find('#documents_modal')).modal('show')

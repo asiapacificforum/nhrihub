@@ -1,15 +1,24 @@
-//= require 'in_page_edit'
-//= require 'ractive_validator'
-//= require 'file_input_decorator'
-//= require 'progress_bar'
-//= require 'ractive_local_methods'
-//= require 'string'
-//= require 'jquery_datepicker'
-//= require 'filter_criteria_datepicker'
-//= require 'confirm_delete_modal'
-//= require 'attached_documents'
-//= require 'communication'
+#= require 'in_page_edit'
+#= require 'ractive_validator'
+#= require 'file_input_decorator'
+#= require 'progress_bar'
+#= require 'ractive_local_methods'
+#= require 'string'
+#= require 'jquery_datepicker'
+#= require 'filter_criteria_datepicker'
+#= require 'confirm_delete_modal'
+#= require 'attached_documents'
+#= require 'communication'
+#= require 'notable'
+#= require 'remindable'
 
+@documents = new Ractive
+  el : '#documents'
+  template : '#documents_modal_template'
+  components :
+    attachedDocuments : AttachedDocuments
+  showModal : ->
+    $(@find('#documents_modal')).modal('show')
 
 EditInPlace = (node,id)->
   ractive = @

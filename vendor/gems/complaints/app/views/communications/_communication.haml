@@ -97,15 +97,6 @@
       .col-sm-2.col-sm-offset-4
         %i.fa.fa-remove.fa-lg#cancel_communication{:style=>"padding-left:30px", "on-click"=>"cancel_communication()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>t("cancel")}
         %i.fa.fa-check.fa-lg#save_communication{:style=>"padding-left:60px", "on-click"=>"save_communication()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>t("save")}
-    .row.form-group#communication_by{:class => '{{#user_id_error}}has-error{{/}}'}
-      %label.control-label.col-sm-2= t('.communication_by')
-      .col-sm-8
-        %select.form-control#communication_by{:value => '{{user_id}}', 'on-change'=>"remove_errors('user_id')"}
-          %option{:value => '', :selected => true, :disabled => true, :style =>"color:#333;"}=t('.select_user')
-          {{#all_staff}}
-          %option{:value => '{{id}}'} {{ first_last_name }}
-          {{/all_staff}}
-        %span.help-block= t('.user_id_error_message')
     .row.form-group#sent_or_received
       {{> select_direction }}
     .row.form-group#mode{:class => '{{#mode_error}}has-error{{/}}'}
@@ -159,8 +150,6 @@
           %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()', 'data-toggle' => :tooltip, :title => t('icon.delete')}
 
 #communication
-
-=javascript_include_tag 'communication'
 
 :coffeescript
   @Communications =

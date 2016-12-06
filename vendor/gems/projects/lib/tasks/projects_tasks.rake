@@ -13,7 +13,7 @@ namespace :projects do
   desc "populates the mandates table"
   task :populate_mandates => :environment do
     Mandate.destroy_all
-    ["good_governance", "human_rights", "special_investigations_unit"].each do |key|
+    ["good_governance", "human_rights", "special_investigations_unit", "corporate_services"].each do |key|
       Mandate.create(:key => key)
     end
   end

@@ -1,7 +1,7 @@
-//= require 'ractive_validator'
-//= require 'progress_bar'
-//= require 'single_note_modal'
-//= require 'single_month_datepicker'
+#= require 'ractive_validator'
+#= require 'progress_bar'
+#= require 'single_note_modal'
+#= require 'single_month_datepicker'
 
 CommunicationDocuments = Ractive.extend
   oninit : ->
@@ -109,7 +109,6 @@ Communication = Ractive.extend
   oninit : ->
     @set
       validation_criteria :
-        user_id : 'numeric'
         mode: ['match',['email','phone','letter','face to face']]
         direction: =>
           # return true if attribute is valid, validator handles the error attribute

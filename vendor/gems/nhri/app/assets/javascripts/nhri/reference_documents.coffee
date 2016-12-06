@@ -3,6 +3,8 @@
 #= require ractive_validator
 #= require ractive_local_methods
 #= require flash
+#= require 'confirm_delete_modal'
+#= require 'remindable'
 
 $ ->
   FileInput = (node)->

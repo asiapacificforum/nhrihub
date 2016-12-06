@@ -170,6 +170,8 @@
 %script#detailsTitle{:type => "template/ractive"}
   %span{:style => 'z-index:20'}= t('.details')
 
+= javascript_include_tag 'confirm_delete_modal'
+
 :coffeescript
   @members = #{@members.to_json}
   @new_member = #{@new_member.to_json}
