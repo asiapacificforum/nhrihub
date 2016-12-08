@@ -1,7 +1,6 @@
 require 'active_support/concern'
 module StrategicPlanIndex
   extend ActiveSupport::Concern
-
   def <=>(other)
     self.index.split('.').map(&:to_i) <=> other.index.split('.').map(&:to_i)
   end
@@ -10,12 +9,16 @@ module StrategicPlanIndex
     [0,1].include?(self <=> other)
   end
 
+  def create_index
+    increment? ? incremented_index : parent_index+'.1'
+  end
+
   def decrement_index
     ar = index.split('.')
     new_suffix = ar.pop.to_i.pred.to_i
     ar << new_suffix
     new_index = ar.join('.')
-    update_attribute(:index, ar.join('.'))
+    update_attribute(:index, new_index)
     index_descendant.each{|o| o.decrement_index_prefix(new_index)}
   end
 
@@ -40,5 +43,25 @@ module StrategicPlanIndex
     else
       [index, description].join(' ')
     end
+  end
+
+  private
+  def parent_index
+    index_parent.index
+  end
+
+  def increment?
+    previous_instance && previous_instance.index.gsub(/\.\d*$/,'') == parent_index
+  end
+
+  def incremented_index
+    ar = previous_instance.index.split('.')
+    ar[-1] = ar[-1].to_i.succ.to_s
+    ar.join('.')
+  end
+
+  def previous_instance
+    instances = index_parent.send(self.class.name.tableize.to_sym).reload
+    instances.last unless instances.blank?
   end
 end
