@@ -1,18 +1,12 @@
 # Manages the automatic indexing of PlannedResult, Outcome, Activity, PerformanceIndicator
 class StrategicPlanIndexer
-  Parents = { :planned_result => :strategic_priority,
-              :outcome => :planned_result,
-              :activity => :outcome,
-              :performance_indicator => :activity,
-              :target => :activity }
-
   attr_accessor :object, :parent
   def self.create(object)
     new(object).next
   end
 
   def parent
-    object.send(Parents[object.class.name.tableize.singularize.to_sym])
+    object.index_parent
   end
 
   def initialize(object)

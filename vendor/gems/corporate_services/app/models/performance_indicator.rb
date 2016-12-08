@@ -45,6 +45,10 @@ class PerformanceIndicator < ActiveRecord::Base
     []
   end
 
+  def index_parent
+    activity
+  end
+
   def media_appearance_titles
     media_appearances.map(&:title)
   end

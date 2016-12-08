@@ -27,6 +27,10 @@ class Outcome < ActiveRecord::Base
     activities
   end
 
+  def index_parent
+    planned_result
+  end
+
   def description_error
     nil
   end

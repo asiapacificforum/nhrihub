@@ -43,6 +43,10 @@ class Activity < ActiveRecord::Base
     performance_indicators
   end
 
+  def index_parent
+    outcome
+  end
+
   def url
     Rails.application.routes.url_helpers.corporate_services_outcome_activity_path(:en,outcome_id,id)
   end

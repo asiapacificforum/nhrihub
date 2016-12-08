@@ -47,6 +47,10 @@ class PlannedResult < ActiveRecord::Base
     outcomes
   end
 
+  def index_parent
+    strategic_priority
+  end
+
   def create_outcome_url
     Rails.application.routes.url_helpers.corporate_services_planned_result_outcomes_path(:en,id)
   end
