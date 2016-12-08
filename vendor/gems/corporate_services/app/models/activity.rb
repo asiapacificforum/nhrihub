@@ -6,7 +6,7 @@ class Activity < ActiveRecord::Base
   # strip index if user has entered it
   before_create do
     self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
-    self.index = StrategicPlanIndexer.new(self,outcome).next
+    self.index = StrategicPlanIndexer.create(self)
   end
 
   def as_json(options={})

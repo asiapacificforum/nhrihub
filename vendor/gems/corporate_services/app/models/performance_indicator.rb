@@ -11,7 +11,7 @@ class PerformanceIndicator < ActiveRecord::Base
 
   before_create do
     self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
-    self.index = StrategicPlanIndexer.new(self,activity).next
+    self.index = StrategicPlanIndexer.create(self)
   end
 
   def as_json(options={})

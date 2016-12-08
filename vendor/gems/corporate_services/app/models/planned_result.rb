@@ -9,7 +9,7 @@ class PlannedResult < ActiveRecord::Base
   # strip index if user has entered it
   before_create do
     self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
-    self.index = StrategicPlanIndexer.new(self,strategic_priority).next
+    self.index = StrategicPlanIndexer.create(self)
   end
 
   after_destroy do |planned_result|
