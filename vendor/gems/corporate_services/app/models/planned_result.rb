@@ -1,4 +1,5 @@
 class PlannedResult < ActiveRecord::Base
+  include StrategicPlanIndex
   belongs_to :strategic_priority
   has_many :outcomes, :dependent => :destroy, :autosave => true
   accepts_nested_attributes_for :outcomes
@@ -31,14 +32,6 @@ class PlannedResult < ActiveRecord::Base
     collection
   end
 
-  def <=>(other)
-    self.index.split('.').map(&:to_i) <=> other.index.split('.').map(&:to_i)
-  end
-
-  def >=(other)
-    [0,1].include?(self <=> other)
-  end
-
   def as_json(options = {})
     default_options = {:except => [:updated_at, :created_at],
                        :methods => [:url, :indexed_description, :description, :outcomes, :create_outcome_url, :description_error]}
@@ -50,38 +43,12 @@ class PlannedResult < ActiveRecord::Base
     nil
   end
 
-  def increment_index_root
-    ar = index.split('.')
-    ar[0] = ar[0].to_i.succ.to_s
-    new_index = ar.join('.')
-    update_attribute(:index, new_index)
-    outcomes.each{|o| o.increment_index_root}
-  end
-
-  # e.g. 2.1 -> 1.1
-  def decrement_index_prefix(new_prefix)
-    ar = index.split('.')
-    ar[0] = new_prefix
-    new_index = ar.join('.')
-    update_attribute(:index, new_index)
-    outcomes.each{|o| o.decrement_index_prefix(new_index)}
-  end
-
-  def decrement_index
-    ar = index.split('.')
-    new_suffix = ar.pop.to_i.pred.to_i
-    ar << new_suffix
-    new_index = ar.join('.')
-    update_attribute(:index, ar.join('.'))
-    outcomes.each{|o| o.decrement_index_prefix(new_index)}
+  def index_descendant
+    outcomes
   end
 
   def create_outcome_url
     Rails.application.routes.url_helpers.corporate_services_planned_result_outcomes_path(:en,id)
-  end
-
-  def indexed_description
-    [index, description].join(' ')
   end
 
   def url

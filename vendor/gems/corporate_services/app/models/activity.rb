@@ -1,4 +1,5 @@
 class Activity < ActiveRecord::Base
+  include StrategicPlanIndex
   belongs_to  :outcome
   has_many :performance_indicators, :dependent => :destroy
   default_scope ->{ order(:index) }
@@ -38,36 +39,8 @@ class Activity < ActiveRecord::Base
     lower_indexes.each{|a| a.decrement_index }
   end
 
-  def <=>(other)
-    self.index.split('.').map(&:to_i) <=> other.index.split('.').map(&:to_i)
-  end
-
-  def >=(other)
-    [0,1].include?(self <=> other)
-  end
-
-  def increment_index_root
-    ar = index.split('.')
-    ar[0] = ar[0].to_i.succ.to_s
-    new_index = ar.join('.')
-    update_attribute(:index, new_index)
-    performance_indicators.each{|pr| pr.increment_index_root}
-  end
-
-  def decrement_index
-    ar = index.split('.')
-    new_suffix = ar.pop.to_i.pred.to_i
-    ar << new_suffix
-    new_index = ar.join('.')
-    update_attribute(:index, ar.join('.'))
-    performance_indicators.each{|o| o.decrement_index_prefix(new_index)}
-  end
-
-  def decrement_index_prefix(new_prefix)
-    ar = index.split('.')
-    new_index = [new_prefix,ar[3]].join('.')
-    update_attribute(:index, new_index)
-    performance_indicators.each{|o| o.decrement_index_prefix(new_index)}
+  def index_descendant
+    performance_indicators
   end
 
   def url
@@ -76,14 +49,6 @@ class Activity < ActiveRecord::Base
 
   def description_error
     nil
-  end
-
-  def indexed_description
-    if description.blank?
-      ""
-    else
-      [index, description].join(' ')
-    end
   end
 
   def copy

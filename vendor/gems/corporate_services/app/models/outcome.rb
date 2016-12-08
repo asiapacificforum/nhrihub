@@ -1,4 +1,5 @@
 class Outcome < ActiveRecord::Base
+  include StrategicPlanIndex
   belongs_to :planned_result
   has_many :activities, :autosave => true, :dependent => :destroy
 
@@ -22,41 +23,12 @@ class Outcome < ActiveRecord::Base
     lower_indexes.each{|o| o.decrement_index }
   end
 
-
-  def <=>(other)
-    self.index.split('.').map(&:to_i) <=> other.index.split('.').map(&:to_i)
-  end
-
-  def >=(other)
-    [0,1].include?(self <=> other)
-  end
-
-  def decrement_index
-    ar = index.split('.')
-    new_suffix = ar.pop.to_i.pred.to_i
-    ar << new_suffix
-    new_index = ar.join('.')
-    update_attribute(:index, ar.join('.'))
-    activities.each{|o| o.decrement_index_prefix(new_index)}
+  def index_descendant
+    activities
   end
 
   def description_error
     nil
-  end
-
-  def increment_index_root
-    ar = index.split('.')
-    ar[0] = ar[0].to_i.succ.to_s
-    new_index = ar.join('.')
-    update_attribute(:index, new_index)
-    activities.each{|a| a.increment_index_root}
-  end
-
-  def decrement_index_prefix(new_prefix)
-    ar = index.split('.')
-    new_index = [new_prefix,ar[2]].join('.')
-    update_attribute(:index, new_index)
-    activities.each{|o| o.decrement_index_prefix(new_index)}
   end
 
   def url
@@ -65,14 +37,6 @@ class Outcome < ActiveRecord::Base
 
   def create_activity_url
     Rails.application.routes.url_helpers.corporate_services_outcome_activities_path(:en,id)
-  end
-
-  def indexed_description
-    if description.blank?
-      ""
-    else
-      [index, description].join(' ')
-    end
   end
 
   def copy

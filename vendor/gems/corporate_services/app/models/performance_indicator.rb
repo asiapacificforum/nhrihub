@@ -1,4 +1,5 @@
 class PerformanceIndicator < ActiveRecord::Base
+  include StrategicPlanIndex
   include Rails.application.routes.url_helpers
   belongs_to :activity
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
@@ -40,33 +41,8 @@ class PerformanceIndicator < ActiveRecord::Base
     lower_indexes.each{|pi| pi.decrement_index }
   end
 
-  def <=>(other)
-    self.index.split('.').map(&:to_i) <=> other.index.split('.').map(&:to_i)
-  end
-
-  def >=(other)
-    [0,1].include?(self <=> other)
-  end
-
-  def increment_index_root
-    ar = index.split('.')
-    ar[0] = ar[0].to_i.succ.to_s
-    new_index = ar.join('.')
-    update_attribute(:index, new_index)
-  end
-
-  def decrement_index
-    ar = index.split('.')
-    new_suffix = ar.pop.to_i.pred.to_i
-    ar << new_suffix
-    new_index = ar.join('.')
-    update_attribute(:index, ar.join('.'))
-  end
-
-  def decrement_index_prefix(new_prefix)
-    ar = index.split('.')
-    new_index = [new_prefix,ar[4]].join('.')
-    update_attribute(:index, new_index)
+  def index_descendant
+    []
   end
 
   def media_appearance_titles
@@ -102,13 +78,6 @@ class PerformanceIndicator < ActiveRecord::Base
     nil
   end
 
-  def indexed_description
-    if description.blank?
-      ""
-    else
-      [index, description].join(' ')
-    end
-  end
 
   def indexed_target
     if target.blank?
