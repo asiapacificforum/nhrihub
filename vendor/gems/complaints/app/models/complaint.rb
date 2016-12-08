@@ -66,6 +66,10 @@ class Complaint < ActiveRecord::Base
     end
   end
 
+  def <=>(other)
+    case_reference <=> other.case_reference
+  end
+
   def as_json(options = {})
     super( :methods => [:reminders, :notes, :assigns,
                         :current_assignee_id,

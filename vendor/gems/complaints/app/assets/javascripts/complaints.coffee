@@ -346,16 +346,17 @@ Complaint = Ractive.extend
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
         'complaint_category_ids', 'agency_ids', 'attached_documents_attributes',
-        'age', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender']
+        'age', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received']
     url : ->
       Routes.complaint_path(current_locale, @get('id'))
     formatted_date :
       get: ->
-        if _.isEmpty(@get('date'))
+        if _.isEmpty(@get('date_received'))
           ""
         else
-          $.datepicker.formatDate("yy, M d", new Date(@get('date')) )
-      set: (val)-> @set('date', $.datepicker.parseDate( "yy, M d", val))
+          $.datepicker.formatDate("yy, M d", new Date(@get('date_received')) )
+      set: (val)->
+        @set('date_received', $.datepicker.parseDate( "yy, M d", val))
     create_reminder_url : ->
       Routes.complaint_reminders_path('en', @get('id'))
     create_note_url : ->
@@ -578,6 +579,7 @@ complaints_options =
         village : ""
         imported : false
         complained_to_subject_agency : false
+        date_received : null
       UserInput.claim_user_input_request(@,'cancel_add_complaint')
       @unshift('complaints',new_complaint)
   cancel_add_complaint : ->

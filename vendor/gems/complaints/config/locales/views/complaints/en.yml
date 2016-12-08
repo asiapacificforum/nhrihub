@@ -44,8 +44,9 @@ en:
       select_agency: 'Select agency'
       assignee: 'Assignee'
       complaint_documents : 'Complaint documents'
-      # filter controls:
+      date_received : "Date received"
 
+      # filter controls:
       search: "Search for complaints by:"
       date_from: "Since date:"
       date_to: "Before date:"

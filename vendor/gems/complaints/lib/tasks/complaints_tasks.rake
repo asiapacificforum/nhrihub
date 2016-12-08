@@ -7,7 +7,7 @@ namespace :complaints do
   task :populate_complaints => [:environment, :populate_complaint_bases, :populate_cats, 'projects:populate_mandates', 'projects:populate_agnc'] do
     Complaint.destroy_all
     3.times do |i|
-      complaint = FactoryGirl.create(:complaint, :case_reference => "C16/#{i+1}")
+      complaint = FactoryGirl.create(:complaint, :case_reference => "C16-#{3-i}")
 
       # avoid creating too many users... creates login collisions
       if User.count > 20

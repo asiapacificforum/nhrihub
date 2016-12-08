@@ -165,6 +165,7 @@ feature "complaints index", :js => true do
       check_agency("ACC")
       attach_file("complaint_fileinput", upload_document)
       fill_in("attached_document_title", :with => "Complaint Document")
+      select_datepicker_date("#date_received",Date.today.year,Date.today.month,16)
     end
     expect(page).to have_selector("#documents .document .filename", :text => "first_upload_file.pdf")
 
@@ -196,6 +197,7 @@ feature "complaints index", :js => true do
     expect(Complaint.last.complaint_documents.count).to eq 1
     expect(Complaint.last.complaint_documents[0].filename).to eq "first_upload_file.pdf"
     expect(Complaint.last.complaint_documents[0].title).to eq "Complaint Document"
+    expect(Complaint.last.date_received.to_date).to eq Date.new(Date.today.year, Date.today.month, 16)
 
     # on the client
     expect(first_complaint.find('.case_reference').text).to eq next_ref
@@ -210,6 +212,7 @@ feature "complaints index", :js => true do
     expect(first_complaint.find('.complainant_phone').text).to eq "555-1212"
     expect(first_complaint.find('.gender').text).to eq "M"
     expect(first_complaint.find('.complained_to_subject_agency').text).to eq "yes"
+    expect(first_complaint.find('.date_received').text).to eq Date.new(Date.today.year, Date.today.month, 16).to_s
 
     within good_governance_complaint_bases do
       Complaint.last.good_governance_complaint_bases.map(&:name).each do |complaint_basis_name|
@@ -358,7 +361,11 @@ feature "complaints index", :js => true do
       attach_file("complaint_fileinput", upload_document)
       fill_in("attached_document_title", :with => "added complaint document")
       expect(page).to have_selector("#complaint_documents .document .filename", :text => "first_upload_file.pdf")
+      select_datepicker_date("#date_received",Date.today.year,Date.today.month,23)
+      # TODO can't figure out why this is necessary... it works find through the UI, but triggering via capybara needs this:
+      select_datepicker_date("#date_received",Date.today.year,Date.today.month,23)
     end
+
     expect{ edit_save }.to change{ Complaint.first.complainant }.to("Norman Normal").
                                       and change{ Complaint.first.village }.to("Normaltown").
                                       and change{ Complaint.first.phone }.to("555-1212").
@@ -381,10 +388,12 @@ feature "complaints index", :js => true do
     expect( Complaint.first.assignees ).to include User.staff.last
     expect( Complaint.first.agencies.map(&:name) ).to include "ACC"
     expect( Complaint.first.agencies.count ).to eq 1
+    expect( Complaint.first.date_received.to_date).to eq Date.new(Date.today.year, Date.today.month, 23)
 
     expect(page).to have_selector('.complainant_age', :text => "88")
     expect(page).to have_selector('.desired_outcome', :text => "Things are more better")
     expect(page).to have_selector('.complained_to_subject_agency', :text => "no")
+    expect(page).to have_selector('.date_received',:text => Date.new(Date.today.year, Date.today.month, 23).to_s)
 
     within good_governance_complaint_bases do
       Complaint.last.good_governance_complaint_bases.map(&:name).each do |complaint_basis_name|

@@ -34,11 +34,6 @@ class ComplaintsController < ApplicationController
   def create
     params[:complaint].delete(:current_status_humanized)
     complaint = Complaint.new(complaint_params)
-    if params[:complaint][:date]
-      date = params[:complaint][:date]
-    else
-      date = DateTime.now
-    end
     complaint.status_changes_attributes = [{:user_id => current_user.id, :name => "Under Evaluation"}]
     if complaint.save
       render :json => complaint, :status => 200
@@ -67,7 +62,7 @@ class ComplaintsController < ApplicationController
   def complaint_params
     params.require(:complaint).permit( :case_reference, :complainant, :village, :phone, :new_assignee_id,
                                        :age, :email, :complained_to_subject_agency, :desired_outcome, :gender,
-                                       :mandate_name, :imported, :good_governance_complaint_basis_ids => [],
+                                       :mandate_name, :date_received, :imported, :good_governance_complaint_basis_ids => [],
                                        :special_investigations_unit_complaint_basis_ids => [],
                                        :human_rights_complaint_basis_ids => [],
                                        :status_changes_attributes => [:user_id, :name],

@@ -169,4 +169,12 @@ module ComplaintsSpecHelpers
   def open_communications_modal
     page.all('#complaints .complaint .fa-comments-o')[0].click
   end
+
+  def select_datepicker_date(id,year,month,day)
+    month = month -1 # js month  monthis 0-indexed
+    page.evaluate_script %Q{ $('#{id}').trigger('focus') } # trigger datepicker
+    page.evaluate_script("target=$('#ui-datepicker-div td[data-month=#{month}][data-year=#{year}] a').filter(function(){return $(this).text()==#{day}})[0]")
+    page.evaluate_script("$(target).trigger('click')")
+    #page.evaluate_script %Q{ $('#{id}').datepicker('hide') } # trigger the onClose handler
+  end
 end

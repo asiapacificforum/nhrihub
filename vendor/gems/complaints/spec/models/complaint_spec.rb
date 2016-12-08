@@ -123,4 +123,17 @@ describe "next case reference" do
       expect(Complaint.next_case_reference).to eq("C#{ current_year }-1")
     end
   end
+
+end
+
+describe "sort algorithm" do
+  before do
+    Complaint.create(:case_reference => "C16-2")
+    Complaint.create(:case_reference => "C16-1")
+    Complaint.create(:case_reference => "C16-3")
+  end
+
+  it "should sort by ascending case reference" do
+    expect(Complaint.all.sort.pluck(:case_reference)).to eq ["C16-1","C16-2","C16-3"]
+  end
 end
