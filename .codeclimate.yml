@@ -28,6 +28,8 @@ ratings:
 exclude_paths:
   - "spec/**/*"
   - "**/spec/**/*"
-  - "db/schema.rb"
+  - "**/schema.rb"
   - "app/assets/javascripts/ractive.js"
   - "app/assets/javascripts/ractive-bootstrap.js"
+  - "app/assets/javascripts/u2f-api.js"
+  - "app/assets/javascripts/mock_yubikey.js"
