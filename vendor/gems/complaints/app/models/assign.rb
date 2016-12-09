@@ -5,6 +5,12 @@ class Assign < ActiveRecord::Base
   # most recent first
   default_scope -> { order(:created_at => :desc)}
 
+  after_create :notify_assignee
+
+  def notify_assignee
+    assignee.complaint_assignment_notify(complaint)
+  end
+
   def as_json(options = {})
     super(:only => [], :methods => [:date, :name])
   end

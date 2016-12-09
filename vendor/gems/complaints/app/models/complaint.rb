@@ -48,6 +48,7 @@ class Complaint < ActiveRecord::Base
   end
 
   before_save do |complaint|
+    # workaround hack b/c FormData object sends "null" string for null values
     string_or_text_columns = Complaint.columns.select{|c| (c.type == :string) || (c.type == :text)}.map(&:name)
     string_or_text_columns.each do |column_name|
       complaint.send("#{column_name}=", nil) if complaint.send(column_name) == "null"

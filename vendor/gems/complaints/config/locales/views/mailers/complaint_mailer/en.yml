@@ -1,0 +1,4 @@
+en:
+  complaint_mailer:
+    complaint_assignment_notification:
+      subject: "Notification of complaint assignment"

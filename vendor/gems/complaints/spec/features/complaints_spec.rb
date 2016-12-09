@@ -174,6 +174,7 @@ feature "complaints index", :js => true do
     expect{save_complaint.click; wait_for_ajax}.to change{ Complaint.count }.by(1)
                                                .and change{ page.all('.complaint').count }.by(1)
                                                .and change{ page.all('.new_complaint').count }.by(-1)
+                                               .and change { ActionMailer::Base.deliveries.count }.by(1)
     # on the server
     expect(Complaint.last.case_reference).to eq next_ref
     expect(Complaint.last.complainant).to eq "Norman Normal"
@@ -247,6 +248,8 @@ feature "complaints index", :js => true do
     end
 
     expect(page.find('#mandate').text).to eq "Special Investigations Unit"
+    email = ActionMailer::Base.deliveries.last
+    expect( email.subject ).to eq "Notification of complaint assignment"
   end
 
   it "does not add a new complaint that is invalid" do
@@ -367,11 +370,12 @@ feature "complaints index", :js => true do
     end
 
     expect{ edit_save }.to change{ Complaint.first.complainant }.to("Norman Normal").
-                                      and change{ Complaint.first.village }.to("Normaltown").
-                                      and change{ Complaint.first.phone }.to("555-1212").
-                                      and change{ Complaint.first.assignees.count }.by(1).
-                                      and change{ Complaint.first.complaint_documents.count }.by(1).
-                                      and change{ (`\ls tmp/uploads/store | wc -l`).to_i }.by 1
+                       and change{ Complaint.first.village }.to("Normaltown").
+                       and change{ Complaint.first.phone }.to("555-1212").
+                       and change{ Complaint.first.assignees.count }.by(1).
+                       and change{ Complaint.first.complaint_documents.count }.by(1).
+                       and change{ (`\ls tmp/uploads/store | wc -l`).to_i }.by(1).
+                       and change { ActionMailer::Base.deliveries.count }.by(1)
 
     expect( Complaint.first.complained_to_subject_agency ).to eq false
     expect( Complaint.first.age ).to eq 88
@@ -434,7 +438,8 @@ feature "complaints index", :js => true do
 
   it "edits a complaint with no change of assignee" do
     edit_complaint
-    expect{ edit_save }.not_to change{ Complaint.first.assignees.count }
+    expect{ edit_save }.to change{ Complaint.first.assignees.count }.by(0)
+                       .and change { ActionMailer::Base.deliveries.count }.by(0)
   end
 
   it "edits a complaint, deleting a file" do

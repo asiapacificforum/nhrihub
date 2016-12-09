@@ -17,4 +17,8 @@ module Notifier
     end
   end
 
+  def complaint_assignment_notify(complaint)
+    ::ComplaintMailer.complaint_assignment_notification(complaint).deliver_now
+  end
+
 end
