@@ -286,7 +286,7 @@ class User < ActiveRecord::Base
     update_attributes(:public_key => nil, :public_key_handle => nil)
   end
 
-  def prepare_to_send_reset_email
+  def prepare_to_send_password_reset_email
     @forgotten_password = true
     make_access_nonce('password_reset_code')
   end

@@ -208,22 +208,19 @@ class Admin::UsersController < ApplicationController
 
   # when a logged-in admin clicks "reset password"
   def send_change_password_email
-    @user = User.find(params[:user_id])
-    @user.prepare_to_send_reset_email
-    @users = User.order("lastName, firstName").all
-    if @user.save
-      flash[:notice] = t('.flash_notice', :name => @user.first_last_name, :email => @user.email )
-      redirect_to admin_users_path
-    else
-      flash[:error] = t('.flash_error', :name => @user.first_last_name, :email => @user.email)
-      redirect_to admin_users_path
-    end
+    send_change_authentication_email("password_reset")
   end
 
   # when a logged-in admin clicks "lost token"
   def send_lost_token_email
+    send_change_authentication_email("lost_token")
+  end
+
+protected
+
+  def send_change_authentication_email(type)
     @user = User.find(params[:user_id])
-    @user.prepare_to_send_lost_token_email
+    @user.send("prepare_to_send_#{type}_email")
     @users = User.order("lastName, firstName").all
     if @user.save
       flash[:notice] = t('.flash_notice', :name => @user.first_last_name, :email => @user.email )
@@ -233,8 +230,6 @@ class Admin::UsersController < ApplicationController
       redirect_to admin_users_path
     end
   end
-
-protected
 
   def user_or_current_user
     if current_user.has_role?('administrator')
