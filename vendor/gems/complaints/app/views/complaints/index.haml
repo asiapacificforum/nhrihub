@@ -19,6 +19,7 @@
 = render :partial => 'complaints/documents_templates'
 
 :coffeescript
+  case_reference = "#{params[:case_reference] ? params[:case_reference] : ''}"
   @all_good_governance_complaint_bases = #{@good_governance_complaint_bases.to_json}
   @all_human_rights_complaint_bases = #{@human_rights_complaint_bases.to_json}
   @all_special_investigations_unit_complaint_bases = #{@special_investigations_unit_complaint_bases.to_json}
@@ -40,7 +41,7 @@
     complainant : ""
     from : null
     to : null
-    case_ref : ""
+    case_reference : case_reference
     village : ""
     phone_number : ""
     basis_rule : null

@@ -1,7 +1,9 @@
 class ComplaintMailer < ActionMailer::Base
+  include Rails.application.routes.url_helpers
   def complaint_assignment_notification(complaint)
     @recipient = complaint.current_assignee
     @complaint = complaint
+    @link = complaints_url('en','html',:case_reference => "#{complaint.case_reference}")
     mail( :to => "#{@recipient.email}",
           :subject => t('.subject'),
           :date => Time.now,

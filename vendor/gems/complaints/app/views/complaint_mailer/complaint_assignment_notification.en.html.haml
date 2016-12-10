@@ -1,4 +1,6 @@
 %p= @recipient.first_last_name
 %p A new complaint has been recorded in the #{APPLICATION_NAME || "database"}, assigned to you.
-%p You can view the complaint by clicking this link.
+%p
+  You can view the complaint by 
+  %a{:href=>@link} clicking this link.
 %p #{APPLICATION_NAME || "database"}  administrator

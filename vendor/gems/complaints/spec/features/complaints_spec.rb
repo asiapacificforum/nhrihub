@@ -250,6 +250,13 @@ feature "complaints index", :js => true do
     expect(page.find('#mandate').text).to eq "Special Investigations Unit"
     email = ActionMailer::Base.deliveries.last
     expect( email.subject ).to eq "Notification of complaint assignment"
+    lines = Nokogiri::HTML(email.body.to_s).xpath(".//p").map(&:text)
+    # lin[0] is addressee
+    expect( lines[0] ).to eq User.staff.first.first_last_name
+    # complaint url is embedded in the email
+    url = Nokogiri::HTML(email.body.to_s).xpath(".//p/a").attr('href').value
+    expect( url ).to match (/\/en\/complaints\?case_reference=c16-1$/)
+    expect( url ).to match (/^http:\/\/#{SITE_URL}/)
   end
 
   it "does not add a new complaint that is invalid" do
@@ -429,6 +436,16 @@ feature "complaints index", :js => true do
       expect(page.all('#complaint_documents .complaint_document .filename').map(&:text)).to include "first_upload_file.pdf"
       expect(page.all('#complaint_documents .complaint_document .title').map(&:text)).to include "added complaint document"
     end
+
+    email = ActionMailer::Base.deliveries.last
+    expect( email.subject ).to eq "Notification of complaint assignment"
+    lines = Nokogiri::HTML(email.body.to_s).xpath(".//p").map(&:text)
+    # lin[0] is addressee
+    expect( lines[0] ).to eq User.staff.last.first_last_name
+    # complaint url is embedded in the email
+    url = Nokogiri::HTML(email.body.to_s).xpath(".//p/a").attr('href').value
+    expect( url ).to match (/\/en\/complaints\.html\?case_reference=#{Complaint.first.case_reference}$/)
+    expect( url ).to match (/^http:\/\/#{SITE_URL}/)
   end
 
   it "edits a complaint with no changes to the status" do # b/c there was a bug
@@ -570,5 +587,13 @@ feature "complaints index", :js => true do
       check_basis(:special_investigations_unit, "Unreasonable delay")
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
     end
+  end
+
+  it "shows a single complaint when a query string is appended to the url" do
+    create_complaints
+    visit complaints_path('en', "html", {:case_reference => "c12-55"})
+    expect(page.all('#complaints .complaint').length).to eq 1
+    expect(page.all('#complaints .complaint', :visible => false).length).to eq 4
+    expect(page.find('#complaints_controls #case_reference').value).to eq "c12-55"
   end
 end

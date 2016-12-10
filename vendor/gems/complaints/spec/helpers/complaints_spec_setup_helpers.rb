@@ -9,7 +9,7 @@ module ComplaintsSpecSetupHelpers
     create_agencies
     create_staff
     create_complaint_statuses
-    FactoryGirl.create(:complaint, :case_reference => "c12/34",
+    FactoryGirl.create(:complaint, :case_reference => "c12-34",
                        :date_received => DateTime.now,
                        :village => Faker::Address.city,
                        :phone => Faker::PhoneNumber.phone_number,
@@ -25,6 +25,12 @@ module ComplaintsSpecSetupHelpers
                        :agencies => _agencies,
                        :communications => _communications)
     set_file_defaults
+  end
+
+  def create_complaints
+    FactoryGirl.create(:complaint, :case_reference => "c12-22")
+    FactoryGirl.create(:complaint, :case_reference => "c12-33")
+    FactoryGirl.create(:complaint, :case_reference => "c12-55")
   end
 
   private
