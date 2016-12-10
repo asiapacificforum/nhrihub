@@ -10,6 +10,12 @@ class Action < ActiveRecord::Base
 
   delegate :controller_name, :to=>:controller
 
+  def self.update_human_names(params)
+    params.each do |action_id, human_name|
+      Action.find(action_id.to_i).update_attribute(:human_name, human_name)
+    end
+  end
+
   def self.not_enabled_for_developer
     where.not(:id => ActionRole.for_developer.pluck(:action_id))
   end

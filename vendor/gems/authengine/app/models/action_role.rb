@@ -29,47 +29,53 @@ class ActionRole < ActiveRecord::Base
     end
   end
 
-  def create_corresponding_create_and_update
-    case action_name
-    when "new"
-      create_create
-    when "edit"
-      create_update
+  def self.update_permissions(params)
+    aa = Role.all.inject({}){|hash,r| hash[r.id] =r.action_ids; hash}
+    params.each do |role_id,permissions| # role is the role name, permissions is a hash of controller/action names
+       role_id = role_id.to_i
+       permissions.each do |action_id, val|
+         action_id = action_id.to_i
+         a = aa[role_id].include?(action_id)
+         if val=="1" && !a # a newly-checked checkbox
+           new = ActionRole.create(:role_id=>role_id,:action_id=>action_id)
+           new.create_corresponding_create_and_update
+         elsif val=="0" && a # a newly-unchecked checkbox
+           to_be_deleted = ActionRole.find_by_role_id_and_action_id(role_id,action_id)
+           to_be_deleted.delete_corresponding_create_and_update
+           to_be_deleted.destroy
+         end
+      end
     end
+  end
+
+  def create_corresponding_create_and_update
+    create_corresponding(paired_method(action_name)) if paired_method(action_name)
   end
 
   def delete_corresponding_create_and_update
-    case action_name
-    when "new"
-      delete_create
-    when "edit"
-      delete_update
-    end
+    delete_corresponding(paired_method(action_name)) if paired_method(action_name)
   end
 
   private
+  def paired_method(method)
+    return "create" if method=="new"
+    return "update" if method=="edit"
+  end
+
   def action_name
     @action ||= Action.find(action_id)
     @action_name = @action.action_name
   end
 
-  def create_create
-    corresponding_action = Action.where(:controller_id => @action.controller_id, :action_name => "create").first
-    ActionRole.create(:action_id => corresponding_action.id, :role_id => role_id)
+  def create_corresponding(method)
+    ActionRole.create(:action_id => corresponding_action_id(method), :role_id => role_id)
   end
 
-  def create_update
-    corresponding_action = Action.where(:controller_id => @action.controller_id, :action_name => "update").first
-    ActionRole.create(:action_id => corresponding_action.id, :role_id => role_id)
+  def delete_corresponding(method)
+    ActionRole.where(:action_id => corresponding_action_id(method), :role_id => role_id).delete_all
   end
 
-  def delete_create
-    corresponding_action = Action.where(:controller_id => @action.controller_id, :action_name => "create").first
-    ActionRole.where(:action_id => corresponding_action.id, :role_id => role_id).delete_all
-  end
-
-  def delete_update
-    corresponding_action = Action.where(:controller_id => @action.controller_id, :action_name => "update").first
-    ActionRole.where(:action_id => corresponding_action.id, :role_id => role_id).delete_all
+  def corresponding_action_id(method)
+    Action.where(:controller_id => @action.controller_id, :action_name => method).first.id
   end
 end

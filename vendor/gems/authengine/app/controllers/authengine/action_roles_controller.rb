@@ -12,26 +12,8 @@ class Authengine::ActionRolesController < ApplicationController
 
 
   def update
-    aa = ActionRole.all.group_by(&:role_id).inject({}){|hash,a| hash[a[0]]=a[1].collect(&:action_id); hash}
-    params[:human_names].each do |action_id, human_name|
-      Action.find(action_id.to_i).update_attribute(:human_name, human_name)
-    end
-    params[:permission].each do |role_id,permissions| # role is the role name, permissions is a hash of controller/action names
-       role_id = role_id.to_i
-       permissions.each do |action_id, val|
-         action_id = action_id.to_i
-         a = aa[role_id].nil? ? false : aa[role_id].include?(action_id) # because a new role, with no permissions granted, produces nil for aa[role_id.to_i]
-         if val=="1" && !a # a newly-checked checkbox
-           new = ActionRole.create(:role_id=>role_id,:action_id=>action_id)
-           new.create_corresponding_create_and_update
-         elsif val=="0" && a # a newly-unchecked checkbox
-           to_be_deleted = ActionRole.find_by_role_id_and_action_id(role_id,action_id)
-           to_be_deleted.delete_corresponding_create_and_update
-           to_be_deleted.destroy
-         end
-      end
-    end
-
+    Action.update_human_names(params[:human_names])
+    ActionRole.update_permissions(params[:permission])
     redirect_to authengine_action_roles_path
   end
 
