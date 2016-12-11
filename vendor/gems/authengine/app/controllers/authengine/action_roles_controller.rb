@@ -5,9 +5,8 @@ class Authengine::ActionRolesController < ApplicationController
                  select('actions.id, actions.action_name, controllers.controller_name, actions.human_name').
                  joins(:controller).
                  sort_by{|a| [a[:controller_name],a.action_name]}
-    @roles = Role.except_developer.order(:name)
-    @allowed = []
-    @roles.each{ |r| @allowed[r.id]= r.actions.map{ |a| a.id unless a.nil? } }
+    @roles = Role.except_developer.order(:name).select(:name, :id)
+    @allowed= Role.all_with_permitted_action_ids
   end
 
 

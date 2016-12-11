@@ -30,7 +30,7 @@ class ActionRole < ActiveRecord::Base
   end
 
   def self.update_permissions(params)
-    aa = Role.all.inject({}){|hash,r| hash[r.id] =r.action_ids; hash}
+    aa = Role.all_with_permitted_action_ids
     params.each do |role_id,permissions| # role is the role name, permissions is a hash of controller/action names
        role_id = role_id.to_i
        permissions.each do |action_id, val|
@@ -67,12 +67,12 @@ class ActionRole < ActiveRecord::Base
     @action_name = @action.action_name
   end
 
-  def create_corresponding(method)
-    ActionRole.create(:action_id => corresponding_action_id(method), :role_id => role_id)
+  def create_corresponding(paired_method)
+    ActionRole.create(:action_id => corresponding_action_id(paired_method), :role_id => role_id)
   end
 
-  def delete_corresponding(method)
-    ActionRole.where(:action_id => corresponding_action_id(method), :role_id => role_id).delete_all
+  def delete_corresponding(paired_method)
+    ActionRole.delete_all(:action_id => corresponding_action_id(paired_method), :role_id => role_id)
   end
 
   def corresponding_action_id(method)

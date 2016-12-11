@@ -25,6 +25,10 @@ class Role < ActiveRecord::Base
     end
   end
 
+  def self.all_with_permitted_action_ids
+    all.inject({}){|hash,r| hash[r.id] =r.action_ids; hash}
+  end
+
   # takes either an array of roles or a single role object
   def self.equal_or_lower_than(role)
     roles = role.is_a?(Array) ? role : [role]
