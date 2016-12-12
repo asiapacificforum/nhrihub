@@ -13,7 +13,7 @@ module ComplaintsSpecSetupHelpers
                        :date_received => DateTime.now,
                        :village => Faker::Address.city,
                        :phone => Faker::PhoneNumber.phone_number,
-                       :age => 23,
+                       :dob => Date.new(1950,8,19),
                        :human_rights_complaint_bases => hr_complaint_bases,
                        :good_governance_complaint_bases => gg_complaint_bases,
                        :special_investigations_unit_complaint_bases => siu_complaint_bases,

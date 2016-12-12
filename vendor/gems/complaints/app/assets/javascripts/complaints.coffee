@@ -346,7 +346,7 @@ Complaint = Ractive.extend
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
         'complaint_category_ids', 'agency_ids', 'attached_documents_attributes',
-        'age', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received']
+        'dob', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received']
     url : ->
       Routes.complaint_path(current_locale, @get('id'))
     formatted_date :
@@ -357,6 +357,14 @@ Complaint = Ractive.extend
           $.datepicker.formatDate("yy, M d", new Date(@get('date_received')) )
       set: (val)->
         @set('date_received', $.datepicker.parseDate( "yy, M d", val))
+    formatted_dob :
+      get: ->
+        if _.isEmpty(@get('dob'))
+          ""
+        else
+          $.datepicker.formatDate("yy, M d", $.datepicker.parseDate("yy-mm-dd",@get('dob')) )
+      set: (val)->
+        @set('dob', $.datepicker.parseDate( "yy/mm/dd", val))
     create_reminder_url : ->
       Routes.complaint_reminders_path('en', @get('id'))
     create_note_url : ->
@@ -371,14 +379,14 @@ Complaint = Ractive.extend
         village : ['notBlank', {if : =>!@get('imported')}]
         mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
         complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
-        age : ['numeric', {if : =>!@get('imported')}]
+        #age : ['numeric', {if : =>!@get('imported')}]
       else
         complainant : ['notBlank', {if : =>!@get('imported') }]
         village : ['notBlank', {if : =>!@get('imported')}]
         mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
         complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
         new_assignee_id : 'numeric'
-        age : ['numeric', {if : =>!@get('imported')}]
+        #age : ['numeric', {if : =>!@get('imported')}]
   oninit : ->
     @set
       editing : false
@@ -389,6 +397,7 @@ Complaint = Ractive.extend
       complaint_basis_id_count_error : false
       filetype_error: false
       filesize_error: false
+      dob_error: false
       expanded:false
       serialization_key:'complaint'
     @validator = new Validator(@)

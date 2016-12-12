@@ -221,12 +221,12 @@
         .col-sm-3
           %i.fa.fa-remove.fa-lg#cancel_complaint{ :style=>"padding-left:30px", "on-click"=>"cancel_add_complaint()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>"cancel"}
           %i.fa.fa-check.fa-lg#save_complaint{ :style=>"padding-left:60px", "on-click"=>"save_complaint()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>"save"}
-      .row.form-group{:class => "{{#age_error}}has-error{{/}}"}
+      .row.form-group{:class => "{{#dob_error}}has-error{{/}}"}
         .col-md-2
-          %span=t('.age')
+          %span=t('.dob')
         .col-md-2
-          %input.form-control#age{:value => '{{age}}', 'on-keydown'=>"remove_attribute_error('age')", :style=>"width:50px;"}
-          %span.help-block.error#age_error= t('.age_error_message')
+          %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:50px;"}
+          %span.help-block.error#dob_error= t('.dob_error_message')
         .col-md-1
           %span=t('.gender')
         .col-md-2
@@ -432,16 +432,16 @@
                   {{/if}}
                 .edit
       .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', :class => "{{#age_error}}has-error{{/}}"}
+        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', :class => "{{#dob_error}}has-error{{/}}"}
           .row
             .col-md-3
-              %label= t('.age')
+              %label= t('.dob')
             .col-md-2
               .no_edit.in
-                %span.complainant_age {{ age }}
+                %span.complainant_dob {{ formatted_dob }}
               .edit
-                %input.form-control#age{:value => '{{age}}', 'on-keydown'=>"remove_attribute_error('age')", :style=>"width:50px;"}
-                %span.help-block.error#age_error= t('.age_error_message')
+                %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:50px;"}
+                %span.help-block.error#dob_error= t('.dob_error_message')
             .col-md-2{:style => "text-align:right"}
               %label= t('.gender')
             .col-md-2
