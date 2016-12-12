@@ -122,6 +122,9 @@ Communication = Ractive.extend
           valid_communicants = _(@findAllComponents('communicant')).map (communicant)->communicant.validate()
           # validate() returns false for invalid communicant
           _(valid_communicants).all (valid)->valid
+        dob: =>
+          date_regex = new RegExp(/\d\d\d\d\/\d\d\/\d\d/)
+          date_regex.test @get('dob')
     @validator = new Validator(@)
   components :
     attachedDocuments : CommunicationDocuments

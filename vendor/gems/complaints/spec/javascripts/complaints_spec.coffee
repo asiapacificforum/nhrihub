@@ -997,59 +997,63 @@ describe "complaints index page", ->
     after ->
       reset_page()
 
-    #it "should not be valid with null user_id", ->
-      #window.communications.set('communications',[{id:1,user_id:null,mode:'email',direction:'sent'}])
-      #expect(communications.findAllComponents('communication')[0].validate()).to.be.false
-      #expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.true
+    describe "validation of mode attribute", ->
+      it "should not be valid with null mode", ->
+        # I can't figure out why it's necessary to set up the communications array twice like this!
+        # the second line is the one we're testing here
+        window.communications.set('communications',[{id:1,mode:'email',direction:'sent',dob:"1950/08/19"}])
+        window.communications.set('communications',[{id:1,mode:null,direction:'sent',dob:"1950/08/19"}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+        expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
 
-    #it "should not be valid with blank user_id", ->
-      #window.communications.set('communications',[{id:1,user_id:"",mode:'email',direction:'sent'}])
-      #expect(communications.findAllComponents('communication')[0].validate()).to.be.false
-      #expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.true
+      it "should not be valid with blank mode", ->
+        window.communications.set('communications',[{id:1,mode:"",direction:'sent',dob:"1950/08/19"}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+        expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
 
-    #it "should be valid with numeric user_id", ->
-      #window.communications.set('communications',[{id:1,user_id:5,mode:'email',direction:'sent'}])
-      #expect(communications.findAllComponents('communication')[0].validate()).to.be.true
-      #expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.false
+      it "should be valid with valid string mode", ->
+        window.communications.set('communications',[{id:1,mode:'email',direction:'sent',dob:"1950/08/19"}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.true
+        expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.false
 
-    #it "should be valid with numeric string user_id", ->
-      #window.communications.set('communications',[{id:1,mode:'email',direction:'sent'}])
-      #expect(communications.findAllComponents('communication')[0].validate()).to.be.true
-      #expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.false
-
-    it "should not be valid with null mode", ->
-      window.communications.set('communications',[{id:1,mode:'email',direction:'sent'}])
-      window.communications.set('communications',[{id:1,mode:null,direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.false
-      expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
-
-    it "should not be valid with blank mode", ->
-      window.communications.set('communications',[{id:1,mode:"",direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.false
-      expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
-
-    it "should be valid with valid string mode", ->
-      window.communications.set('communications',[{id:1,mode:'email',direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.true
-      expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.false
-
-    it "should not be valid with invalid string mode", ->
-      window.communications.set('communications',[{id:1,mode:"foo",direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.false
-      expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
+      it "should not be valid with invalid string mode", ->
+        window.communications.set('communications',[{id:1,mode:"foo",direction:'sent',dob:"1950/08/19"}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+        expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
 
     describe "validation of direction with a custom function", ->
       it "should not validate if mode is phone and direction is not provided", ->
-        window.communications.set('communications',[{id:1,mode:"phone"}])
+        window.communications.set('communications',[{id:1,mode:"phone",dob:"1950/08/19"}])
         expect(communications.findAllComponents('communication')[0].validate()).to.be.false
         expect(communications.findAllComponents('communication')[0].get('direction_error')).to.be.true
 
       it "should validate if mode is phone and direction is provided", ->
-        window.communications.set('communications',[{id:1,mode:"phone",direction:"sent"}])
+        window.communications.set('communications',[{id:1,mode:"phone",direction:"sent",dob:"1950/08/19"}])
         expect(communications.findAllComponents('communication')[0].validate()).to.be.true
         expect(communications.findAllComponents('communication')[0].get('direction_error')).to.be.false
 
       it "should validate if mode is face to face and direction is not provided", ->
-        window.communications.set('communications',[{id:1,mode:"face to face"}])
+        window.communications.set('communications',[{id:1,mode:"face to face",dob:"1950/08/19"}])
         expect(communications.findAllComponents('communication')[0].validate()).to.be.true
         expect(communications.findAllComponents('communication')[0].get('direction_error')).to.be.false
+
+    describe "validation of complainant date of birth", ->
+      it "should be valid if dob is entered with correct format", ->
+        window.communications.set('communications',[{id:1,mode:"email",direction:'sent',dob:"1950/08/19"}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.true
+        expect(communications.findAllComponents('communication')[0].get('dob_error')).to.be.false
+
+      it "should be invalid if dob is entered with incorrect format", ->
+        window.communications.set('communications',[{id:1,mode:"email",direction:'sent',dob:"1950/8/19"}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+        expect(communications.findAllComponents('communication')[0].get('dob_error')).to.be.true
+
+      it "should be invalid if dob is blank", ->
+        window.communications.set('communications',[{id:1,mode:"email",direction:'sent',dob:""}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+        expect(communications.findAllComponents('communication')[0].get('dob_error')).to.be.true
+
+      it "should be invalid if dob is null", ->
+        window.communications.set('communications',[{id:1,mode:"email",direction:'sent',dob:null}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+        expect(communications.findAllComponents('communication')[0].get('dob_error')).to.be.true
