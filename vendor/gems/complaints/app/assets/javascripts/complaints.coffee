@@ -362,9 +362,13 @@ Complaint = Ractive.extend
         if _.isEmpty(@get('dob'))
           ""
         else
-          $.datepicker.formatDate("yy, M d", $.datepicker.parseDate("yy-mm-dd",@get('dob')) )
+          $.datepicker.formatDate("yy, M d", $.datepicker.parseDate("yy-mm-dd",@get('dob')))
       set: (val)->
-        @set('dob', $.datepicker.parseDate( "yy/mm/dd", val))
+        date_regex = new RegExp(/\d\d\d\d\/\d{1,2}\/\d{1,2}/)
+        if date_regex.test val
+          @set('dob', $.datepicker.formatDate("yy-mm-dd",$.datepicker.parseDate( "yy/mm/dd", val)))
+        else
+          @set('dob', "")
     create_reminder_url : ->
       Routes.complaint_reminders_path('en', @get('id'))
     create_note_url : ->
@@ -379,14 +383,24 @@ Complaint = Ractive.extend
         village : ['notBlank', {if : =>!@get('imported')}]
         mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
         complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
-        #age : ['numeric', {if : =>!@get('imported')}]
+        dob: =>
+          date_regex = new RegExp(/\d\d\d\d, \w\w\w \d\d/)
+          date_regex.test @get('formatted_dob')
       else
         complainant : ['notBlank', {if : =>!@get('imported') }]
         village : ['notBlank', {if : =>!@get('imported')}]
         mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
         complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
         new_assignee_id : 'numeric'
-        #age : ['numeric', {if : =>!@get('imported')}]
+        dob: =>
+          date_regex = new RegExp(/\d\d\d\d, \w\w\w \d\d/)
+          date_regex.test @get('formatted_dob')
+    error_vector : ->
+      complainant_error : @get('complainant_error')
+      village_error : @get('village_error')
+      mandate_name_error : @get('mandate_name_error')
+      complaint_basis_id_count_error : @get('complaint_basis_id_count_error')
+      dob_error : @get('dob_error')
   oninit : ->
     @set
       editing : false
