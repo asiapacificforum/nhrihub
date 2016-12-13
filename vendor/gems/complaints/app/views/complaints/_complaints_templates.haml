@@ -224,8 +224,8 @@
       .row.form-group{:class => "{{#dob_error}}has-error{{/}}"}
         .col-md-2
           %span=t('.dob')
-        .col-md-2
-          %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:50px;"}
+        .col-md-3
+          %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:112px;"}
           %span.help-block.error#dob_error= t('.dob_error_message')
         .col-md-1
           %span=t('.gender')
@@ -436,11 +436,11 @@
           .row
             .col-md-3
               %label= t('.dob')
-            .col-md-2
+            .col-md-3
               .no_edit.in
                 %span.complainant_dob {{ formatted_dob }}
               .edit
-                %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:50px;"}
+                %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:112px;"}
                 %span.help-block.error#dob_error= t('.dob_error_message')
             .col-md-2{:style => "text-align:right"}
               %label= t('.gender')
