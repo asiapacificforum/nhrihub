@@ -375,7 +375,7 @@ feature "complaints index", :js => true do
                                       and change{ (`\ls tmp/uploads/store | wc -l`).to_i }.by 1
 
     expect( Complaint.first.complained_to_subject_agency ).to eq false
-    expect( Complaint.first.age ).to eq Date.new(1951,8,19)
+    expect( Complaint.first.dob ).to eq Date.new(1951,8,19)
     expect( Complaint.first.desired_outcome ).to eq "Things are more better"
     expect( Complaint.first.mandate_name ).to eq "Special Investigations Unit"
     expect( Complaint.first.good_governance_complaint_bases.count ).to eq 1
@@ -391,7 +391,7 @@ feature "complaints index", :js => true do
     expect( Complaint.first.agencies.count ).to eq 1
     expect( Complaint.first.date_received.to_date).to eq Date.new(Date.today.year, Date.today.month, 23)
 
-    expect(page).to have_selector('.complainant_age', :text => "1951, Aug 19")
+    expect(page).to have_selector('.complainant_dob', :text => "1951, Aug 19")
     expect(page).to have_selector('.desired_outcome', :text => "Things are more better")
     expect(page).to have_selector('.complained_to_subject_agency', :text => "no")
     expect(page).to have_selector('.date_received',:text => Date.new(Date.today.year, Date.today.month, 23).to_s)
