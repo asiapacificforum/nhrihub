@@ -378,23 +378,14 @@ Complaint = Ractive.extend
       @get('special_investigations_unit_complaint_basis_ids').length +
       @get('human_rights_complaint_basis_ids').length
     validation_criteria : ->
-      if @get('editing')
-        complainant : ['notBlank', {if : =>!@get('imported') }]
-        village : ['notBlank', {if : =>!@get('imported')}]
-        mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
-        complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
-        dob: =>
-          date_regex = new RegExp(/\d\d\d\d, \w\w\w \d\d/)
-          date_regex.test @get('formatted_dob')
-      else
-        complainant : ['notBlank', {if : =>!@get('imported') }]
-        village : ['notBlank', {if : =>!@get('imported')}]
-        mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
-        complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
-        new_assignee_id : 'numeric'
-        dob: =>
-          date_regex = new RegExp(/\d\d\d\d, \w\w\w \d\d/)
-          date_regex.test @get('formatted_dob')
+      complainant : ['notBlank', {if : =>!@get('imported') }]
+      village : ['notBlank', {if : =>!@get('imported')}]
+      mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
+      complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
+      new_assignee_id : ['numeric', {if : =>!@get('editing')}]
+      dob: =>
+        date_regex = new RegExp(/\d\d\d\d, \w\w\w \d\d/)
+        date_regex.test @get('formatted_dob')
     error_vector : ->
       complainant_error : @get('complainant_error')
       village_error : @get('village_error')
