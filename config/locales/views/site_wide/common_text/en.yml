@@ -11,3 +11,4 @@ en:
     note : "note"
     documents: "documents"
     delete: "delete"
+  required : "indicates required field"

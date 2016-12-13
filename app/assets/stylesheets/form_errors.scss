@@ -17,3 +17,9 @@
   margin-top : 0;
   margin-bottom : 0;
 }
+
+.required:after, .required_before:before{
+  content : '*';
+  color : #a94442;
+  font-size : larger;
+}
