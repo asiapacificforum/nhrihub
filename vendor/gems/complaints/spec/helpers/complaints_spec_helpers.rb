@@ -62,8 +62,8 @@ module ComplaintsSpecHelpers
   end
 
   def edit_save
-    page.execute_script("scrollTo(0,0)")
-    page.find('.fa-check').click
+    #page.execute_script("scrollTo(0,0)")
+    page.find('.save_complaint').click
     wait_for_ajax
   end
 
@@ -122,7 +122,7 @@ module ComplaintsSpecHelpers
   end
 
   def save_complaint
-    page.execute_script("scrollTo(0,0)")
+    #page.execute_script("scrollTo(0,0)")
     page.find('#save_complaint')
   end
 

@@ -255,7 +255,7 @@ feature "complaints index", :js => true do
     expect( lines[0] ).to eq User.staff.first.first_last_name
     # complaint url is embedded in the email
     url = Nokogiri::HTML(email.body.to_s).xpath(".//p/a").attr('href').value
-    expect( url ).to match (/\/en\/complaints\?case_reference=c16-1$/)
+    expect( url ).to match (/\/en\/complaints\.html\?case_reference=c16-1$/i)
     expect( url ).to match (/^http:\/\/#{SITE_URL}/)
   end
 
