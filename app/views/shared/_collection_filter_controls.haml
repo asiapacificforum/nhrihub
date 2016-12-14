@@ -12,11 +12,12 @@
         \/
         =t('.subarea')
     .row{:style => "margin-bottom:12px;"}
-      .col-md-2= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_text')
       .col-md-2
-        %input{:type=>"text", :id=>"from", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
+        %input.form-control#title{:type=>:text, :placeholder => t('.enter_text'), :value => "{{filter_criteria.title}}"}
       .col-md-2
-        %input{:type=>"text", :id=>"to", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}"}
+        %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
+      .col-md-2
+        %input.form-control#to{:type=>"text", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}"}
       .col-md-3
         .btn-group.select
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
@@ -61,29 +62,29 @@
       {{/if}}
     .row
       .col-md-1.filter_field.pa_min
-        %input{:style=>"width:80px", :value => '{{filter_criteria.pa_min}}'}
+        %input.form-control{:style=>"width:66px; padding-left:8px; padding-right:8px;", :value => '{{filter_criteria.pa_min}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pa_max
-        %input{:style=>"width:80px", :value => '{{filter_criteria.pa_max}}'}
+        %input.form-control{:style=>"width:66px; padding-left:8px; padding-right:8px;", :value => '{{filter_criteria.pa_max}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.vs_min
-        %input{:style=>"width:50px", :value => '{{filter_criteria.vs_min}}'}
+        %input.form-control{:style=>"width:66px; padding-left:8px; padding-right:8px;", :value => '{{filter_criteria.vs_min}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.vs_max
-        %input{:style=>"width:50px", :value => '{{filter_criteria.vs_max}}'}
+        %input.form-control{:style=>"width:66px; padding-left:8px; padding-right:8px;", :value => '{{filter_criteria.vs_max}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.vc_min
-        %input{:style=>"width:50px", :value => '{{filter_criteria.vc_min}}'}
+        %input.form-control{:style=>"width:66px; padding-left:8px; padding-right:8px;", :value => '{{filter_criteria.vc_min}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.vc_max
-        %input{:style=>"width:50px", :value => '{{filter_criteria.vc_max}}'}
+        %input.form-control{:style=>"width:66px; padding-left:8px; padding-right:8px;", :value => '{{filter_criteria.vc_max}}'}
         %span.error_message= t('defaults.invalid')
       {{#if item_name == 'media_appearance'}}
       .col-md-1.filter_field.pr_min
-        %input{:style=>"width:50px", :value => '{{filter_criteria.pr_min}}'}
+        %input.form-control{:style=>"width:66px; padding-left:8px; padding-right:8px;", :value => '{{filter_criteria.pr_min}}'}
         %span.error_message= t('defaults.invalid')
       .col-md-1.filter_field.pr_max
-        %input{:style=>"width:50px", :value => '{{filter_criteria.pr_max}}'}
+        %input.form-control{:style=>"width:66px; padding-left:8px; padding-right:8px;", :value => '{{filter_criteria.pr_max}}'}
         %span.error_message= t('defaults.invalid')
       {{/if}}
   %div{:id => "#{collection}"}
