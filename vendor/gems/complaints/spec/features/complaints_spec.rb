@@ -85,6 +85,7 @@ feature "complaints index", :js => true do
       expand
       expect(find('.complainant_village').text).to eq Complaint.first.village
       expect(find('.complainant_phone').text).to eq Complaint.first.phone
+      expect(find('.complaint_details').text).to eq Complaint.first.details
 
       within assignee_history do
         Complaint.first.assigns.map(&:name).each do |name|
@@ -152,6 +153,7 @@ feature "complaints index", :js => true do
       fill_in('email', :with => "norm@acme.co.ws")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
+      fill_in('complaint_details', :with => "a long story about lots of stuff")
       fill_in('desired_outcome', :with => "Life gets better")
       choose('special_investigations_unit')
       select_male_gender
@@ -176,29 +178,31 @@ feature "complaints index", :js => true do
                                                .and change{ page.all('.new_complaint').count }.by(-1)
                                                .and change { ActionMailer::Base.deliveries.count }.by(1)
     # on the server
-    expect(Complaint.last.case_reference).to eq next_ref
-    expect(Complaint.last.complainant).to eq "Norman Normal"
-    expect(Complaint.last.dob).to eq Date.new(1950,8,19)
-    expect(Complaint.last.gender).to eq 'M'
-    expect(Complaint.last.email).to eq "norm@acme.co.ws"
-    expect(Complaint.last.complained_to_subject_agency).to eq true
-    expect(Complaint.last.village).to eq "Normaltown"
-    expect(Complaint.last.phone).to eq "555-1212"
-    expect(Complaint.last.desired_outcome).to eq "Life gets better"
-    expect(Complaint.last.mandate.key).to eq 'special_investigations_unit'
-    expect(Complaint.last.good_governance_complaint_bases.map(&:name)).to include "Delayed action"
-    expect(Complaint.last.human_rights_complaint_bases.map(&:name)).to include "CAT"
-    expect(Complaint.last.special_investigations_unit_complaint_bases.map(&:name)).to include "Unreasonable delay"
-    expect(Complaint.last.current_assignee_name).to eq User.staff.first.first_last_name
-    expect(Complaint.last.status_changes.count).to eq 1
-    expect(Complaint.last.status_changes.first.complaint_status.name).to eq "Under Evaluation"
-    expect(Complaint.last.complaint_categories.map(&:name)).to include "Formal"
-    expect(Complaint.last.agencies.map(&:name)).to include "SAA"
-    expect(Complaint.last.agencies.map(&:name)).to include "ACC"
-    expect(Complaint.last.complaint_documents.count).to eq 1
-    expect(Complaint.last.complaint_documents[0].filename).to eq "first_upload_file.pdf"
-    expect(Complaint.last.complaint_documents[0].title).to eq "Complaint Document"
-    expect(Complaint.last.date_received.to_date).to eq Date.new(Date.today.year, Date.today.month, 16)
+    complaint = Complaint.last
+    expect(complaint.case_reference).to eq next_ref
+    expect(complaint.complainant).to eq "Norman Normal"
+    expect(complaint.dob).to eq Date.new(1950,8,19)
+    expect(complaint.gender).to eq 'M'
+    expect(complaint.email).to eq "norm@acme.co.ws"
+    expect(complaint.complained_to_subject_agency).to eq true
+    expect(complaint.village).to eq "Normaltown"
+    expect(complaint.phone).to eq "555-1212"
+    expect(complaint.details).to eq "a long story about lots of stuff"
+    expect(complaint.desired_outcome).to eq "Life gets better"
+    expect(complaint.mandate.key).to eq 'special_investigations_unit'
+    expect(complaint.good_governance_complaint_bases.map(&:name)).to include "Delayed action"
+    expect(complaint.human_rights_complaint_bases.map(&:name)).to include "CAT"
+    expect(complaint.special_investigations_unit_complaint_bases.map(&:name)).to include "Unreasonable delay"
+    expect(complaint.current_assignee_name).to eq User.staff.first.first_last_name
+    expect(complaint.status_changes.count).to eq 1
+    expect(complaint.status_changes.first.complaint_status.name).to eq "Under Evaluation"
+    expect(complaint.complaint_categories.map(&:name)).to include "Formal"
+    expect(complaint.agencies.map(&:name)).to include "SAA"
+    expect(complaint.agencies.map(&:name)).to include "ACC"
+    expect(complaint.complaint_documents.count).to eq 1
+    expect(complaint.complaint_documents[0].filename).to eq "first_upload_file.pdf"
+    expect(complaint.complaint_documents[0].title).to eq "Complaint Document"
+    expect(complaint.date_received.to_date).to eq Date.new(Date.today.year, Date.today.month, 16)
 
     # on the client
     expect(first_complaint.find('.case_reference').text).to eq next_ref
@@ -208,6 +212,7 @@ feature "complaints index", :js => true do
     expand
     expect(first_complaint.find('.complainant_dob').text).to eq "1950, Aug 19"
     expect(first_complaint.find('.email').text).to eq "norm@acme.co.ws"
+    expect(first_complaint.find('.complaint_details').text).to eq "a long story about lots of stuff"
     expect(first_complaint.find('.desired_outcome').text).to eq "Life gets better"
     expect(first_complaint.find('.complainant_village').text).to eq "Normaltown"
     expect(first_complaint.find('.complainant_phone').text).to eq "555-1212"
@@ -269,6 +274,7 @@ feature "complaints index", :js => true do
       expect(page).to have_selector('#mandate_name_error', :text => 'You must select a mandate')
       expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
       expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
+      expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
       fill_in('complainant', :with => "Norman Normal")
       expect(page).not_to have_selector('#complainant_error', :text => "You must enter a complainant")
       fill_in('village', :with => "Leaden Roding")
@@ -279,6 +285,8 @@ feature "complaints index", :js => true do
       expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select a mandate')
       check_basis(:special_investigations_unit, "Unreasonable delay")
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
+      fill_in('complaint_details', :with => "random text")
+      expect(page).not_to have_selector('#details_error', :text => "You must enter the complaint details")
     end
   end
 
@@ -352,6 +360,7 @@ feature "complaints index", :js => true do
       fill_in('dob', :with => "1951/08/19")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
+      fill_in('complaint_details', :with => "the boy stood on the burning deck")
       fill_in('desired_outcome', :with => "Things are more better")
       choose('complained_to_subject_agency_no')
       # CATEGORY
@@ -387,6 +396,7 @@ feature "complaints index", :js => true do
 
     expect( Complaint.first.complained_to_subject_agency ).to eq false
     expect( Complaint.first.dob ).to eq Date.new(1951,8,19)
+    expect( Complaint.first.details ).to eq "the boy stood on the burning deck"
     expect( Complaint.first.desired_outcome ).to eq "Things are more better"
     expect( Complaint.first.mandate_name ).to eq "Special Investigations Unit"
     expect( Complaint.first.good_governance_complaint_bases.count ).to eq 1
@@ -404,6 +414,7 @@ feature "complaints index", :js => true do
 
     expect(page).to have_selector('.complainant_dob', :text => "1951, Aug 19")
     expect(page).to have_selector('.desired_outcome', :text => "Things are more better")
+    expect(page).to have_selector('.complaint_details', :text => "the boy stood on the burning deck")
     expect(page).to have_selector('.complained_to_subject_agency', :text => "no")
     expect(page).to have_selector('.date_received',:text => Date.new(Date.today.year, Date.today.month, 23).to_s)
 
@@ -560,6 +571,7 @@ feature "complaints index", :js => true do
       fill_in('village', :with => "")
       fill_in('phone', :with => "555-1212")
       fill_in('dob', :with => "")
+      fill_in('complaint_details', :with => "")
       # CATEGORY
       uncheck_category("Formal")
       # MANDATE
@@ -580,6 +592,7 @@ feature "complaints index", :js => true do
     expect(page).to have_selector('#village_error', :text => 'You must enter a village')
     expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
     expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
+    expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
     within first_complaint do
       fill_in('complainant', :with => "Norman Normal")
       expect(page).not_to have_selector('#complainant_error', :text => "You must enter a complainant")
@@ -591,6 +604,8 @@ feature "complaints index", :js => true do
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
       fill_in('dob', :with => "1950/08/19")
       expect(page).not_to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
+      fill_in('complaint_details', :with => "bish bash bosh")
+      expect(page).not_to have_selector('#details_error', :text => "You must enter the complaint details")
     end
   end
 

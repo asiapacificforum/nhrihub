@@ -18,6 +18,8 @@ en:
       phone: 'Phone'
       gender : 'Gender'
       complained_to_subject_agency : 'Complained to subject agency?'
+      details : 'Details'
+      details_error_message : 'You must enter the complaint details'
       desired_outcome : 'Desired outcome'
       complainant_error_message : "You must enter a complainant"
       mandate: "Mandate"

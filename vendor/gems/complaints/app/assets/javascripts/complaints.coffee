@@ -345,7 +345,7 @@ Complaint = Ractive.extend
       ['case_reference','complainant','village','phone','mandate_name', 'imported',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
-        'complaint_category_ids', 'agency_ids', 'attached_documents_attributes',
+        'complaint_category_ids', 'agency_ids', 'attached_documents_attributes', 'details',
         'dob', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received']
     url : ->
       Routes.complaint_path(current_locale, @get('id'))
@@ -386,6 +386,7 @@ Complaint = Ractive.extend
       dob: =>
         date_regex = new RegExp(/\d\d\d\d, \w\w\w \d\d/)
         date_regex.test @get('formatted_dob')
+      details : 'notBlank'
     error_vector : ->
       complainant_error : @get('complainant_error')
       village_error : @get('village_error')

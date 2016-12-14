@@ -251,6 +251,12 @@
           %span=t('.phone')
         .col-md-6
           %input.form-control#phone{:value => '{{phone}}'}
+      .row.form-group{:class => "{{#details_error}}has-error{{/}}"}
+        .col-md-2
+          %span.required= t('.details')
+        .col-md-6
+          %textarea.form-control#complaint_details{:value => '{{details}}', 'on-keydown'=>"remove_attribute_error('details')"}
+          %span.help-block.error#details_error= t('.details_error_message')
       .row.form-group
         .col-md-2
           %span= t('.desired_outcome')
@@ -485,7 +491,10 @@
         .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', :class => "{{#village_error}}has-error{{/}}"}
           .row
             .col-md-3
-              %label.required= t('.village')
+              .no_edit.in
+                %label= t('.village')
+              .edit
+                %label.required= t('.village')
             .col-md-9
               .no_edit.in
                 %span.complainant_village {{ village }}
@@ -502,6 +511,20 @@
                 %span.complainant_phone {{ phone }}
               .edit
                 %input.form-control#phone{:value => '{{phone}}'}
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>:edit, :class => "{{#details_error}}has-error{{/}}"}
+          .row
+            .col-md-3
+              .no_edit.in
+                %label= t('.details')
+              .edit
+                %label.required= t('.details')
+            .col-md-9
+              .no_edit.in
+                %span.complaint_details {{ details }}
+              .edit
+                %input.form-control#complaint_details{:value => '{{details}}', 'on-keydown'=>"remove_attribute_error('details')"}
+                %span.help-block.error#details_error= t('.details_error_message')
       .row.collapse.expanded_info
         .col-md-7.col-md-offset-2{'data-toggle'=>:edit}
           .row
