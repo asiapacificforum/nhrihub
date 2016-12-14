@@ -97,9 +97,6 @@
       %label.control-label.col-sm-2=t('.date')
       .col-sm-4
         %input#new_communication_date{:type => :text, :decorator=>:single_month_datepicker, :style => "width:150px", :value => "{{formatted_date}}"}
-      .col-sm-2.col-sm-offset-4
-        %i.fa.fa-remove.fa-lg#cancel_communication{:style=>"padding-left:30px", "on-click"=>"cancel_communication()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>t("cancel")}
-        %i.fa.fa-check.fa-lg#save_communication{:style=>"padding-left:60px", "on-click"=>"save_communication()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>t("save")}
     .row.form-group#sent_or_received
       {{> select_direction }}
     .row.form-group#mode{:class => '{{#mode_error}}has-error{{/}}'}
@@ -129,6 +126,15 @@
       .panel-body
         {{> file_selector_template {key : 'communication_document'} }}
         <attachedDocuments attached_documents='{{attached_documents}}' key='communication_document'>
+    .row
+      .col-sm-3.col-sm-offset-3{:style => "text-align:center;"}
+        .btn.btn-danger.btn-xs#cancel_communication{"on-click" => "cancel_communication()"}
+          %i.fa.fa-remove.fa-lg{:style => "color:white"}
+          %span{:style => "color:white"}= t("defaults.cancel")
+      .col-sm-3{:style => "text-align:center;"}
+        .btn.btn-success.btn-xs#save_communication{:style => "color:white;", "on-click" => "save_communication()"}
+          %i.fa.fa-check.fa-lg{:style => "color:white"}
+          %span= t("defaults.save")
 
 %script#show_communication_template{:type => 'text/ractive'}
   .communication.row
