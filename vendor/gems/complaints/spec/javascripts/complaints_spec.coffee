@@ -913,30 +913,51 @@ describe "complaints index page", ->
       $('.fa-refresh').trigger('click')
       expect($('#complaints .complaint:visible').length).to.equal 4
 
-  describe "complaint validation", ->
-    before (done)->
+  describe "complaint dob getter and setter", ->
+    beforeEach (done)->
       load_variables()
       get_script_under_test(done)
 
-    after ->
+    afterEach ->
+      reset_page()
+
+    it "should set dob from formatted_dob", ->
+      complaints.set('complaints',[{}])
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/8/19") # user enters dob in this format
+      expect(complaints.findAllComponents('complaint')[0].get('dob')).to.equal "1950-08-19"
+
+    it "should set formatted_dob from dob", ->
+      complaints.set('complaints',[{ dob:"1950-08-19"}])
+      expect(complaints.findAllComponents('complaint')[0].get('formatted_dob')).to.equal "1950, Aug 19" # rendered to user in this format
+
+  describe "complaint validation", ->
+    beforeEach (done)->
+      load_variables()
+      get_script_under_test(done)
+
+    afterEach ->
       reset_page()
 
     it "should validate a well-formed complaint, excluding assignee when editing", ->
-      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name : "Good Governance",complaint_basis_ids:[2]}])
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name : "Good Governance",complaint_basis_ids:[2],dob:null}])
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/8/19")
       complaints.findAllComponents('complaint')[0].set('editing',true)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a well-formed complaint, including assignee when not editing", ->
-      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_name : "Good Governance",complaint_basis_ids:[2]}])
+      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_name : "Good Governance",complaint_basis_ids:[2], dob:null}])
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/8/19")
       complaints.findAllComponents('complaint')[0].set('new_assignee_id', 8)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a complaint with no complainant if it is imported", ->
-      complaints.set('complaints',[{ village : "Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:true}])
+      complaints.set('complaints',[{ village : "Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:true, dob:null}])
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/8/19")
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a complaint with no village if it is imported", ->
-      complaints.set('complaints',[{ complainant : "Foo", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:true}])
+      complaints.set('complaints',[{ complainant : "Foo", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:true, dob:null}])
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/8/19")
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should not validate a complaint with no complainant if it is not imported", ->
@@ -948,17 +969,17 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
 
     it "should validate an imported complaint missing village, excluding assignee when editing", ->
-      complaints.set('complaints',[{ complainant:"Foo", mandate_name : "Good Governance", complaint_basis_ids:[2], imported:true}])
+      complaints.set('complaints',[{ complainant:"Foo", mandate_name : "Good Governance", complaint_basis_ids:[2], imported:true, dob:"1950-08-19"}])
       complaints.findAllComponents('complaint')[0].set('editing',true)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate an imported complaint missing complaint_basis_ids, including assignee when not editing", ->
-      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_name : "Good Governance", complaint_basis_ids:[], imported:true}])
+      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_name : "Good Governance", complaint_basis_ids:[], imported:true, dob:"1950-08-19"}])
       complaints.findAllComponents('complaint')[0].set('new_assignee_id', 8)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a complaint missing complaint_basis_ids, excluding assignee when editing, when not imported", ->
-      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name : "Good Governance" ,complaint_basis_ids:[], imported:false}])
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name : "Good Governance" ,complaint_basis_ids:[], imported:false, dob:"1950-08-19"}])
       complaints.findAllComponents('complaint')[0].set('good_governance_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('human_rights_complaint_basis_ids', [])
@@ -966,7 +987,7 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
 
     it "should validate a complaint missing complaint_basis_ids, including assignee when not editing, when not imported", ->
-      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_name : "Good Governance", good_governance_complaint_basis_ids: [], special_investigations_unit_complaint_basis_ids: [], human_rights_complaint_basis_ids: [], imported:true}])
+      complaints.set('complaints',[{complainant:"Foo", village:"Bar", mandate_name : "Good Governance", good_governance_complaint_basis_ids: [], special_investigations_unit_complaint_basis_ids: [], human_rights_complaint_basis_ids: [], imported:true, dob:"1950-08-19"}])
       complaints.findAllComponents('complaint')[0].set('good_governance_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('human_rights_complaint_basis_ids', [])
@@ -974,7 +995,7 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a complaint missing complaint_basis_ids, excluding assignee when editing, when imported", ->
-      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name:"Good Governance", imported:true}])
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name:"Good Governance", imported:true, dob:"1950-08-19"}])
       complaints.findAllComponents('complaint')[0].set('good_governance_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('human_rights_complaint_basis_ids', [])
@@ -989,6 +1010,38 @@ describe "complaints index page", ->
       complaints.findAllComponents('complaint')[0].set('new_assignee_id', 8)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
 
+    it "should be valid if dob is entered with correct format", ->
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name : "Good Governance", imported: false, dob:null}])
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/08/19")
+      complaints.findAllComponents('complaint')[0].set('editing',true)
+      complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [2])
+      expect(complaints.findAllComponents('complaint')[0].validate()).to.be.true
+      expect(complaints.findAllComponents('complaint')[0].get('dob_error')).to.be.false
+
+    it "should be invalid if dob is entered with incorrect format", ->
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name : "Good Governance", imported: false, dob:null}])
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950-8-19")
+      complaints.findAllComponents('complaint')[0].set('editing',true)
+      complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [2])
+      expect(complaints.findAllComponents('complaint')[0].validate()).to.be.false
+      expect(complaints.findAllComponents('complaint')[0].get('dob_error')).to.be.true
+
+    it "should be invalid if dob is blank", ->
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name : "Good Governance", imported: false, dob:null}])
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"")
+      complaints.findAllComponents('complaint')[0].set('editing',true)
+      complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [2])
+      expect(complaints.findAllComponents('complaint')[0].validate()).to.be.false
+      expect(complaints.findAllComponents('complaint')[0].get('dob_error')).to.be.true
+
+    it "should be invalid if dob is null", ->
+      complaints.set('complaints',[{ complainant:"Foo", village:"Bar", mandate_name : "Good Governance", imported: false, dob:null}])
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',null)
+      complaints.findAllComponents('complaint')[0].set('editing',true)
+      complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [2])
+      expect(complaints.findAllComponents('complaint')[0].validate()).to.be.false
+      expect(complaints.findAllComponents('complaint')[0].get('dob_error')).to.be.true
+
   describe "communication validation", ->
     before (done)->
       load_variables()
@@ -997,58 +1050,42 @@ describe "complaints index page", ->
     after ->
       reset_page()
 
-    it "should not be valid with null user_id", ->
-      window.communications.set('communications',[{id:1,user_id:null,mode:'email',direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.false
-      expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.true
+    describe "validation of mode attribute", ->
+      it "should not be valid with null mode", ->
+        # I can't figure out why it's necessary to set up the communications array twice like this!
+        # the second line is the one we're testing here
+        window.communications.set('communications',[{id:1,mode:'email',direction:'sent'}])
+        window.communications.set('communications',[{id:1,mode:null,direction:'sent'}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+        expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
 
-    it "should not be valid with blank user_id", ->
-      window.communications.set('communications',[{id:1,user_id:"",mode:'email',direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.false
-      expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.true
+      it "should not be valid with blank mode", ->
+        window.communications.set('communications',[{id:1,mode:"",direction:'sent'}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+        expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
 
-    it "should be valid with numeric user_id", ->
-      window.communications.set('communications',[{id:1,user_id:5,mode:'email',direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.true
-      expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.false
+      it "should be valid with valid string mode", ->
+        window.communications.set('communications',[{id:1,mode:'email',direction:'sent'}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.true
+        expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.false
 
-    it "should be valid with numeric string user_id", ->
-      window.communications.set('communications',[{id:1,user_id:"5",mode:'email',direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.true
-      expect(communications.findAllComponents('communication')[0].get('user_id_error')).to.be.false
-
-    it "should not be valid with null mode", ->
-      window.communications.set('communications',[{id:1,user_id:5,mode:null,direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.false
-      expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
-
-    it "should not be valid with blank mode", ->
-      window.communications.set('communications',[{id:1,user_id:5,mode:"",direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.false
-      expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
-
-    it "should be valid with valid string mode", ->
-      window.communications.set('communications',[{id:1,user_id:5,mode:'email',direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.true
-      expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.false
-
-    it "should not be valid with invalid string mode", ->
-      window.communications.set('communications',[{id:1,user_id:5,mode:"foo",direction:'sent'}])
-      expect(communications.findAllComponents('communication')[0].validate()).to.be.false
-      expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
+      it "should not be valid with invalid string mode", ->
+        window.communications.set('communications',[{id:1,mode:"foo",direction:'sent'}])
+        expect(communications.findAllComponents('communication')[0].validate()).to.be.false
+        expect(communications.findAllComponents('communication')[0].get('mode_error')).to.be.true
 
     describe "validation of direction with a custom function", ->
       it "should not validate if mode is phone and direction is not provided", ->
-        window.communications.set('communications',[{id:1,user_id:5,mode:"phone"}])
+        window.communications.set('communications',[{id:1,mode:"phone"}])
         expect(communications.findAllComponents('communication')[0].validate()).to.be.false
         expect(communications.findAllComponents('communication')[0].get('direction_error')).to.be.true
 
       it "should validate if mode is phone and direction is provided", ->
-        window.communications.set('communications',[{id:1,user_id:5,mode:"phone",direction:"sent"}])
+        window.communications.set('communications',[{id:1,mode:"phone",direction:"sent"}])
         expect(communications.findAllComponents('communication')[0].validate()).to.be.true
         expect(communications.findAllComponents('communication')[0].get('direction_error')).to.be.false
 
       it "should validate if mode is face to face and direction is not provided", ->
-        window.communications.set('communications',[{id:1,user_id:5,mode:"face to face"}])
+        window.communications.set('communications',[{id:1,mode:"face to face"}])
         expect(communications.findAllComponents('communication')[0].validate()).to.be.true
         expect(communications.findAllComponents('communication')[0].get('direction_error')).to.be.false

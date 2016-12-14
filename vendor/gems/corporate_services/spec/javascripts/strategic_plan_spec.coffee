@@ -18,7 +18,7 @@ load_variables = ->
   #window.all_human_rights_complaint_bases = MagicLamp.loadJSON("all_human_rights_complaint_bases")
   #window.all_special_investigations_unit_complaint_bases = MagicLamp.loadJSON("all_special_investigations_unit_complaint_bases")
   #window.all_staff = MagicLamp.loadJSON("all_staff")
-  MagicLamp.load("strategic_plan_page") # that's the index.haml file being loaded
+  #MagicLamp.load("strategic_plan_page") # that's the show.haml file being loaded
 
 get_script_under_test = (done)->
   $.getScript("/assets/corporate_services/strategic_plan.js").

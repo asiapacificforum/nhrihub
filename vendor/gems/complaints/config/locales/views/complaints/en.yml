@@ -12,8 +12,8 @@ en:
       complainant: 'Complainant'
       village: 'Village'
       village_error_message : "You must enter a village"
-      age: 'Age'
-      age_error_message: "You must enter the complainant's age"
+      dob: 'Date of birth'
+      dob_error_message: "You must enter the complainant's date of birth with format yyyy/mm/dd"
       email : "Email"
       phone: 'Phone'
       gender : 'Gender'

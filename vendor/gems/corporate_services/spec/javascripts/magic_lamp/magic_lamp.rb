@@ -22,9 +22,9 @@ MagicLamp.define do
     #:selected_good_governance_complaint_basis_ids => []}
   #end
 
-  fixture(:name => 'strategic_plan_page') do
-    render :file => 'corporate_services/strategic_plans/show'
-  end
+  #fixture(:name => 'strategic_plan_page') do
+    #render :file => 'corporate_services/strategic_plans/show'
+  #end
 
   fixture(:name => 'strategic_plan_data') do
     StrategicPlanSeedData.initialize(:strategic_plan)

@@ -1,7 +1,7 @@
 %script#complaints_template{:type => 'template/ractive'}
   <filterControls filter_criteria='{{filter_criteria}}' all_good_governance_complaint_bases='{{all_good_governance_complaint_bases}}' all_human_rights_complaint_bases='{{all_human_rights_complaint_bases}}' all_special_investigations_unit_complaint_bases='{{all_special_investigations_unit_complaint_bases}}' statuses='{{statuses}}' />
   {{#complaints}}
-  <complaint expanded=false all_agencies='{{all_agencies}}' all_agencies_in_threes='{{all_agencies_in_threes}}' all_categories='{{all_categories}}' all_mandates='{{all_mandates}}' all_users='{{all_users}}' assigns='{{assigns}}' case_reference='{{case_reference}}' communications='{{communications}}' complaint_category_ids='{{complaint_category_ids}}' complainant='{{complainant}}' complaint_bases='{{complaint_bases}}' complaint_categories='{{complaint_categories}}' complaint_named_documents_titles='{{complaint_named_documents_titles}}' attached_documents='{{attached_documents}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' date='{{date}}' filter_criteria='{{filter_criteria}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' imported='{{imported}}' mandate_id='{{mandate_id}}' mandate_name='{{mandate_name}}' new_assignee_id='{{new_assignee_id}}' notes='{{notes}}' opened_by_id='{{opened_by_id}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}' age='{{age}}' email='{{email}}' desired_outcome='{{desired_outcome}}' complained_to_subject_agency='{{complained_to_subject_agency}}' gender='{{gender}}' date_received='{{date_received}}' />
+  <complaint expanded=false all_agencies='{{all_agencies}}' all_agencies_in_threes='{{all_agencies_in_threes}}' all_categories='{{all_categories}}' all_mandates='{{all_mandates}}' all_users='{{all_users}}' assigns='{{assigns}}' case_reference='{{case_reference}}' communications='{{communications}}' complaint_category_ids='{{complaint_category_ids}}' complainant='{{complainant}}' complaint_bases='{{complaint_bases}}' complaint_categories='{{complaint_categories}}' complaint_named_documents_titles='{{complaint_named_documents_titles}}' attached_documents='{{attached_documents}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' date='{{date}}' dob='{{dob}}' filter_criteria='{{filter_criteria}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' imported='{{imported}}' mandate_id='{{mandate_id}}' mandate_name='{{mandate_name}}' new_assignee_id='{{new_assignee_id}}' notes='{{notes}}' opened_by_id='{{opened_by_id}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}' age='{{age}}' email='{{email}}' desired_outcome='{{desired_outcome}}' complained_to_subject_agency='{{complained_to_subject_agency}}' gender='{{gender}}' date_received='{{date_received}}' />
   {{/complaints}}
 
 %script#good_governance_complaint_basis_filter_select_template{:type => "template/ractive"}
@@ -207,6 +207,8 @@
 %script#new_complaint_template{:type => 'template/ractive'}
   .row.well.well-sm.expandable_well.new_complaint.editable_container{:intro => 'slide'}
     .col-md-12
+      %span.required_before=t('required')
+    .col-md-12
       .row
         .col-md-2
           %span=t('.case_reference')
@@ -214,19 +216,19 @@
           %span#case_reference {{case_reference}}
       .row.form-group{:class => "{{#complainant_error}}has-error{{/}}"}
         .col-md-2
-          %span=t('.complainant')
+          %span.required=t('.complainant')
         .col-md-6
           %input.form-control#complainant{:value => '{{complainant}}', 'on-keydown'=>"remove_attribute_error('complainant')"}
           %span.help-block.error#complainant_error= t('.complainant_error_message')
         .col-sm-3
           %i.fa.fa-remove.fa-lg#cancel_complaint{ :style=>"padding-left:30px", "on-click"=>"cancel_add_complaint()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>"cancel"}
           %i.fa.fa-check.fa-lg#save_complaint{ :style=>"padding-left:60px", "on-click"=>"save_complaint()", "data-toggle"=>"tooltip", "data-placement"=>"bottom", :title=>"save"}
-      .row.form-group{:class => "{{#age_error}}has-error{{/}}"}
+      .row.form-group{:class => "{{#dob_error}}has-error{{/}}"}
         .col-md-2
-          %span=t('.age')
-        .col-md-2
-          %input.form-control#age{:value => '{{age}}', 'on-keydown'=>"remove_attribute_error('age')", :style=>"width:50px;"}
-          %span.help-block.error#age_error= t('.age_error_message')
+          %span.required=t('.dob')
+        .col-md-3
+          %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:112px;"}
+          %span.help-block.error#dob_error= t('.dob_error_message')
         .col-md-1
           %span=t('.gender')
         .col-md-2
@@ -237,7 +239,7 @@
             %input#f{:type=>:radio, :name=>'{{gender}}', :value=>'F'}
       .row.form-group{:class => "{{#village_error}}has-error{{/}}"}
         .col-md-2
-          %span=t('.village')
+          %span.required=t('.village')
         .col-md-6
           %input.form-control#village{:value => '{{village}}', 'on-keydown'=>"remove_attribute_error('village')"}
           %span.help-block.error#village_error= t('.village_error_message')
@@ -272,20 +274,20 @@
           %input#date_received{:type => :text, :name => "{{date_received}}", :decorator => :single_month_datepicker}
       .row.form-group{:class => "{{#new_assignee_id_error}}has-error{{/}}"}
         .col-md-2
-          %label=t('.assignee')
+          %label.required=t('.assignee')
         .col-md-6
           <assigneeSelector users='{{all_staff}}' />
           %span.help-block.error#new_assignee_id_error= t('.assignee_error_message')
       .row.form-group{:class => "{{#mandate_name_error}}has-error{{/}}"}
         .col-md-2
-          %label=t('.mandate')
+          %label.required=t('.mandate')
         .col-md-10
           .row
             <mandatesSelector mandates='{{all_mandates}}' />
           %span.help-block.error#mandate_name_error= t('.mandate_name_error_message')
       .row.form-group{:class => "{{#complaint_basis_id_count_error}}has-error{{/}}"}
         .col-md-2
-          %label=t('.complaint_basis')
+          %label.required=t('.complaint_basis')
         .col-md-10
           .row
             <complaintBasesSelector all_mandates='{{all_mandates}}' />
@@ -333,6 +335,9 @@
 
 %script#show_complaint_template{:type => 'template/ractive'}
   .row.well.well-sm.expandable_well.complaint.editable_container{ :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+    .col-md-12{'data-toggle' => :edit}
+      .fade.edit
+        %span.required_before=t('required')
     .col-md-12
       .row.basic_info
         .col-md-2
@@ -390,8 +395,11 @@
                   %span Under Evaluation
                   %input#under_evaluation{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Under Evaluation'}
           .row.form-group{:class => "{{#complainant_error}}has-error{{/}}"}
-            .col-md-3
-              %label= t('.complainant')
+            .col-md-3{'data-toggle' => :edit}
+              .no_edit.in
+                %label= t('.complainant')
+              .edit
+                %label.required= t('.complainant')
             .col-md-9{'data-toggle'=>'edit'}
               .no_edit.in
                 %span.complainant {{ complainant }}
@@ -432,16 +440,19 @@
                   {{/if}}
                 .edit
       .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', :class => "{{#age_error}}has-error{{/}}"}
+        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', :class => "{{#dob_error}}has-error{{/}}"}
           .row
-            .col-md-3
-              %label= t('.age')
-            .col-md-2
+            .col-md-3{'data-toggle'=>:edit}
               .no_edit.in
-                %span.complainant_age {{ age }}
+                %label= t('.dob')
               .edit
-                %input.form-control#age{:value => '{{age}}', 'on-keydown'=>"remove_attribute_error('age')", :style=>"width:50px;"}
-                %span.help-block.error#age_error= t('.age_error_message')
+                %label.required= t('.dob')
+            .col-md-3
+              .no_edit.in
+                %span.complainant_dob {{ formatted_dob }}
+              .edit
+                %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:112px;"}
+                %span.help-block.error#dob_error= t('.dob_error_message')
             .col-md-2{:style => "text-align:right"}
               %label= t('.gender')
             .col-md-2
@@ -469,7 +480,7 @@
         .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', :class => "{{#village_error}}has-error{{/}}"}
           .row
             .col-md-3
-              %label= t('.village')
+              %label.required= t('.village')
             .col-md-9
               .no_edit.in
                 %span.complainant_village {{ village }}
@@ -528,7 +539,9 @@
       .row.collapse
         .col-md-12.form-group{'data-toggle'=>:edit, :class => "{{#mandate_name_error}}has-error{{/}}"}
           .row
-            .col-md-2=t('.mandate')
+            .col-md-2
+              .no_edit.in=t('.mandate')
+              .edit.required=t('.mandate')
             .col-md-10
               .no_edit.in#mandate {{ mandate_name }}
               .edit
@@ -538,7 +551,9 @@
       .row.collapse
         .col-md-12.form-group{'data-toggle'=>:edit, :class => "{{#complaint_basis_id_count_error}}has-error{{/}}"}
           .row
-            .col-md-2=t('.basis')
+            .col-md-2
+              .no_edit.in=t('.basis')
+              .edit.required=t('.basis')
             .col-md-10
               .no_edit.in
                 <complaintBases />

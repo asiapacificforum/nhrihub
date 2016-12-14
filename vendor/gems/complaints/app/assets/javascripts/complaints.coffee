@@ -346,7 +346,7 @@ Complaint = Ractive.extend
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
         'complaint_category_ids', 'agency_ids', 'attached_documents_attributes',
-        'age', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received']
+        'dob', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received']
     url : ->
       Routes.complaint_path(current_locale, @get('id'))
     formatted_date :
@@ -357,6 +357,18 @@ Complaint = Ractive.extend
           $.datepicker.formatDate("yy, M d", new Date(@get('date_received')) )
       set: (val)->
         @set('date_received', $.datepicker.parseDate( "yy, M d", val))
+    formatted_dob :
+      get: ->
+        if _.isEmpty(@get('dob'))
+          ""
+        else
+          $.datepicker.formatDate("yy, M d", $.datepicker.parseDate("yy-mm-dd",@get('dob')))
+      set: (val)->
+        date_regex = new RegExp(/\d\d\d\d\/\d{1,2}\/\d{1,2}/)
+        if date_regex.test val
+          @set('dob', $.datepicker.formatDate("yy-mm-dd",$.datepicker.parseDate( "yy/mm/dd", val)))
+        else
+          @set('dob', "")
     create_reminder_url : ->
       Routes.complaint_reminders_path('en', @get('id'))
     create_note_url : ->
@@ -366,19 +378,20 @@ Complaint = Ractive.extend
       @get('special_investigations_unit_complaint_basis_ids').length +
       @get('human_rights_complaint_basis_ids').length
     validation_criteria : ->
-      if @get('editing')
-        complainant : ['notBlank', {if : =>!@get('imported') }]
-        village : ['notBlank', {if : =>!@get('imported')}]
-        mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
-        complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
-        age : ['numeric', {if : =>!@get('imported')}]
-      else
-        complainant : ['notBlank', {if : =>!@get('imported') }]
-        village : ['notBlank', {if : =>!@get('imported')}]
-        mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
-        complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
-        new_assignee_id : 'numeric'
-        age : ['numeric', {if : =>!@get('imported')}]
+      complainant : ['notBlank', {if : =>!@get('imported') }]
+      village : ['notBlank', {if : =>!@get('imported')}]
+      mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
+      complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
+      new_assignee_id : ['numeric', {if : =>!@get('editing')}]
+      dob: =>
+        date_regex = new RegExp(/\d\d\d\d, \w\w\w \d\d/)
+        date_regex.test @get('formatted_dob')
+    error_vector : ->
+      complainant_error : @get('complainant_error')
+      village_error : @get('village_error')
+      mandate_name_error : @get('mandate_name_error')
+      complaint_basis_id_count_error : @get('complaint_basis_id_count_error')
+      dob_error : @get('dob_error')
   oninit : ->
     @set
       editing : false
@@ -389,6 +402,7 @@ Complaint = Ractive.extend
       complaint_basis_id_count_error : false
       filetype_error: false
       filesize_error: false
+      dob_error: false
       expanded:false
       serialization_key:'complaint'
     @validator = new Validator(@)
