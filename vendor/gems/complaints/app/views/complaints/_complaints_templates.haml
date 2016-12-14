@@ -207,8 +207,9 @@
 %script#new_complaint_template{:type => 'template/ractive'}
   .row.well.well-sm.expandable_well.new_complaint.editable_container{:intro => 'slide'}
     .col-md-12
-      %span.required_before=t('required')
-    .col-md-12
+      .row
+        .col-md-12
+          %span.required_before=t('required')
       .row
         .col-md-2
           %span=t('.case_reference')

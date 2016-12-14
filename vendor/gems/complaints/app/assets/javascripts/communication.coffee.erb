@@ -167,6 +167,7 @@ Communication = Ractive.extend
       @set(field+"_error",false)
   disable_direction : ->
     @set('direction',null)
+    @remove_errors('mode')
   add_file : (file)->
     attached_document =
       communication_id : @get('id')

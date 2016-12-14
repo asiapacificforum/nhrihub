@@ -38,7 +38,7 @@
       .row
         .col-sm-2
           %label
-            <span class="{{#if i>0}}hidden{{/if}}">
+            <span class="{{#if i>0}}hidden{{/if}} {{#if i==0}}required{{/if}}">
             = t('.communicant')
             </span>
         .col-sm-4.form-group{:class => "{{#name_error}}has-error{{/name_error}}"}
@@ -89,7 +89,10 @@
     %span.help-block#multiple_sender_error{:class => '{{#multiple_sender_error}}has-error{{/}}', :style => 'margin:0px'}= t('.multiple_sender_error_message')
 
 %script#new_communication_template{:type => 'text/ractive'}
-  .form#new_communication
+  .form#new_communication{:style => "margin-top:28px"}
+    .row
+      .col-md-12
+        %span.required_before=t('required')
     .row.form-group#date
       %label.control-label.col-sm-2=t('.date')
       .col-sm-4
@@ -100,7 +103,7 @@
     .row.form-group#sent_or_received
       {{> select_direction }}
     .row.form-group#mode{:class => '{{#mode_error}}has-error{{/}}'}
-      %label.control-label.col-sm-2= t('.method')
+      %label.control-label.col-sm-2.required= t('.method')
       .col-sm-8
         %label.radio-inline
           <input type='radio' id='email_mode' name='{{mode}}' value='email' on-change="remove_errors('mode')" >
@@ -112,7 +115,7 @@
           <input type='radio' id='letter_mode' name='{{mode}}' value='letter' on-change="remove_errors('mode')" >
           = t('.letter')
         %label.radio-inline
-          <input type='radio' id='face_to_face_mode' name='{{mode}}' value='face to face' on-change="remove_errors('mode')" on-change="disable_direction()" >
+          <input type='radio' id='face_to_face_mode' name='{{mode}}' value='face to face' on-change="disable_direction()" >
           = t('.face_to_face')
         %span.help-block= t('.method_error_message')
     .row#communicants
