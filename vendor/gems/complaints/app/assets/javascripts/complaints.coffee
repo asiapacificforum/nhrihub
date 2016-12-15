@@ -393,6 +393,7 @@ Complaint = Ractive.extend
       mandate_name_error : @get('mandate_name_error')
       complaint_basis_id_count_error : @get('complaint_basis_id_count_error')
       dob_error : @get('dob_error')
+      details_error : @get('details_error')
   oninit : ->
     @set
       editing : false
