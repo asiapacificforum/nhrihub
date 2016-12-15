@@ -82,21 +82,6 @@ $ ->
       subarea : Collection.SubareaFilter
   , SelectableArea
 
-  # not currently used, until Ractive 0.8.0 is reliable
-  Collection.SubareaSelect = Ractive.extend
-    template : "#subarea_select_template"
-    show_metrics : (id)->
-      if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && @get('checked')
-        $('.hr_metrics').show(300)
-      else if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && !@get('checked')
-        $('.hr_metrics').hide(300)
-
-  # not currently used, until Ractive 0.8.0 is reliable
-  Collection.AreaSelect = Ractive.extend
-    template : "#area_select_template"
-    components :
-      'subarea-select' : Collection.SubareaSelect
-
   FileInput = (node)->
     $(node).on 'change', (event)->
       add_file(event,@)
@@ -164,11 +149,6 @@ $ ->
       collectionItemArea : Collection.CollectionItemArea
       metric : Collection.Metric
       file : Collection.File
-      # due to a ractive bug, checkboxes don't work in components,
-      # see http://stackoverflow.com/questions/32891814/unexpected-behaviour-of-ractive-component-with-checkbox,
-      # so this component is not used, until the bug is fixed
-      # update: bug is fixed in "edge" but many other problems prevent using it
-      # 'area-select' : AreaSelect
     oninit : ->
       @set
         editing : false

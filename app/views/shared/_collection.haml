@@ -246,29 +246,11 @@
       %span.text {{name}}
       %span.fa.fa-check
 
-%script#area_template{:type=> 'template/ractive'}
-  %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
-    %a{'on-click'=>'toggle()'}
-      %span {{name}}
-      %span.fa.fa-check
-  {{#subareas}}
-  <subarea>
-  {{/subareas}}
-
 %script#subarea_select_template{:type=> 'template/ractive'}
   .checkbox.subarea
     %label
       %input{:type=>:checkbox, 'on-change' => 'show_metrics(id)', :checked => '{{checked}}', :id => '{{model_name}}_subarea_ids_{{id}}', :name => '{{model_name}}[subarea_ids][]', :value => '{{id}}'}
       {{ name }}
-
-%script#area_select_template{:type=> 'template/ractive'}
-  .checkbox
-    %label
-      %input{:type=>:checkbox, :id => '{{model_name}}_area_ids_{{id}}', :name => '{{area_ids}}', :value => '{{id}}'}
-      {{ name }}
-  {{#subareas }}
-  <subarea-select id='{{id}}'/> 
-  {{/subareas }}
 
 %script#edit_title{:type => 'text/ractive'}
   .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
