@@ -233,25 +233,17 @@ FilterMatch =
     re = new RegExp(criterion_digits)
     re.test value_digits
   matches_agencies : ->
-    return true if _.isEmpty(@get('filter_criteria.selected_agency_ids')) || _.isNull(@get('filter_criteria.agency_rule'))
-    if @get('filter_criteria.agency_rule') is 'all'
-      _.isEqual(@get('filter_criteria.selected_agency_ids').slice().sort(), @get('agency_ids').slice().sort())
-    else if @get('filter_criteria.agency_rule') is 'any'
-      _.intersection(@get('filter_criteria.selected_agency_ids'), @get('agency_ids')).length > 0
+    return true if _.isEmpty(@get('filter_criteria.selected_agency_ids'))
+    _.intersection(@get('filter_criteria.selected_agency_ids'), @get('agency_ids')).length > 0
   matches_basis : ->
-    if @get('filter_criteria.basis_rule') == 'all'
-      !@basis_requirement_is_specified() ||
-      ( @matches_good_governance_complaint_basis() &&
-        @matches_human_rights_complaint_basis() &&
-        @matches_special_investigations_unit_complaint_basis())
-    else if @get('filter_criteria.basis_rule') == 'any'
-      match = @matches_good_governance_complaint_basis() || # each val is undefined if no ids were selected
-              @matches_human_rights_complaint_basis() || # if all of them are undefined, match is undefined
-              @matches_special_investigations_unit_complaint_basis() # if any is true, true is returned
-      return true if _.isUndefined(match)
-      match
+    match = @matches_good_governance_complaint_basis() || # each val is undefined if no ids were selected
+            @matches_human_rights_complaint_basis() || # if all of them are undefined, match is undefined
+            @matches_special_investigations_unit_complaint_basis() # if any is true, true is returned
+    return true if _.isUndefined(match)
+    if !@basis_requirement_is_specified()
+      return true
     else
-      true # declare a match, b/c no requirements are specified
+      match
   basis_requirement_is_specified : ->
     @good_governance_basis_requirement_is_specified() ||
     @human_rights_basis_requirement_is_specified() ||
@@ -268,27 +260,15 @@ FilterMatch =
   matches_good_governance_complaint_basis : ->
     selected = @get('filter_criteria.selected_good_governance_complaint_basis_ids')
     attrs = @get('good_governance_complaint_basis_ids')
-    if @get('filter_criteria.basis_rule') is 'all'
-      common_elements = _.intersection(selected,attrs)
-      _.isEqual(common_elements.length,selected.length)
-    else if (@get('filter_criteria.basis_rule') is 'any')
-      _.intersection(selected,attrs).length > 0
+    _.intersection(selected,attrs).length > 0
   matches_human_rights_complaint_basis : ->
     selected = @get('filter_criteria.selected_human_rights_complaint_basis_ids')
     attrs = @get('human_rights_complaint_basis_ids')
-    if @get('filter_criteria.basis_rule') is 'all'
-      common_elements = _.intersection(selected,attrs)
-      _.isEqual(common_elements.length,selected.length)
-    else if (@get('filter_criteria.basis_rule') is 'any')
-      _.intersection(selected,attrs).length > 0
+    _.intersection(selected,attrs).length > 0
   matches_special_investigations_unit_complaint_basis : ->
     selected = @get('filter_criteria.selected_special_investigations_unit_complaint_basis_ids')
     attrs = @get('special_investigations_unit_complaint_basis_ids')
-    if @get('filter_criteria.basis_rule') is 'all'
-      common_elements = _.intersection(selected,attrs)
-      _.isEqual(common_elements.length,selected.length)
-    else if (@get('filter_criteria.basis_rule') is 'any')
-      _.intersection(selected,attrs).length > 0
+    _.intersection(selected,attrs).length > 0
   matches_assignee : ->
     selected_assignee_id = @get('filter_criteria.selected_assignee_id')
     assignee_id = @get('current_assignee_id')
@@ -526,13 +506,6 @@ FilterControls = Ractive.extend
     agencyFilterSelect : AgencyFilterSelect
     assigneeFilterSelect : AssigneeFilterSelect
     statusSelector : StatusSelector
-  filter_rule : (type,rule)->
-    @event.original.preventDefault()
-    @event.original.stopPropagation()
-    if rule == @get("filter_criteria.#{type}_rule")
-      @set("filter_criteria.#{type}_rule", null)
-    else
-      @set("filter_criteria.#{type}_rule", rule)
   expand : ->
     @parent.expand()
   compact : ->

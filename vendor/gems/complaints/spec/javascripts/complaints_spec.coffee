@@ -363,215 +363,71 @@ describe "complaints index page", ->
     after ->
       reset_page()
 
-    describe "when basis_rule is 'all'", ->
-      before ->
-        complaints.set('filter_criteria.basis_rule','all')
+    it "when all filter_criteria.basis_ids are empty", ->
+      complaints.set
+        'filter_criteria.selected_good_governance_complaint_basis_ids' : []
+        'filter_criteria.selected_human_rights_complaint_basis_ids' : []
+        'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
+      complaints.set('complaints',[{good_governance_complaint_basis_ids : [1,2], human_rights_complaint_basis_ids : [1,2], special_investigations_unit_complaint_basis_ids : [1,2] }])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_basis()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
 
-      it "when all filter_criteria.basis_ids are empty", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : []
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [1,2], human_rights_complaint_basis_ids : [1,2], special_investigations_unit_complaint_basis_ids : [1,2] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
+    it "when filter_criteria.good_governance_complaint_basis_ids has a non-matching value", ->
+      complaints.set
+        'filter_criteria.selected_good_governance_complaint_basis_ids' : [1]
+        'filter_criteria.selected_human_rights_complaint_basis_ids' : []
+        'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
+      complaints.set('complaints',[{good_governance_complaint_basis_ids : [2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [] }])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_basis()).to.be.false
+      expect(complaint.include()).to.be.false
+      expect(complaint.get('include')).to.be.false
 
-      it "when filter_criteria.good_governance_complaint_basis_ids has a non-matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : [1,2]
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.false
-        expect(complaint.include()).to.be.false
-        expect(complaint.get('include')).to.be.false
+    it "when filter_criteria.good_governance_complaint_basis_ids has a matching value", ->
+      complaints.set
+        'filter_criteria.selected_good_governance_complaint_basis_ids' : [1]
+        'filter_criteria.selected_human_rights_complaint_basis_ids' : []
+        'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
+      complaints.set('complaints',[{good_governance_complaint_basis_ids : [1,2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [] }])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_basis()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
 
-      it "when filter_criteria.good_governance_complaint_basis_ids has a matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : [1,2]
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [1,2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
+    it "when filter_criteria.human_rights_complaint_basis_ids has a matching value", ->
+      complaints.set
+        'filter_criteria.selected_good_governance_complaint_basis_ids' : []
+        'filter_criteria.selected_human_rights_complaint_basis_ids' : [1]
+        'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
+      complaints.set('complaints',[{good_governance_complaint_basis_ids : [], human_rights_complaint_basis_ids : [1], special_investigations_unit_complaint_basis_ids : [] }])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_basis()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
 
-      it "when filter_criteria.human_rights_complaint_basis_ids has a matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : []
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : [1]
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [], human_rights_complaint_basis_ids : [1], special_investigations_unit_complaint_basis_ids : [] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
+    it "when filter_criteria.special_investigations_unit_complaint_basis_ids has a matching value", ->
+      complaints.set
+        'filter_criteria.selected_good_governance_complaint_basis_ids' : []
+        'filter_criteria.selected_human_rights_complaint_basis_ids' : []
+        'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : [1]
+      complaints.set('complaints',[{good_governance_complaint_basis_ids : [], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [1] }])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_basis()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
 
-      it "when filter_criteria.special_investigations_unit_complaint_basis_ids has a matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : []
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : [1]
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [1,2] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when there is a mix of matching and non-matching values", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : [1]
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : [1]
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [1] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.false
-        expect(complaint.include()).to.be.false
-        expect(complaint.get('include')).to.be.false
-
-    describe "when basis_rule is null", ->
-      before ->
-        complaints.set('filter_criteria.basis_rule',null)
-
-      it "when all filter_criteria.basis_ids are empty", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : []
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [1,2], human_rights_complaint_basis_ids : [1,2], special_investigations_unit_complaint_basis_ids : [1,2] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when filter_criteria.good_governance_complaint_basis_ids has a non-matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : [1]
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when filter_criteria.good_governance_complaint_basis_ids has a matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : [1]
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [1,2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when filter_criteria.human_rights_complaint_basis_ids has a matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : []
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : [1]
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [], human_rights_complaint_basis_ids : [1], special_investigations_unit_complaint_basis_ids : [] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when filter_criteria.special_investigations_unit_complaint_basis_ids has a matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : []
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : [1]
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [1] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when there is a mix of matching and non-matching values", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : [1]
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : [1]
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [1] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-    describe "when basis_rule is 'any'", ->
-      before ->
-        complaints.set('filter_criteria.basis_rule','any')
-
-      it "when all filter_criteria.basis_ids are empty", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : []
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [1,2], human_rights_complaint_basis_ids : [1,2], special_investigations_unit_complaint_basis_ids : [1,2] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.false
-        expect(complaint.include()).to.be.false
-        expect(complaint.get('include')).to.be.false
-
-      it "when filter_criteria.good_governance_complaint_basis_ids has a non-matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : [1]
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.false
-        expect(complaint.include()).to.be.false
-        expect(complaint.get('include')).to.be.false
-
-      it "when filter_criteria.good_governance_complaint_basis_ids has a matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : [1]
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [1,2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when filter_criteria.human_rights_complaint_basis_ids has a matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : []
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : [1]
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : []
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [], human_rights_complaint_basis_ids : [1], special_investigations_unit_complaint_basis_ids : [] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when filter_criteria.special_investigations_unit_complaint_basis_ids has a matching value", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : []
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : [1]
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [1] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when there is a mix of matching and non-matching values", ->
-        complaints.set
-          'filter_criteria.selected_good_governance_complaint_basis_ids' : [1]
-          'filter_criteria.selected_human_rights_complaint_basis_ids' : []
-          'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : [1]
-        complaints.set('complaints',[{good_governance_complaint_basis_ids : [2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [1] }])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_basis()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
+    it "when there is a mix of matching and non-matching values", ->
+      complaints.set
+        'filter_criteria.selected_good_governance_complaint_basis_ids' : [1]
+        'filter_criteria.selected_human_rights_complaint_basis_ids' : []
+        'filter_criteria.selected_special_investigations_unit_complaint_basis_ids' : [1]
+      complaints.set('complaints',[{good_governance_complaint_basis_ids : [2], human_rights_complaint_basis_ids : [], special_investigations_unit_complaint_basis_ids : [1] }])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_basis()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
 
   describe "match agency", ->
     before (done)->
@@ -581,89 +437,37 @@ describe "complaints index page", ->
     after ->
       reset_page()
 
-    describe "when agency filter rule is 'all'", ->
-      before ->
-        complaints.set('filter_criteria.agency_rule','all')
+    it "when filter_criteria.selected_agency_ids is empty", ->
+      complaints.set('filter_criteria.selected_agency_ids',[])
+      complaints.set('complaints', [{agency_ids : [1,2,3]}])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_agencies()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
 
-      it "when filter_criteria.selected_agency_ids is empty", ->
-        complaints.set('filter_criteria.selected_agency_ids',[])
-        complaints.set('complaints', [{agency_ids : [1,2,3]}])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_agencies()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
+    it "when complaint has some, but not all values matching selected_agency_ids", ->
+      complaints.set('filter_criteria.selected_agency_ids',[1])
+      complaints.set('complaints', [{agency_ids : [1,2,3]}])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_agencies()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
 
-      it "when complaint has some, but not all values matching selected_agency_ids", ->
-        complaints.set('filter_criteria.selected_agency_ids',[1,2])
-        complaints.set('complaints', [{agency_ids : [1,2,3]}])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_agencies()).to.be.false
-        expect(complaint.include()).to.be.false
-        expect(complaint.get('include')).to.be.false
+    it "when complaint all agency ids match selected_agency_ids all values", ->
+      complaints.set('filter_criteria.selected_agency_ids',[1,2,3])
+      complaints.set('complaints', [{agency_ids : [1,2,3]}])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_agencies()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
 
-      it "when complaint all agency ids match selected_agency_ids all values", ->
-        complaints.set('filter_criteria.selected_agency_ids',[1,2,3])
-        complaints.set('complaints', [{agency_ids : [1,2,3]}])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_agencies()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when complaint agency_ids is empty", ->
-        complaints.set('filter_criteria.selected_agency_ids',[1,2,3])
-        complaints.set('complaints', [{agency_ids : []}])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_agencies()).to.be.false
-        expect(complaint.include()).to.be.false
-        expect(complaint.get('include')).to.be.false
-
-    describe "when agency filter rule is 'any'", ->
-      before ->
-        complaints.set('filter_criteria.agency_rule','any')
-
-      it "when filter_criteria.selected_agency_ids is empty", ->
-        complaints.set('filter_criteria.selected_agency_ids',[])
-        complaints.set('complaints', [{agency_ids : [1,2,3]}])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_agencies()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when complaint has some, but not all values matching selected_agency_ids", ->
-        complaints.set('filter_criteria.selected_agency_ids',[1])
-        complaints.set('complaints', [{agency_ids : [1,2,3]}])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_agencies()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when complaint all agency ids match selected_agency_ids all values", ->
-        complaints.set('filter_criteria.selected_agency_ids',[1,2,3])
-        complaints.set('complaints', [{agency_ids : [1,2,3]}])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_agencies()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
-
-      it "when complaint agency_ids is empty", ->
-        complaints.set('filter_criteria.selected_agency_ids',[1])
-        complaints.set('complaints', [{agency_ids : []}])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_agencies()).to.be.false
-        expect(complaint.include()).to.be.false
-        expect(complaint.get('include')).to.be.false
-
-    describe "when agency filter rule is not configured", ->
-      before ->
-        complaints.set('filter_criteria.agency_rule',null)
-
-      it "should declare match anyway", ->
-        complaints.set('filter_criteria.selected_agency_ids',[1])
-        complaints.set('complaints', [{agency_ids : [1,2,3]}])
-        complaint = complaints.findComponent('complaint')
-        expect(complaint.matches_agencies()).to.be.true
-        expect(complaint.include()).to.be.true
-        expect(complaint.get('include')).to.be.true
+    it "when complaint agency_ids is empty", ->
+      complaints.set('filter_criteria.selected_agency_ids',[1])
+      complaints.set('complaints', [{agency_ids : []}])
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_agencies()).to.be.false
+      expect(complaint.include()).to.be.false
+      expect(complaint.get('include')).to.be.false
 
   describe "match current assignee", ->
     before (done)->
@@ -771,18 +575,14 @@ describe "complaints index page", ->
     it "should reset complaint basis selection", ->
       complaint_basis_ids = _(complaints.get('all_good_governance_complaint_bases')).pluck('id')
       complaints.set('filter_criteria.selected_good_governance_complaint_basis_ids',complaint_basis_ids)
-      complaints.set('filter_criteria.basis_rule','any')
       $('.fa-refresh').trigger('click')
       expect(complaints.get('filter_criteria.selected_good_governance_complaint_basis_ids')).to.be.empty
-      expect(complaints.get('filter_criteria.basis_rule')).to.be.null
 
     it "should reset agency selection", ->
       agency_ids = _(complaints.get('all_agencies')).pluck('id')
       complaints.set('filter_criteria.selected_agency_ids',agency_ids)
-      complaints.set('filter_criteria.agency_rule','any')
       $('.fa-refresh').trigger('click')
       expect(complaints.get('filter_criteria.selected_agency_ids')).to.be.empty
-      expect(complaints.get('filter_criteria.agency_rule')).to.be.null
 
     it "should reset assignee selection", ->
       staff_id = _(complaints.get('all_staff')).pluck('id')[0]
@@ -871,7 +671,6 @@ describe "complaints index page", ->
       expect($('#complaints .complaint:visible').length).to.equal 4
 
     it "should show complaints matching complaint basis", ->
-      complaints.set('filter_criteria.basis_rule','all')
       complaints.set
         'filter_criteria.selected_good_governance_complaint_basis_ids' : [1,2]
         'filter_criteria.selected_human_rights_complaint_basis_ids' : []
@@ -890,13 +689,10 @@ describe "complaints index page", ->
       expect($('#complaints .complaint:visible').length).to.equal 4
 
     it "should show complaints matching agency", ->
-      complaints.set('filter_criteria.agency_rule','all')
       complaints.set('filter_criteria.selected_agency_ids', [1])
       expect($('#complaints .complaint:visible').length).to.equal 1
-      complaints.set('filter_criteria.agency_rule',null)
       complaints.set('filter_criteria.selected_agency_ids', [])
       expect($('#complaints .complaint:visible').length).to.equal 4
-      complaints.set('filter_criteria.agency_rule','all')
       complaints.set('filter_criteria.selected_agency_ids', [1])
       expect($('#complaints .complaint:visible').length).to.equal 1
       $('.fa-refresh').trigger('click')

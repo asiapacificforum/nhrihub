@@ -88,13 +88,6 @@
             %span.filter-option.pull-left= t('.select_basis')
             %span.caret
           %ul.dropdown-menu
-            %li.filter_rule
-              %a{'on-click'=>"filter_rule('basis','all')", :class => "{{#if filter_criteria.basis_rule == 'all'}}selected{{/if}}"}
-                %span= t('.all')
-                %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('basis','any')", :class => "{{#if filter_criteria.basis_rule == 'any'}}selected{{/if}}"}
-                %span= t('.any')
-                %span.fa.fa-check
             %li.dropdown-header= t('.good_governance')
             {{#all_good_governance_complaint_bases}}
             <goodGovernanceComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
@@ -117,13 +110,6 @@
             %span.filter-option.pull-left= t('.select_agency')
             %span.caret
           %ul.dropdown-menu
-            %li.filter_rule
-              %a{'on-click'=>"filter_rule('agency','all')", :class => "{{#if filter_criteria.agency_rule == 'all'}}selected{{/if}}"}
-                %span= t('.all')
-                %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('agency','any')", :class => "{{#if filter_criteria.agency_rule == 'any'}}selected{{/if}}"}
-                %span= t('.any')
-                %span.fa.fa-check
             {{#all_agencies}}
             <agencyFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
             {{/all_agencies}}
