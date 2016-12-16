@@ -53,10 +53,7 @@ namespace :complaints do
       klass.constantize::DefaultNames.each do |name|
         if klass.constantize.send(:where, "\"#{klass.constantize.table_name}\".\"name\"='#{name}'").length > 0
           complaint_basis = klass.constantize.send(:where, "\"#{klass.constantize.table_name}\".\"name\"='#{name}'").first
-          puts complaint_basis && complaint_basis.respond_to?(:type) && complaint_basis.type
-          puts "didn't create #{complaint_basis && complaint_basis.name}"
         else
-          puts "create #{name}"
           klass.constantize.create(:name => name)
         end
       end

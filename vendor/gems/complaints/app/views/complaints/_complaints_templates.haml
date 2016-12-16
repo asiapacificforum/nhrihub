@@ -141,19 +141,30 @@
   {{/if}}
 
 %script#mandates_selector_template{:type => 'template/ractive'}
+  -#%form
+    -#.col-md-2{:style => "padding-top:0;"}
+      -#%span Good Governance
+    -#.col-md-1.mandate{:style => "padding-top:0;"}
+      -#%input#good_governance{:type => :radio, :name => '{{mandate_name}}', :value => 'Good Governance', 'on-change'=>'remove_error()'}
+    -#.col-md-2{:style => "padding-top:0;"}
+      -#%span Human Rights
+    -#.col-md-1.mandate{:style => "padding-top:0;"}
+      -#%input#human_rights{:type => :radio, :name => '{{mandate_name}}', :value => 'Human Rights', 'on-change'=>'remove_error()'}
+    -#.col-md-2{:style => "padding-top:0;"}
+      -#%span Special Investigations Unit
+    -#.col-md-1.mandate{:style => "padding-top:0;"}
+      -#%input#special_investigations_unit{:type => :radio, :name => '{{mandate_name}}', :value => 'Special Investigations Unit', 'on-change'=>'remove_error()'}
+    -#.col-md-2{:style => "padding-top:0;"}
+      -#%span Corporate Services
+    -#.col-md-1.mandate{:style => "padding-top:0;"}
+      -#%input#corporate_services{:type => :radio, :name => '{{mandate_name}}', :value => 'Corporate Services', 'on-change'=>'remove_error()'}
   %form
-    .col-md-3{:style => "padding-top:0;"}
-      %span Good Governance
+    {{#all_mandates}}
+    .col-md-2{:style => "padding-top:0;"}
+      %span {{ name }}
     .col-md-1.mandate{:style => "padding-top:0;"}
-      %input#good_governance{:type => :radio, :name => '{{mandate_name}}', :value => 'Good Governance', 'on-change'=>'remove_error()'}
-    .col-md-3{:style => "padding-top:0;"}
-      %span Human Rights
-    .col-md-1.mandate{:style => "padding-top:0;"}
-      %input#human_rights{:type => :radio, :name => '{{mandate_name}}', :value => 'Human Rights', 'on-change'=>'remove_error()'}
-    .col-md-3{:style => "padding-top:0;"}
-      %span Special Investigations Unit
-    .col-md-1.mandate{:style => "padding-top:0;"}
-      %input#special_investigations_unit{:type => :radio, :name => '{{mandate_name}}', :value => 'Special Investigations Unit', 'on-change'=>'remove_error()'}
+      %input{:type => :radio, :name => '{{mandate_name}}', :value => '{{ name }}', 'on-change'=>'remove_error()', :id => '{{key}}'}
+    {{/all_mandates}}
 
 %script#complaint_bases_selector_template{:type => 'template/ractive'}
   {{#complaint_bases.0}}
