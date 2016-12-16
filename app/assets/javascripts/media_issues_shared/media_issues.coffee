@@ -77,7 +77,7 @@ $ ->
   , SelectableSubarea
 
   Collection.AreaFilter = Ractive.extend
-    template : '#area_template'
+    template : '#area_filter_template'
     components :
       subarea : Collection.SubareaFilter
   , SelectableArea
