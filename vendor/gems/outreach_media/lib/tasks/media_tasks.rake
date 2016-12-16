@@ -57,7 +57,7 @@ namespace :media do
     Rake::Task["media:populate_vs"].invoke
     Rake::Task["media:populate_pr"].invoke
     Rake::Task["media:populate_ir"].invoke
-    Rake::Task["media:populate_at"].invoke
+    #Rake::Task["media:populate_at"].invoke
     Rake::Task["media:populate_areas"].invoke
     Rake::Task["media:populate_media"].invoke
   end
