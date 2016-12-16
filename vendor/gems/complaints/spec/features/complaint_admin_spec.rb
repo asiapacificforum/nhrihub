@@ -14,7 +14,7 @@ feature "complaint bases admin", :js => true do
   scenario "no complaint bases configured" do
     visit complaint_admin_path('en')
     sleep(0.1)
-    expect(page).to have_selector '#gg_subareas #empty'
+    expect(page).to have_selector '#good_governance_subareas #empty'
     expect(page).to have_selector '#siu_subareas #empty'
     expect(page).to have_selector '#complaint_categories #empty'
     expect(page).to have_selector '#corporate_services_subareas #empty'
@@ -29,7 +29,7 @@ feature "complaint bases admin", :js => true do
   scenario "good governance complaint bases configured" do
     GoodGovernance::ComplaintBasis.create(:name=>"foo")
     visit complaint_admin_path('en')
-    expect(page.find('#gg_subareas .gg_subarea').text).to eq "foo"
+    expect(page.find('#good_governance_subareas .good_governance_subarea').text).to eq "foo"
   end
 
   scenario "corporate services complaint bases configured" do
@@ -54,14 +54,14 @@ feature "complaint bases admin", :js => true do
   scenario "add gg complaint basis" do
     visit complaint_admin_path('en')
     sleep(0.1)
-    expect(page).to have_selector '#gg_subareas #empty'
-    page.find('#gg_subareas #gg_subarea_name').set('A thing')
+    expect(page).to have_selector '#good_governance_subareas #empty'
+    page.find('#good_governance_subareas #good_governance_subarea_name').set('A thing')
     expect{ new_gg_complaint_subarea_button.click; wait_for_ajax }.to change{ GoodGovernance::ComplaintBasis.all.map(&:name) }.from([]).to(["A thing"])
-    expect(page.find('#gg_subareas .gg_subarea').text).to eq "A thing"
-    expect(page).not_to have_selector '#gg_subareas #empty'
-    page.find('#gg_subareas #gg_subarea_name').set('Another thing')
+    expect(page.find('#good_governance_subareas .good_governance_subarea').text).to eq "A thing"
+    expect(page).not_to have_selector '#good_governance_subareas #empty'
+    page.find('#good_governance_subareas #good_governance_subarea_name').set('Another thing')
     expect{ new_gg_complaint_subarea_button.click; wait_for_ajax }.to change{ GoodGovernance::ComplaintBasis.count }.from(1).to(2)
-    expect(page.all('#gg_subareas .gg_subarea')[1].text).to eq "Another thing"
+    expect(page.all('#good_governance_subareas .good_governance_subarea')[1].text).to eq "Another thing"
   end
 
   scenario "add corporate services complaint basis" do
@@ -81,7 +81,7 @@ feature "complaint bases admin", :js => true do
     GoodGovernance::ComplaintBasis.create(:name => "A thing")
     visit complaint_admin_path('en')
     sleep(0.1)
-    page.find('#gg_subareas #gg_subarea_name').set('A thing')
+    page.find('#good_governance_subareas #good_governance_subarea_name').set('A thing')
     expect{ new_gg_complaint_subarea_button.click; wait_for_ajax }.not_to change{ GoodGovernance::ComplaintBasis.count }
     expect( flash_message ).to eq "Complaint basis already exists, must be unique."
   end
@@ -90,7 +90,7 @@ feature "complaint bases admin", :js => true do
     Siu::ComplaintBasis.create(:name => "A thing")
     visit complaint_admin_path('en')
     sleep(0.1)
-    page.find('#gg_subareas #gg_subarea_name').set('A thing')
+    page.find('#good_governance_subareas #good_governance_subarea_name').set('A thing')
     expect{ new_gg_complaint_subarea_button.click; wait_for_ajax }.to change{ GoodGovernance::ComplaintBasis.count }.by(1)
   end
 
@@ -105,7 +105,7 @@ feature "complaint bases admin", :js => true do
     GoodGovernance::ComplaintBasis.create(:name => "A thing")
     visit complaint_admin_path('en')
     expect{ delete_complaint_subarea("A thing").click; wait_for_ajax }.to change{ GoodGovernance::ComplaintBasis.count }.by -1
-    expect(page).to have_selector '#gg_subareas #empty'
+    expect(page).to have_selector '#good_governance_subareas #empty'
   end
 
   scenario "delete a corporate services complaint basis" do

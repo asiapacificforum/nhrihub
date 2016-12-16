@@ -21,7 +21,7 @@ en:
         add: "Add file type"
       file_monitor_filetype:
         add: "Add file type"
-      gg_subarea:
+      good_governance_subarea:
         add: "Add Subarea"
       siu_subarea:
         add: "Add Subarea"
@@ -54,6 +54,9 @@ en:
       gg_subareas: "Good Governance Subareas"
       siu_subareas: "Special Investigations Unit Subareas"
       cs_subareas: "Corporate Services Subareas"
+      good_governance_subareas: "Good Governance Subareas"
+      siu_subareas: "Special Investigations Unit Subareas"
+      corporate_services_subareas: "Corporate Services Subareas"
       categories: "Complaint Categories"
       communicants: "Complaint communicants"
 

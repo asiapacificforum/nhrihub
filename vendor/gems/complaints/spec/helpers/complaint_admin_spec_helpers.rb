@@ -10,7 +10,7 @@ module ComplaintAdminSpecHelpers
   end
 
   def new_gg_complaint_subarea_button
-    page.find('#new_gg_subarea button')
+    page.find('#new_good_governance_subarea button')
   end
 
   def new_corporate_services_complaint_subarea_button
