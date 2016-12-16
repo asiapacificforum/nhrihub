@@ -1,25 +1,36 @@
 .message_block
 %h1=t('.heading')
 
-%h4= t('.gg_bases')
-#gg_bases
+%h4= t('.gg_subareas')
+#gg_subareas
   = render :partial => 'admin/collection_configuration',
     :locals => { :new_item => @good_governance_complaint_basis,
                  :create_url => good_governance_complaint_bases_path('en'),
                  :delete_url => good_governance_complaint_basis_path('en','id'),
                  :collection => @good_governance_complaint_bases.to_json,
-                 :item_name => 'gg_basis',
+                 :item_name => 'gg_subarea',
                  :param_name => 'name',
                  :placeholder => 'e.g. delayed action'}
 
-%h4= t('.siu_bases')
-#siu_bases
+%h4= t('.siu_subareas')
+#siu_subareas
   = render :partial => 'admin/collection_configuration',
     :locals => { :new_item => @siu_complaint_basis,
                  :create_url => siu_complaint_bases_path('en'),
                  :delete_url => siu_complaint_basis_path('en','id'),
                  :collection => @siu_complaint_bases.to_json,
-                 :item_name => 'siu_basis',
+                 :item_name => 'siu_subarea',
+                 :param_name => 'name',
+                 :placeholder => 'e.g. delayed action'}
+
+%h4= t('.cs_subareas')
+#corporate_services_subareas
+  = render :partial => 'admin/collection_configuration',
+    :locals => { :new_item => @corporate_services_complaint_basis,
+                 :create_url => corporate_services_complaint_bases_path('en'),
+                 :delete_url => corporate_services_complaint_basis_path('en','id'),
+                 :collection => @corporate_services_complaint_bases.to_json,
+                 :item_name => 'corporate_services_subarea',
                  :param_name => 'name',
                  :placeholder => 'e.g. delayed action'}
 

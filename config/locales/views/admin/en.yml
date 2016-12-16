@@ -21,10 +21,12 @@ en:
         add: "Add file type"
       file_monitor_filetype:
         add: "Add file type"
-      gg_basis:
-        add: "Add Complaint Basis"
-      siu_basis:
-        add: "Add Complaint Basis"
+      gg_subarea:
+        add: "Add Subarea"
+      siu_subarea:
+        add: "Add Subarea"
+      corporate_services_subarea:
+        add: "Add Subarea"
       complaint_category:
         add: "Add Complaint Category"
       good_governance_project_type:
@@ -49,8 +51,9 @@ en:
       complaint_filesize_max: "Maximum permitted complaint file size"
       communication_filetypes: "Filetypes permitted for communications"
       communication_filesize_max: "Maximum permitted communication file size"
-      gg_bases: "Good Governance Bases of Complaints"
-      siu_bases: "Special Investigations Unit Bases of Complaints"
+      gg_subareas: "Good Governance Subareas"
+      siu_subareas: "Special Investigations Unit Subareas"
+      cs_subareas: "Corporate Services Subareas"
       categories: "Complaint Categories"
       communicants: "Complaint communicants"
 

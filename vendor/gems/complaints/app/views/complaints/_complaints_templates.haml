@@ -67,7 +67,7 @@
       .col-md-2= t('.status')
       .col-md-2= t('.date_from')
       .col-md-2= t('.date_to')
-      .col-md-2= t('.basis')
+      .col-md-2= t('.complaint_basis')
     .row{:style => "margin-bottom:12px;"}
       .col-md-2
         .btn-group.select
@@ -168,7 +168,7 @@
 
 %script#complaint_bases_selector_template{:type => 'template/ractive'}
   {{#complaint_bases.0}}
-  .col-md-4{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
+  .col-md-3{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
     %label {{name}}:
     {{#complaint_bases}}
     .row.complaint_basis
@@ -179,7 +179,7 @@
     {{/complaint_bases}}
   {{/complaint_bases.0}}
   {{#complaint_bases.1}}
-  .col-md-4{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
+  .col-md-3{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
     %label {{name}}:
     {{#complaint_bases}}
     .row.complaint_basis
@@ -190,7 +190,7 @@
     {{/complaint_bases}}
   {{/complaint_bases.1}}
   {{#complaint_bases.2}}
-  .col-md-4{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
+  .col-md-3{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
     %label {{name}}:
     {{#complaint_bases}}
     .row.complaint_basis
@@ -200,6 +200,17 @@
         %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{special_investigations_unit_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"remove_error()"}
     {{/complaint_bases}}
   {{/complaint_bases.2}}
+  {{#complaint_bases.3}}
+  .col-md-3{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
+    %label {{name}}:
+    {{#complaint_bases}}
+    .row.complaint_basis
+      .col-md-9
+        %span {{name}}
+      .col-md-3
+        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{corporate_services_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"remove_error()"}
+    {{/complaint_bases}}
+  {{/complaint_bases.3}}
 
 %script#new_complaint_template{:type => 'template/ractive'}
   .row.well.well-sm.expandable_well.new_complaint.editable_container{:intro => 'slide'}
@@ -577,8 +588,8 @@
         .col-md-12.form-group{'data-toggle'=>:edit, :class => "{{#complaint_basis_id_count_error}}has-error{{/}}"}
           .row
             .col-md-2
-              .no_edit.in=t('.basis')
-              .edit.required=t('.basis')
+              .no_edit.in=t('.complaint_basis')
+              .edit.required=t('.complaint_basis')
             .col-md-10
               .no_edit.in
                 <complaintBases />

@@ -6,6 +6,7 @@ class Complaint < ActiveRecord::Base
   has_many :good_governance_complaint_bases, :class_name => 'GoodGovernance::ComplaintBasis', :through => :complaint_good_governance_complaint_bases
   has_many :special_investigations_unit_complaint_bases, :class_name => 'Siu::ComplaintBasis', :through => :complaint_special_investigations_unit_complaint_bases
   has_many :human_rights_complaint_bases, :class_name => 'Convention', :through => :complaint_human_rights_complaint_bases
+  has_many :corporate_services_complaint_bases, :class_name => 'CorporateServices::ComplaintBasis', :through => :complaint_corporate_servies_complaint_bases
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
   has_many :assigns, :autosave => true, :dependent => :destroy
@@ -13,8 +14,7 @@ class Complaint < ActiveRecord::Base
   belongs_to :opened_by, :class_name => 'User', :foreign_key => :opened_by_id
   has_many :complaint_complaint_categories, :dependent => :destroy
   has_many :complaint_categories, :through => :complaint_complaint_categories
-  #has_many :complaint_mandates, :dependent => :destroy
-  belongs_to :mandate #, :through => :complaint_mandates
+  belongs_to :mandate # == area
   has_many :status_changes, :dependent => :destroy
   accepts_nested_attributes_for :status_changes
   has_many :complaint_statuses, :through => :status_changes

@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     end
     resources :good_governance_complaint_bases, :only => [:create, :destroy], :controller => 'good_governance/complaint_bases'
     resources :siu_complaint_bases, :only => [:create, :destroy], :controller => 'siu/complaint_bases'
+    resources :corporate_services_complaint_bases, :only => [:create, :destroy], :controller => 'corporate_services/complaint_bases'
     resources :complaint_categories, :only => [:create, :destroy]
   end
 end

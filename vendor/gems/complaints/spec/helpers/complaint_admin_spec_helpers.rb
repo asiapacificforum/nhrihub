@@ -5,19 +5,19 @@ module ComplaintAdminSpecHelpers
     page.find('#new_complaint_category button')
   end
 
-  def new_siu_complaint_basis_button
-    page.find('#new_siu_basis button')
+  def new_siu_complaint_subarea_button
+    page.find('#new_siu_subarea button')
   end
 
-  def new_gg_complaint_basis_button
-    page.find('#new_gg_basis button')
+  def new_gg_complaint_subarea_button
+    page.find('#new_gg_subarea button')
   end
 
-  def delete_complaint_basis(text)
-    page.find(:xpath, ".//tr[contains(td,'#{text}')]//a")
+  def new_corporate_services_complaint_subarea_button
+    page.find('#new_corporate_services_subarea button')
   end
 
-  def delete_complaint_basis(text)
+  def delete_complaint_subarea(text)
     page.find(:xpath, ".//tr[contains(td,'#{text}')]//a")
   end
 end
