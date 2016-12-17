@@ -24,42 +24,24 @@
                  :param_name => 'name',
                  :placeholder => 'e.g. formal'}
 
-%h4= t('.complaint_filetypes')
-#complaint_filetypes
-  = render :partial => 'admin/collection_configuration',
-    :locals => { :new_item => @complaint_filetype,
-                 :create_url => complaint_document_filetypes_path('en'),
-                 :delete_url => complaint_document_filetype_path('en','id'),
-                 :collection => @complaint_document_filetypes,
-                 :item_name => 'complaint_document_filetype',
-                 :param_name => 'ext',
-                 :placeholder => 'e.g. ppt'}
+- ["complaint", "communication"].each do |name|
+  %h4= t(".#{name}_filetypes")
+  %div{:id => "#{name}_filetypes"}
+    = render :partial => 'admin/collection_configuration',
+             :locals => { :new_item => instance_variable_get("@#{name}_filetype"),
+                          :create_url => Rails.application.routes.url_helpers.send("#{name}_document_filetypes_path",'en'),
+                          :delete_url => Rails.application.routes.url_helpers.send("#{name}_document_filetype_path",'en','id'),
+                          :collection => instance_variable_get("@#{name}_document_filetypes"),
+                          :item_name => "#{name}_document_filetype",
+                          :param_name => 'ext',
+                          :placeholder => 'e.g. ppt'}
 
-%h4= t('.complaint_filesize_max')
-#complaint_filesize
-  = render :partial => 'admin/document_filesize_configuration',
-           :locals => { :update_url => complaint_document_filesize_path('en'),
-                        :param => @complaint_filesize,
-                        :context => "complaint_document_filesize"}
-
-%h4= t('.communication_filetypes')
-#communication_filetypes
-  = render :partial => 'admin/collection_configuration',
-    :locals => { :new_item => @communication_filetype,
-                 :create_url => communication_document_filetypes_path('en'),
-                 :delete_url => communication_document_filetype_path('en','id'),
-                 :collection => @communication_document_filetypes,
-                 :item_name => 'communication_document_filetype',
-                 :param_name => 'ext',
-                 :placeholder => 'e.g. ppt'}
-
-%h4= t('.communication_filesize_max')
-#communication_filesize
-  = render :partial => 'admin/document_filesize_configuration',
-           :locals => { :update_url => communication_document_filesize_path('en'),
-                        :param => @communication_filesize,
-                        :context => "communication_document_filesize"}
-
+  %h4= t(".#{name}_filesize_max")
+  %div{:id => "#{name}_filesize"}
+    = render :partial => 'admin/document_filesize_configuration',
+             :locals => { :update_url => Rails.application.routes.url_helpers.send("#{name}_document_filesize_path",'en'),
+                          :param => instance_variable_get("@#{name}_filesize"),
+                          :context => "#{name}_document_filesize"}
 
 :coffeescript
   $ ->
