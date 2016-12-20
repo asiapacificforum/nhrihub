@@ -12,6 +12,7 @@ MagicLamp.define do
     :basis_rule => nil,
     :agency_rule => nil,
     :basis_ids => [],
+    :mandate_id => nil,
     :selected_agency_ids => [],
     :current_assignee_id => "",
     :selected_assignee_id => "",

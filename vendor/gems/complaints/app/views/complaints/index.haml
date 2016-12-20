@@ -20,29 +20,29 @@
 
 :coffeescript
   case_reference = "#{params[:case_reference] ? params[:case_reference] : ''}"
-  @all_good_governance_complaint_bases = #{@good_governance_complaint_bases.to_json}
-  @all_human_rights_complaint_bases = #{@human_rights_complaint_bases.to_json}
-  @all_special_investigations_unit_complaint_bases = #{@special_investigations_unit_complaint_bases.to_json}
-  @complaints_data = #{@complaints.to_json}
-  @all_mandates = #{@mandates.to_json}
-  @all_agencies = #{@agencies.to_json}
-  @all_agencies_in_threes = _.chain(@all_agencies).groupBy((el,i)->Math.floor(i/3)).toArray().value()
-  @complaint_bases = #{(@complaint_bases || []).map(&:to_h).to_json}
-  @next_case_reference = "#{@next_case_reference}"
-  @all_users = #{@users.to_json(:only => :id, :methods => :first_last_name)}
-  @all_categories = #{@categories.to_json}
-  @all_staff = #{@staff.to_json}
-  @permitted_filetypes = #{@permitted_filetypes}
-  @maximum_filesize = #{@maximum_filesize}
-  @communication_permitted_filetypes = #{@communication_permitted_filetypes}
-  @communication_maximum_filesize = #{@communication_maximum_filesize}
-  @statuses = #{@statuses.to_json}
-  @filter_criteria =
+  @source_all_good_governance_complaint_bases = #{@good_governance_complaint_bases.to_json}
+  @source_all_human_rights_complaint_bases = #{@human_rights_complaint_bases.to_json}
+  @source_all_special_investigations_unit_complaint_bases = #{@special_investigations_unit_complaint_bases.to_json}
+  @source_complaints_data = #{@complaints.to_json}
+  @source_all_mandates = #{@mandates.to_json}
+  @source_all_agencies = #{@agencies.to_json}
+  @source_all_agencies_in_threes = _.chain(@source_all_agencies).groupBy((el,i)->Math.floor(i/3)).toArray().value()
+  @source_complaint_bases = #{(@complaint_bases || []).map(&:to_h).to_json}
+  @source_next_case_reference = "#{@next_case_reference}"
+  @source_all_users = #{@users.to_json(:only => :id, :methods => :first_last_name)}
+  @source_all_categories = #{@categories.to_json}
+  @source_all_staff = #{@staff.to_json}
+  @source_permitted_filetypes = #{@permitted_filetypes}
+  @source_maximum_filesize = #{@maximum_filesize}
+  @source_communication_permitted_filetypes = #{@communication_permitted_filetypes}
+  @source_communication_maximum_filesize = #{@communication_maximum_filesize}
+  @source_statuses = #{@statuses.to_json}
+  @source_filter_criteria =
     complainant : ""
     from : null
     to : null
     case_reference : case_reference
-    village : ""
+    village : null
     phone_number : ""
     basis_ids : []
     selected_agency_ids : []
@@ -52,6 +52,7 @@
     selected_special_investigations_unit_complaint_basis_ids : []
     selected_good_governance_complaint_basis_ids : []
     selected_statuses : []
+    mandate_ids : []
   @i18n =
     tooltip_messages:
       face_to_face : "#{t('.face_to_face')}"

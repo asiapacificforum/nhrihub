@@ -193,8 +193,9 @@ ComplaintDocuments = Ractive.extend
 
 FilterMatch =
   include : ->
-    #console.log JSON.stringify "matches_complainant" : @matches_complainant(), "matches_case_reference" : @matches_case_reference(), "matches_village" : @matches_village(), "matches_date" : @matches_date(), "matches_phone" : @matches_phone(), "matches_agencies" : @matches_agencies(), "matches_assignee" : @matches_assignee(), "matches_status" : @matches_status(), "matches_basis" : @matches_basis
-    #console.log JSON.stringify "matches_good_governance_complaint_basis" : @matches_good_governance_complaint_basis(), "matches_human_rights_complaint_basis" : @matches_human_rights_complaint_basis(), "matches_special_investigations_unit_complaint_basis" : @matches_special_investigations_unit_complaint_basis(), "basis_rule" : @get('filter_criteria.basis_rule'), "matches_basis" : @matches_basis(), "basis_requirement_is_specified" : @basis_requirement_is_specified(), "good_governance_basis_requirement_is_specified" : @good_governance_basis_requirement_is_specified(), "human_rights_basis_requirement_is_specified" : @human_rights_basis_requirement_is_specified(), "special_investigations_unit_basis_requirement_is_specified" : @special_investigations_unit_basis_requirement_is_specified()
+    # console.log JSON.stringify "matches_complainant" : @matches_complainant(), "matches_case_reference" : @matches_case_reference(), "matches_village" : @matches_village(), "matches_date" : @matches_date(), "matches_phone" : @matches_phone(), "matches_agencies" : @matches_agencies(), "matches_assignee" : @matches_assignee(), "matches_status" : @matches_status(), "matches_basis" : @matches_basis
+    # console.log JSON.stringify "matches_good_governance_complaint_basis" : @matches_good_governance_complaint_basis(), "matches_human_rights_complaint_basis" : @matches_human_rights_complaint_basis(), "matches_special_investigations_unit_complaint_basis" : @matches_special_investigations_unit_complaint_basis(), "basis_rule" : @get('filter_criteria.basis_rule'), "matches_basis" : @matches_basis(), "basis_requirement_is_specified" : @basis_requirement_is_specified(), "good_governance_basis_requirement_is_specified" : @good_governance_basis_requirement_is_specified(), "human_rights_basis_requirement_is_specified" : @human_rights_basis_requirement_is_specified(), "special_investigations_unit_basis_requirement_is_specified" : @special_investigations_unit_basis_requirement_is_specified()
+    # console.log JSON.stringify "matches_area" : @matches_area()
     @matches_complainant() &&
     @matches_case_reference() &&
     @matches_village() &&
@@ -203,7 +204,11 @@ FilterMatch =
     @matches_agencies() &&
     @matches_basis() &&
     @matches_assignee() &&
-    @matches_status()
+    @matches_status() &&
+    @matches_area()
+  matches_area : ->
+    return true if !_.isNumber(@get('filter_criteria.mandate_id')) || _.isNull(@get('filter_criteria.mandate_id'))
+    return parseInt(@get('mandate_id')) == parseInt(@get('filter_criteria.mandate_id'))
   matches_complainant : ->
     return true if _.isEmpty(@get('filter_criteria.complainant'))
     re = new RegExp(@get('filter_criteria.complainant').trim(),"i")
@@ -497,6 +502,19 @@ AssigneeFilterSelect = Ractive.extend
           @set('filter_criteria.selected_assignee_id',null)
   , Toggle
 
+MandateFilterSelect = Ractive.extend
+  template : "#mandate_filter_select_template"
+  computed :
+    selected :
+      get : ->
+        @get('filter_criteria.mandate_id') == @get('id')
+      set : (val)->
+        if val
+          @set('filter_criteria.mandate_id',@get('id'))
+        else
+          @set('filter_criteria.mandate_id',null)
+  , Toggle
+
 FilterControls = Ractive.extend
   template : "#filter_controls_template"
   components :
@@ -504,6 +522,7 @@ FilterControls = Ractive.extend
     humanRightsComplaintBasisFilterSelect : HumanRightsComplaintBasisFilterSelect
     specialInvestigationsUnitComplaintBasisFilterSelect : SpecialInvestigationsUnitComplaintBasisFilterSelect
     agencyFilterSelect : AgencyFilterSelect
+    mandateFilterSelect : MandateFilterSelect
     assigneeFilterSelect : AssigneeFilterSelect
     statusSelector : StatusSelector
   expand : ->
@@ -514,22 +533,21 @@ FilterControls = Ractive.extend
     @set('filter_criteria',$.extend(true,{},complaints_page_data().filter_criteria))
 
 window.complaints_page_data = ->
-  complaints : complaints_data
-  all_mandates : all_mandates
-  complaint_bases : complaint_bases
-  all_agencies : all_agencies
-  all_agencies_in_threes : all_agencies_in_threes
-  all_users : all_users
-  all_categories : all_categories
-  filter_criteria : filter_criteria
-  all_good_governance_complaint_bases : all_good_governance_complaint_bases
-  all_human_rights_complaint_bases : all_human_rights_complaint_bases
-  all_special_investigations_unit_complaint_bases : all_special_investigations_unit_complaint_bases
-  all_staff : all_staff
-  permitted_filetypes : permitted_filetypes
-  maximum_filesize : maximum_filesize
-  statuses : statuses
-  #complaint_named_documents_titles : ["bish", "bash", "bosh"] # shown as an example for future reference
+  complaints : source_complaints_data
+  all_mandates : source_all_mandates
+  complaint_bases : source_complaint_bases
+  all_agencies : source_all_agencies
+  all_agencies_in_threes : source_all_agencies_in_threes
+  all_users : source_all_users
+  all_categories : source_all_categories
+  filter_criteria : source_filter_criteria
+  all_good_governance_complaint_bases : source_all_good_governance_complaint_bases
+  all_human_rights_complaint_bases : source_all_human_rights_complaint_bases
+  all_special_investigations_unit_complaint_bases : source_all_special_investigations_unit_complaint_bases
+  all_staff : source_all_staff
+  permitted_filetypes : source_permitted_filetypes
+  maximum_filesize : source_maximum_filesize
+  statuses : source_statuses
 
 complaints_options =
   el : '#complaints'
@@ -547,7 +565,7 @@ complaints_options =
     unless @add_complaint_active()
       new_complaint =
         assigns : []
-        case_reference : next_case_reference
+        case_reference : source_next_case_reference
         complainant : ""
         attached_documents : []
         current_assignee : ""

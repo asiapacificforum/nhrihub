@@ -17,9 +17,8 @@ namespace :complaints do
       end
       assigns = assignees.map do |user|
         date = DateTime.now.advance(:days => -rand(365))
-        Assign.create(:created_at => date, :assignee => user)
+        Assign.create(:created_at => date, :assignee => user, :complaint_id => complaint.id )
       end
-      complaint.assigns << assigns
 
       complaint_document = FactoryGirl.create(:complaint_document, :title => rand_title, :filename => rand_filename)
       complaint.complaint_documents << complaint_document

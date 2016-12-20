@@ -271,8 +271,8 @@ feature "complaints index", :js => true do
       expect(page).to have_selector('#complainant_error', :text => "You must enter a complainant")
       expect(page).to have_selector('#village_error', :text => 'You must enter a village')
       expect(page).to have_selector('#new_assignee_id_error', :text => 'You must designate an assignee')
-      expect(page).to have_selector('#mandate_name_error', :text => 'You must select a mandate')
-      expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
+      expect(page).to have_selector('#mandate_name_error', :text => 'You must select an area')
+      expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
       expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
       expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
       fill_in('complainant', :with => "Norman Normal")
@@ -282,9 +282,9 @@ feature "complaints index", :js => true do
       select(User.staff.first.first_last_name, :from => "assignee")
       expect(page).not_to have_selector('#new_assignee_id_error', :text => 'You must designate an assignee')
       choose('special_investigations_unit')
-      expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select a mandate')
+      expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select an area')
       check_basis(:special_investigations_unit, "Unreasonable delay")
-      expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
+      expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
       fill_in('complaint_details', :with => "random text")
       expect(page).not_to have_selector('#details_error', :text => "You must enter the complaint details")
     end
@@ -500,6 +500,19 @@ feature "complaints index", :js => true do
       #check_basis(:good_governance, "Delayed action")
       #check_basis(:human_rights, "CAT")
       #check_basis(:special_investigations_unit, "Unreasonable delay")
+      #dob
+      #email
+      #gender
+      #details
+      #outcome
+      #complained-to
+      #date received
+      #reassign-to
+      #area
+      #subarea
+      #agency
+      #documents
+      #categories
     end
     edit_cancel
     sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
@@ -590,7 +603,7 @@ feature "complaints index", :js => true do
 
     expect(page).to have_selector('#complainant_error', :text => "You must enter a complainant")
     expect(page).to have_selector('#village_error', :text => 'You must enter a village')
-    expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
+    expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
     expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
     expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
     within first_complaint do
@@ -601,7 +614,7 @@ feature "complaints index", :js => true do
       choose('special_investigations_unit')
       expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select a mandate')
       check_basis(:special_investigations_unit, "Unreasonable delay")
-      expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one complaint basis')
+      expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
       fill_in('dob', :with => "1950/08/19")
       expect(page).not_to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
       fill_in('complaint_details', :with => "bish bash bosh")

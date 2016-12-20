@@ -34,6 +34,12 @@
       %span {{name}}
       %span.fa.fa-check
 
+%script#mandate_filter_select_template{:type => 'template/ractive'}
+  %li{:class => 'mandate_filter {{#if selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle(id)', :style => 'padding-left:1em;'}
+      %span {{name}}
+      %span.fa.fa-check
+
 %script#status_selector_template{:type => 'template/ractive'}
   %li{:class =>'status_filter {{#if selected}}selected{{/if}}'}
     %a.opt{'on-click'=>'toggle()'}
@@ -67,7 +73,7 @@
       .col-md-2= t('.status')
       .col-md-2= t('.date_from')
       .col-md-2= t('.date_to')
-      .col-md-2= t('.complaint_basis')
+      .col-md-2= t('.agency')
     .row{:style => "margin-bottom:12px;"}
       .col-md-2
         .btn-group.select
@@ -82,6 +88,29 @@
         %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.date_from'), :value => "{{filter_criteria.from}}", :style => 'position:relative; z-index:12;'}
       .col-md-2
         %input.form-control#to{:type=>"text", :name=>"to", :placeholder => t('.date_to'), :value => "{{filter_criteria.to}}", :style => 'position:relative; z-index:12;'}
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_agency')
+            %span.caret
+          %ul.dropdown-menu
+            {{#all_agencies}}
+            <agencyFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
+            {{/all_agencies}}
+    .row.labels
+      .col-md-2= t('.area')
+      .col-md-2= t('.complaint_basis')
+      .col-md-2= t('.assignee')
+    .row{:style => "margin-bottom:12px;"}
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_area')
+            %span.caret
+          %ul.dropdown-menu
+            {{#all_mandates}}
+            <mandateFilterSelect id='{{id}}' name='{{name}}' />
+            {{/all_mandates}}
       .col-md-2
         .btn-group.select
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
@@ -100,19 +129,6 @@
             {{#all_special_investigations_unit_complaint_bases}}
             <specialInvestigationsUnitComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
             {{/all_special_investigations_unit_complaint_bases}}
-    .row.labels
-      .col-md-2= t('.agency')
-      .col-md-2= t('.assignee')
-    .row{:style => "margin-bottom:12px;"}
-      .col-md-2
-        .btn-group.select
-          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
-            %span.filter-option.pull-left= t('.select_agency')
-            %span.caret
-          %ul.dropdown-menu
-            {{#all_agencies}}
-            <agencyFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
-            {{/all_agencies}}
       .col-md-2
         .btn-group.select
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
@@ -175,7 +191,7 @@
       .col-md-9
         %span {{name}}
       .col-md-3
-        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{good_governance_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"remove_error()"}
+        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{corporate_services_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"remove_error()"}
     {{/complaint_bases}}
   {{/complaint_bases.0}}
   {{#complaint_bases.1}}
@@ -186,7 +202,7 @@
       .col-md-9
         %span {{name}}
       .col-md-3
-        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{human_rights_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"remove_error()"}
+        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{good_governance_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"remove_error()"}
     {{/complaint_bases}}
   {{/complaint_bases.1}}
   {{#complaint_bases.2}}
@@ -197,7 +213,7 @@
       .col-md-9
         %span {{name}}
       .col-md-3
-        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{special_investigations_unit_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"remove_error()"}
+        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{human_rights_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"remove_error()"}
     {{/complaint_bases}}
   {{/complaint_bases.2}}
   {{#complaint_bases.3}}
@@ -208,7 +224,7 @@
       .col-md-9
         %span {{name}}
       .col-md-3
-        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{corporate_services_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"remove_error()"}
+        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{special_investigations_unit_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"remove_error()"}
     {{/complaint_bases}}
   {{/complaint_bases.3}}
 

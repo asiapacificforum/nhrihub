@@ -4,22 +4,22 @@ log = (str)->
     console.log str
 
 load_variables = ->
-  window.complaints_data = []
-  window.all_mandates = []
-  window.all_agencies = []
-  window.all_agencies_in_threes = _.chain(all_agencies).groupBy((el,i)->Math.floor(i/3)).toArray().value()
-  window.complaint_bases = []
-  window.next_case_reference = ""
-  window.all_users = []
-  window.all_categories = []
-  window.permitted_filetypes = []
-  window.maximum_filesize = 5
-  window.filter_criteria = MagicLamp.loadJSON("complaint_filter_criteria")
-  window.all_good_governance_complaint_bases = MagicLamp.loadJSON("all_good_governance_complaint_bases")
-  window.all_human_rights_complaint_bases = MagicLamp.loadJSON("all_human_rights_complaint_bases")
-  window.all_special_investigations_unit_complaint_bases = MagicLamp.loadJSON("all_special_investigations_unit_complaint_bases")
-  window.statuses = MagicLamp.loadJSON("statuses")
-  window.all_staff = MagicLamp.loadJSON("all_staff")
+  window.source_complaints_data = []
+  window.source_all_mandates = []
+  window.source_all_agencies = []
+  window.source_all_agencies_in_threes = _.chain(source_all_agencies).groupBy((el,i)->Math.floor(i/3)).toArray().value()
+  window.source_complaint_bases = []
+  window.source_next_case_reference = ""
+  window.source_all_users = []
+  window.source_all_categories = []
+  window.source_permitted_filetypes = []
+  window.source_maximum_filesize = 5
+  window.source_filter_criteria = MagicLamp.loadJSON("complaint_filter_criteria")
+  window.source_all_good_governance_complaint_bases = MagicLamp.loadJSON("all_good_governance_complaint_bases")
+  window.source_all_human_rights_complaint_bases = MagicLamp.loadJSON("all_human_rights_complaint_bases")
+  window.source_all_special_investigations_unit_complaint_bases = MagicLamp.loadJSON("all_special_investigations_unit_complaint_bases")
+  window.source_statuses = MagicLamp.loadJSON("statuses")
+  window.source_all_staff = MagicLamp.loadJSON("all_staff")
   MagicLamp.load("complaints_page") # that's the index.haml file being loaded
 
 get_script_under_test = (done)->
@@ -33,7 +33,7 @@ get_script_under_test = (done)->
       log exception)
 
 reset_page = ->
-  complaints.set('filter_criteria', window.filter_criteria)
+  complaints.findComponent('filterControls').set('filter_criteria', $.extend(true, {}, window.source_filter_criteria))
   complaints.set('complaints',[])
 
 describe "complaints index page", ->
@@ -46,9 +46,50 @@ describe "complaints index page", ->
 
   it "loads all fixtures", ->
     expect($("h1",'.magic-lamp').text()).to.equal "Complaints"
-    #expect($(".complaint", '.magic-lamp').length).to.equal 1 # none pre-loaded
     expect(typeof(simulant)).to.not.equal("undefined")
     return
+
+  it "resets fixtures between tests", ->
+    complaints.findComponent('filterControls').set('filter_criteria', $.extend(true, {}, window.source_filter_criteria))
+    complaints.findComponent('filterControls').set('filter_criteria.mandate_id',"1")
+    expect(window.source_filter_criteria.mandate_id).to.eq null
+
+  describe "match area (aka mandate)", ->
+
+    afterEach ->
+      reset_page()
+
+    it "when filter_criteria mandate_id is null", ->
+      complaints.set('complaints',[{mandate_id:1}])
+      complaints.findComponent('filterControls').set('filter_criteria.mandate_id',null)
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_area()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
+
+    it "when filter_criteria mandate_id matches the complaint mandate_id", ->
+      complaints.set('complaints',[{mandate_id:1}])
+      complaints.findComponent('filterControls').set('filter_criteria.mandate_id',1)
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_area()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
+
+    it "when filter_criteria mandate_id does not match the complaint mandate_id", ->
+      complaints.set('complaints',[{mandate_id:1}])
+      complaints.findComponent('filterControls').set('filter_criteria.mandate_id',2)
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_area()).to.be.false
+      expect(complaint.include()).to.be.false
+      expect(complaint.get('include')).to.be.false
+
+    it "when a complaint does not have a mandate_id value", ->
+      complaints.set('complaints',[{mandate_id:null}])
+      complaints.findComponent('filterControls').set('filter_criteria.mandate_id',2)
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_area()).to.be.false
+      expect(complaint.include()).to.be.false
+      expect(complaint.get('include')).to.be.false
 
   describe "match complainant", ->
     it "UI should set the filter criterion value", ->
@@ -58,7 +99,7 @@ describe "complaints index page", ->
 
     it "when filter_criteria.complainant is empty", ->
       complaints.set('complaints',[{complainant:"Foo"}])
-      complaints.set('filter_criteria.complainant',"")
+      complaints.findComponent('filterControls').set('filter_criteria.complainant',"")
       complaint = complaints.findComponent('complaint')
       expect(complaint.matches_complainant()).to.be.true
       expect(complaint.include()).to.be.true
@@ -539,64 +580,69 @@ describe "complaints index page", ->
       load_variables()
       get_script_under_test(done)
 
-    after ->
+    afterEach ->
       reset_page()
 
     it "should reset complainant field", ->
-      complaints.set('filter_criteria.complainant', "blark")
+      #complaints.set('filter_criteria.complainant', "blark")
+      complaints.findComponent('filterControls').set('complainant',"blark")
       $('.fa-refresh').trigger('click')
       expect($('.filter_control_box input#complainant').val()).to.equal ""
 
     it "should reset village field", ->
-      complaints.set('filter_criteria.village', "blark")
+      #complaints.set('filter_criteria.village', "blark")
+      complaints.findComponent('filterControls').set('village',"blark")
       $('.fa-refresh').trigger('click')
       expect($('.filter_control_box input#village').val()).to.equal ""
 
     it "should reset phone field", ->
-      complaints.set('filter_criteria.phone', "blark")
+      #complaints.set('filter_criteria.phone', "blark")
+      complaints.findComponent('filterControls').set('phone',"blark")
       $('.fa-refresh').trigger('click')
       expect($('.filter_control_box input#phone').val()).to.equal ""
 
     it "should reset case reference field", ->
-      complaints.set('filter_criteria.case_reference', "blark")
+      #complaints.set('filter_criteria.case_reference', "blark")
+      complaints.findComponent('filterControls').set('case_reference',"blark")
       $('.fa-refresh').trigger('click')
       expect($('.filter_control_box input#case_reference').val()).to.equal ""
 
     it "should reset from date field", ->
-      complaints.set('filter_criteria.from', "02/03/2016")
+      complaints.findComponent('filterControls').set('from', "02/03/2016")
       $('.fa-refresh').trigger('click')
       expect($('.filter_control_box input#from').val()).to.equal ""
 
     it "should reset to date field", ->
-      complaints.set('filter_criteria.to', "02/03/2016")
+      #complaints.set('filter_criteria.to', "02/03/2016")
+      complaints.findComponent('filterControls').set('to', "02/03/2016")
       $('.fa-refresh').trigger('click')
       expect($('.filter_control_box input#to').val()).to.equal ""
 
     it "should reset complaint basis selection", ->
       complaint_basis_ids = _(complaints.get('all_good_governance_complaint_bases')).pluck('id')
-      complaints.set('filter_criteria.selected_good_governance_complaint_basis_ids',complaint_basis_ids)
+      complaints.findComponent('filterControls').set('selected_good_governance_complaint_basis_ids',complaint_basis_ids)
       $('.fa-refresh').trigger('click')
       expect(complaints.get('filter_criteria.selected_good_governance_complaint_basis_ids')).to.be.empty
 
     it "should reset agency selection", ->
       agency_ids = _(complaints.get('all_agencies')).pluck('id')
-      complaints.set('filter_criteria.selected_agency_ids',agency_ids)
+      complaints.findComponent('filterControls').set('selected_agency_ids',agency_ids)
       $('.fa-refresh').trigger('click')
       expect(complaints.get('filter_criteria.selected_agency_ids')).to.be.empty
 
     it "should reset assignee selection", ->
       staff_id = _(complaints.get('all_staff')).pluck('id')[0]
-      complaints.set('filter_criteria.selected_assignee_id', staff_id)
+      complaints.findComponent('filterControls').set('selected_assignee_id', staff_id)
       $('.fa-refresh').trigger('click')
       expect(complaints.get('filter_criteria.selected_assignee_id')).to.be.blank
 
   describe "render included complaints", ->
-    before (done)->
+    beforeEach (done)->
       load_variables()
-      window.complaints_data = MagicLamp.loadJSON('complaints_data')
+      window.source_complaints_data = MagicLamp.loadJSON('complaints_data')
       get_script_under_test(done)
 
-    after ->
+    afterEach ->
       reset_page()
 
     it "should render all complaints by default", ->

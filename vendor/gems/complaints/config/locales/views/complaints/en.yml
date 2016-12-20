@@ -24,6 +24,8 @@ en:
       complainant_error_message : "You must enter a complainant"
       mandate: "Area"
       mandate_name_error_message: "You must select an area"
+      area : "Area"
+      select_area : "Select area"
       complaint_basis: "Subareas"
       complaint_basis_error_message : "You must select at least one subarea"
       agency: "Agency"
