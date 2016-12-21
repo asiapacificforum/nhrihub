@@ -161,7 +161,12 @@ class @InpageEdit
         UserInput.reset()
         @context = $target.closest('.editable_container')
         @options.object.set('expanded',false)
+        @_remove_pending_document_uploads()
         @show()
+
+  _remove_pending_document_uploads : ->
+    pending_uploads = _(@options.object.findAllComponents('attachedDocument')).select (doc)-> !doc.get('persisted')
+    _(pending_uploads).each (upload)-> upload.remove_file()
 
   _success : (response, textStatus, jqXhr)->
     UserInput.reset()
