@@ -497,22 +497,22 @@ feature "complaints index", :js => true do
       fill_in('complainant', :with => "Norman Normal")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
-      #check_basis(:good_governance, "Delayed action")
-      #check_basis(:human_rights, "CAT")
-      #check_basis(:special_investigations_unit, "Unreasonable delay")
-      #dob
-      #email
-      #gender
-      #details
-      #outcome
-      #complained-to
-      #date received
-      #reassign-to
-      #area
-      #subarea
-      #agency
-      #documents
-      #categories
+      check_basis(:good_governance, "Private")
+      check_basis(:human_rights, "CAT")
+      check_basis(:good_governance, "Contrary to Law")
+      fill_in('dob', :with => "1820/11/11")
+      fill_in('email', :with => "harry@haricot.net")
+      select_male_gender
+      fill_in('complaint_details', :with => "a long story about lots of stuff")
+      fill_in('desired_outcome', :with => "bish bash bosh")
+      choose('complained_to_subject_agency_yes')
+      select_datepicker_date("#date_received",Date.today.year,Date.today.month,9)
+      select(User.staff.last.first_last_name, :from => "assignee")
+      choose('special_investigations_unit')
+      check_agency("ACC")
+      attach_file("complaint_fileinput", upload_document)
+      fill_in("attached_document_title", :with => "some text any text")
+      check_category("Formal")
     end
     edit_cancel
     sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
@@ -521,6 +521,21 @@ feature "complaints index", :js => true do
       expect(page.find('#complainant').value).to eq original_complaint.complainant
       expect(page.find('#village').value).to eq original_complaint.village
       expect(page.find('#phone').value).to eq original_complaint.phone
+      expect(page.all('#good_governance_bases .complaint_basis input').first['name']).to eq original_complaint.good_governance_complaint_basis_ids.join(',')
+      expect(page.find('#dob').value).to eq original_complaint.dob.to_s
+      expect(page.find('#email').value).to eq original_complaint.email.to_s
+      expect(page.find('#m')).not_to be_checked
+      expect(page.find('#complaint_details').value).to eq original_complaint.details
+      expect(page.find('#desired_outcome').value).to eq original_complaint.desired_outcome.to_s
+      expect(page.find('#complained_to_subject_agency_yes')).not_to be_checked
+      expect(find('.date_received').text).to eq original_complaint.date_received.getlocal.to_date.to_s
+      expect(find('.current_assignee').text).to eq original_complaint.assignees.first.first_last_name
+      expect(page.find(".mandate ##{original_complaint.mandate.key}")).to be_checked
+      expect(page.find_field("ACC")).not_to be_checked
+      expect(page.find_field("SAA")).to be_checked
+      expect(page).not_to have_selector("#attached_document_title")
+      expect(page).not_to have_selector(".title .filename")
+      (page.all('#complaint_categories .complaint_category input')).each{|cat| expect(cat).not_to be_checked}
     end
   end
 
@@ -612,7 +627,7 @@ feature "complaints index", :js => true do
       fill_in('village', :with => "Leaden Roding")
       expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
       choose('special_investigations_unit')
-      expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select a mandate')
+      expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select an area')
       check_basis(:special_investigations_unit, "Unreasonable delay")
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
       fill_in('dob', :with => "1950/08/19")

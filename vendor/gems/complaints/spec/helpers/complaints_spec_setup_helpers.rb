@@ -18,6 +18,8 @@ module ComplaintsSpecSetupHelpers
                        :good_governance_complaint_bases => gg_complaint_bases,
                        :special_investigations_unit_complaint_bases => siu_complaint_bases,
                        :assigns => assigns,
+                       :desired_outcome => Faker::Lorem.sentence,
+                       :details => Faker::Lorem.sentence,
                        :complaint_documents => complaint_docs,
                        :complaint_categories => complaint_cats,
                        :status_changes => _status_changes,
@@ -103,8 +105,10 @@ module ComplaintsSpecSetupHelpers
   end
 
   def gg_complaint_bases
-    names = ["Delayed action", "Failure to act"]
+    names = ["Delayed action", "Failure to act", "Contrary to Law", "Oppressive", "Private"]
     names.collect{|name| FactoryGirl.create(:good_governance_complaint_basis, :name => name) }
+    names = ["Delayed action", "Failure to act"]
+    GoodGovernance::ComplaintBasis.where(:name => names)
   end
 
   def siu_complaint_bases

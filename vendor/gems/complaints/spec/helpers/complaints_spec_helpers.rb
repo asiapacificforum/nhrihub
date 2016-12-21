@@ -24,7 +24,7 @@ module ComplaintsSpecHelpers
   end
 
   def edit_cancel
-    page.find('.fa-remove').click
+    page.find('.edit_cancel .fa-remove').click
   end
 
   def current_status
@@ -68,13 +68,13 @@ module ComplaintsSpecHelpers
   end
 
   def check_category(text)
-    within page.find('#categories') do
+    within page.find('#complaint_categories') do
       check(text)
     end
   end
 
   def uncheck_category(text)
-    within page.find('#categories') do
+    within page.find('#complaint_categories') do
       uncheck(text)
     end
   end

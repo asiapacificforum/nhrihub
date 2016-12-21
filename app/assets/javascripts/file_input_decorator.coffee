@@ -9,17 +9,7 @@
     ractive.add_file(file)
     _reset_input()
   _reset_input = ->
-    # this technique comes from jQuery.fileupload does'nt work well with ractive
     input = $(node)
-    #inputClone = input.clone(true)
-    # make a form and reset it. A hack to reset the fileinput element
-    #$('<form></form>').append(inputClone)[0].reset()
-    # Detaching allows to insert the fileInput on another form
-    # without losing the file input value:
-    # detaches the original fileInput and leaves the clone in the DOM
-    #input.after(inputClone).detach()
-    # Avoid memory leaks with the detached file input:
-    #$.cleanData input.unbind('remove')
     input.wrap('<form></form>').closest('form').get(0).reset()
     input.unwrap()
   return {

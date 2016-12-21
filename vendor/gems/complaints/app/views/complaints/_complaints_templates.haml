@@ -350,7 +350,7 @@
   {{#all_categories}}
   .col-md-3{:style => "padding-top:0;"}
     %label{:for => "category{{id}}"} {{name}}
-  .col-md-1.category{:style => "padding-top:0;"}
+  .col-md-1.complaint_category{:style => "padding-top:0;"}
     %input{:id => "category{{id}}", :type => :checkbox, :name => '{{complaint_category_ids}}', :value => '{{id}}'}
   {{/all_categories}}
 
@@ -633,7 +633,7 @@
           .no_edit.in
             <complaintCategories />
           .edit
-            .row#categories
+            .row#complaint_categories
               <complaintCategoriesSelector />
       .row.collapse{'data-toggle'=>:edit, :style => "margin-top:30px;"}
         .col-sm-3.col-sm-offset-3.edit{:style => "text-align:center;"}
