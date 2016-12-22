@@ -75,6 +75,11 @@ PATH
       u2f
 
 PATH
+  remote: vendor/gems/complaint_reporter
+  specs:
+    complaint_reporter (0.0.1)
+
+PATH
   remote: vendor/gems/complaints
   specs:
     complaints (0.0.1)
@@ -436,6 +441,7 @@ DEPENDENCIES
   capistrano-rvm
   capybara
   coffee-rails
+  complaint_reporter!
   complaints!
   corporate_services!
   dashboard!
