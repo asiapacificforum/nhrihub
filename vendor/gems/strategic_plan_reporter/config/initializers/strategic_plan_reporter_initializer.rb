@@ -3,4 +3,4 @@ FactoryGirl.definition_file_paths << factory_path
 
 Root = StrategicPlanReporter::Engine.root
 TEMPLATE_PATH =  'app/views/strategic_plan_reporter/strategic_plan'
-TMP_DIR = 'tmp/strategic_plan_report'
+TMP_DIR = Rails.root.join('tmp','strategic_plan_report')

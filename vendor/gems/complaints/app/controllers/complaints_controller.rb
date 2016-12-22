@@ -30,6 +30,12 @@ class ComplaintsController < ApplicationController
     @communication_maximum_filesize    = CommunicationDocument.maximum_filesize * 1000000
     @communication_permitted_filetypes = CommunicationDocument.permitted_filetypes.to_json
     @statuses = ComplaintStatus.select(:id, :name).all
+    respond_to do |format|
+      format.html
+      format.docx do
+        send_file ComplaintReport.new(@complaints).docfile
+      end
+    end
   end
 
   def create
@@ -72,3 +78,4 @@ class ComplaintsController < ApplicationController
                                      )
   end
 end
+
