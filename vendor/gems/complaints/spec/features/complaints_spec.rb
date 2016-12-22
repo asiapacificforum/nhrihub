@@ -539,6 +539,50 @@ feature "complaints index", :js => true do
     end
   end
 
+  it "resets errors if editing is cancelled" do
+    edit_complaint
+    # COMPLAINANT
+    within first_complaint do
+      fill_in('complainant', :with => "")
+      fill_in('village', :with => "")
+      fill_in('phone', :with => "555-1212")
+      fill_in('dob', :with => "")
+      fill_in('complaint_details', :with => "")
+      # CATEGORY
+      uncheck_category("Formal")
+      # MANDATE
+      choose('special_investigations_unit') # originally had human rights mandate
+      # BASIS
+      uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
+      uncheck_basis(:good_governance, "Failure to act") # originally had "Delayed action" and "Failure to Act"
+      uncheck_basis(:human_rights, "CAT") # originall had "CAT" "ICESCR"
+      uncheck_basis(:human_rights, "ICESCR") # originall had "CAT" "ICESCR"
+      uncheck_basis(:special_investigations_unit, "Unreasonable delay") #originally had "Unreasonable delay" "Not properly investigated"
+      uncheck_basis(:special_investigations_unit, "Not properly investigated") #originally had "Unreasonable delay" "Not properly investigated"
+      # AGENCY
+      uncheck_agency("SAA")
+    end
+    expect{ edit_save }.not_to change{ Complaint.first}
+
+    expect(page).to have_selector('#complainant_error', :text => "You must enter a complainant")
+    expect(page).to have_selector('#village_error', :text => 'You must enter a village')
+    expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
+    expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
+    expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
+
+    edit_cancel
+    sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
+    edit_complaint
+    within first_complaint do
+      expect(page).not_to have_selector('#complainant_error', :text => "You must enter a complainant")
+      expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
+      expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select an area')
+      expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
+      expect(page).not_to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
+      expect(page).not_to have_selector('#details_error', :text => "You must enter the complaint details")
+    end
+  end
+
   it "permits only one add at a time" do
     add_complaint
     add_complaint

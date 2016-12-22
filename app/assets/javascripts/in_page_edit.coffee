@@ -162,7 +162,14 @@ class @InpageEdit
         @context = $target.closest('.editable_container')
         @options.object.set('expanded',false)
         @_remove_pending_document_uploads()
+        @_remove_errors()
         @show()
+
+  _remove_errors : ->
+    keys = _(@options.object.get()).keys()
+    re = new RegExp(/_error$/)
+    error_attrs = _(keys).select (k)-> re.test(k)
+    _(error_attrs).each (a)=> @options.object.set(a,false)
 
   _remove_pending_document_uploads : ->
     pending_uploads = _(@options.object.findAllComponents('attachedDocument')).select (doc)-> !doc.get('persisted')
