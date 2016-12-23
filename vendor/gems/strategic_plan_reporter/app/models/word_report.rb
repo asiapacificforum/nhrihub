@@ -8,26 +8,34 @@ class WordReport
     zip_it_up
   end
 
+  def tmp_dir
+    self.class.name.constantize::TMP_DIR
+  end
+
+  def template_path
+    self.class.name.constantize::TEMPLATE_PATH
+  end
+
   def create_temp_dir
-    `mkdir #{TMP_DIR}`
+    `mkdir #{tmp_dir}`
   end
 
   def copy_template
-    FileUtils.cp_r(template_source,TMP_DIR)
+    FileUtils.cp_r(template_source,tmp_dir)
   end
 
   def template_source
-    Root.join(TEMPLATE_PATH,'docx/')
+    self.class.name.constantize::Root.join(template_path,'docx/')
   end
 
   def save_word_doc
-    file = File.open(TMP_DIR.join('docx','word','document.xml'),'w+')
+    file = File.open(tmp_dir.join('docx','word','document.xml'),'w+')
     file.write(@word_doc)
     file.close
   end
 
   def zip_it_up
-    FileUtils.cd(TMP_DIR.join('docx')) do
+    FileUtils.cd(tmp_dir.join('docx')) do
       system "zip -qr #{tmpfile} . -x \*.DS_Store \*.git/\* \*.gitignore \*.gitkeep"
     end
   end
@@ -37,7 +45,7 @@ class WordReport
   end
 
   def tmpfile
-    Rails.root.join(TMP_DIR, docfile_name)
+    Rails.root.join(tmp_dir, docfile_name)
   end
 
   def docfile_name
@@ -45,11 +53,4 @@ class WordReport
     self.class.name.underscore+'.docx'
   end
 
-  def to_xml
-    xml
-  end
-
-  def template(name)
-    File.read(Root.join(TEMPLATE_PATH,name))
-  end
 end
