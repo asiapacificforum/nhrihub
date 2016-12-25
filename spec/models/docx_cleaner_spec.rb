@@ -53,6 +53,18 @@ describe "consolidate text nodes" do
     dc = DocxCleaner.new(xml)
     expect(dc.consolidate).to eq "<w:t>{{da tabase}}</w:t>"
   end
+
+  it "should leave intact text nodes outside of moustache delimiters" do
+    xml = '<w:t>text here</w:t><w:t>{{</w:t><w:t>da</w:t><w:t>ta</w:t><w:t>base</w:t> <w:t>}}</w:t>'
+    dc = DocxCleaner.new(xml)
+    expect(dc.consolidate).to eq "<w:t>text here</w:t><w:t>{{database}}</w:t>"
+  end
+
+  it "should ignore xml attributes" do
+    xml = '<w:tc><w:p><w:r><w:t>{</w:t></w:r><w:r><w:t>{</w:t></w:r><w:r><w:t xml:space="preserve"> date</w:t></w:r><w:r w:rsidR="00D046BB"><w:t xml:space="preserve"> </w:t></w:r><w:r><w:t>}}</w:t></w:r></w:p>'
+    dc = DocxCleaner.new(xml)
+    expect(dc.consolidate).to eq "<w:t>{{ date }}</w:t>"
+  end
 end
 
 describe "consolidate" do
