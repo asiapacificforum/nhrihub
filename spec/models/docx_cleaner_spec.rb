@@ -63,7 +63,7 @@ describe "consolidate text nodes" do
   it "should ignore xml attributes" do
     xml = '<w:tc><w:p><w:r><w:t>{</w:t></w:r><w:r><w:t>{</w:t></w:r><w:r><w:t xml:space="preserve"> date</w:t></w:r><w:r w:rsidR="00D046BB"><w:t xml:space="preserve"> </w:t></w:r><w:r><w:t>}}</w:t></w:r></w:p>'
     dc = DocxCleaner.new(xml)
-    expect(dc.consolidate).to eq "<w:t>{{ date }}</w:t>"
+    expect(dc.consolidate).to eq "<w:tc><w:p><w:r><w:t>{{ date }}</w:t></w:r></w:p>"
   end
 end
 

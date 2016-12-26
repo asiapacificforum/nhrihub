@@ -22,20 +22,22 @@ class DocxCleaner
   end
 
   def consolidate_text_nodes
-    self.xml = xml.gsub(/(?:.*?<w:t.*?>(.*?)<\/w:t>.*?)/) do |s|
-      if $1 == "{{"
-        "<w:t>{{"
-      elsif $1 == "}}"
+    @moustache = false
+    open_tag = "<w:t(?:(?:\s.*?)*?)>"
+    close_tag = "<\/w:t(?:(?:\s.*?)*?)>"
+    self.xml = xml.gsub(/((.*?)#{open_tag}(.*?)#{close_tag})/) do |s|
+      if $3 == "{{"
+        @moustache = true
+        "#{$2}<w:t>{{"
+      elsif $3 == "}}"
+        @moustache = false
         "}}</w:t>"
+      elsif @moustache
+        $3
       else
         $1
       end
     end
-    #sub = xml.gsub(/<w:t>(\w*)<\/w:t>.*?<w:t>(\w*)<\/w:t>/,'<w:t>\1\2</w:t>')
-    #unless sub == xml
-      #self.xml = sub
-      #consolidate_text_nodes
-    #end
     xml
   end
 end
