@@ -217,7 +217,7 @@ FilterMatch =
   matches_complainant : ->
     return true if _.isEmpty(@get('filter_criteria.complainant'))
     re = new RegExp(@get('filter_criteria.complainant').trim(),"i")
-    re.test @get('complainant')
+    (re.test @get('firstName')) || (re.test @get('lastName'))
   matches_case_reference : ->
     return true if _.isEmpty(@get('filter_criteria.case_reference'))
     criterion_digits = @get('filter_criteria.case_reference').replace(/\D/g,'')

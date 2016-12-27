@@ -53,7 +53,8 @@ class ComplaintsSeedData
     completed_complaint_status = FactoryGirl.create(:complaint_status, :id => 2, :name => "Completed")
 
     FactoryGirl.create(:complaint,
-                       :complainant => "Camilla Lebsack",
+                       :firstName => "Camilla",
+                       :lastName  => "Lebsack",
                        :village => "Katherineborough",
                        :phone => "802-850-1615 x1496",
                        :case_reference => "c16/31",
@@ -67,7 +68,8 @@ class ComplaintsSeedData
                                                               :complaint_status_id => active_complaint_status.id)])
 
     FactoryGirl.create(:complaint,
-                       :complainant => "Bo McCullough",
+                       :firstName => "Bo",
+                       :lastName  => "McCullough",
                        :village => "Conroytown",
                        :phone => "(567) 894-1478 x4153",
                        :case_reference => "c16/32",
@@ -81,7 +83,8 @@ class ComplaintsSeedData
                                                               :complaint_status_id => active_complaint_status.id)])
 
     FactoryGirl.create(:complaint,
-                       :complainant => "Ned Kessler",
+                       :firstName => "Ned",
+                       :lastName  => "Kessler",
                        :village => "Port Janiya",
                        :phone => "1-862-553-8009 x835",
                        :case_reference => "c16/33",
@@ -95,7 +98,8 @@ class ComplaintsSeedData
                                                               :complaint_status_id => completed_complaint_status.id)])
 
     FactoryGirl.create(:complaint,
-                       :complainant => "Marissa Yost",
+                       :firstName => "Marissa",
+                       :lastName  => "Yost",
                        :village => "Parkerfurt",
                        :phone => "150-042-4712" ,
                        :case_reference => "c16/34",

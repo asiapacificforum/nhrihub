@@ -49,7 +49,7 @@ en:
       assignee: 'Assignee'
       complaint_documents : 'Complaint documents'
       date_received : "Date received"
-      first_name : "First name"
+      first_name : "First name(s)"
       last_name : "Last name"
 
       # filter controls:
