@@ -33,7 +33,8 @@ feature "complaints index", :js => true do
       expect(all('#status_changes .status_change').last.text).to match /#{Complaint.first.status_changes.last.status_humanized}/
       expect(all('#status_changes .status_change .user_name').last.text).to match /#{Complaint.first.status_changes.last.user.first_last_name}/
       expect(all('#status_changes .status_change .date').last.text).to match /#{Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%b %-d, %Y")}/
-      expect(find('.complainant').text).to eq Complaint.first.complainant
+      expect(find('.lastName').text).to eq Complaint.first.lastName
+      expect(find('.firstName').text).to eq Complaint.first.firstName
     end
   end
 
@@ -49,7 +50,8 @@ feature "complaints index", :js => true do
       status = Complaint.first.status_changes.last.status_humanized
       name =   Complaint.first.status_changes.last.user.first_last_name
       expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to match  "#{status} ( by #{name} )".gsub(/\s/,'')
-      expect(find('.complainant').text).to eq Complaint.first.complainant
+      expect(find('.lastName').text).to eq Complaint.first.lastName
+      expect(find('.firstName').text).to eq Complaint.first.firstName
     end
   end
 
@@ -65,7 +67,8 @@ feature "complaints index", :js => true do
       status = Complaint.first.status_changes.last.status_humanized
       date =   Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%b %-d, %Y")
       expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to match "#{status} ( on #{date} )".gsub(/\s/,'')
-      expect(find('.complainant').text).to eq Complaint.first.complainant
+      expect(find('.lastName').text).to eq Complaint.first.lastName
+      expect(find('.firstName').text).to eq Complaint.first.firstName
     end
   end
 
@@ -76,10 +79,17 @@ feature "complaints index", :js => true do
       expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
       status = Complaint.first.status_changes.last.status_humanized
       expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to eq "#{status}".gsub(/\s/,'')
-      expect(find('.complainant').text).to eq Complaint.first.complainant
+      expect(find('.lastName').text).to eq Complaint.first.lastName
+      expect(find('.firstName').text).to eq Complaint.first.firstName
     end
   end
 
+    #remove_column :complaints, :complainant
+    #add_column :complaints, :firstName, :string
+    #add_column :complaints, :lastName, :string
+    #add_column :complaints, :chiefly_title, :string
+    #add_column :complaints, :occupation, :string
+    #add_column :complaints, :employer, :string
   it "expands each complaint to show additional information" do
     within first_complaint do
       expand
@@ -148,7 +158,8 @@ feature "complaints index", :js => true do
   it "adds a new complaint that is valid" do
     add_complaint
     within new_complaint do
-      fill_in('complainant', :with => "Norman Normal")
+      fill_in('lastName', :with => "Normal")
+      fill_in('firstName', :with => "Norman")
       fill_in('dob', :with => "1950/08/19")
       fill_in('email', :with => "norm@acme.co.ws")
       fill_in('village', :with => "Normaltown")
@@ -180,7 +191,8 @@ feature "complaints index", :js => true do
     # on the server
     complaint = Complaint.last
     expect(complaint.case_reference).to eq next_ref
-    expect(complaint.complainant).to eq "Norman Normal"
+    expect(complaint.lastName).to eq "Normal"
+    expect(complaint.firstName).to eq "Norman"
     expect(complaint.dob).to eq Date.new(1950,8,19)
     expect(complaint.gender).to eq 'M'
     expect(complaint.email).to eq "norm@acme.co.ws"
@@ -207,7 +219,8 @@ feature "complaints index", :js => true do
     # on the client
     expect(first_complaint.find('.case_reference').text).to eq next_ref
     expect(first_complaint.find('.current_assignee').text).to eq User.staff.first.first_last_name
-    expect(first_complaint.find('.complainant').text).to eq "Norman Normal"
+    expect(first_complaint.find('.lastName').text).to eq "Normal"
+    expect(first_complaint.find('.firstName').text).to eq "Norman"
     expect(first_complaint.find('#status_changes .status_change .status_humanized').text).to eq 'Under Evaluation'
     expand
     expect(first_complaint.find('.complainant_dob').text).to eq "1950, Aug 19"
@@ -268,15 +281,18 @@ feature "complaints index", :js => true do
     add_complaint
     within new_complaint do
       save_complaint.click
-      expect(page).to have_selector('#complainant_error', :text => "You must enter a complainant")
+      expect(page).to have_selector('#firstName_error', :text => "You must enter a first name")
+      expect(page).to have_selector('#lastName_error', :text => "You must enter a last name")
       expect(page).to have_selector('#village_error', :text => 'You must enter a village')
       expect(page).to have_selector('#new_assignee_id_error', :text => 'You must designate an assignee')
       expect(page).to have_selector('#mandate_name_error', :text => 'You must select an area')
       expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
       expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
       expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
-      fill_in('complainant', :with => "Norman Normal")
-      expect(page).not_to have_selector('#complainant_error', :text => "You must enter a complainant")
+      fill_in('lastName', :with => "Normal")
+      expect(page).not_to have_selector('#lastName_error', :text => "You must enter a first name")
+      fill_in('firstName', :with => "Norman")
+      expect(page).not_to have_selector('#firstName_error', :text => "You must enter a last name")
       fill_in('village', :with => "Leaden Roding")
       expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
       select(User.staff.first.first_last_name, :from => "assignee")
@@ -317,7 +333,8 @@ feature "complaints index", :js => true do
   it "cancels adding" do
     add_complaint
     within new_complaint do
-      fill_in('complainant', :with => "Norman Normal")
+      fill_in('lastName', :with => "Normal")
+      fill_in('firstName', :with => "Norman")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
       choose('special_investigations_unit')
@@ -330,7 +347,8 @@ feature "complaints index", :js => true do
     expect(page).not_to have_selector('.new_complaint')
     add_complaint
     within new_complaint do
-      expect(page.find('#complainant').value).to be_blank
+      expect(page.find('#lastName').value).to be_blank
+      expect(page.find('#firstName').value).to be_blank
       expect(page.find('#village').value).to be_blank
       expect(page.find('#phone').value).to be_blank
       expect(basis_checkbox(:good_governance, "Delayed action")).not_to be_checked
@@ -356,7 +374,8 @@ feature "complaints index", :js => true do
     edit_complaint
     # COMPLAINANT
     within first_complaint do
-      fill_in('complainant', :with => "Norman Normal")
+      fill_in('lastName', :with => "Normal")
+      fill_in('firstName', :with => "Norman")
       fill_in('dob', :with => "1951/08/19")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
@@ -386,7 +405,8 @@ feature "complaints index", :js => true do
       select_datepicker_date("#date_received",Date.today.year,Date.today.month,23)
     end
 
-    expect{ edit_save }.to change{ Complaint.first.complainant }.to("Norman Normal").
+    expect{ edit_save }.to change{ Complaint.first.lastName }.to("Normal").
+                       and change{ Complaint.first.firstName }.to("Norman").
                        and change{ Complaint.first.village }.to("Normaltown").
                        and change{ Complaint.first.phone }.to("555-1212").
                        and change{ Complaint.first.assignees.count }.by(1).
@@ -494,7 +514,8 @@ feature "complaints index", :js => true do
     original_complaint = Complaint.first
     edit_complaint
     within first_complaint do
-      fill_in('complainant', :with => "Norman Normal")
+      fill_in('lastName', :with => "Normal")
+      fill_in('firstName', :with => "Norman")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
       check_basis(:good_governance, "Private")
@@ -518,7 +539,8 @@ feature "complaints index", :js => true do
     sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
     edit_complaint
     within first_complaint do
-      expect(page.find('#complainant').value).to eq original_complaint.complainant
+      expect(page.find('#lastName').value).to eq original_complaint.lastName
+      expect(page.find('#firstName').value).to eq original_complaint.firstName
       expect(page.find('#village').value).to eq original_complaint.village
       expect(page.find('#phone').value).to eq original_complaint.phone
       expect(page.all('#good_governance_bases .complaint_basis input').first['name']).to eq original_complaint.good_governance_complaint_basis_ids.join(',')
@@ -543,7 +565,8 @@ feature "complaints index", :js => true do
     edit_complaint
     # COMPLAINANT
     within first_complaint do
-      fill_in('complainant', :with => "")
+      fill_in('lastName', :with => "")
+      fill_in('firstName', :with => "")
       fill_in('village', :with => "")
       fill_in('phone', :with => "555-1212")
       fill_in('dob', :with => "")
@@ -564,7 +587,8 @@ feature "complaints index", :js => true do
     end
     expect{ edit_save }.not_to change{ Complaint.first}
 
-    expect(page).to have_selector('#complainant_error', :text => "You must enter a complainant")
+    expect(page).to have_selector('#firstName_error', :text => "You must enter a first name")
+    expect(page).to have_selector('#lastName_error', :text => "You must enter a last name")
     expect(page).to have_selector('#village_error', :text => 'You must enter a village')
     expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
     expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
@@ -574,7 +598,8 @@ feature "complaints index", :js => true do
     sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
     edit_complaint
     within first_complaint do
-      expect(page).not_to have_selector('#complainant_error', :text => "You must enter a complainant")
+      expect(page).not_to have_selector('#firstName_error', :text => "You must enter a first name")
+      expect(page).not_to have_selector('#lastName_error', :text => "You must enter a last name")
       expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
       expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select an area')
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
@@ -603,7 +628,8 @@ feature "complaints index", :js => true do
     expect(page.all('.new_complaint').count).to eq 0
     add_complaint
     within new_complaint do
-      expect(page.find('#complainant').value).to be_blank
+      expect(page.find('#lastName').value).to be_blank
+      expect(page.find('#firstName').value).to be_blank
       expect(page.find('#village').value).to be_blank
       expect(page.find('#phone').value).to be_blank
     end
@@ -613,7 +639,8 @@ feature "complaints index", :js => true do
     original_complaint = Complaint.first
     edit_first_complaint
     within first_complaint do
-      fill_in('complainant', :with => "Norman Normal")
+      fill_in('lastName', :with => "Normal")
+      fill_in('firstName', :with => "Norman")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
     end
@@ -624,7 +651,8 @@ feature "complaints index", :js => true do
     sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
     edit_first_complaint
     within first_complaint do
-      expect(page.find('#complainant').value).to eq original_complaint.complainant
+      expect(page.find('#lastName').value).to eq original_complaint.lastName
+      expect(page.find('#firstName').value).to eq original_complaint.firstName
       expect(page.find('#village').value).to eq original_complaint.village
       expect(page.find('#phone').value).to eq original_complaint.phone
     end
@@ -639,7 +667,8 @@ feature "complaints index", :js => true do
     edit_complaint
     # COMPLAINANT
     within first_complaint do
-      fill_in('complainant', :with => "")
+      fill_in('lastName', :with => "")
+      fill_in('firstName', :with => "")
       fill_in('village', :with => "")
       fill_in('phone', :with => "555-1212")
       fill_in('dob', :with => "")
@@ -660,14 +689,17 @@ feature "complaints index", :js => true do
     end
     expect{ edit_save }.not_to change{ Complaint.first}
 
-    expect(page).to have_selector('#complainant_error', :text => "You must enter a complainant")
+    expect(page).to have_selector('#firstName_error', :text => "You must enter a first name")
+    expect(page).to have_selector('#lastName_error', :text => "You must enter a last name")
     expect(page).to have_selector('#village_error', :text => 'You must enter a village')
     expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
     expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
     expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
     within first_complaint do
-      fill_in('complainant', :with => "Norman Normal")
-      expect(page).not_to have_selector('#complainant_error', :text => "You must enter a complainant")
+      fill_in('lastName', :with => "Normal")
+      expect(page).not_to have_selector('#lastName_error', :text => "You must enter a last name")
+      fill_in('firstName', :with => "Norman")
+      expect(page).not_to have_selector('#firstName_error', :text => "You must enter a first name")
       fill_in('village', :with => "Leaden Roding")
       expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
       choose('special_investigations_unit')

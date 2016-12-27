@@ -332,11 +332,12 @@ Complaint = Ractive.extend
     persisted : ->
       !_.isNull(@get('id'))
     persistent_attributes : ->
-      ['case_reference','complainant','village','phone','mandate_name', 'imported',
+      ['case_reference','village','phone','mandate_name', 'imported',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
         'complaint_category_ids', 'agency_ids', 'attached_documents_attributes', 'details',
-        'dob', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received']
+        'dob', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received',
+        'firstName', 'lastName']
     url : ->
       Routes.complaint_path(current_locale, @get('id'))
     formatted_date :
@@ -368,7 +369,8 @@ Complaint = Ractive.extend
       @get('special_investigations_unit_complaint_basis_ids').length +
       @get('human_rights_complaint_basis_ids').length
     validation_criteria : ->
-      complainant : ['notBlank', {if : =>!@get('imported') }]
+      firstName : ['notBlank', {if : =>!@get('imported') }]
+      lastName : ['notBlank', {if : =>!@get('imported') }]
       village : ['notBlank', {if : =>!@get('imported')}]
       mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
       complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]

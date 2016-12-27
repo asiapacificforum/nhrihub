@@ -21,7 +21,8 @@ en:
       details : 'Details'
       details_error_message : 'You must enter the complaint details'
       desired_outcome : 'Desired outcome'
-      complainant_error_message : "You must enter a complainant"
+      firstName_error_message : "You must enter a first name"
+      lastName_error_message : "You must enter a last name"
       mandate: "Area"
       mandate_name_error_message: "You must select an area"
       area : "Area"
@@ -48,6 +49,8 @@ en:
       assignee: 'Assignee'
       complaint_documents : 'Complaint documents'
       date_received : "Date received"
+      first_name : "First name"
+      last_name : "Last name"
 
       # filter controls:
       search: "Search for complaints by:"

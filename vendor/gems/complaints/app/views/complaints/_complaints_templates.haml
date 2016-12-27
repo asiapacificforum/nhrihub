@@ -239,12 +239,19 @@
           %span=t('.case_reference')
         .col-md-5
           %span#case_reference {{case_reference}}
-      .row.form-group{:class => "{{#complainant_error}}has-error{{/}}"}
+      .row
         .col-md-2
-          %span.required=t('.complainant')
-        .col-md-6
-          %input.form-control#complainant{:value => '{{complainant}}', 'on-keydown'=>"remove_attribute_error('complainant')"}
-          %span.help-block.error#complainant_error= t('.complainant_error_message')
+          %span=t('.complainant')
+        .col-md-6{:style => 'padding-top:0px'}
+          .row
+            .col-md-6.form-group{:class => "{{#firstName_error}}has-error{{/}}", :style => 'padding-top:0px;'}
+              %label.required{:for => :firstName, :style => 'font-weight:normal'}=t('.first_name')
+              %input.form-control#firstName{:value => '{{firstName}}', 'on-keydown'=>"remove_attribute_error('firstName')"}
+              %span.help-block.error#firstName_error= t('.firstName_error_message')
+            .col-md-6.form-group{:class => "{{#lastName_error}}has-error{{/}}", :style => 'padding-top:0px;'}
+              %label.required{:for => :lastName, :style => 'font-weight:normal'}=t('.last_name')
+              %input.form-control#lastName{:value => '{{lastName}}', 'on-keydown'=>"remove_attribute_error('lastName')"}
+              %span.help-block.error#lastName_error= t('.lastName_error_message')
       .row.form-group{:class => "{{#dob_error}}has-error{{/}}"}
         .col-md-2
           %span.required=t('.dob')
@@ -431,18 +438,26 @@
                   %input#suspended{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Suspended'}
                   %span Under Evaluation
                   %input#under_evaluation{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Under Evaluation'}
-          .row.form-group{:class => "{{#complainant_error}}has-error{{/}}"}
+          .row
             .col-md-3{'data-toggle' => :edit}
               .no_edit.in
                 %label= t('.complainant')
               .edit
-                %label.required= t('.complainant')
+                %label= t('.complainant')
             .col-md-9{'data-toggle'=>'edit'}
               .no_edit.in
-                %span.complainant {{ complainant }}
+                %span.firstName {{ firstName }}
+                %span.lastName  {{ lastName }}
               .edit
-                %input.form-control#complainant{:value => '{{complainant}}', 'on-keydown'=>"remove_attribute_error('complainant')"}
-                %span.help-block.error#complainant_error= t('.complainant_error_message')
+                .row
+                  .col-md-6.form-group{:class => "{{#firstName_error}}has-error{{/}}"}
+                    %label.required{:for => :firstName}=t('.first_name')
+                    %input.form-control#firstName{:value => '{{firstName}}', 'on-keydown'=>"remove_attribute_error('firstName')"}
+                    %span.help-block.error#firstName_error= t('.firstName_error_message')
+                  .col-md-6.form-group{:class => "{{#lastName_error}}has-error{{/}}"}
+                    %label.required{:for => :lastName}=t('.last_name')
+                    %input.form-control#lastName{:value => '{{lastName}}', 'on-keydown'=>"remove_attribute_error('lastName')"}
+                    %span.help-block.error#lastName_error= t('.lastName_error_message')
         .col-md-3.actions
           .row{:style => "margin-left:0px;"}
             .col-md-1.col-md-offset-2{'data-toggle'=>:edit}
