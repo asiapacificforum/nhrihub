@@ -65,6 +65,15 @@ class ComplaintsController < ApplicationController
     head :ok
   end
 
+  def show
+    @complaint = Complaint.find(params[:id])
+    respond_to do |format|
+      format.docx do
+        send_file ComplaintReport.new(@complaint).docfile
+      end
+    end
+  end
+
   private
   def complaint_params
     params.require(:complaint).permit( :case_reference, :complainant, :village, :phone, :new_assignee_id,

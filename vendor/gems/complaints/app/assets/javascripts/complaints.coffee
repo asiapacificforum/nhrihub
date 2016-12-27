@@ -411,6 +411,8 @@ Complaint = Ractive.extend
     assigneeSelector : AssigneeSelector
     attachedDocuments : ComplaintDocuments
     progressBar : ProgressBar
+  generate_word_doc : ->
+    window.location = Routes.complaint_path('en',@get('id'),{format : 'docx'})
   expand : ->
     @set('expanded',true)
     $(@findAll('.collapse')).collapse('show')

@@ -6,6 +6,10 @@ def cleanup
   file.truncate(0)
   file.close
   file = File.open(file_name,File::RDWR||File::TRUNC)
+  # explanation:
+  # MSWord can break up text elements into separate xml text nodes
+  # DocxCleaner#consolidate brings these nodes back together again
+  # so that substitutions can be made for the {{ value }} moustache pattern
   dc = DocxCleaner.new(xml)
   xml = dc.consolidate
   file.write(xml)
@@ -22,6 +26,6 @@ namespace :complaints do
     FileUtils.cd(source_docs) do
       system "unzip -u complaint_form.docx -d #{target}"
     end
-    #cleanup
+    cleanup
   end
 end
