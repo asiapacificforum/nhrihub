@@ -118,8 +118,20 @@ class Complaint < ActiveRecord::Base
     status_changes.last.status_humanized unless status_changes.empty?
   end
 
+  def complained_to_subject_agency
+    val = read_attribute(:complained_to_subject_agency)
+    def val.to_s
+      self ? 'yes' : 'no'
+    end
+    val
+  end
+
   def date
     date_received.to_datetime.to_s unless date_received.nil?
+  end
+
+  def report_date
+    date_received.to_date.to_s
   end
 
   def current_assignee_name
@@ -147,5 +159,26 @@ class Complaint < ActiveRecord::Base
 
   def remindable_url(remindable_id)
     complaint_reminder_path('en',id,remindable_id)
+  end
+
+  def complainant_full_name
+    [firstName, lastName].join(' ')
+  end
+
+  def gender
+    val = read_attribute(:gender)
+    def val.to_s
+      case self
+      when "M"
+        "male"
+      when "F"
+        "female"
+      when "O"
+        "other"
+      else
+        ""
+      end
+    end
+    val
   end
 end

@@ -69,7 +69,7 @@ class ComplaintsController < ApplicationController
     @complaint = Complaint.find(params[:id])
     respond_to do |format|
       format.docx do
-        send_file ComplaintReport.new(@complaint).docfile
+        send_file ComplaintReport.new(@complaint,current_user).docfile
       end
     end
   end

@@ -18,11 +18,17 @@ describe "consolidate double opening braces" do
     dc = DocxCleaner.new(xml)
     expect(dc.consolidate_double_open_braces).to eq "<w:t>{{</w:t><w:t>{{</w:t>"
   end
+
+  it "should eliminate all xml between double open braces" do
+    xml = '<w:t xml:space="preserve"> {</w:t></w:r><w:proofErr w:type="gramStart"/><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr><w:t>{ </w:t>'
+    dc = DocxCleaner.new(xml)
+    expect(dc.consolidate_double_open_braces).to eq "<w:t>{{</w:t>"
+  end
 end
 
 describe "consolidate double closing braces" do
   it "should eliminate all xml between double open braces" do
-    xml = '<w:t>}</w:t></w:r><w:proofErr w:type="gramStart"/><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr><w:t>}</w:t>'
+    xml = '<w:t xml:space="preserve"> }</w:t></w:r><w:proofErr w:type="gramStart"/><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr><w:t>} </w:t>'
     dc = DocxCleaner.new(xml)
     expect(dc.consolidate_double_close_braces).to eq "<w:t>}}</w:t>"
   end
@@ -61,7 +67,7 @@ describe "consolidate text nodes" do
   end
 
   it "should ignore xml attributes" do
-    xml = '<w:tc><w:p><w:r><w:t>{</w:t></w:r><w:r><w:t>{</w:t></w:r><w:r><w:t xml:space="preserve"> date</w:t></w:r><w:r w:rsidR="00D046BB"><w:t xml:space="preserve"> </w:t></w:r><w:r><w:t>}}</w:t></w:r></w:p>'
+    xml = '<w:tc><w:p><w:r><w:t xml:space="preserve"> {</w:t></w:r><w:r><w:t>{ </w:t></w:r><w:r><w:t xml:space="preserve"> date</w:t></w:r><w:r w:rsidR="00D046BB"><w:t xml:space="preserve"> </w:t></w:r><w:r><w:t>}}</w:t></w:r></w:p>'
     dc = DocxCleaner.new(xml)
     expect(dc.consolidate).to eq "<w:tc><w:p><w:r><w:t>{{ date }}</w:t></w:r></w:p>"
   end
@@ -69,8 +75,18 @@ end
 
 describe "consolidate" do
   it "should consolidate all moustache strings" do
-    xml = '<w:t>{</w:t><w:t>{</w:t><w:t>da</w:t>some stuff <w:t>ta</w:t> more stuff  <w:t>base</w:t> <w:t>}</w:t><w:t>}</w:t>'
+    xml = '<w:t xml:space="preserve"> {</w:t><w:t>{</w:t><w:t>da</w:t>some stuff <w:t>ta</w:t> more stuff  <w:t>base</w:t> <w:t>}</w:t><w:t>}</w:t>'
     dc = DocxCleaner.new(xml)
     expect(dc.consolidate).to eq "<w:t>{{database}}</w:t>"
+  end
+end
+
+describe "consolidate" do
+  it "should consolidate all moustache strings" do
+  xml = '<w:r><w:t>{</w:t></w:r><w:r><w:t xml:space="preserve">{ </w:t></w:r><w:r><w:t>complainant</w:t></w:r><w:r><w:t>_full_name</w:t></w:r><w:r><w:t xml:space="preserve"> }}</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>Name:</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t xml:space="preserve">{{ </w:t></w:r><w:r><w:t>witness_name</w:t></w:r><w:r><w:t xml:space="preserve"> }}</w:t></w:r>'
+  #xml = '<w:t>{{ </w:t><w:t>witness_name</w:t><w:t> }}</w:t>'
+  dc = DocxCleaner.new(xml)
+  expect(dc.consolidate).to eq "<w:r><w:t>{{complainant_full_name }}<w:t>Name:</w:t><w:t>{{ witness_name }}</w:t></w:r>"
+  #expect(dc.consolidate).to eq "<w:t>{{witness_name}}</w:t>"
   end
 end

@@ -13,29 +13,33 @@ class DocxCleaner
     xml
   end
 
+  ATTRIBUTES = "(?:(?:\s[^>]*?)*?)"
+  OPENTAG =    "<w:t#{ATTRIBUTES}>"
+  CLOSETAG = "<\/w:t>"
+
   def consolidate_double_open_braces
-    self.xml = xml.gsub(/<w:t>{<\/w:t>.*?<w:t>{<\/w:t>/,'<w:t>{{</w:t>')
+    self.xml = xml.gsub(/#{OPENTAG}\s*?{\s*?#{CLOSETAG}.*?#{OPENTAG}\s*?{\s*?<\/w:t>/,'<w:t>{{</w:t>')
   end
 
   def consolidate_double_close_braces
-    self.xml = xml.gsub(/<w:t>}<\/w:t>.*?<w:t>}<\/w:t>/,'<w:t>}}</w:t>')
+    self.xml = xml.gsub(/#{OPENTAG}\s*?}\s*?#{CLOSETAG}.*?#{OPENTAG}\s*?}\s*?<\/w:t>/,'<w:t>}}</w:t>')
   end
 
   def consolidate_text_nodes
     @moustache = false
-    open_tag = "<w:t(?:(?:\s.*?)*?)>"
-    close_tag = "<\/w:t(?:(?:\s.*?)*?)>"
-    self.xml = xml.gsub(/((.*?)#{open_tag}(.*?)#{close_tag})/) do |s|
-      if $3 == "{{"
+    #                    $1 $2             $3
+    self.xml = xml.gsub(/((.*?)#{OPENTAG}(.*?)#{CLOSETAG})/) do |s|
+      r1, r2, r3 = $1, $2, $3
+      if r3 =~ /{{/
         @moustache = true
-        "#{$2}<w:t>{{"
-      elsif $3 == "}}"
+        "#{r2}<w:t>{{"
+      elsif r3 =~ /}}/
         @moustache = false
         "}}</w:t>"
       elsif @moustache
-        $3
+        r3
       else
-        $1
+        r1
       end
     end
     xml
