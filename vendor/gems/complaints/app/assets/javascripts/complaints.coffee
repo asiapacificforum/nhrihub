@@ -127,10 +127,13 @@ EditBackup =
     if _.isNull(selected_gender)
       $("input:radio#m", @find('*')).prop('checked',false)
       $("input:radio#f", @find('*')).prop('checked',false)
+      $("input:radio#o", @find('*')).prop('checked',false)
     else if selected_gender == "M"
       $("input:radio#m", @find('*')).prop('checked',true)
     else if selected_gender == "F"
       $("input:radio#f", @find('*')).prop('checked',true)
+    else if selected_gender == "O"
+      $("input:radio#o", @find('*')).prop('checked',true)
     complained_to_subject_agency = @get('complained_to_subject_agency') == "true"
     $("input#complained_to_subject_agency_yes", @find('*')).prop('checked',complained_to_subject_agency)
     $("input#complained_to_subject_agency_no", @find('*')).prop('checked',!complained_to_subject_agency)
@@ -372,7 +375,7 @@ Complaint = Ractive.extend
       firstName : ['notBlank', {if : =>!@get('imported') }]
       lastName : ['notBlank', {if : =>!@get('imported') }]
       village : ['notBlank', {if : =>!@get('imported')}]
-      mandate_name : ['match',["Good Governance","Human Rights","Special Investigations Unit"]]
+      mandate_name : ['match',["Corporate Services", "Good Governance","Human Rights","Special Investigations Unit"]]
       complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
       new_assignee_id : ['numeric', {if : =>!@get('editing')}]
       dob: =>

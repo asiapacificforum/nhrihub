@@ -51,6 +51,9 @@ en:
       date_received : "Date received"
       first_name : "First name(s)"
       last_name : "Last name"
+      male : "Male"
+      female : "Female"
+      other : "Other"
 
       # filter controls:
       search: "Search for complaints by:"

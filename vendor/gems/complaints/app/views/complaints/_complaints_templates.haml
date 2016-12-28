@@ -237,7 +237,7 @@
       .row
         .col-md-2
           %span=t('.case_reference')
-        .col-md-5
+        .col-md-6
           %span#case_reference {{case_reference}}
       .row
         .col-md-2
@@ -255,17 +255,22 @@
       .row.form-group{:class => "{{#dob_error}}has-error{{/}}"}
         .col-md-2
           %span.required=t('.dob')
-        .col-md-3
+        .col-md-2
           %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:112px;"}
           %span.help-block.error#dob_error= t('.dob_error_message')
-        .col-md-1
-          %span=t('.gender')
         .col-md-2
+          %span=t('.gender')
+        .col-md-5
           %form
-            %span M
-            %input#m{:type=>:radio, :name=>'{{gender}}', :value=>'M'}
-            %span F
-            %input#f{:type=>:radio, :name=>'{{gender}}', :value=>'F'}
+            %label{:style => 'font-weight:normal'}
+              %span{:style => "margin-right:6px;"}=t('.male')
+              %input#m{:type=>:radio, :name=>'{{gender}}', :value=>'M'}
+            %label{:style => 'font-weight:normal'}
+              %span{:style => "margin-right:6px; margin-left:12px;"}=t('.female')
+              %input#f{:type=>:radio, :name=>'{{gender}}', :value=>'F'}
+            %label{:style => 'font-weight:normal'}
+              %span{:style => "margin-right:6px; margin-left:12px;"}=t('.other')
+              %input#o{:type=>:radio, :name=>'{{gender}}', :value=>'O'}
       .row.form-group{:class => "{{#village_error}}has-error{{/}}"}
         .col-md-2
           %span.required=t('.village')
@@ -495,31 +500,34 @@
                 .edit
       .row.collapse.expanded_info
         .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', :class => "{{#dob_error}}has-error{{/}}"}
-          .row
-            .col-md-3{'data-toggle'=>:edit}
-              .no_edit.in
-                %label= t('.dob')
-              .edit
-                %label.required= t('.dob')
+          .row.no_edit.in
             .col-md-3
-              .no_edit.in
-                %span.complainant_dob {{ formatted_dob }}
-              .edit
-                %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:112px;"}
-                %span.help-block.error#dob_error= t('.dob_error_message')
+              %label= t('.dob')
+            .col-md-3
+              %span.complainant_dob {{ formatted_dob }}
             .col-md-2{:style => "text-align:right"}
               %label= t('.gender')
+            .col-md-4
+              %span.gender {{gender}}
+          .row.edit
+            .col-md-3
+              %label.required= t('.dob')
             .col-md-2
-              .no_edit.in
-                %span.gender {{gender}}
-              .edit
-                %form
-                  %label{:style => 'font-weight:normal'}
-                    %span{:style => "margin-right:6px;"} M
-                    %input#m{:type=>:radio, :name=>'{{gender}}', :value=>'M'}
-                  %label{:style => 'font-weight:normal'}
-                    %span{:style => "margin-right:6px; margin-left:12px;"} F
-                    %input#f{:type=>:radio, :name=>'{{gender}}', :value=>'F'}
+              %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:112px;"}
+              %span.help-block.error#dob_error= t('.dob_error_message')
+            .col-md-2{:style => "text-align:right"}
+              %label= t('.gender')
+            .col-md-5
+              %form
+                %label{:style => 'font-weight:normal'}
+                  %span{:style => "margin-right:6px;"}=t('.male')
+                  %input#m{:type=>:radio, :name=>'{{gender}}', :value=>'M'}
+                %label{:style => 'font-weight:normal'}
+                  %span{:style => "margin-right:6px; margin-left:12px;"}=t('.female')
+                  %input#f{:type=>:radio, :name=>'{{gender}}', :value=>'F'}
+                %label{:style => 'font-weight:normal'}
+                  %span{:style => "margin-right:6px; margin-left:12px;"}=t('.other')
+                  %input#o{:type=>:radio, :name=>'{{gender}}', :value=>'O'}
       .row.collapse.expanded_info
         .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit'}
           .row
