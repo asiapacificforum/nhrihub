@@ -30,7 +30,9 @@ class DocxCleaner
     #                    $1 $2             $3
     self.xml = xml.gsub(/((.*?)#{OPENTAG}(.*?)#{CLOSETAG})/) do |s|
       r1, r2, r3 = $1, $2, $3
-      if r3 =~ /{{/
+      if r3 =~ /{{.*?}}/
+        r1
+      elsif r3 =~ /{{/
         @moustache = true
         "#{r2}<w:t>{{"
       elsif r3 =~ /}}/

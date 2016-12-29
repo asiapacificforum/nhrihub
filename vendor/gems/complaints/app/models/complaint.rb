@@ -118,12 +118,16 @@ class Complaint < ActiveRecord::Base
     status_changes.last.status_humanized unless status_changes.empty?
   end
 
-  def complained_to_subject_agency
-    val = read_attribute(:complained_to_subject_agency)
-    def val.to_s
-      self ? 'yes' : 'no'
+  def _complained_to_subject_agency
+    complained_to_subject_agency ? 'yes' : 'no'
+  end
+
+  def agency_names
+    list = agencies.map(&:description)
+    def list.to_s
+      self.map{|item| "<w:p><w:t>#{item}</w:t></w:p>"}.join()
     end
-    val
+    list
   end
 
   def date

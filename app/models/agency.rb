@@ -12,4 +12,8 @@ class Agency < ActiveRecord::Base
   def selected
     true
   end
+
+  def description
+    full_name ?  "#{full_name}, (#{name})" : name
+  end
 end

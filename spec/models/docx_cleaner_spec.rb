@@ -84,9 +84,15 @@ end
 describe "consolidate" do
   it "should consolidate all moustache strings" do
   xml = '<w:r><w:t>{</w:t></w:r><w:r><w:t xml:space="preserve">{ </w:t></w:r><w:r><w:t>complainant</w:t></w:r><w:r><w:t>_full_name</w:t></w:r><w:r><w:t xml:space="preserve"> }}</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>Name:</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t xml:space="preserve">{{ </w:t></w:r><w:r><w:t>witness_name</w:t></w:r><w:r><w:t xml:space="preserve"> }}</w:t></w:r>'
-  #xml = '<w:t>{{ </w:t><w:t>witness_name</w:t><w:t> }}</w:t>'
   dc = DocxCleaner.new(xml)
-  expect(dc.consolidate).to eq "<w:r><w:t>{{complainant_full_name }}<w:t>Name:</w:t><w:t>{{ witness_name }}</w:t></w:r>"
-  #expect(dc.consolidate).to eq "<w:t>{{witness_name}}</w:t>"
+  expect(dc.consolidate).to eq "<w:r><w:t>{{complainant_full_name}}</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>Name:</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>{{witness_name}}</w:t></w:r>"
+  end
+end
+
+describe "consolidate" do
+  it "should leave intact all well-formed moustache strings" do
+  xml = '<w:t>{{ text }}</w:t>'
+  dc = DocxCleaner.new(xml)
+  expect(dc.consolidate).to eq "<w:t>{{ text }}</w:t>"
   end
 end

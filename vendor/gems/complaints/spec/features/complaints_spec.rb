@@ -229,7 +229,7 @@ feature "complaints index", :js => true do
     expect(first_complaint.find('.desired_outcome').text).to eq "Life gets better"
     expect(first_complaint.find('.complainant_village').text).to eq "Normaltown"
     expect(first_complaint.find('.complainant_phone').text).to eq "555-1212"
-    expect(first_complaint.find('.gender').text).to eq "M"
+    expect(first_complaint.find('.gender').text).to eq "male"
     expect(first_complaint.find('.complained_to_subject_agency').text).to eq "yes"
     expect(first_complaint.find('.date_received').text).to eq Date.new(Date.today.year, Date.today.month, 16).to_s
 

@@ -7,12 +7,9 @@ class ComplaintReport < WordReport
   end
 
   def generate_word_doc
-    fields = Complaint.new.attributes.keys + ['report_date', 'complainant_full_name', 'witness_name']
-    fields.each do |attribute|
-      value = (attribute == 'witness_name') ? witness_name : complaint.send(attribute).to_s
-      @template = template.gsub(/\{\{\s*#{attribute}\s*\}\}/,value)
+    @word_doc = template.gsub(/\{\{\s*(\w*)\s*\}\}/) do |s|
+      $1 == 'witness_name' ? witness_name : complaint.send($1).to_s
     end
-    @word_doc = @template
   end
 
   def template
