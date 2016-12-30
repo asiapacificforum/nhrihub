@@ -59,7 +59,7 @@ class Reminder < ActiveRecord::Base
         date = date.advance(increment)
       end
     end
-    self.next = date unless date.to_date.past?
+    self.next = date.to_date.past? ? nil : date 
   end
 
   def one_time?

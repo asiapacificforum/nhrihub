@@ -4,7 +4,7 @@ namespace :complaints do
   task :populate => [:populate_complaints]
 
   desc "populates complaints"
-  task :populate_complaints => [:environment, :populate_statuses, :populate_complaint_bases, :populate_cats, 'projects:populate_mandates', 'projects:populate_agnc'] do
+  task :populate_complaints => [:environment, :populate_statuses, :populate_complaint_bases, 'projects:populate_mandates', 'projects:populate_agnc'] do
     Complaint.destroy_all
     3.times do |i|
       complaint = FactoryGirl.create(:complaint, :case_reference => "C16-#{3-i}")
@@ -22,10 +22,6 @@ namespace :complaints do
 
       complaint_document = FactoryGirl.create(:complaint_document, :title => rand_title, :filename => rand_filename)
       complaint.complaint_documents << complaint_document
-
-      complaint_category = ComplaintCategory.all.sample
-      complaint.complaint_categories << complaint_category
-
       complaint.good_governance_complaint_bases << GoodGovernance::ComplaintBasis.all.sample(2)
       complaint.human_rights_complaint_bases << Nhri::ComplaintBasis.all.sample(2)
       complaint.special_investigations_unit_complaint_bases << Siu::ComplaintBasis.all.sample(2)
@@ -40,14 +36,6 @@ namespace :complaints do
     ComplaintStatus.destroy_all
     ["Open", "Suspended", "Closed"].each do |name|
       ComplaintStatus.create(:name => name)
-    end
-  end
-
-  desc "populates complaint categories"
-  task :populate_cats => :environment do
-    ComplaintCategory.destroy_all
-    ComplaintCategories.each do |category|
-      ComplaintCategory.create(:name => category)
     end
   end
 

@@ -33,7 +33,6 @@
   @source_complaint_bases = #{(@complaint_bases || []).map(&:to_h).to_json}
   @source_next_case_reference = "#{@next_case_reference}"
   @source_all_users = #{@users.to_json(:only => :id, :methods => :first_last_name)}
-  @source_all_categories = #{@categories.to_json}
   @source_all_staff = #{@staff.to_json}
   @source_permitted_filetypes = #{@permitted_filetypes}
   @source_maximum_filesize = #{@maximum_filesize}

@@ -13,17 +13,6 @@
                    :param_name => 'name',
                    :placeholder => 'e.g. delayed action'}
 
-%h4= t('.categories')
-#categories
-  = render :partial => 'admin/collection_configuration',
-    :locals => { :new_item => @complaint_category,
-                 :create_url => complaint_categories_path('en'),
-                 :delete_url => complaint_category_path('en','id'),
-                 :collection => @complaint_categories.to_json,
-                 :item_name => 'complaint_category',
-                 :param_name => 'name',
-                 :placeholder => 'e.g. formal'}
-
 - ["complaint", "communication"].each do |name|
   %h4= t(".#{name}_filetypes")
   %div{:id => "#{name}_filetypes"}

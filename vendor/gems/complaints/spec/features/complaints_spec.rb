@@ -122,12 +122,6 @@ feature "complaints index", :js => true do
         end
       end
 
-      within complaint_categories do
-        Complaint.first.complaint_categories.map(&:name).each do |category_name|
-          expect(all('.complaint_category .name').map(&:text)).to include category_name
-        end
-      end
-
       within good_governance_complaint_bases do
         Complaint.first.good_governance_complaint_bases.map(&:name).each do |complaint_basis_name|
           expect(page).to have_selector('.complaint_basis', :text => complaint_basis_name)
@@ -173,7 +167,6 @@ feature "complaints index", :js => true do
       check_basis(:human_rights, "CAT")
       check_basis(:special_investigations_unit, "Unreasonable delay")
       select(User.staff.first.first_last_name, :from => "assignee")
-      check_category("Formal")
       check_agency("SAA")
       check_agency("ACC")
       attach_file("complaint_fileinput", upload_document)
@@ -208,7 +201,6 @@ feature "complaints index", :js => true do
     expect(complaint.current_assignee_name).to eq User.staff.first.first_last_name
     expect(complaint.status_changes.count).to eq 1
     expect(complaint.status_changes.first.complaint_status.name).to eq "Under Evaluation"
-    expect(complaint.complaint_categories.map(&:name)).to include "Formal"
     expect(complaint.agencies.map(&:name)).to include "SAA"
     expect(complaint.agencies.map(&:name)).to include "ACC"
     expect(complaint.complaint_documents.count).to eq 1
@@ -249,10 +241,6 @@ feature "complaints index", :js => true do
       Complaint.last.special_investigations_unit_complaint_bases.map(&:name).each do |complaint_basis_name|
         expect(page).to have_selector('.complaint_basis', :text => complaint_basis_name)
       end
-    end
-
-    within complaint_categories do
-      expect(page.all('.name').map(&:text)).to include "Formal"
     end
 
     within agencies do
@@ -360,11 +348,11 @@ feature "complaints index", :js => true do
   it "changes complaint current status by adding a status_change" do
     edit_complaint
     within current_status do
-      expect(page).to have_checked_field "complete"
-      choose "active"
+      expect(page).to have_checked_field "closed"
+      choose "open"
     end
-    expect{ edit_save }.to change{ Complaint.first.current_status }.from("Complete").to("Active")
-    expect( first_complaint.all('#status_changes .status_change').last.text ).to match "Active"
+    expect{ edit_save }.to change{ Complaint.first.current_status }.from("Closed").to("Open")
+    expect( first_complaint.all('#status_changes .status_change').last.text ).to match "Open"
     expect( first_complaint.all('#status_changes .date').last.text ).to match /#{Date.today.to_s(:short)}/
     user = User.find_by(:login => 'admin')
     expect( first_complaint.all('#status_changes .user_name').last.text ).to match /#{user.first_last_name}/
@@ -382,9 +370,6 @@ feature "complaints index", :js => true do
       fill_in('complaint_details', :with => "the boy stood on the burning deck")
       fill_in('desired_outcome', :with => "Things are more better")
       choose('complained_to_subject_agency_no')
-      # CATEGORY
-      check_category("Informal")
-      uncheck_category("Formal")
       # ASSIGNEE
       select(User.staff.last.first_last_name, :from => "assignee")
       # MANDATE
@@ -425,8 +410,6 @@ feature "complaints index", :js => true do
     expect( Complaint.first.human_rights_complaint_bases.first.name ).to eq "ICESCR"
     expect( Complaint.first.special_investigations_unit_complaint_bases.count ).to eq 1
     expect( Complaint.first.special_investigations_unit_complaint_bases.first.name ).to eq "Not properly investigated"
-    expect( Complaint.first.complaint_categories.map(&:name) ).to include "Informal"
-    expect( Complaint.first.complaint_categories.count ).to eq 1
     expect( Complaint.first.assignees ).to include User.staff.last
     expect( Complaint.first.agencies.map(&:name) ).to include "ACC"
     expect( Complaint.first.agencies.count ).to eq 1
@@ -454,10 +437,6 @@ feature "complaints index", :js => true do
       Complaint.last.special_investigations_unit_complaint_bases.map(&:name).each do |complaint_basis_name|
         expect(page).to have_selector('.complaint_basis', :text => complaint_basis_name)
       end
-    end
-
-    within complaint_categories do
-      expect(page.all('.name').map(&:text)).to include "Informal"
     end
 
     within agencies do
@@ -533,7 +512,6 @@ feature "complaints index", :js => true do
       check_agency("ACC")
       attach_file("complaint_fileinput", upload_document)
       fill_in("attached_document_title", :with => "some text any text")
-      check_category("Formal")
     end
     edit_cancel
     sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
@@ -557,7 +535,6 @@ feature "complaints index", :js => true do
       expect(page.find_field("SAA")).to be_checked
       expect(page).not_to have_selector("#attached_document_title")
       expect(page).not_to have_selector(".title .filename")
-      (page.all('#complaint_categories .complaint_category input')).each{|cat| expect(cat).not_to be_checked}
     end
   end
 
@@ -571,8 +548,6 @@ feature "complaints index", :js => true do
       fill_in('phone', :with => "555-1212")
       fill_in('dob', :with => "")
       fill_in('complaint_details', :with => "")
-      # CATEGORY
-      uncheck_category("Formal")
       # MANDATE
       choose('special_investigations_unit') # originally had human rights mandate
       # BASIS
@@ -673,8 +648,6 @@ feature "complaints index", :js => true do
       fill_in('phone', :with => "555-1212")
       fill_in('dob', :with => "")
       fill_in('complaint_details', :with => "")
-      # CATEGORY
-      uncheck_category("Formal")
       # MANDATE
       choose('special_investigations_unit') # originally had human rights mandate
       # BASIS

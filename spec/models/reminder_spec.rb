@@ -7,6 +7,7 @@ describe "#next" do
     let(:reminder_next_date){ reminder.calculate_next; reminder.next_date }
     let(:reminder_previous){ reminder.calculate_next; reminder.previous }
     let(:reminder_previous_date){ reminder.calculate_next; reminder.previous_date }
+
     context "and start date is in the past" do
       let(:start_date){ DateTime.new(2015,8,1)}
       it "should be the first day in the future which is the same day as the start day" do
@@ -15,6 +16,19 @@ describe "#next" do
         # reminder_next is returned as a Time instance by Postgres, even for datetime column type
         expect(((reminder_next - Time.now.utc)/(60*60*24)).to_i).to be < 7
         expect(reminder_previous).to eq reminder_next.advance(:days => -7)
+      end
+    end
+
+    context "and start date is changed to another date" do
+      let(:start_date){ 7.days.ago }
+      before do
+        reminder.save
+      end
+
+      it "should create a new next date" do
+        original_next_date = reminder.next
+        reminder.update_attribute(:start_date, 8.days.ago)
+        expect(reminder.next.getlocal.to_date).to eq Date.yesterday.advance(:days => 7)
       end
     end
 
@@ -157,12 +171,25 @@ describe "#next" do
     let(:reminder_next_date){ reminder.calculate_next; reminder.next_date }
     let(:reminder_previous){ reminder.calculate_next; reminder.previous }
     let(:reminder_previous_date){ reminder.calculate_next; reminder.previous_date }
+
     context "and start date is in the past" do
       let(:start_date){ DateTime.new(2015,8,1)}
       it "should be nil" do
         expect(reminder_next).to be_nil
         expect(reminder_next_date).to eq "none"
         expect(reminder_previous_date).to eq reminder.start_date.to_date.to_formatted_s(:short)
+      end
+    end
+
+    context "and start date is change to a past date" do
+      let(:start_date){ Date.tomorrow.to_datetime}
+      before do
+        reminder.save
+      end
+      it "should set next to nil" do
+        expect(reminder.next).to eq Date.tomorrow
+        reminder.update_attribute(:start_date, Date.yesterday.to_datetime)
+        expect(reminder.next).to eq nil
       end
     end
 

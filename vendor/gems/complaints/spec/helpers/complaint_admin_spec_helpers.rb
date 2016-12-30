@@ -1,9 +1,6 @@
 require 'rspec/core/shared_context'
 
 module ComplaintAdminSpecHelpers
-  def new_complaint_category_button
-    page.find('#new_complaint_category button')
-  end
 
   def new_siu_complaint_subarea_button
     page.find('#new_siu_subarea button')

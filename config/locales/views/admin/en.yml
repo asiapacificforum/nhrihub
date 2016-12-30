@@ -27,8 +27,6 @@ en:
         add: "Add Subarea"
       corporate_services_subarea:
         add: "Add Subarea"
-      complaint_category:
-        add: "Add Complaint Category"
       good_governance_project_type:
         add: "Add project type"
       human_rights_project_type:
@@ -57,6 +55,5 @@ en:
       good_governance_subareas: "Good Governance Subareas"
       siu_subareas: "Special Investigations Unit Subareas"
       corporate_services_subareas: "Corporate Services Subareas"
-      categories: "Complaint Categories"
       communicants: "Complaint communicants"
 

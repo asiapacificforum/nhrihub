@@ -205,8 +205,8 @@ Communication = Ractive.extend
     communications : []
     all_staff : window.all_staff
     i18n : window.i18n
-    permitted_filetypes : window.communication_permitted_filetypes
-    maximum_filesize : window.communication_maximum_filesize
+    permitted_filetypes : window.source_communication_permitted_filetypes
+    maximum_filesize : window.source_communication_maximum_filesize
   new_communication : ->
     unless @_new_communication_is_active()
       new_communication =

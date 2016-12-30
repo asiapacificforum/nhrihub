@@ -12,8 +12,6 @@ class Complaint < ActiveRecord::Base
   has_many :assigns, :autosave => true, :dependent => :destroy
   has_many :assignees, :through => :assigns
   belongs_to :opened_by, :class_name => 'User', :foreign_key => :opened_by_id
-  has_many :complaint_complaint_categories, :dependent => :destroy
-  has_many :complaint_categories, :through => :complaint_complaint_categories
   belongs_to :mandate # == area
   has_many :status_changes, :dependent => :destroy
   accepts_nested_attributes_for :status_changes
@@ -77,8 +75,7 @@ class Complaint < ActiveRecord::Base
                         :new_assignee_id,
                         :current_assignee_name, :date,
                         :current_status_humanized, :attached_documents,
-                        :complaint_categories, :mandate_name,
-                        :good_governance_complaint_basis_ids,
+                        :mandate_name, :good_governance_complaint_basis_ids,
                         :special_investigations_unit_complaint_basis_ids,
                         :human_rights_complaint_basis_ids, :status_changes,
                         :agency_ids,

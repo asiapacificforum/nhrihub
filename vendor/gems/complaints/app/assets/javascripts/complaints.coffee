@@ -86,14 +86,6 @@ ComplaintBases = Ractive.extend
   components :
     complaintBasis : ComplaintBasis
 
-ComplaintCategory = Ractive.extend
-  template : '#complaint_category_template'
-
-ComplaintCategories = Ractive.extend
-  template : '#complaint_categories_template'
-  components :
-    complaintCategory : ComplaintCategory
-
 AssigneeSelector = Ractive.extend
   template : '#assignee_selector_template'
   remove_error : ->
@@ -112,7 +104,7 @@ EditBackup =
   restore_checkboxes : ->
     # major hack to circumvent ractive bug,
     # it will not be necessary in ractive 0.8.0
-    _(['good_governance_complaint_basis','human_rights_complaint_basis','special_investigations_unit_complaint_basis', 'agency', 'complaint_category']).
+    _(['good_governance_complaint_basis','human_rights_complaint_basis','special_investigations_unit_complaint_basis', 'agency']).
       each (association)=>
         @restore_checkboxes_for(association)
   restore_checkboxes_for : (association)->
@@ -150,9 +142,6 @@ Mandates = Ractive.extend
   template : '#mandates_template'
   components :
     mandate : Mandate
-
-ComplaintCategoriesSelector = Ractive.extend
-  template : '#complaint_categories_selector'
 
 Persistence = $.extend
   delete_callback : (data,textStatus,jqxhr)->
@@ -338,7 +327,7 @@ Complaint = Ractive.extend
       ['case_reference','village','phone','mandate_name', 'imported',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
-        'complaint_category_ids', 'agency_ids', 'attached_documents_attributes', 'details',
+        'agency_ids', 'attached_documents_attributes', 'details',
         'dob', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received',
         'firstName', 'lastName']
     url : ->
@@ -410,8 +399,6 @@ Complaint = Ractive.extend
     complaintBasesSelector : ComplaintBasesSelector 
     agencies : Agencies
     agenciesSelector : AgenciesSelector
-    complaintCategories : ComplaintCategories
-    complaintCategoriesSelector : ComplaintCategoriesSelector
     assignees : Assignees
     assigneeSelector : AssigneeSelector
     attachedDocuments : ComplaintDocuments
@@ -551,7 +538,6 @@ window.complaints_page_data = ->
   all_agencies : source_all_agencies
   all_agencies_in_threes : source_all_agencies_in_threes
   all_users : source_all_users
-  all_categories : source_all_categories
   filter_criteria : source_filter_criteria
   all_good_governance_complaint_bases : source_all_good_governance_complaint_bases
   all_human_rights_complaint_bases : source_all_human_rights_complaint_bases

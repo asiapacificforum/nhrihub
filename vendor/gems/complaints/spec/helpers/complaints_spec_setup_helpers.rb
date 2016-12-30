@@ -4,7 +4,6 @@ module ComplaintsSpecSetupHelpers
   extend RSpec::Core::SharedContext
 
   def populate_database
-    create_categories
     create_mandates
     create_agencies
     create_staff
@@ -21,7 +20,6 @@ module ComplaintsSpecSetupHelpers
                        :desired_outcome => Faker::Lorem.sentence,
                        :details => Faker::Lorem.sentence,
                        :complaint_documents => complaint_docs,
-                       :complaint_categories => complaint_cats,
                        :status_changes => _status_changes,
                        :mandate_id => _mandate_id,
                        :agencies => _agencies,
@@ -54,7 +52,7 @@ module ComplaintsSpecSetupHelpers
   end
 
   def create_complaint_statuses
-     ["Active", "Complete", "No further action", "Presumed Resolved", "Suspended", "Under Evaluation"].each do |status_name|
+     ["Open", "Incomplete", "Closed"].each do |status_name|
        FactoryGirl.create(:complaint_status, :name => status_name)
      end
   end
@@ -75,24 +73,14 @@ module ComplaintsSpecSetupHelpers
     # open 100 days ago, closed 50 days ago
     [FactoryGirl.build(:status_change,
                        :created_at => DateTime.now.advance(:days => -100),
-                       :complaint_status_id => FactoryGirl.create(:complaint_status, :name => "Under Evaluation").id,
+                       :complaint_status_id => FactoryGirl.create(:complaint_status, :name => "Open").id,
                        :change_date => DateTime.now.advance(:days => -100),
                        :user_id => User.staff.pluck(:id).first),
      FactoryGirl.build(:status_change,
                        :created_at => DateTime.now.advance(:days => -50),
-                       :complaint_status_id => FactoryGirl.create(:complaint_status, :name => "Complete").id,
+                       :complaint_status_id => FactoryGirl.create(:complaint_status, :name => "Closed").id,
                        :change_date => DateTime.now.advance(:days => -50),
                        :user_id => User.staff.pluck(:id).second )]
-  end
-
-  def create_categories
-    ["Formal", "Informal", "Out of Jurisdication"].each do |category|
-      FactoryGirl.create(:complaint_category, :name => category) 
-    end
-  end
-
-  def complaint_cats
-    [ ComplaintCategory.find_by(:name => "Formal") ]
   end
 
   def complaint_docs

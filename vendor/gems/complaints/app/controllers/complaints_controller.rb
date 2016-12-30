@@ -9,7 +9,6 @@ class ComplaintsController < ApplicationController
                                      {:complaint_human_rights_complaint_bases=>:human_rights_complaint_basis},
                                      {:complaint_agencies => :agency},
                                      :communications,
-                                     :complaint_categories,
                                      :complaint_documents,
                                      :reminders,:notes).sort.reverse
     @mandates = Mandate.all.sort_by(&:name)
@@ -20,7 +19,6 @@ class ComplaintsController < ApplicationController
                         Siu::ComplaintBasis.named_list ]
     @next_case_reference = Complaint.next_case_reference
     @users = User.all
-    @categories = ComplaintCategory.all
     @good_governance_complaint_bases = GoodGovernance::ComplaintBasis.all
     @human_rights_complaint_bases = Nhri::ComplaintBasis.all
     @special_investigations_unit_complaint_bases = Siu::ComplaintBasis.all
@@ -82,7 +80,7 @@ class ComplaintsController < ApplicationController
                                        :special_investigations_unit_complaint_basis_ids => [],
                                        :human_rights_complaint_basis_ids => [],
                                        :status_changes_attributes => [:user_id, :name],
-                                       :complaint_category_ids => [], :agency_ids => [],
+                                       :agency_ids => [],
                                        :complaint_documents_attributes => [:file, :title, :filename, :original_type, :filesize, :lastModifiedDate],
                                      )
   end

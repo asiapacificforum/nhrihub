@@ -67,18 +67,6 @@ module ComplaintsSpecHelpers
     wait_for_ajax
   end
 
-  def check_category(text)
-    within page.find('#complaint_categories') do
-      check(text)
-    end
-  end
-
-  def uncheck_category(text)
-    within page.find('#complaint_categories') do
-      uncheck(text)
-    end
-  end
-
   def check_agency(text)
     within page.find("#agencies") do
       check(text)
@@ -132,10 +120,6 @@ module ComplaintsSpecHelpers
 
   def agencies
     page.find('#agencies')
-  end
-
-  def complaint_categories
-    page.find('#complaint_categories')
   end
 
   def first_complaint

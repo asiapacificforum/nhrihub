@@ -11,7 +11,6 @@ load_variables = ->
   window.source_complaint_bases = []
   window.source_next_case_reference = ""
   window.source_all_users = []
-  window.source_all_categories = []
   window.source_permitted_filetypes = []
   window.source_maximum_filesize = 5
   window.source_filter_criteria = MagicLamp.loadJSON("complaint_filter_criteria")

@@ -75,4 +75,4 @@ AGENCIES = {
 #   "SBB"
 #   "SPL"
     }
-ComplaintCategories = ["Informal", "Out of Jurisdiction", "Formal"]
+#ComplaintCategories = ["Informal", "Out of Jurisdiction", "Formal"]

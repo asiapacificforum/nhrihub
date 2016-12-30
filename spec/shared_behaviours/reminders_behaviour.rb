@@ -100,13 +100,13 @@ RSpec.shared_examples "reminders" do
         expect(page).to have_selector("#reminders .reminder .text", :text => "don't forget the fruit gums mum")
         edit_reminder_icon.click
         select("one-time", :from => :reminder_reminder_type)
-        select_date("Dec 25 #{Date.today.year}", :from => :reminder_start_date)
+        select_date("Dec 31 #{Date.today.year}", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_ids)
         select(User.last.first_last_name, :from => :reminder_user_ids)
         fill_in(:reminder_text, :with => "have a nice day")
         expect{ edit_reminder_save_icon.click; wait_for_ajax}.to change{Reminder.first.text}.from("don't forget the fruit gums mum").to('have a nice day')
         expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "one-time"
-        expect(page.find("#reminders .reminder .next .in").text).to eq "Dec 25, #{Date.today.year}"
+        expect(page.find("#reminders .reminder .next .in").text).to eq "Dec 31, #{Date.today.year}"
         expect(page.find("#reminders .reminder .text .in").text).to eq "have a nice day"
         expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.first.first_last_name
         expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.last.first_last_name

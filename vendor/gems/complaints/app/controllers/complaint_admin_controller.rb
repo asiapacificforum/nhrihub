@@ -12,7 +12,5 @@ class ComplaintAdminController < ApplicationController
     @siu_complaint_bases = Siu::ComplaintBasis.pluck(:name)
     @corporate_services_complaint_basis = CorporateServices::ComplaintBasis.new
     @corporate_services_complaint_bases = CorporateServices::ComplaintBasis.pluck(:name)
-    @complaint_category = ComplaintCategory.new
-    @complaint_categories = ComplaintCategory.pluck(:name)
   end
 end
