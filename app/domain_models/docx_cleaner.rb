@@ -34,10 +34,10 @@ class DocxCleaner
         r1
       elsif r3 =~ /{{/
         @moustache = true
-        "#{r2}<w:t>{{"
+        "#{r2}<w:t>#{r3}"
       elsif r3 =~ /}}/
         @moustache = false
-        "}}</w:t>"
+        "#{r3}</w:t>"
       elsif @moustache
         r3
       else

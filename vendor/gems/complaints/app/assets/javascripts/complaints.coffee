@@ -620,6 +620,8 @@ complaints_options =
   compact : ->
     @set('expanded', false)
     _(@findAllComponents('complaint')).each (ma)-> ma.compact()
+  generate_report : ->
+    window.location=Routes.complaints_path('en',{format : 'docx'})
 
 window.start_page = ->
   window.complaints = new Ractive complaints_options

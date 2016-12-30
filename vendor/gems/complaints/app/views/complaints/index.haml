@@ -1,9 +1,12 @@
 = stylesheet_link_tag 'complaints'
 .message_block
 %h1= t(".heading")
-.btn.btn-success.btn-sm#add_complaint{:style => "margin-bottom:12px; color:white;", :onclick => "complaints.new_complaint()"}
-  %i.fa.fa-plus.fa-lg{:style => "color:white"}
-  %span= t(".add_complaint")
+%div
+  .btn.btn-success.btn-sm#add_complaint{:style => "margin-bottom:12px; color:white;", :onclick => "complaints.new_complaint()"}
+    %i.fa.fa-plus.fa-lg{:style => "color:white"}
+    %span= t(".add_complaint")
+  .btn.btn-primary.btn-sm.ms_word{:style => "margin-bottom:12px; color:white; float:right;", :onclick => "complaints.generate_report()"}
+    %span= t('.ms_word')
 
 #complaints
 #documents

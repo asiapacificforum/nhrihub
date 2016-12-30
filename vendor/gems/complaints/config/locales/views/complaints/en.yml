@@ -68,6 +68,7 @@ en:
     index:
       heading: "Complaints"
       add_complaint: "Add complaint"
+      ms_word: "MSWord Document"
       face_to_face : "face to face"
       phone: "phone"
       email: "email"

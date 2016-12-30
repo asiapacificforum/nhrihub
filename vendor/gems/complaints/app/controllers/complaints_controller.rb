@@ -33,7 +33,7 @@ class ComplaintsController < ApplicationController
     respond_to do |format|
       format.html
       format.docx do
-        send_file ComplaintReport.new(@complaints).docfile
+        send_file ComplaintsReport.new(@complaints).docfile
       end
     end
   end
