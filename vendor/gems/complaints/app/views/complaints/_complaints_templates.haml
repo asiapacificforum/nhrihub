@@ -467,27 +467,27 @@
           .row{:style => "margin-left:0px;"}
             .col-md-1.col-md-offset-2{'data-toggle'=>:edit}
               .no_edit.in
-                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()"}
+                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", 'data-toggle' => :tooltip, :title => t('.reminders')}
               .edit
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()"}
+                .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", 'data-toggle' => :tooltip, :title => t('.notes')}
               .edit
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                %i.fa.fa-comments-o.fa-lg.counter{'data-count'=>'{{communications_count}}', 'on-click' => 'show_communications_panel()', :style => "position:relative;"}
+                %i.fa.fa-comments-o.fa-lg.counter{'data-count'=>'{{communications_count}}', 'on-click' => 'show_communications_panel()', :style => "position:relative;", 'data-toggle' => :tooltip, :title => t('.communications')}
               .fade.edit
             .col-md-1.icon{'data-toggle' => 'edit'}
               .fade.edit
               .fade.no_edit.in
-                %i.fa.fa-pencil-square-o{:id => "complaint_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
+                %i.fa.fa-pencil-square-o{:id => "complaint_editable{{id}}_edit_start", :style=> "position:relative; top:1px;", 'data-toggle' => 'tooltip', :title => t('.edit')}
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()'}
+                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()', 'data-toggle' => 'tooltip', :title => t('.delete')}
               .edit
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                %i.fa.fa-sm.fa-file-word-o.word_document{'on-click'=>'generate_word_doc()'}
+                %i.fa.fa-sm.fa-file-word-o.word_document{'on-click'=>'generate_word_doc()', 'data-toggle' => 'tooltip', :title => t('.download')}
               .edit
             .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
               %div{'data-toggle'=>:edit}

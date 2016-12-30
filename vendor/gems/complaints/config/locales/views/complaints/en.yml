@@ -54,6 +54,12 @@ en:
       male : "Male"
       female : "Female"
       other : "Other"
+      download : "Download"
+      delete : "Delete"
+      edit : "Edit"
+      communications : "Communications"
+      notes : "Notes"
+      reminders : "Reminders"
 
       # filter controls:
       search: "Search for complaints by:"
