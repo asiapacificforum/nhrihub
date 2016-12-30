@@ -38,6 +38,7 @@ en:
       human_rights: "Human rights"
       special_investigations_unit: "Special Investigations Unit"
       open: "Open"
+      suspended : "Suspended"
       closed: "Closed"
       'on': 'on' # b/c on is a keyword in yaml and the translation borks
       by: 'by'

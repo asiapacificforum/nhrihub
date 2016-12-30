@@ -431,18 +431,12 @@
                 {{/ status_changes}}
               .fade.edit#current_status
                 %form
-                  %span Active
-                  %input#active{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Active'}
-                  %span Complete
-                  %input#complete{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Complete'}
-                  %span No further action
-                  %input#no_further_action{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'No further action'}
-                  %span Presumed Resolved
-                  %input#presumed_resolved{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Presumed Resolved'}
-                  %span Suspended
+                  %span= t('.open')
+                  %input#open{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Open'}
+                  %span= t('.suspended')
                   %input#suspended{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Suspended'}
-                  %span Under Evaluation
-                  %input#under_evaluation{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Under Evaluation'}
+                  %span= t('.closed')
+                  %input#closed{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Closed'}
           .row
             .col-md-3{'data-toggle' => :edit}
               .no_edit.in

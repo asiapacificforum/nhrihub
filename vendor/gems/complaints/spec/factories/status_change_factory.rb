@@ -4,13 +4,19 @@ FactoryGirl.define do
 
     trait :open do
       after(:create) do |status_change|
-        status_change.complaint_status = FactoryGirl.create(:complaint_status, :open)
+        status_change.complaint_status = ComplaintStatus.find_or_create_by(:name => "Open")
+      end
+    end
+
+    trait :suspended do
+      after(:create) do |status_change|
+        status_change.complaint_status = ComplaintStatus.find_or_create_by(:name => "Suspended")
       end
     end
 
     trait :closed do
       after(:create) do |status_change|
-        status_change.complaint_status = FactoryGirl.create(:complaint_status, :closed)
+        status_change.complaint_status = ComplaintStatus.find_or_create_by(:name => "Closed")
       end
     end
   end

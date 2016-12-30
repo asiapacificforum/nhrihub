@@ -3,11 +3,15 @@ FactoryGirl.define do
     name  "oogly woo"
 
     trait :open do
-      name  "open"
+      name  "Open"
+    end
+
+    trait :suspended do
+      name "Suspended"
     end
 
     trait :closed do
-      name "closed"
+      name "Closed"
     end
   end
 end

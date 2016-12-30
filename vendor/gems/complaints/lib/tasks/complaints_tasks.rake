@@ -4,7 +4,7 @@ namespace :complaints do
   task :populate => [:populate_complaints]
 
   desc "populates complaints"
-  task :populate_complaints => [:environment, :populate_complaint_bases, :populate_cats, 'projects:populate_mandates', 'projects:populate_agnc'] do
+  task :populate_complaints => [:environment, :populate_statuses, :populate_complaint_bases, :populate_cats, 'projects:populate_mandates', 'projects:populate_agnc'] do
     Complaint.destroy_all
     3.times do |i|
       complaint = FactoryGirl.create(:complaint, :case_reference => "C16-#{3-i}")
@@ -32,6 +32,14 @@ namespace :complaints do
       complaint.status_changes << FactoryGirl.create(:status_change, :open, :user_id => User.all.sample.id)
       complaint.mandate_id = Mandate.pluck(:id).sample(1)
       complaint.agency_ids = Agency.pluck(:id).sample(2)
+    end
+  end
+
+  desc "populates status table"
+  task :populate_statuses => :environment do
+    ComplaintStatus.destroy_all
+    ["Open", "Suspended", "Closed"].each do |name|
+      ComplaintStatus.create(:name => name)
     end
   end
 
