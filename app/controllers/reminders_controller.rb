@@ -3,7 +3,7 @@ class RemindersController < ApplicationController
     reminder = Reminder.new(reminder_params)
     remindable = reminder.remindable
     if reminder.save
-      render :json => Reminder.includes(:users, :remindable).where(:remindable_id => reminder.remindable_id, :remindable_type => reminder.remindable_type), :status => 200
+      render :json => Reminder.includes(:user, :remindable).where(:remindable_id => reminder.remindable_id, :remindable_type => reminder.remindable_type), :status => 200
     else
       head :internal_server_error
     end
@@ -30,6 +30,6 @@ class RemindersController < ApplicationController
 
   private
   def reminder_params
-    params.require(:reminder).permit(:reminder_type, :start_date, :text, :remindable_id, :remindable_type, { :user_ids => [] })
+    params.require(:reminder).permit(:reminder_type, :start_date, :text, :remindable_id, :remindable_type, :user_id )
   end
 end

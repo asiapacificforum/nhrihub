@@ -36,7 +36,7 @@ module MediaSetupHelper
 
   def add_reminder
     ma = MediaAppearance.first
-    ma.reminders << FactoryGirl.create(:reminder, :reminder_type => 'weekly', :text => "don't forget the fruit gums mum", :users => [User.first])
+    ma.reminders << FactoryGirl.create(:reminder, :reminder_type => 'weekly', :text => "don't forget the fruit gums mum", :user => User.first)
     ma.save
   end
 

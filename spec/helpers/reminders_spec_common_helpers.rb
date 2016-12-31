@@ -21,8 +21,8 @@ module RemindersSpecCommonHelpers
     page.find("#new_reminder #text")
   end
 
-  def recipients
-    page.find("#new_reminder #recipients")
+  def recipient
+    page.find("#new_reminder #recipient")
   end
 
   def reminder_type
@@ -37,12 +37,12 @@ module RemindersSpecCommonHelpers
     page.find("#new_reminder #text.has-error .help-block")
   end
 
-  def recipients_error_message
-    recipients_error.text
+  def recipient_error_message
+    recipient_error.text
   end
 
-  def recipients_error
-    page.find("#new_reminder #recipients.has-error .help-block")
+  def recipient_error
+    page.find("#new_reminder #recipient.has-error .help-block")
   end
 
   def reminder_error_message

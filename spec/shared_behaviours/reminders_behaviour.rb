@@ -13,7 +13,7 @@ RSpec.shared_examples "reminders" do
         select("one-time", :from => :reminder_reminder_type)
         page.find('#reminder_start_date_1i') # forces wait until the element is available
         select_date("Aug 19 2017", :from => :reminder_start_date)
-        select(User.first.first_last_name, :from => :reminder_user_ids)
+        select(User.first.first_last_name, :from => :reminder_user_id)
         fill_in(:reminder_text, :with => "time to check the database")
         expect{save_reminder.click; wait_for_ajax}.to change{Reminder.count}.from(1).to(2).
                                                   and change{ page.all('#reminders .reminder').count }.from(1).to(2)
@@ -38,7 +38,7 @@ RSpec.shared_examples "reminders" do
         new_reminder_button.click
         page.find('#reminder_start_date_1i', :wait => 10) # forces wait until the element is available
         select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
-        select(User.first.first_last_name, :from => :reminder_user_ids)
+        select(User.first.first_last_name, :from => :reminder_user_id)
         fill_in(:reminder_text, :with => "time to check the database")
         expect{save_reminder.click; wait_for_ajax}.not_to change{Reminder.count}
         expect(reminder_error_message).to eq "Please select a type"
@@ -47,23 +47,23 @@ RSpec.shared_examples "reminders" do
         expect(page).to have_selector("#new_reminder #reminder_type .help-block", :text => "Please select a type", :visible => false)
       end
 
-      scenario "with no recipients error" do
+      scenario "with no recipient error" do
         new_reminder_button.click
         select("one-time", :from => :reminder_reminder_type)
         select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         fill_in(:reminder_text, :with => "time to check the database")
         expect{save_reminder.click; wait_for_ajax}.not_to change{Reminder.count}
-        expect(recipients_error_message).to eq "Please select recipient(s)"
-        select(User.first.first_last_name, :from => :reminder_user_ids)
-        expect(recipients).not_to have_selector('.has-error')
-        expect(page).to have_selector("#new_reminder #recipients .help-block", :text =>  "Please select recipient(s)", :visible => false)
+        expect(recipient_error_message).to eq "Please select recipient"
+        select(User.first.first_last_name, :from => :reminder_user_id)
+        expect(recipient).not_to have_selector('.has-error')
+        expect(page).to have_selector("#new_reminder #recipient .help-block", :text =>  "Please select recipient", :visible => false)
       end
 
       scenario "with blank text error" do
         new_reminder_button.click
         select("one-time", :from => :reminder_reminder_type)
         select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
-        select(User.first.first_last_name, :from => :reminder_user_ids)
+        select(User.first.first_last_name, :from => :reminder_user_id)
         expect{save_reminder.click; wait_for_ajax}.not_to change{Reminder.count}
         expect(text_error_message).to eq "Text cannot be blank"
         description_field =  find("#reminder_text").native
@@ -77,7 +77,7 @@ RSpec.shared_examples "reminders" do
         select("one-time", :from => :reminder_reminder_type)
         select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
         fill_in(:reminder_text, :with => "  ")
-        select(User.first.first_last_name, :from => :reminder_user_ids)
+        select(User.first.first_last_name, :from => :reminder_user_id)
         expect{save_reminder.click; wait_for_ajax}.not_to change{Reminder.count}
         expect(text_error_message).to eq "Text cannot be blank"
       end
@@ -86,7 +86,7 @@ RSpec.shared_examples "reminders" do
         new_reminder_button.click
         select("one-time", :from => :reminder_reminder_type)
         select_date("Aug 19 #{Date.today.year}", :from => :reminder_start_date)
-        select(User.first.first_last_name, :from => :reminder_user_ids)
+        select(User.first.first_last_name, :from => :reminder_user_id)
         fill_in(:reminder_text, :with => "time to check the database")
         cancel_reminder.click
         expect(page).not_to have_selector('#new_reminder')
@@ -101,15 +101,13 @@ RSpec.shared_examples "reminders" do
         edit_reminder_icon.click
         select("one-time", :from => :reminder_reminder_type)
         select_date("Dec 31 #{Date.today.year}", :from => :reminder_start_date)
-        select(User.first.first_last_name, :from => :reminder_user_ids)
-        select(User.last.first_last_name, :from => :reminder_user_ids)
+        select(User.first.first_last_name, :from => :reminder_user_id)
         fill_in(:reminder_text, :with => "have a nice day")
         expect{ edit_reminder_save_icon.click; wait_for_ajax}.to change{Reminder.first.text}.from("don't forget the fruit gums mum").to('have a nice day')
         expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "one-time"
         expect(page.find("#reminders .reminder .next .in").text).to eq "Dec 31, #{Date.today.year}"
         expect(page.find("#reminders .reminder .text .in").text).to eq "have a nice day"
-        expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.first.first_last_name
-        expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.last.first_last_name
+        expect(page.find("#reminders .reminder .recipient .name").text).to eq User.first.first_last_name
         # the valud of 'previous' is not reliable if reminder type is changed.
         # This is not a big problem, and fixing it is tricky.
         # expect(page.find("#reminders .reminder .previous").text).to eq "none"
@@ -121,35 +119,32 @@ RSpec.shared_examples "reminders" do
         edit_reminder_icon.click
         all("select#reminder_reminder_type option").first.select_option
         fill_in(:reminder_text, :with => " ")
-        selected_users = Reminder.first.users.map(&:first_last_name)
-        selected_users.each do |user|
-          unselect(user, :from => :reminder_user_ids)
-        end
+        selected_user = Reminder.first.user.first_last_name
 
         expect{ edit_reminder_save_icon.click; wait_for_ajax}.not_to change{Reminder.first.text}
         expect(page).to have_selector(".reminder .reminder_type.has-error")
-        expect(page).to have_selector(".reminder .recipients.has-error")
         expect(page).to have_selector(".reminder .text.has-error")
         edit_reminder_cancel.click
         expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "weekly"
         expect(page.find("#reminders .reminder .next .in").text).to eq next_date
         expect(page.find("#reminders .reminder .text .in").text).to eq "don't forget the fruit gums mum"
-        expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.first.first_last_name
+        expect(page.find("#reminders .reminder .recipient .name").text).to eq User.first.first_last_name
         edit_reminder_icon.click
         expect(page).not_to have_selector(".reminder .reminder_type.has-error")
-        expect(page).not_to have_selector(".reminder .recipients.has-error")
+        expect(page).not_to have_selector(".reminder .recipient.has-error")
         expect(page).not_to have_selector(".reminder .text.has-error")
       end
 
       scenario "cancel without making changes" do
         next_date = page.find("#reminders .reminder .next .in").text
+        original_recipient = page.find("#reminders .reminder .recipient .name").text
         expect(page).to have_selector("#reminders .reminder .text", :text => "don't forget the fruit gums mum")
         edit_reminder_icon.click
         edit_reminder_cancel.click
         expect(page.find("#reminders .reminder .reminder_type .in").text).to eq "weekly"
         expect(page.find("#reminders .reminder .next .in").text).to eq next_date # i.e. no change
         expect(page.find("#reminders .reminder .text .in").text).to eq "don't forget the fruit gums mum"
-        expect(page.all("#reminders .reminder .recipient").map(&:text)).to include User.first.first_last_name
+        expect(page.find("#reminders .reminder .recipient .name").text).to eq original_recipient
       end
     end
 

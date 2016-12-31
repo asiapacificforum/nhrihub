@@ -24,7 +24,7 @@ class Nhri::HeadingsController < ApplicationController
   end
 
   def show
-    indicator_associations = [:reminders => [:users, :remindable],
+    indicator_associations = [:reminders => [:user, :remindable],
                               :notes => [:author, :editor, :notable],
                               :file_monitor => [:user, :indicator],
                               :text_monitors => [:author, :indicator],

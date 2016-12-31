@@ -7,7 +7,11 @@ module AdvisoryCouncilIssuesContextRemindersSpecHelpers
     setup_areas
     FactoryGirl.create(:advisory_council_issue,
                        :hr_area,
-                       :reminders=>[FactoryGirl.create(:reminder, :advisory_council_issue, :reminder_type => :weekly, :text => "don't forget the fruit gums mum", :users => [User.first])],
+                       :reminders=>[FactoryGirl.create(:reminder,
+                                                       :advisory_council_issue,
+                                                       :reminder_type => :weekly,
+                                                       :text => "don't forget the fruit gums mum",
+                                                       :user => User.first)],
                        :notes => [FactoryGirl.create(:note, :advisory_council_issue, :created_at => 3.days.ago.to_datetime),FactoryGirl.create(:note, :advisory_council_issue, :created_at => 4.days.ago.to_datetime)])
     #resize_browser_window
     visit nhri_advisory_council_issues_path(:en)

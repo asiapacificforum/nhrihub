@@ -94,7 +94,7 @@ class User < ActiveRecord::Base
   belongs_to :organization
   has_many :sessions
   has_many :internal_documents
-  has_and_belongs_to_many :reminders
+  has_many :reminders
   has_many :media_appearances
   has_many :assigns, :autosave => true, :dependent => :destroy
   has_many :complaints, :through => :assigns

@@ -2,7 +2,7 @@ class Reminder < ActiveRecord::Base
   include ActionDispatch::Routing::PolymorphicRoutes
   include Rails.application.routes.url_helpers
   belongs_to :remindable, :polymorphic => true
-  has_and_belongs_to_many :users, :validate => false # we will only be adding/removing users by id, not changing their attributes. So performance is improved by not validating.
+  belongs_to :user
   default_scope ->{ order(:id) }
 
   scope :due_today, ->{ where("date(next) = ?", Time.now.utc.to_date) }
@@ -19,7 +19,7 @@ class Reminder < ActiveRecord::Base
     }
 
   def as_json(options = {})
-    super(:except => [:updated_at, :created_at], :methods => [ :recipients, :next_date, :previous_date, :user_ids, :url, :start_year, :start_month, :start_day ])
+    super(:except => [:updated_at, :created_at], :methods => [ :recipient, :next_date, :previous_date, :user_id, :url, :start_year, :start_month, :start_day ])
   end
 
   before_save :calculate_next
@@ -95,8 +95,8 @@ class Reminder < ActiveRecord::Base
     end
   end
 
-  def recipients
-    users.sort_by{|u| [u.lastName, u.firstName]}
+  def recipient
+    user
   end
 
   def self.send_reminders_due_today

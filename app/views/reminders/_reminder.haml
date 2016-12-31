@@ -30,16 +30,13 @@
         .fade.edit{:style => "height:140px;"}
           %textarea#reminder_text.form-control{:name => 'reminder[text]', :cols=>78, :rows=>4, :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"}
           %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.reminder_text_error_message')
-    .col-md-1.tight.recipients.form-group{:class => '{{#user_ids_error}}has-error{{/}}', :style => "width:13%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'user_ids'}
+    .col-md-1.tight.recipient.form-group{:class => '{{#user_id_error}}has-error{{/}}', :style => "width:13%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'user_id'}
       .fade.no_edit.in
-        {{#recipients}}
-        <recipient first_last_name="{{ first_last_name  }}" />
-        {{/recipients}}
+        .name{:style => "margin-bottom: 0px;"} {{ recipient.first_last_name }}
       .fade.edit{:style => "height:140px;"}
-        =select :reminder, :user_ids, options_for_select(recipients_options), {},
-          {:multiple => true, :class=>'form-control', :value => '{{user_ids}}',
-           'on-change'=>"remove_errors('user_ids')", :style => "height:82px;"}
-        %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-6px; width:100%; background-color:#fff"}= t('.reminder_recipients_error_message')
+        =select :reminder, :user_id, options_for_select(recipient_options), {},
+          {:class=>'form-control', :value => '{{user_id}}', 'on-change'=>"remove_errors('user_id')", :style => "height:82px;"}
+        %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-6px; width:100%; background-color:#fff"}= t('.reminder_recipient_error_message')
     .col-md-1.icon.tight{:style => "text-align:center; font-size:14px; height:20px; width:3%", 'data-toggle' => 'edit'}
       .fade.edit
         %i.fa.fa-remove.fa-lg{:style => "position:relative;", :id => "reminder_editable{{id}}_edit_cancel"}
@@ -67,18 +64,15 @@
       .col-sm-10
         =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
         %span.help-block= t('.reminder_text_error_message')
-    .form-group#recipients{:class => '{{#user_ids_error}}has-error{{/}}'}
-      %label.control-label.topaligned.col-sm-2= t('.recipient_s')
+    .form-group#recipient{:class => '{{#user_id_error}}has-error{{/}}'}
+      %label.control-label.topaligned.col-sm-2= t('.recipient')
       .col-sm-10
-        =select :reminder, :user_ids, options_for_select(recipients_options), {}, {:multiple => true, :class=>'form-control', :style => "width:24%", :value => '{{user_ids}}', 'on-change'=>"remove_errors('user_ids')"}
-        %span.help-block= t('.reminder_recipients_error_message')
+        =select :reminder, :user_id, options_for_select(recipient_options), {:prompt => t('.select_recipient')}, { :class=>'form-control', :style => "width:24%", :value => '{{user_id}}', 'on-change'=>"remove_errors('user_id')"}
+        %span.help-block= t('.reminder_recipient_error_message')
     .form-group
       .col-sm-10.col-sm-offset-2
         <i class="fa fa-remove fa-lg" id="cancel_reminder" style="padding-left:30px" on-click="cancel_reminder()" data-toggle="tooltip" data-placement="bottom" title="cancel"/>
         <i class="fa fa-check fa-lg" id="save_reminder" style="padding-left:60px" on-click="save_reminder()" data-toggle="tooltip" data-placement="bottom" title="save"/>
-
-%script#recipient_template{:type => 'text/ractive'}
-  %p.recipient{:style => "margin-bottom: 0px;"} {{ first_last_name }}
 
 %script#reminders_template{:type => 'ractive/template'}
   <modal-custom id="reminders_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
@@ -93,12 +87,12 @@
       %h5.col-md-1.tight{:style => "width:18%;"}= t('.next')
       %h5.col-md-1.tight{:style => "width:8%;"}= t('.previous')
       %h5.col-md-6.tight{:style => "width:41%;"}= t('.text')
-      %h5.col-md-1.tight{:style => "width:13%;"}= t('.recipients')
+      %h5.col-md-1.tight{:style => "width:13%;"}= t('.recipient')
       %h5.col-md-1.tight{:style => "width:3%;"}
       %h5.col-md-1.tight{:style => "width:3%;"}
       %h5.col-md-1.tight{:style => "width:3%;"}
     {{#reminders}}
-    <reminder reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next_date="{{next_date}}" previous_date="{{previous_date}}" recipients="{{recipients}}"/>
+    <reminder reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next_date="{{next_date}}" previous_date="{{previous_date}}" recipient="{{recipient}}"/>
     {{/reminders}}
   </modal-body>
   </modal-custom>
@@ -136,9 +130,6 @@
         }
 
     Ractive.decorators.popover_edit = PopoverEdit
-
-    Recipient = Ractive.extend
-      template : '#recipient_template'
 
     window.reminders = new Ractive
       el: "#reminder"
@@ -183,8 +174,8 @@
       validate : ->
         type = @_validate('reminder_type')
         text = @_validate('text')
-        user_ids = @_validate('user_ids')
-        type && text && user_ids
+        user_id = @_validate('user_id')
+        type && text && user_id
       _validate : (field)->
         if _.isString(@get(field))
           @set(field, @get(field).trim())
@@ -213,5 +204,4 @@
     , ConfirmDeleteModal
 
     Ractive.components.reminder = Reminder
-    Ractive.components.recipient = Recipient
     return

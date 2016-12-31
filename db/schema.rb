@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161230204509) do
+ActiveRecord::Schema.define(version: 20161231185559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -572,11 +572,7 @@ ActiveRecord::Schema.define(version: 20161230204509) do
     t.string   "remindable_type"
     t.datetime "start_date"
     t.datetime "next"
-  end
-
-  create_table "reminders_users", id: false, force: :cascade do |t|
-    t.integer "reminder_id"
-    t.integer "user_id"
+    t.integer  "user_id"
   end
 
   create_table "roles", force: :cascade do |t|
