@@ -437,11 +437,11 @@ $ ->
       pa_max : ->
         @max('people_affecteds')
       formatted_from_date:
-        get: -> $.datepicker.formatDate("dd/mm/yy", @get('filter_criteria.from'))
-        set: (val)-> @set('filter_criteria.from', $.datepicker.parseDate( "dd/mm/yy", val))
+        get: -> $.datepicker.formatDate("yy, M d", @get('filter_criteria.from'))
+        set: (val)-> @set('filter_criteria.from', $.datepicker.parseDate( "yy, M d", val))
       formatted_to_date:
-        get: -> $.datepicker.formatDate("dd/mm/yy", @get('filter_criteria.to'))
-        set: (val)-> @set('filter_criteria.to', $.datepicker.parseDate( "dd/mm/yy", val))
+        get: -> $.datepicker.formatDate("yy, M d", @get('filter_criteria.to'))
+        set: (val)-> @set('filter_criteria.to', $.datepicker.parseDate( "yy, M d", val))
     min : (param)->
       params = _(@get(param)).reject (p)-> _.isNull(p) || _.isUndefined(p)
       params.reduce (min,val)->
@@ -498,11 +498,11 @@ $ ->
     cancel : ->
       @shift('collection_items')
     set_filter_criteria_to_date : (selectedDate)->
-      @set('filter_criteria.to',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+      @set('filter_criteria.to',$.datepicker.parseDate("yy, M d",selectedDate))
       $('#from').datepicker 'option', 'maxDate', selectedDate
       @update()
     set_filter_criteria_from_date : (selectedDate)->
-      @set('filter_criteria.from',$.datepicker.parseDate("dd/mm/yy",selectedDate))
+      @set('filter_criteria.from',$.datepicker.parseDate("yy, M d",selectedDate))
       $('#to').datepicker 'option', 'minDate', selectedDate
       @update()
     add_file : (file)->
