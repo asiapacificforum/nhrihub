@@ -112,8 +112,8 @@ feature "complaints index", :js => true do
         expect(all('.status_change .user_name')[1].text).to eq User.staff.second.first_last_name
         expect(all('.status_change .date')[0].text).to eq Complaint.first.status_changes[0].created_at.localtime.to_date.to_s(:short)
         expect(all('.status_change .date')[1].text).to eq Complaint.first.status_changes[1].created_at.localtime.to_date.to_s(:short)
-        expect(all('.status_change .status_humanized')[0].text).to eq "Under Evaluation"
-        expect(all('.status_change .status_humanized')[1].text).to eq "Complete"
+        expect(all('.status_change .status_humanized')[0].text).to eq "Open"
+        expect(all('.status_change .status_humanized')[1].text).to eq "Closed"
       end
 
       within complaint_documents do

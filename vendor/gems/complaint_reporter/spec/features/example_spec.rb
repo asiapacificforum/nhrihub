@@ -3,6 +3,6 @@ $:.unshift File.expand_path '../../helpers', __FILE__
 
 feature "bloo" do
   scenario "blah" do
-    expect("foo").to eq "bar"
+    expect(1).to eq 1
   end
 end

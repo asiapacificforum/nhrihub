@@ -181,7 +181,7 @@ describe "#next" do
       end
     end
 
-    context "and start date is change to a past date" do
+    context "and start date is changed to a past date" do
       let(:start_date){ Date.tomorrow.to_datetime}
       before do
         reminder.save

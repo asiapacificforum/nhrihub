@@ -14,8 +14,8 @@ class Reminder < ActiveRecord::Base
     'weekly'       => {:days  => 7},
     'monthly'      => {:months=> 1},
     'quarterly'    => {:months=> 3},
-    'semi-annual'=> {:months=> 6},
-    'annual'     => {:years => 1}
+    'semi-annual'  => {:months=> 6},
+    'annual'       => {:years => 1}
     }
 
   def as_json(options = {})
@@ -76,15 +76,6 @@ class Reminder < ActiveRecord::Base
     elsif reminder_prior_to_next.past?
       previous = reminder_prior_to_next
     end
-
-    #def previous.to_s
-      #unless self.blank?
-        #self.to_formatted_s(:short)
-      #else
-        #"none"
-      #end
-    #end
-
     previous
   end
 
@@ -95,20 +86,6 @@ class Reminder < ActiveRecord::Base
       "none"
     end
   end
-
-  #def next
-    #next_reminder_date = read_attribute('next')
-
-    #def next_reminder_date.to_s
-      #if self
-        #self.to_formatted_s(:short)
-      #else
-        #"none"
-      #end
-    #end
-
-    #next_reminder_date
-  #end
 
   def next_date
     if self.next

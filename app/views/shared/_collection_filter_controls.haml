@@ -15,9 +15,9 @@
       .col-md-2
         %input.form-control#title{:type=>:text, :placeholder => t('.enter_text'), :value => "{{filter_criteria.title}}"}
       .col-md-2
-        %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}"}
+        %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.from_date'), :value => "{{formatted_from_date}}", :style => 'position:relative; z-index:12;'}
       .col-md-2
-        %input.form-control#to{:type=>"text", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}"}
+        %input.form-control#to{:type=>"text", :name=>"to", :placeholder => t('.to_date'), :value => "{{formatted_to_date}}", :style => 'position:relative; z-index:12;'}
       .col-md-3
         .btn-group.select
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
