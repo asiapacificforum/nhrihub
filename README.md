@@ -2,10 +2,10 @@
 # NHRIDocs
 ## Description
 NHRIDocs is an internal web application for National Human Rights Institutions ("NHRI") and other complaint handling institutions or human rights monitoring civil society organisations. It comprises a suite of modules that assist in the planning and management of the NHRI's internal processes, accreditation, and performance metrics. It has a range of functionality designed to improve the efficiency and capacity of your organisation, including:
-  -  A dynamic human rights indicators monitoring tool aligned to the UN framework of indicators with the ability to download all data and evaluate trends. (ref: http://www.ohchr.org/Documents/Publications/Human_rights_indicators_en.pdf, page 88)
+  -  A dynamic human rights indicators monitoring tool aligned to the UN framework of indicators with the ability to download all data and evaluate trends. (ref: [http://www.ohchr.org/Documents/Publications/Human_rights_indicators_en.pdf](http://www.ohchr.org/Documents/Publications/Human_rights_indicators_en.pdf), page 88)
   -  A complaints handling database (set up for complaints relating to human rights or good governance but also customisable)
   -  Strategic plan monitoring – link all of your organisations work to your strategic plan and be able to continuously monitor progress and have a downloadable report available at the click of a button
-  -  ICC Accreditation module to help you collate all required documentation for accreditation and reaccreditation (ref: http://nhri.ohchr.org/EN/AboutUs/ICCAccreditation/Pages/default.aspx )
+  -  GANHRI Accreditation module to help you collate all required documentation for accreditation and reaccreditation (ref: [http://nhri.ohchr.org/EN/AboutUs/ICCAccreditation/Pages/default.aspx](http://nhri.ohchr.org/EN/AboutUs/ICCAccreditation/Pages/default.aspx) )
   -  Internal document file management system to store all of your organisation’s files and folders that can be accessible at any time via any computer with an internet connection
   -  Media monitoring tool to track information in the media and collect data that can be used to identify trends and emerging issues
 
@@ -179,7 +179,7 @@ These files contain sensitive information and should be manually copied into the
 A list of all the files that the application requires to be present in the shared directory is found in the conifg/deploy_example.rb file.
 
 ## Configuring SSL
-Letsencrypt (http://letsencrypt.org) may be used to obtain an ssl certificate. This is facilitated by the letsencrypt_plugin gem (https://github.com/lgromanowski/letsencrypt-plugin). This gem needs a configuration file, and it's stored in the shared/config/letsencrypt_plugin.yml where capistrano symlinks files. Refer to the gem's README for information on the parameters that must be included. The RSA private key is also symlinked by capistrano to shared/key/keyfile.pem.
+[Letsencrypt](http://letsencrypt.org) may be used to obtain an ssl certificate. This is facilitated by the [letsencrypt_plugin gem](https://github.com/lgromanowski/letsencrypt-plugin). This gem needs a configuration file, and it's stored in the shared/config/letsencrypt_plugin.yml where capistrano symlinks files. Refer to the gem's README for information on the parameters that must be included. The RSA private key is also symlinked by capistrano to shared/key/keyfile.pem.
 
 After following the instructions on the letsencrypt_plugin gem, you will have ssl certificates for your site stored in the certificates directory.
 

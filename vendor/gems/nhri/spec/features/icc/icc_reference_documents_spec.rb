@@ -21,8 +21,8 @@ feature "internal document management", :js => true do
   end
 
   scenario "add a new document" do
-    expect(page_heading).to eq "NHRI ICC Accreditation Reference Documents"
-    expect(page_title).to eq "NHRI ICC Accreditation Reference Documents"
+    expect(page_heading).to eq "GANHRI Accreditation Reference Documents"
+    expect(page_title).to eq "GANHRI Accreditation Reference Documents"
     expect(page.find('div.title .no_edit').text).to eq "my important document"
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#icc_reference_document_title").set("some file name")
@@ -37,7 +37,7 @@ feature "internal document management", :js => true do
   end
 
   scenario "add a new document but omit document name" do
-    expect(page_heading).to eq "NHRI ICC Accreditation Reference Documents"
+    expect(page_heading).to eq "GANHRI Accreditation Reference Documents"
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#icc_reference_document_title").set("")
     expect{upload_files_link.click; wait_for_ajax}.to change{IccReferenceDocument.count}
@@ -45,7 +45,7 @@ feature "internal document management", :js => true do
   end
 
   scenario "start upload before any docs have been selected" do
-    expect(page_heading).to eq "NHRI ICC Accreditation Reference Documents"
+    expect(page_heading).to eq "GANHRI Accreditation Reference Documents"
     upload_files_link.click
     expect(flash_message).to eq "You must first click \"Add files...\" and select file(s) to upload"
   end
@@ -155,7 +155,7 @@ feature "internal document management", :js => true do
 
   describe "add multiple icc accreditation reference files" do
     before do
-      expect(page_heading).to eq "NHRI ICC Accreditation Reference Documents"
+      expect(page_heading).to eq "GANHRI Accreditation Reference Documents"
       # first doc
       attach_file("primary_file", upload_document)
       page.find("#icc_reference_document_title").set("fancy file")

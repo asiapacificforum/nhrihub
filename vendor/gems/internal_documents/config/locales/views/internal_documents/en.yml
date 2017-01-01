@@ -10,8 +10,8 @@ en:
       details: "File details"
       title_error_message: "Title cannot be blank"
       duplicate_title_error_message: "Duplicate"
-      icc_revision_in_non_icc_primary_error_message:  "ICC accreditation file title not allowed"
-      icc_title_error_message:  "ICC accreditation file title not allowed"
+      icc_revision_in_non_icc_primary_error_message:  "GANHRI accreditation file title not allowed"
+      icc_title_error_message:  "GANHRI accreditation file title not allowed"
       revision_error_message: "Invalid"
       noFileTypes: "No permitted file types have been configured"
       add: "Add files..."
@@ -31,7 +31,7 @@ en:
       processing: "Processing..."
       too_large : "File is too large"
       unpermitted_type : "File type not allowed"
-      select_icc : "Select ICC document title"
+      select_icc : "Select GANHRI document title"
   internal_document_admin:
     show:
       heading: "Internal Document Configuration"

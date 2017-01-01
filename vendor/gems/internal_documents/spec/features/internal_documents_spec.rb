@@ -165,7 +165,7 @@ feature "internal document management", :js => true do
       page.find('.template-download input.revision').set("0.1")
       expect{ click_edit_save_icon(page); wait_for_ajax }.not_to change{ @doc.reload.title }
     end
-    expect(page).to have_selector(".internal_document .title .edit.in #icc_title_error", :text => "ICC accreditation file title not allowed")
+    expect(page).to have_selector(".internal_document .title .edit.in #icc_title_error", :text => "GANHRI accreditation file title not allowed")
     click_edit_cancel_icon(page)
     expect(page.find('.collapse .internal_document .title .no_edit').text).to eq "first archive document"
     expect(page.find('.collapse .internal_document .revision .no_edit').text).to eq "2.9"

@@ -1,5 +1,5 @@
 # an AccreditationRequiredDoc is a document whose title is one of the special titles configured via admin
-# it is a special type of internal document, accessible through the NHRI -> ICC -> ICC Internal Documents menu
+# it is a special type of internal document, accessible through the NHRI -> GANHRI accreditation -> Internal Documents menu
 class AccreditationRequiredDoc < InternalDocument
   belongs_to :accreditation_document_group, :foreign_key => :document_group_id
 
