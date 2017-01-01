@@ -11,8 +11,18 @@ module AdvisoryCouncilIssueSpecHelper
     page.find('.add_article')
   end
 
+  def add_save
+    page.find('#save_add').click
+    wait_for_ajax
+  end
+
+  def add_cancel
+    page.find(".advisory_council_issue #cancel_add").click
+  end
+
   def edit_save
-    page.find('.fa-check')
+    page.find('#_edit_save').click
+    wait_for_ajax
   end
 
   def chars_remaining
@@ -45,12 +55,12 @@ module AdvisoryCouncilIssueSpecHelper
   end
 
   def cancel_article_add
-    page.find('.form #edit_cancel').click
+    page.find('#cancel_add').click
     sleep(0.2)
   end
 
   def edit_cancel
-    page.find(".editable_container .basic_info .actions .fa-remove")
+    page.find('#_edit_cancel').click
   end
 
   def click_delete_article

@@ -299,7 +299,7 @@ $ ->
       $('.form input, .form select')
     save : ->
       if @validate()
-        url = @parent.get('create_outreach_event_url')
+        url = @parent.get('create_collection_item_url')
         $.ajax
           method : 'post'
           url : url

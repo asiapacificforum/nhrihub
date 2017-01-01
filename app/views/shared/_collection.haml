@@ -46,12 +46,8 @@
                 .note_icon.counter.show_notes{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
               .edit
             {{>attachments_icons}}
-            .col-md-1.icon{ 'data-toggle' => 'edit'}
-              .fade.edit
-                %i.fa.fa-remove{:id => "#{item}_editable{{id}}_edit_cancel"}
             .col-md-1.icon{'data-toggle' => 'edit'}
               .fade.edit
-                %i.fa.fa-check{:id => "#{item}_editable{{id}}_edit_save"}
               .fade.no_edit.in
                 %i.fa.fa-pencil-square-o{:id => "#{item}_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
             .col-md-1{'data-toggle'=>:edit}
@@ -115,6 +111,17 @@
                     .value {{ affected_people_count }}
             .fade.edit
               {{> collection_item_edit}}
+        .row{'data-toggle' => :edit}
+          .no_edit.in
+          .edit
+            .col-sm-3.col-sm-offset-3{:style => "text-align:center;"}
+              .btn.btn-danger.btn-sm#_edit_cancel
+                %i.fa.fa-remove.fa-lg{:style => "color:white"}
+                %span{:style => "color:white"}= t("defaults.cancel")
+            .col-sm-3{:style => "text-align:center;"}
+              .btn.btn-success.btn-sm#_edit_save{:style => "color:white;"}
+                %i.fa.fa-check.fa-lg{:style => "color:white"}
+                %span= t("defaults.save")
 
 %script#reported_by{:type => 'template/ractive'}
   // so the partial inclusion doesn't barf
@@ -126,11 +133,6 @@
         .col-md-1{:style => "padding-top:28px"}= t('.title')
         .col-md-8
           {{> edit_title }}
-        .col-md-2
-          .form-group
-            .nothing{:style => 'visibility:hidden'} nothing
-            %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
-            %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
       .row.fileupload
         .col-md-12
           .row.fileupload_progress
@@ -172,6 +174,15 @@
             .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
         .panel-content
           {{> collection_item_edit}}
+      .row
+        .col-sm-3.col-sm-offset-3{:style => "text-align:center;"}
+          .btn.btn-danger.btn-sm#cancel_add{"on-click" => "cancel()"}
+            %i.fa.fa-remove.fa-lg{:style => "color:white"}
+            %span{:style => "color:white"}= t("defaults.cancel")
+        .col-sm-3{:style => "text-align:center;"}
+          .btn.btn-success.btn-sm#save_add{:style => "color:white;", "on-click" => "save()"}
+            %i.fa.fa-check.fa-lg{:style => "color:white"}
+            %span= t("defaults.save")
 
 %script#collection_item_edit{:type => 'text/ractive'}
   .row
