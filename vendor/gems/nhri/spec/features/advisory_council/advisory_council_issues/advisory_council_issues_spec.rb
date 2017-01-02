@@ -3,10 +3,12 @@ require 'login_helpers'
 require 'navigation_helpers'
 require_relative '../../../helpers/advisory_council/advisory_council_issues_spec_helper'
 require_relative '../../../helpers/advisory_council/advisory_council_issues_setup_helper'
+require 'media_issues_common_helpers'
 
 
 feature "show advisory council issue archive", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaIssuesCommonHelpers
   include AdvisoryCouncilIssueSpecHelper
   include AdvisoryCouncilIssueSetupHelper
 
@@ -27,6 +29,7 @@ end
 
 feature "create a new article", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaIssuesCommonHelpers
   include AdvisoryCouncilIssueSpecHelper
   include AdvisoryCouncilIssueSetupHelper
 
@@ -100,13 +103,14 @@ feature "create a new article", :js => true do
   end
 
   scenario "start creating and cancel" do
-    cancel_article_add
+    add_cancel
     expect(page).not_to have_selector('.form #advisory_council_issue_title')
   end
 end
 
 feature "attempt to add and save with errors", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaIssuesCommonHelpers
   include AdvisoryCouncilIssueSpecHelper
   include AdvisoryCouncilIssueSetupHelper
 
@@ -178,6 +182,7 @@ end
 
 feature "when there are existing articles", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaIssuesCommonHelpers
   include AdvisoryCouncilIssueSpecHelper
   include AdvisoryCouncilIssueSetupHelper
 
@@ -343,6 +348,7 @@ end
 
 feature "enforce single user add or edit action", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaIssuesCommonHelpers
   include AdvisoryCouncilIssueSpecHelper
   include AdvisoryCouncilIssueSetupHelper
 
@@ -379,6 +385,7 @@ end
 
 feature "view attachments", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include MediaIssuesCommonHelpers
   include AdvisoryCouncilIssueSpecHelper
   include AdvisoryCouncilIssueSetupHelper
 

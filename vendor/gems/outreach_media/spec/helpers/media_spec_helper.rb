@@ -3,107 +3,17 @@ require 'rspec/core/shared_context'
 module MediaSpecHelper
   extend RSpec::Core::SharedContext
 
-  def edit_article
-    page.all('.fa-pencil-square-o')
+  def single_item_selector
+    '#media_appearances .media_appearance'
   end
 
-  def add_article_button
-    page.find('.add_article')
-  end
-
-  def edit_save
-    page.find('.fa-check')
-  end
-
-  def chars_remaining
-    page.find('.chars_remaining').text
-  end
-
-  def areas
-    page.all("#media_appearances .media_appearance .expanded_info .description .area .name").map(&:text)
-  end
-
-  def subareas
-    page.all("#media_appearances .media_appearance .expanded_info .description .subareas .subarea").map(&:text)
+  def media_appearances
+    page.all(single_item_selector)
   end
 
   def expand_all_panels
     page.find('#media_appearances_controls #expand').click
     sleep(0.3)
-  end
-
-  def people_affected
-    page.find(".metric#affected_people_count .value").text
-  end
-
-  def positivity_rating
-    page.find(".metric#positivity_rating .value").text
-  end
-
-  def violation_severity
-    page.find(".metric#violation_severity .value").text
-  end
-
-  def cancel_article_add
-    page.find('.form #edit_cancel').click
-    sleep(0.2)
-  end
-
-  def edit_cancel
-    page.find(".editable_container .basic_info .actions .fa-remove")
-  end
-
-  def click_delete_article
-    page.find('.media_appearance .delete_icon_sm').click
-  end
-
-  def media_appearances
-    page.all('#media_appearances .media_appearance')
-  end
-
-  def click_note_icon
-    page.find('#media_appearances .media_appearance .basic_info .actions .show_notes').click
-    sleep(0.4)
-  end
-
-  def click_add_note
-    page.find('#add_note').click
-    sleep(0.4)
-  end
-
-  def save_note
-    page.find('#save_note').click
-  end
-
-  def upload_file_path(filename)
-    CapybaraRemote.upload_file_path(page,filename)
-  end
-
-  def upload_document
-    upload_file_path('first_upload_file.pdf')
-  end
-
-  def big_upload_document
-    upload_file_path('big_upload_file.pdf')
-  end
-
-  def upload_image
-    upload_file_path('first_upload_image_file.png')
-  end
-
-  def clear_file_attachment
-    page.find("#deselect_file").click
-  end
-
-  def saved_file
-  end
-
-  def click_the_download_icon
-    page.find('.media_appearance .actions .fa-cloud-download').click
-  end
-
-  def click_the_link_icon
-    page.find('.media_appearance .actions .fa-globe').click
   end
 
   def first_article_link
@@ -118,28 +28,4 @@ module MediaSpecHelper
     end
   end
 
-  def select_performance_indicators
-    sleep(0.1)
-    page.find('.performance_indicator_select>a')
-  end
-
-  def select_first_planned_result
-    sleep(0.1)
-    page.all(".dropdown-submenu.planned_result").first.hover
-  end
-
-  def select_first_outcome
-    sleep(0.1)
-    page.all(".dropdown-submenu.outcome").first.hover
-  end
-
-  def select_first_activity
-    sleep(0.1)
-    page.all(".dropdown-submenu.activity").first.hover
-  end
-
-  def select_first_performance_indicator
-    sleep(0.1)
-    page.all("li.performance_indicator").first.click
-  end
 end

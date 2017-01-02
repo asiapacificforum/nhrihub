@@ -3,117 +3,17 @@ require 'rspec/core/shared_context'
 module AdvisoryCouncilIssueSpecHelper
   extend RSpec::Core::SharedContext
 
-  def edit_article
-    page.all('.fa-pencil-square-o')
+  def single_item_selector
+    '#advisory_council_issues .advisory_council_issue'
   end
 
-  def add_article_button
-    page.find('.add_article')
-  end
-
-  def add_save
-    page.find('#save_add').click
-    wait_for_ajax
-  end
-
-  def add_cancel
-    page.find(".advisory_council_issue #cancel_add").click
-  end
-
-  def edit_save
-    page.find('#_edit_save').click
-    wait_for_ajax
-  end
-
-  def chars_remaining
-    page.find('.chars_remaining').text
-  end
-
-  def areas
-    page.all("#advisory_council_issues .advisory_council_issue .expanded_info .description .area .name").map(&:text)
-  end
-
-  def subareas
-    page.all("#advisory_council_issues .advisory_council_issue .expanded_info .description .subareas .subarea").map(&:text)
+  def advisory_council_issues
+    page.all(single_item_selector)
   end
 
   def expand_all_panels
     page.find('#advisory_council_issues_controls #expand').click
     sleep(0.3)
-  end
-
-  def people_affected
-    page.find(".metric#affected_people_count .value").text
-  end
-
-  def positivity_rating
-    page.find(".metric#positivity_rating .value").text
-  end
-
-  def violation_severity
-    page.find(".metric#violation_severity .value").text
-  end
-
-  def cancel_article_add
-    page.find('#cancel_add').click
-    sleep(0.2)
-  end
-
-  def edit_cancel
-    page.find('#_edit_cancel').click
-  end
-
-  def click_delete_article
-    page.find('.advisory_council_issue .delete_icon_sm').click
-  end
-
-  def advisory_council_issues
-    page.all('#advisory_council_issues .advisory_council_issue')
-  end
-
-  def click_note_icon
-    page.find('#advisory_council_issues .advisory_council_issue .basic_info .actions .show_notes').click
-    sleep(0.4)
-  end
-
-  def click_add_note
-    page.find('#add_note').click
-    sleep(0.4)
-  end
-
-  def save_note
-    page.find('#save_note').click
-  end
-
-  def upload_file_path(filename)
-    CapybaraRemote.upload_file_path(page,filename)
-  end
-
-  def upload_document
-    upload_file_path('first_upload_file.pdf')
-  end
-
-  def big_upload_document
-    upload_file_path('big_upload_file.pdf')
-  end
-
-  def upload_image
-    upload_file_path('first_upload_image_file.png')
-  end
-
-  def clear_file_attachment
-    page.find("#deselect_file").click
-  end
-
-  def saved_file
-  end
-
-  def click_the_download_icon
-    page.find('.advisory_council_issue .actions .fa-cloud-download').click
-  end
-
-  def click_the_link_icon
-    page.find('.advisory_council_issue .actions .fa-globe').click
   end
 
   def first_article_link
@@ -128,18 +28,4 @@ module AdvisoryCouncilIssueSpecHelper
     end
   end
 
-  def select_first_planned_result
-    sleep(0.1)
-    page.all(".dropdown-submenu.planned_result").first.hover
-  end
-
-  def select_first_outcome
-    sleep(0.1)
-    page.all(".dropdown-submenu.outcome").first.hover
-  end
-
-  def select_first_activity
-    sleep(0.1)
-    page.all(".dropdown-submenu.activity").first.hover
-  end
 end

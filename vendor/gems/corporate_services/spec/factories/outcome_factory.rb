@@ -1,7 +1,6 @@
 FactoryGirl.define do
   factory :outcome do
     description { Faker::Lorem.words(6).join(" ") }
-    #association :planned_result
 
     trait :populated do
       after(:create) do |o|
