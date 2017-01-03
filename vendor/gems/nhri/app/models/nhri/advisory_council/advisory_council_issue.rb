@@ -81,9 +81,4 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
     nhri_advisory_council_advisory_council_issue_reminder_path('en',id,remindable_id)
   end
 
-  #def article_link=(value)
-    #value = nil if "null" == value
-    #write_attribute(:article_link, value)
-  #end
-
 end
