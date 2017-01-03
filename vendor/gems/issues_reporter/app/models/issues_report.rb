@@ -11,7 +11,7 @@ class IssuesReport < WordReport
 
   def generate_word_doc
     tail_template = File.read(Root.join(TEMPLATE_PATH, "_tail.xml"))
-    issue_template = File.read(Root.join(TEMPLATE_PATH, "_issue_template.xml"))
+    issue_template = File.read(Root.join(TEMPLATE_PATH, "_list_item_template.xml"))
     issues_items = interpolate_list(issues, issue_template)
     @word_doc = head + issues_items + tail_template
     generate_header

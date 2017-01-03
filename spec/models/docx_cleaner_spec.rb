@@ -1,4 +1,5 @@
-require_relative '../../app/domain_models/docx_cleaner.rb'
+require_relative '../../app/domain_models/report_utilities/docx_cleaner.rb'
+
 describe "consolidate double opening braces" do
   it "should eliminate all xml between double open braces" do
     xml = '<w:t>{</w:t></w:r><w:proofErr w:type="gramStart"/><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr><w:t>{</w:t>'
