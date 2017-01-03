@@ -344,11 +344,6 @@ $ ->
     fetch_link : ->
       redirectWindow = window.open(@get('article_link'), '_blank')
       redirectWindow.location
-    show_metrics : (ev, id)->
-      if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && ev.target.checked
-        $('.hr_metrics').show(300)
-      else if (Collection.Subarea.find(id).extended_name == "Human Rights Violation") && !ev.target.checked
-        $('.hr_metrics').hide(300)
     add_file : (file)->
       @set
         file : file

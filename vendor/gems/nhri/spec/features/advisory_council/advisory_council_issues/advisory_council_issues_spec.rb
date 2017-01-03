@@ -194,6 +194,18 @@ feature "when there are existing articles", :js => true do
       visit nhri_advisory_council_issues_path(:en)
     end
 
+    # b/c there was a bug!
+    scenario "start creating and cancel" do
+      add_article_button.click
+      check("Human Rights")
+      check("advisory_council_issue_subarea_ids_1") # violation
+      add_cancel
+      expect(page).not_to have_selector('.form #advisory_council_issue_title')
+      edit_article[0].click
+      expect(page).not_to have_selector('.hr_metrics#violation_severity')
+      expect(page).not_to have_selector('.hr_metrics#people_affected')
+    end
+
     scenario "delete an article" do
       saved_file_path = File.join('tmp','uploads','store',Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.file.id)
       expect(File.exists?(saved_file_path)).to eq true
