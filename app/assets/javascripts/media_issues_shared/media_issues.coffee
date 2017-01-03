@@ -231,22 +231,14 @@ $ ->
     _matches_to : ->
       $.datepicker.parseDate("yy, M d",@get('date')) <= new Date(@get('filter_criteria.to'))
     _matches_area_subarea : ->
-      return (@_matches_area() || @_matches_subarea()) if @get('filter_criteria.rule') == 'any'
-      return (@_matches_area() && @_matches_subarea()) if @get('filter_criteria.rule') == 'all'
+      return (@_matches_area() || @_matches_subarea())
     _matches_area : ->
-      if @get('filter_criteria.rule') == 'any'
-        return true if _.isEmpty(@get('area_ids'))
-        matches = _.intersection(@get('area_ids'), @get('filter_criteria.areas'))
-        matches.length > 0
-      else
-        _.isEqual(@get('area_ids').slice().sort(), @get('filter_criteria.areas').slice().sort())
+      return true if _.isEmpty(@get('area_ids'))
+      matches = _.intersection(@get('area_ids'), @get('filter_criteria.areas'))
+      matches.length > 0
     _matches_subarea : ->
-      if @get('filter_criteria.rule') == 'any'
-        matches = _.intersection(@get('subarea_ids'), @get('filter_criteria.subareas'))
-        matches.length > 0
-      else
-        return true if _.isEmpty(@get('filter_criteria.subareas'))
-        _.isEqual(@get('subarea_ids').slice().sort(), @get('filter_criteria.subareas').slice().sort())
+      matches = _.intersection(@get('subarea_ids'), @get('filter_criteria.subareas'))
+      matches.length > 0
     _matches_people_affected : ->
       if @get('hr_violation')
         value = parseInt(@get('affected_people_count'))
@@ -393,7 +385,6 @@ $ ->
       vs_max : null
       pa_min : 0
       pa_max : null
-      rule   : 'any'
     permitted_filetypes : permitted_filetypes
     maximum_filesize : maximum_filesize
 

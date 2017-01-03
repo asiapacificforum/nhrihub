@@ -67,14 +67,11 @@ en:
       date_to: "Before date:"
       enter_complainant: "All or part of name"
       enter_village: "All or part of village"
-      all: "All"
-      any: "Any"
       clear: "reset"
 
     index:
       heading: "Complaints"
       add_complaint: "Add complaint"
-      ms_word: "MSWord Document"
       face_to_face : "face to face"
       phone: "phone"
       email: "email"

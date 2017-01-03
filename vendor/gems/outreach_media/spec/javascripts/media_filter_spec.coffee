@@ -183,13 +183,13 @@ describe 'media filter', ->
     expect(filter_criteria.title()).to.equal 'F'
 
   it 'filters media appearances by earliest date', ->
-    @page.set_from_date('19/08/2014')
+    @page.set_from_date('2014, Aug 19')
     expect(filter_criteria.from()).to.equal (new Date('08/19/2014')).getTime()
     expect(@page.text_fields_length()).to.equal 1
     expect(@page.text_fields()).to.include "Fantasy land"
 
   it 'filters media appearances by latest date', ->
-    @page.set_to_date('19/08/2014')
+    @page.set_to_date('2014, Aug 19')
     expect(filter_criteria.to()).to.equal (new Date('08/19/2014')).getTime()
     expect(@page.text_fields_length()).to.equal 7
     expect(@page.text_fields()).to.not.include "Fantasy land"
@@ -360,8 +360,8 @@ describe 'media filter', ->
     # pending
 
   it 'initializes the filter parameters with the lowest and highest actual values', ->
-    expect(@page.$date_from().val()).to.equal '01/01/2014'
-    expect(@page.$date_to().val()).to.equal '01/01/2015'
+    expect(@page.$date_from().val()).to.equal '2014, Jan 1'
+    expect(@page.$date_to().val()).to.equal '2015, Jan 1'
     expect(@page.violation_coefficient('min').val()).to.equal '0'
     expect(@page.violation_coefficient('max').val()).to.equal '10'
     expect(@page.positivity_rating('min').val()).to.equal '1'

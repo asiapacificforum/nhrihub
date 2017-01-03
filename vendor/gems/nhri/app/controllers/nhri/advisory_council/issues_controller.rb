@@ -4,6 +4,12 @@ class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
     @areas = Area.includes(:subareas).all
     @subareas = Subarea.extended
     @advisory_council_issue = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.new
+    respond_to do |format|
+      format.html
+      format.docx do
+        send_file IssuesReport.new(@advisory_council_issues).docfile
+      end
+    end
   end
 
   def create

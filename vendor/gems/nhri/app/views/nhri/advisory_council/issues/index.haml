@@ -2,11 +2,16 @@
 = stylesheet_link_tag 'expandable_list'
 = stylesheet_link_tag 'form_errors'
 = stylesheet_link_tag 'media_issues'
+= stylesheet_link_tag 'bootstrap-select'
+
 %h1= t('.heading')
 
-.btn.btn-success.btn-sm.add_article{:style => "margin-bottom:12px; color:white;", :onclick => "collection.new_article()"}
-  %i.fa.fa-plus.fa-lg{:style => "color:white"}
-  %span= t('.add_issue')
+%div
+  .btn.btn-success.btn-sm.add_article{:style => "margin-bottom:12px; color:white;", :onclick => "collection.new_article()"}
+    %i.fa.fa-plus.fa-lg{:style => "color:white"}
+    %span= t('.add_issue')
+  .btn.btn-primary.btn-sm.ms_word{:style => "margin-bottom:12px; color:white; float:right;", :onclick => "window.location='#{nhri_advisory_council_issues_path('en','docx')}'"}
+    %span= t('ms_word')
 
 #collection_container
 

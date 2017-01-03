@@ -214,9 +214,5 @@ Teaspoon.configure do |config|
     suite.helper = Rails.root.join("vendor","gems","corporate_services","spec","javascripts","spec_helper.js")
     suite.matcher = Rails.root.join("vendor/gems/corporate_services/spec/javascripts/strategic_plan_spec.coffee")
   end
-  config.suite :advisory_council_issues do |suite|
-    suite.helper = Rails.root.join("vendor","gems","corporate_services","spec","javascripts","advisory_council_issues","spec_helper.js")
-    suite.matcher = Rails.root.join("vendor/gems/corporate_services/spec/javascripts/advisory_council_issues/issues_spec.coffee")
-  end
 
 end

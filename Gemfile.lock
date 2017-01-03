@@ -100,6 +100,11 @@ PATH
     internal_documents (0.0.1)
 
 PATH
+  remote: vendor/gems/issues_reporter
+  specs:
+    issues_reporter (0.0.1)
+
+PATH
   remote: vendor/gems/nhri
   specs:
     nhri (0.0.1)
@@ -451,6 +456,7 @@ DEPENDENCIES
   font-awesome-sass
   haml-rails
   internal_documents!
+  issues_reporter!
   jquery-rails
   js-routes
   launchy

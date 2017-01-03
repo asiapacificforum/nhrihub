@@ -86,10 +86,7 @@
         .panel.panel-default
           .panel-heading
             .row
-              .col-md-2.description{:style => "width:50%"}
-                =t('.areas')
-                \/
-                =t('.subareas')
+              .col-md-2.description{:style => "width:50%"}=t('.areas_subareas')
               .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
           .panel-content{'data-toggle'=>'edit'}
             .fade.no_edit.in
@@ -97,16 +94,16 @@
                 .col-md-2.description{:style => "width:50%"}
                   {{> item_areas}}
                 .col-md-2.metrics{:style=>"width:40%; display:flex; flex-direction:column;"}
-                  .metric{:id =>:positivity_rating}
+                  .metric#positivity_rating{:style => '{{#if issue_context}}display:none{{/if}}'}
                     .name= t('.positivity')
                     .value {{ positivity_rating_rank_text }}
-                  .metric{:id =>"violation_severity", :style => '{{#unless hr_violation}}display:none{{/unless}}'}
+                  .metric#violation_severity{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
                     .name= t('.violation_severity')
                     .value {{ violation_severity_rank_text }}
-                  .metric{:id =>"violation_coefficient", :style => '{{#unless hr_violation}}display:none{{/unless}}'}
+                  .metric#violation_coefficient{ :style => '{{#unless hr_violation}}display:none{{/unless}}'}
                     .name= t('.coefficient')
                     .value {{ violation_coefficient }}
-                  .metric{:id =>"affected_people_count", :style => '{{#unless hr_violation}}display:none{{/unless}}'}
+                  .metric#affected_people_count{:style => '{{#unless hr_violation}}display:none{{/unless}}'}
                     .name= t('.people_affected')
                     .value {{ affected_people_count }}
             .fade.edit
@@ -167,10 +164,7 @@
       .panel.panel-default.expanded_info
         .panel-heading
           .row
-            .col-md-2.description{:style => "width:50%"}
-              =t('.areas')
-              \/
-              =t('.subareas')
+            .col-md-2.description{:style => "width:50%"}=t('.areas_subareas')
             .col-md-2.metrics{:style=>"width:25%;"}= t('.metrics')
         .panel-content
           {{> collection_item_edit}}

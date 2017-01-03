@@ -187,8 +187,6 @@ Alternatively you may exclude this gem from Gemfile (and remove it from config/r
 
 ## Customizing the theme
 
-## Log rotation
-
 ## Document storage
 
 ## Modules
@@ -201,7 +199,6 @@ Modules should configure all the routes required for navigation within the modul
 A newly-generated module is connected into the application by
 1. Add it to the Gemfile and install with the 'bundle' command
 2. Add links to the top-level navigation menu (config/navigation.rb)
-3. If it includes javascripts in its app/assets/javascript/modname/ directory, then //= require modname must be added to the app/javascripts/application.js of the main app.
 Included modules may be excluded simply by deleting them from the vendor/gems library and removing the links from
 the top-level navigation menu and removing it from the Gemfile.
 Database migrations pertaining to the module's resources should be added in the module's own db/migrate directory. They

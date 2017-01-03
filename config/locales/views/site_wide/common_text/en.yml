@@ -12,3 +12,4 @@ en:
     documents: "documents"
     delete: "delete"
   required : "indicates required field"
+  ms_word: "MSWord Document"

@@ -7,10 +7,7 @@
       .col-md-2= t('.title')
       .col-md-2= t('.from')
       .col-md-2= t('.to')
-      .col-md-2
-        =t('.area')
-        \/
-        =t('.subarea')
+      .col-md-2=t('.area_subarea')
     .row{:style => "margin-bottom:12px;"}
       .col-md-2
         %input.form-control#title{:type=>:text, :placeholder => t('.enter_text'), :value => "{{filter_criteria.title}}"}
@@ -24,13 +21,6 @@
             %span.filter-option.pull-left= t('.select')
             %span.caret
           %ul.dropdown-menu
-            %li.filter_rule
-              %a{'on-click'=>"filter_rule('all')", :class => "{{#if filter_criteria.rule == 'all'}}selected{{/if}}"}
-                %span=t('.all')
-                %span.fa.fa-check
-              %a{'on-click'=>"filter_rule('any')", :class => "{{#if filter_criteria.rule == 'any'}}selected{{/if}}"}
-                %span=t('.any')
-                %span.fa.fa-check
             {{#areas}}
             <area id='{{id}}' name='{{name}}'/>
             {{/areas}}
