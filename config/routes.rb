@@ -63,11 +63,6 @@ Rails.application.routes.draw do
   # this route is specified as it's used in authengine as the place
   # where logged-in users first land
     get 'home', :to => 'home#index'
-    namespace :communication_document do
-      resources :filetypes, :param => :ext, :only => [:create, :destroy]
-      resource :filesize, :only => :update
-    end
-    resources :communication_documents, :only => [:destroy, :show]
     resources :csp_reports, :only => [:index, :create]
     get 'csp_reports/clear_all', :to => 'csp_reports#clear_all', :via => :get
   end

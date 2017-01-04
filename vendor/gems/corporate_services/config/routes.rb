@@ -1,9 +1,8 @@
 Rails.application.routes.draw do
   scope ":locale", locale: /en|fr/ do
     namespace :corporate_services do
-      namespace :internal_documents do # note this must be before the internal documents resource
-        resources :filetypes, :param => :ext, :only => [:create, :destroy]
-        resource :filesize, :only => :update
+      namespace :internal_documents do
+        file_attachment_concern
       end
       namespace :strategic_plans do
         resource :start_date, :only => :update
@@ -25,8 +24,7 @@ Rails.application.routes.draw do
         resources :performance_indicators, :controller => "activities/performance_indicators"
       end
       resources :performance_indicators do
-        resources :reminders, :controller => "performance_indicators/reminders"
-        resources :notes, :controller => "performance_indicators/notes"
+        notes_reminder_concern('performance_indicators')
       end
       get 'admin', :to => "admin#index"
     end

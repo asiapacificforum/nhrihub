@@ -1,18 +1,18 @@
 Rails.application.routes.draw do
   scope ':locale' do
     namespace :nhri do
+      [:icc, :file_monitor].each do |namespace|
+        namespace namespace do file_attachment_concern end
+      end
       namespace :icc do # note this must be before the icc resource
         resources :accreditation_required_document_groups, :param => :title, :only => [:create, :destroy]
-        resource  :filesize, :only => :update
-        resources :filetypes, :param => :ext, :only => [:create, :destroy]
       end
       namespace :protection_promotion do
         resources :internal_documents
       end
       resources :indicators, :controller => 'heading/indicators'
       resources :indicators do
-        resources :reminders, :controller => 'indicator/reminders'
-        resources :notes, :controller => 'indicator/notes'
+        notes_reminder_concern('indicator')
         resources :monitors, :controller => 'indicator/monitors'
         resources :file_monitors, :controller => 'indicator/file_monitors'
       end
@@ -20,36 +20,21 @@ Rails.application.routes.draw do
         resources :indicators, :controller => 'heading/indicators'
         resources :human_rights_attributes, :controller => 'heading/human_rights_attributes'
       end
-      namespace :file_monitor do
-        resource  :filesize, :only => :update
-        resources :filetypes, :param => :ext, :only => [:create, :destroy]
-      end
       namespace :advisory_council do
         resources :terms_of_references
         resources :members
         resources :minutes
         resources :issues
-        namespace :terms_of_reference_version do
-          resource  :filesize, :only => :update
-          resources :filetypes, :param => :ext, :only => [:create, :destroy]
-        end
-        namespace :advisory_council_minutes do
-          resource  :filesize, :only => :update
-          resources :filetypes, :param => :ext, :only => [:create, :destroy]
-        end
-        namespace :advisory_council_issue do
-          resource  :filesize, :only => :update
-          resources :filetypes, :param => :ext, :only => [:create, :destroy]
-        end
-        resources :advisory_council_issues do
-          resources :reminders, :controller => 'advisory_council_issue/reminders'
-          resources :notes, :controller => 'advisory_council_issue/notes'
+        [:terms_of_reference_version, :advisory_council_minutes, :advisory_council_issue, :advisory_council_issues].each do |namespace|
+          namespace namespace do
+            file_attachment_concern
+          end
         end
       end
       resources :hr_protection
       resources :icc
       resources :icc_reference_documents do
-        resources :reminders, :controller => "icc_reference_documents/reminders"
+        notes_reminder_concern('icc_reference_documents')
       end
       resources :accreditation_required_docs
       get 'admin', :to => "admin#index"
