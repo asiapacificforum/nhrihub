@@ -25,7 +25,10 @@ Rails.application.routes.draw do
         resources :members
         resources :minutes
         resources :issues
-        [:terms_of_reference_version, :advisory_council_minutes, :advisory_council_issue, :advisory_council_issues].each do |namespace|
+        resources :advisory_council_issues do
+          notes_reminder_concern('advisory_council_issue')
+        end
+        [:terms_of_reference_version, :advisory_council_minutes, :advisory_council_issue].each do |namespace|
           namespace namespace do
             file_attachment_concern
           end
