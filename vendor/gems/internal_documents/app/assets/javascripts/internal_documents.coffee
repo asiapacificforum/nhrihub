@@ -211,10 +211,31 @@ $ ->
       @validator.validate()
   , ConfirmDeleteModal
 
+  class InclusionMatcher
+    constructor : (item)->
+      if typeof item != 'object'
+        throw new Error "No ractive object has been provided to InclusionMatcher"
+      @item = item
+    inclusion_criteria : ->
+      @item.get('inclusion_criteria')
+    include : ->
+      attributes = _(@inclusion_criteria()).keys()
+      _(attributes).any (attribute)=> @filterMatchAttribute(attribute)
+    filterMatchAttribute : (attribute)->
+      @inclusion_criteria()[attribute]()
+
   Doc = Ractive.extend
     template: '#document_group_template'
     oninit : ->
       @set('archive_upload_files',[])
+      @set 'validation_criteria',
+        title : =>
+          other_titles = _(@parent.docs_without(@)).map (doc)->doc.get('title')
+          _(other_titles).all (title)=> title != @get('title')
+      @validator = new Validator(@)
+      return
+    onconfig : ->
+      @inclusionMatcher = new InclusionMatcher(@)
     computed :
       url : -> Routes.internal_document_path(current_locale,@get('id'))
       file : -> true
@@ -223,6 +244,21 @@ $ ->
       title_edit_permitted : -> true
       delete_confirmation_message : ->
         "#{delete_confirmation_message} \"#{@get('title')}\"?"
+      include : -> @inclusionMatcher.include()
+      inclusion_criteria : ->
+        #no_filter : =>
+          #a =  !_.isNull(@get('filter_criteria.title')) && !_.isEmpty(@get('filter_criteria.title'))
+          #b = (@get('filter_criteria.filetypes').length > 0) and (@get('filter_criteria.filetypes').length < 5)
+          #!a # && !b
+        match_title : =>
+          a =  !_.isNull(@get('filter_criteria.title')) &&! _.isEmpty(@get('filter_criteria.title'))
+          re = new RegExp(@get('filter_criteria.title').trim(),'i')
+          c = re.test @get('title')
+          a && c
+        match_filetype : =>
+          b = (@get('filter_criteria.filetypes').length > 0) #and (@get('filter_criteria.filetypes').length < 5)
+          d = _(@get('filter_criteria.filetypes')).any (filetype)=> filetype == @get('filetype')
+          b and d
     components :
       archivedoc : ArchiveDoc
     download_file : ->
@@ -249,7 +285,36 @@ $ ->
         @parent.remove(@)
       else
         @parent.replace(data)
+    validate : ->
+      @validator.validate()
   , ConfirmDeleteModal
+
+  FiletypeSelector = Ractive.extend
+    template : "#filetype_selector_template"
+    oninit : ->
+      @set('selected',true)
+    toggle : ->
+      @event.original.preventDefault()
+      @event.original.stopPropagation()
+      if @get("selected")
+        @unselect()
+      else
+        @select()
+    select : ->
+      @push('filter_criteria.filetypes', @get('name'))
+      @set("selected",true)
+    unselect : ->
+      i = _(@get('filter_criteria.filetypes')).indexOf(@get('name'))
+      @splice('filter_criteria.filetypes',i,1)
+      @set("selected",false)
+
+  FilterControls = Ractive.extend
+    template : '#filter_controls_template'
+    components :
+      filetypeSelector: FiletypeSelector
+    clear_filter : ->
+      @set('filter_criteria', {title : "", filetypes : _(window.filetypes).map (ft)->ft.name})
+      _(@findAllComponents('filetypeSelector')).each (selector)=> selector.unselect()
 
   Docs = Ractive.extend
     template: '#document_groups_template'
@@ -271,15 +336,18 @@ $ ->
     el: '#container'
     template : '#uploader_template'
     data:
+      filetypes : window.filetypes
       required_files_titles : window.required_files_titles
       files : files
       upload_documents : []
       _ : _ # use underscore for sorting
       context : window.context
       type : window.type
+      filter_criteria : {title : "", filetypes : _(window.filetypes).map (ft)->ft.name}
     components :
       docs : Docs
       uploadDocuments : UploadDocuments
+      filterControls : FilterControls
     computed :
       stripped_titles : ->
         _(@findAllComponents('doc')).map (doc)->doc.get('stripped_title')

@@ -27,11 +27,7 @@ div[id$='_complaint_bases'] {
   width : 10%;
 }
 
-#complaints_controls .filter_rule {
-  display : flex;
-}
-
-// othwise pointer is the default
+// otherwise pointer is the default
 .inactive-icon {
   cursor : default;
 }

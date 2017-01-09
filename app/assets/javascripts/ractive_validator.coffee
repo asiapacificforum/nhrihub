@@ -44,7 +44,6 @@ class @Validator
       #   ['lessThan', 44, {if : true}]
       #   ['match', ['one','two']]
       #   -> passed in function
-      #[criterion,param] = if _.isArray(params) then params else [params]
       [criterion, param, condition] = if _.isArray(params) then params else [params]
       if _.isUndefined(condition) && _.isObject(param) && !_.isArray(param)
         condition = param

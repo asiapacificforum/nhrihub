@@ -10,5 +10,6 @@
   var context = "internal_document"
   var type = "InternalDocument"
   var delete_confirmation_message = "#{t('.delete_confirmation_message')}"
+  var filetypes = #{ InternalDocument::Filetypes.to_json }
 
 = javascript_include_tag "internal_documents"

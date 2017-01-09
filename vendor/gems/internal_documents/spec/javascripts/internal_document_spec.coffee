@@ -108,7 +108,7 @@ describe 'Internal document', ->
     expect(docs[0].validate()).to.equal false
     expect(docs[0].get('title_error')).to.equal true
 
-  it "adds an error when non-icc archive docis edited to icc title", ->
+  it "adds an error when non-icc archive doc is edited to icc title", ->
     docs = _(internal_document_uploader.findAllComponents('doc')).select (doc)->!doc.get('title').match(/Statement of Compliance/)
     archive_doc = docs[0].findAllComponents('archivedoc')[0]
     expect(archive_doc.get('is_icc_doc')).to.equal false
@@ -119,3 +119,95 @@ describe 'Internal document', ->
     expect(archive_doc.get('is_icc_doc')).to.equal true
     expect(archive_doc.validate()).to.equal false
     expect(archive_doc.get('icc_title_error')).to.equal true
+
+describe 'Internal document filter', ->
+  before (done)->
+    window.files = []
+    window.required_files_titles = MagicLamp.loadJSON('internal_document_data').required_files_titles
+    window.maximum_filesize = MagicLamp.loadJSON('internal_document_maximum_filesize')
+    window.permitted_filetypes = ['pdf']
+    window.files_list_error = MagicLamp.loadRaw('no_files_error_message')
+    window.accreditation_required_document = MagicLamp.loadRaw('accreditation_required_document')
+    MagicLamp.load("internal_document_page") # that's the _index partial being loaded
+    $.getScript("/assets/internal_documents.js").
+      done( ->
+        log "(Internal documents page) javascript was loaded"
+        done()).
+      fail( (jqxhr, settings, exception) ->
+        log "Triggered ajaxError handler"
+        log settings
+        log exception)
+
+  describe "filter by title", ->
+    beforeEach ->
+      internal_document_uploader.set(files : [])
+      internal_document_uploader.set('files', [{ inclusion_criteria : {}, title : "bish", filetype : "qux"},
+                                               { inclusion_criteria : {}, title : "bash", filetype : "qux"},
+                                               { inclusion_criteria : {}, title : "bosh", filetype : "qux"} ])
+
+    it 'loads test fixtures and data', ->
+      expect($("h1",'.magic-lamp').text()).to.equal "Internal Documents"
+      expect(typeof(simulant)).to.not.equal("undefined")
+
+    it 'matches all files when filter_criteria.title is blank', ->
+      internal_document_uploader.set({'filter_criteria.title': "", "filter_criteria.filetypes":["image","pdf","msword", "excel", "ppt"]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal true
+
+    it 'matches all files when filter_criteria.title is null', ->
+      internal_document_uploader.set({'filter_criteria.title': null, "filter_criteria.filetypes":["image","pdf","msword", "excel", "ppt"]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal true
+
+    it 'matches all files when filter_criteria.title is only whitespace', ->
+      internal_document_uploader.set({'filter_criteria.title': "  ", "filter_criteria.filetypes":["image","pdf","msword", "excel", "ppt"]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal true
+
+    it 'includes matching files when filter_criteria.title is a string', ->
+      internal_document_uploader.set({'filter_criteria.title': "ash", "filter_criteria.filetypes":["image","pdf","msword", "excel", "ppt"]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal false
+      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal false
+
+  describe "filter by document type", ->
+    beforeEach ->
+      internal_document_uploader.set(files : [])
+      internal_document_uploader.set('filter_criteria' : {})
+      internal_document_uploader.set('files', [{ inclusion_criteria : {}, title : "bish", filetype : "image"},
+                                               { inclusion_criteria : {}, title : "bash", filetype : "msword"},
+                                               { inclusion_criteria : {}, title : "bosh", filetype : "pdf"} ])
+
+    it 'includes docs with images when filter_criteria.filetypes selects image', ->
+      internal_document_uploader.set({'filter_criteria.title': "", "filter_criteria.filetypes":["image"]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true # 0 1 x 1
+      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal false # 0 1 x 0
+      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal false # 0 1 x 0
+
+    it 'includes word docs when filter_criteria.filetypes selects msword', ->
+      internal_document_uploader.set({'filter_criteria.title': "", "filter_criteria.filetypes":["msword"]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal false
+      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal false
+
+    it 'includes pdf docs when filter_criteria.filetypes includes pdf', ->
+      internal_document_uploader.set({'filter_criteria.title': "", "filter_criteria.filetypes":["image","pdf"]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal false
+      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal true
+
+  describe "filter by multiple criteria", ->
+    beforeEach ->
+      internal_document_uploader.set(files : [])
+      internal_document_uploader.set('files', [{ inclusion_criteria : {}, title : "bish", filetype : "image"},
+                                               { inclusion_criteria : {}, title : "bash", filetype : "msword"},
+                                               { inclusion_criteria : {}, title : "bosh", filetype : "pdf"} ])
+
+    it 'includes docs with images and docs matching title criterion', ->
+      internal_document_uploader.set({'filter_criteria.title': "ash", "filter_criteria.filetypes":["image"]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true # 1 1 0 1
+      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true # 1 1 1 0
+      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal false # 1 1 0 0

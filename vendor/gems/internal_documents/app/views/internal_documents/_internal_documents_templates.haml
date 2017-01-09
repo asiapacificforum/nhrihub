@@ -1,7 +1,37 @@
+%script#filetype_selector_template{:type => 'template/ractive'}
+  %li{:class =>'status_filter {{#if selected}}selected{{/if}}'}
+    %a.opt{'on-click'=>'toggle()'}
+      %span {{name}}
+      %span.fa.fa-check
+
+%script#filter_controls_template{:type => 'template/ractive'}
+  .row
+    .col-lg-9.filter_control_box#internal_documents_controls{:style => "margin-left:15px; width:847.5px; margin-top:6px;"}
+      .row
+        .col-md-12
+          %h4= t('.search')
+      .row.labels
+        .col-md-4= t('.title')
+        .col-md-4= t('.type')
+      .row{:style => "margin-bottom:12px;"}
+        .col-md-4= text_field_tag :title, "{{filter_criteria.title}}", :placeholder => t('.enter_title'), :class => 'form-control'
+        .col-md-4
+          .btn-group.select
+            %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+              %span.filter-option.pull-left= t('.select_type')
+              %span.caret
+            %ul.dropdown-menu
+              {{#filetypes}}
+              <filetypeSelector filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
+              {{/filetypes}}
+        .col-md-1{:style => 'text-align:center'}
+          %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
+
 %script#uploader_template{:type => 'html/template'}
   .fileupload.buttonbar
     {{> fileuploadButtonbar }}
     <uploadDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' upload_documents='{{upload_documents}}' named_document_datalist='{{complaint_named_documents_titles}}' />
+    <filterControls filter_criteria='{{filter_criteria}}' />
     .row
       .col-lg-9
         / The table listing the files available for upload/download
@@ -20,7 +50,7 @@
           <docs/>
 
 %script#document_group_template{:type => 'html/template'}
-  .panel.panel-default.template-download
+  .panel.panel-default.template-download{:style => "display:{{#if include}}block{{else}}none{{/if}}"}
     #headingOne.panel-heading{:role => "tab"}
       %strong.error.text-danger {{= file.error }}
       {{> document_template }}
@@ -124,7 +154,7 @@
 
 %script#document_groups_template{:type => 'ractive/template'}
   {{#files}}
-  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' />
+  <doc file_extension='{{file_extension}}' filter_criteria='{{filter_criteria}}' id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' />
   {{/files}}
 
 %script#flash_error_template{:type => 'template/ractive'}

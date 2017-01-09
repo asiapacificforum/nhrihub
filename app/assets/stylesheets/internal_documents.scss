@@ -1,5 +1,7 @@
 @import "theme";
 @import "form_errors";
+@import "filter_controls";
+@import "bootstrap-select";
 
 table.document *:not(.include_popover) {
   z-index:15;

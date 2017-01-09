@@ -190,6 +190,7 @@ ComplaintDocuments = Ractive.extend
 
 FilterMatch =
   include : ->
+    console.log "call include()"
     # console.log JSON.stringify "matches_complainant" : @matches_complainant(), "matches_case_reference" : @matches_case_reference(), "matches_village" : @matches_village(), "matches_date" : @matches_date(), "matches_phone" : @matches_phone(), "matches_agencies" : @matches_agencies(), "matches_assignee" : @matches_assignee(), "matches_status" : @matches_status(), "matches_basis" : @matches_basis
     # console.log JSON.stringify "matches_good_governance_complaint_basis" : @matches_good_governance_complaint_basis(), "matches_human_rights_complaint_basis" : @matches_human_rights_complaint_basis(), "matches_special_investigations_unit_complaint_basis" : @matches_special_investigations_unit_complaint_basis(), "basis_rule" : @get('filter_criteria.basis_rule'), "matches_basis" : @matches_basis(), "basis_requirement_is_specified" : @basis_requirement_is_specified(), "good_governance_basis_requirement_is_specified" : @good_governance_basis_requirement_is_specified(), "human_rights_basis_requirement_is_specified" : @human_rights_basis_requirement_is_specified(), "special_investigations_unit_basis_requirement_is_specified" : @special_investigations_unit_basis_requirement_is_specified()
     # console.log JSON.stringify "matches_area" : @matches_area()
@@ -282,18 +283,11 @@ FilterMatch =
 
 Toggle =
   oninit : ->
-    @unselect()
+    @set('selected',false)
   toggle : ->
     @event.original.preventDefault()
     @event.original.stopPropagation()
-    if @get('selected')
-      @unselect()
-    else
-      @select()
-  select : ->
-    @set('selected',true)
-  unselect : ->
-    @set('selected',false)
+    @set('selected',!@get('selected'))
 
 StatusSelector = Ractive.extend
   template : '#status_selector_template'

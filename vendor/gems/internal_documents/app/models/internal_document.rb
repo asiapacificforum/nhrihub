@@ -5,6 +5,12 @@ class InternalDocument < ActiveRecord::Base
 
   ConfigPrefix = 'internal_documents'
 
+  Filetypes = [ {:name => "msword", :pattern => /^doc(x)?$/},
+                {:name => "pdf",    :pattern => /^pdf$/},
+                {:name => "excel",  :pattern => /^xls(x)?$/},
+                {:name => "ppt",    :pattern => /^ppt$/},
+                {:name => "image",  :pattern => /^(gif|jp(e)?g|tiff)$/} ]
+
   belongs_to :document_group, :counter_cache => :archive_doc_count
   delegate :created_at, :to => :document_group, :prefix => true
   belongs_to :user
@@ -73,6 +79,8 @@ class InternalDocument < ActiveRecord::Base
                        :formatted_modification_date,
                        :formatted_creation_date,
                        :formatted_filesize,
+                       :filetype,
+                       :file_extension,
                        :type,
                        :archive_files] )
   end
@@ -81,13 +89,10 @@ class InternalDocument < ActiveRecord::Base
     document_group && document_group.primary
   end
 
-  def document_group_primary?
-    document_group_primary == self
-  end
-
   def primary?
     document_group_primary == self
   end
+  alias_method :document_group_primary?, :primary?
 
   def archive_files
     if primary?
@@ -106,6 +111,17 @@ class InternalDocument < ActiveRecord::Base
 
   def has_archive_files?
     archive_files.count > 0
+  end
+
+  def file_extension
+    original_filename.split('.').last
+  end
+
+  def filetype
+    type = Filetypes.find do |type|
+      type[:pattern] =~ file_extension
+    end
+    type[:name]
   end
 
 end
