@@ -309,7 +309,6 @@ $ ->
   FiletypeSelector = Ractive.extend
     template : "#filetype_selector_template"
     oninit : ->
-      #@set('selected',false)
       @unselect()
     toggle : ->
       @event.original.preventDefault()
