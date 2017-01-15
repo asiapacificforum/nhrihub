@@ -174,6 +174,8 @@ $ ->
             return true if match_parent
       @remove_errors()
       @validator = new Validator(@)
+    onconfig : ->
+      @inclusionMatcher = new InclusionMatcher(@)
     computed :
       url : -> Routes.internal_document_path(current_locale,@get('id'))
       file : -> false
@@ -199,6 +201,10 @@ $ ->
           re.test @get('title')
       delete_confirmation_message : ->
         i18n.delete_confirmation_message
+      include : -> @inclusionMatcher.include()
+      inclusion_criteria : ->
+        title : "asText"
+        filetype : "matchAny"
     remove_errors : ->
       @set
         title_error: false
@@ -209,6 +215,8 @@ $ ->
       @get('document_group').replace(data)
     validate : ->
       @validator.validate()
+    include : ->
+      false
   , ConfirmDeleteModal
 
   class InclusionMatcher
@@ -222,7 +230,21 @@ $ ->
       attributes = _(@inclusion_criteria()).keys()
       _(attributes).any (attribute)=> @filterMatchAttribute(attribute)
     filterMatchAttribute : (attribute)->
-      @inclusion_criteria()[attribute]()
+      @filter_criterion = @item.get("filter_criteria.#{attribute}")
+      @filter_criteria = @item.get("filter_criteria.#{attribute}s")
+      @attribute_under_test = @item.get(attribute)
+      @inclusion_criterion = @inclusion_criteria()[attribute]
+      if _.isFunction @inclusion_criterion
+        @inclusion_criterion()
+      else if _.isString(@inclusion_criterion)
+        @[@inclusion_criterion]()
+    asText : ->
+      return false if _.isNull(@filter_criterion) || _.isEmpty(@filter_criterion) || _.isUndefined(@filter_criterion)
+      re = new RegExp(@filter_criterion.trim(),'i')
+      re.test @attribute_under_test
+    matchAny : ->
+      return false if @filter_criteria.length == 0
+      _(@filter_criteria).any (item)=> item == @attribute_under_test
 
   Doc = Ractive.extend
     template: '#document_group_template'
@@ -246,19 +268,14 @@ $ ->
         "#{delete_confirmation_message} \"#{@get('title')}\"?"
       include : -> @inclusionMatcher.include()
       inclusion_criteria : ->
-        #no_filter : =>
-          #a =  !_.isNull(@get('filter_criteria.title')) && !_.isEmpty(@get('filter_criteria.title'))
-          #b = (@get('filter_criteria.filetypes').length > 0) and (@get('filter_criteria.filetypes').length < 5)
-          #!a # && !b
-        match_title : =>
-          a =  !_.isNull(@get('filter_criteria.title')) &&! _.isEmpty(@get('filter_criteria.title'))
-          re = new RegExp(@get('filter_criteria.title').trim(),'i')
-          c = re.test @get('title')
-          a && c
-        match_filetype : =>
-          b = (@get('filter_criteria.filetypes').length > 0) #and (@get('filter_criteria.filetypes').length < 5)
-          d = _(@get('filter_criteria.filetypes')).any (filetype)=> filetype == @get('filetype')
-          b and d
+        title : "asText"
+        filetype : "matchAny"
+        noFilterActive : =>
+          active_title_filter = !_.isNull(@get('filter_criteria.title')) && !_.isEmpty(@get('filter_criteria.title'))
+          active_filetypes_filter = @get('filter_criteria.filetypes').length > 0
+          !active_title_filter && !active_filetypes_filter
+        archivedocs : =>
+          _(@findAllComponents('archivedoc')).any (doc)-> doc.get('include')
     components :
       archivedoc : ArchiveDoc
     download_file : ->
@@ -292,7 +309,8 @@ $ ->
   FiletypeSelector = Ractive.extend
     template : "#filetype_selector_template"
     oninit : ->
-      @set('selected',true)
+      #@set('selected',false)
+      @unselect()
     toggle : ->
       @event.original.preventDefault()
       @event.original.stopPropagation()

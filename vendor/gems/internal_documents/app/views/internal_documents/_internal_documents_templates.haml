@@ -61,7 +61,7 @@
         %p empty
         {{/}}
         {{#_(archive_files).sortBy(revision).reverse()}}
-        <archivedoc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' />
+        <archivedoc filter_criteria='{{filter_criteria}}' id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' />
         {{/}}
 
 %script#popover_template{:type => "template/ractive"}

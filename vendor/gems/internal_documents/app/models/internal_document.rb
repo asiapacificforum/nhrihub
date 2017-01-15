@@ -114,14 +114,14 @@ class InternalDocument < ActiveRecord::Base
   end
 
   def file_extension
-    original_filename.split('.').last
+    original_filename.split('.').last if persisted?
   end
 
   def filetype
     type = Filetypes.find do |type|
       type[:pattern] =~ file_extension
     end
-    type[:name]
+    type[:name] unless type.nil?
   end
 
 end

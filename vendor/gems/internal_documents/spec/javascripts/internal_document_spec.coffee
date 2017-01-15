@@ -141,37 +141,38 @@ describe 'Internal document filter', ->
   describe "filter by title", ->
     beforeEach ->
       internal_document_uploader.set(files : [])
-      internal_document_uploader.set('files', [{ inclusion_criteria : {}, title : "bish", filetype : "qux"},
-                                               { inclusion_criteria : {}, title : "bash", filetype : "qux"},
-                                               { inclusion_criteria : {}, title : "bosh", filetype : "qux"} ])
+      internal_document_uploader.set(filter_criteria : {title : null, filetypes : []})
+      internal_document_uploader.set('files', [{ inclusion_criteria : {}, title : "bish", filetype : "pdf"},
+                                               { inclusion_criteria : {}, title : "bash", filetype : "pdf"},
+                                               { inclusion_criteria : {}, title : "bosh", filetype : "pdf"} ])
 
     it 'loads test fixtures and data', ->
       expect($("h1",'.magic-lamp').text()).to.equal "Internal Documents"
       expect(typeof(simulant)).to.not.equal("undefined")
 
     it 'matches all files when filter_criteria.title is blank', ->
-      internal_document_uploader.set({'filter_criteria.title': "", "filter_criteria.filetypes":["image","pdf","msword", "excel", "ppt"]})
-      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true
-      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true
-      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal true
+      internal_document_uploader.set({'filter_criteria.title': "", "filter_criteria.filetypes":[]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[1].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].get('include')).to.equal true
 
     it 'matches all files when filter_criteria.title is null', ->
-      internal_document_uploader.set({'filter_criteria.title': null, "filter_criteria.filetypes":["image","pdf","msword", "excel", "ppt"]})
-      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true
-      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true
-      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal true
+      internal_document_uploader.set({'filter_criteria.title': null, "filter_criteria.filetypes":[]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[1].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].get('include')).to.equal true
 
     it 'matches all files when filter_criteria.title is only whitespace', ->
-      internal_document_uploader.set({'filter_criteria.title': "  ", "filter_criteria.filetypes":["image","pdf","msword", "excel", "ppt"]})
-      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true
-      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true
-      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal true
+      internal_document_uploader.set({'filter_criteria.title': "  ", "filter_criteria.filetypes":[]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[1].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].get('include')).to.equal true
 
     it 'includes matching files when filter_criteria.title is a string', ->
-      internal_document_uploader.set({'filter_criteria.title': "ash", "filter_criteria.filetypes":["image","pdf","msword", "excel", "ppt"]})
-      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal false
-      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true
-      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal false
+      internal_document_uploader.set({'filter_criteria.title': "ash", "filter_criteria.filetypes":[]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].get('include')).to.equal false
+      expect(internal_document_uploader.findAllComponents('doc')[1].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].get('include')).to.equal false
 
   describe "filter by document type", ->
     beforeEach ->
@@ -183,31 +184,46 @@ describe 'Internal document filter', ->
 
     it 'includes docs with images when filter_criteria.filetypes selects image', ->
       internal_document_uploader.set({'filter_criteria.title': "", "filter_criteria.filetypes":["image"]})
-      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true # 0 1 x 1
-      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal false # 0 1 x 0
-      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal false # 0 1 x 0
+      expect(internal_document_uploader.findAllComponents('doc')[0].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[1].get('include')).to.equal false
+      expect(internal_document_uploader.findAllComponents('doc')[2].get('include')).to.equal false
 
     it 'includes word docs when filter_criteria.filetypes selects msword', ->
       internal_document_uploader.set({'filter_criteria.title': "", "filter_criteria.filetypes":["msword"]})
-      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal false
-      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true
-      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal false
+      expect(internal_document_uploader.findAllComponents('doc')[0].get('include')).to.equal false
+      expect(internal_document_uploader.findAllComponents('doc')[1].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].get('include')).to.equal false
 
     it 'includes pdf docs when filter_criteria.filetypes includes pdf', ->
       internal_document_uploader.set({'filter_criteria.title': "", "filter_criteria.filetypes":["image","pdf"]})
-      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true
-      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal false
-      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[0].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[1].get('include')).to.equal false
+      expect(internal_document_uploader.findAllComponents('doc')[2].get('include')).to.equal true
 
   describe "filter by multiple criteria", ->
     beforeEach ->
       internal_document_uploader.set(files : [])
+      internal_document_uploader.set(filter_criteria : {})
       internal_document_uploader.set('files', [{ inclusion_criteria : {}, title : "bish", filetype : "image"},
                                                { inclusion_criteria : {}, title : "bash", filetype : "msword"},
                                                { inclusion_criteria : {}, title : "bosh", filetype : "pdf"} ])
 
     it 'includes docs with images and docs matching title criterion', ->
-      internal_document_uploader.set({'filter_criteria.title': "ash", "filter_criteria.filetypes":["image"]})
-      expect(internal_document_uploader.findAllComponents('doc')[0].include()).to.equal true # 1 1 0 1
-      expect(internal_document_uploader.findAllComponents('doc')[1].include()).to.equal true # 1 1 1 0
-      expect(internal_document_uploader.findAllComponents('doc')[2].include()).to.equal false # 1 1 0 0
+      internal_document_uploader.set({'filter_criteria.title': "ash", "filter_criteria.filetypes":["msword"]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].get('include')).to.equal false
+      expect(internal_document_uploader.findAllComponents('doc')[1].get('include')).to.equal true
+      expect(internal_document_uploader.findAllComponents('doc')[2].get('include')).to.equal false
+
+  describe "matches archive docs", ->
+    beforeEach ->
+      internal_document_uploader.set(files : [])
+      internal_document_uploader.set(filter_criteria : {})
+      internal_document_uploader.set('files', [
+                                                 inclusion_criteria : {},
+                                                 title : "bish",
+                                                 filetype : "image",
+                                                 archive_files : [{title : "foo", filetype : "image"}] ])
+
+    it 'includes docs with archive docs images and archive docs matching title criterion', ->
+      internal_document_uploader.set({'filter_criteria.title': "foo", "filter_criteria.filetypes":["msword"]})
+      expect(internal_document_uploader.findAllComponents('doc')[0].get('include')).to.equal true
