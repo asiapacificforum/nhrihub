@@ -160,6 +160,7 @@ feature "complaints index", :js => true do
       fill_in('phone', :with => "555-1212")
       fill_in('complaint_details', :with => "a long story about lots of stuff")
       fill_in('desired_outcome', :with => "Life gets better")
+      fill_in('chiefly_title', :with => "bossman")
       choose('special_investigations_unit')
       select_male_gender
       choose('complained_to_subject_agency_yes')
@@ -186,6 +187,7 @@ feature "complaints index", :js => true do
     expect(complaint.case_reference).to eq next_ref
     expect(complaint.lastName).to eq "Normal"
     expect(complaint.firstName).to eq "Norman"
+    expect(complaint.chiefly_title).to eq "bossman"
     expect(complaint.dob).to eq Date.new(1950,8,19)
     expect(complaint.gender).to eq 'M'
     expect(complaint.email).to eq "norm@acme.co.ws"
@@ -213,6 +215,7 @@ feature "complaints index", :js => true do
     expect(first_complaint.find('.current_assignee').text).to eq User.staff.first.first_last_name
     expect(first_complaint.find('.lastName').text).to eq "Normal"
     expect(first_complaint.find('.firstName').text).to eq "Norman"
+    expect(first_complaint.find('.chiefly_title').text).to eq "bossman"
     expect(first_complaint.find('#status_changes .status_change .status_humanized').text).to eq 'Under Evaluation'
     expand
     expect(first_complaint.find('.complainant_dob').text).to eq "1950, Aug 19"
@@ -364,6 +367,7 @@ feature "complaints index", :js => true do
     within first_complaint do
       fill_in('lastName', :with => "Normal")
       fill_in('firstName', :with => "Norman")
+      fill_in('chiefly_title', :with => "kahunga")
       fill_in('dob', :with => "1951/08/19")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
@@ -399,6 +403,7 @@ feature "complaints index", :js => true do
                        and change{ (`\ls tmp/uploads/store | wc -l`).to_i }.by(1).
                        and change { ActionMailer::Base.deliveries.count }.by(1)
 
+    expect( Complaint.first.chiefly_title ).to eq "kahunga"
     expect( Complaint.first.complained_to_subject_agency ).to eq false
     expect( Complaint.first.dob ).to eq Date.new(1951,8,19)
     expect( Complaint.first.details ).to eq "the boy stood on the burning deck"
@@ -495,6 +500,7 @@ feature "complaints index", :js => true do
     within first_complaint do
       fill_in('lastName', :with => "Normal")
       fill_in('firstName', :with => "Norman")
+      fill_in('chiefly_title', :with => "barista")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
       check_basis(:good_governance, "Private")
@@ -519,6 +525,7 @@ feature "complaints index", :js => true do
     within first_complaint do
       expect(page.find('#lastName').value).to eq original_complaint.lastName
       expect(page.find('#firstName').value).to eq original_complaint.firstName
+      expect(page.find('#chiefly_title').value).to eq original_complaint.chiefly_title
       expect(page.find('#village').value).to eq original_complaint.village
       expect(page.find('#phone').value).to eq original_complaint.phone
       expect(page.all('#good_governance_bases .complaint_basis input').first['name']).to eq original_complaint.good_governance_complaint_basis_ids.join(',')

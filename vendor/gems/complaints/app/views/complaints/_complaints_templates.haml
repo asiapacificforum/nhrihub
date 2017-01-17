@@ -234,11 +234,14 @@
           %span=t('.complainant')
         .col-md-6{:style => 'padding-top:0px'}
           .row
-            .col-md-6.form-group{:class => "{{#firstName_error}}has-error{{/}}", :style => 'padding-top:0px;'}
+            .col-md-4.form-group{:style => 'padding-top:0px;'}
+              %label.required{:for => :chiefly_title, :style => 'font-weight:normal'}=t('.chiefly_title')
+              %input.form-control#chiefly_title{:value => '{{chiefly_title}}'}
+            .col-md-4.form-group{:class => "{{#firstName_error}}has-error{{/}}", :style => 'padding-top:0px;'}
               %label.required{:for => :firstName, :style => 'font-weight:normal'}=t('.first_name')
               %input.form-control#firstName{:value => '{{firstName}}', 'on-keydown'=>"remove_attribute_error('firstName')"}
               %span.help-block.error#firstName_error= t('.firstName_error_message')
-            .col-md-6.form-group{:class => "{{#lastName_error}}has-error{{/}}", :style => 'padding-top:0px;'}
+            .col-md-4.form-group{:class => "{{#lastName_error}}has-error{{/}}", :style => 'padding-top:0px;'}
               %label.required{:for => :lastName, :style => 'font-weight:normal'}=t('.last_name')
               %input.form-control#lastName{:value => '{{lastName}}', 'on-keydown'=>"remove_attribute_error('lastName')"}
               %span.help-block.error#lastName_error= t('.lastName_error_message')
@@ -421,15 +424,19 @@
                 %label= t('.complainant')
             .col-md-9{'data-toggle'=>'edit'}
               .no_edit.in
+                %span.chiefly_title {{ chiefly_title }}
                 %span.firstName {{ firstName }}
                 %span.lastName  {{ lastName }}
               .edit
                 .row
-                  .col-md-6.form-group{:class => "{{#firstName_error}}has-error{{/}}"}
+                  .col-md-4.form-group
+                    %label.required{:for => :chiefly_title}=t('.chiefly_title')
+                    %input.form-control#chiefly_title{:value => '{{chiefly_title}}'}
+                  .col-md-4.form-group{:class => "{{#firstName_error}}has-error{{/}}"}
                     %label.required{:for => :firstName}=t('.first_name')
                     %input.form-control#firstName{:value => '{{firstName}}', 'on-keydown'=>"remove_attribute_error('firstName')"}
                     %span.help-block.error#firstName_error= t('.firstName_error_message')
-                  .col-md-6.form-group{:class => "{{#lastName_error}}has-error{{/}}"}
+                  .col-md-4.form-group{:class => "{{#lastName_error}}has-error{{/}}"}
                     %label.required{:for => :lastName}=t('.last_name')
                     %input.form-control#lastName{:value => '{{lastName}}', 'on-keydown'=>"remove_attribute_error('lastName')"}
                     %span.help-block.error#lastName_error= t('.lastName_error_message')

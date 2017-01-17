@@ -51,6 +51,7 @@ en:
       date_received : "Date received"
       first_name : "First name(s)"
       last_name : "Last name"
+      chiefly_title : "Chiefly title"
       male : "Male"
       female : "Female"
       other : "Other"

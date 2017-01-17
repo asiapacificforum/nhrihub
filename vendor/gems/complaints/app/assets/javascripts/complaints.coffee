@@ -323,7 +323,7 @@ Complaint = Ractive.extend
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
         'agency_ids', 'attached_documents_attributes', 'details',
         'dob', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received',
-        'firstName', 'lastName']
+        'firstName', 'lastName', 'chiefly_title']
     url : ->
       Routes.complaint_path(current_locale, @get('id'))
     formatted_date :
