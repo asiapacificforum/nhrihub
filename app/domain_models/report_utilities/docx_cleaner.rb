@@ -16,9 +16,11 @@ class DocxCleaner
   ATTRIBUTES = "(?:(?:\s[^>]*?)*?)"
   OPENTAG =    "<w:t#{ATTRIBUTES}>"
   CLOSETAG = "<\/w:t>"
+  SPACES = '\s*?'
 
   def consolidate_double_open_braces
-    self.xml = xml.gsub(/#{OPENTAG}\s*?{\s*?#{CLOSETAG}.*?#{OPENTAG}\s*?{\s*?<\/w:t>/,'<w:t>{{</w:t>')
+    #self.xml = xml.gsub(/#{OPENTAG}\s*?{\s*?#{CLOSETAG}.*?#{OPENTAG}\s*?{\s*?<\/w:t>/,'<w:t>{{</w:t>')
+    self.xml = xml.gsub(/#{OPENTAG}\s*?{\s*?#{CLOSETAG}.*?#{OPENTAG}\s*?{\s*?(.*?)\s*?<\/w:t>/,'<w:t>{{ \1</w:t>')
   end
 
   def consolidate_double_close_braces
