@@ -251,10 +251,9 @@
         .col-md-2
           %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:112px;"}
           %span.help-block.error#dob_error= t('.dob_error_message')
-        .col-md-2
-          %span=t('.gender')
-        .col-md-5
-          %form
+        .col-md-7
+          %span{:style => "margin-right:16px"}=t('.gender')
+          %form{:style => "display:inline"}
             %label{:style => 'font-weight:normal'}
               %span{:style => "margin-right:6px;"}=t('.male')
               %input#m{:type=>:radio, :name=>'{{gender}}', :value=>'M'}
