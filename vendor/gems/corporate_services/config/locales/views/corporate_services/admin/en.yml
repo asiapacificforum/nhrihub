@@ -2,14 +2,8 @@ en:
   corporate_services:
     admin:
       index:
-        heading: "Corporate Services module"
-        filetypes: "Filetypes permitted for internal documents"
-        add: "Add filetype"
-        filesize_max: "Maximum permitted file size"
-        start_date: "Strategic plan annual start date"
+        heading: "Strategic Plan configuration"
+        start_date: "Annual start date"
       start_date:
         current_val: "Current value"
         change: "Change to"
-  layout:
-    nav:
-      corp_svcs: "Manage Corporate services"

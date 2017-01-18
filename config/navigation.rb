@@ -16,7 +16,7 @@ SimpleNavigation::Configuration.run do |navigation|
         icc.item :icc_ref, t('layout.nav.icc.ref'), nhri_icc_reference_documents_path
       end
     end
-    primary.item :corporate_services, t('layout.nav.strat_plan'), corporate_services_strategic_plan_path("current")
+    primary.item :strategic_plan, t('layout.nav.strat_plan'), corporate_services_strategic_plan_path("current")
     primary.item :media, t('layout.nav.media'), media_appearances_path
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path
@@ -25,7 +25,7 @@ SimpleNavigation::Configuration.run do |navigation|
       ad.item :access, t('layout.nav.access'), authengine_action_roles_path
       ad.item :nhri, t('layout.nav.nhri'), nhri_admin_path
       ad.item :gg, t('layout.nav.projects'), project_admin_path
-      ad.item :corp_svcs, t('layout.nav.corporate_services'), corporate_services_admin_path
+      ad.item :corp_svcs, t('layout.nav.strat_plan'), corporate_services_admin_path
       ad.item :or_media, t('layout.nav.media'), media_appearance_admin_path
       ad.item :compl, t('layout.nav.complaints'), complaint_admin_path
       ad.item :doc, t('layout.nav.int_docs'), internal_document_admin_path
