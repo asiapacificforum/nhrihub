@@ -1,3 +1,5 @@
+= render :partial => 'shared/flash_error'
+
 %script#show_strategic_priority{:type => 'text/ractive'}
   .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
     .panel-heading.strategic_priority_title{:style => "color:#404040; background-color:rgba(140, 123, 85, 0.56); background-image:none; padding-bottom:4px; padding-top:15px;"}

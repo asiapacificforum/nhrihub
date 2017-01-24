@@ -8,7 +8,7 @@
   @maximum_filesize = #{IccReferenceDocument.maximum_filesize * 1000000}
   @permitted_filetypes = #{ IccReferenceDocument.permitted_filetypes }
   @files = #{ @icc_reference_documents.to_json }
-  @files_list_error = "#{t('.flash.no_files_error')}"
+  @flash_error = "#{t('.flash.no_files_error')}"
   @required_files_titles = #{@required_files_titles.to_json}
   @context = "icc"
   @delete_confirmation_message = "#{t('.delete_confirmation_message')}"

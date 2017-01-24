@@ -8,14 +8,24 @@ require_relative '../helpers/outcomes_spec_helpers'
 require_relative '../helpers/activities_spec_helpers'
 require_relative '../helpers/strategic_priority_spec_helpers'
 
-feature "strategic plan basic", :js => true do
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
+feature "when there are no previous strategic plans", :js => true do
+  include LoggedInEnAdminUserHelper
+  include NavigationHelpers
+  include StrategicPlanHelpers
 
-  scenario "index page should show the current year" do
-    start_date = SiteConfig['corporate_services.strategic_plans.start_date']
-    visit corporate_services_strategic_plan_path(:en, "current")
-    expect(page).to have_select("strategic_plan_start_date",
-                                :selected => "Strategic Plan: Current reporting year #{StrategicPlanStartDate.most_recent.to_s} - #{StrategicPlanStartDate.most_recent.advance(:years => 1, :days => -1).to_s}")
+  scenario "navigation menu shows none configured" do
+    toggle_navigation_dropdown('Strategic plan')
+    expect(page).to have_selector("ul.dropdown-menu>li>a", :text => "none configured")
+  end
+
+  scenario "create a new strategic plan" do
+    toggle_navigation_dropdown('Strategic plan')
+    select_dropdown_menu_item('none configured')
+    fill_in("strategic_plan_title", :with => "A plan for the 21st century")
+    save_strategic_plan
+    toggle_navigation_dropdown('Strategic plan')
+    expect(page).to have_selector("ul.dropdown-menu>li>a", :text => "A plan for the 21st century")
+    expect(page).to have_selector("h1", :text =>  "Strategic Plan: A plan for the 21st century")
   end
 end
 
@@ -29,24 +39,34 @@ end
 
 feature "select strategic plan from prior years", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPrioritySpecHelpers
 
   before do
-    sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
-    StrategicPriority.create(:strategic_plan_id => sp1.id, :priority_level => 1, :description => "Gonna do things betta")
-    sp2 = StrategicPlan.create(:start_date => 18.months.ago.to_date)
-    StrategicPriority.create(:strategic_plan_id => sp2.id, :priority_level => 1, :description => "We gotta fix this")
+    @sp1 = StrategicPlan.create(:title => "A plan for the millenium")
+    StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
+    @sp2 = StrategicPlan.create(:title => "A plan for the 21st century")
+    StrategicPriority.create(:strategic_plan_id => @sp2.id, :priority_level => 1, :description => "We gotta fix this")
   end
 
-  scenario "select a prior year and add a strategic priority" do
-    visit corporate_services_strategic_plan_path(:en, "current")
-    select("Strategic Plan: Starting #{18.months.ago.to_date.to_s}, ending #{18.months.ago.to_date.advance(:years => 1, :days => -1).to_s}", :from => "strategic_plan_start_date")
+  scenario "select the current year and add a strategic priority" do
+    visit corporate_services_strategic_plan_path(:en, @sp2.id)
     expect(page).to have_selector(".strategic_priority_title .description .no_edit", :text => "We gotta fix this")
     add_strategic_priority({:priority_level => "Strategic Priority 1", :description => "blah blah blah"})
     expect(page).to have_selector(".strategic_priority_title .description .no_edit", :text => "blah blah blah")
   end
 
-  xscenario "add priorities disabled for prior years" do
-    
+  scenario "add priorities disabled for prior years" do
+    visit corporate_services_strategic_plan_path(:en, @sp1.id)
+    expect(page).to have_selector(".strategic_priority_title .description .no_edit", :text => "Gonna do things betta")
+    if page.driver.browser.is_a? Capybara::Poltergeist::Browser
+      expect(add_priority_button['disabled']).to eq "disabled"
+    else
+      expect(add_priority_button['disabled']).to eq "true"
+    end
+    add_priority_button.click
+    expect(flash_message).to eq "Strategic priorities can only be added to the current strategic plan"
+    click_anywhere
+    expect(page.find('.message_block .error', :visible=>false)).not_to be_visible
   end
 end
 
@@ -61,7 +81,7 @@ feature "restrict user input to a single add or edit", :js => true do
 
   before do
     setup_activity
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     open_accordion_for_strategic_priority_one
   end
 
@@ -135,9 +155,9 @@ def user_input_request
   page.evaluate_script("strategic_plan.get('user_input_requested').get('description')")
 end
 
-def add_priority_button
-  page.find('.add_strategic_priority')
-end
+#def add_priority_button
+  #page.find('.add_strategic_priority')
+#end
 
 def add_strategic_priority(attrs)
   add_priority_button.click

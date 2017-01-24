@@ -1,3 +1,5 @@
+= render :partial => 'shared/flash_error'
+
 %script#filetype_selector_template{:type => 'template/ractive'}
   %li{:class =>'status_filter {{#if selected}}selected{{/if}}'}
     %a.opt{'on-click'=>'toggle()'}
@@ -156,10 +158,6 @@
   {{#files}}
   <doc file_extension='{{file_extension}}' filter_criteria='{{filter_criteria}}' id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' />
   {{/files}}
-
-%script#flash_error_template{:type => 'template/ractive'}
-  %ul.error{:style => "display:none"}
-    %li {{ message }}
 
 %script#internal_document_title_selector{:type => 'html/template'}
   %label{:for =>"internal_document_title"}= t('.doc_title')

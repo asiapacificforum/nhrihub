@@ -26,43 +26,20 @@ class StrategicPlan < ActiveRecord::Base
     all_json(strategic_plan)
   end
 
-  def self.all_with_current
-    ensure_current
-    all.sort.reverse
-  end
-
   def self.most_recent
-    where("strategic_plans.start_date = (select max(start_date) from strategic_plans)").first
-  end
-
-  def self.ensure_current
-    last_strategic_plan = most_recent
-    if last_strategic_plan.nil?
-      create(:start_date => StrategicPlanStartDate.most_recent)
-    elsif !last_strategic_plan.current?
-      strategic_priorities = last_strategic_plan.strategic_priorities.map(&:copy)
-      create(:start_date => StrategicPlanStartDate.most_recent,
-             :strategic_priorities => strategic_priorities )
-    end
+    where("strategic_plans.created_at = (select max(created_at) from strategic_plans)").first
   end
 
   def as_json(options={})
-    super(:except => [:updated_at, :created_at], :methods => :strategic_priorities)
+    super(:except => [:updated_at, :created_at], :methods => [:strategic_priorities,:current])
   end
 
   def current?
-    date_range.include?(Date.today)
+    self.id == StrategicPlan.most_recent.id
   end
+  alias_method :current, :current?
 
   def <=>(other)
-    start_date <=> other.start_date
-  end
-
-  def date_range
-    start_date ... end_date
-  end
-
-  def end_date
-    start_date.advance(:years => 1, :days => -1)
+    created_at <=> other.created_at
   end
 end

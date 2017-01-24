@@ -13,7 +13,7 @@ module CorporateServicesContextRemindersSpecHelpers
                           :start_date => Date.new(2015,8,19),
                           :text => "don't forget the fruit gums mum",
                           :user => User.first, :remindable => PerformanceIndicator.first)
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     open_accordion_for_strategic_priority_one
     expect(reminders_icon['data-count']).to eq "1"
     open_reminders_panel

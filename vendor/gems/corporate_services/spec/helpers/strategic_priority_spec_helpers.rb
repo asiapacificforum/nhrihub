@@ -32,7 +32,11 @@ module StrategicPrioritySpecHelpers
   end
 
   def add_priority_button
-    page.find('.add_strategic_priority')
+    page.find('#add_strategic_priority')
+  end
+
+  def click_anywhere
+    page.find('body').click
   end
 
   def add_strategic_priority(attrs)

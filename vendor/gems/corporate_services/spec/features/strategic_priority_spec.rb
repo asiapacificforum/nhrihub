@@ -8,7 +8,8 @@ feature "adding strategic priorities", :js => true do
   include StrategicPrioritySpecHelpers
 
   before do
-    visit corporate_services_strategic_plan_path(:en, "current")
+    StrategicPlan.create
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
   end
 
   scenario "add strategic priority" do
@@ -63,7 +64,7 @@ feature "strategic plan multiple strategic priorities", :js => true do
   before do
     @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
     StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
   end
 
   scenario "add second/lower strategic priority, it's inserted below" do
@@ -99,7 +100,7 @@ feature "editing strategic priorities", :js => true do
   before do
     @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
     StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
   end
 
 
@@ -151,7 +152,7 @@ feature "deleting strategic priorities", :js => true do
     before do
       @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
       StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
-      visit corporate_services_strategic_plan_path(:en, "current")
+      visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     end
 
     scenario "delete a strategic priority" do
@@ -168,7 +169,7 @@ feature "deleting strategic priorities", :js => true do
       StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
       StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 2, :description => "Gonna do things betta")
       StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 3, :description => "Gonna do things betta")
-      visit corporate_services_strategic_plan_path(:en, "current")
+      visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     end
 
     scenario "delete a strategic priority" do

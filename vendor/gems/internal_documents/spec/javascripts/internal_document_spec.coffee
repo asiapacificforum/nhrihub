@@ -9,7 +9,7 @@ describe 'Internal document', ->
     window.required_files_titles = MagicLamp.loadJSON('internal_document_data').required_files_titles
     window.maximum_filesize = MagicLamp.loadJSON('internal_document_maximum_filesize')
     window.permitted_filetypes = ['pdf']
-    window.files_list_error = MagicLamp.loadRaw('no_files_error_message')
+    window.flash_error = MagicLamp.loadRaw('no_files_error_message')
     window.accreditation_required_document = MagicLamp.loadRaw('accreditation_required_document')
     MagicLamp.load("internal_document_page") # that's the _index partial being loaded
     $.getScript("/assets/internal_documents.js").
@@ -126,7 +126,7 @@ describe 'Internal document filter', ->
     window.required_files_titles = MagicLamp.loadJSON('internal_document_data').required_files_titles
     window.maximum_filesize = MagicLamp.loadJSON('internal_document_maximum_filesize')
     window.permitted_filetypes = ['pdf']
-    window.files_list_error = MagicLamp.loadRaw('no_files_error_message')
+    window.flash_error = MagicLamp.loadRaw('no_files_error_message')
     window.accreditation_required_document = MagicLamp.loadRaw('accreditation_required_document')
     MagicLamp.load("internal_document_page") # that's the _index partial being loaded
     $.getScript("/assets/internal_documents.js").

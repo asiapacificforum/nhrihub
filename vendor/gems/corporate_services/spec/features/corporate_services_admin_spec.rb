@@ -2,32 +2,54 @@ require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
 require_relative '../helpers/corporate_services_admin_spec_helpers'
+require_relative '../helpers/strategic_plan_helpers'
 require 'shared_behaviours/file_admin_behaviour'
-require 'file_admin_common_helpers'
 
 feature "strategic plan admin", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPlanHelpers
 
-  scenario "start date not configured" do
-    visit corporate_services_admin_path('en')
-    expect(page.find('span#start_date').text).to eq "January 1"
-    expect(page).to have_select('strategic_plan_start_date_date_2i', :selected => 'January')
-    expect(page).to have_select('strategic_plan_start_date_date_3i', :selected => '1')
+  before do
+    visit corporate_services_admin_path(:en)
   end
 
-  scenario "start date already configured" do
-    StrategicPlanStartDate.new(:date => Date.new(2001,8,19)).save
-    visit corporate_services_admin_path('en')
-    expect(page.find('span#start_date').text).to eq "August 19"
-    expect(page).to have_select('strategic_plan_start_date_date_2i', :selected => 'August')
-    expect(page).to have_select('strategic_plan_start_date_date_3i', :selected => '19')
+  scenario "add a strategic plan" do
+    fill_in("strategic_plan_title", :with => "A plan for the 21st century")
+    expect{save_strategic_plan}.to change{StrategicPlan.count}.from(0).to(1)
+    expect(StrategicPlan.most_recent.title).to eq "A plan for the 21st century"
   end
 
-  scenario "set the date" do
-    visit corporate_services_admin_path('en')
-    page.select 'April', :from => 'strategic_plan_start_date_date_2i'
-    page.select '1', :from => 'strategic_plan_start_date_date_3i'
-    page.find('#change_start_date').click; sleep(0.2)
-    expect( Date.parse(SiteConfig['corporate_services.strategic_plans.start_date']).strftime("%B %-d") ).to match(/^April 1/)
+  scenario "add a strategic plan with blank title" do
+    fill_in("strategic_plan_title", :with => "")
+    expect{save_strategic_plan}.not_to change{StrategicPlan.count}
+    expect(page).to have_selector("#title_error", :text => "title cannot be blank")
   end
+
+  scenario "add a strategic plan with whitespace title" do
+    fill_in("strategic_plan_title", :with => "  ")
+    expect{save_strategic_plan}.not_to change{StrategicPlan.count}
+    expect(page).to have_selector("#title_error", :text => "title cannot be blank")
+  end
+end
+
+feature "when there are already some strategic plans", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include StrategicPlanHelpers
+
+  before do
+    StrategicPlan.create(:title => 'a man a plan')
+    visit corporate_services_admin_path(:en)
+  end
+
+  scenario "delete a strategic plan" do
+    expect{ delete_plan; confirm_deletion; wait_for_ajax }.to change{StrategicPlan.count}.from(1).to(0).
+                                                          and change{page.all('tr#strategic_plan').length}.from(1).to(0)
+  end
+
+  scenario "add a strategic plan with duplicate title" do
+    fill_in("strategic_plan_title", :with => "a man a plan")
+    expect{save_strategic_plan}.not_to change{StrategicPlan.count}
+    expect(page).to have_selector("#unique_title_error", :text => "title already exists")
+  end
+
 end

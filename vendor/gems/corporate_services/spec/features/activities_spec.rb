@@ -18,7 +18,7 @@ feature "populate plannned result activities", :js => true do
       spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
       pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
       o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
-      visit corporate_services_strategic_plan_path(:en, "current")
+      visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
       open_accordion_for_strategic_priority_one
       add_activity.click
     end
@@ -60,7 +60,7 @@ feature "populate plannned result activities", :js => true do
   feature "add activity to pre-existing" do
     before do
       setup_activity
-      visit corporate_services_strategic_plan_path(:en, "current")
+      visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
       open_accordion_for_strategic_priority_one
       add_activity.click
     end
@@ -89,7 +89,7 @@ feature "actions on existing activities", :js => true do
     Activity.create(:outcome_id => o.id, :description => "work hard")
     Activity.create(:outcome_id => o.id, :description => "do the right thing")
     resize_browser_window
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     open_accordion_for_strategic_priority_one
   end
 

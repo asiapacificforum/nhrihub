@@ -19,7 +19,7 @@ feature "populate activity performance indicators", :js => true do
       pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
       o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
       a = Activity.create(:outcome_id => o.id, :description => "50% improvement")
-      visit corporate_services_strategic_plan_path(:en, "current")
+      visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
       open_accordion_for_strategic_priority_one
       add_performance_indicator.click
     end
@@ -68,7 +68,7 @@ feature "populate activity performance indicators", :js => true do
   feature "add performance indicator to pre-existing" do
     before do
       setup_performance_indicator
-      visit corporate_services_strategic_plan_path(:en, "current")
+      visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
       open_accordion_for_strategic_priority_one
       add_performance_indicator.click
     end
@@ -101,7 +101,7 @@ feature "actions on existing performance indicators", :js => true do
     resize_browser_window
     PerformanceIndicator.create(:activity_id => activity.id, :description => "great effort", :target => "15% improvement")
     PerformanceIndicator.create(:activity_id => activity.id, :description => "things get better", :target => "85% improvement")
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     open_accordion_for_strategic_priority_one
   end
 

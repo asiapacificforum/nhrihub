@@ -1,3 +1,5 @@
+= render :partial => 'shared/flash_error'
+
 %script#uploader_template{:type => 'html/template'}
   / The file upload form used as target for the jQuery fileupload widget
   / this is the fileupload configuration when uploading files via the buttonbar
@@ -74,13 +76,6 @@
   {{#files}}
   <doc id='{{id}}' title='{{title}}' date='{{date}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_date='{{formatted_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}'  />
   {{/files}}
-
-%script#flash_error_template{:type => 'template/ractive'}
-  %ul.error{:style => "display:none"}
-    %li {{ message }}
-
-
-  / The template to display files ready for upload
 
 %script#upload_template{:type => 'html/template'}
   .row

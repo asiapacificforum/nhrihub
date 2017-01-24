@@ -1,8 +1,11 @@
 = stylesheet_link_tag 'corporate_services/strategic_plan'
-= select :strategic_plan, :start_date, start_date_options, {}, {:class => "form-control h1_select", :style => "background-color:inherit;height:50px"}
+
+.message_block
+
+%h1= t('.heading', :title => @strategic_plan.title)
 
 %div
-  .btn.btn-success.btn-sm.add_strategic_priority{:style => "margin-bottom:12px; color:white;"}
+  .btn.btn-success.btn-sm#add_strategic_priority{:style => "margin-bottom:12px; color:white;", :disabled => ("disabled" unless @strategic_plan.current?)}
     %i.fa.fa-plus.fa-lg{:style => "color:white"}
     %span= t('.add_priority')
   .btn.btn-primary.btn-sm.ms_word{:style => "margin-bottom:12px; color:white; float:right;"}
@@ -23,20 +26,20 @@
 
 :coffeescript
   @strategic_plan_data = #{@strategic_plan.to_json}
+  @flash_error = "#{t('.strategic_priority_disallowed')}"
 
 :coffeescript
   $ ->
-    # switch pages in response to changes in the title select box
-    $('#strategic_plan_start_date').on 'change', ->
-      url = "#{corporate_services_strategic_plan_path(:en,:id)}".replace(/id$/,@.value)
-      $.get( url, null, set_data, 'json')
-
     set_data = (data,status,jqxhr)->
       strategic_plan.set(data)
 
     # add the new_strategic_priority form
-    $('.add_strategic_priority').on 'click', ->
+    $('#add_strategic_priority').on 'click', (event)->
+      event.stopPropagation()
       strategic_plan.new_strategic_priority()
 
+    $('body').on 'click',"[id!='add_strategic_priority']", ->
+      flash.hide()
+
     $('.ms_word').on 'click', ->
-      window.location="#{corporate_services_strategic_plan_path(StrategicPlan.most_recent)}.docx"
+      window.location="#{corporate_services_strategic_plan_path(@strategic_plan)}.docx"

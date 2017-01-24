@@ -15,7 +15,7 @@ feature "show existing planned result", :js => true do
     pr = PlannedResult.create(:strategic_priority_id => sp1.id, :description => "Something profound")
     Outcome.create(:description => "smarter thinking", :planned_result_id => pr.id)
     Outcome.create(:description => "pervasive niftiness", :planned_result_id => pr.id)
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     open_accordion_for_strategic_priority_one
   end
 
@@ -34,7 +34,7 @@ feature "populate strategic plan contents", :js => true do
   before do
     sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
     StrategicPriority.create(:strategic_plan_id => sp1.id, :priority_level => 1, :description => "Gonna do things betta")
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     page.execute_script("$('.fade').removeClass('fade')")
     open_accordion_for_strategic_priority_one
     add_planned_result.click
@@ -86,7 +86,7 @@ feature "actions on existing planned results", :js => true do
     spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
     PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
     PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something not so profound")
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     open_accordion_for_strategic_priority_one
   end
 

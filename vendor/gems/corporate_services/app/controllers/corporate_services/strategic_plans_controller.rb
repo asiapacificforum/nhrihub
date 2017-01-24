@@ -1,12 +1,6 @@
 class CorporateServices::StrategicPlansController < ApplicationController
   def show
-    @strategic_plans = StrategicPlan.all_with_current.sort # for the select box options
-    if params[:id] == "current"
-      @strategic_plan = StrategicPlan.current.eager_loaded_associations.first
-      #@strategic_plan = StrategicPlan.load_sql
-    else
-      @strategic_plan = StrategicPlan.where(:id => params[:id]).eager_loaded_associations.first
-    end
+    @strategic_plan = StrategicPlan.where(:id => params[:id]).eager_loaded_associations.first
     respond_to do |format|
       format.html
       format.json {render :json => @strategic_plan }
@@ -14,5 +8,28 @@ class CorporateServices::StrategicPlansController < ApplicationController
         send_file StrategicPlanReport.new(@strategic_plan).docfile
       end
     end
+  end
+
+  def create
+    @strategic_plan = StrategicPlan.new(strategic_plan_params)
+    if @strategic_plan.save
+      redirect_to corporate_services_strategic_plan_path(@strategic_plan.id)
+    else
+      render :status => 500
+    end
+  end
+
+  def destroy
+    @strategic_plan = StrategicPlan.find(params[:id])
+    if @strategic_plan.destroy
+      head 200
+    else
+      head 500
+    end
+  end
+
+  private
+  def strategic_plan_params
+    params.require(:strategic_plan).permit(:title)
   end
 end

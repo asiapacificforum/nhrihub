@@ -16,7 +16,14 @@ SimpleNavigation::Configuration.run do |navigation|
         icc.item :icc_ref, t('layout.nav.icc.ref'), nhri_icc_reference_documents_path
       end
     end
-    primary.item :strategic_plan, t('layout.nav.strat_plan'), corporate_services_strategic_plan_path("current")
+    primary.item :strat_plan, t('layout.nav.strat_plan') do |st_pl|
+      StrategicPlan.all.each do |sp|
+        st_pl.item :sp_item, sp.title, corporate_services_strategic_plan_path(sp.id)
+      end
+      if StrategicPlan.count.zero?
+        st_pl.item :sp_item, "none configured", corporate_services_admin_path, :highlights_on => /corporate_services\/strategic_plans/
+      end
+    end
     primary.item :media, t('layout.nav.media'), media_appearances_path
     primary.item :admin, t('layout.nav.admin'), :if => Proc.new{ current_user.is_admin? || current_user.is_developer? } do |ad|
       ad.item :users, t('layout.nav.user'), admin_users_path

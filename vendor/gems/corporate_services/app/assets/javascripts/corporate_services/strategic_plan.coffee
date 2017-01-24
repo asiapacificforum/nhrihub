@@ -3,6 +3,8 @@
 //= require 'notable'
 //= require 'confirm_delete_modal'
 //= require 'ractive_validator'
+//= require 'flash'
+
 $ ->
   Ractive.DEBUG = false
 
@@ -421,11 +423,14 @@ $ ->
     components :
       sp : StrategicPriority
     new_strategic_priority : ->
-      UserInput.claim_user_input_request(@,'remove_strategic_priorities_form')
-      # add only if there are no strategic priorities
-      # of if the most recent is persisted
-      if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
-        strategic_plan.unshift('strategic_priorities', {id:null, description: '', priority_level:null} )
+      if @get('current')
+        UserInput.claim_user_input_request(@,'remove_strategic_priorities_form')
+        # add only if there are no strategic priorities
+        # of if the most recent is persisted
+        if @.findAllComponents().length == 0 || @.findComponent().get('persisted')
+          strategic_plan.unshift('strategic_priorities', {id:null, description: '', priority_level:null} )
+      else
+        flash.notify()
     remove_strategic_priorities_form : ->
       @get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
 

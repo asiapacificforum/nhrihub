@@ -102,32 +102,32 @@ end
 
 describe "#filetype" do
   it "should decode pdf file as pdf filetype" do
-    doc = InternalDocument.new(:original_type => "foo.pdf")
+    doc = InternalDocument.create(:original_filename => "foo.pdf")
     expect(doc.filetype).to eq "pdf"
   end
 
   it "should decode ppt file as ppt filetype" do
-    doc = InternalDocument.new(:original_type => "foo.ppt")
+    doc = InternalDocument.create(:original_filename => "foo.ppt")
     expect(doc.filetype).to eq "ppt"
   end
 
   it "should decode doc and docx files as msword filetype" do
-    doc = InternalDocument.new(:original_type => "foo.doc")
+    doc = InternalDocument.create(:original_filename => "foo.doc")
     expect(doc.filetype).to eq "msword"
-    doc = InternalDocument.new(:original_type => "foo.docx")
+    doc = InternalDocument.create(:original_filename => "foo.docx")
     expect(doc.filetype).to eq "msword"
   end
 
   it "should decode xls and xlsx files as excel filetype" do
-    doc = InternalDocument.new(:original_type => "foo.xls")
+    doc = InternalDocument.create(:original_filename => "foo.xls")
     expect(doc.filetype).to eq "excel"
-    doc = InternalDocument.new(:original_type => "foo.xlsx")
+    doc = InternalDocument.create(:original_filename => "foo.xlsx")
     expect(doc.filetype).to eq "excel"
   end
 
   it "should decode tiff, jpg, jpeg, and gif files as image filetype" do
     ["tiff","jpg","jpeg","gif"].each do |ext|
-      doc = InternalDocument.new(:original_type => "foo.#{ext}")
+      doc = InternalDocument.create(:original_filename => "foo.#{ext}")
       expect(doc.filetype).to eq "image"
     end
   end

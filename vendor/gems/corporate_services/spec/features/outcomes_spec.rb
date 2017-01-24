@@ -15,7 +15,7 @@ feature "populate plannned result outcomes", :js => true do
       sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
       spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
       pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
-      visit corporate_services_strategic_plan_path(:en, "current")
+      visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
       open_accordion_for_strategic_priority_one
     end
 
@@ -69,7 +69,7 @@ feature "populate plannned result outcomes", :js => true do
       spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
       pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
       pr.outcomes << Outcome.new(:description => "Smarter thinking")
-      visit corporate_services_strategic_plan_path(:en, "current")
+      visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
       open_accordion_for_strategic_priority_one
       add_outcome.click
     end
@@ -107,7 +107,7 @@ feature "actions on existing single outcome", :js => true do
     o1 = Outcome.create(:planned_result_id => pr.id, :description => "whirled peas")
     page.driver.resize_window_to(page.driver.current_window_handle,1280,1024) if page.driver.is_a? Capybara::Selenium::Driver
     page.driver.resize_window(2224,768) if page.driver.is_a? Capybara::Poltergeist::Driver
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     open_accordion_for_strategic_priority_one
   end
 
@@ -145,7 +145,7 @@ feature "actions on existing multiple outcomes", :js => true do
     o1 = Outcome.create(:planned_result_id => pr.id, :description => "whirled peas")
     o2 = Outcome.create(:planned_result_id => pr.id, :description => "cosmic harmony")
     page.driver.resize_window(1224,768) if page.driver.is_a? Capybara::Poltergeist::Driver
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     open_accordion_for_strategic_priority_one
   end
 

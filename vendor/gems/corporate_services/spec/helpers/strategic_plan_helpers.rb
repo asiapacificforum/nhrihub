@@ -7,4 +7,13 @@ module StrategicPlanHelpers
     sleep 0.3
   end
 
+  def save_strategic_plan
+    page.find('#save').click
+    wait_for_ajax
+  end
+
+  def delete_plan
+    page.all('.delete_strategic_plan')[0].click
+  end
+
 end

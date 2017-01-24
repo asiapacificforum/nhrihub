@@ -1,3 +1,5 @@
+= render :partial => 'shared/flash_error'
+
 %script#uploader_template{:type => 'html/template'}
   .fileupload.buttonbar
     {{> fileuploadButtonbar }}
@@ -95,12 +97,6 @@
   {{#files}}
   <doc id='{{id}}' title='{{title}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' source_url='{{source_url}}' />
   {{/files}}
-
-%script#flash_error_template{:type => 'template/ractive'}
-  %ul.error{:style => "display:none"}
-    %li {{ message }}
-
-  / The template to display files ready for upload
 
 %script#upload_documents_template{:type => 'html/template'}
   {{#upload_documents}}

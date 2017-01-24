@@ -18,7 +18,7 @@ feature "performance indicators outreach events and media appearances", :js => t
     setup_strategic_plan
     setup_media_appearances
     setup_projects
-    visit corporate_services_strategic_plan_path(:en, "current")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     open_accordion_for_strategic_priority_one
   end
 
