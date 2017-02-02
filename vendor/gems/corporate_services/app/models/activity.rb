@@ -55,9 +55,9 @@ class Activity < ActiveRecord::Base
     nil
   end
 
-  def copy
+  def dup
     activity = Activity.new(attributes.slice("index", "description"))
-    activity.performance_indicators = performance_indicators.map(&:copy)
+    activity.performance_indicators = performance_indicators.map(&:dup)
     activity
   end
 

@@ -10,15 +10,18 @@
 
 %script#new_strategic_plan_template{:type => 'template/ractive'}
   .admin.well
-    %table.table.borderless.strategic_plan{:style => "width:500px;"}
-      %tbody
-        %tr.form-group
-          %td
-            %input.form-control#strategic_plan_title{:type => :text, :placeholder => t('.placeholder'), :name => 'strategic_plan[title]', :value => '{{title}}', 'on-keydown' => 'remove_error()'}
-            %span.help-block#title_error= t('.title_error')
-            %span.help-block#unique_title_error= t('.unique_title_error')
-          %td
-            %button.btn.btn-success.btn-m#save{'on-click' => 'submit()'}= t('.create')
+    .row.form-inline
+      .col-md-3.strategic_plan.form-group
+        %label{:for => 'strategic_plan_title', :style => "padding-right:12px;"}= t('.title')
+        %input.form-control#strategic_plan_title{:type => :text, :placeholder => t('.placeholder'), :name => 'strategic_plan[title]', :value => '{{title}}', 'on-keydown' => 'remove_error()', :style => "width:200px;"}
+        %span.help-block#title_error= t('.title_error')
+        %span.help-block#unique_title_error= t('.unique_title_error')
+      .col-md-2.form-group
+        %label
+          %span{:style => "padding-right:18px"}= t('.copy')
+          %input.form-control#copy{:type => :checkbox, :style => "position:relative; top :-3px;", :checked => '{{copy}}'}
+      .col-md-2
+        %button.btn.btn-success.btn-m#save{'on-click' => 'submit()'}= t('.create')
 
 %script#strategic_plans_template{:type => 'template/ractive'}
   <newStrategicPlan />
@@ -33,7 +36,7 @@
   a.disallowed { cursor : not-allowed; opacity : 0.75; }
 
 %script#strategic_plan_template{:type => 'template/ractive'}
-  %tr#strategic_plan{'intro-outro' => :fade}
+  %tr.strategic_plan{'intro-outro' => :fade}
     %td {{title}}
     %td
       %a{:class => 'delete_strategic_plan {{#unless delete_permitted}}disallowed{{/unless}}', 'on-click' => "delete_if_permitted()"}= t('delete')
@@ -67,14 +70,22 @@
       url : Routes.corporate_services_strategic_plans_path('en')
     submit : ->
       if @validate()
-        data = {strategic_plan : {title : @get('title')}}
-        $.post(@get('url'),data)
+        data = {strategic_plan : {title : @get('title'), copy : @get('copy')}}
+        $.ajax
+          url : @get('url')
+          method : 'post'
+          data : data
+          success : @create_callback
+          context : @
       else
         $('.form-group').addClass('has-error')
     validate : ->
       @validator.validate()
     remove_error : ->
       $('.form-group').removeClass('has-error')
+    create_callback : (data, status, jqxhr)->
+      @set(title : "", copy : false)
+      @parent.add_strategic_plan(data)
 
   @strategic_plans = new Ractive
     el: '#strategic_plans'
@@ -85,5 +96,10 @@
       strategicPlan : StrategicPlan
       newStrategicPlan : NewStrategicPlan
     remove : (strategic_plan)->
+      $("#strat_plan .dropdown-menu li:contains("+strategic_plan.get('title')+")").remove()
       index = @findAllComponents('strategicPlan').indexOf(strategic_plan)
       @splice('strategic_plans',index,1)
+    add_strategic_plan : (strategic_plan)->
+      href = Routes.corporate_services_strategic_plan_path('en',strategic_plan.id)
+      $('#strat_plan .dropdown-menu').append("<li id='sp_item'><a href='"+href+"'>"+strategic_plan.title+"</a></li>")
+      @push('strategic_plans',strategic_plan)

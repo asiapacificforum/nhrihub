@@ -59,9 +59,9 @@ class PlannedResult < ActiveRecord::Base
     Rails.application.routes.url_helpers.corporate_services_strategic_priority_planned_result_path(:en, strategic_priority_id, id)
   end
 
-  def copy
+  def dup
     planned_result = PlannedResult.new(attributes.slice("index", "description"))
-    planned_result.outcomes = outcomes.map(&:copy)
+    planned_result.outcomes << outcomes.map(&:dup)
     planned_result
   end
 end

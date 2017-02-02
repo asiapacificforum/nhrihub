@@ -1,4 +1,5 @@
 class StrategicPlan < ActiveRecord::Base
+  attr_accessor :copy
   has_many :strategic_priorities, :dependent => :destroy
 
   # an ActiveRecord::Relation is returned so that it can be merged, see PlannedResult.in_current_strategic_plan
@@ -28,6 +29,18 @@ class StrategicPlan < ActiveRecord::Base
 
   def self.most_recent
     where("strategic_plans.created_at = (select max(created_at) from strategic_plans)").first
+  end
+
+  def initialize(attrs={})
+    if attrs.delete :copy
+      initialize_with_copy(attrs)
+    else
+      super
+    end
+  end
+
+  def initialize_with_copy(attrs)
+    initialize( attrs.merge(:strategic_priorities => StrategicPlan.most_recent.strategic_priorities.map(&:dup)))
   end
 
   def as_json(options={})

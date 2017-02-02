@@ -43,9 +43,9 @@ class Outcome < ActiveRecord::Base
     Rails.application.routes.url_helpers.corporate_services_outcome_activities_path(:en,id)
   end
 
-  def copy
+  def dup
     outcome = Outcome.new(attributes.slice("index", "description"))
-    outcome.activities = activities.map(&:copy)
+    outcome.activities << activities.map(&:dup)
     outcome
   end
 

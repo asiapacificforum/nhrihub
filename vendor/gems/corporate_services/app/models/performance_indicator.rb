@@ -91,7 +91,7 @@ class PerformanceIndicator < ActiveRecord::Base
     end
   end
 
-  def copy
+  def dup
     PerformanceIndicator.new(attributes.slice("index", "description", "target"))
   end
 end

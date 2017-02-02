@@ -101,53 +101,12 @@ describe "eager loading via scopes" do
     expect(performance_indicator["project_titles"].length).to eq 2
     expect(performance_indicator["media_appearance_titles"].length).to eq 2
   end
-
 end
 
 describe ".load_sql" do
   before do
-    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year-1,1,1))
-    current_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year,1,1))
-
-    2.times do |i|
-      sp = FactoryGirl.create(:strategic_priority, :priority_level => i+1, :strategic_plan_id => previous_strategic_plan.id)
-      2.times do
-        pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
-        2.times do
-          o = FactoryGirl.create(:outcome, :planned_result => pr)
-          2.times do
-            a = FactoryGirl.create(:activity, :outcome => o)
-            2.times do
-              pi = FactoryGirl.create(:performance_indicator, :activity => a)
-              2.times do
-                MediaAppearance.create(:title => "foo", :performance_indicators => [pi])
-                FactoryGirl.create(:project, :performance_indicators => [pi])
-              end
-            end
-          end
-        end
-      end
-    end
-
-    2.times do |i|
-      sp = FactoryGirl.create(:strategic_priority, :priority_level => i+1, :strategic_plan_id => current_strategic_plan.id)
-      2.times do
-        pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
-        2.times do
-          o = FactoryGirl.create(:outcome, :planned_result => pr)
-          2.times do
-            a = FactoryGirl.create(:activity, :outcome => o)
-            2.times do
-              pi = FactoryGirl.create(:performance_indicator, :activity => a)
-              2.times do
-                MediaAppearance.create(:title => "foo", :performance_indicators => [pi])
-                FactoryGirl.create(:project, :performance_indicators => [pi])
-              end
-            end
-          end
-        end
-      end
-    end
+    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :well_populated, :start_date => Date.new(Date.today.year-1,1,1))
+    current_strategic_plan = FactoryGirl.create(:strategic_plan, :well_populated, :start_date => Date.new(Date.today.year,1,1))
   end
 
   let(:json){StrategicPlan.load_sql}
@@ -180,6 +139,63 @@ describe ".load_sql" do
 
     expect(performance_indicator["projects"].length).to eq 2
     expect(performance_indicator["media_appearances"].length).to eq 2
+  end
+end
+
+describe "create new plan and copy previous elements" do
+  before do
+    @previous_strategic_plan = FactoryGirl.create(:strategic_plan, :well_populated, :start_date => Date.new(Date.today.year-1,1,1))
+  end
+
+  it "should copy previous strategic plan elements if created with copy flag set" do
+    new_strategic_plan = StrategicPlan.new(:copy => true)
+    new_strategic_plan.save
+    expect(new_strategic_plan.strategic_priorities.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].reload.planned_results.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].reload.planned_results.length).to eq 2
+
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[0].reload.outcomes.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[1].reload.outcomes.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[0].reload.outcomes.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[1].reload.outcomes.length).to eq 2
+
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[0].outcomes[0].reload.activities.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[0].outcomes[1].reload.activities.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[1].outcomes[0].reload.activities.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[1].outcomes[1].reload.activities.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[0].outcomes[0].reload.activities.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[0].outcomes[1].reload.activities.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[1].outcomes[0].reload.activities.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[1].outcomes[1].reload.activities.length).to eq 2
+
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[0].outcomes[0].activities[0].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[0].outcomes[0].activities[1].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[0].outcomes[1].activities[0].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[0].outcomes[1].activities[1].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[1].outcomes[0].activities[0].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[1].outcomes[0].activities[1].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[1].outcomes[1].activities[0].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[0].planned_results[1].outcomes[1].activities[1].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[0].outcomes[0].activities[0].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[0].outcomes[0].activities[1].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[0].outcomes[1].activities[0].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[0].outcomes[1].activities[1].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[1].outcomes[0].activities[0].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[1].outcomes[0].activities[1].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[1].outcomes[1].activities[0].reload.performance_indicators.length).to eq 2
+    expect(new_strategic_plan.strategic_priorities[1].planned_results[1].outcomes[1].activities[1].reload.performance_indicators.length).to eq 2
+  end
+
+  it "should create a blank StrategicPlan if copy flag is set to false" do
+    new_strategic_plan = StrategicPlan.new(:copy => false)
+    new_strategic_plan.save
+    expect(new_strategic_plan.strategic_priorities).to be_empty
+  end
+
+  it "should create a blank StrategicPlan if copy flag is not present" do
+    new_strategic_plan = StrategicPlan.new
+    new_strategic_plan.save
+    expect(new_strategic_plan.strategic_priorities).to be_empty
   end
 
 end

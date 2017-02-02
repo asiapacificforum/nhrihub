@@ -13,7 +13,7 @@ class CorporateServices::StrategicPlansController < ApplicationController
   def create
     @strategic_plan = StrategicPlan.new(strategic_plan_params)
     if @strategic_plan.save
-      redirect_to corporate_services_strategic_plan_path(@strategic_plan.id)
+      render :json => @strategic_plan
     else
       render :status => 500
     end
@@ -30,6 +30,6 @@ class CorporateServices::StrategicPlansController < ApplicationController
 
   private
   def strategic_plan_params
-    params.require(:strategic_plan).permit(:title)
+    params.require(:strategic_plan).permit(:title, :copy)
   end
 end

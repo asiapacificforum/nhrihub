@@ -9,5 +9,12 @@ FactoryGirl.define do
         sp.planned_results << FactoryGirl.create(:planned_result, :populated, :strategic_priority_id => sp.id)
       end
     end
+
+    trait :well_populated do
+      after(:create) do |sp|
+        sp.planned_results << FactoryGirl.create(:planned_result, :well_populated, :strategic_priority_id => sp.id)
+        sp.planned_results << FactoryGirl.create(:planned_result, :well_populated, :strategic_priority_id => sp.id)
+      end
+    end
   end
 end

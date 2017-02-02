@@ -17,6 +17,9 @@ feature "strategic plan admin", :js => true do
     fill_in("strategic_plan_title", :with => "A plan for the 21st century")
     expect{save_strategic_plan}.to change{StrategicPlan.count}.from(0).to(1)
     expect(StrategicPlan.most_recent.title).to eq "A plan for the 21st century"
+    expect(StrategicPlan.most_recent.strategic_priorities.length ).to eq(0)
+    expect(page).to have_selector('#strategic_plans .strategic_plan td', :text => "A plan for the 21st century")
+    expect(page).to have_selector('#strat_plan #sp_item', :text => "A plan for the 21st century")
   end
 
   scenario "add a strategic plan with blank title" do
@@ -37,7 +40,7 @@ feature "when there are already some strategic plans", :js => true do
   include StrategicPlanHelpers
 
   before do
-    StrategicPlan.create(:title => 'a man a plan')
+    FactoryGirl.create(:strategic_plan, :well_populated, :title => 'a man a plan')
     visit corporate_services_admin_path(:en)
   end
 
@@ -50,6 +53,13 @@ feature "when there are already some strategic plans", :js => true do
     fill_in("strategic_plan_title", :with => "a man a plan")
     expect{save_strategic_plan}.not_to change{StrategicPlan.count}
     expect(page).to have_selector("#unique_title_error", :text => "title already exists")
+  end
+
+  scenario "add a strategic plan with copy flag checked" do
+    fill_in("strategic_plan_title", :with => "a man a better plan")
+    check("copy")
+    expect{save_strategic_plan}.to change{StrategicPlan.count}.from(1).to(2)
+    expect(StrategicPlan.most_recent.strategic_priorities.length).to eq 2
   end
 
 end
