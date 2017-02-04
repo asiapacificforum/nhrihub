@@ -43,7 +43,7 @@
   %div{:class => "{{key}}_document"}
     .row
       .col-md-6.title {{title}}
-      .col-md-4.filename {{filename}}
+      .col-md-4.filename {{truncated_filename}}
       .col-md-1.download
         %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
       .col-md-1.delete

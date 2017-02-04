@@ -20,6 +20,12 @@
       Routes[@get('parent_type')+"_document_path"](current_locale,@get('id'))
     truncated_title : ->
       "\""+@get('title').split(' ').slice(0,4).join(' ') + "...\""
+    truncated_filename : ->
+      if @get('filename').length > 50
+        [base,extension] = @get('filename').split('.')
+        base.slice(0,40)+"..."+extension
+      else
+        @get('filename')
     delete_confirmation_message : ->
       i18n.delete_document_confirmation_message + @get('truncated_title') + "?"
   remove_file : ->

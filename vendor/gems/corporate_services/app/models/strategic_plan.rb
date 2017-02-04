@@ -32,7 +32,7 @@ class StrategicPlan < ActiveRecord::Base
   end
 
   def initialize(attrs={})
-    if attrs.delete :copy
+    if attrs && attrs.delete(:copy)
       initialize_with_copy(attrs)
     else
       super

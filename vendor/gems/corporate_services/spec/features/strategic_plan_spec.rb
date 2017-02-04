@@ -17,16 +17,6 @@ feature "when there are no previous strategic plans", :js => true do
     toggle_navigation_dropdown('Strategic plan')
     expect(page).to have_selector("ul.dropdown-menu>li>a", :text => "none configured")
   end
-
-  scenario "create a new strategic plan" do
-    toggle_navigation_dropdown('Strategic plan')
-    select_dropdown_menu_item('none configured')
-    fill_in("strategic_plan_title", :with => "A plan for the 21st century")
-    save_strategic_plan
-    toggle_navigation_dropdown('Strategic plan')
-    expect(page).to have_selector("ul.dropdown-menu>li>a", :text => "A plan for the 21st century")
-    expect(page).to have_selector("h1", :text =>  "Strategic Plan: A plan for the 21st century")
-  end
 end
 
 feature "modifying strategic plan configuration", :js => true do

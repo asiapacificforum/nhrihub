@@ -19,7 +19,7 @@ feature "strategic plan admin", :js => true do
     expect(StrategicPlan.most_recent.title).to eq "A plan for the 21st century"
     expect(StrategicPlan.most_recent.strategic_priorities.length ).to eq(0)
     expect(page).to have_selector('#strategic_plans .strategic_plan td', :text => "A plan for the 21st century")
-    expect(page).to have_selector('#strat_plan #sp_item', :text => "A plan for the 21st century")
+    expect(page).to have_selector('#strat_plan #sp_item', :visible => false, :text => "A plan for the 21st century")
   end
 
   scenario "add a strategic plan with blank title" do
@@ -46,7 +46,7 @@ feature "when there are already some strategic plans", :js => true do
 
   scenario "delete a strategic plan" do
     expect{ delete_plan; confirm_deletion; wait_for_ajax }.to change{StrategicPlan.count}.from(1).to(0).
-                                                          and change{page.all('tr#strategic_plan').length}.from(1).to(0)
+                                                          and change{page.all('tr.strategic_plan').length}.from(1).to(0)
   end
 
   scenario "add a strategic plan with duplicate title" do
