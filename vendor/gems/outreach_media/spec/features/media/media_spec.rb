@@ -16,13 +16,20 @@ feature "show media archive", :js => true do
     setup_positivity_ratings
     setup_file_constraints
     setup_areas
-    FactoryGirl.create(:media_appearance, :hr_area, :positivity_rating => PositivityRating.first, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
+    2.times do
+      FactoryGirl.create(:media_appearance, :hr_area, :positivity_rating => PositivityRating.first, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
+    end
     resize_browser_window
     visit media_appearances_path(:en)
   end
 
   scenario "lists media appearances" do
     expect(page_heading).to eq "Media Archive"
+    expect(page).to have_selector("#media_appearances .media_appearance", :count => 2)
+  end
+
+  scenario "prepopulates filter controls title in response to url query field" do
+    visit media_appearances_path(:en, {:title => MediaAppearance.first.title})
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 1)
   end
 end

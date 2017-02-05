@@ -367,7 +367,7 @@ $ ->
     all_performance_indicators : performance_indicators
     item_name : item_name
     filter_criteria :
-      title : ""
+      title : window.selected_title
       from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation
       to : new Date(new Date().toDateString()) # then it yields proper comparison with Rails timestamp
       areas : []
