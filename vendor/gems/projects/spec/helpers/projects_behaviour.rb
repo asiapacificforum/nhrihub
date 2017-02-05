@@ -16,6 +16,11 @@ RSpec.shared_examples "projects index" do
       expect(projects_count).to eq 2
     end
 
+    it "pre-populates the projects filter when a title is passed in the url" do
+      visit projects_path(:en, {:title => Project.first.title})
+      expect(projects_count).to eq 1
+    end
+
     it "shows expanded information for each of the projects" do
       expand_last_project
       within last_project do

@@ -4,6 +4,7 @@
 = render :partial => 'notes/note' # it's in the main app
 
 :coffeescript
+  selected_title = "#{params[:title] ? params[:title] : ''}"
   @projects_data = #{@projects.to_json}
   @areas = #{@areas.to_json}
   @agencies = #{@agencies.to_json}
@@ -27,7 +28,7 @@
   @create_reminder_url = "#{@create_reminder_url}"
   @create_note_url     = "#{@create_note_url}"
   @filter_criteria =
-    title : ""
+    title : selected_title
     area_ids : []
     area_rule   : 'any'
     agency_ids : []

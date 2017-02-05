@@ -1,6 +1,5 @@
 class ComplaintsController < ApplicationController
   def index
-    #@complaints = Complaint.all
     @complaints = Complaint.includes(:assigns,
                                      :mandate,
                                      {:status_changes => :complaint_status},
