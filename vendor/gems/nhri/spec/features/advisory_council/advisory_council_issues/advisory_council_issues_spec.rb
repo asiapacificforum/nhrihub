@@ -25,6 +25,12 @@ feature "show advisory council issue archive", :js => true do
     expect(page_heading).to eq "Advisory Council Issues"
     expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 1)
   end
+
+  scenario "prepopulates title filter when title is passed as url query" do
+    FactoryGirl.create(:advisory_council_issue, :title => "the big issue")
+    visit nhri_advisory_council_issues_path(:en, {:title => "the big issue"})
+    expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 1)
+  end
 end
 
 feature "create a new article", :js => true do

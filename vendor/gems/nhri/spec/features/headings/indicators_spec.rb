@@ -8,6 +8,10 @@ feature "indicators behaviour", :js => true do
   include IndicatorsSpecHelpers
   include IndicatorsSpecSetupHelpers
 
+  it "should highlight indicator and position page to display indicator selected with url" do
+    
+  end
+
   it "should delete indicators" do
     expect(page).to have_selector("#indicators .indicator", :count => 2)
     expect{delete_indicator.click; confirm_deletion; wait_for_ajax}.to change{Nhri::Indicator.count}.by(-1)
