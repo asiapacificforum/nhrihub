@@ -183,6 +183,12 @@ A list of all the files that the application requires to be present in the share
 
 After following the instructions on the letsencrypt_plugin gem, you will have ssl certificates for your site stored in the certificates directory.
 
+For reference, within this application, you must first be logged-in as the user with read/write privileges, and then from the command line, issue the command:
+
+```
+RAILS_ENV=production bundle exec rake letsencrypt_plugin
+```
+
 Alternatively you may exclude this gem from Gemfile (and remove it from config/routes.rb) and obtain the site ssl certificate by another means.
 
 ## Customizing the theme
