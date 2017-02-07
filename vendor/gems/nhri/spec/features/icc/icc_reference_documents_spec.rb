@@ -5,7 +5,27 @@ require 'active_support/number_helper'
 require_relative '../../helpers/icc/icc_reference_documents_spec_helpers'
 require_relative '../../helpers/icc/icc_reference_documents_default_settings'
 
-feature "internal document management", :js => true do
+feature "list of icc reference documents", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  extend  ActiveSupport::NumberHelper
+  include IccReferenceDocumentsSpecHelpers
+  include IccReferenceDocumentDefaultSettings
+
+  before do
+    SiteConfig['nhri.icc_reference_documents.filetypes'] = ['pdf']
+    SiteConfig['nhri.icc_reference_documents.filesize'] = 3
+    doc = FactoryGirl.create(:icc_reference_document, :title => "my important document")
+    visit nhri_icc_reference_documents_path('en')
+  end
+
+  it "should render a list of icc reference documents" do
+    expect(page).to have_selector("#reference_documents .icc_reference_document", :count => 1)
+  end
+end
+
+feature "icc reference document management", :js => true do
   include IERemoteDetector
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
