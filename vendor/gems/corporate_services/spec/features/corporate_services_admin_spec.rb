@@ -20,6 +20,7 @@ feature "strategic plan admin", :js => true do
     expect(StrategicPlan.most_recent.strategic_priorities.length ).to eq(0)
     expect(page).to have_selector('#strategic_plans .strategic_plan td', :text => "A plan for the 21st century")
     expect(page).to have_selector('#strat_plan #sp_item', :visible => false, :text => "A plan for the 21st century")
+    expect(page).not_to have_selector('#strat_plan #sp_item', :visible => false, :text => "none configured")
   end
 
   scenario "add a strategic plan with blank title" do
@@ -47,6 +48,27 @@ feature "when there are already some strategic plans", :js => true do
   scenario "delete a strategic plan" do
     expect{ delete_plan; confirm_deletion; wait_for_ajax }.to change{StrategicPlan.count}.from(1).to(0).
                                                           and change{page.all('tr.strategic_plan').length}.from(1).to(0)
+    expect(page).not_to have_selector('#strat_plan #sp_item', :visible => false, :text => "a man a plan")
+    expect(page).to have_selector('#strat_plan #sp_item', :visible => false, :text => "none configured")
+  end
+
+  scenario "delete and then re-add a strategic plan" do
+    delete_plan
+    confirm_deletion
+    wait_for_ajax
+    fill_in("strategic_plan_title", :with => "a man a plan")
+    expect{save_strategic_plan}.to change{StrategicPlan.count}.from(0).to(1)
+  end
+
+  scenario "add a duplicate and delete the original" do
+    fill_in("strategic_plan_title", :with => "a man a plan")
+    save_strategic_plan
+    expect(page).to have_selector("#unique_title_error", :text => "title already exists")
+    delete_plan
+    confirm_deletion
+    wait_for_ajax
+    save_strategic_plan
+    expect(page).not_to have_selector("#unique_title_error", :text => "title already exists")
   end
 
   scenario "add a strategic plan with duplicate title" do

@@ -32,7 +32,7 @@ class StrategicPlan < ActiveRecord::Base
   end
 
   def initialize(attrs={})
-    if attrs && attrs.delete(:copy)
+    if attrs && (attrs.delete(:copy) == "true")
       initialize_with_copy(attrs)
     else
       super
@@ -40,7 +40,11 @@ class StrategicPlan < ActiveRecord::Base
   end
 
   def initialize_with_copy(attrs)
-    initialize( attrs.merge(:strategic_priorities => StrategicPlan.most_recent.strategic_priorities.map(&:dup)))
+    if StrategicPlan.count > 0
+      attrs = attrs.merge(:strategic_priorities => StrategicPlan.most_recent.strategic_priorities.map(&:dup))
+    end
+
+    initialize( attrs)
   end
 
   def as_json(options={})
