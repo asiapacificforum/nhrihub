@@ -148,7 +148,7 @@ describe "create new plan and copy previous elements" do
   end
 
   it "should copy previous strategic plan elements if created with copy flag set" do
-    new_strategic_plan = StrategicPlan.create(:copy => true)
+    new_strategic_plan = StrategicPlan.create(:copy => "true")
     expect(new_strategic_plan.strategic_priorities.length).to eq 2
     expect(new_strategic_plan.strategic_priorities[0].reload.planned_results.length).to eq 2
     expect(new_strategic_plan.strategic_priorities[1].reload.planned_results.length).to eq 2

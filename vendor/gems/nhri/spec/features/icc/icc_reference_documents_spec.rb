@@ -139,7 +139,7 @@ feature "icc reference document management", :js => true do
     expect{ click_edit_save_icon(page); wait_for_ajax }.to change{ @doc.reload.title }.to("new document title")
     expect(@doc.source_url).to eq "http://www.google.com"
     expect(page.find('.template-download .title .no_edit').text).to eq "new document title"
-    expect(page.find('.template-download .source_url .no_edit').text).to eq "http://www.google.com"
+    expect(page.find('.template-download .source_url .no_edit').text).to eq "http://www.google.com..."
   end
 
   scenario "edit filename to blank" do

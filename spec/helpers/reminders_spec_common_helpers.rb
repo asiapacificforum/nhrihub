@@ -62,7 +62,7 @@ module RemindersSpecCommonHelpers
   end
 
   def save_reminder
-    page.find("i#save_reminder")
+    page.find("#save_reminder")
   end
 
   def edit_reminder_cancel
@@ -70,7 +70,7 @@ module RemindersSpecCommonHelpers
   end
 
   def cancel_reminder
-    page.find("i#cancel_reminder")
+    page.find("#cancel_reminder")
   end
 
   def reminder_delete_icon
