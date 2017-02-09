@@ -74,13 +74,14 @@
 }
 
 /* the next two change the icon from a closed folder to an open folder */
-div[aria-expanded='false'] .fa-folder-o:before {
+div.collapsed[data-toggle='collapse'] .fa-folder-o:before {
   content: "\f114";
 }
 
-[aria-expanded='true'] .fa-folder-o:before {
+div:not(.collapsed)[data-toggle='collapse'] .fa-folder-o:before {
   content: "\f115";
 }
+
 
 .editable { /* so that switch to edit leaves text in precise same position */
   padding-left:3px;

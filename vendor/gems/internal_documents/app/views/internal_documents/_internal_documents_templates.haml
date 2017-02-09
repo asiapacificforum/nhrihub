@@ -134,7 +134,7 @@
           %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
       %td{:style => "text-align:center; width:8%"}
         {{#if file}}
-        .icon{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{{ id }}"}
+        .icon.collapsed{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{{ id }}"}
           %i.fa.fa-folder-o.fa-lg
         {{else}}
         -# just to keep the spacing the same

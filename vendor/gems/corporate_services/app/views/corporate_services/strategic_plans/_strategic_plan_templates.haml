@@ -19,7 +19,7 @@
             .fade.edit{:style=>"width:100%"}
               %input.form-control#strategic_priority_description{:name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'background-color:#D6CDB8; width:100%; font-size: 16px; margin-left:2px; height:22px;', 'on-keydown' => "remove_description_errors()"}
               %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.description_error_message')
-          .col-md-1{:style => "text-align:center; font-size:14px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
+          .col-md-1.collapsed{:style => "text-align:center; font-size:14px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
             %i.fa.fa-folder-o.fa-lg#toggle
           .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px;", 'data-toggle' => 'edit'}
             .fade.edit

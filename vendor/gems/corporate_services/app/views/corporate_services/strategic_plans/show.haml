@@ -25,6 +25,7 @@
 = javascript_include_tag "corporate_services/strategic_plan"
 
 :coffeescript
+  @selected_performance_indicator_id = "#{params[:performance_indicator_id] ? params[:performance_indicator_id] : ''}"
   @strategic_plan_data = #{@strategic_plan.to_json}
   @flash_error = "#{t('.strategic_priority_disallowed')}"
 

@@ -9,7 +9,7 @@ feature "indicators behaviour", :js => true do
   include IndicatorsSpecSetupHelpers
 
   it "should highlight indicator and position page to display indicator selected with url" do
-    
+    expect(1).to eq 0
   end
 
   it "should delete indicators" do

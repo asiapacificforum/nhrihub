@@ -160,3 +160,22 @@ feature "actions on existing performance indicators", :js => true do
     expect( PerformanceIndicator.last.description ).to eq "new description"
   end
 end
+
+feature "open strategic plan and highlight performance indicator when its id is passed in via url query", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include PerformanceIndicatorsSpecHelpers
+  include StrategicPlanHelpers
+  include SetupHelpers
+
+  before do
+    activity = setup_activity
+    resize_browser_window
+    PerformanceIndicator.create(:activity_id => activity.id, :description => "great effort", :target => "15% improvement")
+    @selected_performance_indicator = PerformanceIndicator.create(:activity_id => activity.id, :description => "things get better", :target => "85% improvement")
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id, {:performance_indicator_id => @selected_performance_indicator.id})
+  end
+
+  it "should open the strategic priority and highlight the selected performance indicator" do
+    expect(page).to have_selector("#performance_indicator_editable#{@selected_performance_indicator.id}")
+  end
+end
