@@ -2,7 +2,6 @@ class Activity < ActiveRecord::Base
   include StrategicPlanIndex
   belongs_to  :outcome
   has_many :performance_indicators, :dependent => :destroy
-  default_scope ->{ order(:index) }
 
   # strip index if user has entered it
   before_create do

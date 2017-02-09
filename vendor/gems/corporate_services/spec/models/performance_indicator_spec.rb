@@ -41,7 +41,7 @@ describe "#indexed_description" do
 
       a1.performance_indicators << FactoryGirl.create(:performance_indicator, :activity => a1)
       a1.save
-      @new_performance_indicator = a1.performance_indicators.last
+      @new_performance_indicator = a1.performance_indicators.to_a.last
     end
 
     it "should correctly assign the index" do

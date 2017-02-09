@@ -4,7 +4,6 @@ class PlannedResult < ActiveRecord::Base
   has_many :outcomes, :dependent => :destroy, :autosave => true
   accepts_nested_attributes_for :outcomes
 
-  default_scope ->{ order(:index) }
   scope :in_current_strategic_plan, ->{ joins(:strategic_priority => :strategic_plan).merge(StrategicPlan.current) }
 
   # strip index if user has entered it

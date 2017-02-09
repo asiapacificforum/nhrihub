@@ -51,4 +51,8 @@ module PerformanceIndicatorsSpecHelpers
   def cancel_performance_indicator_addition
     page.find('.new_performance_indicator_control #create_stop').click
   end
+
+  def performance_indicator_indices
+    page.evaluate_script("_(strategic_plan.findAllComponents('pi')).map(function(pi){return pi.get('index')})")
+  end
 end

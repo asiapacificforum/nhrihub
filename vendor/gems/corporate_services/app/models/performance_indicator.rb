@@ -8,7 +8,6 @@ class PerformanceIndicator < ActiveRecord::Base
   has_many :media_appearances, :through => :media_appearance_performance_indicators
   has_many :project_performance_indicators, :dependent => :destroy
   has_many :projects, :through => :project_performance_indicators
-  default_scope ->{ order(:index) }
 
   before_create do
     self.description = self.description.gsub(/^[^a-zA-Z]*/,'')

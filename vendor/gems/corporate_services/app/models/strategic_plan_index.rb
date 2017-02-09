@@ -1,6 +1,10 @@
 require 'active_support/concern'
 module StrategicPlanIndex
   extend ActiveSupport::Concern
+  included do
+    default_scope ->{ order("string_to_array(index,'.')::int[]") }
+  end
+
   def <=>(other)
     self.index.split('.').map(&:to_i) <=> other.index.split('.').map(&:to_i)
   end

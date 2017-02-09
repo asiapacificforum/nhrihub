@@ -39,11 +39,18 @@ $ ->
         validation_criteria :
           description : 'notBlank'
       @validator = new Validator(@)
+    oncomplete : ->
+      if @get('selected')
+        @findParent('sp').open()
+        @slide_into_view()
+        @highlight()
     components :
       outreachevents : OutreachEvents
       mediaappearances : MediaAppearances
       projects : Projects
     computed :
+      selected : ->
+        parseInt(window.selected_performance_indicator_id) == @get('id')
       persisted : ->
         !isNaN(parseInt(@get('id')))
       reminders_count : ->
@@ -86,6 +93,10 @@ $ ->
       @parent.remove_performance_indicator_form()
     edit_update : (performance_indicator) ->
       @set(performance_indicator)
+    slide_into_view : ->
+      $('body').animate({scrollTop:$("#performance_indicator_editable#{@get('id')}").offset().top-100},1000)
+    highlight : ->
+      $("#performance_indicator_editable#{@get('id')}").addClass('highlight')
   , Remindable, Notable, ConfirmDeleteModal
 
   Activity = Ractive.extend
@@ -414,6 +425,9 @@ $ ->
       @show_add_planned_result()
     edit_update : (strategic_priorities)->
       @parent.set('strategic_priorities',strategic_priorities) # different from other components, b/c user may update the priority level. In others, index is not user-settable
+    open : ->
+      $( @find('.collapsed') ).removeClass('collapsed')
+      $( @find('.collapse') ).addClass('in')
   , ConfirmDeleteModal
 
   window.strategic_plan = new Ractive

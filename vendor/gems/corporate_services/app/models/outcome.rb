@@ -3,8 +3,6 @@ class Outcome < ActiveRecord::Base
   belongs_to :planned_result
   has_many :activities, :autosave => true, :dependent => :destroy
 
-  default_scope ->{ order(:index) }
-
   # strip index if user has entered it
   before_create do
     self.description = self.description.gsub(/^[^a-zA-Z]*/,'')

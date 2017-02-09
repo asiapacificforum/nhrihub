@@ -170,12 +170,46 @@ feature "open strategic plan and highlight performance indicator when its id is 
   before do
     activity = setup_activity
     resize_browser_window
-    PerformanceIndicator.create(:activity_id => activity.id, :description => "great effort", :target => "15% improvement")
-    @selected_performance_indicator = PerformanceIndicator.create(:activity_id => activity.id, :description => "things get better", :target => "85% improvement")
-    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id, {:performance_indicator_id => @selected_performance_indicator.id})
+    15.times do
+      FactoryGirl.create(:performance_indicator, :activity_id => activity.id)
+    end
+    selected_performance_indicator = PerformanceIndicator.create(:activity_id => activity.id, :description => "things get better", :target => "85% improvement")
+    15.times do
+      FactoryGirl.create(:performance_indicator, :activity_id => activity.id)
+    end
+    @id = selected_performance_indicator.id
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id, {:performance_indicator_id => @id})
   end
 
   it "should open the strategic priority and highlight the selected performance indicator" do
-    expect(page).to have_selector("#performance_indicator_editable#{@selected_performance_indicator.id}")
+    expect(page).to have_selector("#performance_indicator_editable#{@id}") # i.e. strategic priority should be opened
+    page_position = page.evaluate_script("$('body').scrollTop()")
+    element_offset = page.evaluate_script("$('#performance_indicator_editable#{@id}').offset().top")
+    expect(page_position).to eq element_offset - 100 # performance indicator must be positioned near the top of the page
+    expect(page).to have_css("#performance_indicator_editable#{@id}.highlight")
+  end
+end
+
+feature "renders performance indicators in order of index", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include PerformanceIndicatorsSpecHelpers
+  include StrategicPlanHelpers
+  include SetupHelpers
+
+  before do
+    activity = setup_activity
+    resize_browser_window
+    15.times do
+      FactoryGirl.create(:performance_indicator, :activity_id => activity.id)
+    end
+    selected_performance_indicator = PerformanceIndicator.create(:activity_id => activity.id, :description => "things get better", :target => "85% improvement")
+    @id = selected_performance_indicator.id
+    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id, {:performance_indicator_id => @id})
+  end
+
+  it "should open the strategic priority and highlight the selected performance indicator" do
+    expect(page).to have_selector("#performance_indicator_editable#{@id}")
+    indexes = (1..16).map{|i| "1.1.1.1.#{i}"}
+    expect(performance_indicator_indices).to eq indexes
   end
 end
