@@ -145,7 +145,13 @@ $ ->
 
   Doc = Ractive.extend
     template: '#template-download'
+    oncomplete : ->
+      if @get('selected')
+        @highlight()
+        @slide_into_view()
     computed :
+      selected : ->
+        parseInt(window.selected_document_id) == @get('id')
       stripped_title : ->
         @get('title').replace(/\s/g,"").toLowerCase()
       title_edit_permitted : ->
@@ -178,6 +184,14 @@ $ ->
       $('#reminders_modal').modal('show')
     delete_callback : (data,textStatus,jqxhr)->
       @parent.remove(@get('id'))
+    highlight : ->
+      $("#icc_reference_document_editable#{@get('id')}").
+        closest('.panel-heading').
+        addClass('highlight').
+        css('background-image','none')
+    slide_into_view : ->
+      $('body').animate({scrollTop:$("#icc_reference_document_editable#{@get('id')}").offset().top-100},1000)
+
   , Remindable, ConfirmDeleteModal
 
   Docs = Ractive.extend

@@ -207,7 +207,7 @@ feature "icc reference document management", :js => true do
   end
 end
 
-feature "internal document management when no filetypes have been configured", :js => true do
+feature "reference document management when no filetypes have been configured", :js => true do
   include IERemoteDetector
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
@@ -244,5 +244,35 @@ feature "open document from source_url", :js => true do
     click_the_source_url_link
     page.switch_to_window(page.windows[1])
     expect(page.evaluate_script('window.location.href')).to include @doc.source_url
+  end
+end
+
+feature "reference document highlighted when its id is passed in via url query string", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  extend  ActiveSupport::NumberHelper
+  include IccReferenceDocumentsSpecHelpers
+  include IccReferenceDocumentDefaultSettings
+
+  before do
+    15.times do
+      FactoryGirl.create(:icc_reference_document)
+    end
+    @id = FactoryGirl.create(:icc_reference_document).id
+    15.times do
+      FactoryGirl.create(:icc_reference_document)
+    end
+    visit nhri_icc_reference_documents_path('en', :selected_document_id => @id)
+  end
+
+  it "should highlight the selected document" do
+    expect(page).to have_selector("#reference_documents .panel-heading.highlight .icc_reference_document#icc_reference_document_editable#{@id}")
+  end
+
+  it "should scroll the selected document into view" do
+    page_position = page.evaluate_script("$('body').scrollTop()")
+    element_offset = page.evaluate_script("$('#icc_reference_document_editable#{@id}').offset().top")
+    expect(page_position).to eq element_offset - 100
   end
 end

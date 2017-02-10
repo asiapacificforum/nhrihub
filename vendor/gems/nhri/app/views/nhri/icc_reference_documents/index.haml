@@ -5,6 +5,7 @@
 = render :partial => 'shared/fileupload_buttonbar'
 
 :coffeescript
+  @selected_document_id = "#{params[:selected_document_id] ? params[:selected_document_id] : '' }"
   @maximum_filesize = #{IccReferenceDocument.maximum_filesize * 1000000}
   @permitted_filetypes = #{ IccReferenceDocument.permitted_filetypes }
   @files = #{ @icc_reference_documents.to_json }
