@@ -97,6 +97,8 @@ $ ->
       $('body').animate({scrollTop:$("#performance_indicator_editable#{@get('id')}").offset().top-100},1000)
     highlight : ->
       $("#performance_indicator_editable#{@get('id')}").addClass('highlight')
+    remove_highlight : ->
+      $("#performance_indicator_editable#{@get('id')}").removeClass('highlight')
   , Remindable, Notable, ConfirmDeleteModal
 
   Activity = Ractive.extend

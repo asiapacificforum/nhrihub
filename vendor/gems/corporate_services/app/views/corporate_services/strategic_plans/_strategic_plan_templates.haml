@@ -260,7 +260,7 @@
       %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:56px"}
 
 %script#show_performance_indicator_template{:type => 'text/ractive'}
-  .row.performance_indicator.editable_container{:id => "performance_indicator_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "padding-top:6px;"}
+  .row.performance_indicator.editable_container{:id => "performance_indicator_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "padding-top:6px;", 'on-click'=>'remove_highlight()'}
     .col-md-3.description.form-group{'data-toggle'=>'edit', :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>'description'}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
