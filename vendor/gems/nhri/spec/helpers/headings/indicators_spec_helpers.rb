@@ -3,6 +3,12 @@ require 'rspec/core/shared_context'
 module IndicatorsSpecHelpers
   extend RSpec::Core::SharedContext
 
+  def setup_fully_populated_heading
+    heading = FactoryGirl.create(:heading)
+    Nhri::HeadingGenerator.generate_attributes
+    Nhri::HeadingGenerator.generate(:fixed)
+  end
+
   def delete_indicator
     page.all('.indicator .delete_indicator')[0]
   end

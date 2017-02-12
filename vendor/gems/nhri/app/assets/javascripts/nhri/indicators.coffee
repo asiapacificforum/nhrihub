@@ -158,6 +158,8 @@ $ ->
   Indicator = Ractive.extend
     template : "#indicator_template"
     computed :
+      selected : ->
+        parseInt(window.selected_indicator_id) == @get('id')
       monitors_count : ->
         if @get('monitor_format') == "numeric"
           @get('numeric_monitors').length
@@ -181,6 +183,10 @@ $ ->
         @get('title').split(' ').slice(0,4).join(' ')+"..."
       delete_confirmation_message : ->
         "#{delete_indicator_confirmation_message} \"#{@get('truncated_title')}\"?"
+    oncomplete : ->
+      if @get('selected')
+        @highlight()
+        @slide_into_view()
     show_monitors_panel : ->
       type = @get('monitor_format')
       if type == 'file'
@@ -204,6 +210,10 @@ $ ->
       new_indicator.set(@get())
       new_indicator.set('source',@)
       $('#new_indicator_modal').modal('show')
+    highlight : ->
+      $(@find('.indicator')).addClass('highlight')
+    slide_into_view : ->
+      $('body').animate( {scrollTop:$(".indicator.highlight").offset().top-100}, 1000)
     , Remindable, Notable, ConfirmDeleteModal
 
   NatureHumanRightsAttribute = Ractive.extend

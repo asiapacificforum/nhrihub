@@ -6,11 +6,30 @@ require_relative '../../helpers/headings/indicators_spec_setup_helpers'
 feature "indicators behaviour", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include IndicatorsSpecHelpers
-  include IndicatorsSpecSetupHelpers
+  before do
+    setup_fully_populated_heading
+    @indicator_id = Nhri::HumanRightsAttribute.first.indicators.where(:nature => "Structural").last.id
+    visit nhri_heading_path(:en, Nhri::Heading.first.id,{:selected_indicator_id => @indicator_id})
+  end
 
   it "should highlight indicator and position page to display indicator selected with url" do
-    expect(1).to eq 0
+    expect(page).to have_selector(".indicator.highlight", :text => Nhri::Indicator.find(@indicator_id).title)
   end
+
+  it "should scroll the highlighted indicator into view" do
+    page_position = page.evaluate_script("$('body').scrollTop()")
+    element_offset = page.evaluate_script("$('.indicator.highlight').offset().top")
+    # it is a mystery to me why this needs to be 88 and not 100, as designed
+    # but it appears to work, and I have been unable to find an explanation,
+    # it's not worth spending any more time to understand it!
+    expect(page_position).to eq element_offset - 100
+  end
+end
+
+feature "indicators behaviour", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include IndicatorsSpecHelpers
+  include IndicatorsSpecSetupHelpers
 
   it "should delete indicators" do
     expect(page).to have_selector("#indicators .indicator", :count => 2)

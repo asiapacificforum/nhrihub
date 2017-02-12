@@ -20,6 +20,7 @@
 
 
 :coffeescript
+  @selected_indicator_id = "#{params[:selected_indicator_id] ? params[:selected_indicator_id] : ''}"
   @heading_data = #{@heading.to_json}
   @natures = [{name:'structural',text:"#{t('.structural')}"},{name:'process',text:"#{t('.process')}"},{name:'outcomes',text:"#{t('.outcomes')}"}]
   @permitted_filetypes = #{ Nhri::FileMonitor.permitted_filetypes.to_json }
