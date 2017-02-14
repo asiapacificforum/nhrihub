@@ -154,7 +154,11 @@ localhost:5000/teaspoon/testname
 ```
 where testname is the name of the test suite you wish to run. The following js test suites are included:
 * media
-* corporate
+* internal_documents
+* projects
+* headings
+* complaints
+* strategic_plan
 * default (runs all other suites)
 
 #### Headless testing (faster, but debugging is more difficult, use this for regression testing)

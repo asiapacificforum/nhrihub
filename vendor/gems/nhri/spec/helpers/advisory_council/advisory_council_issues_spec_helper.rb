@@ -28,4 +28,9 @@ module AdvisoryCouncilIssueSpecHelper
     end
   end
 
+  def clear_filter_fields
+    page.find('.fa-refresh').click
+    sleep(0.2) #javascript
+  end
+
 end

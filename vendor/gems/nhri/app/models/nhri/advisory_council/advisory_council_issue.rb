@@ -46,19 +46,19 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
   end
 
   def url
-    Rails.application.routes.url_helpers.nhri_advisory_council_issue_path(:en,id) if persisted?
+    nhri_advisory_council_issue_path(:en,id) if persisted?
   end
 
   def create_url
-    Rails.application.routes.url_helpers.nhri_advisory_council_issues_path(:en)
+    nhri_advisory_council_issues_path(:en)
   end
 
   def create_note_url
-    Rails.application.routes.url_helpers.nhri_advisory_council_advisory_council_issue_notes_path(:en,id) if persisted?
+    nhri_advisory_council_advisory_council_issue_notes_path(:en,id) if persisted?
   end
 
   def create_reminder_url
-    Rails.application.routes.url_helpers.nhri_advisory_council_advisory_council_issue_reminders_path(:en,id) if persisted?
+    nhri_advisory_council_advisory_council_issue_reminders_path(:en,id) if persisted?
   end
 
   def has_link
@@ -79,6 +79,10 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
 
   def remindable_url(remindable_id)
     nhri_advisory_council_advisory_council_issue_reminder_path('en',id,remindable_id)
+  end
+
+  def index_url
+    nhri_advisory_council_issues_path('en',{:selection => title})
   end
 
 end

@@ -464,16 +464,18 @@ $ ->
       i = _(@get("filter_criteria.#{attr}s")).indexOf(id)
       @splice("filter_criteria.#{attr}s",i,1)
     clear_filter : ->
-      @set('filter_criteria',collection_items_data().filter_criteria)
+      filter_criteria = _.extend(collection_items_data().filter_criteria,{title : ""})
+      @set('filter_criteria',filter_criteria)
+      window.history.pushState({},"unused title string",window.location.origin + window.location.pathname)
       _(@findAllComponents('area')).each (a)-> a.select()
       _(@findAllComponents('subarea')).each (a)-> a.select()
       @populate_min_max_fields()
     set_defaults : ->
       @clear_filter()
-    filter_rule : (name)->
-      @event.original.preventDefault()
-      @event.original.stopPropagation()
-      @set('filter_criteria.rule',name)
+    #filter_rule : (name)->
+      #@event.original.preventDefault()
+      #@event.original.stopPropagation()
+      #@set('filter_criteria.rule',name)
     new_article : ->
       @unshift('collection_items', $.extend(true,{},new_collection_item))
       $(@find("##{item_name}_title")).focus()

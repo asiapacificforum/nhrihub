@@ -27,9 +27,14 @@ feature "show advisory council issue archive", :js => true do
   end
 
   scenario "prepopulates title filter when title is passed as url query" do
-    FactoryGirl.create(:advisory_council_issue, :title => "the big issue")
-    visit nhri_advisory_council_issues_path(:en, {:title => "the big issue"})
+    issue = FactoryGirl.create(:advisory_council_issue, :title => "the big issue")
+    visit nhri_advisory_council_issues_path(:en)
+    expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 2)
+    visit issue.index_url
     expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 1)
+    clear_filter_fields
+    expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 2)
+    expect(page.evaluate_script("window.location.search")).to be_blank
   end
 end
 

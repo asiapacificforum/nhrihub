@@ -352,9 +352,19 @@ describe 'media filter', ->
     simulant.fire(@page.people_affected('max')[0],'change')
     expect(@page.pa_max()).to.not.have.$class('error')
 
+  it 'clears all filter parameters when clear_filter is invoked', ->
+    expect(@page.text_fields_length()).to.equal 8
+    @page.$title_input().val('F')
+    simulant.fire(@page.$title_input()[0],'change')
+    expect(@page.text_fields_length()).to.equal 2
+    collection.clear_filter()
+    expect(@page.text_fields_length()).to.equal 8
 
-  #it 'clears all filter parameters when clear button is clicked', ->
-    # pending
+  it 'filters and clears when filter_criteria pre-selects a title', ->
+    collection.set('filter_criteria.title', 'Fantasy land')
+    expect(@page.text_fields_length()).to.equal 1
+    collection.clear_filter()
+    expect(@page.text_fields_length()).to.equal 8
 
   it 'shows no matches message when there are no matches', ->
     # pending
