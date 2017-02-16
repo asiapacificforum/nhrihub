@@ -33,4 +33,8 @@ module AdvisoryCouncilIssueSpecHelper
     sleep(0.2) #javascript
   end
 
+  def click_back_button
+    page.evaluate_script('window.history.back()')
+  end
+
 end

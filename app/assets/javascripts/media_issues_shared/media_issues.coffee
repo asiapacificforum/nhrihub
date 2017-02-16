@@ -367,7 +367,7 @@ $ ->
     all_performance_indicators : performance_indicators
     item_name : item_name
     filter_criteria :
-      title : window.selected_title
+      title : ''
       from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation
       to : new Date(new Date().toDateString()) # then it yields proper comparison with Rails timestamp
       areas : []
@@ -389,7 +389,18 @@ $ ->
     data : window.collection_items_data()
     oninit : ->
       @populate_min_max_fields()
+      @set('filter_criteria.title',@get('search_string_title_selector'))
     computed :
+      title_filter : ->
+        if !_.isNull(@get('search_string_title_selector'))
+          @get('search_string_title_selector')
+        else
+          @get('filter_criteria.title')
+      search_string_title_selector : ->
+        unless _.isEmpty( window.location.search) || _.isNull( window.location.search)
+          window.location.search.split("=")[1].replace(/\+/g,' ')
+        else
+          ''
       dates : ->
         _(@findAllComponents('collectionItem')).map (collectionItem)->
           if !_.isNull(collectionItem.get('date'))
@@ -464,18 +475,20 @@ $ ->
       i = _(@get("filter_criteria.#{attr}s")).indexOf(id)
       @splice("filter_criteria.#{attr}s",i,1)
     clear_filter : ->
-      filter_criteria = _.extend(collection_items_data().filter_criteria,{title : ""})
-      @set('filter_criteria',filter_criteria)
-      window.history.pushState({},"unused title string",window.location.origin + window.location.pathname)
+      window.history.pushState({foo: "bar"},"unused title string",window.location.origin + window.location.pathname)
+      @set_filter_from_query_string()
       _(@findAllComponents('area')).each (a)-> a.select()
       _(@findAllComponents('subarea')).each (a)-> a.select()
       @populate_min_max_fields()
+    set_filter_from_query_string : ->
+      search_string = if (_.isEmpty( window.location.search) || _.isNull( window.location.search)) then '' else window.location.search.split("=")[1].replace(/\+/g,' ')
+      filter_criteria = _.extend(collection_items_data().filter_criteria,{title : search_string})
+      @set('filter_criteria',filter_criteria)
+      _(collection.findAllComponents('area')).each (a)->a.select()
+      _(collection.findAllComponents('subarea')).each (a)->a.select()
+      @populate_min_max_fields()
     set_defaults : ->
       @clear_filter()
-    #filter_rule : (name)->
-      #@event.original.preventDefault()
-      #@event.original.stopPropagation()
-      #@set('filter_criteria.rule',name)
     new_article : ->
       @unshift('collection_items', $.extend(true,{},new_collection_item))
       $(@find("##{item_name}_title")).focus()
@@ -499,6 +512,9 @@ $ ->
   window.start_page = ->
     window.collection = new Ractive options
     filter_criteria_datepicker.start(collection)
+    # so that a state object is present when returnng to the initial state with the back button
+    # this is so we can discriminate returning to the page from page load
+    history.replaceState({bish:"bosh"},"bash",window.location)
 
   start_page()
 
@@ -515,3 +531,7 @@ $ ->
     else
       $(".#{key}").removeClass('error')
 
+
+  window.onpopstate = (event)->
+    if event.state # to ensure that it doesn't trigger on page load, it's a problem with phantomjs but not with chrome
+      collection.set_filter_from_query_string()
