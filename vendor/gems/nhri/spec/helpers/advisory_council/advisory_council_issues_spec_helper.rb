@@ -28,13 +28,8 @@ module AdvisoryCouncilIssueSpecHelper
     end
   end
 
-  def clear_filter_fields
-    page.find('.fa-refresh').click
-    sleep(0.2) #javascript
-  end
-
-  def click_back_button
-    page.evaluate_script('window.history.back()')
+  def number_of_rendered_issues
+    page.all("#advisory_council_issues .advisory_council_issue").length
   end
 
 end

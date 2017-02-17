@@ -694,10 +694,16 @@ feature "complaints index", :js => true do
   end
 
   it "shows a single complaint when a query string is appended to the url" do
-    create_complaints
-    visit complaints_path('en', "html", {:case_reference => "c12-55"})
-    expect(page.all('#complaints .complaint').length).to eq 1
-    expect(page.all('#complaints .complaint', :visible => false).length).to eq 4
-    expect(page.find('#complaints_controls #case_reference').value).to eq "c12-55"
+    create_complaints # 3 complaints
+    visit @complaint.index_url
+    expect(number_of_rendered_complaints).to eq 1
+    expect(number_of_all_complaints).to eq 4
+    expect(page.find('#complaints_controls #case_reference').value).to eq @complaint.case_reference
+    clear_filter_fields
+    expect(number_of_rendered_complaints).to eq 4
+    expect(query_string).to be_blank
+    click_back_button
+    expect(page.evaluate_script("window.location.search")).to eq "?case_reference=#{@complaint.case_reference}"
+    expect(number_of_rendered_complaints).to eq 1
   end
 end

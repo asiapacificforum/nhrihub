@@ -162,6 +162,10 @@ class Complaint < ActiveRecord::Base
     complaint_reminder_path('en',id,remindable_id)
   end
 
+  def index_url
+    complaints_path('en', "html", {:case_reference => case_reference})
+  end
+
   def complainant_full_name
     [firstName, lastName].join(' ')
   end

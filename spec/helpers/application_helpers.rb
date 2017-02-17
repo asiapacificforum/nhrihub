@@ -53,4 +53,17 @@ module ApplicationHelpers
   def confirm_deletion
     page.find('.modal#confirm-delete a#confirm').click
   end
+
+  def clear_filter_fields
+    page.find('.fa-refresh').click
+    sleep(0.2) #javascript
+  end
+
+  def click_back_button
+    page.evaluate_script('window.history.back()')
+  end
+
+  def query_string
+    page.evaluate_script("window.location.search")
+  end
 end

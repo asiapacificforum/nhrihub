@@ -30,7 +30,7 @@ module ComplaintsSpecSetupHelpers
   def create_complaints
     FactoryGirl.create(:complaint, :case_reference => "c12-22")
     FactoryGirl.create(:complaint, :case_reference => "c12-33")
-    FactoryGirl.create(:complaint, :case_reference => "c12-55")
+    @complaint = FactoryGirl.create(:complaint, :case_reference => "c12-55")
   end
 
   private

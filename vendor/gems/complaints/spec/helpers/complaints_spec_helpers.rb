@@ -134,6 +134,14 @@ module ComplaintsSpecHelpers
     page.all('#complaints .complaint')
   end
 
+  def number_of_rendered_complaints
+    complaints.length
+  end
+
+  def number_of_all_complaints
+    page.all('#complaints .complaint', :visible => false).length
+  end
+
   def documents
     page.all('#complaint_documents .complaint_document')
   end

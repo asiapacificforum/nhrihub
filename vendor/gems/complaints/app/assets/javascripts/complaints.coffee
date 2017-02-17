@@ -279,7 +279,7 @@ FilterMatch =
   matches_status : ->
     selected_statuses = @get('filter_criteria.selected_statuses')
     status_name = @get('current_status_humanized')
-    (selected_statuses.indexOf(status_name) != -1) || _.isEmpty(selected_statuses)
+    _.isEmpty(selected_statuses) || (selected_statuses.indexOf(status_name) != -1)
 
 Toggle =
   oninit : ->
@@ -524,6 +524,14 @@ FilterControls = Ractive.extend
     @parent.compact()
   clear_filter : ->
     @set('filter_criteria',$.extend(true,{},complaints_page_data().filter_criteria))
+    window.history.pushState({foo: "bar"},"unused title string",window.location.origin + window.location.pathname)
+    @set_filter_from_query_string()
+  set_filter_from_query_string : ->
+    search_string = if (_.isEmpty( window.location.search) || _.isNull( window.location.search)) then '' else window.location.search.split("=")[1]
+    filter_criteria = _.extend(source_filter_criteria,{case_reference : search_string})
+    @set('filter_criteria',filter_criteria)
+    #_(collection.findAllComponents('area')).each (a)->a.select()
+    #_(collection.findAllComponents('subarea')).each (a)->a.select()
 
 window.complaints_page_data = ->
   complaints : source_complaints_data
@@ -611,3 +619,11 @@ Ractive.decorators.inpage_edit = EditInPlace
 $ ->
   start_page()
   filter_criteria_datepicker.start(complaints)
+  # so that a state object is present when returnng to the initial state with the back button
+  # this is so we can discriminate returning to the page from page load
+  history.replaceState({bish:"bosh"},"bash",window.location)
+
+
+window.onpopstate = (event)->
+  if event.state # to ensure that it doesn't trigger on page load, it's a problem with phantomjs but not with chrome
+    window.complaints.findComponent('filterControls').set_filter_from_query_string()

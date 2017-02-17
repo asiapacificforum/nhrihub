@@ -19,27 +19,26 @@ feature "show advisory council issue archive", :js => true do
                          :hr_area,
                          :reminders=>[FactoryGirl.create(:reminder, :advisory_council_issue)] )
     end
-    #issue = FactoryGirl.create(:advisory_council_issue, :title => "the big issue")
     resize_browser_window
     visit nhri_advisory_council_issues_path(:en)
   end
 
   scenario "lists advisory council issues" do
     expect(page_heading).to eq "Advisory Council Issues"
-    expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 2)
+    expect(number_of_rendered_issues).to eq 2
   end
 
   scenario "prepopulates title filter when title is passed as url query" do
-    expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 2)
+    expect(number_of_rendered_issues).to eq 2
     visit @issue.index_url
-    expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 1)
+    expect(number_of_rendered_issues).to eq 1
     clear_filter_fields
-    expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 2)
-    expect(page.evaluate_script("window.location.search")).to be_blank
+    expect(number_of_rendered_issues).to eq 2
+    expect(query_string).to be_blank
     click_back_button
     escaped_title_string = @issue.title.gsub(/\s/,'+')
-    expect(page.evaluate_script("window.location.search")).to eq "?selection=#{escaped_title_string}"
-    expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 1)
+    expect(query_string).to eq "?selection=#{escaped_title_string}"
+    expect(number_of_rendered_issues).to eq 1
   end
 end
 
