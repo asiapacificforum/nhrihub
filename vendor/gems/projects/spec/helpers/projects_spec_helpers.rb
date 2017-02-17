@@ -24,7 +24,7 @@ module ProjectsSpecHelpers
                              :with_documents,
                              :with_performance_indicators)
 
-    ggp = FactoryGirl.create(:project,
+    @project = FactoryGirl.create(:project,
                              :with_named_documents,
                              :with_performance_indicators,
                              :with_mandates,

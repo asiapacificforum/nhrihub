@@ -17,8 +17,16 @@ RSpec.shared_examples "projects index" do
     end
 
     it "pre-populates the projects filter when a title is passed in the url" do
-      visit projects_path(:en, {:title => Project.first.title})
-      expect(projects_count).to eq 1
+      visit @project.index_url
+      expect(number_of_rendered_projects).to eq 1
+      expect(number_of_all_projects).to eq 2
+      expect(page.find('#projects_controls #title').value).to eq @project.title
+      clear_filter_fields
+      expect(number_of_rendered_projects).to eq 2
+      expect(query_string).to be_blank
+      click_back_button
+      expect(page.evaluate_script("window.location.search")).to eq "?title=#{@project.title.gsub(/\s/,'+')}"
+      expect(number_of_rendered_projects).to eq 1
     end
 
     it "shows expanded information for each of the projects" do

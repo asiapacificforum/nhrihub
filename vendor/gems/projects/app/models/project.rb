@@ -80,4 +80,8 @@ class Project < ActiveRecord::Base
     project_reminder_path('en',id,remindable_id)
   end
 
+  def index_url
+    projects_path(:en, {:title => title})
+  end
+
 end

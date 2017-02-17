@@ -40,8 +40,17 @@ module ProjectsSpecCommonHelpers
     page.find('#human_rights_types')
   end
 
+  def single_item_selector
+    "#projects .project"
+  end
+
   def projects_count
-    page.all('#projects .project').count
+    page.all(single_item_selector).count
+  end
+  alias_method :number_of_rendered_projects, :projects_count
+
+  def number_of_all_projects
+    page.all(single_item_selector, :visible => false).count
   end
 
   def add_project

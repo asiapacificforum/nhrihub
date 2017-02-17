@@ -370,6 +370,12 @@ FilterControls = Ractive.extend
     @parent.compact()
   clear_filter : ->
     @set('filter_criteria', window.projects_page_data().filter_criteria)
+    window.history.pushState({foo: "bar"},"unused title string",window.location.origin + window.location.pathname)
+    @set_filter_from_query_string()
+  set_filter_from_query_string : ->
+    search_string = if (_.isEmpty( window.location.search) || _.isNull( window.location.search)) then '' else window.location.search.split("=")[1].replace(/\+/g,' ')
+    filter_criteria = _.extend(window.filter_criteria,{title : search_string})
+    @set('filter_criteria',filter_criteria)
 
 window.projects_page_data = ->
   performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')
@@ -446,3 +452,10 @@ window.start_page = ->
 
 $ ->
   start_page()
+  # so that a state object is present when returnng to the initial state with the back button
+  # this is so we can discriminate returning to the page from page load
+  history.replaceState({bish:"bosh"},"bash",window.location)
+
+window.onpopstate = (event)->
+  if event.state # to ensure that it doesn't trigger on page load, it's a problem with phantomjs but not with chrome
+    window.projects.findComponent('filterControls').set_filter_from_query_string()
