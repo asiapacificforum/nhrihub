@@ -99,6 +99,10 @@ class MediaAppearance < ActiveRecord::Base
     media_appearance_reminder_path('en',id,remindable_id)
   end
 
+  def index_url
+    media_appearances_path(:en, {:title => title})
+  end
+
   def date
     created_at.to_time.to_date.to_s(:default) if persisted? # to_time converts to localtime
   end

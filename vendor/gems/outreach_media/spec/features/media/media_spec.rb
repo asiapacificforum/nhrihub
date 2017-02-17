@@ -16,8 +16,8 @@ feature "show media archive", :js => true do
     setup_positivity_ratings
     setup_file_constraints
     setup_areas
-    2.times do
-      FactoryGirl.create(:media_appearance, :hr_area, :positivity_rating => PositivityRating.first, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
+    4.times do
+      @media_appearance = FactoryGirl.create(:media_appearance, :hr_area, :positivity_rating => PositivityRating.first, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
     end
     resize_browser_window
     visit media_appearances_path(:en)
@@ -25,12 +25,20 @@ feature "show media archive", :js => true do
 
   scenario "lists media appearances" do
     expect(page_heading).to eq "Media Archive"
-    expect(page).to have_selector("#media_appearances .media_appearance", :count => 2)
+    expect(number_of_rendered_media_appearances).to eq 4
   end
 
   scenario "prepopulates filter controls title in response to url query field" do
-    visit media_appearances_path(:en, {:title => MediaAppearance.first.title})
-    expect(page).to have_selector("#media_appearances .media_appearance", :count => 1)
+    visit @media_appearance.index_url
+    expect(number_of_rendered_media_appearances).to eq 1
+    expect(number_of_all_media_appearances).to eq 4
+    expect(page.find("#media_appearances_controls #title").value).to eq @media_appearance.title
+    clear_filter_fields
+    expect(number_of_rendered_media_appearances).to eq 4
+    expect(query_string).to be_blank
+    click_back_button
+    expect(page.evaluate_script("window.location.search")).to eq "?title=#{@media_appearance.title.gsub(/\s/,'+')}"
+    expect(number_of_rendered_media_appearances).to eq 1
   end
 end
 

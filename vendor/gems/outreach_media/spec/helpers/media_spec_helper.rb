@@ -28,4 +28,12 @@ module MediaSpecHelper
     end
   end
 
+  def number_of_rendered_media_appearances
+    page.all(single_item_selector).length
+  end
+
+  def number_of_all_media_appearances
+    page.all(single_item_selector, :visible => false).length
+  end
+
 end

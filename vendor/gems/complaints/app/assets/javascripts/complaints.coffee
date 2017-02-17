@@ -530,8 +530,6 @@ FilterControls = Ractive.extend
     search_string = if (_.isEmpty( window.location.search) || _.isNull( window.location.search)) then '' else window.location.search.split("=")[1]
     filter_criteria = _.extend(source_filter_criteria,{case_reference : search_string})
     @set('filter_criteria',filter_criteria)
-    #_(collection.findAllComponents('area')).each (a)->a.select()
-    #_(collection.findAllComponents('subarea')).each (a)->a.select()
 
 window.complaints_page_data = ->
   complaints : source_complaints_data
