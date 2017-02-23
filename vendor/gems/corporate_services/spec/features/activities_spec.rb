@@ -138,13 +138,9 @@ feature "actions on existing activities", :js => true do
   scenario "edit one of multiple activities, not the first" do
     page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[1].click
     activity_description_field.last.set("new description")
-    #expect{activity_save_icon.click; wait_for_ajax}.to change{Activity.last.description}.to("new description")
-                                                   #.and change{page.all(activity_selector+".description .no_edit span:first-of-type")[1].text}
-                                                   #.to "1.1.1.2 new description"
-    # expect{}.to change{} fails for unknown reasons, so use this longer syntax
     activity_save_icon.click
     wait_for_ajax
     expect(page.all(activity_selector+".description .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 new description"
-    expect( Activity.last.description ).to eq "new description"
+    expect( Activity.all.to_a.last.description ).to eq "new description"
   end
 end

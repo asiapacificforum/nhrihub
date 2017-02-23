@@ -157,7 +157,7 @@ feature "actions on existing performance indicators", :js => true do
     wait_for_ajax
     expect(page.all(performance_indicator_selector+".description .no_edit span:first-of-type")[1].text ).to eq "1.1.1.1.2 new description"
     expect(page.all(performance_indicator_selector+".target .no_edit span:first-of-type")[1].text ).to eq "1.1.1.1.2 total satisfaction"
-    expect( PerformanceIndicator.last.description ).to eq "new description"
+    expect( PerformanceIndicator.all.to_a.last.description ).to eq "new description"
   end
 end
 

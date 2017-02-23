@@ -202,7 +202,7 @@ feature "actions on existing multiple outcomes", :js => true do
   scenario "edit one of multiple outcomes, not the first" do
     outcome_descriptions[1].click
     outcome_description_field.set("new description")
-    expect{ outcome_save_icon.click; wait_for_ajax }.to change{ Outcome.last.description }.to "new description"
+    expect{ outcome_save_icon.click; wait_for_ajax }.to change{ Outcome.all.to_a.last.description }.to "new description"
     expect(page.all(".row.outcome .col-md-2.description")[1].text ).to eq "1.1.2 new description"
   end
 end
