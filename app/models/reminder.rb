@@ -24,6 +24,14 @@ class Reminder < ActiveRecord::Base
 
   before_save :calculate_next
 
+  def link
+    remindable.index_url
+  end
+
+  def remindable_name
+    remindable.model_name.human
+  end
+
   def next_or_today
     if self.next
       self.next.to_date

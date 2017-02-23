@@ -1,5 +1,7 @@
 en:
   activerecord:
+    models:
+      media_appearance: "Media Appearance"
     attributes:
       media_appearance:
         affected_people_count: "# People affected"

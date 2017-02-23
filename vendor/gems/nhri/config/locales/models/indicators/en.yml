@@ -1,5 +1,8 @@
 en:
   activerecord:
+    models:
+      indicator: "Indicator"
+  activerecord:
     attributes:
       file_monitor:
         original_filename: "Original file name"

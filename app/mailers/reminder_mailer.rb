@@ -5,6 +5,8 @@ class ReminderMailer < ApplicationMailer
   def reminder(reminder)
     @recipients = reminder.user.first_last_name
     @text = reminder.text
+    @link = reminder.link
+    @remindable_name = reminder.remindable_name
     mail to: reminder.user.email_with_name, subject: default_i18n_subject(application_name: APPLICATION_NAME)
   end
 end

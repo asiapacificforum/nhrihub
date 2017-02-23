@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe ReminderMailer, type: :mailer do
   describe "reminder" do
     let(:user) { FactoryGirl.build(:user, :email => "norm@acme.org") }
-    let(:reminder){ FactoryGirl.build(:reminder, :user => user) }
+    let(:complaint) { FactoryGirl.create(:complaint) }
+    let(:reminder){ FactoryGirl.build(:reminder, :complaint, :remindable_id => complaint.id, :user => user) }
     let(:mail) { ReminderMailer.reminder(reminder) }
 
     it "renders the headers" do
@@ -13,7 +14,10 @@ RSpec.describe ReminderMailer, type: :mailer do
     end
 
     it "renders the body" do
+      puts mail.body.encoded
+      puts reminder.text
       expect(mail.body.encoded).to match(reminder.text)
+      expect(mail.body.encoded).to include(reminder.link)
     end
   end
 

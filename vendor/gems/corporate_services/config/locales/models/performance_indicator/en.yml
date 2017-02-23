@@ -1,0 +1,4 @@
+en:
+  activerecord:
+    models:
+      performance_indicator: "Performance Indicator"

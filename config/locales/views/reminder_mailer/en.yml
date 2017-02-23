@@ -4,3 +4,5 @@ en:
       subject: "A reminder from %{application_name}"
       greeting: "Reminder to %{recipients}"
       no_reply: "This email was automatically generated. Please do not reply. The mailbox is not monitored"
+      click : "Click here"
+      click_message : "to see the %{remindable_name} that generated this reminder"

@@ -5,6 +5,8 @@ en:
         accreditation_document_group:
           duplicate: "already exists, must be unique."
   activerecord:
+    models:
+      icc_reference_document: "GANHRI Reference Document"
     attributes:
       icc_reference_document:
         original_filename: "Original file name"
