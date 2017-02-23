@@ -50,8 +50,11 @@
 
 %script#new_reminder_template{:type => 'text/ractive'}
   .form-horizontal#new_reminder
+    .row
+      .col-sm-2.col-md-offset-2
+        %span.required_before=t('required')
     .form-group#reminder_type{:class => '{{#reminder_type_error}}has-error{{/}}'}
-      %label.control-label.col-sm-2= t('.type')
+      %label.control-label.col-sm-2.required= t('.type')
       .col-sm-10
         =select :reminder, :reminder_type, options_for_select(reminder_type_options), {:prompt => "select type"}, {:class => 'form-control', :style => "width:31%", :value => '{{reminder_type}}', 'on-change'=>"remove_errors('reminder_type')"}
         %span.help-block= t('.reminder_type_error_message')
@@ -60,12 +63,12 @@
       .col-sm-10
         =date_select :reminder, :start_date, {:start_year => Date.today.year}, {:class=>'form-control'}
     .form-group#text{:class => '{{#text_error}}has-error{{/}}'}
-      %label.control-label.topaligned.col-sm-2= t('.text')
+      %label.control-label.topaligned.col-sm-2.required= t('.text')
       .col-sm-10
         =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
         %span.help-block= t('.reminder_text_error_message')
     .form-group#recipient{:class => '{{#user_id_error}}has-error{{/}}'}
-      %label.control-label.topaligned.col-sm-2= t('.recipient')
+      %label.control-label.topaligned.col-sm-2.required= t('.recipient')
       .col-sm-10
         =select :reminder, :user_id, options_for_select(recipient_options), {:prompt => t('.select_recipient')}, { :class=>'form-control', :style => "width:24%", :value => '{{user_id}}', 'on-change'=>"remove_errors('user_id')"}
         %span.help-block= t('.reminder_recipient_error_message')
