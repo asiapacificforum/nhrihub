@@ -12,7 +12,7 @@ namespace :corporate_services do
           2.times do
             a = FactoryGirl.create(:activity, :outcome => o)
             2.times do
-              FactoryGirl.create(:performance_indicator, :activity => a)
+              FactoryGirl.create(:performance_indicator, :well_populated, :activity => a)
             end
           end
         end

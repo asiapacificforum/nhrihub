@@ -24,12 +24,15 @@ class Reminder < ActiveRecord::Base
 
   before_save :calculate_next
 
+  # it's used in the reminder email
   def link
     remindable.index_url
   end
 
+  # it's used in the reminder email
   def remindable_name
-    remindable.model_name.human
+    # for i18n configurability
+    remindable.model_name.human.titlecase
   end
 
   def next_or_today

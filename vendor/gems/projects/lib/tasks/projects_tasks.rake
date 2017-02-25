@@ -6,7 +6,7 @@ namespace :projects do
   task "populate_projects" => :environment do
     Project.destroy_all
     5.times do
-      FactoryGirl.create(:project)
+      FactoryGirl.create(:project, :with_reminders)
     end
   end
 

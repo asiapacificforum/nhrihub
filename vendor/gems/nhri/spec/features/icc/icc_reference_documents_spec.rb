@@ -259,11 +259,12 @@ feature "reference document highlighted when its id is passed in via url query s
     15.times do
       FactoryGirl.create(:icc_reference_document)
     end
-    @id = FactoryGirl.create(:icc_reference_document).id
+    icc_reference_document = FactoryGirl.create(:icc_reference_document)
+    @id = icc_reference_document.id
     15.times do
       FactoryGirl.create(:icc_reference_document)
     end
-    visit nhri_icc_reference_documents_path('en', :selected_document_id => @id)
+    visit icc_reference_document.index_url
   end
 
   it "should highlight the selected document" do

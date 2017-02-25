@@ -39,4 +39,8 @@ class IccReferenceDocument < ActiveRecord::Base
     nhri_icc_reference_document_reminder_path('en',id,remindable_id)
   end
 
+  def index_url
+    nhri_icc_reference_documents_path('en', :selected_document_id => id)
+  end
+
 end

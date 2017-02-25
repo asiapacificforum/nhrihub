@@ -56,6 +56,11 @@ class PerformanceIndicator < ActiveRecord::Base
     projects.map(&:title)
   end
 
+  def index_url
+    strategic_plan = activity.outcome.planned_result.strategic_priority.strategic_plan
+    corporate_services_strategic_plan_path(:en, strategic_plan.id, {:performance_indicator_id => id})
+  end
+
   def create_note_url
     corporate_services_performance_indicator_notes_path(:en,id)
   end
@@ -80,7 +85,6 @@ class PerformanceIndicator < ActiveRecord::Base
   def description_error
     nil
   end
-
 
   def indexed_target
     if target.blank?

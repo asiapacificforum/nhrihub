@@ -75,7 +75,7 @@ FactoryGirl.define do
 
     trait :with_reminders do
       after(:create) do |aci|
-        rand(3).times do
+        (rand(3)+1).times do
           FactoryGirl.create(:reminder, :advisory_council_issue, :remindable_id => aci.id)
         end
       end

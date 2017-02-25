@@ -53,4 +53,8 @@ class Nhri::Indicator < ActiveRecord::Base
     nhri_indicator_reminder_path('en',id,remindable_id)
   end
 
+  def index_url
+    nhri_heading_path(:en, heading.id,{:selected_indicator_id => id})
+  end
+
 end

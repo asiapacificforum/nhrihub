@@ -6,5 +6,9 @@ FactoryGirl.define do
     nature {["Structural","Process","Outcomes"].sample}
     monitor_format { ["text", "numeric", "file"].sample }
     numeric_monitor_explanation {if monitor_format=="numeric" then Faker::Lorem.words(7).join(' ') else nil end }
+
+    after(:build) do |indicator|
+      indicator.reminders << FactoryGirl.create(:reminder, :indicator)
+    end
   end
 end

@@ -6,6 +6,7 @@ FactoryGirl.define do
 
     after(:create) do |reminder|
       reminder.user = User.first
+      reminder.save
     end
 
     trait :due_today do
@@ -19,14 +20,6 @@ FactoryGirl.define do
 
     trait :media_appearance do
       remindable_type "MediaAppearance"
-    end
-
-    trait :outreach_event do
-      remindable_type "OutreachEvent"
-    end
-
-    trait :activity do
-      remindable_type "Activity"
     end
 
     trait :advisory_council_issue do
@@ -43,6 +36,14 @@ FactoryGirl.define do
 
     trait :complaint do
       remindable_type "Complaint"
+    end
+
+    trait :performance_indicator do
+      remindable_type "PerformanceIndicator"
+    end
+
+    trait :icc do
+      remindable_type "IccReferenceDocument"
     end
   end
 end

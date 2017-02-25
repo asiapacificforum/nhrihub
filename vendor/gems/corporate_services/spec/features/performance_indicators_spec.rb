@@ -173,12 +173,18 @@ feature "open strategic plan and highlight performance indicator when its id is 
     15.times do
       FactoryGirl.create(:performance_indicator, :activity_id => activity.id)
     end
-    selected_performance_indicator = PerformanceIndicator.create(:activity_id => activity.id, :description => "things get better", :target => "85% improvement")
+    selected_performance_indicator = FactoryGirl.create(:performance_indicator, :activity => activity)
+    reminder = FactoryGirl.create(:reminder, :remindable => selected_performance_indicator)
     15.times do
       FactoryGirl.create(:performance_indicator, :activity_id => activity.id)
     end
     @id = selected_performance_indicator.id
-    visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id, {:performance_indicator_id => @id})
+    visit selected_performance_indicator.index_url
+    # it would be good if this worked, but mail preview adds the locale string and there's no route for that
+    # I haven't found a solution, TODO either find a workaround or make a rails issue
+    #host = Capybara.current_session.server.host
+    #port = Capybara.current_session.server.port
+    #visit "http://#{host}:#{port}/rails/mailers/reminder_mailer/performance_indicator_reminder.html?part=text%2Fhtml"
   end
 
   it "should open the strategic priority and highlight the selected performance indicator" do

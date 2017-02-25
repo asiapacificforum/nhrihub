@@ -8,8 +8,13 @@ FactoryGirl.define do
     original_type       { "application/pdf" }
 
     after(:build) { |doc|
-      doc.user = FactoryGirl.create(:user, :with_password)
+      if User.count > 20
+        doc.user = User.all.sample
+      else
+        doc.user = FactoryGirl.create(:user, :with_password)
+      end
       FileUtils.touch Rails.root.join('tmp','uploads','store',doc.file_id)
+      doc.reminders << FactoryGirl.create(:reminder, :icc)
     }
   end
 end

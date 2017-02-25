@@ -8,8 +8,9 @@ feature "indicators behaviour", :js => true do
   include IndicatorsSpecHelpers
   before do
     setup_fully_populated_heading
-    @indicator_id = Nhri::HumanRightsAttribute.first.indicators.where(:nature => "Structural").last.id
-    visit nhri_heading_path(:en, Nhri::Heading.first.id,{:selected_indicator_id => @indicator_id})
+    indicator = Nhri::HumanRightsAttribute.first.indicators.where(:nature => "Structural").last
+    @indicator_id = indicator.id
+    visit indicator.index_url
   end
 
   it "should highlight indicator and position page to display indicator selected with url" do

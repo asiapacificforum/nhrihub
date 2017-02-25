@@ -25,8 +25,11 @@
 
 %script#new_note_template{:type => 'text/ractive'}
   .form-horizontal#new_note
+    .row
+      .col-sm-2.col-md-offset-2
+        %span.required_before=t('required')
     .form-group#text{:class => '{{#text_error}}has-error{{/}}'}
-      %label.control-label.topaligned.col-sm-2= t('.text')
+      %label.control-label.topaligned.col-sm-2.required= t('.text')
       .col-sm-10
         =text_area :note, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
         %span.help-block= t('.note_text_error_message')
