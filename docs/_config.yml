@@ -1,3 +1,4 @@
 theme: jekyll-theme-tactile
 title: "NHRI Hub"
 description: "A suite of tools for management of NHRI operations"
+show_downloads: true
