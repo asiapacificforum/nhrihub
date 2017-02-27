@@ -25,8 +25,6 @@ gem 'jquery-rails'
 # bundle exec rake doc:rails generates the API under doc/api.
 ##gem 'sdoc', '~> 0.4.0',          group: :doc
 
-# Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -41,6 +39,8 @@ gem 'whenever', :require => false
 gem 'secure_headers', :git => 'https://github.com/twitter/secureheaders', :branch => 'master', :require => 'secure_headers'
 
 group :development do
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
   # Use Capistrano for deployment
   gem 'capistrano-rails'
   # capistrano add-ons
@@ -52,6 +52,8 @@ group :development do
   # specify higher rev than required by capistrano in order to get
   # fixed connection pooling and faster deploys
   gem 'sshkit', '~> 1.5'
+  gem 'jekyll'
+  gem 'jekyll-theme-tactile'
 end
 
 # Use debugger

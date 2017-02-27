@@ -43,3 +43,4 @@ tags
 lib/import_data
 lib/tasks/import.rake
 anomalous_case_references.txt
+docs/.sass-cache
