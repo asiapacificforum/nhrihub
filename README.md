@@ -218,10 +218,17 @@ will be included and run with the main application's migrations.
 The root application includes models, controllers and views that appear in multiple modules, and may be included in new modules. They are:
 1. Reminders
 2. Notes
-Each of these shared elements has a feature test spec implemented as an rspec shared behaviour. So the behaviour can be tested when the shared model is incorporated into a module.
+Each of these shared elements has a feature test spec implemented as an rspec shared behaviour. So the behaviour can be tested when the shared model is incorporated as an association into a module.
 
 ### Sending Reminders
 A rake task is provided that should be run each day, exactly once per day, to send any reminders that are due on that day. This is done by the server's cron daemon. The configuration of the cron daemon is accomplished with the NHRIDocs app using the [whenever gem](https://github.com/javan/whenever). The configuration file is config/schedule.rb.
+
+# Github Pages
+All the files for a static informational website, served a Jekyll server, are included in the /docs directory. The Jekyll gem is included in the development environment, and is also available on GitHub to serve files from this directory. It is viewable on the web at [http://asiapacificforum.github.io/nhrihub/](http://asiapacificforum.github.io/nhrihub/). To view this locally, invoke
+```
+jekyll serve
+```
+from the /docs directory and point your browser to localhost::4000.
 
 ## License
 GPL V3, see LICENSE.txt
