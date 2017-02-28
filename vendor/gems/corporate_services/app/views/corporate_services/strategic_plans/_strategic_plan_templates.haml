@@ -286,8 +286,8 @@
       .alarm_icon.counter{'data-count'=>'{{reminders_count}}', 'on-click' => "show_reminders_panel()"}
     .col-md-1.actions{:style=>"padding-top:4px;"}
       .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()"}
-    .col-md-1.actions{:style=>"padding-top:4px;"}
-      .rule{'on-click' => "show_rules_panel()"}
+    -#.col-md-1.actions{:style=>"padding-top:4px;"}
+      -#.rule{'on-click' => "show_rules_panel()"}
 
 %script#projects_template{:type => 'text/ractive'}
   {{#project_titles}}
