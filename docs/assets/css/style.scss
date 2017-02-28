@@ -1,0 +1,34 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+.inner { width : 700px; }
+
+a {
+  cursor : pointer;
+  color: #5490d2;}
+a:hover {
+  color: #010315;
+}
+
+form input, form textarea {
+  margin-bottom: 0.5em;
+}
+input, textarea {
+  font-size: 0.8em;
+  font-family: 'proxima-nova-soft', sans-serif;
+  border: 1px solid #ddd;
+  background: #fff;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+}
+button, input {
+  line-height: normal;
+}
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: 100%;
+  margin: 0;
+  vertical-align: baseline;
+}
