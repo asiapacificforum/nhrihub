@@ -290,21 +290,23 @@
 
 %script#projects_template{:type => 'text/ractive'}
   {{#project_titles}}
-  <project title='{{.}}' />
+  <project title='{{title}}' index_url='{{index_url}}' />
   {{/project_titles}}
 
 %script#project_template{:type => 'text/ractive'}
   .title.project{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.project')}
-    %span {{title}}
+    %span
+      %a{:href => "{{index_url}}"} {{title}}
 
 %script#media_appearances_template{:type => 'text/ractive'}
   {{#media_appearance_titles}}
-  <mediaappearance title='{{.}}' />
+  <mediaappearance title='{{title}}' index_url='{{index_url}}' />
   {{/media_appearance_titles}}
 
 %script#media_appearance_template{:type => 'text/ractive'}
   .title.media_appearance{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.media_appearance')}
-    %span {{title}}
+    %span
+      %a{:href => "{{index_url}}"} {{title}}
 
 = render :partial => 'shared/confirm_delete_modal'
 = render :partial => 'reminders/reminder' # it's in the main app

@@ -12,7 +12,7 @@ module FileConstraints
     end
 
     def maximum_filesize
-      SiteConfig[filesize_config_param]
+      SiteConfig[filesize_config_param] || 5
     end
 
     def maximum_filesize=(val)

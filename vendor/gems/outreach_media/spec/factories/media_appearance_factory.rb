@@ -15,7 +15,6 @@ FactoryGirl.define do
     end
 
     after(:build) do |media_appearance|
-      media_appearance.performance_indicator_ids = PerformanceIndicator.pluck(:id).sample(rand(2))
       media_appearance.user_id = User.pluck(:id)
       media_appearance.positivity_rating_id = PositivityRating.pluck(:id)
       if media_appearance.file_id
@@ -24,6 +23,12 @@ FactoryGirl.define do
           Rails.root.join('tmp')
         original_file_path = OutreachMedia::Engine.root.join('lib','sample.pdf')
         FileUtils.copy_file original_file_path, path.join('uploads','store',media_appearance.file_id) 
+      end
+    end
+
+    trait :with_performance_indicators do
+      after(:build) do |media_appearance|
+        media_appearance.performance_indicator_ids = PerformanceIndicator.pluck(:id).sample(rand(2))
       end
     end
 

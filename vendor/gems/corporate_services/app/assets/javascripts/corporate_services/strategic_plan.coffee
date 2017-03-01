@@ -16,14 +16,6 @@ $ ->
     components :
       'mediaappearance' : MediaAppearance
 
-  OutreachEvent = Ractive.extend
-    template : "#outreach_event_template"
-
-  OutreachEvents = Ractive.extend
-    template : "#outreach_events_template"
-    components :
-      'outreachevent' : OutreachEvent
-
   Project = Ractive.extend
     template: "#project_template"
 
@@ -45,7 +37,6 @@ $ ->
         @slide_into_view()
         @highlight()
     components :
-      outreachevents : OutreachEvents
       mediaappearances : MediaAppearances
       projects : Projects
     computed :
