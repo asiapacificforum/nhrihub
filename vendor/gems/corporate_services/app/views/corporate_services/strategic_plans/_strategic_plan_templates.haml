@@ -221,7 +221,7 @@
           %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
     .col-md-2{:style=>"width:80%;", :class => "{{^performance_indicators}}empty{{/performance_indicators}}"}
       {{#performance_indicators}}
-      <pi activity_id="{{activity_id}}" create_note_url="{{create_note_url}}" create_reminder_url="{{create_reminder_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" indexed_target="{{indexed_target}}" media_appearance_titles="{{media_appearance_titles}}" notes="{{notes}}" outreach_event_titles="{{outreach_event_titles}}" project_titles="{{project_titles}}" reminders="{{reminders}}" target="{{target}}" url="{{url}}" />
+      <pi activity_id="{{activity_id}}" create_note_url="{{create_note_url}}" create_reminder_url="{{create_reminder_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" indexed_target="{{indexed_target}}" media_appearance_titles="{{media_appearance_titles}}" notes="{{notes}}" project_titles="{{project_titles}}" reminders="{{reminders}}" target="{{target}}" url="{{url}}" />
       {{/performance_indicators}}
       {{^performance_indicators}}
       .row.performance_indicator
@@ -279,7 +279,6 @@
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_target', :placeholder => "Enter target",
             :name => "performance_indicator[target]", :value => "{{ target }}", :style => "width:initial; height:45px;"}
     .col-md-3.performance_indicator_progress
-      <outreachevents />
       <mediaappearances />
       <projects />
     .col-md-1.actions{:style=>"padding-top:4px;"}
@@ -296,15 +295,6 @@
 
 %script#project_template{:type => 'text/ractive'}
   .title.project{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.project')}
-    %span {{title}}
-
-%script#outreach_events_template{:type => 'text/ractive'}
-  {{#outreach_event_titles}}
-  <outreachevent title='{{.}}' />
-  {{/outreach_event_titles}}
-
-%script#outreach_event_template{:type => 'text/ractive'}
-  .title.outreach_event{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.outreach_event')}
     %span {{title}}
 
 %script#media_appearances_template{:type => 'text/ractive'}

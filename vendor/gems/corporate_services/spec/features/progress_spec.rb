@@ -22,10 +22,17 @@ feature "performance indicators outreach events and media appearances", :js => t
     open_accordion_for_strategic_priority_one
   end
 
-  scenario "associated outreach_events and media_appearances should be shown" do
+  scenario "associated projects and media_appearances should be shown" do
     media_text = MediaAppearance.first.title
     project_text = Project.first.title
     expect(page).to have_selector(progress_selector + ".title.media_appearance span", :text => media_text)
     expect(page).to have_selector(progress_selector + ".title.project span", :text => project_text)
   end
+
+  scenario "media appearance progress item should link back to the media appearance" do
+    media_text = MediaAppearance.first.title
+    click_link(media_text)
+    expect(heading).to eq "Media Appearances"
+  end
+
 end
