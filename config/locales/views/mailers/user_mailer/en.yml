@@ -3,7 +3,11 @@ en:
     user_mailer:
       signup_notification:
         subject: "Please activate your %{org_name} %{app_name} account"
-      activation:
+      activate_notification:
         subject: "Your account has been activated!"
-      forgot_password:
+      forgot_password_notification:
         subject: 'You have requested to change your password'
+      reset_password_notification:
+        subject: 'Your password has been reset'
+      lost_token_notification:
+        subject: 'You may register a new token'

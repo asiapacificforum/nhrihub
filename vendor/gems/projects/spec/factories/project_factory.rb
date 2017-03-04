@@ -18,7 +18,7 @@ FactoryGirl.define do
 
     trait :with_named_documents do
       after(:build) do |project|
-        project.project_documents << FactoryGirl.build(:project_document, :title => "Project Document")
+        project.project_documents << FactoryGirl.build(:project_document, :title => "Final Report")
         project.project_documents << FactoryGirl.build(:project_document, :title => "Project Document")
       end
     end

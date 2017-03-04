@@ -6,14 +6,7 @@ module IndicatorsContextRemindersSpecHelpers
   before do
     FactoryGirl.create(:heading)
     FactoryGirl.create(:human_rights_attribute)
-    FactoryGirl.create(:indicator,
-                       :reminders=>[FactoryGirl.create(:reminder,
-                                                       :indicator,
-                                                       :reminder_type => :weekly,
-                                                       :text => "don't forget the fruit gums mum",
-                                                       :user => User.first)],
-                       :notes => [FactoryGirl.create(:note, :indicator, :created_at => 3.days.ago.to_datetime),FactoryGirl.create(:note, :indicator, :created_at => 4.days.ago.to_datetime)])
-    #resize_browser_window
+    FactoryGirl.create(:indicator, :with_reminder, :with_notes)
     visit nhri_heading_path(:en, Nhri::Heading.first.id)
     page.all('.alarm_icon')[0].click
     sleep(0.3) # css transition

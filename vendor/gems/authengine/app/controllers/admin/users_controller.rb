@@ -42,6 +42,7 @@ class Admin::UsersController < ApplicationController
     cookies.delete :auth_token
     @user = User.new(user_params)
     @user.save!
+    flash[:notice] = "a registration email has been sent to #{@user.first_last_name} at #{@user.email}"
     redirect_to admin_users_path
   rescue ActiveRecord::RecordInvalid
     flash[:error] = t('.record_invalid')
@@ -216,17 +217,30 @@ class Admin::UsersController < ApplicationController
     send_change_authentication_email("lost_token")
   end
 
+  # user was registered but registration email was lost and user never responded to it, so we want to send it again
+  # it is easier to destroy the user and re-create the record, triggering a new registration email
+  def resend_registration_email
+    @user = User.find(params[:user_id])
+    attrs = @user.slice(:email, :firstName, :lastName)
+    @user.destroy
+    save User.new(attrs)
+  end
+
 protected
 
   def send_change_authentication_email(type)
     @user = User.find(params[:user_id])
     @user.send("prepare_to_send_#{type}_email")
     @users = User.order("lastName, firstName").all
-    if @user.save
-      flash[:notice] = t('.flash_notice', :name => @user.first_last_name, :email => @user.email )
+    save(@user)
+  end
+
+  def save(user)
+    if user.save
+      flash[:notice] = t('.flash_notice', :name => user.first_last_name, :email => user.email )
       redirect_to admin_users_path
     else
-      flash[:error] = t('.flash_error', :name => @user.first_last_name, :email => @user.email)
+      flash[:error] = t('.flash_error', :name => user.first_last_name, :email => user.email)
       redirect_to admin_users_path
     end
   end

@@ -46,7 +46,6 @@ RSpec.shared_examples "existing project file management" do
   it "replaces named files" do
     edit_last_project.click
     within edit_documents do
-      #attach_file
       attach_file("project_fileinput", upload_document)
     end
     page.find("#project_document_title").set("Final Report")

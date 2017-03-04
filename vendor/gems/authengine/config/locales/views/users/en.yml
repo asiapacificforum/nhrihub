@@ -20,6 +20,7 @@ en:
         edit_roles: 'edit roles'
         edit_profile: 'edit profile'
         reset_password: 'reset password'
+        resend_registration: 'resend registration'
         lost_token: 'lost access token'
         register_token: 'register access token'
         no_prev: 'no previous login'
@@ -65,6 +66,9 @@ en:
       send_lost_token_email :
         flash_notice: "A token registration email has been sent to %{name}, %{email}"
         flash_error: "Failed to send token registration email to %{name}, %{email}"
+      resend_registration_email:
+        flash_notice: "a registration email has been resent to %{name} at %{email}"
+        flash_error: "Failed to resend activation email to #{name}, #{email}"
       new_password:
         flash_notice:
           invalid: 'Invalid password reset.'

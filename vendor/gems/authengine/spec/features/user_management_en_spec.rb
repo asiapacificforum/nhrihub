@@ -38,6 +38,7 @@ feature "Manage users", :js => true do
     # ensure that mail was actually sent
     expect{click_button("Save")}.to change { ActionMailer::Base.deliveries.count }.by(1)
     expect(page_heading).to eq "Manage users"
+    expect(flash_message).to eq "a registration email has been sent to Norman Normal at norm@normco.com"
     email = ActionMailer::Base.deliveries.last
     expect( email.subject ).to eq "Please activate your #{ORGANIZATION_NAME} #{APPLICATION_NAME} account"
     expect( email.to.first ).to eq "norm@normco.com"
@@ -53,6 +54,21 @@ feature "Manage users", :js => true do
     expect( lines[-1]).to match /#{APPLICATION_NAME} administrator/
     expect( norman_normal_to_be_in_the_database ).to eq true
     expect( norman_normal_account_is_activated ).to eq false
+  end
+
+  scenario "add a new user and reset password before user has first logged in" do
+    user = FactoryGirl.create(:user)
+    ActiveRecord::Base.connection.execute("update users set salt = NULL, crypted_password = NULL where users.id = #{user.id}")
+    visit admin_users_path(:en)
+    email_count = ActionMailer::Base.deliveries.length
+    within user_record_for(user) do
+      click_link "resend registration"
+    end
+    expect(flash_message).to match /a registration email has been resent to #{user.first_last_name} at #{user.email}/
+    expect(ActionMailer::Base.deliveries.length).to eq email_count+1
+    email = ActionMailer::Base.deliveries.last
+    expect( email.subject ).to eq "Please activate your #{ORGANIZATION_NAME} #{APPLICATION_NAME} account"
+    expect( email.to.first ).to eq user.email
   end
 
   scenario "show user information" do
@@ -223,6 +239,7 @@ feature "user lost token replacement and registration", :js => true do
   include LoggedInEnAdminUserHelper # logs in as admin
   include NavigationHelpers
   include UserManagementHelpers
+
   before do
     toggle_navigation_dropdown("Admin")
     select_dropdown_menu_item("Manage users")
@@ -256,6 +273,7 @@ feature "user lost token replacement and registration", :js => true do
     fill_in "Password", :with => "password"
     login_button.click
     expect(flash_message).to eq "Logged in successfully"
+
   end
 
 end

@@ -3,6 +3,11 @@ require 'rspec/core/shared_context'
 module UserManagementHelpers
   extend RSpec::Core::SharedContext
 
+  def user_record_for(user)
+    #page.find(:xpath, "//tr[contains(td[2]/text(),'#{user.firstName}')]/td[contains(.,'reset password')]")
+    page.find(:xpath, "//tr[contains(td[2]/text(),'#{user.lastName}')]")
+  end
+
   def norman_normal_to_be_in_the_database
     User.where(:firstName => "Norman", :lastName => "Normal").exists?
   end

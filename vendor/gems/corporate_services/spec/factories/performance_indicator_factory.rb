@@ -4,7 +4,7 @@ FactoryGirl.define do
 
     trait :well_populated do
       after(:create) do |pi|
-        MediaAppearance.create(:file, :title => Faker::Lorem.sentence(5), :performance_indicators => [pi])
+        FactoryGirl.create(:media_appearance, :file, :title => Faker::Lorem.sentence(5), :performance_indicators => [pi])
         Project.create(:title => Faker::Lorem.sentence(5), :performance_indicators => [pi])
         2.times do
           pi.reminders << FactoryGirl.create(:reminder, :performance_indicator, :remindable_id => pi.id)

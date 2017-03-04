@@ -1,3 +1,11 @@
+# EVENT                  AFTER SAVE                     NONCE                                 MAIL ON SAVE                      PASSWORD VALIDATE
+# create                 signup_notify                  activation_code                       signup_notification               N
+# activate               activate_notify                                                      activate_notification             Y
+# forgot_password        forgotten_password_notify      password_reset_code                   forgotten_password_notification   N
+# reset_password         reset_password_notify                                                reset_password_notification       N
+# lost_token             lost_token_notify              replacement_token_registration_code   lost_token_notification           Y
+# resend_registration    resend_registration_notify     activation_code                       resend_registration_notification  N
+#
 require 'digest/sha1'
 class User < ActiveRecord::Base
   include Notifier
@@ -221,6 +229,10 @@ class User < ActiveRecord::Base
     !activated_at.nil?
   end
 
+  def has_chosen_password?
+    !crypted_password.nil? && !salt.nil?
+  end
+
   # Returns true if the user has just been activated.
   def pending?
     @activated
@@ -291,6 +303,10 @@ class User < ActiveRecord::Base
     make_access_nonce('password_reset_code')
   end
 
+  def prepare_to_send_signup_email
+    make_access_nonce("activation_code")
+  end
+
   def reset_password
     # First update the password_reset_code before setting the
     # reset_password flag to avoid duplicate email notifications.
@@ -328,9 +344,9 @@ protected
   end
 
   def password_required?
-    crypted_password.blank? || # validate the password field if there's no crypted password
+    (crypted_password.blank? || # validate the password field if there's no crypted password
       # this doesn't make sense... don't validate presence of password if it's blank! TODO fix this
-      !password.blank? # validate the password field if it's being provided
+      !password.blank?) # validate the password field if it's being provided
   end
 
   def password_confirmation_required?

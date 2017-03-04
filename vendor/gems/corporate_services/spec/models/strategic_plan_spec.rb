@@ -137,8 +137,8 @@ describe ".load_sql" do
     performance_indicator = activity["performance_indicators"][0]
     expect(performance_indicator.keys).to match_array ["id", "activity_id", "description", "target", "index", "indexed_description", "indexed_target", "reminders", "notes", "projects", "media_appearances"] #, "media_appearance_titles", "project_titles", "description_error", "create_reminder_url", "url", "create_note_url"]
 
-    expect(performance_indicator["projects"].length).to eq 2
-    expect(performance_indicator["media_appearances"].length).to eq 2
+    expect(performance_indicator["projects"].length).to eq 1
+    expect(performance_indicator["media_appearances"].length).to eq 1
   end
 end
 

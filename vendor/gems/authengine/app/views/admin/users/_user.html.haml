@@ -18,6 +18,10 @@
     - unless user == current_user
       = link_to t('.edit_roles'), admin_user_user_roles_path(user)
   %td{:style => "padding-left:10px"}= link_to t('.edit_profile'), edit_admin_user_path(user), :disabled => !user.active?
-  %td{:style => "padding-left:10px"}= link_to t('.reset_password'), admin_send_change_password_email_path(user), :method => :post
+  %td{:style => "padding-left:10px"}
+    - if user.active? && user.has_chosen_password?
+      = link_to t('.reset_password'), admin_send_change_password_email_path(user), :method => :post
+    - else
+      = link_to t('.resend_registration'), admin_resend_registration_email_path(user), :method => :post
   %td{:style => "padding-left:10px"}= link_to t('.lost_token'), admin_send_lost_token_email_path(user), :method => :post
 
