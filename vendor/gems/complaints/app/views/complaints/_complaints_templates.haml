@@ -235,7 +235,7 @@
         .col-md-6{:style => 'padding-top:0px'}
           .row
             .col-md-4.form-group{:style => 'padding-top:0px;'}
-              %label.required{:for => :chiefly_title, :style => 'font-weight:normal'}=t('.chiefly_title')
+              %label{:for => :chiefly_title, :style => 'font-weight:normal'}=t('.chiefly_title')
               %input.form-control#chiefly_title{:value => '{{chiefly_title}}'}
             .col-md-4.form-group{:class => "{{#firstName_error}}has-error{{/}}", :style => 'padding-top:0px;'}
               %label.required{:for => :firstName, :style => 'font-weight:normal'}=t('.first_name')
