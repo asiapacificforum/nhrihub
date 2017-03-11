@@ -343,7 +343,6 @@ Complaint = Ractive.extend
       set: (val)->
         date_regex = new RegExp(/\d{1,2}\/\d{1,2}\/\d\d\d\d/)
         if date_regex.test val
-          console.log "val"
           @set('dob', $.datepicker.formatDate("yy-mm-dd",$.datepicker.parseDate( "dd/mm/yy", val)))
         else
           @set('dob', "")
