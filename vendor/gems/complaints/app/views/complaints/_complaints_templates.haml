@@ -248,6 +248,7 @@
       .row.form-group{:class => "{{#dob_error}}has-error{{/}}"}
         .col-md-2
           %span.required=t('.dob')
+          %span dd/mm/yyyy
         .col-md-2
           %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:112px;"}
           %span.help-block.error#dob_error= t('.dob_error_message')
@@ -488,6 +489,7 @@
           .row.edit
             .col-md-3
               %label.required= t('.dob')
+              %span dd/mm/yyyy
             .col-md-2
               %input.form-control#dob{:value => '{{formatted_dob}}', 'on-keydown'=>"remove_attribute_error('dob')", :style=>"width:112px;"}
               %span.help-block.error#dob_error= t('.dob_error_message')

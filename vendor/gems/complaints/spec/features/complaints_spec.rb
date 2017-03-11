@@ -154,7 +154,7 @@ feature "complaints index", :js => true do
     within new_complaint do
       fill_in('lastName', :with => "Normal")
       fill_in('firstName', :with => "Norman")
-      fill_in('dob', :with => "1950/08/19")
+      fill_in('dob', :with => "08/09/1950")
       fill_in('email', :with => "norm@acme.co.ws")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
@@ -188,7 +188,7 @@ feature "complaints index", :js => true do
     expect(complaint.lastName).to eq "Normal"
     expect(complaint.firstName).to eq "Norman"
     expect(complaint.chiefly_title).to eq "bossman"
-    expect(complaint.dob).to eq Date.new(1950,8,19)
+    expect(complaint.dob).to eq Date.new(1950,9,8)
     expect(complaint.gender).to eq 'M'
     expect(complaint.email).to eq "norm@acme.co.ws"
     expect(complaint.complained_to_subject_agency).to eq true
@@ -218,7 +218,7 @@ feature "complaints index", :js => true do
     expect(first_complaint.find('.chiefly_title').text).to eq "bossman"
     expect(first_complaint.find('#status_changes .status_change .status_humanized').text).to eq 'Under Evaluation'
     expand
-    expect(first_complaint.find('.complainant_dob').text).to eq "1950, Aug 19"
+    expect(first_complaint.find('.complainant_dob').text).to eq "8/9/1950"
     expect(first_complaint.find('.email').text).to eq "norm@acme.co.ws"
     expect(first_complaint.find('.complaint_details').text).to eq "a long story about lots of stuff"
     expect(first_complaint.find('.desired_outcome').text).to eq "Life gets better"
@@ -368,7 +368,7 @@ feature "complaints index", :js => true do
       fill_in('lastName', :with => "Normal")
       fill_in('firstName', :with => "Norman")
       fill_in('chiefly_title', :with => "kahunga")
-      fill_in('dob', :with => "1951/08/19")
+      fill_in('dob', :with => "19/08/1950")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
       fill_in('complaint_details', :with => "the boy stood on the burning deck")
@@ -405,7 +405,7 @@ feature "complaints index", :js => true do
 
     expect( Complaint.first.chiefly_title ).to eq "kahunga"
     expect( Complaint.first.complained_to_subject_agency ).to eq false
-    expect( Complaint.first.dob ).to eq Date.new(1951,8,19)
+    expect( Complaint.first.dob ).to eq Date.new(1950,8,19)
     expect( Complaint.first.details ).to eq "the boy stood on the burning deck"
     expect( Complaint.first.desired_outcome ).to eq "Things are more better"
     expect( Complaint.first.mandate_name ).to eq "Special Investigations Unit"
@@ -420,7 +420,7 @@ feature "complaints index", :js => true do
     expect( Complaint.first.agencies.count ).to eq 1
     expect( Complaint.first.date_received.to_date).to eq Date.new(Date.today.year, Date.today.month, 23)
 
-    expect(page).to have_selector('.complainant_dob', :text => "1951, Aug 19")
+    expect(page).to have_selector('.complainant_dob', :text => "19/8/1950")
     expect(page).to have_selector('.desired_outcome', :text => "Things are more better")
     expect(page).to have_selector('.complaint_details', :text => "the boy stood on the burning deck")
     expect(page).to have_selector('.complained_to_subject_agency', :text => "no")
@@ -506,7 +506,7 @@ feature "complaints index", :js => true do
       check_basis(:good_governance, "Private")
       check_basis(:human_rights, "CAT")
       check_basis(:good_governance, "Contrary to Law")
-      fill_in('dob', :with => "1820/11/11")
+      fill_in('dob', :with => "11/11/1820")
       fill_in('email', :with => "harry@haricot.net")
       select_male_gender
       fill_in('complaint_details', :with => "a long story about lots of stuff")
@@ -529,7 +529,7 @@ feature "complaints index", :js => true do
       expect(page.find('#village').value).to eq original_complaint.village
       expect(page.find('#phone').value).to eq original_complaint.phone
       expect(page.all('#good_governance_bases .complaint_basis input').first['name']).to eq original_complaint.good_governance_complaint_basis_ids.join(',')
-      expect(page.find('#dob').value).to eq original_complaint.dob.to_s
+      expect(page.find('#dob').value).to eq original_complaint.dob.strftime("%-d/%-m/%Y")
       expect(page.find('#email').value).to eq original_complaint.email.to_s
       expect(page.find('#m')).not_to be_checked
       expect(page.find('#complaint_details').value).to eq original_complaint.details

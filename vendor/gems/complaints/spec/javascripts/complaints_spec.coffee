@@ -764,12 +764,12 @@ describe "complaints index page", ->
 
     it "should set dob from formatted_dob", ->
       complaints.set('complaints',[{}])
-      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/8/19") # user enters dob in this format
-      expect(complaints.findAllComponents('complaint')[0].get('dob')).to.equal "1950-08-19"
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"8/9/1950") # user enters dob in this format
+      expect(complaints.findAllComponents('complaint')[0].get('dob')).to.equal "1950-09-08"
 
     it "should set formatted_dob from dob", ->
       complaints.set('complaints',[{ dob:"1950-08-19"}])
-      expect(complaints.findAllComponents('complaint')[0].get('formatted_dob')).to.equal "1950, Aug 19" # rendered to user in this format
+      expect(complaints.findAllComponents('complaint')[0].get('formatted_dob')).to.equal "19/8/1950" # rendered to user in this format
 
   describe "complaint validation", ->
     beforeEach (done)->
@@ -781,24 +781,24 @@ describe "complaints index page", ->
 
     it "should validate a well-formed complaint, excluding assignee when editing", ->
       complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance",complaint_basis_ids:[2],dob:null,details:"stuff here"}])
-      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/8/19")
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"19/8/1950")
       complaints.findAllComponents('complaint')[0].set('editing',true)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a well-formed complaint, including assignee when not editing", ->
       complaints.set('complaints',[{firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance",complaint_basis_ids:[2], dob:null, details:"stuff here"}])
-      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/8/19")
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"19/8/1950")
       complaints.findAllComponents('complaint')[0].set('new_assignee_id', 8)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a complaint with no complainant if it is imported", ->
       complaints.set('complaints',[{ village : "Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:true, dob:null, details:"stuff here"}])
-      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/8/19")
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"19/8/1950")
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should validate a complaint with no village if it is imported", ->
       complaints.set('complaints',[{ firstName : "Foo", lastName:"Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:true, dob:null, details:"stuff here"}])
-      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/8/19")
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"19/8/1950")
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
 
     it "should not validate a complaint with no complainant if it is not imported", ->
@@ -853,7 +853,7 @@ describe "complaints index page", ->
 
     it "should be valid if dob is entered with correct format", ->
       complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", imported: false, dob:null, details:"stuff here"}])
-      complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950/08/19")
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"09/08/1950") # dd/mm/yyyy
       complaints.findAllComponents('complaint')[0].set('editing',true)
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [2])
       expect(complaints.findAllComponents('complaint')[0].validate()).to.be.true

@@ -190,7 +190,7 @@ ComplaintDocuments = Ractive.extend
 
 FilterMatch =
   include : ->
-    console.log "call include()"
+    #console.log "call include()"
     # console.log JSON.stringify "matches_complainant" : @matches_complainant(), "matches_case_reference" : @matches_case_reference(), "matches_village" : @matches_village(), "matches_date" : @matches_date(), "matches_phone" : @matches_phone(), "matches_agencies" : @matches_agencies(), "matches_assignee" : @matches_assignee(), "matches_status" : @matches_status(), "matches_basis" : @matches_basis
     # console.log JSON.stringify "matches_good_governance_complaint_basis" : @matches_good_governance_complaint_basis(), "matches_human_rights_complaint_basis" : @matches_human_rights_complaint_basis(), "matches_special_investigations_unit_complaint_basis" : @matches_special_investigations_unit_complaint_basis(), "basis_rule" : @get('filter_criteria.basis_rule'), "matches_basis" : @matches_basis(), "basis_requirement_is_specified" : @basis_requirement_is_specified(), "good_governance_basis_requirement_is_specified" : @good_governance_basis_requirement_is_specified(), "human_rights_basis_requirement_is_specified" : @human_rights_basis_requirement_is_specified(), "special_investigations_unit_basis_requirement_is_specified" : @special_investigations_unit_basis_requirement_is_specified()
     # console.log JSON.stringify "matches_area" : @matches_area()
@@ -339,11 +339,11 @@ Complaint = Ractive.extend
         if _.isEmpty(@get('dob'))
           ""
         else
-          $.datepicker.formatDate("yy, M d", $.datepicker.parseDate("yy-mm-dd",@get('dob')))
+          $.datepicker.formatDate("d/m/yy", $.datepicker.parseDate("yy-mm-dd",@get('dob')))
       set: (val)->
-        date_regex = new RegExp(/\d\d\d\d\/\d{1,2}\/\d{1,2}/)
+        date_regex = new RegExp(/\d{1,2}\/\d{1,2}\/\d\d\d\d/)
         if date_regex.test val
-          @set('dob', $.datepicker.formatDate("yy-mm-dd",$.datepicker.parseDate( "yy/mm/dd", val)))
+          @set('dob', $.datepicker.formatDate("yy-mm-dd",$.datepicker.parseDate( "dd/mm/yy", val)))
         else
           @set('dob', "")
     create_reminder_url : ->
@@ -362,7 +362,7 @@ Complaint = Ractive.extend
       complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
       new_assignee_id : ['numeric', {if : =>!@get('editing')}]
       dob: =>
-        date_regex = new RegExp(/\d\d\d\d, \w\w\w \d\d/)
+        date_regex = new RegExp(/\d{1,2}\/\d{1,2}\/\d{4}/)
         date_regex.test @get('formatted_dob')
       details : 'notBlank'
     error_vector : ->
