@@ -430,7 +430,7 @@
               .edit
                 .row
                   .col-md-4.form-group
-                    %label.required{:for => :chiefly_title}=t('.chiefly_title')
+                    %label{:for => :chiefly_title}=t('.chiefly_title')
                     %input.form-control#chiefly_title{:value => '{{chiefly_title}}'}
                   .col-md-4.form-group{:class => "{{#firstName_error}}has-error{{/}}"}
                     %label.required{:for => :firstName}=t('.first_name')
