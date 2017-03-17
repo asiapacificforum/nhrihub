@@ -48,7 +48,7 @@ en:
       select_agency: 'Select agency'
       assignee: 'Assignee'
       complaint_documents : 'Complaint documents'
-      date_received : "Date received"
+      date_received : "Date complaint was received"
       first_name : "First name(s)"
       last_name : "Last name"
       chiefly_title : "Chiefly title"
