@@ -20,7 +20,7 @@ class PlannedResultReport
   end
 
   def planned_result(planned_result)
-    planned_result_template.gsub(/planned_result/,planned_result.indexed_description)
+    planned_result_template.gsub(/planned_result/,ERB::Util.html_escape(planned_result.indexed_description))
   end
 
 end

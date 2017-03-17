@@ -28,7 +28,7 @@ class ProgressReport
   end
 
   def progress_report(first, progress_item)
-    progress_template(first).gsub(/progress/,progress_item.title)
+    progress_template(first).gsub(/progress/,ERB::Util.html_escape(progress_item.title))
   end
 
 end

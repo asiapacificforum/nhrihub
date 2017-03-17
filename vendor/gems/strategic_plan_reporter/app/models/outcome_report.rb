@@ -27,7 +27,7 @@ class OutcomeReport
   end
 
   def outcome(first,outcome)
-    outcome_template(first).gsub(/outcome/,outcome.indexed_description)
+    outcome_template(first).gsub(/outcome/,ERB::Util.html_escape(outcome.indexed_description))
   end
 
 end
