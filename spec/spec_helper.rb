@@ -25,8 +25,8 @@ require_relative './support/wait_for_ajax'
 require_relative './support/wait_for_authentication'
 require_relative './support/wait_for_modal'
 
-#comment this line out to use the default javascript server firefox
-#Capybara.default_wait_time = 5
+#Capybara.default_max_wait_time = 5
+
 Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome,)
 end
