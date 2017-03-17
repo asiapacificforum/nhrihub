@@ -3,8 +3,10 @@ class StrategicPlan < ActiveRecord::Base
   has_many :strategic_priorities, :dependent => :destroy
 
   # an ActiveRecord::Relation is returned so that it can be merged, see PlannedResult.in_current_strategic_plan
-  scope :current, ->{ where("strategic_plans.start_date >= ? and strategic_plans.start_date < ?",Date.today.advance(:years => -1),Date.today) }
+  #scope :current, ->{ where("strategic_plans.created_at = (select max(created_at) from strategic_plans)")}
   scope :eager_loaded_associations, ->{includes(:strategic_priorities => {:planned_results => {:outcomes => {:activities => {:performance_indicators => [:media_appearances, :projects, :notes, :reminders]}}}})}
+
+  default_scope { order(:created_at) }
 
   # leave this here as something to investigate in the future, At the moment it does not seem to improve
   # TTFB, but benchmark shows it's 10x faster than instantiating AR objects
@@ -22,13 +24,18 @@ class StrategicPlan < ActiveRecord::Base
                                             :include => outcomes }}
     strategic_priorities = {:strategic_priorities => {:columns => [:id, :description, :priority_level, :strategic_plan_id],
                                                       :include => planned_results }}
-    strategic_plan = {:columns => [:id, :start_date],
+    strategic_plan = {:columns => [:id],
                       :include => strategic_priorities}
     all_json(strategic_plan)
   end
 
   def self.most_recent
-    where("strategic_plans.created_at = (select max(created_at) from strategic_plans)").first
+    current.first
+  end
+
+  # an ActiveRecord::Relation is returned so that it can be merged, see PlannedResult.in_current_strategic_plan
+  def self.current
+    where("strategic_plans.created_at = (select max(created_at) from strategic_plans)")
   end
 
   def initialize(attrs={})
