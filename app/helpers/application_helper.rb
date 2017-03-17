@@ -20,6 +20,12 @@ module ApplicationHelper
     #haml_tag :script, "$(function(){$('##{input}').focus()})"
   #end
 
+  def menu_text(strategic_plan)
+    strategic_plan.current? ?
+      strategic_plan.title + " (current)" :
+      strategic_plan.title
+  end
+
   def current_user_permitted?(path)
     is_logout?(path) || user_is_developer? || permissions_granted?(path)
   end

@@ -37,7 +37,11 @@
 
 %script#strategic_plan_template{:type => 'template/ractive'}
   %tr.strategic_plan{'intro-outro' => :fade}
-    %td {{title}}
+    %td
+      {{title}}
+      {{#if current}}
+      (current)
+      {{/if}}
     %td
       %a{:class => 'delete_strategic_plan {{#unless delete_permitted}}disallowed{{/unless}}', 'on-click' => "delete_if_permitted()"}= t('delete')
 
@@ -48,6 +52,8 @@
       delete_confirmation_message : -> "#{t('.delete_confirmation_message')}" + "\""+@get('title') + "\"" + "?"
       url : -> Routes.corporate_services_strategic_plan_path('en',@get('id'))
       delete_permitted : -> #{@delete_permitted}
+      current : ->
+        @get('title') == @parent.last_title()
     delete_if_permitted : ->
       if @get('delete_permitted')
         @show_confirm_delete_modal()
@@ -111,12 +117,23 @@
       @push('strategic_plans',strategic_plan)
     remove_menu_item : (strategic_plan)->
       $("#strat_plan .dropdown-menu li:contains("+strategic_plan.get('title')+")").remove()
+      @redesignate_current()
       @add_none_configured() if $("#strat_plan .dropdown-menu li").length == 0
+    redesignate_current : ->
+      new_current = $('#strat_plan .dropdown-menu #sp_item a').last()
+      new_text = $(new_current).html() + " (current)"
+      $(new_current).html(new_text)
     add_menu_item : (strategic_plan)->
       href = Routes.corporate_services_strategic_plan_path('en',strategic_plan.id)
-      $('#strat_plan .dropdown-menu').append("<li id='sp_item'><a href='"+href+"'>"+strategic_plan.title+"</a></li>")
+      $('#strat_plan .dropdown-menu #sp_item a').each (index,menu_item)->
+        menu_item = $(menu_item)
+        new_text = menu_item.html().replace(/ \(current\)/,'')
+        menu_item.html(new_text)
+      $('#strat_plan .dropdown-menu').append("<li id='sp_item'><a href='"+href+"'>"+strategic_plan.title+" (current)</a></li>")
     add_none_configured : ->
       href = Routes.corporate_services_admin_path('en')
       $('#strat_plan .dropdown-menu').append("<li id='sp_item'><a href='"+href+"'>none configured</a></li>")
     remove_none_configured : ->
       $("#strat_plan .dropdown-menu li:contains('none configured')").remove()
+    last_title : ->
+      @get('strategic_plans')[@get('strategic_plans').length-1].title

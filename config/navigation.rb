@@ -18,7 +18,7 @@ SimpleNavigation::Configuration.run do |navigation|
     end
     primary.item :strat_plan, t('layout.nav.strat_plan') do |st_pl|
       StrategicPlan.all.each do |sp|
-        st_pl.item :sp_item, sp.title, corporate_services_strategic_plan_path(sp.id)
+        st_pl.item :sp_item, menu_text(sp), corporate_services_strategic_plan_path(sp.id)
       end
       if StrategicPlan.count.zero?
         st_pl.item :sp_item, "none configured", corporate_services_admin_path, :highlights_on => /corporate_services\/strategic_plans/

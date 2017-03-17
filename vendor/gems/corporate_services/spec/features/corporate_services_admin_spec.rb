@@ -8,6 +8,7 @@ require 'shared_behaviours/file_admin_behaviour'
 feature "strategic plan admin", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include StrategicPlanHelpers
+  include CorporateServicesAdminSpecHelpers
 
   before do
     visit corporate_services_admin_path(:en)
@@ -18,9 +19,8 @@ feature "strategic plan admin", :js => true do
     expect{save_strategic_plan}.to change{StrategicPlan.count}.from(0).to(1)
     expect(StrategicPlan.most_recent.title).to eq "A plan for the 21st century"
     expect(StrategicPlan.most_recent.strategic_priorities.length ).to eq(0)
-    expect(page).to have_selector('#strategic_plans .strategic_plan td', :text => "A plan for the 21st century")
-    expect(page).to have_selector('#strat_plan #sp_item', :visible => false, :text => "A plan for the 21st century")
-    expect(page).not_to have_selector('#strat_plan #sp_item', :visible => false, :text => "none configured")
+    expect(strategic_plan_menu).to include "A plan for the 21st century (current)"
+    expect(strategic_plan_menu).not_to include "none configured"
   end
 
   scenario "add a strategic plan with blank title" do
@@ -39,29 +39,45 @@ end
 feature "when there are already some strategic plans", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include StrategicPlanHelpers
+  include CorporateServicesAdminSpecHelpers
 
   before do
+    FactoryGirl.create(:strategic_plan, :title => 'the plan for the planet')
+    # it's well-populated so that we can test copy of associations
     FactoryGirl.create(:strategic_plan, :well_populated, :title => 'a man a plan')
     visit corporate_services_admin_path(:en)
   end
 
   scenario "delete a strategic plan" do
+    expect(strategic_plan_menu).to include "a man a plan (current)"
+    expect(strategic_plan_menu).to include "the plan for the planet"
+    expect{ delete_plan; confirm_deletion; wait_for_ajax }.to change{StrategicPlan.count}.from(2).to(1).
+                                                          and change{page.all('tr.strategic_plan').length}.from(2).to(1)
+    sleep(0.5)
     expect{ delete_plan; confirm_deletion; wait_for_ajax }.to change{StrategicPlan.count}.from(1).to(0).
                                                           and change{page.all('tr.strategic_plan').length}.from(1).to(0)
-    expect(page).not_to have_selector('#strat_plan #sp_item', :visible => false, :text => "a man a plan")
-    expect(page).to have_selector('#strat_plan #sp_item', :visible => false, :text => "none configured")
+    expect(strategic_plan_menu).to include "none configured"
+  end
+
+  scenario "delete the current strategic plan" do
+    expect(strategic_plan_menu).to include "the plan for the planet"
+    expect(strategic_plan_menu).to include "a man a plan (current)"
+    expect{ delete_current_plan; confirm_deletion; wait_for_ajax }.to change{StrategicPlan.count}.from(2).to(1).
+                                                          and change{page.all('tr.strategic_plan').length}.from(2).to(1)
+    expect(strategic_plan_menu).to include "the plan for the planet (current)"
+    expect(page.all('tr.strategic_plan').map(&:text)).to include "the plan for the planet (current)"
   end
 
   scenario "delete and then re-add a strategic plan" do
     delete_plan
     confirm_deletion
     wait_for_ajax
-    fill_in("strategic_plan_title", :with => "a man a plan")
-    expect{save_strategic_plan}.to change{StrategicPlan.count}.from(0).to(1)
+    fill_in("strategic_plan_title", :with => "the plan for the planet")
+    expect{save_strategic_plan}.to change{StrategicPlan.count}.from(1).to(2)
   end
 
   scenario "add a duplicate and delete the original" do
-    fill_in("strategic_plan_title", :with => "a man a plan")
+    fill_in("strategic_plan_title", :with => "the plan for the planet")
     save_strategic_plan
     expect(page).to have_selector("#unique_title_error", :text => "title already exists")
     delete_plan
@@ -78,10 +94,13 @@ feature "when there are already some strategic plans", :js => true do
   end
 
   scenario "add a strategic plan with copy flag checked" do
+    expect(strategic_plan_menu).to include "a man a plan (current)"
     fill_in("strategic_plan_title", :with => "a man a better plan")
     check("copy")
-    expect{save_strategic_plan}.to change{StrategicPlan.count}.from(1).to(2)
+    expect{save_strategic_plan}.to change{StrategicPlan.count}.from(2).to(3)
     expect(StrategicPlan.most_recent.strategic_priorities.length).to eq 2
+    expect(strategic_plan_menu).to include "a man a better plan (current)"
+    expect(strategic_plan_menu).to include "a man a plan"
   end
 
 end
