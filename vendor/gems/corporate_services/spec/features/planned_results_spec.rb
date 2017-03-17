@@ -10,7 +10,7 @@ feature "show existing planned result", :js => true do
   include PlannedResultHelpers
 
   before do
-    sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    sp1 = StrategicPlan.create(:created_at => 6.months.ago.to_date)
     StrategicPriority.create(:strategic_plan_id => sp1.id, :priority_level => 1, :description => "Gonna do things betta")
     pr = PlannedResult.create(:strategic_priority_id => sp1.id, :description => "Something profound")
     Outcome.create(:description => "smarter thinking", :planned_result_id => pr.id)
@@ -32,7 +32,7 @@ feature "populate strategic plan contents", :js => true do
   include PlannedResultHelpers
 
   before do
-    sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    sp1 = StrategicPlan.create(:created_at => 6.months.ago.to_date)
     StrategicPriority.create(:strategic_plan_id => sp1.id, :priority_level => 1, :description => "Gonna do things betta")
     visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     page.execute_script("$('.fade').removeClass('fade')")
@@ -82,7 +82,7 @@ feature "actions on existing planned results", :js => true do
   include PlannedResultHelpers
 
   before do
-    sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    sp = StrategicPlan.create(:created_at => 6.months.ago.to_date)
     spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
     PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
     PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something not so profound")

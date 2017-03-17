@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe ".current class method" do
   before do
-    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year-1,1,1))
-    @current_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year,1,1))
+    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => DateTime.new(Date.today.year-1,1,1))
+    @current_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => DateTime.new(Date.today.year,1,1))
   end
 
   it "should return the current strategic plan" do
@@ -13,39 +13,19 @@ end
 
 describe ".most_recent" do
   before do
-    @first_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year-1,1,1))
-    @second_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year,1,1))
+    @first_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => DateTime.new(Date.today.year-1,1,1))
+    @second_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => DateTime.new(Date.today.year,1,1))
   end
 
-  it "should return the StrategicPlan instance with the most recent start_date" do
+  it "should return the StrategicPlan instance with the most recent created_at" do
     expect(StrategicPlan.most_recent).to eq @second_strategic_plan
   end
 end
 
 describe "eager loading via scopes" do
   before do
-    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year-1,1,1))
-    current_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year,1,1))
-
-    #2.times do |i|
-      #sp = FactoryGirl.create(:strategic_priority, :priority_level => i+1, :strategic_plan_id => previous_strategic_plan.id)
-      #2.times do
-        #pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
-        #2.times do
-          #o = FactoryGirl.create(:outcome, :planned_result => pr)
-          #2.times do
-            #a = FactoryGirl.create(:activity, :outcome => o)
-            #2.times do
-              #pi = FactoryGirl.create(:performance_indicator, :activity => a)
-              #2.times do
-                #FactoryGirl.create(:media_appearance, :performance_indicators => [pi])
-                #FactoryGirl.create(:project, :performance_indicators => [pi])
-              #end
-            #end
-          #end
-        #end
-      #end
-    #end
+    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => DateTime.new(Date.today.year-1,1,1))
+    current_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => DateTime.new(Date.today.year,1,1))
 
     2.times do |i|
       sp = FactoryGirl.create(:strategic_priority, :priority_level => i+1, :strategic_plan_id => current_strategic_plan.id)
@@ -105,8 +85,8 @@ end
 
 describe ".load_sql" do
   before do
-    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :well_populated, :start_date => Date.new(Date.today.year-1,1,1))
-    current_strategic_plan = FactoryGirl.create(:strategic_plan, :well_populated, :start_date => Date.new(Date.today.year,1,1))
+    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :well_populated, :created_at => DateTime.new(Date.today.year-1,1,1))
+    current_strategic_plan = FactoryGirl.create(:strategic_plan, :well_populated, :created_at => DateTime.new(Date.today.year,1,1))
   end
 
   let(:json){StrategicPlan.load_sql}
@@ -144,7 +124,7 @@ end
 
 describe "create new plan and copy previous elements" do
   before do
-    @previous_strategic_plan = FactoryGirl.create(:strategic_plan, :well_populated, :start_date => Date.new(Date.today.year-1,1,1))
+    @previous_strategic_plan = FactoryGirl.create(:strategic_plan, :well_populated, :created_at => DateTime.new(Date.today.year-1,1,1))
   end
 
   it "should copy previous strategic plan elements if created with copy flag set" do

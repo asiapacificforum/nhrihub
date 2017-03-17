@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :strategic_plan do
-    start_date Date.today
+    start_date nil
     title {Faker::Lorem.sentence(8,false,0)}
 
     trait :populated do

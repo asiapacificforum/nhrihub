@@ -12,7 +12,7 @@ feature "populate plannned result outcomes", :js => true do
 
   feature "add outcome when there were none before" do
     before do
-      sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+      sp = StrategicPlan.create(:created_at => 6.months.ago.to_date)
       spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
       pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
       visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
@@ -65,7 +65,7 @@ feature "populate plannned result outcomes", :js => true do
 
   feature "add outcome to pre-existing" do
     before do
-      sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+      sp = StrategicPlan.create(:created_at => 6.months.ago.to_date)
       spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
       pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
       pr.outcomes << Outcome.new(:description => "Smarter thinking")
@@ -101,7 +101,7 @@ feature "actions on existing single outcome", :js => true do
   include OutcomesSpecHelpers
 
   before do
-    sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    sp = StrategicPlan.create(:created_at => 6.months.ago.to_date)
     spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
     pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
     o1 = Outcome.create(:planned_result_id => pr.id, :description => "whirled peas")
@@ -139,7 +139,7 @@ feature "actions on existing multiple outcomes", :js => true do
   include OutcomesSpecHelpers
 
   before do
-    sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    sp = StrategicPlan.create(:created_at => 6.months.ago.to_date)
     spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
     pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
     o1 = Outcome.create(:planned_result_id => pr.id, :description => "whirled peas")

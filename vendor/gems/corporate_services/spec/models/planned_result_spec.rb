@@ -3,7 +3,7 @@ require 'rails_helper'
 describe "#indexed_description" do
   context "for the first in the strategic priority" do
     before do
-      stp = StrategicPlan.create(:start_date => 6.months.ago.to_date )
+      stp = StrategicPlan.create(:created_at => 6.months.ago.to_date )
       @sp = StrategicPriority.create(:description => 'first strategic priority', :priority_level => 1, :strategic_plan_id => stp.id)
       @planned_result = PlannedResult.create(:strategic_priority_id => @sp.id, :description => "first planned result")
     end
@@ -17,7 +17,7 @@ describe "#indexed_description" do
 
   context "for the second in the strategic priority" do
     before do
-      stp = StrategicPlan.create(:start_date => 6.months.ago.to_date )
+      stp = StrategicPlan.create(:created_at => 6.months.ago.to_date )
       sp = StrategicPriority.create(:description => 'first strategic priority', :priority_level => 1, :strategic_plan_id => stp.id)
       PlannedResult.create(:strategic_priority_id => sp.id, :description => "first planned result")
       @planned_result = PlannedResult.create(:strategic_priority_id => sp.id, :description => "second planned result")
@@ -30,7 +30,7 @@ describe "#indexed_description" do
 
   context "for the first in the strategic priority with priority level 2" do
     before do
-      stp = StrategicPlan.create(:start_date => 6.months.ago.to_date )
+      stp = StrategicPlan.create(:created_at => 6.months.ago.to_date )
       sp = StrategicPriority.create(:description => 'second strategic priority', :priority_level => 2, :strategic_plan_id => stp.id)
       PlannedResult.create(:strategic_priority_id => sp.id, :description => "first planned result")
       @planned_result = PlannedResult.create(:strategic_priority_id => sp.id, :description => "second planned result")
@@ -43,7 +43,7 @@ describe "#indexed_description" do
 
   context "when an index is mistakenly included in the description by the user" do
     before do
-      stp = StrategicPlan.create(:start_date => 6.months.ago.to_date )
+      stp = StrategicPlan.create(:created_at => 6.months.ago.to_date )
       sp = StrategicPriority.create(:description => 'second strategic priority', :priority_level => 2, :strategic_plan_id => stp.id)
       PlannedResult.create(:strategic_priority_id => sp.id, :description => "1.2  first planned result")
     end
@@ -57,7 +57,7 @@ end
 describe "#indexed_description" do
   context "for the first in the planned result" do
     before do
-      stp = StrategicPlan.create(:start_date => 6.months.ago.to_date )
+      stp = StrategicPlan.create(:created_at => 6.months.ago.to_date )
       StrategicPriority.create(:description => 'first strategic priority', :priority_level => 1, :strategic_plan_id => stp.id)
       @sp = StrategicPriority.create(:description => 'first strategic priority', :priority_level => 2, :strategic_plan_id => stp.id)
       @planned_result = PlannedResult.create(:strategic_priority_id => @sp.id, :description => "first planned result")
@@ -127,10 +127,10 @@ end
 
 describe ".all_with_associations scope" do
   before do
-    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year-1,1,1))
+    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => Date.new(Date.today.year-1,1,1))
     sp = FactoryGirl.create(:strategic_priority, :priority_level => 1, :strategic_plan_id => previous_strategic_plan.id)
     pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
-    @current_strategic_plan = FactoryGirl.create(:strategic_plan, :start_date => Date.new(Date.today.year,1,1))
+    @current_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => Date.new(Date.today.year,1,1))
     sp = FactoryGirl.create(:strategic_priority, :priority_level => 1, :strategic_plan_id => @current_strategic_plan.id)
     pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
   end

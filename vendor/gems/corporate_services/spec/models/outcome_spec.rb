@@ -3,7 +3,7 @@ require 'rails_helper'
 describe "#indexed_description" do
   context "for the first in the planned result" do
     before do
-      stp = StrategicPlan.create(:start_date => 6.months.ago.to_date )
+      stp = StrategicPlan.create(:created_at => 6.months.ago.to_date )
       @sp = StrategicPriority.create(:description => 'first strategic priority', :priority_level => 1, :strategic_plan_id => stp.id)
       @planned_result = PlannedResult.create(:strategic_priority_id => @sp.id, :description => "first planned result")
       @outcome = Outcome.create(:planned_result_id => @planned_result.id, :description => "first outcome")

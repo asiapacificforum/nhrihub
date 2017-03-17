@@ -14,7 +14,7 @@ feature "populate activity performance indicators", :js => true do
 
   feature "add performance indicator when there were none before" do
     before do
-      sp = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+      sp = StrategicPlan.create(:created_at => 6.months.ago.to_date)
       spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
       pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
       o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
