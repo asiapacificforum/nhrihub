@@ -124,7 +124,7 @@ class Complaint < ActiveRecord::Base
   def agency_names
     list = agencies.map(&:description)
     def list.to_s
-      self.map{|item| "<w:p><w:t>#{item}</w:t></w:p>"}.join()
+      self.map{|item| "<w:p><w:t>#{ERB::Util.html_escape(item)}</w:t></w:p>"}.join()
     end
     list
   end

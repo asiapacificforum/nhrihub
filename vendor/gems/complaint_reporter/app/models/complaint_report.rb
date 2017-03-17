@@ -13,7 +13,8 @@ class ComplaintReport < WordReport
 
   def generate_word_doc
     @word_doc = template.gsub(/\{\{\s*(\w*)\s*\}\}/) do |s|
-      complaint.send($1).to_s
+      #$1 == 'witness_name' ? witness_name : complaint.send($1).to_s
+      $1 == 'agency_names' ? complaint.send(:agency_names) : ERB::Util.html_escape(complaint.send($1).to_s)
     end
   end
 
