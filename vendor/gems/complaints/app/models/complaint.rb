@@ -23,6 +23,8 @@ class Complaint < ActiveRecord::Base
   accepts_nested_attributes_for :complaint_documents
   has_many :communications, :dependent => :destroy
 
+  attr_accessor :witness_name
+
   def status_changes_attributes=(attrs)
     # only create a status_change object if this is a new complaint
     # or if the status is changing
