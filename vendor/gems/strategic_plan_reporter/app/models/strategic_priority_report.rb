@@ -8,7 +8,7 @@ class StrategicPriorityReport
 
   def strategic_priority_snippet(strategic_priority)
     @strategic_priority_template ||= strategic_priority_template
-    @strategic_priority_template.gsub(/strategic_priority/, "Strategic Priority #{strategic_priority.index}: #{strategic_priority.description}")
+    @strategic_priority_template.gsub(/strategic_priority/, "Strategic Priority #{strategic_priority.index}: #{ERB::Util.html_escape(strategic_priority.description)}")
   end
 
   def strategic_priority_template

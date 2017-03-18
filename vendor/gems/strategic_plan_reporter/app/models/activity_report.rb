@@ -27,6 +27,6 @@ class ActivityReport
   end
 
   def activity(first,activity)
-    activity_template(first).gsub(/activity/,activity.indexed_description)
+    activity_template(first).gsub(/activity/,ERB::Util.html_escape(activity.indexed_description))
   end
 end

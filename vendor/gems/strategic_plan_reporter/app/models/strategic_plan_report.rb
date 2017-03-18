@@ -1,3 +1,5 @@
+require Rails.root.join('app', 'domain_models', 'report_utilities', 'word_report').to_s
+
 class StrategicPlanReport < WordReport
   include ViewPath
   attr_accessor :strategic_plan

@@ -6,14 +6,14 @@ class ComplaintReport < WordReport
 
   attr_accessor :complaint,:witness_name
   def initialize(complaint,witness)
-    @witness_name = witness.first_last_name
     @complaint = complaint
+    @complaint.witness_name = witness.first_last_name
     super()
   end
 
   def generate_word_doc
     @word_doc = template.gsub(/\{\{\s*(\w*)\s*\}\}/) do |s|
-      $1 == 'witness_name' ? witness_name : complaint.send($1).to_s
+      $1 == 'agency_names' ? complaint.send(:agency_names) : ERB::Util.html_escape(complaint.send($1).to_s)
     end
   end
 

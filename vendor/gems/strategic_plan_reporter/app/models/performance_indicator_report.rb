@@ -29,8 +29,8 @@ class PerformanceIndicatorReport
 
   def performance_indicator(first, performance_indicator)
     performance_indicator_template(first).
-      gsub(/performance_indicator/,performance_indicator.indexed_description).
-      gsub(/target/,performance_indicator.indexed_target)
+      gsub(/performance_indicator/,ERB::Util.html_escape(performance_indicator.indexed_description)).
+      gsub(/target/,ERB::Util.html_escape(performance_indicator.indexed_target))
   end
 end
 

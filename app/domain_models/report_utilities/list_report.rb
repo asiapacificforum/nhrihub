@@ -25,6 +25,6 @@ module ListReport
   end
 
   def interpolate(template,object)
-    template.gsub(/\{\{\s*(\w*)\s*\}\}/) { object.send($1).to_s }
+    template.gsub(/\{\{\s*(\w*)\s*\}\}/) { ERB::Util.html_escape(object.send($1).to_s) }
   end
 end
