@@ -21,6 +21,7 @@ feature "strategic plan admin", :js => true do
     expect(StrategicPlan.most_recent.strategic_priorities.length ).to eq(0)
     expect(strategic_plan_menu).to include "A plan for the 21st century (current)"
     expect(strategic_plan_menu).not_to include "none configured"
+    expect(strategic_plan_list).to include "A plan for the 21st century (current)"
   end
 
   scenario "add a strategic plan with blank title" do
@@ -50,22 +51,32 @@ feature "when there are already some strategic plans", :js => true do
 
   scenario "delete a strategic plan" do
     expect(strategic_plan_menu).to include "a man a plan (current)"
+    expect(strategic_plan_list).to include "a man a plan (current)"
     expect(strategic_plan_menu).to include "the plan for the planet"
+    expect(strategic_plan_list).to include "the plan for the planet"
     expect{ delete_plan; confirm_deletion; wait_for_ajax }.to change{StrategicPlan.count}.from(2).to(1).
-                                                          and change{page.all('tr.strategic_plan').length}.from(2).to(1)
-    sleep(0.5)
-    expect{ delete_plan; confirm_deletion; wait_for_ajax }.to change{StrategicPlan.count}.from(1).to(0).
-                                                          and change{page.all('tr.strategic_plan').length}.from(1).to(0)
+                                                          and change{strategic_plan_list.length}.from(2).to(1)
+    expect(strategic_plan_menu).to include "a man a plan (current)"
+    expect(strategic_plan_list).to include "a man a plan (current)"
+    expect(strategic_plan_menu).not_to include "the plan for the planet"
+    expect(strategic_plan_list).not_to include "the plan for the planet"
+    sleep(0.2)
+    expect{ delete_plan; confirm_deletion; wait_for_ajax }.to change{StrategicPlan.count}.from(1).to(0)
+    expect(strategic_plan_menu).not_to include "a man a plan (current)"
+    expect(strategic_plan_list).not_to include "a man a plan (current)"
+    expect(strategic_plan_menu).not_to include "the plan for the planet"
+    expect(strategic_plan_list).not_to include "the plan for the planet"
     expect(strategic_plan_menu).to include "none configured"
+    expect(strategic_plan_list).to include "none configured"
   end
 
   scenario "delete the current strategic plan" do
     expect(strategic_plan_menu).to include "the plan for the planet"
     expect(strategic_plan_menu).to include "a man a plan (current)"
     expect{ delete_current_plan; confirm_deletion; wait_for_ajax }.to change{StrategicPlan.count}.from(2).to(1).
-                                                          and change{page.all('tr.strategic_plan').length}.from(2).to(1)
+                                                          and change{strategic_plan_list.length}.from(2).to(1)
     expect(strategic_plan_menu).to include "the plan for the planet (current)"
-    expect(page.all('tr.strategic_plan').map(&:text)).to include "the plan for the planet (current)"
+    expect(strategic_plan_list).to include "the plan for the planet (current)"
   end
 
   scenario "delete and then re-add a strategic plan" do

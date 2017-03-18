@@ -2,6 +2,10 @@ require 'rspec/core/shared_context'
 
 module CorporateServicesAdminSpecHelpers
   extend RSpec::Core::SharedContext
+  def strategic_plan_list
+    page.all('#strategic_plans .strategic_plan td:nth-child(1)').map(&:text)
+  end
+
   def strategic_plan_menu
     page.find('#strat_plan').hover
     page.all('#strat_plan #sp_item').map(&:text)

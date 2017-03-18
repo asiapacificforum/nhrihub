@@ -28,7 +28,11 @@
   %table.table.borderless{:style => "width: 500px;"}
     %tbody
       {{#strategic_plans}}
-      <strategicPlan title='{{title}}' id='{{id}}' />
+      <strategicPlan strategic_plans='{{strategic_plans}}' title='{{title}}' id='{{id}}' />
+      {{/strategic_plans}}
+      {{^strategic_plans}}
+      %tr.strategic_plan{'intro-outro' => :fade}
+        %td none configured
       {{/strategic_plans}}
 
 %style
@@ -45,15 +49,39 @@
     %td
       %a{:class => 'delete_strategic_plan {{#unless delete_permitted}}disallowed{{/unless}}', 'on-click' => "delete_if_permitted()"}= t('delete')
 
+%script#strategic_plan_menu_template{:type => 'template/ractive'}
+  %a.dropdown-toggle{ "data-toggle"=>"dropdown", "data-target"=>"#"}
+    Strategic plan
+    %b.caret
+  %ul.dropdown-menu
+    {{#strategic_plans}}
+    <strategicPlanMenuItem strategic_plans='{{strategic_plans}}' title='{{title}}' id='{{id}}' />
+    {{/strategic_plans}}
+    {{^strategic_plans}}
+    %li#sp_item
+      %a none configured
+    {{/strategic_plans}}
+
+%script#strategic_plan_menu_item_template{:type => 'template/ractive'}
+  %li#sp_item
+    %a{:href => "{{url}}"}
+      {{title}}
+      {{#if current}}
+      (current)
+      {{/if}}
+
+
 :coffeescript
+  @strategic_plan_data = #{@strategic_plans.to_json}
+
   StrategicPlan = Ractive.extend
     template : '#strategic_plan_template'
     computed :
       delete_confirmation_message : -> "#{t('.delete_confirmation_message')}" + "\""+@get('title') + "\"" + "?"
       url : -> Routes.corporate_services_strategic_plan_path('en',@get('id'))
       delete_permitted : -> #{@delete_permitted}
-      current : ->
-        @get('title') == @parent.last_title()
+      current : -> @get('title') == @get('last_title')
+      last_title : -> @get('strategic_plans')[@get('strategic_plans').length-1].title
     delete_if_permitted : ->
       if @get('delete_permitted')
         @show_confirm_delete_modal()
@@ -99,41 +127,34 @@
       @remove_error()
       @parent.add_strategic_plan(data)
 
+  StrategicPlanMenuItem = Ractive.extend
+    template : "#strategic_plan_menu_item_template"
+    computed :
+      url : -> Routes.corporate_services_strategic_plan_path('en', @get('id'))
+      current : -> @get('title') == @get('last_title')
+      last_title : -> @get('strategic_plans')[@get('strategic_plans').length-1].title
+
   @strategic_plans = new Ractive
     el: '#strategic_plans'
     template: '#strategic_plans_template'
     data :
-      strategic_plans : #{@strategic_plans.to_json}
+      strategic_plans : window.strategic_plan_data
     components :
       strategicPlan : StrategicPlan
       newStrategicPlan : NewStrategicPlan
     remove : (strategic_plan)->
-      @remove_menu_item(strategic_plan)
       index = @findAllComponents('strategicPlan').indexOf(strategic_plan)
-      @splice('strategic_plans',index,1)
+      window.strategic_plan_data.splice(index,1)
     add_strategic_plan : (strategic_plan)->
-      @add_menu_item(strategic_plan)
-      @remove_none_configured()
       @push('strategic_plans',strategic_plan)
-    remove_menu_item : (strategic_plan)->
-      $("#strat_plan .dropdown-menu li:contains("+strategic_plan.get('title')+")").remove()
-      @redesignate_current()
-      @add_none_configured() if $("#strat_plan .dropdown-menu li").length == 0
-    redesignate_current : ->
-      new_current = $('#strat_plan .dropdown-menu #sp_item a').last()
-      new_text = $(new_current).html() + " (current)"
-      $(new_current).html(new_text)
-    add_menu_item : (strategic_plan)->
-      href = Routes.corporate_services_strategic_plan_path('en',strategic_plan.id)
-      $('#strat_plan .dropdown-menu #sp_item a').each (index,menu_item)->
-        menu_item = $(menu_item)
-        new_text = menu_item.html().replace(/ \(current\)/,'')
-        menu_item.html(new_text)
-      $('#strat_plan .dropdown-menu').append("<li id='sp_item'><a href='"+href+"'>"+strategic_plan.title+" (current)</a></li>")
-    add_none_configured : ->
-      href = Routes.corporate_services_admin_path('en')
-      $('#strat_plan .dropdown-menu').append("<li id='sp_item'><a href='"+href+"'>none configured</a></li>")
-    remove_none_configured : ->
-      $("#strat_plan .dropdown-menu li:contains('none configured')").remove()
-    last_title : ->
-      @get('strategic_plans')[@get('strategic_plans').length-1].title
+
+  @strategic_plan_menu = new Ractive
+    el: "#strat_plan"
+    template : "#strategic_plan_menu_template"
+    components :
+      strategicPlanMenuItem : StrategicPlanMenuItem
+
+
+  $ =>
+    @strategic_plans.observe('strategic_plans', (strategic_plans)=> @strategic_plan_menu.set('strategic_plans', strategic_plans))
+    #@strategic_plans.set('strategic_plans', #{@strategic_plans.to_json})
