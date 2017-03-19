@@ -8,7 +8,7 @@ feature "adding strategic priorities", :js => true do
   include StrategicPrioritySpecHelpers
 
   before do
-    StrategicPlan.create
+    StrategicPlan.create(:title => "stuff and stuff")
     visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
   end
 
@@ -62,7 +62,7 @@ feature "strategic plan multiple strategic priorities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include StrategicPrioritySpecHelpers
   before do
-    @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date, :title => "a plan for the millenium")
     StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
     visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
   end
@@ -98,7 +98,7 @@ feature "editing strategic priorities", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include StrategicPrioritySpecHelpers
   before do
-    @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+    @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date, :title => "a plan for the millenium")
     StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
     visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
   end
@@ -150,7 +150,7 @@ feature "deleting strategic priorities", :js => true do
     include LoggedInEnAdminUserHelper # sets up logged in admin user
     include StrategicPrioritySpecHelpers
     before do
-      @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+      @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date, :title => "a plan for the millenium")
       StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
       visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     end
@@ -165,7 +165,7 @@ feature "deleting strategic priorities", :js => true do
     include LoggedInEnAdminUserHelper # sets up logged in admin user
     include StrategicPrioritySpecHelpers
     before do
-      @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date)
+      @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date, :title => "a plan for the millenium")
       StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
       StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 2, :description => "Gonna do things betta")
       StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 3, :description => "Gonna do things betta")

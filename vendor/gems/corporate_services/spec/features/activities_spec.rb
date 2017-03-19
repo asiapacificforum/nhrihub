@@ -14,7 +14,7 @@ feature "populate plannned result activities", :js => true do
 
   feature "add activity when there were none before" do
     before do
-      sp = StrategicPlan.create(:created_at => 6.months.ago.to_date)
+      sp = StrategicPlan.create(:created_at => 6.months.ago.to_date, :title => "a plan for the millenium")
       spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
       pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
       o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
@@ -82,7 +82,7 @@ feature "actions on existing activities", :js => true do
   include StrategicPlanHelpers
 
   before do
-    sp = StrategicPlan.create(:created_at => 6.months.ago.to_date)
+    sp = StrategicPlan.create(:created_at => 6.months.ago.to_date, :title => "a plan for the millenium")
     spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")
     pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
     o = Outcome.create(:planned_result_id => pr.id, :description => "whirled peas")
