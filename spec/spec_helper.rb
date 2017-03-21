@@ -27,6 +27,11 @@ require_relative './support/wait_for_modal'
 
 #Capybara.default_max_wait_time = 5
 
+#to run a test from a different timezone, specify it in the command line like this:
+#   TZ=Pacific/Apia rspec spec/feature/timezone.spec
+# to confirm, uncomment this line:
+# puts ENV['TZ']
+
 Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome,)
 end

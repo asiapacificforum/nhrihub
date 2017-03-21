@@ -577,7 +577,6 @@ complaints_options =
         mandate_id : null
         agency_ids : []
         notes : []
-        opened_by_id : null
         phone : ""
         reminders : []
         current_status_humanized : "Under Evaluation"
@@ -614,13 +613,17 @@ window.start_page = ->
 
 Ractive.decorators.inpage_edit = EditInPlace
 
+helpers = Ractive.defaults.data
+
+helpers.local = (gmt_date)->
+  $.datepicker.formatDate("yy, M dd", new Date(gmt_date))
+
 $ ->
   start_page()
   filter_criteria_datepicker.start(complaints)
   # so that a state object is present when returnng to the initial state with the back button
   # this is so we can discriminate returning to the page from page load
   history.replaceState({bish:"bosh"},"bash",window.location)
-
 
 window.onpopstate = (event)->
   if event.state # to ensure that it doesn't trigger on page load, it's a problem with phantomjs but not with chrome

@@ -14,7 +14,7 @@ class StatusChange < ActiveRecord::Base
   end
 
   def date
-    change_date.localtime.to_date.to_s(:short) unless change_date.nil?
+    change_date
   end
 
   def status_humanized

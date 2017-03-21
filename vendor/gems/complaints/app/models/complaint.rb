@@ -11,12 +11,10 @@ class Complaint < ActiveRecord::Base
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
   has_many :assigns, :autosave => true, :dependent => :destroy
   has_many :assignees, :through => :assigns
-  belongs_to :opened_by, :class_name => 'User', :foreign_key => :opened_by_id
   belongs_to :mandate # == area
   has_many :status_changes, :dependent => :destroy
   accepts_nested_attributes_for :status_changes
   has_many :complaint_statuses, :through => :status_changes
-  #accepts_nested_attributes_for :complaint_statuses
   has_many :complaint_agencies, :dependent => :destroy
   has_many :agencies, :through => :complaint_agencies
   has_many :complaint_documents, :dependent => :destroy
