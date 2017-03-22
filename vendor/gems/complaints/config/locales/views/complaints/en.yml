@@ -1,6 +1,7 @@
 en:
   complaints:
     complaints_templates:
+      no_mandates : 'None designated'
       compact: 'Compact'
       compact_all: 'Compact all'
       expand: 'Expand'
@@ -23,13 +24,13 @@ en:
       desired_outcome : 'Desired outcome'
       firstName_error_message : "You must enter a first name"
       lastName_error_message : "You must enter a last name"
-      mandate: "Area"
-      mandate_name_error_message: "You must select an area"
+      mandate: "Area(s)"
+      mandate_ids_error_message: "You must select at least one area"
       area : "Area"
       select_area : "Select area"
-      complaint_basis: "Subareas"
+      complaint_basis: "Subarea(s)"
       complaint_basis_error_message : "You must select at least one subarea"
-      agency: "Agency"
+      agency: "Agency(ies)"
       assignees_history: "History of assignees"
       documents: "Documents"
       case_reference: "Case reference"

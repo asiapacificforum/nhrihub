@@ -1,7 +1,7 @@
 class ComplaintsController < ApplicationController
   def index
     @complaints = Complaint.includes(:assigns,
-                                     :mandate,
+                                     :mandates,
                                      {:status_changes => :complaint_status},
                                      {:complaint_good_governance_complaint_bases=>:good_governance_complaint_basis},
                                      {:complaint_special_investigations_unit_complaint_bases => :special_investigations_unit_complaint_basis},
@@ -75,11 +75,11 @@ class ComplaintsController < ApplicationController
   def complaint_params
     params.require(:complaint).permit( :case_reference, :firstName, :lastName, :chiefly_title, :village, :phone, :new_assignee_id,
                                        :dob, :email, :complained_to_subject_agency, :desired_outcome, :gender, :details,
-                                       :mandate_name, :date_received, :imported, :good_governance_complaint_basis_ids => [],
+                                       :date_received, :imported, :good_governance_complaint_basis_ids => [],
                                        :special_investigations_unit_complaint_basis_ids => [],
                                        :human_rights_complaint_basis_ids => [],
                                        :status_changes_attributes => [:user_id, :name],
-                                       :agency_ids => [],
+                                       :agency_ids => [], :mandate_ids => [],
                                        :complaint_documents_attributes => [:file, :title, :filename, :original_type, :filesize, :lastModifiedDate],
                                      )
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170119041053) do
+ActiveRecord::Schema.define(version: 20170321165122) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -194,6 +194,13 @@ ActiveRecord::Schema.define(version: 20170119041053) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "complaint_mandates", force: :cascade do |t|
+    t.integer  "complaint_id"
+    t.integer  "mandate_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "complaint_statuses", force: :cascade do |t|
@@ -588,8 +595,9 @@ ActiveRecord::Schema.define(version: 20170119041053) do
     t.string   "session_id",  limit: 255
     t.datetime "login_date"
     t.datetime "logout_date"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.boolean  "expired",                 default: false
     t.index ["session_id"], name: "index_sessions_on_session_id", using: :btree
   end
 

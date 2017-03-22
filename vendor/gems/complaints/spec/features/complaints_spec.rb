@@ -29,10 +29,10 @@ feature "complaints index", :js => true do
       expect(find('.date_received').text).to eq Complaint.first.date_received.getlocal.to_date.to_s
       expect(all('#status_changes .status_change').first.text).to match /#{Complaint.first.status_changes.first.status_humanized}/
       expect(all('#status_changes .status_change .user_name').first.text).to match /#{Complaint.first.status_changes.first.user.first_last_name}/
-      expect(all('#status_changes .status_change .date').first.text).to match /#{Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%b %-d, %Y")}/
+      expect(all('#status_changes .status_change .date').first.text).to match /#{Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%Y, %b %-d")}/
       expect(all('#status_changes .status_change').last.text).to match /#{Complaint.first.status_changes.last.status_humanized}/
       expect(all('#status_changes .status_change .user_name').last.text).to match /#{Complaint.first.status_changes.last.user.first_last_name}/
-      expect(all('#status_changes .status_change .date').last.text).to match /#{Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%b %-d, %Y")}/
+      expect(all('#status_changes .status_change .date').last.text).to match /#{Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%Y, %b %-d")}/
       expect(find('.lastName').text).to eq Complaint.first.lastName
       expect(find('.firstName').text).to eq Complaint.first.firstName
     end
@@ -45,7 +45,7 @@ feature "complaints index", :js => true do
       expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
       status = Complaint.first.status_changes.first.status_humanized
       name =   Complaint.first.status_changes.first.user.first_last_name
-      date =   Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%b %-d, %Y")
+      date =   Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%Y, %b %-d")
       expect(all('#status_changes .status_change').first.text.gsub(/\s/,'')).to match "#{status} ( by #{name} , on #{date} )".gsub(/\s/,'')
       status = Complaint.first.status_changes.last.status_humanized
       name =   Complaint.first.status_changes.last.user.first_last_name
@@ -62,10 +62,10 @@ feature "complaints index", :js => true do
       expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
       status = Complaint.first.status_changes.first.status_humanized
       name =   Complaint.first.status_changes.first.user.first_last_name
-      date =   Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%b %-d, %Y")
+      date =   Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%Y, %b %-d")
       expect(all('#status_changes .status_change').first.text.gsub(/\s/,'')).to match "#{status} ( by #{name}, on #{date} )".gsub(/\s/,'')
       status = Complaint.first.status_changes.last.status_humanized
-      date =   Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%b %-d, %Y")
+      date =   Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%Y, %b %-d")
       expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to match "#{status} ( on #{date} )".gsub(/\s/,'')
       expect(find('.lastName').text).to eq Complaint.first.lastName
       expect(find('.firstName').text).to eq Complaint.first.firstName
@@ -84,12 +84,6 @@ feature "complaints index", :js => true do
     end
   end
 
-    #remove_column :complaints, :complainant
-    #add_column :complaints, :firstName, :string
-    #add_column :complaints, :lastName, :string
-    #add_column :complaints, :chiefly_title, :string
-    #add_column :complaints, :occupation, :string
-    #add_column :complaints, :employer, :string
   it "expands each complaint to show additional information" do
     within first_complaint do
       expand
@@ -110,8 +104,8 @@ feature "complaints index", :js => true do
         expect(page).to have_selector('.status_change', :count => 2)
         expect(all('.status_change .user_name')[0].text).to eq User.staff.first.first_last_name
         expect(all('.status_change .user_name')[1].text).to eq User.staff.second.first_last_name
-        expect(all('.status_change .date')[0].text).to eq Complaint.first.status_changes[0].created_at.localtime.to_date.to_s(:short)
-        expect(all('.status_change .date')[1].text).to eq Complaint.first.status_changes[1].created_at.localtime.to_date.to_s(:short)
+        expect(all('.status_change .date')[0].text).to eq Complaint.first.status_changes[0].created_at.localtime.to_date.strftime("%Y, %b %-d")
+        expect(all('.status_change .date')[1].text).to eq Complaint.first.status_changes[1].created_at.localtime.to_date.strftime("%Y, %b %-d")
         expect(all('.status_change .status_humanized')[0].text).to eq "Open"
         expect(all('.status_change .status_humanized')[1].text).to eq "Closed"
       end
@@ -161,7 +155,8 @@ feature "complaints index", :js => true do
       fill_in('complaint_details', :with => "a long story about lots of stuff")
       fill_in('desired_outcome', :with => "Life gets better")
       fill_in('chiefly_title', :with => "bossman")
-      choose('special_investigations_unit')
+      check('special_investigations_unit')
+      check('good_governance')
       select_male_gender
       choose('complained_to_subject_agency_yes')
       check_basis(:good_governance, "Delayed action")
@@ -196,7 +191,8 @@ feature "complaints index", :js => true do
     expect(complaint.phone).to eq "555-1212"
     expect(complaint.details).to eq "a long story about lots of stuff"
     expect(complaint.desired_outcome).to eq "Life gets better"
-    expect(complaint.mandate.key).to eq 'special_investigations_unit'
+    expect(complaint.mandates.map(&:key)).to include 'special_investigations_unit'
+    expect(complaint.mandates.map(&:key)).to include 'good_governance'
     expect(complaint.good_governance_complaint_bases.map(&:name)).to include "Delayed action"
     expect(complaint.human_rights_complaint_bases.map(&:name)).to include "CAT"
     expect(complaint.special_investigations_unit_complaint_bases.map(&:name)).to include "Unreasonable delay"
@@ -256,7 +252,8 @@ feature "complaints index", :js => true do
       expect(page.all('#complaint_documents .complaint_document')[0].find('.title').text).to eq "Complaint Document"
     end
 
-    expect(page.find('#mandate').text).to eq "Special Investigations Unit"
+    expect(page.find('#mandate').text).to match /Special Investigations Unit/
+    expect(page.find('#mandate').text).to match /Good Governance/
     email = ActionMailer::Base.deliveries.last
     expect( email.subject ).to eq "Notification of complaint assignment"
     lines = Nokogiri::HTML(email.body.to_s).xpath(".//p").map(&:text)
@@ -276,7 +273,7 @@ feature "complaints index", :js => true do
       expect(page).to have_selector('#lastName_error', :text => "You must enter a last name")
       expect(page).to have_selector('#village_error', :text => 'You must enter a village')
       expect(page).to have_selector('#new_assignee_id_error', :text => 'You must designate an assignee')
-      expect(page).to have_selector('#mandate_name_error', :text => 'You must select an area')
+      expect(page).to have_selector('#mandate_id_count_error', :text => 'You must select at least one area')
       expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
       expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
       expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
@@ -288,8 +285,8 @@ feature "complaints index", :js => true do
       expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
       select(User.staff.first.first_last_name, :from => "assignee")
       expect(page).not_to have_selector('#new_assignee_id_error', :text => 'You must designate an assignee')
-      choose('special_investigations_unit')
-      expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select an area')
+      check('special_investigations_unit')
+      expect(page).not_to have_selector('#mandate_ids_count_error', :text => 'You must select an area')
       check_basis(:special_investigations_unit, "Unreasonable delay")
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
       fill_in('complaint_details', :with => "random text")
@@ -328,7 +325,7 @@ feature "complaints index", :js => true do
       fill_in('firstName', :with => "Norman")
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
-      choose('special_investigations_unit')
+      check('special_investigations_unit')
       check_basis(:good_governance, "Delayed action")
       check_basis(:human_rights, "CAT")
       check_basis(:special_investigations_unit, "Unreasonable delay")
@@ -356,7 +353,7 @@ feature "complaints index", :js => true do
     end
     expect{ edit_save }.to change{ Complaint.first.current_status }.from("Closed").to("Open")
     expect( first_complaint.all('#status_changes .status_change').last.text ).to match "Open"
-    expect( first_complaint.all('#status_changes .date').last.text ).to match /#{Date.today.to_s(:short)}/
+    expect( first_complaint.all('#status_changes .date').last.text ).to match /#{Date.today.strftime("%Y, %b %-d")}/
     user = User.find_by(:login => 'admin')
     expect( first_complaint.all('#status_changes .user_name').last.text ).to match /#{user.first_last_name}/
   end
@@ -377,7 +374,7 @@ feature "complaints index", :js => true do
       # ASSIGNEE
       select(User.staff.last.first_last_name, :from => "assignee")
       # MANDATE
-      choose('special_investigations_unit') # originally had human rights mandate
+      check('special_investigations_unit') # originally had human rights mandate
       # BASIS
       uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
       uncheck_basis(:human_rights, "CAT") # originall had "CAT" "ICESCR"
@@ -408,7 +405,7 @@ feature "complaints index", :js => true do
     expect( Complaint.first.dob ).to eq Date.new(1950,8,19)
     expect( Complaint.first.details ).to eq "the boy stood on the burning deck"
     expect( Complaint.first.desired_outcome ).to eq "Things are more better"
-    expect( Complaint.first.mandate_name ).to eq "Special Investigations Unit"
+    expect( Complaint.first.mandates.map(&:key) ).to match_array [ "human_rights", "special_investigations_unit"]
     expect( Complaint.first.good_governance_complaint_bases.count ).to eq 1
     expect( Complaint.first.good_governance_complaint_bases.first.name ).to eq "Failure to act"
     expect( Complaint.first.human_rights_complaint_bases.count ).to eq 1
@@ -514,7 +511,7 @@ feature "complaints index", :js => true do
       choose('complained_to_subject_agency_yes')
       select_datepicker_date("#date_received",Date.today.year,Date.today.month,9)
       select(User.staff.last.first_last_name, :from => "assignee")
-      choose('special_investigations_unit')
+      check('special_investigations_unit')
       check_agency("ACC")
       attach_file("complaint_fileinput", upload_document)
       fill_in("attached_document_title", :with => "some text any text")
@@ -537,7 +534,7 @@ feature "complaints index", :js => true do
       expect(page.find('#complained_to_subject_agency_yes')).not_to be_checked
       expect(find('.date_received').text).to eq original_complaint.date_received.getlocal.to_date.to_s
       expect(find('.current_assignee').text).to eq original_complaint.assignees.first.first_last_name
-      expect(page.find(".mandate ##{original_complaint.mandate.key}")).to be_checked
+      expect(page.find(".mandate ##{original_complaint.mandates.first.key}")).to be_checked
       expect(page.find_field("ACC")).not_to be_checked
       expect(page.find_field("SAA")).to be_checked
       expect(page).not_to have_selector("#attached_document_title")
@@ -556,7 +553,7 @@ feature "complaints index", :js => true do
       fill_in('dob', :with => "")
       fill_in('complaint_details', :with => "")
       # MANDATE
-      choose('special_investigations_unit') # originally had human rights mandate
+      check('special_investigations_unit') # originally had human rights mandate
       # BASIS
       uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
       uncheck_basis(:good_governance, "Failure to act") # originally had "Delayed action" and "Failure to Act"
@@ -656,7 +653,7 @@ feature "complaints index", :js => true do
       fill_in('dob', :with => "")
       fill_in('complaint_details', :with => "")
       # MANDATE
-      choose('special_investigations_unit') # originally had human rights mandate
+      uncheck('human_rights')
       # BASIS
       uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
       uncheck_basis(:good_governance, "Failure to act") # originally had "Delayed action" and "Failure to Act"
@@ -672,6 +669,7 @@ feature "complaints index", :js => true do
     expect(page).to have_selector('#firstName_error', :text => "You must enter a first name")
     expect(page).to have_selector('#lastName_error', :text => "You must enter a last name")
     expect(page).to have_selector('#village_error', :text => 'You must enter a village')
+    expect(page).to have_selector('#mandate_id_count_error', :text => 'You must select at least one area')
     expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
     expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
     expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
@@ -682,8 +680,8 @@ feature "complaints index", :js => true do
       expect(page).not_to have_selector('#firstName_error', :text => "You must enter a first name")
       fill_in('village', :with => "Leaden Roding")
       expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
-      choose('special_investigations_unit')
-      expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select an area')
+      check('special_investigations_unit')
+      expect(page).not_to have_selector('#mandate_id_count_error', :text => 'You must select at least one area')
       check_basis(:special_investigations_unit, "Unreasonable delay")
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
       fill_in('dob', :with => "1950/08/19")

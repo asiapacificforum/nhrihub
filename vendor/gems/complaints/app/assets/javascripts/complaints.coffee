@@ -56,8 +56,8 @@ Agencies = Ractive.extend
 MandatesSelector = Ractive.extend
   template : '#mandates_selector_template'
   remove_error : ->
-    if !_.isEmpty @get('mandate_name')
-      @parent.remove_attribute_error('mandate_name')
+    if @parent.get('mandate_id_count') != 0
+      @parent.remove_attribute_error('mandate_id_count')
 
 ComplaintBasesSelector = Ractive.extend
   template : '#complaint_bases_selector_template'
@@ -318,7 +318,7 @@ Complaint = Ractive.extend
     persisted : ->
       !_.isNull(@get('id'))
     persistent_attributes : ->
-      ['case_reference','village','phone','mandate_name', 'imported',
+      ['case_reference','village','phone','mandate_ids', 'imported',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
         'agency_ids', 'attached_documents_attributes', 'details',
@@ -346,19 +346,25 @@ Complaint = Ractive.extend
           @set('dob', $.datepicker.formatDate("yy-mm-dd",$.datepicker.parseDate( "dd/mm/yy", val)))
         else
           @set('dob', "")
+    mandate_names : ->
+      mandates = _(@get('all_mandates')).select (mandate)=> _(@get('mandate_ids')).include(mandate.id)
+      names = _(mandates).map (mandate)-> mandate.name
+      names.join(', ')
     create_reminder_url : ->
       Routes.complaint_reminders_path('en', @get('id'))
     create_note_url : ->
       Routes.complaint_notes_path('en', @get('id'))
-    complaint_basis_id_count : ->
+    complaint_basis_id_count : -> # aka subareas
       @get('good_governance_complaint_basis_ids').length +
       @get('special_investigations_unit_complaint_basis_ids').length +
       @get('human_rights_complaint_basis_ids').length
+    mandate_id_count : -> # aka 'areas'
+      @get('mandate_ids').length
     validation_criteria : ->
       firstName : ['notBlank', {if : =>!@get('imported') }]
       lastName : ['notBlank', {if : =>!@get('imported') }]
       village : ['notBlank', {if : =>!@get('imported')}]
-      mandate_name : ['match',["Corporate Services", "Good Governance","Human Rights","Special Investigations Unit"]]
+      mandate_id_count : 'nonZero'
       complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
       new_assignee_id : ['numeric', {if : =>!@get('editing')}]
       dob: =>
@@ -368,7 +374,7 @@ Complaint = Ractive.extend
     error_vector : ->
       complainant_error : @get('complainant_error')
       village_error : @get('village_error')
-      mandate_name_error : @get('mandate_name_error')
+      mandate_id_count_error : @get('mandate_id_count_error')
       complaint_basis_id_count_error : @get('complaint_basis_id_count_error')
       dob_error : @get('dob_error')
       details_error : @get('details_error')

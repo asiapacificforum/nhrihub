@@ -21,7 +21,7 @@ module ComplaintsSpecSetupHelpers
                        :details => Faker::Lorem.sentence,
                        :complaint_documents => complaint_docs,
                        :status_changes => _status_changes,
-                       :mandate_id => _mandate_id,
+                       :mandate_ids => [_mandate_id],
                        :agencies => _agencies,
                        :communications => _communications)
     set_file_defaults
@@ -46,7 +46,7 @@ module ComplaintsSpecSetupHelpers
   end
 
   def create_mandates
-    [:good_governance, :human_rights, :special_investigations_unit].each do |key|
+    [:good_governance, :human_rights, :special_investigations_unit, :corporate_services].each do |key|
       FactoryGirl.create(:mandate, :key => key)
     end
   end
