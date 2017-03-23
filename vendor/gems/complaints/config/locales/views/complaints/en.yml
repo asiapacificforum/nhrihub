@@ -1,6 +1,7 @@
 en:
   complaints:
     complaints_templates:
+      complaint_error : "Form errors present, cannot be saved"
       no_mandates : 'None designated'
       compact: 'Compact'
       compact_all: 'Compact all'
@@ -14,7 +15,7 @@ en:
       village: 'Village'
       village_error_message : "You must enter a village"
       dob: 'Date of birth'
-      dob_error_message: "You must enter the complainant's date of birth with format yyyy/mm/dd"
+      dob_error_message: "You must enter the complainant's date of birth with format dd/mm/yyyy"
       email : "Email"
       phone: 'Phone'
       gender : 'Gender'

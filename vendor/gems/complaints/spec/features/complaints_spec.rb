@@ -271,16 +271,20 @@ feature "complaints index", :js => true do
       save_complaint.click
       expect(page).to have_selector('#firstName_error', :text => "You must enter a first name")
       expect(page).to have_selector('#lastName_error', :text => "You must enter a last name")
+      expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format dd/mm/yyyy")
       expect(page).to have_selector('#village_error', :text => 'You must enter a village')
       expect(page).to have_selector('#new_assignee_id_error', :text => 'You must designate an assignee')
       expect(page).to have_selector('#mandate_id_count_error', :text => 'You must select at least one area')
       expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
-      expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
+      expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format dd/mm/yyyy")
       expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
+      expect(page).to have_selector('#complaint_error', :text => "Form errors present, cannot be saved")
       fill_in('lastName', :with => "Normal")
       expect(page).not_to have_selector('#lastName_error', :text => "You must enter a first name")
       fill_in('firstName', :with => "Norman")
       expect(page).not_to have_selector('#firstName_error', :text => "You must enter a last name")
+      fill_in('dob', :with => "19/08/1968")
+      expect(page).not_to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format dd/mm/yyyy")
       fill_in('village', :with => "Leaden Roding")
       expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
       select(User.staff.first.first_last_name, :from => "assignee")
@@ -291,6 +295,7 @@ feature "complaints index", :js => true do
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
       fill_in('complaint_details', :with => "random text")
       expect(page).not_to have_selector('#details_error', :text => "You must enter the complaint details")
+      expect(page).not_to have_selector('#complaint_error', :text => "Form errors present, cannot be saved")
     end
   end
 
@@ -303,6 +308,7 @@ feature "complaints index", :js => true do
     expect(page).to have_selector('#filesize_error', :text => "File is too large")
 
     expect{ save_complaint.click; wait_for_ajax }.not_to change{ Complaint.count }
+    expect(page).to have_selector('#complaint_error', :text => "Form errors present, cannot be saved")
   end
 
   it "flags as invalid when file attachment is unpermitted filetype" do
@@ -316,6 +322,7 @@ feature "complaints index", :js => true do
     expect(page).to have_css('#original_type_error', :text => "File type not allowed")
 
     expect{ save_complaint.click; wait_for_ajax }.not_to change{ Complaint.count }
+    expect(page).to have_selector('#complaint_error', :text => "Form errors present, cannot be saved")
   end
 
   it "cancels adding" do
@@ -570,8 +577,9 @@ feature "complaints index", :js => true do
     expect(page).to have_selector('#lastName_error', :text => "You must enter a last name")
     expect(page).to have_selector('#village_error', :text => 'You must enter a village')
     expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
-    expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
+    expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format dd/mm/yyyy")
     expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
+    expect(page).to have_selector('#complaint_error', :text => "Form errors present, cannot be saved")
 
     edit_cancel
     sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
@@ -582,8 +590,9 @@ feature "complaints index", :js => true do
       expect(page).not_to have_selector('#village_error', :text => 'You must enter a village')
       expect(page).not_to have_selector('#mandate_name_error', :text => 'You must select an area')
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
-      expect(page).not_to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
+      expect(page).not_to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format dd/mm/yyyy")
       expect(page).not_to have_selector('#details_error', :text => "You must enter the complaint details")
+      expect(page).not_to have_selector('#complaint_error', :text => "Form errors present, cannot be saved")
     end
   end
 
@@ -671,8 +680,9 @@ feature "complaints index", :js => true do
     expect(page).to have_selector('#village_error', :text => 'You must enter a village')
     expect(page).to have_selector('#mandate_id_count_error', :text => 'You must select at least one area')
     expect(page).to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
-    expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
+    expect(page).to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format dd/mm/yyyy")
     expect(page).to have_selector('#details_error', :text => "You must enter the complaint details")
+    expect(page).to have_selector('#complaint_error', :text => "Form errors present, cannot be saved")
     within first_complaint do
       fill_in('lastName', :with => "Normal")
       expect(page).not_to have_selector('#lastName_error', :text => "You must enter a last name")
@@ -685,9 +695,10 @@ feature "complaints index", :js => true do
       check_basis(:special_investigations_unit, "Unreasonable delay")
       expect(page).not_to have_selector('#complaint_basis_id_count_error', :text => 'You must select at least one subarea')
       fill_in('dob', :with => "1950/08/19")
-      expect(page).not_to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format yyyy/mm/dd")
+      expect(page).not_to have_selector('#dob_error', :text => "You must enter the complainant's date of birth with format dd/mm/yyyy")
       fill_in('complaint_details', :with => "bish bash bosh")
       expect(page).not_to have_selector('#details_error', :text => "You must enter the complaint details")
+      expect(page).not_to have_selector('#complaint_error', :text => "Form errors present, cannot be saved")
     end
   end
 

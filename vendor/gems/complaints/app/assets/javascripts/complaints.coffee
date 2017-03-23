@@ -341,11 +341,17 @@ Complaint = Ractive.extend
         else
           $.datepicker.formatDate("d/m/yy", $.datepicker.parseDate("yy-mm-dd",@get('dob')))
       set: (val)->
-        date_regex = new RegExp(/\d{1,2}\/\d{1,2}\/\d\d\d\d/)
-        if date_regex.test val
+        date_regex = new RegExp(/(\d{1,2})\/(\d{1,2})\/\d{4}/)
+        match = date_regex.exec val
+        valid_day = match && (parseInt(match[1]) <= 31)
+        valid_month = match && (parseInt(match[2]) <= 12)
+        if !_.isNull(match) && valid_day && valid_month
           @set('dob', $.datepicker.formatDate("yy-mm-dd",$.datepicker.parseDate( "dd/mm/yy", val)))
+          @validate_attribute('dob')
         else
           @set('dob', "")
+    has_errors : ->
+      @validator.has_errors()
     mandate_names : ->
       mandates = _(@get('all_mandates')).select (mandate)=> _(@get('mandate_ids')).include(mandate.id)
       names = _(mandates).map (mandate)-> mandate.name
@@ -368,8 +374,11 @@ Complaint = Ractive.extend
       complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
       new_assignee_id : ['numeric', {if : =>!@get('editing')}]
       dob: =>
-        date_regex = new RegExp(/\d{1,2}\/\d{1,2}\/\d{4}/)
-        date_regex.test @get('formatted_dob')
+        date_regex = new RegExp(/\d{4}-(\d{1,2})-(\d{1,2})/) # yyyy-mm-dd
+        match = date_regex.exec @get('dob')
+        valid_month = match && (parseInt(match[1]) <= 12)
+        valid_day = match && (parseInt(match[2]) <= 31)
+        !_.isNull(match) && valid_day && valid_month
       details : 'notBlank'
     error_vector : ->
       complainant_error : @get('complainant_error')
@@ -381,17 +390,18 @@ Complaint = Ractive.extend
   oninit : ->
     @set
       editing : false
-      complainant_error: false
-      village_error : false
-      current_assignee_id_error : false
-      mandate_name_error : false
-      complaint_basis_id_count_error : false
-      filetype_error: false
-      filesize_error: false
-      dob_error: false
       expanded:false
       serialization_key:'complaint'
+  onconfig: ->
     @validator = new Validator(@)
+  # this should work, but due to some weirdness in ractive, it doesn't, maybe a future release
+  # will work better so that the callbacks can be removed from the view elements
+  #onchange: (obj)->
+    #attr = _(obj).keys()[0]
+    #console.log "change to #{attr}"
+    #unless _.isUndefined(@validator)
+      #if _(@validator.attributes).includes(attr)
+        #@validate_attribute(attr)
   components :
     mandates : Mandates
     mandatesSelector : MandatesSelector
@@ -413,6 +423,8 @@ Complaint = Ractive.extend
     $(@findAll('.collapse')).collapse('hide')
   validate : ->
     @validator.validate()
+  validate_attribute : (attribute)->
+    @validator.validate_attribute(attribute)
   remove_attribute_error : (attribute)->
     @set(attribute+"_error",false)
   remove_errors : ->
@@ -570,7 +582,8 @@ complaints_options =
       new_complaint =
         assigns : []
         case_reference : source_next_case_reference
-        complainant : ""
+        firstName : ""
+        lastName : ""
         attached_documents : []
         current_assignee : ""
         current_assignee_id : ""
@@ -622,7 +635,7 @@ Ractive.decorators.inpage_edit = EditInPlace
 helpers = Ractive.defaults.data
 
 helpers.local = (gmt_date)->
-  $.datepicker.formatDate("yy, M dd", new Date(gmt_date))
+  $.datepicker.formatDate("yy, M d", new Date(gmt_date))
 
 $ ->
   start_page()
