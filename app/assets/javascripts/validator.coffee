@@ -1,4 +1,8 @@
 @Validator =
+  has_errors : ->
+    attributes = _(@get('validation_criteria')).keys()
+    error_attributes = _(attributes).map (attr)->attr+"_error"
+    _(error_attributes).any (attr)=>@get(attr)
   validate : ->
     attributes = _(@get('validation_criteria')).keys()
     valid_attributes = _(attributes).map (attribute)=> @validate_attribute(attribute)

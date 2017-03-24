@@ -14,16 +14,18 @@
 %script#new_project_template{:type => 'template/ractive'}
   .row.new_project.expandable_well.well{:intro => 'slide'}
     .col-md-12
+      %span.required_before=t('required')
+    .col-md-12
       .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
         .col-md-2
-          %label{:for => 'project_title'}=t('.title')
+          %label.required{:for => 'project_title'}=t('.title')
         .col-md-7
           %input.form-control#project_title{:value => '{{title}}', 'on-keydown'=>"remove_attribute_error('title')"}
           %span.help-block.error#title_error= t('.title_error_message')
         .col-sm-3
       .row.form-group{:class => "{{#description_error}}has-error{{/}}"}
         .col-md-2
-          %label{:for => 'project_description'}=t('.description')
+          %label.required{:for => 'project_description'}=t('.description')
         .col-md-7
           %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"remove_attribute_error('description')"}
           %span.help-block.error#description_error= t('.description_error_message')
@@ -159,7 +161,12 @@
 
 %script#edit_title{:type => 'template/ractive'}
   .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
-    .col-md-12.clearfix
+    .col-md-2
+      .no_edit.in
+        %span=t('.title')
+      .edit
+        %span.required=t('.title')
+    .col-md-10.clearfix
       .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
       =text_field_tag 'project[title]', nil, :class => 'form-control', :id => 'project_title', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_attribute_error('title')"
       %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
@@ -167,6 +174,10 @@
 %script#show_project_template{:type => 'template/ractive'}
   .row.well.well-sm.expandable_well.project.editable_container{ :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
     .col-md-12
+      .row
+        .col-md-9{'data-toggle' => 'edit'}
+          .edit
+            %span.required_before=t('required')
       .row.basic_info
         .col-md-9.title{'data-toggle'=>'edit'}
           .fade.no_edit.in
@@ -183,18 +194,12 @@
               .no_edit.in
                 .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
               .edit
-            .col-md-1.icon{ 'data-toggle' => 'edit'}
-              .fade.edit
-                %i.fa.fa-remove{:id => "project_editable{{id}}_edit_cancel"}
             .col-md-1.icon{'data-toggle' => 'edit'}
-              .fade.edit
-                %i.fa.fa-check{:id => "project_editable{{id}}_edit_save"}
               .fade.no_edit.in
                 %i.fa.fa-pencil-square-o{:id => "project_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
                 %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()'}
-              .edit
             .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
               %div{'data-toggle'=>:edit}
                 .no_edit.in
@@ -206,7 +211,11 @@
                 .edit
       .collapse.expanded_info{:class => "collapse{{id}}"}
         .row.description.form-group{:class => "{{#description_error}}has-error{{/}}", 'data-toggle'=>'edit', :style => "width:60%"}
-          .col-md-2=t('.description')
+          .col-md-2
+            .no_edit.in
+              %span=t('.description')
+            .edit
+              %span.required=t('.description')
           .col-md-10
             .fade.no_edit.in
               %span {{description}}
@@ -235,6 +244,17 @@
               {{> file_selector_template {key : 'project'} }}
             .fade.no_edit.in
             <projectDocuments project_documents='{{project_documents}}' />
+        .row{'data-toggle'=>:edit, :style => "margin-top:30px;"}
+          .col-sm-3.col-sm-offset-3.edit{:style => "text-align:center;"}
+            .btn.btn-danger.btn-sm.edit_cancel{"on-click" => "project_editable{{id}}_edit_cancel()", :id => "project_editable{{id}}_edit_cancel"}
+              %i.fa.fa-remove.fa-lg{:style => "color:white"}
+              %span{:style => "color:white"}= t("defaults.cancel")
+          .col-sm-3.edit{:style => "text-align:center;"}
+            .btn.btn-success.btn-sm.save_project{:style => "color:white;", "on-click" => "project_editable{{id}}_edit_save()", :id => "project_editable{{id}}_edit_save"}
+              %i.fa.fa-check.fa-lg{:style => "color:white"}
+              %span= t("defaults.save")
+            .form-group{:class => "{{#has_errors}}has-error{{/}}"}
+              %span#project_error.help-block.error= t(".project_error")
 
 %script#conventions_template{:type => 'template/ractive'}
   .row#conventions{:style => "margin-left:0px;"}

@@ -230,11 +230,15 @@ Project = Ractive.extend
     @set
       'editing' : false
       'title_error': false
+      'description_error': false
       'project_error':false
       'filetype_error': false
       'filesize_error': false
       'expanded':false
       'serialization_key':'project'
+    @set 'validation_criteria',
+      title : 'notBlank'
+      description : 'notBlank'
     @initialize_validator()
   computed :
     persistent_attributes : ->
@@ -264,8 +268,8 @@ Project = Ractive.extend
       window.create_note_url.replace('id',@get('id'))
     create_reminder_url : ->
       window.create_reminder_url.replace('id',@get('id'))
-    #association_id : ->
-      #@get('id')
+    has_errors : ->
+      @has_errors()
   components :
     areasSelector : AreasSelector
     projectTypesSelector : ProjectTypesSelector
@@ -289,6 +293,8 @@ Project = Ractive.extend
   remove_errors : ->
     @compact() #nothing to do with errors, but this method is called on edit_cancel
     @restore()
+  remove_attribute_error : (attr)->
+    @set(attr+"_error", false)
   add_file : (file)->
     project =
       id : null
