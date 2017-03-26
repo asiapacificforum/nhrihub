@@ -18,6 +18,7 @@ module ProjectsSpecCommonHelpers
     select_performance_indicators.click
     select_second_planned_result
     select_first_outcome
+    select_first_activity
     select_first_performance_indicator
   end
 
