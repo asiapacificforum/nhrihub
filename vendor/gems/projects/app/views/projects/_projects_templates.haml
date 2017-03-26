@@ -1,7 +1,7 @@
 %script#projects_template{:type => 'template/ractive'}
   <filterControls filter_criteria='{{filter_criteria}}' />
   {{#projects}}
-  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' area_ids='{{area_ids}}' agency_ids='{{agency_ids}}' convention_ids='{{convention_ids}}' performance_indicator_associations='{{performance_indicator_associations}}' project_type_ids='{{project_type_ids}}' all_areas='{{all_areas}}' all_agencies='{{all_agencies}}' all_agencies_in_threes='{{all_agencies_in_threes}}' all_conventions='{{all_conventions}}' project_types='{{project_types}}' areas='{{areas}}' agencies='{{agencies}}' conventions='{{conventions}}' reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
+  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' area_ids='{{area_ids}}'  performance_indicator_associations='{{performance_indicator_associations}}' project_type_ids='{{project_type_ids}}' all_areas='{{all_areas}}'  project_types='{{project_types}}' areas='{{areas}}'  reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
   {{/projects}}
 
 %script#project_template{:type => 'template/ractive'}
@@ -12,7 +12,7 @@
   {{/if}}
 
 %script#new_project_template{:type => 'template/ractive'}
-  .row.new_project.expandable_well.well{:intro => 'slide'}
+  .row.new_project.expandable_well.well
     .col-md-12
       %span.required_before=t('required')
     .col-md-12
@@ -31,8 +31,6 @@
           %span.help-block.error#description_error= t('.description_error_message')
       <areasSelector areas='{{all_areas}}' />
       <projectTypesSelector all_areas='{{all_areas}}' />
-      {{> agency_selector }}
-      {{> convention_selector }}
       <performanceindicatorselect planned_results='{{planned_results}}' />
       .panel.panel-default#documents
         .panel-heading= t('.project_documents')
@@ -96,33 +94,6 @@
     .col-md-4.filename{:style => "overflow-wrap:break-word"} {{filename}}
     .col-md-2
       %i.fa.fa-remove.remove{'on-click' => 'remove_file()'}
-
-%script#convention_selector{:type => 'template/ractive'}
-  .row
-    .col-md-2
-      %label=t('.convention')
-    .col-md-10
-      .row
-        .col-md-4#conventions{:style => "padding-top:0;"}
-          <conventionsSelector />
-
-%script#agency_selector{:type => 'template/ractive'}
-  .row
-    .col-md-2
-      %label=t('.agency')
-    .col-md-10
-      <agenciesSelector />
-
-%script#conventions_selector_template{:type => 'template/ractive'}
-  %label=t('.human_rights')
-  {{#all_conventions}}
-  .row.convention
-    .col-md-9
-      %label{:for => 'convention_{{id}}'}
-        %span{'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>'{{full_name}}'} {{name}}
-    .col-md-3
-      %input{:id=>'convention_{{id}}', :type => :checkbox, :name => '{{convention_ids}}', :value => '{{id}}'}
-  {{/all_conventions}}
 
 %script#project_types_selector_template{:type => 'template/ractive'}
   .row
@@ -228,13 +199,9 @@
             .fade.no_edit.in
               <areas areas='{{areas}}' />
               <projectTypes projectTypes='{{projectTypes}}' />
-              <agencies agencies='{{agencies}}' />
-              <conventions conventions='{{conventions}}' />
             .fade.edit
               <areasSelector areas='{{all_areas}}' />
               <projectTypesSelector all_areas='{{all_areas}}'/>
-              {{> agency_selector }}
-              {{> convention_selector }}
         .panel.panel-default.documents
           .panel-heading
             .row
@@ -255,22 +222,6 @@
               %span= t("defaults.save")
             .form-group{:class => "{{#has_errors}}has-error{{/}}"}
               %span#project_error.help-block.error= t(".project_error")
-
-%script#conventions_template{:type => 'template/ractive'}
-  .row#conventions{:style => "margin-left:0px;"}
-    .col-md-2=t('.conventions')
-    .col-md-10.comma-list
-      {{#conventions}}
-      %span.convention {{name}}
-      {{/conventions}}
-
-%script#agencies_template{:type => 'template/ractive'}
-  .row#agencies{:style => "margin-left:0px;"}
-    .col-md-2=t('.agencies')
-    .col-md-10.comma-list
-      {{#agencies}}
-      %span.agency {{name}}
-      {{/agencies}}
 
 %script#project_types_template{:type => 'template/ractive'}
   .row#area_project_types{:style => "margin-left:0px;"}
@@ -302,18 +253,6 @@
 
 %script#project_type_filter_select_template{:type => 'template/ractive'}
   %li{:class => 'project_type_filter {{#if selected}}selected{{/if}}'}
-    %a{'on-click'=>'toggle(id)'}
-      %span {{name}}
-      %span.fa.fa-check
-
-%script#agency_filter_select_template{:type => 'template/ractive'}
-  %li{:class => 'agency_filter {{#if selected}}selected{{/if}}'}
-    %a{'on-click'=>'toggle(id)'}
-      %span {{name}}
-      %span.fa.fa-check
-
-%script#convention_filter_select_template{:type => 'template/ractive'}
-  %li{:class => 'convention_filter {{#if selected}}selected{{/if}}'}
     %a{'on-click'=>'toggle(id)'}
       %span {{name}}
       %span.fa.fa-check
@@ -389,28 +328,8 @@
         %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
         {{/if}}
     .row.labels
-      .col-md-3= t('.agency')
-      .col-md-3= t('.convention')
       .col-md-3= t('.performance_indicators')
     .row
-      .col-md-3
-        .btn-group.select{:style=>"width:240px;"}
-          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
-            %span.filter-option.pull-left= t('.select_agency')
-            %span.caret
-          %ul.dropdown-menu.scrolling_dropdown{:style => "list-style:none; padding-left:18px;"}
-            {{#all_agencies}}
-            <agencyFilterSelect id='{{id}}' name='{{name}}'/>
-            {{/all_agencies}}
-      .col-md-3
-        .btn-group.select{:style=>"width:240px;"}
-          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
-            %span.filter-option.pull-left= t('.select_convention')
-            %span.caret
-          %ul.dropdown-menu{:style => "list-style:none; padding-left:18px;"}
-            {{#all_conventions}}
-            <conventionFilterSelect id='{{id}}' name='{{name}}'/>
-            {{/all_conventions}}
       .col-md-3
         .btn-group.performance_indicator_select.select{:style=>"width:240px;"}
           %button.btn.btn-default.dropdown-toggle{:type => :button, 'data-toggle'=>'dropdown'}

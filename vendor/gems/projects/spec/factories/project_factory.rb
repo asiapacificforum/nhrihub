@@ -41,16 +41,5 @@ FactoryGirl.define do
       end
     end
 
-    trait :with_agencies do 
-      after(:build) do |project|
-        project.agency_ids = Agency.pluck(:id)
-      end
-    end
-
-    trait :with_conventions do 
-      after(:build) do |project|
-        project.convention_ids = Convention.pluck(:id)
-      end
-    end
   end
 end

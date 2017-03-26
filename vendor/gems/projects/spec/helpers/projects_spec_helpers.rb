@@ -6,8 +6,6 @@ module ProjectsSpecHelpers
     setup_strategic_plan
     populate_mandates
     populate_types
-    populate_agencies
-    populate_conventions
     populate_database
     set_file_defaults
     resize_browser_window
@@ -28,8 +26,7 @@ module ProjectsSpecHelpers
                              :with_named_documents,
                              :with_performance_indicators,
                              :with_mandates,
-                             :with_project_types,
-                             :with_agencies,
-                             :with_conventions)
+                             :with_project_types)
   end
+
 end

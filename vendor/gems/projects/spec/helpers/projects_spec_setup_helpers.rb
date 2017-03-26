@@ -34,38 +34,6 @@ module ProjectsSpecSetupHelpers
     #end
   end
 
-  def populate_agencies
-    agencies = {
-    "MJCA" => "Ministry of Justice and Courts Administration",
-    "SAA" => "Samoa Airport Authority"#,
-    #"MAF" => "Ministry of Agriculture and Fisheries",
-    #"MNRE" => "Ministry of Natural Resources and Environment",
-    #"LTA" => "Land Transport Authority",
-    #"SFESA" => "Fire and Emergency Services Authority",
-    #"SNPF" => "Samoa National Provident Fund",
-    #"MCIL" => "Ministry of Commerce Industry and Labour",
-    #"ACC" => "Accident Compensation Corporation"
-    }.each do |short,full|
-      Agency.create(:name => short, :full_name => full)
-    end
-  end
-
-  def populate_conventions
-    conventions = {
-    "ICERD" => "International Convention on the Elimination of All Forms of Racial Discrimination",
-    #"ICCPR" => "International Covenant on Civil and Political Rights",
-    #"ICESCR" => "International Covenant on Economic, Social and Cultural Rights",
-    "CEDAW" => "Convention on the Elimination of All Forms of Discrimination against Women"#,
-    #"CAT" => "Convention against Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment",
-    #"CRC" => "Convention on the Rights of the Child",
-    #"ICMW" => "International Convention on the Protection of the Rights of All Migrant Workers and Members of Their Families",
-    #"CPED" => "International Convention for the Protection of All Persons from Enforced Disappearance",
-    #"CRPD" => "Convention on the Rights of Persons with Disabilities"
-    }.each do |short,full|
-      Convention.create(:name => short, :full_name => full)
-    end
-  end
-
   def setup_strategic_plan
     sp = StrategicPlan.create(:created_at => 6.months.ago.to_date, :title => "a plan for the millenium")
     spl = StrategicPriority.create(:strategic_plan_id => sp.id, :priority_level => 1, :description => "Gonna do things betta")

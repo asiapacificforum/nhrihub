@@ -174,6 +174,7 @@ $ ->
     validate : ->
       @validator.validate()
     computed :
+      performance_indicator_required : -> false
       truncated_title : ->
         "\""+@get('title').split(' ').slice(0,4).join(' ') + "...\""
       delete_confirmation_message : ->

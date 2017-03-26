@@ -3,8 +3,6 @@ class Project < ActiveRecord::Base
 
   has_many :project_performance_indicators, :dependent => :destroy
   has_many :performance_indicators, :through => :project_performance_indicators
-  has_many :project_conventions, :dependent => :destroy
-  has_many :conventions, :through => :project_conventions
   has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
   has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
   has_many :project_mandates, :dependent => :destroy
@@ -14,8 +12,6 @@ class Project < ActiveRecord::Base
   has_many :good_governance_project_types, ->{merge(ProjectType.good_governance)}, :through => :project_project_types, :source => :project_type
   has_many :human_rights_project_types,    ->{merge(ProjectType.human_rights)},    :through => :project_project_types, :source => :project_type
   has_many :siu_project_types,             ->{merge(ProjectType.siu)},             :through => :project_project_types, :source => :project_type
-  has_many :project_agencies, :dependent => :destroy
-  has_many :agencies, :through => :project_agencies
   has_many :project_documents, :dependent => :destroy
   has_many :named_project_documents, ->{merge(ProjectDocument.named)}, :class_name => 'ProjectDocument', :dependent => :destroy
   accepts_nested_attributes_for :project_documents
@@ -38,10 +34,6 @@ class Project < ActiveRecord::Base
                                                 # [{"name"=>"mandate name", "project_types"=>[{"id"=>1, "name"=>"type name"}]}]
        :area_ids => area_ids,
        :areas => areas,
-       :agencies => agencies,
-       :agency_ids => agency_ids,
-       :conventions => conventions,
-       :convention_ids => convention_ids,
        :project_type_ids => project_type_ids,
        :reminders => reminders,
        :notes => notes,

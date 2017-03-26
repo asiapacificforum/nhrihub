@@ -1,4 +1,4 @@
-SelectedPerformanceIndicator = Ractive.extend
+@SelectedPerformanceIndicator = Ractive.extend
   template : '#selected_performance_indicator_template'
   oninit : ->
     @set
@@ -25,7 +25,7 @@ SelectedPerformanceIndicator = Ractive.extend
   delete_performance_indicator_callback : ->
     @parent.remove_indicator(@get('id'))
 
-PerformanceIndicatorSelect = Ractive.extend
+@PerformanceIndicatorSelect = Ractive.extend
   template : '#performance_indicator_select'
   components :
     selectedPerformanceIndicator : SelectedPerformanceIndicator
@@ -38,12 +38,13 @@ PerformanceIndicatorSelect = Ractive.extend
   delete_indicator_callback : (data,status,jqxhr)->
     @parent.remove_performance_indicator(data.id)
 
-Ractive.components.performanceindicatorselect = PerformanceIndicatorSelect
+Ractive.components.performanceindicatorselect = @PerformanceIndicatorSelect
 
 @PerformanceIndicatorAssociation =
   remove_performance_indicator : (id)-> # it's the id of the join table, e.g. project_performance_indicator.id
     index = @performance_indicator_index(id)
     @get('performance_indicator_associations').splice(index,1)
+    @validate_attribute('performance_indicator_associations')
   performance_indicator_index : (id)->
     @performance_indicator_ids().indexOf(id)
   performance_indicator_ids : ->
@@ -62,4 +63,7 @@ Ractive.components.performanceindicatorselect = PerformanceIndicatorSelect
           id : performance_indicator_id
           indexed_description : @get('all_performance_indicators')[performance_indicator_id]
       @push('performance_indicator_associations', performance_indicator_association)
+      @remove_attribute_error('performance_indicator_associations')
+  remove_attribute_error : (attribute)->
+    @set(attribute+"_error",false)
 

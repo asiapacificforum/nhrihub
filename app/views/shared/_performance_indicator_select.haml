@@ -2,7 +2,7 @@
   .panel.panel-default.performance_indicators
     .panel-heading
       .row
-        .col-md-2= t('.performance_indicators')
+        .col-md-2{:class=>"{{#performance_indicator_required}}required{{/}}"}= t('.performance_indicators')
     .panel-content{'data-toggle' => :edit}
       %div.fade.no_edit{:class => "{{#persisted}}in{{/persisted}}"}
         {{> performance_indicator_show }}
@@ -55,6 +55,8 @@
       {{^performance_indicator_associations}}
       %div.selected_performance_indicator=t('.none_assigned')
       {{/performance_indicator_associations}}
+  .form-group
+    %span.help-block#performance_indicator_associations_error.error{:class => "{{#performance_indicator_associations_error}}has-error{{/}}"} There must be at least one performance indicator
 
 %script#performance_indicator_show{:type => 'template/ractive'}
   .row

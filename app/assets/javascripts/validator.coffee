@@ -12,7 +12,7 @@
     [criterion,param] = if _.isArray(params) then params else [params]
     @[criterion].call(@,attribute,param)
   notBlank : (attribute)->
-    @set(attribute, @get(attribute).trim())
+    @set(attribute, @get(attribute).trim()) unless _.isNull @get(attribute)
     @set(attribute+"_error", _.isEmpty(@get(attribute)))
     !@get(attribute+"_error")
   lessThan : (attribute,param)->

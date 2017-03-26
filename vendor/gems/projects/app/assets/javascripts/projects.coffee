@@ -40,12 +40,13 @@ EditInPlace = (node,id)->
 
 # TODO this approach, where Validator is a mixin should be replaced by the approach used
 # in 'communication' where Validator is a separate class
-ProjectValidator = _.extend
-  initialize_validator : ->
-    @set 'validation_criteria',
-      title : 'notBlank'
-      description : 'notBlank'
-  , Validator
+#ProjectValidator = _.extend
+  ##initialize_validator : ->
+    ##@set 'validation_criteria',
+      ##title : 'notBlank'
+      ##description : 'notBlank'
+      ##performance_indicator_associations : ['nonEmpty', @get('performance_indicator_associations')]
+  #, Validator
 
 AreasSelector = Ractive.extend
   template : '#areas_selector_template'
@@ -53,23 +54,11 @@ AreasSelector = Ractive.extend
 ProjectTypesSelector = Ractive.extend
   template : '#project_types_selector_template'
 
-AgenciesSelector = Ractive.extend
-  template : '#agencies_selector_template'
-
-ConventionsSelector = Ractive.extend
-  template : '#conventions_selector_template'
-
 Areas = Ractive.extend
   template : '#areas_template'
 
 ProjectTypes = Ractive.extend
   template : '#project_types_template'
-
-Agencies = Ractive.extend
-  template : '#agencies_template'
-
-Conventions = Ractive.extend
-  template : '#conventions_template'
 
 EditBackup =
   stash : ->
@@ -81,7 +70,7 @@ EditBackup =
   restore_checkboxes : ->
     # major hack to circumvent ractive bug,
     # it will not be necessary in ractive 0.8.0
-    _(['area','agency','convention','project_type']).
+    _(['area','project_type']).
       each (association)=>
         @restore_checkboxes_for(association)
   restore_checkboxes_for : (association)->
@@ -190,8 +179,6 @@ FilterMatch =
   include : ->
     @matches_title() &&
     @matches_area() &&
-    @matches_agency() &&
-    @matches_convention() &&
     @matches_project_type() &&
     @matches_performance_indicator()
   matches_title : ->
@@ -201,14 +188,6 @@ FilterMatch =
     criterion = @get('filter_criteria.area_ids')
     value = @get('area_ids')
     @contains(criterion,value)
-  matches_agency : ->
-    criterion = @get('filter_criteria.agency_ids')
-    value = @get('agency_ids')
-    agency_match = @contains(criterion,value)
-  matches_convention : ->
-    criterion = @get('filter_criteria.convention_ids')
-    value = @get('convention_ids')
-    convention_match = @contains(criterion,value)
   matches_project_type : ->
     criterion = @get('filter_criteria.project_type_ids')
     value = @get('project_type_ids')
@@ -231,20 +210,18 @@ Project = Ractive.extend
       'editing' : false
       'title_error': false
       'description_error': false
+      'performance_indicator_associations_error': false
       'project_error':false
       'filetype_error': false
       'filesize_error': false
       'expanded':false
       'serialization_key':'project'
-    @set 'validation_criteria',
-      title : 'notBlank'
-      description : 'notBlank'
-    @initialize_validator()
   computed :
+    performance_indicator_required : -> true
     persistent_attributes : ->
       # the asFormData method knows how to interpret 'project_documents_attributes'
       ['title', 'description', 'area_ids', 'project_type_ids',
-       'agency_ids', 'convention_ids', 'selected_performance_indicators_attributes', 'project_documents_attributes']
+       'selected_performance_indicators_attributes', 'project_documents_attributes']
     url : ->
       Routes.project_path(current_locale,@get('id'))
     truncated_title : ->
@@ -269,16 +246,19 @@ Project = Ractive.extend
     create_reminder_url : ->
       window.create_reminder_url.replace('id',@get('id'))
     has_errors : ->
-      @has_errors()
+      #@has_errors()
+      attributes = _(@get('validation_criteria')).keys()
+      error_attributes = _(attributes).map (attr)->attr+"_error"
+      _(error_attributes).any (attr)=>@get(attr)
+    validation_criteria : ->
+      title : 'notBlank'
+      description : 'notBlank'
+      performance_indicator_associations : ['nonEmpty', @get('performance_indicator_associations')]
   components :
     areasSelector : AreasSelector
     projectTypesSelector : ProjectTypesSelector
-    agenciesSelector : AgenciesSelector
-    conventionsSelector : ConventionsSelector
     areas : Areas
     projectTypes : ProjectTypes
-    agencies : Agencies
-    conventions : Conventions
     projectDocuments : ProjectDocuments
     progressBar : ProgressBar
   cancel_project : ->
@@ -308,7 +288,7 @@ Project = Ractive.extend
     @unshift('project_documents', project)
   show_file_selector : ->
     @find('#project_fileinput').click()
-  , ProjectValidator, PerformanceIndicatorAssociation, EditBackup, Persistence, FilterMatch, Remindable, Notable
+  , Validator, PerformanceIndicatorAssociation, EditBackup, Persistence, FilterMatch, Remindable, Notable
 
 FilterSelect = Ractive.extend
   computed :
@@ -333,20 +313,6 @@ AreaFilterSelect = Ractive.extend
       "area_ids"
   , FilterSelect
 
-AgencyFilterSelect = Ractive.extend
-  template : "#agency_filter_select_template"
-  computed :
-    collection : ->
-      "agency_ids"
-  , FilterSelect
-
-ConventionFilterSelect = Ractive.extend
-  template : "#convention_filter_select_template"
-  computed :
-    collection : ->
-      "convention_ids"
-  , FilterSelect
-
 ProjectTypeFilterSelect = Ractive.extend
   template : "#project_type_filter_select_template"
   computed :
@@ -366,8 +332,6 @@ FilterControls = Ractive.extend
   template : "#filter_controls_template"
   components :
     areaFilterSelect : AreaFilterSelect
-    agencyFilterSelect : AgencyFilterSelect
-    conventionFilterSelect : ConventionFilterSelect
     projectTypeFilterSelect : ProjectTypeFilterSelect
     performanceIndicatorFilterSelect : PerformanceIndicatorFilterSelect
   expand : ->
@@ -388,9 +352,6 @@ window.projects_page_data = ->
   expanded : false
   projects : projects_data
   all_areas : areas
-  all_agencies : agencies
-  all_agencies_in_threes : all_agencies_in_threes
-  all_conventions : conventions
   planned_results : planned_results
   all_performance_indicators : performance_indicators
   all_area_project_types : project_types
@@ -403,19 +364,6 @@ projects_options = ->
   el : "#projects"
   template : '#projects_template'
   data : $.extend(true,{},projects_page_data())
-    #performance_indicator_url : Routes.project_performance_indicator_path(current_locale,'id')
-    #expanded : false
-    #projects : projects_data
-    #all_areas : areas
-    #all_agencies : agencies
-    #all_conventions : conventions
-    #planned_results : planned_results
-    #all_performance_indicators : performance_indicators
-    #all_area_project_types : project_types
-    #project_named_documents_titles : project_named_documents_titles
-    #permitted_filetypes : permitted_filetypes
-    #maximum_filesize : maximum_filesize
-    #filter_criteria : filter_criteria
   components :
     project : Project
     filterControls : FilterControls
@@ -427,8 +375,6 @@ projects_options = ->
         description : ""
         area_ids : []
         project_type_ids : []
-        agency_ids : []
-        convention_ids : []
         performance_indicator_associations : []
         project_documents : []
       UserInput.claim_user_input_request(@,'cancel_add_project')

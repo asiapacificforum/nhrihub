@@ -4,6 +4,23 @@ require 'projects_spec_setup_helpers'
 module ProjectsSpecCommonHelpers
   extend RSpec::Core::SharedContext
   include ProjectsSpecSetupHelpers
+
+  def add_a_performance_indicator
+    select_performance_indicators.click
+    select_first_planned_result
+    select_first_outcome
+    select_first_activity
+    select_first_performance_indicator
+    PerformanceIndicator.first
+  end
+
+  def add_a_unique_performance_indicator
+    select_performance_indicators.click
+    select_second_planned_result
+    select_first_outcome
+    select_first_performance_indicator
+  end
+
   def click_the_download_icon
     page.all('#project_documents .project_document .fa-cloud-download')[0].click
   end

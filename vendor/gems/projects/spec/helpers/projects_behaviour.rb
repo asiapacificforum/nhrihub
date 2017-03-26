@@ -45,16 +45,6 @@ RSpec.shared_examples "projects index" do
             end
           end
         end
-        within agencies do
-          last_project.agencies.each do |agency|
-            expect(all('.agency').map(&:text)).to include agency.name
-          end
-        end
-        within conventions do
-          last_project.conventions.each do |convention|
-            expect(all('.convention').map(&:text)).to include convention.name
-          end
-        end
         within performance_indicators do
           last_project.performance_indicators.each do |performance_indicator|
             expect(all('.performance_indicator').map(&:text)).to include performance_indicator.indexed_description
@@ -81,20 +71,7 @@ RSpec.shared_examples "projects index" do
         check('Consultation')
       end
 
-      within agencies do
-        check('MJCA')
-      end
-
-      within conventions do
-        check('ICERD')
-      end
-
-      select_performance_indicators.click
-      select_first_planned_result
-      select_first_outcome
-      select_first_activity
-      page.execute_script("scrollTo(0,800)")
-      select_first_performance_indicator
+      add_a_performance_indicator
 
       # SAVE IT
       page.execute_script("scrollTo(0,0)")
@@ -124,12 +101,6 @@ RSpec.shared_examples "projects index" do
             expect(all('.project_type').map(&:text)).to include 'Consultation'
           end
         end
-        within agencies do
-          expect(all('.agency').map(&:text)).to include "MJCA"
-        end
-        within conventions do
-          expect(all('.convention').map(&:text)).to include "ICERD"
-        end
         within performance_indicators do
           expect(find('.performance_indicator').text).to eq pi.indexed_description
         end
@@ -146,20 +117,7 @@ RSpec.shared_examples "projects index" do
         check('Consultation')
       end
 
-      within agencies do
-        check('MJCA')
-      end
-
-      within conventions do
-        check('ICERD')
-      end
-
-      select_performance_indicators.click
-      select_first_planned_result
-      select_first_outcome
-      select_first_activity
-      page.execute_script("scrollTo(0,800)")
-      select_first_performance_indicator
+      add_a_performance_indicator
 
       within new_project do
         attach_file("project_fileinput", upload_document)
@@ -202,12 +160,6 @@ RSpec.shared_examples "projects index" do
           within good_governance_area do
             expect(all('.project_type').map(&:text)).to include 'Consultation'
           end
-        end
-        within agencies do
-          expect(all('.agency').map(&:text)).to include "MJCA"
-        end
-        within conventions do
-          expect(all('.convention').map(&:text)).to include "ICERD"
         end
         within performance_indicators do
           expect(find('.performance_indicator').text).to eq pi.indexed_description
@@ -255,13 +207,7 @@ RSpec.shared_examples "projects index" do
     it "should remove performance indicator from the list during adding" do
       add_project.click
 
-      select_performance_indicators.click
-      select_first_planned_result
-      select_first_outcome
-      select_first_activity
-      page.execute_script("scrollTo(0,800)")
-      select_first_performance_indicator
-      pi = PerformanceIndicator.first
+      pi = add_a_performance_indicator
 
       expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
       remove_first_indicator.click
@@ -272,23 +218,11 @@ RSpec.shared_examples "projects index" do
     it "should prevent adding duplicate performance indicators" do
       add_project.click
 
-      select_performance_indicators.click
-      select_first_planned_result
-      select_first_outcome
-      select_first_activity
-      page.execute_script("scrollTo(0,800)")
-      select_first_performance_indicator
-      pi = PerformanceIndicator.first
+      pi = add_a_performance_indicator
 
       expect(page).to have_selector(".new_project #performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
 
-      select_performance_indicators.click
-      select_first_planned_result
-      select_first_outcome
-      select_first_activity
-      page.execute_script("scrollTo(0,800)")
-      select_first_performance_indicator
-      pi = PerformanceIndicator.first
+      pi = add_a_performance_indicator
 
       expect(page).to have_selector(".new_project #performance_indicators .selected_performance_indicator", :text => pi.indexed_description, :count => 1)
     end
@@ -296,6 +230,7 @@ RSpec.shared_examples "projects index" do
     it "should show warning and not add when title is blank" do
       add_project.click
       fill_in('project_description', :with => "new project description")
+      add_a_performance_indicator
       expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
@@ -308,6 +243,7 @@ RSpec.shared_examples "projects index" do
       add_project.click
       fill_in('project_title', :with => "    ")
       fill_in('project_description', :with => "new project description")
+      add_a_performance_indicator
       expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
@@ -319,6 +255,7 @@ RSpec.shared_examples "projects index" do
     it "should show warning and not add when description is blank" do
       add_project.click
       fill_in('project_title', :with => "new project title")
+      add_a_performance_indicator
       expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
       expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
       expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
@@ -331,11 +268,30 @@ RSpec.shared_examples "projects index" do
       add_project.click
       fill_in('project_title', :with => "new project title")
       fill_in('project_description', :with => "   ")
+      add_a_performance_indicator
       expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
       expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
       expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
       fill_in('project_description', :with => 't')
       expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
+      expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+    end
+
+    it "should show warning and not add when performance_indicator is not linked" do
+      add_project.click
+      fill_in('project_title', :with => "new project title")
+      fill_in('project_description', :with => "described by words")
+      expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
+      expect(page).to have_selector("#performance_indicator_associations_error", :text => "There must be at least one performance indicator")
+      expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      #select_performance_indicators.click
+      #select_first_planned_result
+      #select_first_outcome
+      #select_first_activity
+      #page.execute_script("scrollTo(0,800)")
+      #select_first_performance_indicator
+      add_a_performance_indicator
+      expect(page).not_to have_selector("#performance_indicator_associations_error", :text => "There must be at least one performance indicator")
       expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
     end
 
@@ -371,21 +327,7 @@ RSpec.shared_examples "projects index" do
         check('Amicus Curiae')
       end
 
-      within agencies do
-        check('SAA')
-      end
-
-      within conventions do
-        check('CEDAW')
-      end
-
-      select_performance_indicators.click
-      select_first_planned_result
-      select_first_outcome
-      select_first_activity
-      #page.execute_script("scrollTo(0,800)")
-      select_first_performance_indicator
-      pi = PerformanceIndicator.first
+      pi = add_a_performance_indicator
 
       attach_file("project_fileinput", upload_document)
       fill_in("project_document_title", :with => "Adding another doc")
@@ -401,10 +343,6 @@ RSpec.shared_examples "projects index" do
       expect( project.project_type_ids ).to include consultation_project_type.id
       amicus_project_type = ProjectType.find_by(:name => "Amicus Curiae")
       expect( project.project_type_ids ).to include amicus_project_type.id
-      agency = Agency.find_by(:name => "SAA")
-      expect( project.agency_ids ).to include agency.id
-      convention = Convention.find_by(:name => "CEDAW")
-      expect( project.convention_ids ).to include convention.id
       expect( project.project_documents.count ).to eq 4
 
       expand_first_project
@@ -417,12 +355,6 @@ RSpec.shared_examples "projects index" do
           within good_governance_area do
             expect(all('.project_type').map(&:text)).to include 'Consultation'
           end
-        end
-        within agencies do
-          expect(all('.agency').map(&:text)).to include "SAA"
-        end
-        within conventions do
-          expect(all('.convention').map(&:text)).to include "CEDAW"
         end
         within performance_indicators do
           expect(all('.performance_indicator').map(&:text)).to include pi.indexed_description
@@ -442,12 +374,7 @@ RSpec.shared_examples "projects index" do
 
     it "should edit a project and add performance indicators" do
       edit_first_project.click
-      select_performance_indicators.click
-      select_second_planned_result
-      select_first_outcome
-      select_first_activity
-      #page.execute_script("scrollTo(0,800)")
-      select_first_performance_indicator
+      add_a_unique_performance_indicator
       expect{ edit_save.click; wait_for_ajax }.to change{ Project.first.performance_indicators.count }.from(3).to(4)
     end
 
@@ -456,8 +383,6 @@ RSpec.shared_examples "projects index" do
       edit_last_project.click # has all associations checked
       uncheck_all_checkboxes
       expect{ edit_save.click; wait_for_ajax }.to change{Project.last.project_type_ids}.to([]).
-                                            and change{Project.last.agency_ids}.to([]).
-                                            and change{Project.last.convention_ids}.to([]).
                                             and change{Project.last.area_ids}.to([])
     end
 
@@ -476,19 +401,7 @@ RSpec.shared_examples "projects index" do
         check('Amicus Curiae')
       end
 
-      within agencies do
-        check('SAA')
-      end
-
-      within conventions do
-        check('CEDAW')
-      end
-
-      select_performance_indicators.click
-      select_first_planned_result
-      select_first_outcome
-      select_first_activity
-      select_first_performance_indicator
+      add_a_performance_indicator
 
       edit_cancel
 
@@ -500,8 +413,6 @@ RSpec.shared_examples "projects index" do
         expect(find('.description .col-md-10 .no_edit span').text).to eq project.description
         expect(all('.area .name').count).to eq 0
         expect(all('#project_types .project_type').count).to eq 0
-        expect(all('#agencies .agency').count).to eq 0
-        expect(all('#conventions .convention').count).to eq 0
         expect(all('.performance_indicator').count).to eq project.performance_indicator_ids.count
       end
 
@@ -517,10 +428,6 @@ RSpec.shared_examples "projects index" do
       expect(checkbox('project_type_3')).not_to be_checked
       expect(checkbox('project_type_4')).not_to be_checked
       expect(checkbox('project_type_5')).not_to be_checked
-      expect(checkbox('agency_1')).not_to be_checked
-      expect(checkbox('agency_2')).not_to be_checked
-      expect(checkbox('convention_1')).not_to be_checked
-      expect(checkbox('convention_2')).not_to be_checked
     end
 
     it "should show warning and not save when editing and title is blank" do
@@ -589,14 +496,7 @@ RSpec.shared_examples "projects index" do
 
     it "should not permit duplicate performance indicator associations to be added when editing" do
       edit_first_project.click
-
-      select_performance_indicators.click
-      select_first_planned_result
-      select_first_outcome
-      select_first_activity
-      #page.execute_script("scrollTo(0,800)")
-      select_first_performance_indicator
-
+      add_a_performance_indicator
       expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :count => 3)
     end
   end
