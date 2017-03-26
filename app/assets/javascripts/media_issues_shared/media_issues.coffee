@@ -478,9 +478,6 @@ $ ->
     clear_filter : ->
       window.history.pushState({foo: "bar"},"unused title string",window.location.origin + window.location.pathname)
       @set_filter_from_query_string()
-      _(@findAllComponents('area')).each (a)-> a.select()
-      _(@findAllComponents('subarea')).each (a)-> a.select()
-      @populate_min_max_fields()
     set_filter_from_query_string : ->
       search_string = if (_.isEmpty( window.location.search) || _.isNull( window.location.search)) then '' else window.location.search.split("=")[1].replace(/\+/g,' ')
       filter_criteria = _.extend(collection_items_data().filter_criteria,{title : search_string})
