@@ -31,6 +31,10 @@ MagicLamp.define do
     StrategicPlan.first
   end
 
+  fixture(:name => 'strategic_plan_templates') do
+    render :partial => 'corporate_services/strategic_plans/strategic_plan_templates'
+  end
+
   #fixture(:name => 'all_good_governance_complaint_bases') do
     #ComplaintsSeedData.initialize(:good_governance_complaint_bases)
     #GoodGovernance::ComplaintBasis.all

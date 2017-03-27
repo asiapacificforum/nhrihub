@@ -5,20 +5,7 @@ log = (str)->
 
 load_variables = ->
   window.strategic_plan_data = MagicLamp.loadJSON("strategic_plan_data")
-  #window.all_mandates = []
-  #window.all_agencies = []
-  #window.complaint_bases = []
-  #window.next_case_reference = ""
-  #window.all_users = []
-  #window.all_categories = []
-  #window.permitted_filetypes = []
-  #window.maximum_filesize = 5
-  #window.filter_criteria        = MagicLamp.loadJSON("complaint_filter_criteria")
-  #window.all_good_governance_complaint_bases = MagicLamp.loadJSON("all_good_governance_complaint_bases")
-  #window.all_human_rights_complaint_bases = MagicLamp.loadJSON("all_human_rights_complaint_bases")
-  #window.all_special_investigations_unit_complaint_bases = MagicLamp.loadJSON("all_special_investigations_unit_complaint_bases")
-  #window.all_staff = MagicLamp.loadJSON("all_staff")
-  #MagicLamp.load("strategic_plan_page") # that's the show.haml file being loaded
+  MagicLamp.load("strategic_plan_templates")
 
 get_script_under_test = (done)->
   $.getScript("/assets/corporate_services/strategic_plan.js").
@@ -30,22 +17,10 @@ get_script_under_test = (done)->
       log settings
       log exception)
 
-#reset_page = ->
-  #complaints.set('filter_criteria', window.filter_criteria)
-  #complaints.set('complaints',[])
-
 describe "strategic plan page", ->
   before (done)->
     load_variables()
     get_script_under_test(done)
-
-  #after ->
-    #reset_page()
-
-  it "loads all fixtures", ->
-    expect($(".h1_select:selected",'.magic-lamp').text()).to.match /Strategic Plan: Current reporting year/
-    expect(typeof(simulant)).to.not.equal("undefined")
-    return
 
   it "validates strategic priority", ->
     strategic_priority = strategic_plan.findAllComponents('sp')[0]
