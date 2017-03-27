@@ -147,7 +147,7 @@ $ ->
       index = _(guids).indexOf(guid)
       @splice('human_rights_attributes',index,1)
     toggle_attributes : ->
-      UserInput.terminate_user_input_request()
+      UserInput.reset()
       @set('expanded',!@get('expanded'))
       $("#edit_attributes#{@get('id')}").collapse('toggle')
   , ConfirmDeleteModal
