@@ -156,12 +156,14 @@ feature "attempt to save with errors", :js => true do
   end
 
   scenario "title is blank" do
-    sleep(0.8)
     expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
     expect{add_save}.not_to change{MediaAppearance.count}
     expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
+    expect(page).to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     fill_in("media_appearance_title", :with => "m")
+    fill_in("media_appearance_article_link", :with => "h")
     expect(page).not_to have_selector("#title_error", :visible => true)
+    expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
   end
 
   feature "neither link nor file is included" do
@@ -169,17 +171,20 @@ feature "attempt to save with errors", :js => true do
       fill_in("media_appearance_title", :with => "My new article title")
       expect{add_save}.not_to change{MediaAppearance.count}
       expect(page).to have_selector('#attachment_error', :text => "A file or link must be included")
+      expect(page).to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
 
     scenario "remove error by adding a file" do
       page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
       page.attach_file("primary_file", upload_document, :visible => false)
       expect(page).not_to have_selector('#attachment_error', :text => "A file or link must be included")
+      expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
 
     scenario "remove error by adding a link" do
       fill_in("media_appearance_article_link", :with => "h")
       expect(page).not_to have_selector('#attachment_error', :text => "A file or link must be included")
+      expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
   end
 
@@ -191,16 +196,19 @@ feature "attempt to save with errors", :js => true do
       fill_in("media_appearance_article_link", :with => "h")
       expect{add_save}.not_to change{MediaAppearance.count}
       expect(page).to have_selector('#single_attachment_error', :text => "Either file or link, not both")
+      expect(page).to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
 
     scenario "remove error by removing file" do
       clear_file_attachment
       expect(page).not_to have_selector('#single_attachment_error', :text => "Either file or link, not both")
+      expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
 
     scenario "remove error by deleting link" do
       delete_article_link_field
       expect(page).not_to have_selector('#single_attachment_error', :text => "Either file or link, not both")
+      expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
   end
 
@@ -267,6 +275,7 @@ feature "when there are existing articles", :js => true do
       expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq "My new article title"
       expect(areas).not_to include "Human Rights"
       expect(areas).to include "Good Governance"
+      expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
 
     scenario "edit an article and upload a different file" do
@@ -302,8 +311,10 @@ feature "when there are existing articles", :js => true do
       expect(chars_remaining).to eq "You have 100 characters left"
       expect{edit_save}.not_to change{MediaAppearance.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
+      expect(page).to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
       fill_in("media_appearance_title", :with => "m")
       expect(page).not_to have_selector("#title_error", :visible => true)
+      expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
 
     scenario "edit an article and add file error" do
@@ -324,10 +335,12 @@ feature "when there are existing articles", :js => true do
       expect(chars_remaining).to eq "You have 100 characters left"
       expect{edit_save}.not_to change{MediaAppearance.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
+      expect(page).to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
       edit_cancel
       sleep(0.2)
       edit_article[0].click
       expect(page).not_to have_selector("#title_error", :visible => true)
+      expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
 
     scenario "edit an article and cancel without saving" do
@@ -357,9 +370,11 @@ feature "when there are existing articles", :js => true do
       expect(page).to have_selector('label', :text => 'Enter web link') # to control timing
       expect{add_save}.not_to change{MediaAppearance.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
+      expect(page).to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
       add_cancel
       edit_article[0].click
       expect(page).not_to have_selector("#title_error", :visible => true)
+      expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
   end
 

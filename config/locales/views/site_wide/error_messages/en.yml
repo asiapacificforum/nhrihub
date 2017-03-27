@@ -4,3 +4,4 @@ en:
     unpermitted_type: "File type not allowed"
     noFileTypes: "No permitted file types have been configured"
     title_error_message: "Title cannot be blank"
+    form_error : "Form has errors, cannot be saved"

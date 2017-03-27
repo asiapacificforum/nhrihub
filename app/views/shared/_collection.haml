@@ -119,6 +119,8 @@
               .btn.btn-success.btn-sm#_edit_save{:style => "color:white;"}
                 %i.fa.fa-check.fa-lg{:style => "color:white"}
                 %span= t("defaults.save")
+              .form-group{:class => "{{#has_errors}}has-error{{/}}"}
+                %span.help-block.error{:id => "#{item}_error"}= t("error_messages.form_error")
 
 %script#reported_by{:type => 'template/ractive'}
   // so the partial inclusion doesn't barf
@@ -177,6 +179,8 @@
           .btn.btn-success.btn-sm#save_add{:style => "color:white;", "on-click" => "save()"}
             %i.fa.fa-check.fa-lg{:style => "color:white"}
             %span= t("defaults.save")
+          .form-group{:class => "{{#has_errors}}has-error{{/}}"}
+            %span.help-block.error{:id => "#{item}_error"}= t("error_messages.form_error")
 
 %script#positivity_rating_input{:type => 'template/ractive'}
   .form-group#positivity_rating

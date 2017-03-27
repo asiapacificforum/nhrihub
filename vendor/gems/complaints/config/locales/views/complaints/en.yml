@@ -1,7 +1,6 @@
 en:
   complaints:
     complaints_templates:
-      complaint_error : "Form errors present, cannot be saved"
       no_mandates : 'None designated'
       compact: 'Compact'
       compact_all: 'Compact all'

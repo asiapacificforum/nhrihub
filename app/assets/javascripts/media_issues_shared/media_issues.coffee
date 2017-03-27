@@ -155,25 +155,28 @@ $ ->
         attachment_error:false
         single_attachment_error:false
         expanded:false
-        validation_criteria:
-          title : 'notBlank'
-          attachment : =>
-            return true if @get('model_name') == "advisory_council_issue" # attachments are optional and both are allowed
-            valid_link = !_.isNull(@get('article_link')) && @get('article_link').length > 0
-            valid_file = !_.isNull(@get('original_filename'))
-            valid_link || valid_file
-          single_attachment : =>
-            return true if @get('model_name') == "advisory_council_issue" # attachments are optional and both are allowed
-            valid_link = !_.isNull(@get('article_link')) && @get('article_link').length > 0
-            valid_file = !_.isNull(@get('original_filename'))
-            !(valid_link && valid_file)
-          filesize : ['lessThan', @get('maximum_filesize'), {if : => @get('file')}]
-          original_type : ['match', @get('permitted_filetypes'), {if : => @get('file')}]
         serialization_key : item_name
+    onconfig : ->
       @validator = new Validator(@)
     validate : ->
       @validator.validate()
     computed :
+      validation_criteria: ->
+        title : 'notBlank'
+        attachment : =>
+          return true if @get('model_name') == "advisory_council_issue" # attachments are optional and both are allowed
+          valid_link = !_.isNull(@get('article_link')) && @get('article_link').length > 0
+          valid_file = !_.isNull(@get('original_filename'))
+          valid_link || valid_file
+        single_attachment : =>
+          return true if @get('model_name') == "advisory_council_issue" # attachments are optional and both are allowed
+          valid_link = !_.isNull(@get('article_link')) && @get('article_link').length > 0
+          valid_file = !_.isNull(@get('original_filename'))
+          !(valid_link && valid_file)
+        filesize : ['lessThan', @get('maximum_filesize'), {if : => @get('file')}]
+        original_type : ['match', @get('permitted_filetypes'), {if : => @get('file')}]
+      has_errors : ->
+        @validator.has_errors()
       performance_indicator_required : -> false
       truncated_title : ->
         "\""+@get('title').split(' ').slice(0,4).join(' ') + "...\""

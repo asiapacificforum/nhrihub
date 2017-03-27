@@ -35,7 +35,6 @@ en:
       convention: "Convention"
       select_agency: "Select agency"
       select_convention: "Select convention"
-      project_error: "Form errors present, cannot be saved"
       project_type: "Project type"
       select_project_type: "Select project type"
       performance_indicators: "Performance indicators"
