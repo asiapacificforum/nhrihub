@@ -58,6 +58,13 @@ describe 'Headings page', ->
       $('#add_attribute').click()
       expect($('.attribute .description .no_edit:visible').length).to.equal 3
 
+    it "terminates editing when the dropdown is closed", ->
+      $("#attributes .attribute i[id$='edit_start']").first().click()
+      expect($("input#attribute_description:visible").length).to.equal 1
+      $('.show_attributes').first().trigger('click')
+      $('.show_attributes').first().trigger('click')
+      expect($("input#attribute_description:visible").length).to.equal 0
+
   context 'when adding a new heading', ->
     it 'it permits multiple simultaneous attribute add panels', ->
       $('#add_heading').click()
