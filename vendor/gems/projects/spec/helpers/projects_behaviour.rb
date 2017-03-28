@@ -233,10 +233,10 @@ RSpec.shared_examples "projects index" do
       add_a_performance_indicator
       expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
-      expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_title', :with => 't')
       expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
-      expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).not_to have_selector("#project_error", :text => "Form has errors, cannot be saved")
     end
 
     it "should show warning and not add when title is whitespace" do
@@ -246,10 +246,10 @@ RSpec.shared_examples "projects index" do
       add_a_performance_indicator
       expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
-      expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_title', :with => 't')
       expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
-      expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).not_to have_selector("#project_error", :text => "Form has errors, cannot be saved")
     end
 
     it "should show warning and not add when description is blank" do
@@ -258,10 +258,10 @@ RSpec.shared_examples "projects index" do
       add_a_performance_indicator
       expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
       expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
-      expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_description', :with => 't')
       expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
-      expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).not_to have_selector("#project_error", :text => "Form has errors, cannot be saved")
     end
 
     it "should show warning and not add when description is whitespace" do
@@ -271,10 +271,10 @@ RSpec.shared_examples "projects index" do
       add_a_performance_indicator
       expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
       expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
-      expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_description', :with => 't')
       expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
-      expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).not_to have_selector("#project_error", :text => "Form has errors, cannot be saved")
     end
 
     it "should show warning and not add when performance_indicator is not linked" do
@@ -283,7 +283,7 @@ RSpec.shared_examples "projects index" do
       fill_in('project_description', :with => "described by words")
       expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
       expect(page).to have_selector("#performance_indicator_associations_error", :text => "There must be at least one performance indicator")
-      expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       #select_performance_indicators.click
       #select_first_planned_result
       #select_first_outcome
@@ -292,7 +292,7 @@ RSpec.shared_examples "projects index" do
       #select_first_performance_indicator
       add_a_performance_indicator
       expect(page).not_to have_selector("#performance_indicator_associations_error", :text => "There must be at least one performance indicator")
-      expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).not_to have_selector("#project_error", :text => "Form has errors, cannot be saved")
     end
 
     it "should prevent adding more than one project at a time" do
@@ -435,10 +435,10 @@ RSpec.shared_examples "projects index" do
       fill_in('project_title', :with => '')
       expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).title }
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
-      expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_title', :with => 't')
       expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
-      expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).not_to have_selector("#project_error", :text => "Form has errors, cannot be saved")
     end
 
     it "should show warning and not save edited project when title is whitespace" do
@@ -446,10 +446,10 @@ RSpec.shared_examples "projects index" do
       fill_in('project_title', :with => "   ")
       expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).title }
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
-      expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_title', :with => 't')
       expect(page).not_to have_selector("#title_error", :text => "Title cannot be blank")
-      expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).not_to have_selector("#project_error", :text => "Form has errors, cannot be saved")
     end
 
     it "should show warning and not save edited project when description is blank" do
@@ -457,10 +457,10 @@ RSpec.shared_examples "projects index" do
       fill_in('project_description', :with => "")
       expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).description }
       expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
-      expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_description', :with => 't')
       expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
-      expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).not_to have_selector("#project_error", :text => "Form has errors, cannot be saved")
     end
 
     it "should show warning and not save edited project when description is whitespace" do
@@ -468,10 +468,10 @@ RSpec.shared_examples "projects index" do
       fill_in('project_description', :with => "  ")
       expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).description }
       expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
-      expect(page).to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_description', :with => 't')
       expect(page).not_to have_selector("#description_error", :text => "Description cannot be blank")
-      expect(page).not_to have_selector("#project_error", :text => "Form errors present, cannot be saved")
+      expect(page).not_to have_selector("#project_error", :text => "Form has errors, cannot be saved")
     end
 
     it "should terminate adding if editing is initiated" do
