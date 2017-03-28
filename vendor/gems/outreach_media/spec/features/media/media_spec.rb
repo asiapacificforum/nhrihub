@@ -13,11 +13,10 @@ feature "show media archive", :js => true do
   include MediaSetupHelper
 
   before do
-    setup_positivity_ratings
     setup_file_constraints
     setup_areas
     4.times do
-      @media_appearance = FactoryGirl.create(:media_appearance, :hr_area, :positivity_rating => PositivityRating.first, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
+      @media_appearance = FactoryGirl.create(:media_appearance, :hr_area, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
     end
     resize_browser_window
     visit media_appearances_path(:en)
@@ -50,9 +49,7 @@ feature "create a new article", :js => true do
 
   before do
     setup_strategic_plan
-    setup_positivity_ratings
     setup_areas
-    setup_violation_severities
     setup_file_constraints
     setup_strategic_plan
     resize_browser_window
@@ -63,20 +60,10 @@ feature "create a new article", :js => true do
   scenario "without file and without errors" do
     fill_in("media_appearance_title", :with => "My new article title")
     expect(chars_remaining).to eq "You have 80 characters left"
-    expect(page).not_to have_selector("input#people_affected", :visible => true)
-    #expect(page.find('#media_appearance_subarea_ids_1')).to be_disabled # defer until ractive 0.8.0 is stable
-    #expect(page.find('#media_appearance_subarea_ids_2')).to be_disabled
-    #expect(page.find('#media_appearance_subarea_ids_3')).to be_disabled
-    #expect(page.find('#media_appearance_subarea_ids_4')).to be_disabled
-    #expect(page.find('#media_appearance_subarea_ids_5')).to be_disabled
     check("Human Rights")
     check("media_appearance_subarea_ids_1")
-    expect(page).to have_selector("input#people_affected", :visible => true)
     check("Good Governance")
     check("CRC")
-    fill_in('people_affected', :with => " 100000 ")
-    select('3: Has no bearing on the office', :from => 'Positivity rating')
-    select('4: Serious', :from => 'Violation severity')
     fill_in('media_appearance_article_link', :with => "http://www.example.com")
     select_performance_indicators.click
     select_first_planned_result
@@ -88,7 +75,6 @@ feature "create a new article", :js => true do
     expect{page.execute_script("scrollTo(0,0)"); add_save}.to change{MediaAppearance.count}.from(0).to(1)
     ma = MediaAppearance.first
     expect(ma.performance_indicator_ids).to eq [pi.id]
-    expect(ma.affected_people_count).to eq 100000 # b/c this attribute now returns a hash!
     sleep(0.4)
     expect(page).to have_selector("#media_appearances .media_appearance", :count => 1)
     expect(page.find("#media_appearances .media_appearance .basic_info .title").text).to eq "My new article title"
@@ -96,9 +82,6 @@ feature "create a new article", :js => true do
     expect(areas).to include "Human Rights"
     expect(areas).to include "Good Governance"
     expect(subareas).to include "CRC"
-    expect(positivity_rating).to eq "3: Has no bearing on the office"
-    expect(violation_severity).to eq "4: Serious"
-    expect(people_affected.gsub(/,/,'')).to eq "100000" # b/c phantomjs does not have a toLocaleString() method
   end
 
   scenario "upload article from file" do
@@ -146,9 +129,7 @@ feature "attempt to save with errors", :js => true do
   include MediaSetupHelper
 
   before do
-    setup_positivity_ratings
     setup_areas
-    setup_violation_severities
     setup_file_constraints
     resize_browser_window
     visit media_appearances_path(:en)
@@ -263,12 +244,8 @@ feature "when there are existing articles", :js => true do
       expect(chars_remaining).to eq "You have 80 characters left"
       uncheck("Human Rights")
       check("media_appearance_subarea_ids_1")
-      expect(page).to have_selector("input#people_affected", :visible => true)
       check("Good Governance")
       check("CRC")
-      fill_in('people_affected', :with => " 100000 ")
-      select('3: Has no bearing on the office', :from => 'Positivity rating')
-      select('4: Serious', :from => 'Violation severity')
       expect{page.execute_script("scrollTo(0,0)"); edit_save}.to change{MediaAppearance.first.title}
       expect(MediaAppearance.first.area_ids).to eql [2]
       sleep(0.4)
@@ -350,12 +327,8 @@ feature "when there are existing articles", :js => true do
       expect(chars_remaining).to eq "You have 80 characters left"
       uncheck("Human Rights")
       check("media_appearance_subarea_ids_1")
-      expect(page).to have_selector("input#people_affected", :visible => true)
       check("Good Governance")
       check("CRC")
-      fill_in('people_affected', :with => " 100000 ")
-      select('3: Has no bearing on the office', :from => 'Positivity rating')
-      select('4: Serious', :from => 'Violation severity')
       expect{page.execute_script("scrollTo(0,0)"); edit_cancel}.not_to change{MediaAppearance.first.title}
       expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq original_media_appearance.title
       sleep(0.3) # seems to be required for test passing in chrome

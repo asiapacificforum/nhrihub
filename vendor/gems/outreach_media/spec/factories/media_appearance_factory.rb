@@ -16,7 +16,6 @@ FactoryGirl.define do
 
     after(:build) do |media_appearance|
       media_appearance.user_id = User.pluck(:id)
-      media_appearance.positivity_rating_id = PositivityRating.pluck(:id)
       if media_appearance.file_id
         path = Rails.env.production? ?
           Rails.root.join('..','..','shared') :
@@ -91,10 +90,6 @@ FactoryGirl.define do
         hr_area = Area.where(:name => "Human Rights").first
         ma.areas << hr_area
         ma.subareas << Subarea.where(:name => "Violation", :area_id => hr_area.id).first
-        unless ma.affected_people_count
-          ma.affected_people_count = rand(9000)
-        end
-        ma.violation_severity_id = ViolationSeverity.pluck(:id).sample
       end
     end
   end

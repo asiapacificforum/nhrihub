@@ -4,8 +4,6 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
   ConfigPrefix = 'nhri.advisory_council_issue'
   attachment :file
 
-  belongs_to :violation_severity
-  delegate :text, :rank, :rank_text, :to => :violation_severity, :prefix => true, :allow_nil => true
   belongs_to :user
   has_many :reminders, :as => :remindable, :dependent => :destroy
   has_many :notes, :as => :notable, :dependent => :destroy
@@ -32,8 +30,7 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
                        :url,
                        :initiator,
                        :create_reminder_url,
-                       :create_note_url,
-                       :violation_severity_rank_text ]})
+                       :create_note_url]})
   end
 
   alias_method :collection_item_areas, :issue_areas

@@ -3,25 +3,20 @@ require 'rspec/core/shared_context'
 module MediaSetupHelper
   extend RSpec::Core::SharedContext
   def setup_database(type)
-    setup_positivity_ratings
     setup_areas
-    setup_violation_severities
     if type == :media_appearance_with_file
       FactoryGirl.create(:media_appearance,
                          :hr_area,
                          :file,
-                         :positivity_rating => PositivityRating.first,
                          :reminders=>[] )
     elsif type == :media_appearance_with_link
       FactoryGirl.create(:media_appearance,
                          :hr_area,
                          :link,
-                         :positivity_rating => PositivityRating.first,
                          :reminders=>[] )
     else
       FactoryGirl.create(:media_appearance,
                          :hr_area,
-                         :positivity_rating => PositivityRating.first,
                          :reminders=>[] )
     end
     add_reminder
@@ -30,7 +25,6 @@ module MediaSetupHelper
   def add_a_second_article
     FactoryGirl.create(:media_appearance,
                        :hr_area,
-                       :positivity_rating => PositivityRating.first,
                        :reminders=>[] )
   end
 
@@ -42,16 +36,6 @@ module MediaSetupHelper
 
   def setup_articles
     FactoryGirl.create(:media_appearance)
-  end
-
-  def setup_positivity_ratings
-    PositivityRating.delete_all
-    PositivityRating::DefaultValues.each { |pr| PositivityRating.create(:rank => pr.rank) }
-  end
-
-  def setup_violation_severities
-    ViolationSeverity.delete_all
-    ViolationSeverity::DefaultValues.each { |vs| ViolationSeverity.create(:rank=>vs.rank) }
   end
 
   def setup_areas

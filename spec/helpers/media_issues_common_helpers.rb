@@ -33,18 +33,6 @@ module MediaIssuesCommonHelpers
     page.all("#{single_item_selector} .expanded_info .description .subareas .subarea").map(&:text)
   end
 
-  def people_affected
-    page.find(".metric#affected_people_count .value").text
-  end
-
-  def positivity_rating
-    page.find(".metric#positivity_rating .value").text
-  end
-
-  def violation_severity
-    page.find(".metric#violation_severity .value").text
-  end
-
   def add_cancel
     page.find("#{single_item_selector} #cancel_add").click
   end

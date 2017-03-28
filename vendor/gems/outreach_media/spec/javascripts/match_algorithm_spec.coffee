@@ -6,10 +6,6 @@ media_appearance_subarea_matches = ->
   _(collection.findAllComponents('collectionItem')).map (ma)-> ma._matches_subarea()
 media_appearance_area_subarea_matches = ->
   _(collection.findAllComponents('collectionItem')).map (ma)-> ma._matches_area_subarea()
-media_appearance_affected_people_count_matches = ->
-  _(collection.findAllComponents('collectionItem')).map (ma)-> ma._matches_people_affected()
-media_appearance_violation_severity_matches = ->
-  _(collection.findAllComponents('collectionItem')).map (ma)-> ma._matches_violation_severity()
 
 log = (str)->
   re = new RegExp('phantomjs','gi')
@@ -39,76 +35,10 @@ describe "within range evaluation", ->
         log settings
         log exception)
 
-  it "should evaluate integers", ->
-    min = 0
-    max = 10
-    val = 5
-    expect(test(min,max,val)).to.be.true
-    min = 0
-    max = 5
-    val = 10
-    expect(test(min,max,val)).to.be.false
-
-  it "should evaluate integers when range is indeterminate", ->
-    min = NaN
-    max = 10
-    val = 5
-    expect(test(min,max,val)).to.be.true
-    min = NaN
-    max = 5
-    val = 10
-    expect(test(min,max,val)).to.be.false
-    min = NaN
-    max = NaN
-    val = 10
-    expect(test(min,max,val)).to.be.true
-
-  it "should evaluate indeterminate input as true", ->
-    min = NaN
-    max = NaN
-    val = parseInt(null)
-    expect(test(min,max,val)).to.be.true
-
-  it "should evaluate floats", ->
-    min = 0.5
-    max = 5.3
-    val = 2.5
-    expect(test(min,max,val)).to.be.true
-    min = 0.5
-    max = 2.5
-    val = 5.3
-    expect(test(min,max,val)).to.be.false
-
-  it "should evaluate floats when range is indeterminate", ->
-    min = NaN
-    max = 5.3
-    val = 2.5
-    expect(test(min,max,val)).to.be.true
-    min = NaN
-    max = 2.5
-    val = 10.1
-    expect(test(min,max,val)).to.be.false
-    min = NaN
-    max = NaN
-    val = 10.4
-    expect(test(min,max,val)).to.be.true
-
-  it "should evaluate as true when min/max are empty", ->
-    min = NaN
-    max = NaN
-    val = 4.4
-    expect(test(min,max,val)).to.be.true
-
-  it "should evaluate as true when val is empty", ->
-    min = 2.3
-    max = 8.7
-    val = parseInt(null)
-    expect(test(min,max,val)).to.be.true
-
-
 describe "area and subarea matching algorithm", ->
   before (done)->
     window.Collection = {}
+    window.item_name = "media_appearance"
     window.collection_items = MagicLamp.loadJSON('collection_items')
     window.areas = MagicLamp.loadJSON('areas_data')
     window.subareas = MagicLamp.loadJSON('subareas_data')
@@ -191,27 +121,3 @@ describe "area and subarea matching algorithm", ->
       collection.reset({'collection_items':[{"area_ids":[1], "media_areas":[{"area_id":1}]}]})
       collection.set({'filter_criteria.areas':[2], 'filter_criteria.subareas':[]})
       expect(media_appearance_area_subarea_matches()).to.eql [false]
-
-  describe "matching of human rights-specific parameters", ->
-    describe "when instance is not human rights violation", ->
-      it "should ignore any value in the people affected criteria and interpret it as zero", ->
-        collection.set({'collection_items': [{'title':'foo','media_appearance_areas':[{'area_id':1, 'subarea_ids':[2]}],'metrics':{'affected_people_count':{'value':23}}}]})
-        collection.set({'filter_criteria.pa_min':0, 'filter_criteria.pa_max':30})
-        expect(media_appearance_affected_people_count_matches()).to.eql [true]
-        collection.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':30})
-        expect(media_appearance_affected_people_count_matches()).to.eql [false]
-
-    describe "when instance is human rights violation", ->
-      describe "and affected_people_count parameter value falls outside thresholds", ->
-        it "should exclude the instance", ->
-          collection.set({'collection_items': [{'title':'bar','media_appearance_areas':[{'area_id':1, 'subarea_ids':[1]}],'metrics':{'affected_people_count':{'value':23}}}]})
-          collection.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':20})
-          expect(media_appearance_affected_people_count_matches()).to.eql [false]
-
-      describe "and affected_people_count parameter value is null", ->
-        it "should interpret the null value as zero", ->
-          collection.set({'collection_items': [{'title':'baz', 'media_appearance_areas':[{'area_id':1, 'subarea_ids':[1]}], 'metrics':{'affected_people_count':{'value':null}}}]})
-          collection.set({'filter_criteria.pa_min':0, 'filter_criteria.pa_max':20})
-          expect(media_appearance_affected_people_count_matches()).to.eql [true]
-          collection.set({'filter_criteria.pa_min':8, 'filter_criteria.pa_max':20})
-          expect(media_appearance_affected_people_count_matches()).to.eql [false]

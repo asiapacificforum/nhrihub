@@ -4,7 +4,6 @@ module AdvisoryCouncilIssueSetupHelper
   extend RSpec::Core::SharedContext
   def setup_database(type = :advisory_council_issue_with_file)
     setup_areas
-    setup_violation_severities
     if type == :advisory_council_issue_with_file
       FactoryGirl.create(:advisory_council_issue,
                          :hr_area,
@@ -36,11 +35,6 @@ module AdvisoryCouncilIssueSetupHelper
 
   def setup_articles
     FactoryGirl.create(:advisory_council_issue)
-  end
-
-  def setup_violation_severities
-    ViolationSeverity.delete_all
-    ViolationSeverity::DefaultValues.each { |vs| ViolationSeverity.create(:rank=>vs.rank) }
   end
 
   def setup_areas

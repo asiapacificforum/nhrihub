@@ -42,9 +42,6 @@ $ ->
     components :
       collectionitemsubarea : Collection.CollectionItemSubarea
 
-  Collection.Metric = Ractive.extend
-    template : '#metric_template'
-
   Selectable =
     oninit : ->
       @select()
@@ -147,7 +144,6 @@ $ ->
     template : '#collection_item_template'
     components :
       collectionItemArea : Collection.CollectionItemArea
-      metric : Collection.Metric
       file : Collection.File
     oninit : ->
       @set
@@ -196,14 +192,6 @@ $ ->
         item_name
       issue_context : ->
         item_name == "advisory_council_issue"
-      hr_violation : ->
-        id = Collection.Subarea.hr_violation().id
-        _(@get('subarea_ids')).indexOf(id) != -1
-      formatted_metrics : ->
-        metrics = $.extend(true,{},@get('metrics'))
-        if !_.isNull(affected_people_count)
-          affected_people_count = @get('metrics').toLocaleString()
-        metrics
       count : ->
         t = @get('title') || ""
         100 - t.length
@@ -212,11 +200,7 @@ $ ->
           (@_matches_title() &&
           @_matches_from() &&
           @_matches_to() &&
-          @_matches_area_subarea() &&
-          @_matches_violation_coefficient() &&
-          @_matches_positivity_rating() &&
-          @_matches_violation_severity() &&
-          @_matches_people_affected())
+          @_matches_area_subarea())
       persisted : ->
         !_.isNull(@get('id'))
       match_vector : ->
@@ -225,10 +209,6 @@ $ ->
         matches_area_subarea : @_matches_area_subarea()
         matches_area : @_matches_area()
         matches_subarea: @_matches_subarea()
-        matches_people_affected : @_matches_people_affected()
-        matches_violation_severity : @_matches_violation_severity()
-        matches_violation_coefficient : @_matches_violation_coefficient()
-        matches_positivity_rating : @_matches_positivity_rating()
         matches_title: @_matches_title()
     _matches_from : ->
       $.datepicker.parseDate("yy, M d",@get('date')) >= new Date(@get('filter_criteria.from'))
@@ -243,40 +223,6 @@ $ ->
     _matches_subarea : ->
       matches = _.intersection(@get('subarea_ids'), @get('filter_criteria.subareas'))
       matches.length > 0
-    _matches_people_affected : ->
-      if @get('hr_violation')
-        value = parseInt(@get('affected_people_count'))
-        value = 0 if !_.isNumber(value) || _.isNaN(value) # null value is interpreted as zero for hr_violation instances
-      else
-        value = 0
-      @_between(parseInt(@get('filter_criteria.pa_min')),parseInt(@get('filter_criteria.pa_max')),value)
-    _matches_violation_severity : ->
-      # note, violation_severity_rank_text is a string of the form "4: some text here", but parseInt converts appropriately!
-      if @get('hr_violation')
-        value = parseInt(@get('violation_severity_rank_text'))
-        value = 0 if !_.isNumber(value) || _.isNaN(value) # null value is interpreted as zero for hr_violation instances
-      else
-        value = 0
-      @_between(parseInt(@get('filter_criteria.vs_min')),parseInt(@get('filter_criteria.vs_max')),value)
-    _matches_violation_coefficient : ->
-      if @get('hr_violation')
-        value = parseFloat(@get('violation_coefficient'))
-        value = 0 if !_.isNumber(value) || _.isNaN(value) # null value is interpreted as zero for hr_violation instances
-      else
-        value = 0
-      @_between(parseFloat(@get('filter_criteria.vc_min')),parseFloat(@get('filter_criteria.vc_max')),value)
-    _matches_positivity_rating : ->
-      # note, positivity_rating_rank_text is a string of the form "4: some text here", but parseInt converts appropriately!
-      @_between(parseInt(@get('filter_criteria.pr_min')),parseInt(@get('filter_criteria.pr_max')),parseInt(@get("positivity_rating_rank_text")))
-    _between : (min,max,val)->
-      return true if _.isNaN(val) # declare match if there's no value
-      min = if _.isNaN(min) # from the input element a zero-length string can be presented
-              0
-            else
-              min
-      exceeds_min = (val >= min)
-      less_than_max = _.isNaN(max) || (val <= max) # if max is not a number, then assume val is in-range
-      exceeds_min && less_than_max
     _matches_title : ->
       re = new RegExp(@get('filter_criteria.title'),'i')
       re.test(@get('title'))
@@ -318,10 +264,9 @@ $ ->
       @compact() #nothing to do with errors, but this method is called on edit_cancel
       @restore()
     persistent_attributes : ->
-      attrs = ['file', 'title', 'affected_people_count', 'violation_severity_id',
-               'article_link', 'lastModifiedDate', 'area_ids', 'subarea_ids',
+      attrs = ['file', 'title', 'article_link', 'lastModifiedDate', 'area_ids', 'subarea_ids',
                'filesize', 'original_filename', 'original_type']
-      attrs.push('positivity_rating_id', 'selected_performance_indicators_attributes') if item_name == "media_appearance"
+      attrs.push('selected_performance_indicators_attributes') if item_name == "media_appearance"
       attrs
     formData : ->
       @asFormData @persistent_attributes()
@@ -376,14 +321,6 @@ $ ->
       to : new Date(new Date().toDateString()) # then it yields proper comparison with Rails timestamp
       areas : []
       subareas : []
-      vc_min : 0.0
-      vc_max : null
-      pr_min : 0
-      pr_max : null
-      vs_min : 0
-      vs_max : null
-      pa_min : 0
-      pa_max : null
     permitted_filetypes : permitted_filetypes
     maximum_filesize : maximum_filesize
 
@@ -409,34 +346,10 @@ $ ->
         _(@findAllComponents('collectionItem')).map (collectionItem)->
           if !_.isNull(collectionItem.get('date'))
             $.datepicker.parseDate("yy, M d",collectionItem.get('date'))
-      violation_coefficients : ->
-        _(@findAllComponents('collectionItem')).map (collectionItem)->parseFloat (collectionItem.get("violation_coefficient") || 0.0 )
-      positivity_ratings : ->
-        _(@findAllComponents('collectionItem')).map (collectionItem)->parseInt( parseInt(collectionItem.get("positivity_rating_rank_text"))  || 0)
-      violation_severities : ->
-        _(@findAllComponents('collectionItem')).map (collectionItem)->parseInt( parseInt(collectionItem.get("violation_severity_rank_text"))  || 0)
-      people_affecteds : ->
-        _(@findAllComponents('collectionItem')).map (collectionItem)->parseInt( collectionItem.get("affected_people_count")  || 0)
       earliest : ->
         @min('dates')
       most_recent : ->
         @max('dates')
-      vc_min : ->
-        @min('violation_coefficients')
-      vc_max : ->
-        @max('violation_coefficients')
-      pr_min : ->
-        @min('positivity_ratings')
-      pr_max : ->
-        @max('positivity_ratings')
-      vs_min : ->
-        @min('violation_severities')
-      vs_max : ->
-        @max('violation_severities')
-      pa_min : ->
-        @min('people_affecteds')
-      pa_max : ->
-        @max('people_affecteds')
       formatted_from_date:
         get: -> $.datepicker.formatDate("yy, M d", @get('filter_criteria.from'))
         set: (val)-> @set('filter_criteria.from', $.datepicker.parseDate( "yy, M d", val))
@@ -459,14 +372,6 @@ $ ->
     populate_min_max_fields : ->
       @set('filter_criteria.from',@get('earliest'))  unless _.isUndefined(@get('earliest'))
       @set('filter_criteria.to',@get('most_recent')) unless _.isUndefined(@get('most_recent'))
-      @set('filter_criteria.vc_min',@get('vc_min'))  unless _.isUndefined(@get('vc_min'))
-      @set('filter_criteria.vc_max',@get('vc_max'))  unless _.isUndefined(@get('vc_max'))
-      @set('filter_criteria.pr_min',@get('pr_min'))  unless _.isUndefined(@get('pr_min'))
-      @set('filter_criteria.pr_max',@get('pr_max'))  unless _.isUndefined(@get('pr_max'))
-      @set('filter_criteria.vs_min',@get('vs_min'))  unless _.isUndefined(@get('vs_min'))
-      @set('filter_criteria.vs_max',@get('vs_max'))  unless _.isUndefined(@get('vs_max'))
-      @set('filter_criteria.pa_min',@get('pa_min'))  unless _.isUndefined(@get('pa_min'))
-      @set('filter_criteria.pa_max',@get('pa_max'))  unless _.isUndefined(@get('pa_max'))
     expand : ->
       @set('expanded', true)
       _(@findAllComponents('collectionItem')).each (collectionItem)-> collectionItem.expand()
@@ -518,20 +423,6 @@ $ ->
     history.replaceState({bish:"bosh"},"bash",window.location)
 
   start_page()
-
-# validate the filter_criteria input fields whenever they change
-  collection.observe 'filter_criteria.*', (newval, oldval, path)->
-    key = path.split('.')[1]
-
-    has_error = ->
-      return _.isNaN(parseFloat(newval)) if key.match(/vc_min|vc_max/)
-      return _.isNaN(parseInt(newval)) if key.match(/pr_min|pr_max|pa_min|pa_max|vs_min|vs_max/)
-
-    if has_error() && !_.isEmpty(newval)
-      $(".#{key}").addClass('error')
-    else
-      $(".#{key}").removeClass('error')
-
 
   window.onpopstate = (event)->
     if event.state # to ensure that it doesn't trigger on page load, it's a problem with phantomjs but not with chrome

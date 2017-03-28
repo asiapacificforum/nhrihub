@@ -3,10 +3,6 @@ class MediaAppearance < ActiveRecord::Base
   include FileConstraints
   ConfigPrefix = 'media_appearance'
 
-  belongs_to :violation_severity
-  belongs_to :positivity_rating
-  delegate :text, :rank, :rank_text, :to => :positivity_rating, :prefix => true, :allow_nil => true
-  delegate :text, :rank, :rank_text, :to => :violation_severity, :prefix => true, :allow_nil => true
   belongs_to :user
   has_many :reminders, :as => :remindable, :dependent => :destroy
   has_many :notes, :as => :notable, :dependent => :destroy
@@ -23,20 +19,7 @@ class MediaAppearance < ActiveRecord::Base
 
   default_scope { order('media_appearances.created_at desc') }
 
-  before_save do |media_appearance|
-    if !media_appearance.is_hr_violation?
-      # probably would always be zero, but this facilitates testing!
-      media_appearance.affected_people_count = 0
-      media_appearance.violation_coefficient = 0
-      media_appearance.violation_severity_id = 0
-    end
-  end
-
   before_save NullStringConvert
-
-  def is_hr_violation?
-    subarea_ids.include? Subarea.hr_violation_id
-  end
 
   def as_json(options={})
     super({:except => [:updated_at,
@@ -48,12 +31,10 @@ class MediaAppearance < ActiveRecord::Base
                        :area_ids,
                        :subarea_ids,
                        :performance_indicator_associations,
-                       :positivity_rating_rank_text,
                        :reminders,
                        :notes,
                        :create_reminder_url,
-                       :create_note_url,
-                       :violation_severity_rank_text ]})
+                       :create_note_url]})
   end
 
   # assign a generic name so that javascript is reusable for differenct collections
@@ -61,14 +42,6 @@ class MediaAppearance < ActiveRecord::Base
 
   def performance_indicator_associations
     media_appearance_performance_indicators
-  end
-
-  def positivity_rating_rank=(val)
-    self.positivity_rating_id = PositivityRating.where(:rank => val).first.id unless val.blank?
-  end
-
-  def violation_severity_rank=(val)
-    self.violation_severity_id = ViolationSeverity.where(:rank => val).first.id unless val.blank?
   end
 
   def page_data

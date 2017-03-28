@@ -1,6 +1,6 @@
 class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
   def index
-    @advisory_council_issues = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.includes(:subareas, :violation_severity, :notes, :reminders, :areas => :subareas).all
+    @advisory_council_issues = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.includes(:subareas, :notes, :reminders, :areas => :subareas).all
     @areas = Area.includes(:subareas).all
     @subareas = Subarea.extended
     @advisory_council_issue = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.new
@@ -54,7 +54,6 @@ class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
       require(:advisory_council_issue).
       permit(:title,
              :affected_people_count,
-             :violation_severity_id,
              :file,
              :remove_file,
              :original_filename,

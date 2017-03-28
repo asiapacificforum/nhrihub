@@ -1,6 +1,6 @@
 class MediaAppearancesController < ApplicationController
   def index
-    @media_appearances = MediaAppearance.includes(:subareas, :violation_severity, :positivity_rating, :performance_indicators, :notes, :reminders, :areas => :subareas).all
+    @media_appearances = MediaAppearance.includes(:subareas, :performance_indicators, :notes, :reminders, :areas => :subareas).all
     @media_appearance = MediaAppearance.new
     @areas = Area.includes(:subareas).all
     @subareas = Subarea.extended
@@ -48,9 +48,6 @@ class MediaAppearancesController < ApplicationController
     params.
       require(:media_appearance).
       permit(:title,
-             :affected_people_count,
-             :positivity_rating_id,
-             :violation_severity_id,
              :file,
              :remove_file,
              :original_filename,

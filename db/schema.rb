@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170324131534) do
+ActiveRecord::Schema.define(version: 20170330161242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,15 +56,12 @@ ActiveRecord::Schema.define(version: 20170324131534) do
   end
 
   create_table "advisory_council_issues", force: :cascade do |t|
-    t.string   "file_id",               limit: 255
+    t.string   "file_id",           limit: 255
     t.integer  "filesize"
-    t.string   "original_filename",     limit: 255
-    t.string   "original_type",         limit: 255
+    t.string   "original_filename", limit: 255
+    t.string   "original_type",     limit: 255
     t.integer  "user_id"
     t.string   "title"
-    t.integer  "affected_people_count"
-    t.float    "violation_coefficient"
-    t.integer  "violation_severity_id"
     t.datetime "lastModifiedDate"
     t.text     "article_link"
     t.datetime "created_at"
@@ -367,19 +364,15 @@ ActiveRecord::Schema.define(version: 20170324131534) do
   end
 
   create_table "media_appearances", force: :cascade do |t|
-    t.string   "file_id",               limit: 255
+    t.string   "file_id",           limit: 255
     t.integer  "filesize"
-    t.string   "original_filename",     limit: 255
-    t.string   "original_type",         limit: 255
+    t.string   "original_filename", limit: 255
+    t.string   "original_type",     limit: 255
     t.integer  "user_id"
     t.string   "url"
     t.string   "title"
-    t.integer  "affected_people_count"
-    t.float    "violation_coefficient"
-    t.integer  "positivity_rating_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "violation_severity_id"
     t.datetime "lastModifiedDate"
     t.text     "article_link"
   end
@@ -497,12 +490,6 @@ ActiveRecord::Schema.define(version: 20170324131534) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "index",                 limit: 10
-  end
-
-  create_table "positivity_ratings", force: :cascade do |t|
-    t.integer  "rank"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "project_documents", force: :cascade do |t|
@@ -676,12 +663,6 @@ ActiveRecord::Schema.define(version: 20170324131534) do
     t.string   "public_key_handle"
     t.string   "replacement_token_registration_code"
     t.index ["login"], name: "index_users_on_login", using: :btree
-  end
-
-  create_table "violation_severities", force: :cascade do |t|
-    t.integer  "rank"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
 end

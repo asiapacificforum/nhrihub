@@ -1,10 +1,6 @@
 FactoryGirl.define do
   factory :advisory_council_issue, :class => Nhri::AdvisoryCouncil::AdvisoryCouncilIssue do
     title {Faker::Lorem.sentence(5)}
-    #affected_people_count
-    #violation_coefficient
-    #violation_severity_id
-    #lastModifiedDate
 
     trait :link do
       article_link { "http://www.example.com" } # so we can actually test it!
@@ -86,10 +82,6 @@ FactoryGirl.define do
         hr_area = Area.where(:name => "Human Rights").first
         aci.areas << hr_area
         aci.subareas << Subarea.where(:name => "Violation", :area_id => hr_area.id).first
-        unless aci.affected_people_count
-          aci.affected_people_count = rand(9000)
-        end
-        aci.violation_severity_id = ViolationSeverity.pluck(:id).sample
       end
     end
   end
