@@ -375,10 +375,14 @@
             .col-md-12
               %label= t('.reference')
               %span.case_reference {{ case_reference }}
-          .row
-            .col-md-12.date_received
-              {{formatted_date}}
         .col-md-7
+          .row{'data-toggle' => :edit}
+            .col-md-3
+              %label= t('.date_received')
+            .col-md-9.date_received
+              .no_edit.in {{formatted_date}}
+              .edit
+                %input#date_received{:type => :text, :name => "{{formatted_date}}", :decorator => :single_month_datepicker, :value => "{{formatted_date}}"}
           .row
             .col-md-3
               %label= t('.current_assignee')
@@ -582,12 +586,6 @@
                   %label{:style => "font-weight:normal;"}
                     =t('no')
                     %input#complained_to_subject_agency_no{:type => :radio, :name => "{{complained_to_subject_agency}}", :value => 'false'}
-            .col-md-3{:style => "text-align:right;"}
-              %label= t('.date_received')
-            .col-md-3
-              .no_edit.in {{formatted_date}}
-              .edit
-                %input#date_received{:type => :text, :name => "{{formatted_date}}", :decorator => :single_month_datepicker, :value => "{{formatted_date}}"}
       .row.collapse
         .col-md-2=t('.assignees_history')
         .col-md-5{'data-toggle'=>:edit}
