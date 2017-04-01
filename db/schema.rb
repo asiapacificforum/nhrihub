@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170330161242) do
+ActiveRecord::Schema.define(version: 20170401003007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -303,12 +303,6 @@ ActiveRecord::Schema.define(version: 20170330161242) do
     t.datetime "lastModifiedDate"
   end
 
-  create_table "impact_ratings", force: :cascade do |t|
-    t.integer  "rank"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "indicators", force: :cascade do |t|
     t.string   "title"
     t.integer  "human_rights_attribute_id"
@@ -429,50 +423,6 @@ ActiveRecord::Schema.define(version: 20170330161242) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "index",             limit: 10
-  end
-
-  create_table "outreach_event_areas", force: :cascade do |t|
-    t.integer  "outreach_event_id"
-    t.integer  "area_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "outreach_event_documents", force: :cascade do |t|
-    t.integer  "outreach_event_id"
-    t.string   "file_id",           limit: 255
-    t.integer  "file_size"
-    t.string   "file_filename",     limit: 255
-    t.string   "file_content_type", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "outreach_event_performance_indicators", force: :cascade do |t|
-    t.integer  "outreach_event_id"
-    t.integer  "performance_indicator_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "outreach_event_subareas", force: :cascade do |t|
-    t.integer  "outreach_event_id"
-    t.integer  "subarea_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "outreach_events", force: :cascade do |t|
-    t.string   "title"
-    t.datetime "event_date"
-    t.integer  "audience_type_id"
-    t.string   "audience_name"
-    t.integer  "participant_count"
-    t.integer  "affected_people_count"
-    t.text     "description"
-    t.integer  "impact_rating_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "performance_indicators", force: :cascade do |t|
