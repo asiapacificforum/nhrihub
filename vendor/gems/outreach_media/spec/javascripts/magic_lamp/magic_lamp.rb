@@ -70,9 +70,9 @@ MagicLamp.define do
     #"Select audience type"
   #end
 
-  fixture(:name => 'selected_impact_rating') do
-    "Select impact rating"
-  end
+  #fixture(:name => 'selected_impact_rating') do
+    #"Select impact rating"
+  #end
 
   #fixture(:name => 'audience_types') do
     #AudienceTypeTest.populate_test_data
@@ -91,8 +91,8 @@ MagicLamp.define do
     #render :partial => 'outreach_media/outreach_events/index'
   #end
 
-  fixture(:name => 'impact_ratings') do
-    ImpactRatingTest.populate_test_data
-    ImpactRating.all
-  end
+  #fixture(:name => 'impact_ratings') do
+    #ImpactRatingTest.populate_test_data
+    #ImpactRating.all
+  #end
 end

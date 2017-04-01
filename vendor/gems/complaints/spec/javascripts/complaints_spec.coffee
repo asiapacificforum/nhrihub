@@ -7,7 +7,7 @@ load_variables = ->
   window.source_complaints_data = []
   window.source_all_mandates = []
   window.source_all_agencies = []
-  window.source_all_agencies_in_threes = _.chain(source_all_agencies).groupBy((el,i)->Math.floor(i/3)).toArray().value()
+  window.source_all_agencies_in_sixes = _.chain(source_all_agencies).groupBy((el,i)->Math.floor(i/6)).toArray().value()
   window.source_complaint_bases = []
   window.source_next_case_reference = ""
   window.source_all_users = []
@@ -97,7 +97,7 @@ describe "complaints index page", ->
       expect(complaints.get('filter_criteria.complainant')).to.equal "Siddhi"
 
     it "when filter_criteria.complainant is empty", ->
-      complaints.set('complaints',[{firstName:"Foo"}])
+      complaints.set('complaints',[{firstName:"Foo", lastName : null}])
       complaints.findComponent('filterControls').set('filter_criteria.complainant',"")
       complaint = complaints.findComponent('complaint')
       expect(complaint.matches_complainant()).to.be.true
@@ -105,7 +105,7 @@ describe "complaints index page", ->
       expect(complaint.get('include')).to.be.true
 
     it "when filter_criteria.complainant is whitespace", ->
-      complaints.set('complaints',[{firstName:"Foo"}])
+      complaints.set('complaints',[{firstName:"Foo", lastName : null}])
       complaints.set('filter_criteria.complainant',"  ")
       complaint = complaints.findComponent('complaint')
       expect(complaint.matches_complainant()).to.be.true
@@ -113,7 +113,7 @@ describe "complaints index page", ->
       expect(complaint.get('include')).to.be.true
 
     it "when filter_criteria.complainant has a non-matching value", ->
-      complaints.set('complaints',[{firstName:"Foo"}])
+      complaints.set('complaints',[{firstName:"Foo", lastName : null}])
       complaints.set('filter_criteria.complainant',"bar")
       complaint = complaints.findComponent('complaint')
       expect(complaint.matches_complainant()).to.be.false
@@ -121,8 +121,24 @@ describe "complaints index page", ->
       expect(complaint.get('include')).to.be.false
 
     it "when filter_criteria.complainant has a matching value", ->
-      complaints.set('complaints',[{firstName:"got some foo in my porridge"}])
+      complaints.set('complaints',[{firstName:"got some foo in my porridge", lastName : null}])
       complaints.set('filter_criteria.complainant',"Foo")
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_complainant()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
+
+    it "when filter_criteria.complainant has a value matching first and last names", ->
+      complaints.set('complaints',[{firstName:"Foo", lastName:"Bar"}])
+      complaints.set('filter_criteria.complainant',"Foo b")
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_complainant()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
+
+    it "when filter_criteria.complainant has a value matching first and last names with long whitespace", ->
+      complaints.set('complaints',[{firstName:"  Foo   ", lastName:"Bar  "}])
+      complaints.set('filter_criteria.complainant'," Foo  b")
       complaint = complaints.findComponent('complaint')
       expect(complaint.matches_complainant()).to.be.true
       expect(complaint.include()).to.be.true
