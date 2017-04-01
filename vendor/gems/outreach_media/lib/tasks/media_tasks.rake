@@ -4,16 +4,8 @@ good_governance_subareas = ["Violation", "Office report", "Office consultations"
 
 namespace :media do
   desc "populate violation severity table"
-  task :populate_vs => :environment do
-    ViolationSeverity.destroy_all
-    ViolationSeverity::DefaultValues.each { |vs| ViolationSeverity.create(:rank=>vs.rank) }
-  end
 
   desc "populate positivity ratings"
-  task :populate_pr => :environment do
-    PositivityRating.destroy_all
-    PositivityRating::DefaultValues.each { |pr| PositivityRating.create(:rank => pr.rank) }
-  end
 
   desc "populate impact ratings"
   task :populate_ir => :environment do
@@ -54,10 +46,7 @@ namespace :media do
   task :populate => :environment do
     Rake::Task["populate_users"].invoke
     Rake::Task["corporate_services:populate_sp"].invoke
-    Rake::Task["media:populate_vs"].invoke
-    Rake::Task["media:populate_pr"].invoke
     Rake::Task["media:populate_ir"].invoke
-    #Rake::Task["media:populate_at"].invoke
     Rake::Task["media:populate_areas"].invoke
     Rake::Task["media:populate_media"].invoke
   end
