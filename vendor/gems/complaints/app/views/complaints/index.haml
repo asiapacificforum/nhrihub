@@ -28,7 +28,7 @@
   @source_complaints_data = #{@complaints.to_json}
   @source_all_mandates = #{@mandates.to_json}
   @source_all_agencies = #{@agencies.to_json}
-  @source_all_agencies_in_threes = _.chain(@source_all_agencies).groupBy((el,i)->Math.floor(i/3)).toArray().value()
+  @source_all_agencies_in_sixes = _.chain(@source_all_agencies).groupBy((el,i)->Math.floor(i/6)).toArray().value()
   @source_complaint_bases = #{(@complaint_bases || []).map(&:to_h).to_json}
   @source_next_case_reference = "#{@next_case_reference}"
   @source_all_users = #{@users.to_json(:only => :id, :methods => :first_last_name)}
