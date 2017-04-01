@@ -3,16 +3,6 @@ human_rights_subareas = ["Violation", "Education activities", "Office reports", 
 good_governance_subareas = ["Violation", "Office report", "Office consultations"]
 
 namespace :media do
-  desc "populate violation severity table"
-
-  desc "populate positivity ratings"
-
-  desc "populate impact ratings"
-  task :populate_ir => :environment do
-    ImpactRating.destroy_all
-    ImpactRating::DefaultValues.each { |ir| ImpactRating.create(ir.marshal_dump) }
-  end
-
   desc "populates areas and subareas"
   task :populate_areas => :environment do
     Area.destroy_all
@@ -46,7 +36,6 @@ namespace :media do
   task :populate => :environment do
     Rake::Task["populate_users"].invoke
     Rake::Task["corporate_services:populate_sp"].invoke
-    Rake::Task["media:populate_ir"].invoke
     Rake::Task["media:populate_areas"].invoke
     Rake::Task["media:populate_media"].invoke
   end
