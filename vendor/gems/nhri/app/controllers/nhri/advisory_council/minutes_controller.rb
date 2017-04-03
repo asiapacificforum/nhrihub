@@ -30,11 +30,7 @@ class Nhri::AdvisoryCouncil::MinutesController < ApplicationController
   end
 
   def show
-    advisory_council_minutes = Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.find(params[:id])
-    send_opts = { :filename => advisory_council_minutes.original_filename,
-                  :type => advisory_council_minutes.original_type,
-                  :disposition => :attachment }
-    send_file advisory_council_minutes.file.to_io, send_opts
+    send_attached_file Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.find(params[:id])
   end
 
   private
