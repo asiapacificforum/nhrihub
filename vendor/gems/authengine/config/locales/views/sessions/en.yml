@@ -6,6 +6,8 @@ en:
         user_name: 'User name'
         password: 'Password'
         login: 'Log in...'
+        forgot: 'Forgot password'
+        username_required: 'You must enter your username'
       create:
         success: 'Logged in successfully'
       destroy:

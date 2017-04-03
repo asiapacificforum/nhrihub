@@ -7,9 +7,6 @@ Rails.application.routes.draw do
       namespace :icc do # note this must be before the icc resource
         resources :accreditation_required_document_groups, :param => :title, :only => [:create, :destroy]
       end
-      namespace :protection_promotion do
-        resources :internal_documents
-      end
       resources :indicators, :controller => 'heading/indicators'
       resources :indicators do
         notes_reminder_concern('indicator')

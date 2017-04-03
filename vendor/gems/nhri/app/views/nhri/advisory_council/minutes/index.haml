@@ -1,6 +1,7 @@
 = stylesheet_link_tag 'internal_documents'
 = stylesheet_link_tag 'jquery_datepicker'
 .message_block
+#jflash
 %h1=t('.heading')
 #container
 
@@ -10,7 +11,7 @@
 = javascript_include_tag 'in_page_edit'
 
 :javascript
-  var flash_error = "#{t('.flash.no_files_error')}"
+  var flash_error = "#{t('error_messages.no_files_error')}"
   var files = #{ @advisory_council_minutes.to_json }
   var permitted_filetypes = #{@permitted_filetypes}
   var maximum_filesize = #{@maximum_filesize * 1000000}

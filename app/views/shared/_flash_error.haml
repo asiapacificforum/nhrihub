@@ -1,3 +1,9 @@
 %script#flash_error_template{:type => 'template/ractive'}
   %ul.error{:style => "display:none"}
-    %li {{ message }}
+    %li {{ error_message }}
+  %ul.info{:style => "display:none"}
+    %li {{ info_message }}
+  %ul.warn{:style => "display:none"}
+    %li {{ warn_message }}
+  %ul.confirm{:style => "display:none"}
+    %li {{ confirm_message }}

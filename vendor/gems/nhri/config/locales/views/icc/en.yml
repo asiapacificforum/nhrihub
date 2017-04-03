@@ -11,8 +11,6 @@ en:
         archive: "Archive"
         add1: "Add file"
         delete: "Delete"
-        flash:
-          no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
       template_upload:
         start_one: "Start"
         cancel_one: "Cancel"

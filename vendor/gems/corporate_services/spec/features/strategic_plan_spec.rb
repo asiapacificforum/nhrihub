@@ -56,7 +56,7 @@ feature "select strategic plan from prior years", :js => true do
     add_priority_button.click
     expect(flash_message).to eq "Strategic priorities can only be added to the current strategic plan"
     click_anywhere
-    expect(page.find('.message_block .error', :visible=>false)).not_to be_visible
+    expect(page.find('#jflash .error', :visible=>false)).not_to be_visible
   end
 end
 
@@ -144,10 +144,6 @@ end
 def user_input_request
   page.evaluate_script("strategic_plan.get('user_input_requested').get('description')")
 end
-
-#def add_priority_button
-  #page.find('.add_strategic_priority')
-#end
 
 def add_strategic_priority(attrs)
   add_priority_button.click

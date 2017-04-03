@@ -123,4 +123,9 @@ feature "terms of reference document", :js => true do
     end
   end
 
+  it "start upload before any docs have been selected" do
+    upload_files_link.click
+    expect(flash_message).to eq "You must first click \"Add files...\" and select file(s) to upload"
+  end
+
 end

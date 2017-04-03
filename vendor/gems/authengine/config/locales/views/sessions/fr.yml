@@ -5,7 +5,9 @@ fr:
         heading: "S'il vous plaît connecter"
         user_name: "Nom d'usilateur"
         password: "Mot de pass"
+        forgot: 'Mot de pass oublié'
         login: "S'identifier..."
+        username_required: "Vous devez entrer votre nom d'utilisateur"
       create:
         success: "Connecté avec succès"
         bad_credentials: "Votre nom d'utilisateur ou mot de passe est incorrect."

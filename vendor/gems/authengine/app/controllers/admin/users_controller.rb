@@ -11,7 +11,7 @@ class Admin::UsersController < ApplicationController
 
   # activate is where a user with the correct activation code
   # is redirected to, so they can enter passwords and login name
-  skip_before_action :check_permissions, :only=>[:activate, :signup, :new_password, :change_password, :register_new_token_request, :register_new_token_response]
+  skip_before_action :check_permissions, :only=>[:activate, :signup, :new_password, :change_password, :register_new_token_request, :register_new_token_response, :send_forgot_password_email]
 
   def index
     @users = User.
@@ -217,8 +217,23 @@ class Admin::UsersController < ApplicationController
     send_change_authentication_email("lost_token")
   end
 
+  # user clicks "forgot password" on login screen
+  def send_forgot_password_email
+    if User.forgot_password(params[:login])
+      render :js => "flash.set('error_message', '#{t('.flash_notice')}');flash.notify();"
+    end
+  rescue User::LoginNotFound
+    # the user is intentionally not informed if the login is not found, as a measure to
+    # slow down malicious attempts
+    render :js => "flash.set('error_message', '#{t('.flash_notice')}');flash.notify();"
+  rescue User::AccountNotActivated
+    render :js => "flash.set('error_message', '#{t('.flash_account_not_activated_notice')}');flash.notify();"
+  rescue User::AccountDisabled
+    render :js => "flash.set('error_message', '#{t('.flash_account_disabled_notice')}');flash.notify();"
+  end
+
   # user was registered but registration email was lost and user never responded to it, so we want to send it again
-  # it is easier to destroy the user and re-create the record, triggering a new registration email
+  # it is easiest to destroy the user and re-create the record, triggering a new registration email
   def resend_registration_email
     @user = User.find(params[:user_id])
     attrs = @user.slice(:email, :firstName, :lastName)
@@ -230,7 +245,7 @@ protected
 
   def send_change_authentication_email(type)
     @user = User.find(params[:user_id])
-    @user.send("prepare_to_send_#{type}_email")
+    @user.send("prepare_to_send_#{type}_email") # type = password_reset or lost_token
     @users = User.order("lastName, firstName").all
     save(@user)
   end

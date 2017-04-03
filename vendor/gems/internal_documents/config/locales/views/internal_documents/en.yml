@@ -3,8 +3,6 @@ en:
     index:
       heading: "Internal Documents"
       error: "Error"
-      flash:
-        no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
       delete_confirmation_message : "Are you sure you want to delete the file"
     internal_documents_templates :
       details: "File details"

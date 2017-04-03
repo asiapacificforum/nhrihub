@@ -1,6 +1,7 @@
 - focus('login')
 - scope = 'authengine.sessions.new'
 = message_block
+%div#jflash
 - unless logged_in?
   %h1=t('heading', :scope => scope)
   =form_tag authengine_sessions_path do
@@ -17,6 +18,10 @@
         %td
           .btn.btn-default.btn-primary#sign_up{:onclick=>'send_user_params()'}=t('login', :scope => scope)
         %td
+          %a#forgot_password{:onclick=>'reset_password()'}=t('forgot', :scope => scope)
+
+= render :partial => 'shared/flash_error'
+
 
 - if Rails.env.production?
   = javascript_include_tag 'u2f-api.js'
@@ -31,7 +36,7 @@
 :coffeescript
   $ ->
     remove_flash= ->
-      $('.message_block').empty()
+      flash.hide()
     check_for_return_key= (event)->
       send_user_params() if event.which == 13
     $('#login').on('keydown',remove_flash)
@@ -39,6 +44,15 @@
     $('body').on('keydown',check_for_return_key)
 
   production_env = #{Rails.env.production?}
+
+  @reset_password = ->
+    if _($('#login').val().trim()).isEmpty()
+      @flash.set('error_message', "#{t('username_required', :scope => scope)}")
+      @flash.show()
+    else
+      $.post
+        url: "#{admin_send_forgot_password_email_path}"
+        data : $('form').serialize()
 
   @send_user_params = ->
     @authentication_pending = 1 # it's used as a flag in the test suite
@@ -68,3 +82,5 @@
     $('#u2f_sign_response').val(JSON.stringify(signResponse))
     @authentication_pending = 0
     $('form').submit()
+
+= javascript_include_tag 'flash'

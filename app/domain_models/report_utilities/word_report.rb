@@ -17,7 +17,7 @@ class WordReport
   end
 
   def create_temp_dir
-    `mkdir #{tmp_dir}`
+    `mkdir #{tmp_dir} 2>/dev/null`
   end
 
   def copy_template

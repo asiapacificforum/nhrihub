@@ -60,6 +60,10 @@ en:
         flash_error: "There was a problem disabling this user."
       enable:
         flash_error: "There was a problem enabling this user."
+      send_forgot_password_email:
+        flash_notice : "A password reset email has been sent to the email address for your account"
+        flash_account_disabled_notice : "The account is disabled, please see the administrator"
+        flash_account_not_activated_notice : "The account is not activated, please see the administrator"
       send_change_password_email:
         flash_notice: "A password reset email has been sent to %{name}, %{email}"
         flash_error: "Failed to send password reset email to %{name}, %{email}"

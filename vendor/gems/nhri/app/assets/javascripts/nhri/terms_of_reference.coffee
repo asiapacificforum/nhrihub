@@ -189,7 +189,7 @@ $ ->
       _ : _ # use underscore for sorting
     computed :
       empty_upload_files_list : ->
-        @get('upload_files').length == 0
+        @get('upload_documents').length == 0
     components :
       docs : Docs
       uploadDocuments : UploadDocuments

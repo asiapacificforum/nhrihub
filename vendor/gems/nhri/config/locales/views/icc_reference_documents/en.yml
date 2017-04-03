@@ -6,8 +6,6 @@ en:
       index:
         heading: "GANHRI Accreditation Reference Documents"
         error: "Error"
-        flash:
-          no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
         delete_confirmation_message: "Are you sure you want to delete the document "
       reference_documents_templates :
         details: "File details"

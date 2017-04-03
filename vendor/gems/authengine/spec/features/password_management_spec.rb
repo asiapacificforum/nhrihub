@@ -87,3 +87,55 @@ feature "Password management, admin resets user password", :js => true do
   xscenario "reset user password, user has the wrong token" do
   end
 end
+
+feature "Password management, user forgets password", :js => true do
+  #include LoggedInEnAdminUserHelper # logs in as admin
+  include NavigationHelpers
+  include UserManagementHelpers
+  include RegisteredUserHelper
+  before do
+    raise "two-factor authentication must be enabled in config/env.yml for integration tests" unless TwoFactorAuthentication.enabled?
+    visit "/en"
+    configure_keystore
+    resize_browser_window
+  end
+
+  it "user does not enter a username" do
+    page.find("#forgot_password").click
+    expect(flash_message).to match /You must enter your username/
+    fill_in "User name", :with => "admin"
+    expect(flash_message).to be_blank
+  end
+
+  it "user tries to reset password but login not found" do
+    expect(page).to have_selector("h1", :text => "Please log in")
+    fill_in "User name", :with => "bozo"
+    expect{ page.find("#forgot_password").click; wait_for_ajax}.not_to change { ActionMailer::Base.deliveries.count }
+    expect(flash_message).to match /A password reset email has been sent to the email address for your account/
+  end
+
+  it "user tries to reset but account was not activated" do
+    user = User.where(:login => 'staff').first
+    user.send(:update_attribute, :activated_at, nil)
+    expect(page).to have_selector("h1", :text => "Please log in")
+    fill_in "User name", :with => "staff"
+    expect{ page.find("#forgot_password").click; wait_for_ajax}.not_to change { ActionMailer::Base.deliveries.count }
+    expect(flash_message).to match /The account is not activated, please see the administrator/
+  end
+
+  it "user tries to reset but account was disabled" do
+    user = User.where(:login => 'staff').first
+    user.send(:update_attribute, :enabled , false)
+    expect(page).to have_selector("h1", :text => "Please log in")
+    fill_in "User name", :with => "staff"
+    expect{ page.find("#forgot_password").click; wait_for_ajax}.not_to change { ActionMailer::Base.deliveries.count }
+    expect(flash_message).to match /The account is disabled, please see the administrator/
+  end
+
+  it "should send an email to the user" do
+    expect(page).to have_selector("h1", :text => "Please log in")
+    fill_in "User name", :with => "staff"
+    expect{ page.find("#forgot_password").click; wait_for_ajax}.to change { ActionMailer::Base.deliveries.count }.by(1)
+    expect(flash_message).to match /A password reset email has been sent to the email address for your account/
+  end
+end

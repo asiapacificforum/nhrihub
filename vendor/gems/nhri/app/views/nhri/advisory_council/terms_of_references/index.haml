@@ -1,6 +1,7 @@
 = stylesheet_link_tag "nhri/terms_of_reference_version"
 = stylesheet_link_tag "internal_documents"
 .message_block
+#jflash
 %h1=t('.heading')
 #container
 
@@ -8,7 +9,7 @@
 = render :partial => 'shared/fileupload_buttonbar'
 
 :coffeescript
-  @flash_error = "#{t('.flash.no_files_error')}"
+  @flash_error = "#{t('error_messages.no_files_error')}"
   @files = #{ @terms_of_reference_versions.to_json }
   @permitted_filetypes = #{@permitted_filetypes}
   @maximum_filesize = #{@maximum_filesize * 1000000}

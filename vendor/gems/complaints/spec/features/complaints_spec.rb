@@ -539,7 +539,7 @@ feature "complaints index", :js => true do
       expect(page.find('#complaint_details').value).to eq original_complaint.details
       expect(page.find('#desired_outcome').value).to eq original_complaint.desired_outcome.to_s
       expect(page.find('#complained_to_subject_agency_yes')).not_to be_checked
-      expect(find('.date_received').text).to eq original_complaint.date_received.getlocal.to_date.to_s
+      expect(find('#date_received').value).to eq original_complaint.date_received.getlocal.to_date.to_s
       expect(find('.current_assignee').text).to eq original_complaint.assignees.first.first_last_name
       expect(page.find(".mandate ##{original_complaint.mandates.first.key}")).to be_checked
       expect(page.find_field("ACC")).not_to be_checked

@@ -201,7 +201,7 @@ class User < ActiveRecord::Base
     raise LoginNotFound if login.blank?
     user = find_by(:login => login)
     raise LoginNotFound if user.nil?
-    raise AccountNotActivated.new unless user.active?
+    raise AccountNotActivated.new unless user.active? # never see this as user would be nil, login is blank if user is not activated
     raise AccountDisabled.new unless user.enabled?
     user
   end
@@ -288,6 +288,7 @@ class User < ActiveRecord::Base
     "#{first_last_name} <#{email}>"
   end
 
+  # called from users_controller#send_change_authentication_email
   def prepare_to_send_lost_token_email
     @lost_token = true
     nullify_public_key_params
@@ -298,6 +299,7 @@ class User < ActiveRecord::Base
     update_attributes(:public_key => nil, :public_key_handle => nil)
   end
 
+  # called from users_controller#send_change_authentication_email
   def prepare_to_send_password_reset_email
     @forgotten_password = true
     make_access_nonce('password_reset_code')
@@ -305,6 +307,12 @@ class User < ActiveRecord::Base
 
   def prepare_to_send_signup_email
     make_access_nonce("activation_code")
+  end
+
+  def self.forgot_password(login)
+    user = User.find_by_login(login)
+    user.prepare_to_send_password_reset_email
+    user.save # triggers email
   end
 
   def reset_password
