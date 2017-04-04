@@ -400,7 +400,7 @@ feature "view attachments", :js => true do
     doc = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first
     visit nhri_advisory_council_issues_path(:en)
     click_the_download_icon
-    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
       filename = doc.original_filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")

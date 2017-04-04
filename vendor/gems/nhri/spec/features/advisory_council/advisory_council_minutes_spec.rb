@@ -64,7 +64,7 @@ feature "advisory council minutes document", :js => true do
   it "can download the saved document", :driver => :chrome do
     doc = Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.first
     click_the_download_icon
-    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
       filename = doc.original_filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
