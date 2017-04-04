@@ -66,7 +66,7 @@ module InternalDocumentsSpecCommonHelpers
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("a second file")
     page.find('#internal_document_revision').set("3.3")
-    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(1).to(2)
+    expect{upload_files_link.click; sleep(0.5)}.to change{InternalDocument.count}.from(2).to(3) # starts with a primary and an archive file
     expect(page).to have_css(".files .template-download", :count => 2)
   end
 

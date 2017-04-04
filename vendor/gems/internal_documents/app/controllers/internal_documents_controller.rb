@@ -1,4 +1,5 @@
 class InternalDocumentsController < ApplicationController
+  include AttachedFile
   def index
     @internal_document = InternalDocument.new
     @internal_documents = DocumentGroup.non_empty.map(&:primary) # all types of InternalDocument
@@ -42,11 +43,7 @@ class InternalDocumentsController < ApplicationController
   end
 
   def show
-    internal_document = InternalDocument.find(params[:id])
-    send_opts = { :filename => internal_document.original_filename,
-                  :type => internal_document.original_type,
-                  :disposition => :attachment }
-    send_file internal_document.file.to_io, send_opts
+    send_attached_file(InternalDocument.find(params[:id]))
   end
 
   private
