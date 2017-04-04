@@ -14,6 +14,6 @@ module TermsOfReferenceSpecHelper
   end
 
   def click_the_download_icon
-    page.all('.terms_of_reference_version .icon i.fa-cloud-download').first
+    page.all('.terms_of_reference_version .icon i.fa-cloud-download').first.click
   end
 end

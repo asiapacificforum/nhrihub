@@ -1,6 +1,8 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require 'upload_file_helpers'
+require 'download_helpers'
 require_relative '../../helpers/advisory_council/terms_of_reference_setup_helper'
 require_relative '../../helpers/advisory_council/terms_of_reference_spec_helper'
 
@@ -10,6 +12,8 @@ feature "terms of reference document", :js => true do
   include NavigationHelpers
   include AdvisoryCouncilTermsOfReferenceSetupHelper
   include TermsOfReferenceSpecHelper
+  include UploadFileHelpers
+  include DownloadHelpers
 
   before do
     Nhri::AdvisoryCouncil::TermsOfReferenceVersion.maximum_filesize = 5
@@ -34,6 +38,9 @@ feature "terms of reference document", :js => true do
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find('#terms_of_reference_version_revision').set('3.4')
     expect{upload_files_link.click; wait_for_ajax}.to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}.by(1)
+    uploaded_file = Nhri::AdvisoryCouncil::TermsOfReferenceVersion.where(:revision_major => 3, :revision_minor => 4).first
+    filename = Rails.root.join('tmp','uploads','store',uploaded_file.file_id).to_s
+    expect(File.exists?(filename)).to eq true
     expect(page).to have_selector('.terms_of_reference_version', :text => 'Terms of Reference, revision 3.4', :count => 1)
   end
 
@@ -112,20 +119,32 @@ feature "terms of reference document", :js => true do
   end
 
   it "can download the saved document", :driver => :chrome do
-    @doc = Nhri::AdvisoryCouncil::TermsOfReferenceVersion.first
-    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
-      click_the_download_icon
+    doc = Nhri::AdvisoryCouncil::TermsOfReferenceVersion.first
+    click_the_download_icon
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
-      filename = @doc.original_filename
+      filename = doc.original_filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
-    else
-      expect(1).to eq 1 # download not supported by selenium driver
     end
+    expect(downloaded_file).to eq doc.original_filename
   end
 
   it "start upload before any docs have been selected" do
     upload_files_link.click
     expect(flash_message).to eq "You must first click \"Add files...\" and select file(s) to upload"
+  end
+
+  it "user is warned and no save occurs if unpermitted filetype is selected" do
+    page.attach_file("primary_file", upload_image, :visible => false)
+    expect(page).to have_css('.error', :text => "File type not allowed")
+    expect{ upload_files_link.click; wait_for_ajax}.not_to change{Nhri::AdvisoryCouncil::TermsOfReferenceVersion.count}
+  end
+
+  it "user is warned and no save occurs if selected file exceeds permitted filesize" do
+    page.attach_file("primary_file", big_upload_document, :visible => false)
+    expect(page).to have_css('.error', :text => "File is too large")
+    page.find(".template-upload i.cancel").click
+    expect(page).not_to have_css(".files .template_upload")
   end
 
 end

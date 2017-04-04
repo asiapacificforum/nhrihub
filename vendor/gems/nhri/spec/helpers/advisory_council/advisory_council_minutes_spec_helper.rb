@@ -14,6 +14,6 @@ module AdvisoryCouncilMinutesSpecHelper
   end
 
   def click_the_download_icon
-    page.all('.advisory_council_minutes .icon i.fa-cloud-download').first
+    page.all('.advisory_council_minutes .icon i.fa-cloud-download').first.click
   end
 end

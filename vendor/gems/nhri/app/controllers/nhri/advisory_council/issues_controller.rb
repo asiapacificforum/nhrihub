@@ -1,4 +1,6 @@
 class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
+  include AttachedFile
+
   def index
     @advisory_council_issues = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.includes(:subareas, :notes, :reminders, :areas => :subareas).all
     @areas = Area.includes(:subareas).all
@@ -34,11 +36,7 @@ class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
   end
 
   def show
-    issue = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.find(params[:id])
-    send_opts = { :filename => issue.original_filename,
-                  :type => issue.original_type,
-                  :disposition => :attachment }
-    send_file issue.file.to_io, send_opts
+    send_attached_file( Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.find(params[:id]))
   end
 
   private

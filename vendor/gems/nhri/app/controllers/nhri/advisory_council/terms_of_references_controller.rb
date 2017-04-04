@@ -1,4 +1,6 @@
 class Nhri::AdvisoryCouncil::TermsOfReferencesController < ApplicationController
+  include AttachedFile
+
   def index
     @terms_of_reference_versions = Nhri::AdvisoryCouncil::TermsOfReferenceVersion.all
     @permitted_filetypes = Nhri::AdvisoryCouncil::TermsOfReferenceVersion.permitted_filetypes
@@ -30,11 +32,7 @@ class Nhri::AdvisoryCouncil::TermsOfReferencesController < ApplicationController
   end
 
   def show
-    terms_of_reference_version = Nhri::AdvisoryCouncil::TermsOfReferenceVersion.find(params[:id])
-    send_opts = { :filename => terms_of_reference_version.original_filename,
-                  :type => terms_of_reference_version.original_type,
-                  :disposition => :attachment }
-    send_file terms_of_reference_version.file.to_io, send_opts
+    send_attached_file( Nhri::AdvisoryCouncil::TermsOfReferenceVersion.find(params[:id]) )
   end
 
   private

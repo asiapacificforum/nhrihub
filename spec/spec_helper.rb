@@ -24,6 +24,7 @@ require 'selenium-webdriver'
 require_relative './support/wait_for_ajax'
 require_relative './support/wait_for_authentication'
 require_relative './support/wait_for_modal'
+require_relative 'helpers/download_helpers'
 
 #Capybara.default_max_wait_time = 5
 
@@ -33,7 +34,13 @@ require_relative './support/wait_for_modal'
 # puts ENV['TZ']
 
 Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome,)
+  caps = Selenium::WebDriver::Remote::Capabilities.chrome(
+    "chromeOptions" => {
+      "args" => [ "--window-size=1400,800"],
+      "prefs" => {"download.default_directory" => DownloadHelpers::PATH }
+    }
+  )
+  Capybara::Selenium::Driver.new(app, :browser => :chrome, :desired_capabilities => caps)
 end
 
 Capybara.register_driver :poltergeist do |app|

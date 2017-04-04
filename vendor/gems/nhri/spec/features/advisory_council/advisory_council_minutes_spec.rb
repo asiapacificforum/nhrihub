@@ -1,6 +1,7 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require 'download_helpers'
 require_relative '../../helpers/advisory_council/advisory_council_minutes_setup_helper'
 require_relative '../../helpers/advisory_council/advisory_council_minutes_spec_helper'
 
@@ -10,6 +11,7 @@ feature "advisory council minutes document", :js => true do
   include NavigationHelpers
   include AdvisoryCouncilMinutesSetupHelper
   include AdvisoryCouncilMinutesSpecHelper
+  include DownloadHelpers
 
   before do
     Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.maximum_filesize = 5
@@ -60,15 +62,14 @@ feature "advisory council minutes document", :js => true do
   end
 
   it "can download the saved document", :driver => :chrome do
-    @doc = Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.first
+    doc = Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.first
+    click_the_download_icon
     unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
-      click_the_download_icon
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
-      filename = @doc.original_filename
+      filename = doc.original_filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
-    else
-      expect(1).to eq 1 # download not supported by selenium driver
     end
+    expect(downloaded_file).to eq doc.original_filename
   end
 
   it "start upload before any docs have been selected" do

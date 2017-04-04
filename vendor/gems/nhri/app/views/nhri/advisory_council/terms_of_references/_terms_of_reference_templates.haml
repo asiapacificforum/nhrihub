@@ -104,7 +104,7 @@
                 %p.name {{ original_filename }}
                 .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
                   %span.help-block.error#filesize_error= t('.too_large')
-                .form-group{:class => "{{#filetype_error}}has-error{{/}}"}
+                .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
                   %span.help-block.error#filetype_error= t('.unpermitted_type')
                 .form-group{:class => "{{#unconfigured_filetypes_error}}has-error{{/}}"}
                   %span.help-block.error#unconfigured_filetypes_error= t('.noFileTypes')

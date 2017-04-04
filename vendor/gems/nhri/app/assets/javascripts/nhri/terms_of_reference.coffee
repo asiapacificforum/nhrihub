@@ -100,7 +100,7 @@ $ ->
       persisted : ->
         !_.isNull(@get('id'))
       persistent_attributes : ->
-        ['revision', 'filesize', 'original_type', 'original_filename', 'lastModifiedDate'] unless @get('persisted')
+        ['file', 'revision', 'filesize', 'original_type', 'original_filename', 'lastModifiedDate'] unless @get('persisted')
     cancel_upload : ->
       @parent.remove(@)
     validate : ->

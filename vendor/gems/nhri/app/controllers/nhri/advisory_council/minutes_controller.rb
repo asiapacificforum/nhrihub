@@ -1,4 +1,5 @@
 class Nhri::AdvisoryCouncil::MinutesController < ApplicationController
+  include AttachedFile
   def index
     @advisory_council_minutes = Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.all
     @permitted_filetypes = Nhri::AdvisoryCouncil::AdvisoryCouncilMinutes.permitted_filetypes
