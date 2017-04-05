@@ -1,6 +1,7 @@
 require 'rails_helper'
 $:.unshift File.expand_path '../../helpers', __FILE__
 require 'login_helpers'
+require 'download_helpers'
 require 'complaints_spec_setup_helpers'
 require 'navigation_helpers'
 require 'complaints_spec_helpers'
@@ -12,6 +13,7 @@ feature "complaints index", :js => true do
   include NavigationHelpers
   include ComplaintsSpecHelpers
   include UploadFileHelpers
+  include DownloadHelpers
 
   before do
     populate_database
@@ -485,17 +487,16 @@ feature "complaints index", :js => true do
                                           and change{ documents.count }.by(-1)
   end
 
-  it "should download a complaint document file" do
+  it "should download a complaint document file", :driver => :chrome do
     expand
     @doc = ComplaintDocument.first
-    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
-      click_the_download_icon
+    filename = @doc.filename
+    click_the_download_icon
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
-      filename = @doc.filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
-    else
-      expect(1).to eq 1 # download not supported by selenium driver
     end
+    expect(downloaded_file).to eq filename
   end
 
   it "restores previous values when editing is cancelled" do

@@ -4,11 +4,6 @@ module DownloadHelpers
   PATH = File.expand_path('../../../tmp/downloaded_files', __FILE__)
   TIMEOUT = 10
 
-  def downloaded_file
-    wait_for_download
-    download
-  end
-
   def wait_for_download
     Timeout.timeout(TIMEOUT) do
       sleep 0.1 until downloaded?
@@ -29,7 +24,7 @@ module DownloadHelpers
 
   def downloaded_file
     wait_for_download
-    downloaded_files.first.split("/").last
+    filename = downloaded_files.first.split("/").last
   end
 
 

@@ -1,6 +1,7 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require 'download_helpers'
 require_relative '../../helpers/media_spec_helper'
 require_relative '../../helpers/media_setup_helper'
 require 'media_issues_common_helpers'
@@ -434,23 +435,23 @@ feature "view attachments", :js => true do
   include MediaIssuesCommonHelpers
   include MediaSpecHelper
   include MediaSetupHelper
+  include DownloadHelpers
 
   before do
     setup_file_constraints
   end
 
-  scenario "download attached file" do
-    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
-      setup_database(:media_appearance_with_file)
-      @doc = MediaAppearance.first
-      visit media_appearances_path(:en)
-      click_the_download_icon
+  scenario "download attached file", :driver => :chrome do
+    setup_database(:media_appearance_with_file)
+    visit media_appearances_path(:en)
+    click_the_download_icon
+    @doc = MediaAppearance.first
+    filename = @doc.original_filename
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
-      filename = @doc.original_filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
-    else
-      expect(1).to eq 1 # download not supported by selenium driver
     end
+    expect(downloaded_file).to eq filename
   end
 
   scenario "visit link" do

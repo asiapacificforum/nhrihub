@@ -288,7 +288,7 @@ feature "communications files", :js => true do
     end
   end
 
-  it "should download files", :driver => :chrome do
+  it "should download files" do
     open_documents_modal
     filename = CommunicationDocument.first.filename
     expect(page).to have_selector('.communication_document_document .filename', :text=>filename)

@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'login_helpers'
+require 'download_helpers'
 require 'navigation_helpers'
 require 'active_support/number_helper'
 require_relative '../../helpers/icc/icc_reference_documents_spec_helpers'
@@ -32,6 +33,7 @@ feature "icc reference document management", :js => true do
   extend  ActiveSupport::NumberHelper
   include IccReferenceDocumentsSpecHelpers
   include IccReferenceDocumentDefaultSettings
+  include DownloadHelpers
 
   before do
     SiteConfig['nhri.icc_reference_documents.filetypes'] = ['pdf']
@@ -161,15 +163,14 @@ feature "icc reference document management", :js => true do
     expect(page.find('div.title .edit input').value).to eq "my important document"
   end
 
-  scenario "download a file" do
-    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
-      click_the_download_icon
+  scenario "download a file", :driver => :chrome do
+    click_the_download_icon
+    filename = @doc.original_filename
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
-      filename = @doc.original_filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
-    else
-      expect(1).to eq 1 # download not supported by selenium driver
     end
+    expect(downloaded_file).to eq filename
   end
 
 

@@ -21,4 +21,9 @@ class ProjectDocument < ActiveRecord::Base
   def not_named?
     !named?
   end
+
+  # required for AttachedFile controller concern
+  def original_filename
+    filename
+  end
 end

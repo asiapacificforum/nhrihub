@@ -1,14 +1,15 @@
 require 'login_helpers'
 require 'navigation_helpers'
+require 'download_helpers'
 require 'projects_spec_common_helpers'
 require 'upload_file_helpers'
 
 RSpec.shared_examples "existing project file management" do
   include IERemoteDetector
-  #include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
   include ProjectsSpecCommonHelpers
   include UploadFileHelpers
+  include DownloadHelpers
 
   it "should upload new files" do
     edit_first_project.click
@@ -68,14 +69,16 @@ RSpec.shared_examples "existing project file management" do
                                                                 and change{ project_documents.all('.project_document').count }.by(-1)
   end
 
-  # can't test download in chrome or firefox
-  it "can download the saved document", :driver => :poltergeist do
+  it "can download the saved document", :driver => :chrome do
     @doc = Project.last.project_documents.first
+    filename = @doc.filename
     expand_last_project
     click_the_download_icon
-    expect(page.response_headers['Content-Type']).to eq('application/pdf')
-    filename = @doc.filename
-    expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
+      expect(page.response_headers['Content-Type']).to eq('application/pdf')
+      expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+    end
+    expect(downloaded_file).to eq filename
   end
 
   it "panel expanding should behave" do
