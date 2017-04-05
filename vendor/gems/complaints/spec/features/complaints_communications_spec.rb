@@ -3,6 +3,7 @@ $:.unshift File.expand_path '../../helpers', __FILE__
 require 'login_helpers'
 require 'complaints_spec_setup_helpers'
 require 'navigation_helpers'
+require 'download_helpers'
 require 'complaints_spec_helpers'
 require 'complaints_communications_spec_helpers'
 require 'upload_file_helpers'
@@ -258,6 +259,7 @@ feature "communications files", :js => true do
   include ComplaintsSpecHelpers
   include ComplaintsCommunicationsSpecHelpers
   include UploadFileHelpers
+  include DownloadHelpers
 
   before do
     populate_database
@@ -291,10 +293,11 @@ feature "communications files", :js => true do
     filename = CommunicationDocument.first.filename
     expect(page).to have_selector('.communication_document_document .filename', :text=>filename)
     download_document
-    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
     end
+    expect(downloaded_file).to eq filename
   end
 end
 

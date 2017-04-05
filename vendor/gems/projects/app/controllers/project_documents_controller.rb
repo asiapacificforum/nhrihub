@@ -1,4 +1,6 @@
 class ProjectDocumentsController < ApplicationController
+  include AttachedFile
+
   def destroy
     @project_document = ProjectDocument.find(params[:id])
     @project_document.destroy
@@ -6,10 +8,6 @@ class ProjectDocumentsController < ApplicationController
   end
 
   def show
-    project_document = ProjectDocument.find(params[:id])
-    send_opts = { :filename => project_document.filename,
-                  :type => project_document.original_type,
-                  :disposition => :attachment }
-    send_file project_document.file.to_io, send_opts
+    send_attached_file ProjectDocument.find(params[:id])
   end
 end

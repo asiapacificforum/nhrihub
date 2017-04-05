@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'login_helpers'
+require 'download_helpers'
 require_relative '../../helpers/headings/indicator_numeric_monitor_spec_helpers'
 require_relative '../../helpers/headings/indicator_text_monitor_spec_helpers'
 require_relative '../../helpers/headings/indicator_file_monitor_spec_helpers'
@@ -215,6 +216,7 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
   include IndicatorMonitorSpecCommonHelpers
   include IndicatorsFileMonitorSpecSetupHelpers
   include UploadFileHelpers
+  include DownloadHelpers
 
   scenario "update the file of the existing monitor" do
     expect(page).to have_selector('h4', :text => "Monitor: File")
@@ -265,15 +267,14 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
     expect(page).not_to have_selector('#selected_file', :text => 'first_upload_file.pdf')
   end
 
-  scenario "download the monitor file" do
-    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
-      click_the_download_icon
+  scenario "download the monitor file", :driver => :chrome do
+    click_the_download_icon
+    filename = Nhri::FileMonitor.first.original_filename
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
       expect(page.response_headers['Content-Type']).to eq('application/msword')
-      filename = Nhri::FileMonitor.first.original_filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
-    else
-      expect(1).to eq 1 # download not supported by selenium driver
     end
+    expect(downloaded_file).to eq filename
   end
 
   scenario "delete a monitor" do

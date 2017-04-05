@@ -1,4 +1,6 @@
 class MediaAppearancesController < ApplicationController
+  include AttachedFile
+
   def index
     @media_appearances = MediaAppearance.includes(:subareas, :performance_indicators, :notes, :reminders, :areas => :subareas).all
     @media_appearance = MediaAppearance.new
@@ -29,11 +31,7 @@ class MediaAppearancesController < ApplicationController
   end
 
   def show
-    media_appearance = MediaAppearance.find(params[:id])
-    send_opts = { :filename => media_appearance.original_filename,
-                  :type => media_appearance.original_type,
-                  :disposition => :attachment }
-    send_file media_appearance.file.to_io, send_opts
+    send_attached_file MediaAppearance.find(params[:id])
   end
 
   private

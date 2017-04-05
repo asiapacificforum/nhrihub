@@ -1,4 +1,5 @@
 require 'navigation_helpers'
+require 'download_helpers'
 require 'projects_spec_common_helpers'
 require 'upload_file_helpers'
 
@@ -7,6 +8,7 @@ RSpec.shared_examples "projects index" do
   include NavigationHelpers
   include ProjectsSpecCommonHelpers
   include UploadFileHelpers
+  include DownloadHelpers
 
   feature "list behaviour" do
     it "should show a list of projects" do
@@ -501,17 +503,15 @@ RSpec.shared_examples "projects index" do
     end
   end
 
-  it "should download a project document file" do
+  it "should download a project document file", :driver => :chrome do
     expand_first_project
     @doc = ProjectDocument.first
-    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
-      click_the_download_icon
+    filename = @doc.filename
+    click_the_download_icon
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
-      filename = @doc.filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
-    else
-      puts "disregard, it's fake"
-      expect(1).to eq 1 # download not supported by selenium driver
     end
+    expect(downloaded_file).to eq filename
   end
 end

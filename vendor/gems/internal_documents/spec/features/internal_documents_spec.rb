@@ -1,6 +1,7 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require 'download_helpers'
 require_relative '../helpers/internal_documents_spec_helpers'
 require_relative '../helpers/internal_documents_default_settings'
 require_relative '../helpers/internal_documents_spec_common_helpers'
@@ -12,6 +13,7 @@ feature "internal document management", :js => true do
   include InternalDocumentDefaultSettings
   include InternalDocumentsSpecHelpers
   include InternalDocumentsSpecCommonHelpers
+  include DownloadHelpers
 
   before do
     SiteConfig['internal_documents.filetypes'] = ['pdf']
@@ -183,15 +185,14 @@ feature "internal document management", :js => true do
     expect(page.find('td.revision .edit input').value).to eq "3.0"
   end
 
-  scenario "download a file" do
-    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported, can't test download
-      click_the_download_icon
+  scenario "download a file", :driver => :chrome do
+    click_the_download_icon
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
       expect(page.response_headers['Content-Type']).to eq('application/pdf')
       filename = @doc.original_filename
       expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
-    else
-      expect(1).to eq 1 # download not supported by selenium driver
     end
+    expect(downloaded_file).to eq @doc.original_filename
   end
 
   feature "add a new revision" do
@@ -236,24 +237,18 @@ feature "internal document management", :js => true do
     end
   end
 
-  # this sequence passes in all the browsers but fails in phantomjs
   scenario "add a new file and then add a new revision to it" do
-    unless ie_remote?(page)
-      expect(1).to eq 1 # download not supported by selenium driver
-    else
-      add_a_second_file
-      # attach to the second file input
-      # uploading an archive file
-      #page.driver.debug
-      all(:file_field, "archive_fileinput")[0].set(upload_document)
-      page.find("#internal_document_title").set("some replacement file name")
-      page.find('#internal_document_revision').set("3.5")
-      # problem is that the add callback is being called on the first, primary file, upload input,
-      # so that the uploaded file is designated as a primary file
-      expect{ page.find('.template-upload .start .fa-cloud-upload').click; wait_for_ajax}.to change{InternalDocument.count}
-      #page.save_screenshot(Rails.root.join('tmp','screenshots','test.png'))
-      expect(page.all('.template-download').count).to eq 2
-    end
+    add_a_second_file
+    # attach to the second file input
+    # uploading an archive file
+    find(:file_field, "primary_fileinput").set(upload_document)
+    page.find("#internal_document_title").set("some replacement file name")
+    page.find('#internal_document_revision').set("3.5")
+    # make it an archive file by giving it a document group id:
+    document_group_id = InternalDocument.first.document_group_id
+    page.execute_script("internal_document_uploader.findComponent('uploadDocument').set('document_group_id', #{document_group_id})")
+    expect{ page.find('.template-upload .start .fa-cloud-upload').click; wait_for_ajax}.to change{InternalDocument.count}
+    expect(page.all('.template-download').count).to eq 2
   end
 
   scenario "initiate adding a revision but cancel" do

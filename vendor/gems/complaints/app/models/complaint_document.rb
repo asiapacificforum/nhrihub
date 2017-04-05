@@ -17,4 +17,9 @@ class ComplaintDocument < ActiveRecord::Base
     'complaint[complaint_documents_attributes][]'
   end
 
+  # TODO need to harmonize column names throughout the app
+  def original_filename
+    filename
+  end
+
 end
