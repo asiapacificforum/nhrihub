@@ -53,6 +53,10 @@
       $.post
         url: "#{admin_send_forgot_password_email_path}"
         data : $('form').serialize()
+        success : delete_username
+
+  delete_username = ->
+    $('#login').val("")
 
   @send_user_params = ->
     @authentication_pending = 1 # it's used as a flag in the test suite

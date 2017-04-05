@@ -23,12 +23,14 @@ module ApplicationHelpers
   end
 
   def flash_message
-    rails_flash = page.find(".message_block").text
+    if ( page.find(".message_block").text rescue false)
+      rails_flash = page.find(".message_block").text
+      return rails_flash unless rails_flash.blank?
+    end
     if (page.find('#jflash') rescue false)
       javascript_flash = page.find('#jflash').text
+      return javascript_flash unless javascript_flash.blank?
     end
-    return rails_flash unless rails_flash.blank?
-    return javascript_flash unless javascript_flash.blank?
   end
 
   def navigation_menu

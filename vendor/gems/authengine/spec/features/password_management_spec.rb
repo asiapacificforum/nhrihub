@@ -2,7 +2,6 @@ require "rails_helper"
 require 'login_helpers'
 require 'navigation_helpers'
 require_relative '../helpers/user_management_helpers'
-#require File.expand_path('../../helpers/unactivated_user_helpers',__FILE__)
 
 feature "Password management, admin resets user password", :js => true do
   include LoggedInEnAdminUserHelper # logs in as admin
@@ -93,11 +92,12 @@ feature "Password management, user forgets password", :js => true do
   include NavigationHelpers
   include UserManagementHelpers
   include RegisteredUserHelper
+  include UserManagementHelpers
+
   before do
     raise "two-factor authentication must be enabled in config/env.yml for integration tests" unless TwoFactorAuthentication.enabled?
     visit "/en"
     configure_keystore
-    resize_browser_window
   end
 
   it "user does not enter a username" do
@@ -132,10 +132,26 @@ feature "Password management, user forgets password", :js => true do
     expect(flash_message).to match /The account is disabled, please see the administrator/
   end
 
-  it "should send an email to the user" do
+  it "should send an email to the user, from which the user may set new password" do
     expect(page).to have_selector("h1", :text => "Please log in")
     fill_in "User name", :with => "staff"
     expect{ page.find("#forgot_password").click; wait_for_ajax}.to change { ActionMailer::Base.deliveries.count }.by(1)
     expect(flash_message).to match /A password reset email has been sent to the email address for your account/
+    expect(page.find('#login').value).to be_blank
+
+    visit email_activation_link
+    expect(page_heading).to match /Select new password for #{User.last.first_last_name}/
+    fill_in(:user_password, :with => "shinynewsecret")
+    fill_in(:user_password_confirmation, :with => "shinynewsecret")
+    original_public_key = User.last.public_key
+    submit_button.click
+    wait_for_authentication
+    expect(flash_message).to eq "Your new password has been saved, you may login below."
+    expect(User.last.public_key).to eq original_public_key
+    fill_in "User name", :with => "staff"
+    fill_in "Password", :with => "shinynewsecret"
+    login_button.click
+    sleep(0.5)
+    expect(flash_message).to eq "Logged in successfully"
   end
 end

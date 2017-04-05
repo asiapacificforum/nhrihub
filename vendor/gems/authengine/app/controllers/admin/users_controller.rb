@@ -220,12 +220,12 @@ class Admin::UsersController < ApplicationController
   # user clicks "forgot password" on login screen
   def send_forgot_password_email
     if User.forgot_password(params[:login])
-      render :js => "flash.set('error_message', '#{t('.flash_notice')}');flash.notify();"
+      render :js => "flash.set('confirm_message', '#{t('.flash_notice')}');flash.notify();"
     end
   rescue User::LoginNotFound
     # the user is intentionally not informed if the login is not found, as a measure to
     # slow down malicious attempts
-    render :js => "flash.set('error_message', '#{t('.flash_notice')}');flash.notify();"
+    render :js => "flash.set('confirm_message', '#{t('.flash_notice')}');flash.notify();"
   rescue User::AccountNotActivated
     render :js => "flash.set('error_message', '#{t('.flash_account_not_activated_notice')}');flash.notify();"
   rescue User::AccountDisabled

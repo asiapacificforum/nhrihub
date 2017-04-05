@@ -8,9 +8,11 @@ $ ->
       warn_message : null
       confirm_message : null
     show : ->
-      $(@find('ul')).show(30)
+      _(['error','info','warn','confirm']).each (type)=>
+        unless _.isNull(@get("#{type}_message")) || _.isUndefined(@get("#{type}_message"))
+          $(@find("ul.#{type}")).show(30)
     hide : ->
-      $(@find('ul')).hide(30)
+      $(@findAll('ul')).hide(30)
     notify : ->
       @show()
 

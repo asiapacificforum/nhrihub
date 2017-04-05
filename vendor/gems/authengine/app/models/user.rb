@@ -354,7 +354,8 @@ protected
   def password_required?
     (crypted_password.blank? || # validate the password field if there's no crypted password
       # this doesn't make sense... don't validate presence of password if it's blank! TODO fix this
-      !password.blank?) # validate the password field if it's being provided
+      !password.blank?) && # validate the password field if it's being provided
+      !@forgotten_password
   end
 
   def password_confirmation_required?
