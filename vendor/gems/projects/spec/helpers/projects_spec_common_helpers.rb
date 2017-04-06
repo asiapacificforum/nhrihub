@@ -7,19 +7,14 @@ module ProjectsSpecCommonHelpers
 
   def add_a_performance_indicator
     select_performance_indicators.click
-    select_first_planned_result
-    select_first_outcome
-    select_first_activity
-    select_first_performance_indicator
+    page.all("li.performance_indicator a").first.click
     PerformanceIndicator.first
   end
 
   def add_a_unique_performance_indicator
     select_performance_indicators.click
-    select_second_planned_result
-    select_first_outcome
-    select_first_activity
-    select_first_performance_indicator
+    page.all("li.performance_indicator a").last.click
+    PerformanceIndicator.all.to_a.last
   end
 
   def click_the_download_icon
@@ -161,41 +156,16 @@ module ProjectsSpecCommonHelpers
     page.find('.performance_indicator_select>a')
   end
 
-  def select_first_planned_result
-    sleep(0.1)
-    page.execute_script("$('.dropdown-backdrop').remove()") # it's inserted by bootstrap due to phantomjs declaring that it's responds to document.documentElement.ontouch
-    expect(page).to have_selector(".dropdown-submenu.planned_result") # to synchronize the timing
-    page.all(".dropdown-submenu.planned_result").first.hover
-  end
-
-  def select_second_planned_result
-    sleep(0.1)
-    page.execute_script("$('.dropdown-backdrop').remove()") # it's inserted by bootstrap due to phantomjs declaring that it's responds to document.documentElement.ontouch
-    expect(page).to have_selector(".dropdown-submenu.planned_result") # to synchronize the timing
-    page.all(".dropdown-submenu.planned_result")[1].hover
-  end
-
-  def select_first_outcome
-    sleep(0.1)
-    page.all(".dropdown-submenu.outcome").first.hover
-  end
-
-  def select_first_activity
-    sleep(0.1)
-    page.all(".dropdown-submenu.activity").first.hover
-  end
-
-  def select_first_performance_indicator
-    sleep(0.2)
-    page.all("li.performance_indicator").first.click
-  end
-
   def performance_indicators
     page.find('#performance_indicators')
   end
 
   def remove_first_indicator
     page.all('.selected_performance_indicator .remove')[0]
+  end
+
+  def remove_last_indicator
+    page.all('.selected_performance_indicator .remove')[-1]
   end
 
   def uncheck_all_checkboxes

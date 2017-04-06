@@ -257,34 +257,6 @@
       %span {{name}}
       %span.fa.fa-check
 
-%script#performance_indicator_filter_select_template{:type => 'template/ractive'}
-  %ul.dropdown-menu
-    %li.dropdown-header= t('.planned_result')
-    {{#planned_results }}
-    %li.dropdown-submenu.planned_result
-      %a {{ indexed_description }}
-      %ul.dropdown-menu
-        %li.dropdown-header= t('.outcome')
-        {{#outcomes }}
-        %li.dropdown-submenu.outcome
-          %a {{ indexed_description }}
-          %ul.dropdown-menu
-            %li.dropdown-header= t('.activity')
-            {{#activities}}
-            %li.dropdown-submenu.activity
-              %a {{ indexed_description }}
-              %ul.dropdown-menu
-                %li.dropdown-header= t('.performance_indicator')
-                {{#performance_indicators}}
-                %li.performance_indicator
-                  %a.opt{ 'on-click'=>'toggle(id)'}
-                    %span.text {{ indexed_description }}
-                    %span.fa.fa-check
-                {{/performance_indicators}}
-            {{/activities}}
-        {{/outcomes }}
-    {{/planned_results }}
-
 %script#filter_controls_template{:type => 'template/ractive'}
   .row.filter_control_box#projects_controls
     .row

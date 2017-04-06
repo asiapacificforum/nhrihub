@@ -75,12 +75,13 @@
   }
 }
 
-// it's on the Outreach Events page, where performance indicators are
-// associated with events
+// it's on the Projects page, where performance indicators are
+// associated with projects
 .performance_indicator_select {
   & li {
     position: relative;
     font-size : 14px;
+    list-style : none;
 
     &.selected a span.fa-check {
       position: absolute;

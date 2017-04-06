@@ -38,16 +38,6 @@ EditInPlace = (node,id)->
     update : (id)=>
     }
 
-# TODO this approach, where Validator is a mixin should be replaced by the approach used
-# in 'communication' where Validator is a separate class
-#ProjectValidator = _.extend
-  ##initialize_validator : ->
-    ##@set 'validation_criteria',
-      ##title : 'notBlank'
-      ##description : 'notBlank'
-      ##performance_indicator_associations : ['nonEmpty', @get('performance_indicator_associations')]
-  #, Validator
-
 AreasSelector = Ractive.extend
   template : '#areas_selector_template'
 
@@ -322,7 +312,7 @@ ProjectTypeFilterSelect = Ractive.extend
 
 PerformanceIndicatorFilterSelect = Ractive.extend
   template: "#performance_indicator_filter_select_template"
-  toggle : (id)->
+  select : (id)->
     if @get('filter_criteria.performance_indicator_id') == id
       @set('filter_criteria.performance_indicator_id',null)
     else

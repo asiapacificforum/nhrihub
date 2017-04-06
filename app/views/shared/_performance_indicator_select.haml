@@ -1,8 +1,9 @@
 %script#performance_indicator_select{:type => 'template/ractive'}
   .panel.panel-default.performance_indicators
-    .panel-heading
+    .panel-heading{'data-toggle' => :edit}
       .row
-        .col-md-2{:class=>"{{#performance_indicator_required}}required{{/}}"}= t('.performance_indicators')
+        .col-md-2.no_edit.in= t('.performance_indicators')
+        .col-md-2.edit{:class=>"{{#performance_indicator_required}}required{{/}}"}= t('.performance_indicators')
     .panel-content{'data-toggle' => :edit}
       %div.fade.no_edit{:class => "{{#persisted}}in{{/persisted}}"}
         {{> performance_indicator_show }}
@@ -22,32 +23,7 @@
         %a.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
           =t('.select_performance_indicator')
           %span.caret
-        %ul.dropdown-menu
-          %li.dropdown-header= t('.planned_result')
-          {{#planned_results }}
-          %li.dropdown-submenu.planned_result
-            %a {{ indexed_description }}
-            %ul.dropdown-menu
-              %li.dropdown-header= t('.outcome')
-              {{#outcomes }}
-              %li.dropdown-submenu.outcome
-                %a {{ indexed_description }}
-                %ul.dropdown-menu
-                  %li.dropdown-header= t('.activity')
-                  {{#activities}}
-                  %li.dropdown-submenu.activity
-                    %a {{ indexed_description }}
-                    %ul.dropdown-menu
-                      %li.dropdown-header= t('.performance_indicator')
-                      {{#performance_indicators}}
-                      %li.performance_indicator
-                        %a.opt{ 'on-click'=>'select(this)'}
-                          %span.text{'data-id'=>'{{id}}'} {{ indexed_description }}
-                          %span.fa.fa-check
-                      {{/performance_indicators}}
-                  {{/activities}}
-              {{/outcomes }}
-          {{/planned_results }}
+        {{> performance_indicator_filter_select_template }}
     .col-md-8#performance_indicators
       {{#performance_indicator_associations}}
       <selectedPerformanceIndicator association_id='{{association_id}}' indexed_description='{{performance_indicator.indexed_description}}' id='{{id}}' performance_indicator_url='{{performance_indicator_url}}' />
@@ -57,6 +33,30 @@
       {{/performance_indicator_associations}}
   .form-group
     %span.help-block#performance_indicator_associations_error.error{:class => "{{#performance_indicator_associations_error}}has-error{{/}}"} There must be at least one performance indicator
+
+%script#performance_indicator_filter_select_template{:type => 'template/ractive'}
+  %ul.dropdown-menu
+    {{#planned_results }}
+    %li.dropdown-submenu.planned_result
+      %div {{ indexed_description }}
+      %ul
+        {{#outcomes }}
+        %li.dropdown-submenu.outcome
+          %div {{ indexed_description }}
+          %ul
+            {{#activities}}
+            %li.dropdown-submenu.activity
+              %div {{ indexed_description }}
+              %ul
+                {{#performance_indicators}}
+                %li.performance_indicator
+                  %a.opt{ 'on-click'=>'select(id)'}
+                    %span.text {{ indexed_description }}
+                    %span.fa.fa-check
+                {{/performance_indicators}}
+            {{/activities}}
+        {{/outcomes }}
+    {{/planned_results }}
 
 %script#performance_indicator_show{:type => 'template/ractive'}
   .row

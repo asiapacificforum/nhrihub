@@ -304,6 +304,8 @@ $ ->
       @validator.validate_attribute('original_type')
       @validator.validate_attribute('attachment')
       @validator.validate_attribute('single_attachment')
+    validate_attribute : (attribute)->
+      @validator.validate_attribute(attribute)
   , PerformanceIndicatorAssociation, Remindable, Notable, ConfirmDeleteModal, EditBackup
 
   window.collection_items_data = -> # an initialization data set so that tests can reset between

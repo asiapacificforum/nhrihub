@@ -67,9 +67,6 @@ feature "create a new article", :js => true do
     check("CRC")
     fill_in('media_appearance_article_link', :with => "http://www.example.com")
     select_performance_indicators.click
-    select_first_planned_result
-    select_first_outcome
-    select_first_activity
     select_first_performance_indicator
     pi = PerformanceIndicator.first
     expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
@@ -488,13 +485,13 @@ feature "performance indicator association", :js => true do
   scenario "add a performance indicator link" do
     edit_article[0].click
     select_performance_indicators.click
-    select_first_planned_result
-    select_first_outcome
-    select_first_activity
     select_first_performance_indicator
     pi = PerformanceIndicator.first
     expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
-    page.execute_script("scrollTo(0,0)")
+    remove_last_indicator.click
+    expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
+    select_performance_indicators.click
+    select_first_performance_indicator
     expect{edit_save}.to change{MediaAppearance.first.performance_indicator_ids}.from([]).to([pi.id])
   end
 end
