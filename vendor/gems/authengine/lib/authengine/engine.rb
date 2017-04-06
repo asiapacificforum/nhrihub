@@ -5,16 +5,10 @@ require 'application_helper'
 
 module Authengine
   class Engine < Rails::Engine
-
-    # Config defaults
-    config.widget_factory_name = "default factory name"
-    config.mount_at = '/'
-
     # Load rake tasks
     #rake_tasks do
       #load File.join(File.dirname(__FILE__), 'rails/railties/tasks.rake')
     #end
-    config.i18n.load_path += Dir.glob(config.root.join('config','locales','**','*.{rb,yml}'))
 
     # Check the gem config
     initializer "check config" do |app|
@@ -43,14 +37,6 @@ module Authengine
         #include AuthorizedSystem
       #end
     #end
-
-    initializer :append_migrations do |app|
-      unless app.root.to_s.match root.to_s
-        config.paths["db/migrate"].expanded.each do |expanded_path|
-          app.config.paths["db/migrate"] << expanded_path
-        end
-      end
-    end
 
   end
 end
