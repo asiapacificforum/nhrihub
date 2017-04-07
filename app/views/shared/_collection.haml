@@ -81,7 +81,7 @@
       .collapse.expanded_info{:class => "collapse{{id}}"}
         {{> reported_by}}
         {{#unless issue_context}}
-        <performanceindicatorselect />
+        <performanceIndicators />
         {{/unless issue_context}}
         .panel.panel-default
           .panel-heading
@@ -147,7 +147,7 @@
         .col-md-2
           %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "validate()"}
       {{#unless issue_context}}
-      <performanceindicatorselect />
+      <performanceIndicators />
       {{/unless issue_context}}
       .panel.panel-default.expanded_info
         .panel-heading

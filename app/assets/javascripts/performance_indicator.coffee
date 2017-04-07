@@ -25,8 +25,8 @@
   delete_performance_indicator_callback : ->
     @parent.remove_indicator(@get('indexed_description'))
 
-@PerformanceIndicatorSelect = Ractive.extend
-  template : '#performance_indicator_select'
+@PerformanceIndicators = Ractive.extend
+  template : '#performance_indicators_template'
   components :
     selectedPerformanceIndicator : SelectedPerformanceIndicator
   select : (id)->
@@ -37,8 +37,9 @@
   #delete_indicator_callback : (data,status,jqxhr)->
     #@parent.remove_performance_indicator(data.id)
 
-Ractive.components.performanceindicatorselect = @PerformanceIndicatorSelect
+Ractive.components.performanceIndicators = @PerformanceIndicators
 
+# mixin for ractive views
 @PerformanceIndicatorAssociation =
   remove_performance_indicator : (indexed_description)->
     index = @performance_indicator_index(indexed_description)

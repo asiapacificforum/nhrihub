@@ -31,7 +31,7 @@
           %span.help-block.error#description_error= t('.description_error_message')
       <areasSelector areas='{{all_areas}}' />
       <projectTypesSelector all_areas='{{all_areas}}' />
-      <performanceindicatorselect planned_results='{{planned_results}}' />
+      <performanceIndicators />
       .panel.panel-default#documents
         .panel-heading= t('.project_documents')
         .panel-body
@@ -193,7 +193,7 @@
             .fade.edit{:style => "width: 100%"}
               %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"remove_attribute_error('description')"}
               %span.help-block.error#description_error= t('.description_error_message')
-        <performanceindicatorselect performance_indicators='{{performance_indicators}}' />
+        <performanceIndicators />
         .panel.panel-default
           .panel-body{'data-toggle'=>'edit'}
             .fade.no_edit.in
