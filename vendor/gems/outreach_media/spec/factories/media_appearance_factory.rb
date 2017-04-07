@@ -27,7 +27,7 @@ FactoryGirl.define do
 
     trait :with_performance_indicators do
       after(:build) do |media_appearance|
-        media_appearance.performance_indicator_ids = PerformanceIndicator.pluck(:id).sample(rand(2))
+        media_appearance.performance_indicator_ids = PerformanceIndicator.pluck(:id).last(3)
       end
     end
 

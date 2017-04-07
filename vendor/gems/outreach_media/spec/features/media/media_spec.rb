@@ -5,6 +5,9 @@ require 'download_helpers'
 require_relative '../../helpers/media_spec_helper'
 require_relative '../../helpers/media_setup_helper'
 require 'media_issues_common_helpers'
+require 'performance_indicator_helpers'
+require 'performance_indicator_association'
+require_relative '../../helpers/media_appearance_context_performance_indicator_spec_helpers'
 
 
 feature "show media archive", :js => true do
@@ -19,7 +22,6 @@ feature "show media archive", :js => true do
     4.times do
       @media_appearance = FactoryGirl.create(:media_appearance, :hr_area, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
     end
-    resize_browser_window
     visit media_appearances_path(:en)
   end
 
@@ -53,7 +55,6 @@ feature "create a new article", :js => true do
     setup_areas
     setup_file_constraints
     setup_strategic_plan
-    resize_browser_window
     visit media_appearances_path(:en)
     add_article_button.click
   end
@@ -129,7 +130,6 @@ feature "attempt to save with errors", :js => true do
   before do
     setup_areas
     setup_file_constraints
-    resize_browser_window
     visit media_appearances_path(:en)
     add_article_button.click
   end
@@ -224,7 +224,6 @@ feature "when there are existing articles", :js => true do
     before do
       setup_database(:media_appearance_with_file)
       setup_file_constraints
-      resize_browser_window
       visit media_appearances_path(:en)
     end
 
@@ -399,7 +398,6 @@ feature "enforce single user add or edit action", :js => true do
     setup_database(:media_appearance_with_file)
     setup_file_constraints
     add_a_second_article
-    resize_browser_window
     visit media_appearances_path(:en)
   end
 
@@ -465,34 +463,10 @@ feature "view attachments", :js => true do
       expect( page.evaluate_script('window.location.href')).to include first_article_link
     end
   end
+
 end
 
 feature "performance indicator association", :js => true do
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
-  include MediaIssuesCommonHelpers
-  include MediaSpecHelper
-  include MediaSetupHelper
-
-  before do
-    setup_database(:media_appearance_with_file)
-    setup_strategic_plan
-    setup_file_constraints
-    resize_browser_window
-    visit media_appearances_path(:en)
-    sleep(0.4)
-  end
-
-  scenario "add a performance indicator link" do
-    edit_article[0].click
-    select_performance_indicators.click
-    select_first_performance_indicator
-    pi = PerformanceIndicator.first
-    expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
-    remove_last_indicator.click
-    expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
-    select_performance_indicators.click
-    select_first_performance_indicator
-    expect{edit_save}.to change{MediaAppearance.first.performance_indicator_ids}.from([]).to([pi.id])
-  end
+  include MediaAppearanceContextPerformanceIndicatorSpecHelper
+  it_behaves_like "has performance indicator association"
 end
-

@@ -8,7 +8,6 @@ module ProjectsSpecSetupHelpers
     populate_types
     populate_database
     set_file_defaults
-    resize_browser_window
     visit projects_path(:en)
   end
 
@@ -67,16 +66,17 @@ module ProjectsSpecSetupHelpers
     pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something profound")
     o = Outcome.create(:planned_result_id => pr.id, :description => "ultimate enlightenment")
     a1 = Activity.create(:description => "Smarter thinking", :outcome_id => o.id)
+    3.times do
+      PerformanceIndicator.create(:description => Faker::Lorem.words(3).join(" "), :target => "90%", :activity_id => a1.id)
+    end
     a2 = Activity.create(:description => "Public outreach", :outcome_id => o.id)
+    3.times do
+      PerformanceIndicator.create(:description => Faker::Lorem.words(3).join(" "), :target => "90%", :activity_id => a2.id)
+    end
     a3 = Activity.create(:description => "Media coverage", :outcome_id => o.id)
-    p1 = PerformanceIndicator.create(:description => "Happier people", :target => "90%", :activity_id => a1.id)
-    p2 = PerformanceIndicator.create(:description => "More wealth", :target => "80%", :activity_id => a2.id)
-    p3 = PerformanceIndicator.create(:description => "Greater justice", :target => "70%", :activity_id => a3.id)
-
-    pr = PlannedResult.create(:strategic_priority_id => spl.id, :description => "Something weird")
-    o = Outcome.create(:planned_result_id => pr.id, :description => "All good things")
-    a1 = Activity.create(:description => "Random acts of kindness", :outcome_id => o.id)
-    p1 = PerformanceIndicator.create(:description => "Life is better", :target => "90%", :activity_id => a1.id)
+    3.times do
+      PerformanceIndicator.create(:description => Faker::Lorem.words(3).join(" "), :target => "90%", :activity_id => a3.id)
+    end
   end
 end
 

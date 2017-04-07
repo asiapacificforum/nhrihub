@@ -136,7 +136,8 @@ module ProjectsSpecHelpers
 
   def edit_save
     page.execute_script("scrollTo(0,0)")
-    page.find('i.fa-check')
+    page.find('i.fa-check').click
+    wait_for_ajax
   end
 
   def edit_first_project

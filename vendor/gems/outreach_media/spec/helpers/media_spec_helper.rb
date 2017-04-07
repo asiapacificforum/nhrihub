@@ -2,7 +2,6 @@ require 'rspec/core/shared_context'
 
 module MediaSpecHelper
   extend RSpec::Core::SharedContext
-
   def single_item_selector
     '#media_appearances .media_appearance'
   end

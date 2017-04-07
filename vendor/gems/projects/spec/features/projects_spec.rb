@@ -5,6 +5,9 @@ require 'navigation_helpers'
 require 'download_helpers'
 require 'projects_spec_helpers'
 require 'upload_file_helpers'
+require 'projects_context_performance_indicator_spec_helpers'
+require 'performance_indicator_helpers'
+require 'performance_indicator_association'
 
 feature "projects index", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
@@ -210,28 +213,6 @@ feature "projects index", :js => true do
       expect(page.find('#project_description').value).to eq ""
     end
 
-    it "should remove performance indicator from the list during adding" do
-      add_project.click
-
-      pi = add_a_performance_indicator
-
-      expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-      remove_first_indicator.click
-      wait_for_ajax
-      expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-    end
-
-    it "should prevent adding duplicate performance indicators" do
-      add_project.click
-
-      pi = add_a_performance_indicator
-
-      expect(page).to have_selector(".new_project #performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-
-      pi = add_a_performance_indicator
-
-      expect(page).to have_selector(".new_project #performance_indicators .selected_performance_indicator", :text => pi.indexed_description, :count => 1)
-    end
 
     it "should show warning and not add when title is blank" do
       add_project.click
@@ -290,12 +271,6 @@ feature "projects index", :js => true do
       expect{ save_project.click; wait_for_ajax }.not_to change{ Project.count }
       expect(page).to have_selector("#performance_indicator_associations_error", :text => "There must be at least one performance indicator")
       expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
-      #select_performance_indicators.click
-      #select_first_planned_result
-      #select_first_outcome
-      #select_first_activity
-      #page.execute_script("scrollTo(0,800)")
-      #select_first_performance_indicator
       add_a_performance_indicator
       expect(page).not_to have_selector("#performance_indicator_associations_error", :text => "There must be at least one performance indicator")
       expect(page).not_to have_selector("#project_error", :text => "Form has errors, cannot be saved")
@@ -343,7 +318,7 @@ feature "projects index", :js => true do
       page.all("#project_document_title")[0].set("Adding still another doc")
       expect(page).to have_selector("#project_documents .document .filename", :text => "upload_file.pdf", :count => 2)
 
-      expect{ edit_save.click; wait_for_ajax }.to change{ Project.find(1).title }.to("new project title")
+      expect{ edit_save}.to change{ Project.find(1).title }.to("new project title")
       project = Project.find(1)
       consultation_project_type = ProjectType.find_by(:name => "Consultation")
       expect( project.project_type_ids ).to include consultation_project_type.id
@@ -372,28 +347,11 @@ feature "projects index", :js => true do
       end
     end
 
-    it "should edit a project and remove performance indicators" do
-      edit_first_project.click
-      expect{ remove_first_indicator.click; wait_for_ajax }.to change{ ProjectPerformanceIndicator.count }.by(-1).
-                                                         and change{ page.all('.selected_performance_indicator').count }.by(-1)
-    end
-
-    it "should edit a project and add performance indicators" do
-      edit_first_project.click
-      pi = add_a_unique_performance_indicator
-      expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-      # just make sure it can be removed with the 'x' icon
-      remove_last_indicator.click # it's the one that was just added
-      expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-      add_a_unique_performance_indicator
-      expect{ edit_save.click; wait_for_ajax }.to change{ Project.first.performance_indicators.count }.from(3).to(4)
-    end
-
     # test this b/c of special handling of checkboxes in ractive
     it "should edit a project and save when all checkboxes are unchecked" do
       edit_last_project.click # has all associations checked
       uncheck_all_checkboxes
-      expect{ edit_save.click; wait_for_ajax }.to change{Project.last.project_type_ids}.to([]).
+      expect{ edit_save }.to change{Project.last.project_type_ids}.to([]).
                                             and change{Project.last.area_ids}.to([])
     end
 
@@ -444,7 +402,7 @@ feature "projects index", :js => true do
     it "should show warning and not save when editing and title is blank" do
       edit_first_project.click
       fill_in('project_title', :with => '')
-      expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).title }
+      expect{ edit_save }.not_to change{ Project.find(1).title }
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_title', :with => 't')
@@ -455,7 +413,7 @@ feature "projects index", :js => true do
     it "should show warning and not save edited project when title is whitespace" do
       edit_first_project.click
       fill_in('project_title', :with => "   ")
-      expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).title }
+      expect{ edit_save}.not_to change{ Project.find(1).title }
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_title', :with => 't')
@@ -466,7 +424,7 @@ feature "projects index", :js => true do
     it "should show warning and not save edited project when description is blank" do
       edit_first_project.click
       fill_in('project_description', :with => "")
-      expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).description }
+      expect{ edit_save}.not_to change{ Project.find(1).description }
       expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
       expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_description', :with => 't')
@@ -477,7 +435,7 @@ feature "projects index", :js => true do
     it "should show warning and not save edited project when description is whitespace" do
       edit_first_project.click
       fill_in('project_description', :with => "  ")
-      expect{ edit_save.click; wait_for_ajax }.not_to change{ Project.find(1).description }
+      expect{ edit_save}.not_to change{ Project.find(1).description }
       expect(page).to have_selector("#description_error", :text => "Description cannot be blank")
       expect(page).to have_selector("#project_error", :text => "Form has errors, cannot be saved")
       fill_in('project_description', :with => 't')
@@ -505,11 +463,6 @@ feature "projects index", :js => true do
       expect(page).to have_selector('#projects .project textarea#project_description', :visible => true, :count => 1)
     end
 
-    it "should not permit duplicate performance indicator associations to be added when editing" do
-      edit_first_project.click
-      add_a_performance_indicator
-      expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :count => 3)
-    end
   end
 
   it "should download a project document file", :driver => :chrome do
@@ -523,4 +476,99 @@ feature "projects index", :js => true do
     end
     expect(downloaded_file).to eq filename
   end
+end
+
+#feature "projects performance indicators links", :js => true do
+  #include LoggedInEnAdminUserHelper # sets up logged in admin user
+  #include IERemoteDetector
+  #include NavigationHelpers
+  #include ProjectsSpecHelpers
+  #include UploadFileHelpers
+  #include DownloadHelpers
+
+  #it "should remove performance indicator from the list during adding" do
+    #add_project.click
+    #pi = add_a_performance_indicator
+    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+    #remove_first_indicator.click
+    #wait_for_ajax
+    #expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+  #end
+
+  #it "should prevent adding duplicate performance indicators" do
+    #add_project.click
+    #pi = add_a_performance_indicator
+    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+    ## try a duplicate
+    #pi = add_a_performance_indicator
+    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description, :count => 1)
+  #end
+
+  #it "should edit a project and remove performance indicators" do
+    #edit_first_project.click
+    #expect{ remove_first_indicator.click; wait_for_ajax }.to change{ ProjectPerformanceIndicator.count }.by(-1).
+      #and change{ page.all('.selected_performance_indicator').count }.by(-1)
+  #end
+
+  #it "should edit a project and add performance indicators" do
+    #edit_first_project.click
+    #pi = add_a_unique_performance_indicator
+    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+    ## just make sure it can be removed with the 'x' icon
+    #remove_last_indicator.click # it's the one that was just added
+    #expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+    #add_a_unique_performance_indicator
+    #expect{ edit_save.click; wait_for_ajax }.to change{ Project.first.performance_indicators.count }.from(3).to(4)
+  #end
+
+  #it "should not permit duplicate performance indicator associations to be added when editing" do
+    #edit_first_project.click
+    #add_a_performance_indicator
+    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :count => 3)
+  #end
+#end
+
+feature "performance indicator association", :js => true do
+  include ProjectsContextPerformanceIndicatorSpecHelpers
+  it_behaves_like "has performance indicator association"
+  #it "should remove performance indicator from the list during adding" do
+    #add_project.click
+    #pi = add_a_performance_indicator
+    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+    #remove_first_indicator.click
+    #wait_for_ajax
+    #expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+  #end
+
+  #it "should prevent adding duplicate performance indicators" do
+    #add_project.click
+    #pi = add_a_performance_indicator
+    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+    ## try a duplicate
+    #pi = add_a_performance_indicator
+    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description, :count => 1)
+  #end
+
+  #it "should edit a project and remove performance indicators" do
+    #edit_first_project.click
+    #expect{ remove_first_indicator.click; wait_for_ajax }.to change{ ProjectPerformanceIndicator.count }.by(-1).
+      #and change{ page.all('.selected_performance_indicator').count }.by(-1)
+  #end
+
+  #it "should edit a project and add performance indicators" do
+    #edit_first_project.click
+    #pi = add_a_unique_performance_indicator
+    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+    ## just make sure it can be removed with the 'x' icon
+    #remove_last_indicator.click # it's the one that was just added
+    #expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
+    #add_a_unique_performance_indicator
+    #expect{ edit_save.click; wait_for_ajax }.to change{ Project.first.performance_indicators.count }.from(3).to(4)
+  #end
+
+  #it "should not permit duplicate performance indicator associations to be added when editing" do
+    #edit_first_project.click
+    #add_a_performance_indicator
+    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :count => 3)
+  #end
 end
