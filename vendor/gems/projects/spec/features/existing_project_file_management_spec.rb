@@ -4,7 +4,6 @@ require 'projects_spec_helpers'
 require 'login_helpers'
 require 'navigation_helpers'
 require 'download_helpers'
-require 'projects_spec_common_helpers'
 require 'upload_file_helpers'
 
 feature "existing project file management", :js => true do
@@ -12,7 +11,6 @@ feature "existing project file management", :js => true do
   include ProjectsSpecHelpers
   include IERemoteDetector
   include NavigationHelpers
-  include ProjectsSpecCommonHelpers
   include UploadFileHelpers
   include DownloadHelpers
 

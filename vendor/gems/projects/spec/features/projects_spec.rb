@@ -1,18 +1,16 @@
 require 'rails_helper'
 $:.unshift File.expand_path '../../helpers', __FILE__
-require 'projects_spec_helpers'
 require 'login_helpers'
 require 'navigation_helpers'
 require 'download_helpers'
-require 'projects_spec_common_helpers'
+require 'projects_spec_helpers'
 require 'upload_file_helpers'
 
 feature "projects index", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
-  include ProjectsSpecHelpers
   include IERemoteDetector
   include NavigationHelpers
-  include ProjectsSpecCommonHelpers
+  include ProjectsSpecHelpers
   include UploadFileHelpers
   include DownloadHelpers
 

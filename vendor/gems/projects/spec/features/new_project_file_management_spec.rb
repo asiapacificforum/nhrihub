@@ -3,7 +3,6 @@ $:.unshift File.expand_path '../../helpers', __FILE__
 require 'projects_spec_helpers'
 require 'login_helpers'
 require 'navigation_helpers'
-require 'projects_spec_common_helpers'
 require 'upload_file_helpers'
 
 feature "new project file management", :js => true do
@@ -11,7 +10,6 @@ feature "new project file management", :js => true do
   include ProjectsSpecHelpers
   include IERemoteDetector
   include NavigationHelpers
-  include ProjectsSpecCommonHelpers
   include UploadFileHelpers
 
   it "should remove a selected file" do
