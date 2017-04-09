@@ -34,7 +34,7 @@ feature "projects index", :js => true do
       expect(number_of_rendered_projects).to eq 2
       expect(query_string).to be_blank
       click_back_button
-      expect(page.evaluate_script("window.location.search")).to eq "?title=#{@project.title.gsub(/\s/,'+')}"
+      expect(page.evaluate_script("window.location.search")).to eq "?title=#{(ERB::Util.url_encode(@project.title)).gsub(/%20/,'+')}"
       expect(number_of_rendered_projects).to eq 1
     end
 
@@ -462,7 +462,6 @@ feature "projects index", :js => true do
       edit_last_project.click
       expect(page).to have_selector('#projects .project textarea#project_description', :visible => true, :count => 1)
     end
-
   end
 
   it "should download a project document file", :driver => :chrome do
@@ -478,97 +477,7 @@ feature "projects index", :js => true do
   end
 end
 
-#feature "projects performance indicators links", :js => true do
-  #include LoggedInEnAdminUserHelper # sets up logged in admin user
-  #include IERemoteDetector
-  #include NavigationHelpers
-  #include ProjectsSpecHelpers
-  #include UploadFileHelpers
-  #include DownloadHelpers
-
-  #it "should remove performance indicator from the list during adding" do
-    #add_project.click
-    #pi = add_a_performance_indicator
-    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-    #remove_first_indicator.click
-    #wait_for_ajax
-    #expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-  #end
-
-  #it "should prevent adding duplicate performance indicators" do
-    #add_project.click
-    #pi = add_a_performance_indicator
-    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-    ## try a duplicate
-    #pi = add_a_performance_indicator
-    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description, :count => 1)
-  #end
-
-  #it "should edit a project and remove performance indicators" do
-    #edit_first_project.click
-    #expect{ remove_first_indicator.click; wait_for_ajax }.to change{ ProjectPerformanceIndicator.count }.by(-1).
-      #and change{ page.all('.selected_performance_indicator').count }.by(-1)
-  #end
-
-  #it "should edit a project and add performance indicators" do
-    #edit_first_project.click
-    #pi = add_a_unique_performance_indicator
-    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-    ## just make sure it can be removed with the 'x' icon
-    #remove_last_indicator.click # it's the one that was just added
-    #expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-    #add_a_unique_performance_indicator
-    #expect{ edit_save.click; wait_for_ajax }.to change{ Project.first.performance_indicators.count }.from(3).to(4)
-  #end
-
-  #it "should not permit duplicate performance indicator associations to be added when editing" do
-    #edit_first_project.click
-    #add_a_performance_indicator
-    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :count => 3)
-  #end
-#end
-
 feature "performance indicator association", :js => true do
   include ProjectsContextPerformanceIndicatorSpecHelpers
   it_behaves_like "has performance indicator association"
-  #it "should remove performance indicator from the list during adding" do
-    #add_project.click
-    #pi = add_a_performance_indicator
-    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-    #remove_first_indicator.click
-    #wait_for_ajax
-    #expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-  #end
-
-  #it "should prevent adding duplicate performance indicators" do
-    #add_project.click
-    #pi = add_a_performance_indicator
-    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-    ## try a duplicate
-    #pi = add_a_performance_indicator
-    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description, :count => 1)
-  #end
-
-  #it "should edit a project and remove performance indicators" do
-    #edit_first_project.click
-    #expect{ remove_first_indicator.click; wait_for_ajax }.to change{ ProjectPerformanceIndicator.count }.by(-1).
-      #and change{ page.all('.selected_performance_indicator').count }.by(-1)
-  #end
-
-  #it "should edit a project and add performance indicators" do
-    #edit_first_project.click
-    #pi = add_a_unique_performance_indicator
-    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-    ## just make sure it can be removed with the 'x' icon
-    #remove_last_indicator.click # it's the one that was just added
-    #expect(page).not_to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description)
-    #add_a_unique_performance_indicator
-    #expect{ edit_save.click; wait_for_ajax }.to change{ Project.first.performance_indicators.count }.from(3).to(4)
-  #end
-
-  #it "should not permit duplicate performance indicator associations to be added when editing" do
-    #edit_first_project.click
-    #add_a_performance_indicator
-    #expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :count => 3)
-  #end
 end

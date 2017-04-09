@@ -172,7 +172,10 @@ FilterMatch =
     @matches_project_type() &&
     @matches_performance_indicator()
   matches_title : ->
-    re = new RegExp(@get('filter_criteria.title').trim(),"i")
+    escaped_title = @get('filter_criteria.title').
+                      replace(/\\/g,"\\\\").
+                      replace(/(\?|\(|\)|\[|\]|\{|\}|\.|\>|\<)/g,"\\$1")
+    re = new RegExp(escaped_title.trim(),"i")
     re.test @get('title')
   matches_area : ->
     criterion = @get('filter_criteria.area_ids')
@@ -329,12 +332,11 @@ FilterControls = Ractive.extend
   compact : ->
     @parent.compact()
   clear_filter : ->
-    @set('filter_criteria', window.projects_page_data().filter_criteria)
     window.history.pushState({foo: "bar"},"unused title string",window.location.origin + window.location.pathname)
-    @set_filter_from_query_string()
+    @set('filter_criteria', _.extend(window.projects_page_data().filter_criteria, {title : ""}))
   set_filter_from_query_string : ->
     search_string = if (_.isEmpty( window.location.search) || _.isNull( window.location.search)) then '' else window.location.search.split("=")[1].replace(/\+/g,' ')
-    filter_criteria = _.extend(window.filter_criteria,{title : search_string})
+    filter_criteria = _.extend(window.filter_criteria,{title : unescape(search_string)})
     @set('filter_criteria',filter_criteria)
 
 window.projects_page_data = ->

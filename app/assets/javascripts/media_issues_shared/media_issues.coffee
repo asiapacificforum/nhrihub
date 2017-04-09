@@ -224,8 +224,11 @@ $ ->
       matches = _.intersection(@get('subarea_ids'), @get('filter_criteria.subareas'))
       matches.length > 0
     _matches_title : ->
-      re = new RegExp(@get('filter_criteria.title'),'i')
-      re.test(@get('title'))
+      escaped_title = @get('filter_criteria.title').
+                        replace(/\\/g,"\\\\").
+                        replace(/(\?|\(|\)|\[|\]|\{|\}|\.|\>|\<)/g,"\\$1")
+      re = new RegExp(escaped_title.trim(),"i")
+      re.test @get('title')
     expand : ->
       @set('expanded',true)
       $(@find('.collapse')).collapse('show')
@@ -318,7 +321,7 @@ $ ->
     all_performance_indicators : performance_indicators
     item_name : item_name
     filter_criteria :
-      title : ''
+      title : selected_title
       from : new Date(new Date().toDateString()) # so that the time is 00:00, vs. the time of instantiation
       to : new Date(new Date().toDateString()) # then it yields proper comparison with Rails timestamp
       areas : []
@@ -341,7 +344,7 @@ $ ->
           @get('filter_criteria.title')
       search_string_title_selector : ->
         unless _.isEmpty( window.location.search) || _.isNull( window.location.search)
-          window.location.search.split("=")[1].replace(/\+/g,' ')
+          unescape(window.location.search.split("=")[1].replace(/\+/g,' '))
         else
           ''
       dates : ->
@@ -387,10 +390,13 @@ $ ->
       @splice("filter_criteria.#{attr}s",i,1)
     clear_filter : ->
       window.history.pushState({foo: "bar"},"unused title string",window.location.origin + window.location.pathname)
-      @set_filter_from_query_string()
+      @set('filter_criteria', _.extend(window.collection_items_data().filter_criteria, {title : ""}))
+      _(collection.findAllComponents('area')).each (a)->a.select()
+      _(collection.findAllComponents('subarea')).each (a)->a.select()
+      @populate_min_max_fields()
     set_filter_from_query_string : ->
       search_string = if (_.isEmpty( window.location.search) || _.isNull( window.location.search)) then '' else window.location.search.split("=")[1].replace(/\+/g,' ')
-      filter_criteria = _.extend(collection_items_data().filter_criteria,{title : search_string})
+      filter_criteria = _.extend(collection_items_data().filter_criteria,{title : unescape(search_string)})
       @set('filter_criteria',filter_criteria)
       _(collection.findAllComponents('area')).each (a)->a.select()
       _(collection.findAllComponents('subarea')).each (a)->a.select()

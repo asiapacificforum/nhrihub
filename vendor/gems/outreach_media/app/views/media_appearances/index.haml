@@ -16,7 +16,7 @@
 = render :partial => 'notes/note' # it's in the main app
 
 :coffeescript
-  @selected_title = "#{params[:title] ? params[:title] : ''}"
+  @selected_title = "#{params[:title] ? escape_javascript(params[:title]) : ''}"
   @collection_items = #{@media_appearances.to_json}
   @item_name = "media_appearance"
   @areas = #{@areas.to_json}

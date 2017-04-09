@@ -4,7 +4,7 @@
 = render :partial => 'notes/note' # it's in the main app
 
 :coffeescript
-  selected_title = "#{params[:title] ? params[:title] : ''}"
+  @selected_title = "#{params[:title] ? escape_javascript(params[:title]) : ''}"
   @projects_data = #{@projects.to_json}
   @areas = #{@areas.to_json}
   @agencies = #{@agencies.to_json}

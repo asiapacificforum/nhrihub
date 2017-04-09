@@ -19,9 +19,15 @@ feature "show media archive", :js => true do
   before do
     setup_file_constraints
     setup_areas
-    4.times do
-      @media_appearance = FactoryGirl.create(:media_appearance, :hr_area, :reminders=>[FactoryGirl.create(:reminder, :media_appearance)] )
+    3.times do
+      @media_appearance = FactoryGirl.create(:media_appearance,
+                                             :hr_area,
+                                             :reminders=>[FactoryGirl.create(:reminder, :media_appearance)])
     end
+    @media_appearance = FactoryGirl.create(:media_appearance,
+                                           :hr_area,
+                                           :reminders=>[FactoryGirl.create(:reminder, :media_appearance)],
+                                           :title => '" all? the<>\ [] ){} ({)888.,# weird // @;:characters &')
     visit media_appearances_path(:en)
   end
 
@@ -39,7 +45,7 @@ feature "show media archive", :js => true do
     expect(number_of_rendered_media_appearances).to eq 4
     expect(query_string).to be_blank
     click_back_button
-    expect(page.evaluate_script("window.location.search")).to eq "?title=#{@media_appearance.title.gsub(/\s/,'+')}"
+    expect(page.evaluate_script("window.location.search")).to eq "?title=#{(ERB::Util.url_encode(@media_appearance.title)).gsub(/%20/,'+')}"
     expect(number_of_rendered_media_appearances).to eq 1
   end
 end
