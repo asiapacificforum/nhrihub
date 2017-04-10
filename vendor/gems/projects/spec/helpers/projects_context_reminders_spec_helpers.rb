@@ -6,7 +6,6 @@ module ProjectsContextRemindersSpecHelpers
   include ProjectsSpecSetupHelpers
 
   before do
-    populate_database
     rem = Reminder.create(:reminder_type => 'weekly',
                           :start_date => Date.new(2015,8,19),
                           :text => "don't forget the fruit gums mum",
@@ -15,8 +14,5 @@ module ProjectsContextRemindersSpecHelpers
     open_reminders_panel
   end
 
-  def populate_database
-    FactoryGirl.create(:project)
-  end
 end
 

@@ -21,7 +21,7 @@ feature "existing project file management", :js => true do
       attach_file("project_fileinput", upload_document)
     end
     page.find("#project_document_title").set("New uploaded document")
-    expect{ edit_save.click; wait_for_ajax }.to change{ Project.first.project_documents.count }.from(2).to(3)
+    expect{ edit_save }.to change{ Project.first.project_documents.count }.from(2).to(3)
     expect(Project.first.project_documents.map(&:title)).to include "New uploaded document"
     expect(all('.project_document .title').map(&:text)).to include "New uploaded document"
   end
@@ -53,7 +53,7 @@ feature "existing project file management", :js => true do
       attach_file("project_fileinput", upload_document)
     end
     page.find("#project_document_title").set("Final Report")
-    expect{ edit_save.click; wait_for_ajax }.not_to change{ ProjectDocument.count }
+    expect{ edit_save }.not_to change{ ProjectDocument.count }
   end
 
   it "adds files to the files list if they are not 'named files'" do
@@ -63,7 +63,7 @@ feature "existing project file management", :js => true do
       attach_file("project_fileinput", upload_document)
     end
     page.find("#project_document_title").set("Any old title")
-    expect{ edit_save.click; wait_for_ajax }.to change{ ProjectDocument.count }.by(1)
+    expect{ edit_save }.to change{ ProjectDocument.count }.by(1)
   end
 
   it "should delete files" do
@@ -86,8 +86,7 @@ feature "existing project file management", :js => true do
 
   it "panel expanding should behave" do
     edit_first_project.click
-    edit_save.click
-    wait_for_ajax
+    edit_save
     expect(page.evaluate_script("projects.findAllComponents('project')[0].get('expanded')")).to eq true
     expect(page.evaluate_script("projects.findAllComponents('project')[0].get('editing')")).to eq false
     edit_first_project.click

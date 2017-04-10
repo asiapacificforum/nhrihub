@@ -24,6 +24,7 @@
 = render :partial => 'notes/note' # it's in the main app
 
 :javascript
+  var selected_title = ''
   var collection_items = #{@advisory_council_issues.to_json}
   var item_name = "advisory_council_issue"
   var areas = #{@areas.to_json}
