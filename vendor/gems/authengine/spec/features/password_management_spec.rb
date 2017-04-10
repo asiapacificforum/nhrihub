@@ -19,6 +19,7 @@ feature "Password management, admin resets user password", :js => true do
     end
     expect(page_heading).to eq "Manage users"
     expect(flash_message).to match /A password reset email has been sent to/
+
     click_link('Logout')
     # user whose password was reset responds to the link in the email
     visit(new_password_activation_link)

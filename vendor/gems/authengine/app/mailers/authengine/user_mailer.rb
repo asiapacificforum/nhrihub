@@ -1,58 +1,32 @@
 class Authengine::UserMailer < ActionMailer::Base
   # subject for each email type is configured in config/locales/views/mailers/user_mailer/**.yml
   def signup_notification(user)
-    setup_email(user)
     @url = authengine_activate_url(:activation_code => user.activation_code, :locale => I18n.locale)
-    send_mail
+    send_mail(user)
   end
 
   def activate_notification(user)
-    setup_email(user)
     @url = login_url(:locale => I18n.locale)
-    send_mail
+    send_mail(user)
   end
 
   def forgotten_password_notification(user)
-    setup_email(user)
     @url  = "http://#{SITE_URL}/#{I18n.locale}/admin/new_password/#{user.password_reset_code}"
-    send_mail
-  end
-
-  def reset_password_notification(user)
-    setup_email(user)
-    puts "reset password notification"
-    @subject = t('.subject')
+    send_mail(user)
   end
 
   def lost_token_notification(user)
-    setup_email(user)
     @url  = "http://#{SITE_URL}/#{I18n.locale}/admin/register_replacement_token_request/#{user.replacement_token_registration_code}"
-    send_mail
-  end
-
-  def message_to_admin(subject,body)
-    @admin = User.find_by_login('admin')
-    @recipients  = @admin.email
-    @from        = @admin.email
-    @subject     = "#{APPLICATION_NAME || "database"} - "
-    @sent_on     = Time.now
-    @subject    += subject
-    @body  = body
+    send_mail(user)
   end
 
 protected
-  def setup_email(user)
-    @recipients  = "#{user.email}"
-    @from        = "#{APPLICATION_NAME || "database"} Administrator<#{ADMIN_EMAIL}>"
-    @sent_on     = Time.now
-    @user        = user
-  end
-
-  def send_mail
-    mail( :to => @recipients,
+  def send_mail(user)
+    @user = user
+    mail( :to => "#{@user.email}",
           :subject => t('.subject', org_name: ORGANIZATION_NAME, app_name: APPLICATION_NAME),
-          :date => @sent_on,
-          :from => @from
+          :date => Time.now,
+          :from => "#{APPLICATION_NAME || "database"} Administrator<#{ADMIN_EMAIL}>"
         )
   end
 end

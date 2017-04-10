@@ -4,13 +4,6 @@
 # check_permissions filter, distinguishing between actions on one's own
 # model vs. actions on other users' models.
 class Admin::UsersController < ApplicationController
-  #before_filter :not_logged_in_required, :only => [:new, :create]
-  #before_filter :login_required, :only => [:show, :edit, :update]
-  #before_filter :check_administrator_role, :only => [:index, :destroy, :enable]
-  #before_filter :user_or_current_user, :only => [:show, :edit, :update]
-
-  # activate is where a user with the correct activation code
-  # is redirected to, so they can enter passwords and login name
   skip_before_action :check_permissions, :only=>[:activate, :signup, :new_password, :change_password, :register_new_token_request, :register_new_token_response, :send_forgot_password_email]
 
   def index
@@ -276,11 +269,6 @@ private
       'signup_without_two_factor_authentication'
     end
   end
-
-  #def two_factor_authentication_required?
-    #ENV.fetch("two_factor_authentication").blank? ||
-      #ENV.fetch("two_factor_authentication") == 'enabled'
-  #end
 
   def activation_params
     params.require(:user).

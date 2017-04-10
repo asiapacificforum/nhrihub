@@ -7,7 +7,5 @@ en:
         subject: "Your account has been activated!"
       forgotten_password_notification:
         subject: 'You have requested to change your password'
-      reset_password_notification:
-        subject: 'Your password has been reset'
       lost_token_notification:
         subject: 'You may register a new token'

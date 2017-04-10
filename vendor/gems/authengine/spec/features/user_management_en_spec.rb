@@ -40,6 +40,9 @@ feature "Manage users", :js => true do
     expect(page_heading).to eq "Manage users"
     expect(flash_message).to eq "a registration email has been sent to Norman Normal at norm@normco.com"
     email = ActionMailer::Base.deliveries.last
+
+    # check the email
+    email = ActionMailer::Base.deliveries.last
     expect( email.subject ).to eq "Please activate your #{ORGANIZATION_NAME} #{APPLICATION_NAME} account"
     expect( email.to.first ).to eq "norm@normco.com"
     expect( email.from.first ).to eq ADMIN_EMAIL
@@ -252,6 +255,7 @@ feature "user lost token replacement and registration", :js => true do
     end
     expect(page_heading).to eq "Manage users"
     expect(flash_message).to match /A token registration email has been sent to/
+
     # disable access by the lost token
     expect( User.last.public_key ).to be_nil
     expect( User.last.public_key_handle ).to be_nil
