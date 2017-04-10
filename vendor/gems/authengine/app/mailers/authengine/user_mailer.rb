@@ -3,46 +3,31 @@ class Authengine::UserMailer < ActionMailer::Base
   def signup_notification(user)
     setup_email(user)
     @url = authengine_activate_url(:activation_code => user.activation_code, :locale => I18n.locale)
-    mail( :to => @recipients,
-          :subject => t('.subject', org_name: ORGANIZATION_NAME, app_name: APPLICATION_NAME),
-          :date => @sent_on,
-          :from => @from
-        )
+    send_mail
   end
 
   def activate_notification(user)
     setup_email(user)
     @url = login_url(:locale => I18n.locale)
-    mail( :to => @recipients,
-          :subject => t('.subject'),
-          :date => @sent_on,
-          :from => @from
-        )
+    send_mail
   end
 
   def forgotten_password_notification(user)
     setup_email(user)
     @url  = "http://#{SITE_URL}/#{I18n.locale}/admin/new_password/#{user.password_reset_code}"
-    mail( :to => @recipients,
-          :subject => t('.subject'),
-          :date => @sent_on,
-          :from => @from
-        )
+    send_mail
   end
 
   def reset_password_notification(user)
     setup_email(user)
+    puts "reset password notification"
     @subject = t('.subject')
   end
 
   def lost_token_notification(user)
     setup_email(user)
     @url  = "http://#{SITE_URL}/#{I18n.locale}/admin/register_replacement_token_request/#{user.replacement_token_registration_code}"
-    mail( :to => @recipients,
-          :subject => t('.subject'),
-          :date => @sent_on,
-          :from => @from
-        )
+    send_mail
   end
 
   def message_to_admin(subject,body)
@@ -61,5 +46,13 @@ protected
     @from        = "#{APPLICATION_NAME || "database"} Administrator<#{ADMIN_EMAIL}>"
     @sent_on     = Time.now
     @user        = user
+  end
+
+  def send_mail
+    mail( :to => @recipients,
+          :subject => t('.subject', org_name: ORGANIZATION_NAME, app_name: APPLICATION_NAME),
+          :date => @sent_on,
+          :from => @from
+        )
   end
 end
