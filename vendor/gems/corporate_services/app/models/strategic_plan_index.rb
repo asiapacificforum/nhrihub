@@ -3,6 +3,22 @@ module StrategicPlanIndex
   extend ActiveSupport::Concern
   included do
     default_scope ->{ order("string_to_array(index,'.')::int[]") }
+
+    after_destroy do
+      lower_priority_siblings.each{|pr| pr.decrement_index }
+    end
+
+    # strip index if user has entered it
+    before_create do
+      self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
+      self.index = create_index
+    end
+  end
+
+  def lower_priority_siblings
+    parent_id = (self.index_parent.class.name.underscore+"_id").to_sym
+    siblings = self.class.send(:where, {parent_id => self.send(parent_id)})
+    siblings.select{|sibling| sibling >= self}
   end
 
   def <=>(other)

@@ -1,4 +1,21 @@
 require 'rails_helper'
+describe "#lower_priority_siblings" do
+  before do
+    spl = StrategicPlan.new
+    spl.save
+    sp = FactoryGirl.create(:strategic_priority, :priority_level => 1, :strategic_plan => spl)
+    pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
+    o = FactoryGirl.create(:outcome, :planned_result_id => pr.id)
+    8.times do
+      FactoryGirl.create(:activity, :outcome_id => o.id)
+    end
+  end
+
+  it "should identify lower priority siblings" do
+    activity = Activity.where(:index => "1.1.1.4").first
+    expect(activity.lower_priority_siblings.map(&:index)).to eq ["1.1.1.4","1.1.1.5","1.1.1.6","1.1.1.7","1.1.1.8"]
+  end
+end
 
 describe "#indexed_description" do
   context "for the first in the outcome" do

@@ -9,11 +9,6 @@ class PerformanceIndicator < ActiveRecord::Base
   has_many :project_performance_indicators, :dependent => :destroy
   has_many :projects, :through => :project_performance_indicators
 
-  before_create do
-    self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
-    self.index = create_index
-  end
-
   def as_json(options={})
     default_options = {:except =>  [:updated_at, :created_at],
                        :methods => [:indexed_description,
@@ -31,13 +26,6 @@ class PerformanceIndicator < ActiveRecord::Base
 
   def namespace
     :corporate_services
-  end
-
-  after_destroy do |performance_indicator|
-    lower_indexes = PerformanceIndicator.
-                      where(:activity_id => performance_indicator.activity_id).
-                      select{|pi| pi >= self}
-    lower_indexes.each{|pi| pi.decrement_index }
   end
 
   def index_descendant

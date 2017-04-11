@@ -6,18 +6,6 @@ class PlannedResult < ActiveRecord::Base
 
   scope :in_current_strategic_plan, ->{ joins(:strategic_priority => :strategic_plan).merge(StrategicPlan.current) }
 
-  # strip index if user has entered it
-  before_create do
-    self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
-    self.index = create_index
-  end
-
-  after_destroy do |planned_result|
-    lower_priorities = PlannedResult.
-                         where(:strategic_priority_id => planned_result.strategic_priority_id).
-                         select{|pr| pr >= self}
-    lower_priorities.each{|pr| pr.decrement_index }
-  end
 
   def self.all_with_associations
     collection = in_current_strategic_plan.includes(:outcomes => {:activities => :performance_indicators}).all.sort_by(&:index)

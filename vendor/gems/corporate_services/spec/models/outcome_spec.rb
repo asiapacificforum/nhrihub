@@ -20,6 +20,23 @@ describe "#indexed_description" do
   end
 end
 
+describe "#lower_priority_siblings" do
+  before do
+    spl = StrategicPlan.new
+    spl.save
+    sp = FactoryGirl.create(:strategic_priority, :priority_level => 1, :strategic_plan => spl)
+    pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
+    8.times do
+      FactoryGirl.create(:outcome, :planned_result_id => pr.id)
+    end
+  end
+
+  it "should identify lower priority siblings" do
+    outcome = Outcome.where(:index => "1.1.4").first
+    expect(outcome.lower_priority_siblings.map(&:index)).to eq ["1.1.4","1.1.5","1.1.6","1.1.7","1.1.8"]
+  end
+end
+
 describe "destroy" do
   before do
     spl = StrategicPlan.new

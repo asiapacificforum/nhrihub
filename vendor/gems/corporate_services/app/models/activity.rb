@@ -3,12 +3,6 @@ class Activity < ActiveRecord::Base
   belongs_to  :outcome
   has_many :performance_indicators, :dependent => :destroy
 
-  # strip index if user has entered it
-  before_create do
-    self.description = self.description.gsub(/^[^a-zA-Z]*/,'')
-    self.index = create_index
-  end
-
   def as_json(options={})
     super(:except =>  [:updated_at, :created_at, :progress], #progress shouldn't even be in the schema!
           :methods => [:indexed_description,
@@ -29,13 +23,6 @@ class Activity < ActiveRecord::Base
 
   def namespace
     :corporate_services
-  end
-
-  after_destroy do |activity|
-    lower_indexes = Activity.
-                      where(:outcome_id => activity.outcome_id).
-                      select{|a| a >= self}
-    lower_indexes.each{|a| a.decrement_index }
   end
 
   def index_descendant
