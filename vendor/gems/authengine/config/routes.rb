@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  #scope ':locale', locale: /#{I18n.available_locales.join("|")}/ do
   scope ':locale', locale: /en|fr/ do
     root :to => "authengine/sessions#new"
 
@@ -53,14 +52,6 @@ Rails.application.routes.draw do
       resources :roles
       resources :users do
         resource :account
-        resources :user_roles, :only => [:destroy] do
-          collection do
-            get 'index' # shows user_roles for a user, from which to add/remove roles
-            get 'edit'
-            put 'update', :as => 'update'
-            post 'create', :as => 'create'
-          end
-        end
 
         member do
           put 'enable'
