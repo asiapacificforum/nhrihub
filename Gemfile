@@ -47,7 +47,6 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rvm'
   gem 'capistrano-passenger', '= 0.0.2'
-  #gem 'capistrano-faster-assets', :git => "git@github.com:lazylester/capistrano-faster-assets.git"
   gem 'capistrano-faster-assets'
   # specify higher rev than required by capistrano in order to get
   # fixed connection pooling and faster deploys
@@ -63,7 +62,6 @@ gem 'haml-rails'
 
 group :development, :test, :jstest do
   gem 'rspec-rails'
-  #gem 'capybara', :git => "git@github.com:lazylester/capybara.git", :branch => "attach_file_remote"
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'database_cleaner'
@@ -88,19 +86,19 @@ gem 'faker'
 
 gem 'tzinfo-data' # so that we use the ruby tzinfo vs what is installed on the machine e.g. /usr/share/zoneinfo
 
-gem 'letsencrypt_plugin', :github => "lgromanowski/letsencrypt-plugin", :ref => "6ef3a2ea450af2cec4be906842ebcbf809b5fc46"
+gem 'letsencrypt_plugin', :git => "https://github.com/lgromanowski/letsencrypt-plugin.git", :ref => "6ef3a2ea450af2cec4be906842ebcbf809b5fc46"
 
 ###not needed in rails 5
 ###gem 'quiet_assets', group: :development
-gem "refile", :git => "git@github.com:refile/refile.git", :ref => "d7a42", require: "refile/rails" # for rails5 compatibility
-gem "sinatra", github: "sinatra/sinatra", :ref => "285275b42fa1bf096a5c9559b6cead2f31b65b66" # for rack 2 compatibility as required for rails5
-gem "rack", github: "rack/rack" # also for sinatra 2.0.0-alpha support
-gem "rack-protection", github: "sinatra/rack-protection"
+gem "refile", :git => "https://github.com/refile/refile.git", :ref => "d7a42", require: "refile/rails" # for rails5 compatibility
+gem "sinatra", git: "https://github.com/sinatra/sinatra.git" #, :ref => "285275b42fa1bf096a5c9559b6cead2f31b65b66" # for rack 2 compatibility as required for rails5
+gem "rack", git: "https://github.com/rack/rack.git" # also for sinatra 2.0.0-alpha support
+gem "rack-protection" #, git: "https://github.com/sinatra/rack-protection.git"
 gem "rails-settings-cached", '~> 0.4.2'
 gem "underscore-rails"
 gem "capistrano-linked-files"
-gem "message_block", github: "lazylester/message_block"
-gem "surus", github: "asiapacificforum/surus", :ref => "36cb18a" # postgres direct to json
+gem "message_block", git: "https://github.com/lazylester/message_block.git"
+gem "surus", git: "https://github.com/asiapacificforum/surus.git", :ref => "36cb18a" # postgres direct to json
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'
