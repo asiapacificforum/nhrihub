@@ -20,7 +20,6 @@ feature "show advisory council issue archive", :js => true do
                          :hr_area,
                          :reminders=>[FactoryGirl.create(:reminder, :advisory_council_issue)] )
     end
-    resize_browser_window
     visit nhri_advisory_council_issues_path(:en)
   end
 
@@ -52,7 +51,6 @@ feature "create a new article", :js => true do
   before do
     setup_areas
     setup_file_constraints
-    resize_browser_window
     visit nhri_advisory_council_issues_path(:en)
     add_article_button.click
   end
@@ -119,7 +117,6 @@ feature "attempt to add and save with errors", :js => true do
   before do
     setup_areas
     setup_file_constraints
-    resize_browser_window
     visit nhri_advisory_council_issues_path(:en)
     add_article_button.click
   end
@@ -191,7 +188,6 @@ feature "when there are existing articles", :js => true do
     before do
       setup_database
       setup_file_constraints
-      resize_browser_window
       visit nhri_advisory_council_issues_path(:en)
     end
 
@@ -360,7 +356,6 @@ feature "enforce single user add or edit action", :js => true do
   before do
     setup_database
     add_a_second_article
-    resize_browser_window
     visit nhri_advisory_council_issues_path(:en)
   end
 

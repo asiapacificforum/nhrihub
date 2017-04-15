@@ -180,7 +180,18 @@ The 5 most recent releases are kept on the server.
 
 Capistrano deployment also symlinks the config/database.yml and lib/constants files to copies in the 'shared' directory.
 These files contain sensitive information and should be manually copied into the 'shared' directory. This is typically done just once when the app is first installed, as the information will typically remain unchanged for the life of the app.
-A list of all the files that the application requires to be present in the shared directory is found in the conifg/deploy_example.rb file.
+
+The following files are required by the app, and are not included in the source due to their sensitive content. They must be manually copied into the shared directory:
+* config/database.yml
+* config/secrets.yml
+* lib/constants.rb
+* deploy/production.rb
+* app/assets/images/banner_logo.png
+* config/locales/site_specific/en.yml
+* config/locales/site_specific/fr.yml
+* key/keyfile.pem
+* shared/config/letsencrypt_plugin.yml
+* shared/config/env.yml
 
 ## Configuring SSL
 [Letsencrypt](http://letsencrypt.org) may be used to obtain an ssl certificate. This is facilitated by the [letsencrypt_plugin gem](https://github.com/lgromanowski/letsencrypt-plugin). This gem needs a configuration file, and it's stored in the shared/config/letsencrypt_plugin.yml where capistrano symlinks files. Refer to the gem's README for information on the parameters that must be included. The RSA private key is also symlinked by capistrano to shared/key/keyfile.pem.

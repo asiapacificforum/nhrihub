@@ -23,7 +23,10 @@ lib/constants.rb
 
 # database configuration
 config/database.yml
+
+# capistrano configuration
 config/deploy/production.rb
+config/deploy/nhri-hub.com.rb
 
 app/assets/images/banner_logo.png
 

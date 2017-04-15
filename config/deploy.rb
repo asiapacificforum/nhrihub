@@ -58,6 +58,7 @@ set :linked_dirs, fetch(:linked_dirs, []).push('certificates',
 #set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb) + Dir.glob('vendor/gems/**/app/assets')
 set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb) + Dir.glob('vendor/gems/**/app/assets')
 
+
 namespace :deploy do
 
   after :updated, 'whenever:update_crontab'
