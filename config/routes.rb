@@ -57,7 +57,7 @@ Rails.application.routes.draw do
   # see https://github.com/crismali/magic_lamp
   mount MagicLamp::Genie, at: "/magic_lamp" if defined?(MagicLamp)
 
-  mount LetsencryptPlugin::Engine, at: '/'
+  #mount LetsencryptPlugin::Engine, at: '/'
 
   scope "/:locale" do
   # this route is specified as it's used in authengine as the place
