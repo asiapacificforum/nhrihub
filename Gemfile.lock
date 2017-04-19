@@ -360,6 +360,7 @@ GEM
     rb-fsevent (0.9.8)
     rb-inotify (0.9.8)
       ffi (>= 0.5.0)
+    rb-readline (0.5.4)
     ref (2.0.0)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -496,6 +497,7 @@ DEPENDENCIES
   rack-protection
   rails (= 5.0.1)
   rails-settings-cached (~> 0.4.2)
+  rb-readline
   refile!
   rspec-rails
   sass-rails
