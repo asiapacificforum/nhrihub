@@ -86,7 +86,7 @@ gem 'faker'
 
 gem 'tzinfo-data' # so that we use the ruby tzinfo vs what is installed on the machine e.g. /usr/share/zoneinfo
 
-gem 'letsencrypt_plugin', :git => "https://github.com/lgromanowski/letsencrypt-plugin.git", :ref => "6ef3a2ea450af2cec4be906842ebcbf809b5fc46"
+#gem 'letsencrypt_plugin', :git => "https://github.com/lgromanowski/letsencrypt-plugin.git", :ref => "6ef3a2ea450af2cec4be906842ebcbf809b5fc46"
 
 ###not needed in rails 5
 ###gem 'quiet_assets', group: :development
