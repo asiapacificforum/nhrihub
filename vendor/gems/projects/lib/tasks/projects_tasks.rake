@@ -1,6 +1,6 @@
 namespace :projects do
   desc "populates all projects-related tables"
-  task :populate => ["projects:populate_mandates", "projects:populate_types", "projects:populate_agnc", "projects:populate_conv", "projects:populate_projects"]
+  task :populate => ["projects:populate_mandates", "projects:populate_types", "projects:populate_projects"]
 
   desc "populates the projects table"
   task "populate_projects" => :environment do
@@ -53,12 +53,12 @@ namespace :projects do
     end
   end
 
-  desc "populates conventions"
-  task :populate_conv => :environment do
-    Convention.destroy_all
-    # CONVENTIONS defined in lib/constants
-    conventions = CONVENTIONS.each do |short,full|
-      Convention.create(:name => short, :full_name => full)
-    end
-  end
+  #desc "populates conventions"
+  #task :populate_conv => :environment do
+    #Convention.destroy_all
+    ## CONVENTIONS defined in lib/constants
+    #conventions = CONVENTIONS.each do |short,full|
+      #Convention.create(:name => short, :full_name => full)
+    #end
+  #end
 end

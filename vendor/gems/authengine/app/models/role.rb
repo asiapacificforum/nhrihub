@@ -2,10 +2,10 @@
 # for a session can be downgraded to a lower role.
 # The hierarchy gives meaning to "lower role".
 class Role < ActiveRecord::Base
-  has_many :user_roles
+  has_many :user_roles, :dependent => :destroy
   has_many :users, :through=>:user_roles
 
-  has_many :action_roles
+  has_many :action_roles, :dependent => :destroy
   has_many :actions, :through => :action_roles
 
   belongs_to :parent, :class_name => 'Role'
