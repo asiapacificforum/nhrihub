@@ -144,6 +144,15 @@ describe "complaints index page", ->
       expect(complaint.include()).to.be.true
       expect(complaint.get('include')).to.be.true
 
+    it "when filter_criteria.complainant has a value matching chiefly title", ->
+      complaints.set('complaints',[]) # I can't figure out why this is necessary, but without it chiefly title does not get set in the next line!
+      complaints.set('complaints',[{chiefly_title: "Katanga", firstName : "Mandela", lastName : "Mugube"}])
+      complaints.set('filter_criteria.complainant'," k")
+      complaint = complaints.findComponent('complaint')
+      expect(complaint.matches_complainant()).to.be.true
+      expect(complaint.include()).to.be.true
+      expect(complaint.get('include')).to.be.true
+
   describe "match date", ->
     before (done)->
       load_variables()

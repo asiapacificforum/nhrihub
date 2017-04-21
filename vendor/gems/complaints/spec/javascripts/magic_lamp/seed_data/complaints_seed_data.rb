@@ -53,6 +53,7 @@ class ComplaintsSeedData
     completed_complaint_status = FactoryGirl.create(:complaint_status, :id => 2, :name => "Completed")
 
     FactoryGirl.create(:complaint,
+                       :chiefly_title => "Arjuna",
                        :firstName => "Camilla",
                        :lastName  => "Lebsack",
                        :village => "Katherineborough",
@@ -68,6 +69,7 @@ class ComplaintsSeedData
                                                               :complaint_status_id => active_complaint_status.id)])
 
     FactoryGirl.create(:complaint,
+                       :chiefly_title => "Arjuna",
                        :firstName => "Bo",
                        :lastName  => "McCullough",
                        :village => "Conroytown",
@@ -83,6 +85,7 @@ class ComplaintsSeedData
                                                               :complaint_status_id => active_complaint_status.id)])
 
     FactoryGirl.create(:complaint,
+                       :chiefly_title => "Arjuna",
                        :firstName => "Ned",
                        :lastName  => "Kessler",
                        :village => "Port Janiya",
@@ -98,6 +101,7 @@ class ComplaintsSeedData
                                                               :complaint_status_id => completed_complaint_status.id)])
 
     FactoryGirl.create(:complaint,
+                       :chiefly_title => "Arjuna",
                        :firstName => "Marissa",
                        :lastName  => "Yost",
                        :village => "Parkerfurt",

@@ -83,14 +83,6 @@ class Complaint < ActiveRecord::Base
                         :communications])
   end
 
-  #def mandate_name
-    #mandate && mandate.name
-  #end
-
-  #def mandate_name=(name)
-    #self.mandate_id = Mandate.where(:key => name.gsub(/\s/,'').underscore).first.id
-  #end
-
   def attached_documents
     complaint_documents
   end
@@ -168,7 +160,7 @@ class Complaint < ActiveRecord::Base
   end
 
   def complainant_full_name
-    [firstName, lastName].join(' ')
+    [chiefly_title, firstName, lastName].join(' ')
   end
 
   def gender

@@ -211,7 +211,8 @@ FilterMatch =
     return true if _.isEmpty(@get('filter_criteria.complainant'))
     flexible_space_match = @get('filter_criteria.complainant').trim().replace(/\s+/g, "\\s+")
     re = new RegExp(flexible_space_match,"i")
-    re.test @get('firstName')+" "+@get('lastName')
+    full_name = [@get('chiefly_title'),@get('firstName'),@get('lastName')].join(' ')
+    re.test full_name
   matches_case_reference : ->
     return true if _.isEmpty(@get('filter_criteria.case_reference'))
     criterion_digits = @get('filter_criteria.case_reference').replace(/\D/g,'')
