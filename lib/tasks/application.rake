@@ -2,8 +2,9 @@ desc "populate the entire application"
 task :populate => :environment do
   Note.destroy_all
   Reminder.destroy_all
-  ["csp_reports:populate", "projects:populate", "complaints:populate", "corporate_services:populate", "media:populate", "nhri:populate"].each do |task|
-    Rake::Task[task].invoke
+  modules = ["csp_reports", "projects", "complaints", "corporate_services", "media", "nhri", "internal_documents"]
+  modules.each do |task|
+    Rake::Task[task+":populate"].invoke
   end
 end
 
