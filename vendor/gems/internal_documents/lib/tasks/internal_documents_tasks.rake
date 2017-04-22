@@ -17,7 +17,7 @@ def rand_filename
   l.times do
     arr << @words.sample
   end
-  arr.join('_').downcase + ".pdf"
+  arr.join('_').downcase + ".docx"
 end
 
 namespace :internal_documents do

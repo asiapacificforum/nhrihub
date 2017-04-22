@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :internal_document do
-    #file_id             { SecureRandom.hex(30) }
     file                { LoremIpsumDocument.new.docfile }
     title               { Faker::Lorem.words(4).join(" ") }
     filesize            { 10000 + (30000*rand).to_i }
@@ -11,13 +10,6 @@ FactoryGirl.define do
     original_type       "docx"
     type                nil
     user
-
-
-    #after(:build) do |doc|
-      #archive_filename = Rails.root.join('tmp','uploads','store',doc.file_id) 
-      #file = LoremIpsumDocument.new
-      #FileUtils.touch filename
-    #end
 
     trait :null_revision do
       revision_major nil
