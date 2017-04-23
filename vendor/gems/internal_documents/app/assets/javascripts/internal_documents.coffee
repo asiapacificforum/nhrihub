@@ -217,6 +217,8 @@ $ ->
       @validator.validate()
     include : ->
       false
+    download_file : ->
+      window.location = @get('url')
   , ConfirmDeleteModal
 
   class InclusionMatcher

@@ -195,6 +195,20 @@ feature "internal document management", :js => true do
     expect(downloaded_file).to eq @doc.original_filename
   end
 
+  scenario "download an archive file", :driver => :chrome do # b/c there was a bug!
+    @doc = InternalDocument.all.find(&:document_group_primary?).archive_files.first
+    click_the_archive_icon
+    within archive_panel do
+      click_the_download_icon
+    end
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
+      expect(page.response_headers['Content-Type']).to eq('application/pdf')
+      filename = @doc.original_filename
+      expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+    end
+    expect(downloaded_file).to eq @doc.original_filename
+  end
+
   feature "add a new revision" do
     context "including user configured title" do
       before do

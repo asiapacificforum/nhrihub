@@ -8,6 +8,8 @@ module DownloadHelpers
     Timeout.timeout(TIMEOUT) do
       sleep 0.1 until downloaded?
     end
+  rescue Timeout::Error
+    raise "download didn't happen"
   end
 
   def downloaded?
