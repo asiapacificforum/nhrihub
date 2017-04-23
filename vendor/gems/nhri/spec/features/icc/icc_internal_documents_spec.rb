@@ -1,6 +1,7 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
+require 'download_helpers'
 require_relative '../../helpers/icc/icc_spec_helper'
 require_relative '../../helpers/icc/icc_setup_helper'
 
@@ -9,6 +10,7 @@ feature "show icc internal documents index page", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include IccSpecHelper
   include IccSetupHelper
+  include DownloadHelpers
 
   before do
     setup_database # Statement of Compliance with 4 archive files
@@ -29,6 +31,30 @@ feature "show icc internal documents index page", :js => true do
     expect(page.all('.template-upload .title select#accreditation_required_doc_title option').map(&:text)).not_to include @title
   end
 
+  scenario "download a file", :driver => :chrome do
+    @doc = InternalDocument.all.find(&:document_group_primary?)
+    click_the_download_icon
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
+      expect(page.response_headers['Content-Type']).to eq('docx')
+      filename = @doc.original_filename
+      expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+    end
+    expect(downloaded_file).to eq @doc.original_filename
+  end
+
+  scenario "download an archive file", :driver => :chrome do
+    @doc = InternalDocument.all.find(&:document_group_primary?).archive_files.last
+    click_the_archive_icon
+    within archive_panel do
+      click_the_first_download_icon
+    end
+    unless page.driver.instance_of?(Capybara::Selenium::Driver) # response_headers not supported
+      expect(page.response_headers['Content-Type']).to eq('application/pdf')
+      filename = @doc.original_filename
+      expect(page.response_headers['Content-Disposition']).to eq("attachment; filename=\"#{filename}\"")
+    end
+    expect(downloaded_file).to eq @doc.original_filename
+  end
 end
 
 feature "add a document", :js => true do

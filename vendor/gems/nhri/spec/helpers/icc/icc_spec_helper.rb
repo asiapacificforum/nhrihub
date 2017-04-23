@@ -17,4 +17,21 @@ module IccSpecHelper
   def delete_first_document
     page.all('.fa-trash-o').first.click
   end
+
+  def click_the_archive_icon
+    page.all('.template-download .fa-folder-o')[0].click
+    sleep(0.2)
+  end
+
+  def click_the_first_download_icon
+    page.all('.download').first.click
+  end
+
+  def click_the_download_icon
+    page.find('.download').click
+  end
+
+  def archive_panel
+    page.find('.collapse', :text => 'Archive')
+  end
 end
