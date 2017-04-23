@@ -1,15 +1,13 @@
 FactoryGirl.define do
   factory :terms_of_reference_version, :class => Nhri::AdvisoryCouncil::TermsOfReferenceVersion do
-    file_id             { SecureRandom.hex(30) }
+    file                { LoremIpsumDocument.new.docfile }
     filesize            { 10000 + (30000*rand).to_i }
-    original_filename   { "#{Faker::Lorem.words(2).join("_")}.pdf" }
+    original_filename   { "#{Faker::Lorem.words(2).join("_")}.docx" }
     revision_major      { rand(10) }
     revision_minor      { rand(9) }
     lastModifiedDate    { Faker::Date.between(1.year.ago, Date.today) }
-    original_type       "application/msword"
-    user
+    original_type       "docx"
 
-
-    after(:build) { |doc| FileUtils.touch Rails.root.join('tmp','uploads','store',doc.file_id)  }
+    after(:build) { |doc| doc.user = User.all.sample }
   end
 end

@@ -12,12 +12,10 @@ FactoryGirl.define do
   end
 
   factory :file_monitor, :class => Nhri::FileMonitor do
-    file_id             { SecureRandom.hex(30) }
+    file                { LoremIpsumDocument.new.docfile }
     filesize            { 10000 + (30000*rand).to_i }
     original_filename   { "#{Faker::Lorem.words(2).join("_")}.pdf" }
     original_type       "application/msword"
     user_id { User.pluck(:id).sample }
-
-    after(:build) { |doc| FileUtils.touch Rails.root.join('tmp','uploads','store',doc.file_id)  }
   end
 end

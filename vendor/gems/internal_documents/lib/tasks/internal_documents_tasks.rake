@@ -21,11 +21,8 @@ def rand_filename
 end
 
 namespace :internal_documents do
-  desc "populate all models within the internal documents module"
-  task :populate => [:populate_id]
-
   desc "populate database with internal documents: 5 primary, 10 archive"
-  task :populate_id => :environment do
+  task :populate => :environment do
     DocumentGroup.destroy_all
     InternalDocument.destroy_all
     Organization.destroy_all

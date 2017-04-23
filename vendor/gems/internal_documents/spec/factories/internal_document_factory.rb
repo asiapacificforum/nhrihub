@@ -9,7 +9,7 @@ FactoryGirl.define do
     lastModifiedDate    { Faker::Date.between(1.year.ago, Date.today) }
     original_type       "docx"
     type                nil
-    user
+    user_id { User.pluck(:id).sample }
 
     trait :null_revision do
       revision_major nil
