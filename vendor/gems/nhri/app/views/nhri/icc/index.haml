@@ -13,6 +13,7 @@
   var required_files_titles = #{@required_files_titles.to_json}
   var context = "icc"
   var type = "AccreditationRequiredDoc"
+  var filetypes = #{ InternalDocument::Filetypes.to_json }
 
 = render :partial => 'shared/confirm_delete_modal'
 = javascript_include_tag "internal_documents"
