@@ -1,7 +1,9 @@
+@import 'theme';
+
 .expandable_well {
-  background-image: -webkit-linear-gradient(top, #DBD2AB 0%, #D8CD9F 100%);
-  background-image: linear-gradient(to bottom, #DBD2AB 0%, #D8CD9F 100%);
-  border-color: #ABA58D;
+  background-image: -webkit-linear-gradient(top, $well_bg_light 0%, $well_bg_dark 100%);
+  background-image: linear-gradient(to bottom, $well_bg_light 0%, $well_bg_dark 100%);
+  border-color: $well_border;
   border-radius: 10px;
   margin-bottom: 8px;
   .col-md-1, .col-md-2, .col-md-3, .col-md-4,
@@ -11,15 +13,15 @@
   }
 
   .panel {
-    border-color: #ABA58D;
-    background-color: #DBD2AB;
+    border-color: $well_border;
+    background-color: $well_bg_light;
 
     .panel-heading {
       //@extend h5;
-      background-image: -webkit-linear-gradient(top, #DBD2AB 0%, #D8CD9F 100%);
-      background-image: linear-gradient(to bottom, #DBD2AB 0%, #D8CD9F 100%);
+      background-image: -webkit-linear-gradient(top, $well_bg_light 0%, $well_bg_dark 100%);
+      background-image: linear-gradient(to bottom, $well_bg_light 0%, $well_bg_dark 100%);
       color: #655F44;
-      border-color: #ABA58D;
+      border-color: $well_border;
     }
   }
 }

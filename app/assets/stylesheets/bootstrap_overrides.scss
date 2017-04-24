@@ -3,7 +3,7 @@
 */
 body {
   padding-top: 60px;
-  background-color: #DBD2AB;
+  background-color: $site_bg;
 }
 @media (max-width: 979px) {
   body {
@@ -13,7 +13,7 @@ body {
 
 h1 {
   font-size: 26px;
-  color: #556F91;
+  color: $h1;
 }
 
 h2, .h2 {
@@ -24,9 +24,9 @@ h2, .h2 {
 :focus {outline:none}
 
 .admin.well {
-  background-image: -webkit-linear-gradient(top, #D8CFA8 0%, #DBD2AB 100%);
-  background-image: -o-linear-gradient(top, #D8CFA8 0%, #DBD2AB 100%);
-  background-image: linear-gradient(to bottom, #D8CFA8 0%, #DBD2AB 100%);
+  background-image: -webkit-linear-gradient(top, $well_bg_light 0%, $well_bg_dark 100%);
+  background-image: -o-linear-gradient(top, $well_bg_light 0%, $well_bg_dark 100%);
+  background-image: linear-gradient(to bottom, $well_bg_light 0%, $well_bg_dark 100%);
   border-color: #E2DAB7;
 }
 
