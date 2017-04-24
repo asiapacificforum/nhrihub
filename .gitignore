@@ -31,6 +31,7 @@ config/deploy/nhri-hub.com.rb
 app/assets/images/banner_logo.png
 
 config/locales/site_specific/*.yml
+config/site_specific_linked_files
 
 coverage
 TODO
