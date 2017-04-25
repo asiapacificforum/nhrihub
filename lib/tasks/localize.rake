@@ -9,14 +9,14 @@ namespace :nhri_hub do
     puts files
     # if file exists, and it's not a symlink, do nothing
     # if file doesn't exist or it's a symlink, link to the site_specific file
-    #files.each do |file|
-      #file_path = Rails.root.join("config/site_specific_linked_files/#{site}",file)
-      #link_path = Rails.root.join(file)
-      #if File.exists? link_path
-        #FileUtils.rm link_path
-        #File.symlink file_path,link_path
-      #end #/if
-    #end #/do
+    files.each do |file|
+      file_path = Rails.root.join("config/site_specific_linked_files/#{site}",file)
+      link_path = Rails.root.join(file)
+      if File.exists? link_path
+        FileUtils.rm link_path
+        File.symlink file_path,link_path
+      end #/if
+    end #/do
     config_file = Rails.root.join("config/site_specific_linked_files/current_config.yml")
     if File.exists?(config_file)
       config = YAML.load_file(config_file)
