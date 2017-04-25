@@ -29,4 +29,18 @@ namespace :nhri_hub do
       f.close
     end
   end #/task
+
+  desc "creates the directory structure within config/site_specific_linked_files for a new site called with rake \"nhri_hub:create_site[oz]\""
+  task :create_site,[:site] do |t,args|
+    site = args[:site]
+    dir = Rails.root.join('config','site_specific_linked_files',site)
+    if File.exists?(dir)
+      puts "site directory already exists #{dir}"
+    else
+      config =  `cap #{site} deploy:print_config_variables | grep linked_files`
+      files = config.match(/\[(.*)\]/)[1].split(',').map{|s| s.gsub("\"","").strip }
+      dirs = files.map{|f| Rails.root.join('config','site_specific_linked_files',site,f).dirname }
+      dirs.uniq.each{ |dir| FileUtils.makedirs(dir) }
+    end
+  end
 end #/namespace
