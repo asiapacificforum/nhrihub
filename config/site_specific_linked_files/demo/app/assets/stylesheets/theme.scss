@@ -1,0 +1,21 @@
+$light_on_dark: #F2F2E7;
+$dark_blue: #337AB7;
+$green : #5CB85C;
+$red : #C12E2A;
+$banner_bg: #104c77;
+$banner_border: #FCCD0F;
+$banner_main_text: #e09600;
+$banner_sub_text: #E4E2D9;
+$site_bg: #ccc5b8;
+$h1: #556F91;
+$well_bg_light: #e8dfcd;
+$well_bg_dark: #dad0bf;
+$well_border: #aba58d;
+
+.navbar-brand {
+  background-image: none;
+  background-repeat: no-repeat;
+  background-size: 56px;
+  width: 69px;
+  margin-left: 0px !important; // b/c bootstrap seems to be forcing -15px!
+}

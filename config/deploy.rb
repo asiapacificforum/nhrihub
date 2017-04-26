@@ -32,7 +32,8 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml',
                                                  'config/locales/site_specific/fr.yml',
                                                  'key/keyfile.pem',
                                                  'config/letsencrypt_plugin.yml',
-                                                 'config/env.yml')
+                                                 'config/env.yml',
+                                                 'app/assets/stylesheets/theme.scss')
 
 # Default value for linked_dirs is []
 # set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
@@ -76,7 +77,8 @@ namespace :deploy do
     end
   end
 
-  #Beware... this will overwrite critical files
-  #before :finishing, 'linked_files:upload_files' # beware this clobbers database.yml
+  # Beware... this will overwrite critical files
+  # beware this clobbers database.yml
+  # before :finishing, 'linked_files:upload_files'
 
 end

@@ -6,28 +6,32 @@ namespace :nhri_hub do
     config =  `cap #{site} deploy:print_config_variables | grep linked_files`
     # ":linked_files => [\"filename\",...]"
     files = config.match(/\[(.*)\]/)[1].split(',').map{|s| s.gsub("\"","").strip }
-    puts files
+    #puts files
     # if file exists, and it's not a symlink, do nothing
     # if file doesn't exist or it's a symlink, link to the site_specific file
     files.each do |file|
       file_path = Rails.root.join("config/site_specific_linked_files/#{site}",file)
       link_path = Rails.root.join(file)
-      if File.exists? link_path
-        FileUtils.rm link_path
-        File.symlink file_path,link_path
+      if File.exists? file_path
+        begin
+          FileUtils.rm link_path
+        rescue Errno::ENOENT
+          # in case the link was not present, no need to remove it!
+        end
+        File.symlink file_path, link_path
+      else
+        puts "#{file} not found"
       end #/if
     end #/do
     config_file = Rails.root.join("config/site_specific_linked_files/current_config.yml")
     if File.exists?(config_file)
       config = YAML.load_file(config_file)
-      puts "previous site: #{config[:current]}"
+      puts "previous build was for site: #{config[:current]}"
+    else
+      puts "no previous build existed"
     end
-    file = File.open config_file, File::CREAT|File::RDWR do |f|
-      puts "new site: #{site}"
-      f.truncate(0)
-      f.write YAML.dump({:current => site})
-      f.close
-    end
+    File.write(config_file, YAML.dump({:current => site}), nil, :mode => 'w')
+    puts "current build is for site: #{site}"
   end #/task
 
   desc "creates the directory structure within config/site_specific_linked_files for a new site called with rake \"nhri_hub:create_site[oz]\""
