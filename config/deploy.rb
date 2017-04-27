@@ -3,6 +3,8 @@ lock '3.6.0'
 
 set :application, 'nhri_docs'
 set :repo_url, 'git@github.com:asiapacificforum/nhridocs.git'
+#for a ton of debugging information use this:
+#set :ssh_options, { :verbose => :debug }
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
@@ -17,7 +19,7 @@ set :repo_url, 'git@github.com:asiapacificforum/nhridocs.git'
 # set :format, :pretty
 
 # Default value for :log_level is :debug
-set :log_level, :debug
+#set :log_level, :debug
 
 # Default value for :pty is false
 set :pty, true
@@ -26,7 +28,6 @@ set :pty, true
 set :linked_files, fetch(:linked_files, []).push('config/database.yml',
                                                  'config/secrets.yml',
                                                  'lib/constants.rb',
-                                                 'config/deploy/production.rb',
                                                  'app/assets/images/banner_logo.png',
                                                  'config/locales/site_specific/en.yml',
                                                  'config/locales/site_specific/fr.yml',
@@ -64,7 +65,6 @@ set :migration_role, "web"
 
 
 namespace :deploy do
-
   after :updated, 'whenever:update_crontab'
   after :reverted, 'whenever:update_crontab'
 
