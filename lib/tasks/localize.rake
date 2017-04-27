@@ -1,17 +1,44 @@
+def cap_config(site)
+  @cap_config ||= `cap #{site} deploy:print_config_variables`
+end
+def linked_files(site)
+  config =  cap_config(site).match(/linked_files.*$/)[0]
+  # ":linked_files => [\"filename\",...]"
+  raise "No Capistrano linked files configured" if config.blank?
+  files = config.match(/\[(.*)\]/)[1].split(',').map{|s| s.gsub("\"","").strip }
+  files.map do |file|
+    file_path = Rails.root.join("config/site_specific_linked_files/#{site}",file)
+    link_path = Rails.root.join(file)
+    [file_path, link_path, file]
+  end
+end
+def deploy_to(site)
+  deploy_path = cap_config(site).match(/deploy_to => "(.*)"$/)[1]
+  shared_path = deploy_path+"/shared/"
+end
 # invoke with rake "nhri_hub:localize[au]" including the quotes and no extra spaces
 namespace :nhri_hub do
+  desc "check that the build has been completed for the current capistrano stage"
+  task :ensure_build,[:role] do |t,args|
+    stage = args[:role]
+    build_site = YAML.load_file(Rails.root.join('config','site_specific_linked_files', 'current_config.yml'))[:current]
+    raise "build has not been done for #{stage}" unless build_site == stage
+  end
+
+  desc "upload linked files to server"
+  task :upload_linked_files,[:site] do |t,args|
+    site = args[:site]
+    linked_files(site).each do |file|
+      file_path, link_path, file = file
+      `scp #{file_path} #{site}:#{deploy_to(site)}#{file}`
+    end
+  end
+
   desc "on development machine, link capistrano linked files to the config/site_specific_linked_files/<% site %> files"
   task :localize,[:site] do |t,args|
     site = args[:site]
-    config =  `cap #{site} deploy:print_config_variables | grep linked_files`
-    # ":linked_files => [\"filename\",...]"
-    files = config.match(/\[(.*)\]/)[1].split(',').map{|s| s.gsub("\"","").strip }
-    #puts files
-    # if file exists, and it's not a symlink, do nothing
-    # if file doesn't exist or it's a symlink, link to the site_specific file
-    files.each do |file|
-      file_path = Rails.root.join("config/site_specific_linked_files/#{site}",file)
-      link_path = Rails.root.join(file)
+    linked_files(site).each do |file|
+      file_path, link_path = file
       if File.exists? file_path
         begin
           FileUtils.rm link_path
