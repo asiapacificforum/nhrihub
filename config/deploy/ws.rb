@@ -1,3 +1,7 @@
+set :assets_roles, fetch(:asset_roles, []).push('ws')
+# If the environment differs from the stage name
+set :rails_env, 'production'
+
 # server-based syntax
 # ======================
 # Defines a single server with a list of roles and multiple properties.
@@ -64,7 +68,7 @@
 #     auth_methods: %w(publickey password)
 #     # password: 'please use keys'
 #   }
-server '69.25.136.193',
+server 'ws',
   user: 'deploy',
   roles: %w{web app},
   ssh_options: {
@@ -74,3 +78,15 @@ server '69.25.136.193',
     auth_methods: %w(publickey)
     # password: 'please use keys'
   }
+
+#set :rvm_custom_path, "~/.rvm"
+
+namespace :deploy do
+  task :ensure_build do
+    run_locally  do
+      rake "nhri_hub:ensure_build[ws]"
+    end
+  end
+
+  before :starting, :ensure_build
+end
