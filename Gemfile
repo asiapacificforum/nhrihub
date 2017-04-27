@@ -47,7 +47,7 @@ group :development do
   gem 'capistrano-rails'
   # capistrano add-ons
   gem 'capistrano-bundler'
-  gem 'capistrano-rvm'
+  #gem 'capistrano-rvm' # unmaintained gem is broken!
   gem 'capistrano-passenger', '= 0.0.2'
   gem 'capistrano-faster-assets'
   # specify higher rev than required by capistrano in order to get
@@ -57,9 +57,6 @@ group :development do
   gem 'jekyll-theme-tactile'
 end
 
-# Use debugger
-
-#gem 'haml'
 gem 'haml-rails'
 
 group :development, :test, :jstest do
@@ -67,8 +64,6 @@ group :development, :test, :jstest do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'database_cleaner'
-  #gem 'debugger'
-
   gem 'teaspoon'
   gem 'teaspoon-mocha'
   gem 'magic_lamp'
