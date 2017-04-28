@@ -22,7 +22,6 @@
 lib/constants.rb
 
 # database configuration
-config/database.yml
 
 # capistrano configuration
 config/deploy/production.rb
@@ -34,9 +33,13 @@ app/assets/stylesheets/theme.scss
 config/locales/site_specific/*.yml
 config/site_specific_linked_files/ws/
 config/site_specific_linked_files/demo/config/database.yml
+config/database.yml
 config/site_specific_linked_files/demo/config/secrets.yml
+config/secrets.yml
 config/site_specific_linked_files/demo/config/initializers/action_mailer.rb
+config/initializers/action_mailer.rb
 config/site_specific_linked_files/demo/key/keyfile.pem
+key/keyfile.pem
 config/site_specific_linked_files/current_config.yml
 
 coverage

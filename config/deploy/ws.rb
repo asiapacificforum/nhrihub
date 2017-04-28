@@ -12,6 +12,7 @@ set :rails_env, 'production'
 # server 'db.example.com', user: 'deploy', roles: %w{db}
 
 
+append :linked_files, 'vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb'
 
 # role-based syntax
 # ==================

@@ -1,5 +1,6 @@
 def cap_config(site)
-  @cap_config ||= `cap #{site} deploy:print_config_variables`
+  instance_variable_set("@cap_config_#{site}",instance_variable_get("@cap_config_#{site}") || `cap #{site} deploy:print_config_variables`)
+  instance_variable_get("@cap_config_#{site}")
 end
 def linked_files(site)
   config =  cap_config(site).match(/linked_files.*$/)[0]
@@ -18,6 +19,19 @@ def deploy_to(site)
 end
 # invoke with rake "nhri_hub:localize[au]" including the quotes and no extra spaces
 namespace :nhri_hub do
+  desc "during development pull linked files from servers, shared directory, into config/site_specific_linked_files/%site%/"
+  task :fetch_linked_files do
+    ["ws", "demo"].each do |site|
+      puts "fetching #{site}"
+      server_path = deploy_to(site)
+      linked_files(site).each do |linked_file|
+        file_path, link_path, file = linked_file
+        puts "fetching #{file}"
+        `scp #{site}:#{server_path}#{file} #{file_path}`
+      end
+    end
+  end
+
   desc "check that the build has been completed for the current capistrano stage"
   task :ensure_build,[:role] do |t,args|
     stage = args[:role]

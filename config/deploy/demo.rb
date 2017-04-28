@@ -4,7 +4,7 @@ set :filter, :roles => %w{demo}
 set :rails_env, 'production'
 
 # .htaccess is required by passenger on this server
-append :linked_files, 'public/.htaccess', 'config/initializers/action_mailer.rb'
+append :linked_files, 'public/.htaccess', 'config/initializers/action_mailer.rb', 'vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb'
 append :assets_roles, 'demo' # triggers asset precompilation if necessary
 
 set :migration_role, "demo" # triggers migration
