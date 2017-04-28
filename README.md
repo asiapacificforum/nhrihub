@@ -12,7 +12,7 @@ NHRIDocs is an internal web application for National Human Rights Institutions (
 All modules of the application have a range of functionality to assist in the course of your work such as the setting of automatic reminders, logging historical versions of all documents, assigning projects, complaints or other matters to registered users and setting different permission levels to protect the confidentiality and integrity of your documents. Each module can be enabled/disabled to reflect the work undertaken by your organisation.
 
 ## Current Status
-As of Aug 12, 2016 NHRIdocs is a "feature complete", and is being prepared for its first beta test in a live environment.
+As of April 28, 2017 NHRIdocs is a "feature complete", and is being prepared for its first beta test in a live environment.
 
 ## Ruby version
 Configured in the .ruby-version file, to support the RVM version manager, look in that file for the currently-configured version
@@ -54,7 +54,7 @@ The permitted values for the application's TIME_ZONE parameter are those values 
 The configuration file for configuring access to the server's smtp daemon is config/initializers/action_mailer.rb. Due to the sensitive information, and because it is required to persist through software updates, the file is symlinked to a copy in the Capistrano shared directory. A file called config/initializers/action_mailer_example.rb is included as a guide on how to configure the real configuration file. Consult [Rails Guides: Action Mailer Basics](http://guides.rubyonrails.org/action_mailer_basics.html) for further information on mailer configuration.
 
 ### Application Constants
-  TODO
+The collection of attributes that may differ between installation instances of the application are stored in lib/constants.rb. Be sure to read and configure this file with the appropriate values.
 
 ## Database creation and initialization
 When it is first installed, the access privileges must be "bootstrapped" to permit the first user access. After this, the first user may configure further users through the web user interface.
@@ -207,8 +207,49 @@ RAILS_ENV=production bundle exec rake letsencrypt_plugin
 Alternatively you may exclude this gem from Gemfile (and remove it from config/routes.rb) and obtain the site ssl certificate by another means.
 
 ## Customizing the theme
+The colour scheme used for rendering the site are all collected in app/assets/stylesheets/theme.scss.
 
 ## Document storage
+Uploaded documents are stored within the filesystem, under the Capistrano shared directory, in uploads/store, with filenames assigned by the application.
+
+## Storing Multiple Site Variants in a Single Repo
+The set of files that localise the application for a particular client are contained in config/site_specific_linked_files/%site_name/*.
+
+Each of the these files contains sensitive information pertaining to a particular site (e.g. database password) or simply site-specific attributes (banner text, theme colours, email text). The files may be incorporated locally (during development) and dispatched to the appropriate server with the following workflow:
+
+
+### To add a new client to the repo
+
+1. invoke:
+
+```
+rake "create_site[site_name]"
+```
+
+This quickly sets up the directory structure for the site-specific files.
+
+2. create the localization files required for the client, use the set of files in config/site_specific_linked_files/demo/* as a guide.
+
+3. IMPORTANT: be sure to include the newly-added directory system in .gitignore, so they remain local and are never uploaded to the repo.
+
+4. symlink the localization files into the filesystem with:
+
+```
+rake "localize[site_name]"
+```
+
+### To upload the localization files
+The localization files will be stored on the server in the Capistrano shared directory. After invoking:
+
+```
+rake "localize[site_name]"
+```
+
+The files may be uploaded to the Capistrano shared directory with:
+
+```
+cap linked_files:upload:files
+```
 
 ## Modules
 The application is structures as modules, located in the vendor/gems directory. The framework for a new module may be generated
