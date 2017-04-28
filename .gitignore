@@ -29,6 +29,7 @@ config/deploy/production.rb
 config/deploy/nhri-hub.com.rb
 
 app/assets/images/banner_logo.png
+app/assets/stylesheets/theme.scss
 
 config/locales/site_specific/*.yml
 config/site_specific_linked_files/ws/
