@@ -45,10 +45,11 @@ group :development do
   gem 'spring'
   # Use Capistrano for deployment
   gem 'capistrano-rails'
+  gem 'capistrano', '~>3.8.1'
   # capistrano add-ons
   gem 'capistrano-bundler'
   #gem 'capistrano-rvm' # unmaintained gem is broken!
-  gem 'capistrano-passenger', '= 0.0.2'
+  gem 'capistrano-passenger'
   gem 'capistrano-faster-assets'
   # specify higher rev than required by capistrano in order to get
   # fixed connection pooling and faster deploys

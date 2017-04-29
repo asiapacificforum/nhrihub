@@ -1,1 +1,3 @@
-/Users/lesnightingill/Code/apf/config/site_specific_linked_files/demo/public/.htaccess
+RackBaseURI /
+PassengerAppRoot /home/nhrihubc/www/nhri-hub.com/current
+RailsEnv production

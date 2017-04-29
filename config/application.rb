@@ -1,5 +1,8 @@
 require File.expand_path('../boot', __FILE__)
-require File.expand_path('../../lib/constants', __FILE__)
+begin
+  require File.expand_path('../../lib/constants', __FILE__)
+rescue LoadError
+end
 
 # Pick the frameworks you want:
 require "active_model/railtie"
@@ -32,7 +35,11 @@ module Apf
     config.i18n.load_path += Dir.glob(Rails.root.join("**","config","locales","**","*.yml"))
     config.i18n.default_locale = :en
 
-    config.action_mailer.default_url_options = {:host => SITE_URL}
+    begin
+      config.action_mailer.default_url_options = {:host => SITE_URL}
+    rescue NameError
+      config.action_mailer.default_url_options = {:host => "not_configured"}
+    end
     config.action_mailer.preview_path = "#{Rails.root}/spec/mailers/previews"
 
     # see http://railsapps.github.io/rails-environment-variables.html

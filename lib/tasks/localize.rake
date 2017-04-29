@@ -1,3 +1,15 @@
+def update_config_file(site)
+  config_file = Rails.root.join("config/site_specific_linked_files/current_config.yml")
+  if File.exists?(config_file)
+    config = YAML.load_file(config_file)
+    puts "previous build was for site: #{config[:current]}"
+  else
+    puts "no previous build existed"
+  end
+  File.write(config_file, YAML.dump({:current => site}), nil, :mode => 'w')
+  puts "current build is for site: #{site}"
+end
+
 def cap_config(site)
   instance_variable_set("@cap_config_#{site}",instance_variable_get("@cap_config_#{site}") || `cap #{site} deploy:print_config_variables`)
   instance_variable_get("@cap_config_#{site}")
@@ -19,6 +31,20 @@ def deploy_to(site)
 end
 # invoke with rake "nhri_hub:localize[au]" including the quotes and no extra spaces
 namespace :nhri_hub do
+  #desc "unlink the capistrano linked files, else the links get uploaded, they're relinked on the server"
+  #task :set_null_site do
+    #["ws","demo"].each do |site|
+      #linked_files(site).each do |linked_file|
+        #file_path, link_path, file = linked_file
+        #begin
+        #FileUtils.rm link_path
+        #rescue Errno::ENOENT
+        #end
+      #end
+    #end
+    #update_config_file('none')
+  #end
+
   desc "during development pull linked files from servers, shared directory, into config/site_specific_linked_files/%site%/"
   task :fetch_linked_files do
     ["ws", "demo"].each do |site|
@@ -36,7 +62,7 @@ namespace :nhri_hub do
   task :ensure_build,[:role] do |t,args|
     stage = args[:role]
     build_site = YAML.load_file(Rails.root.join('config','site_specific_linked_files', 'current_config.yml'))[:current]
-    raise "build has not been done for #{stage}" unless build_site == stage
+    raise "build has not been done for #{stage}"unless build_site == stage
   end
 
   desc "upload linked files to server"
@@ -59,20 +85,13 @@ namespace :nhri_hub do
         rescue Errno::ENOENT
           # in case the link was not present, no need to remove it!
         end
-        File.symlink file_path, link_path
+        #File.symlink file_path, link_path
+        FileUtils.cp file_path, link_path
       else
         puts "#{file} not found"
       end #/if
     end #/do
-    config_file = Rails.root.join("config/site_specific_linked_files/current_config.yml")
-    if File.exists?(config_file)
-      config = YAML.load_file(config_file)
-      puts "previous build was for site: #{config[:current]}"
-    else
-      puts "no previous build existed"
-    end
-    File.write(config_file, YAML.dump({:current => site}), nil, :mode => 'w')
-    puts "current build is for site: #{site}"
+    update_config_file(site)
   end #/task
 
   desc "creates the directory structure within config/site_specific_linked_files for a new site called with rake \"nhri_hub:create_site[oz]\""

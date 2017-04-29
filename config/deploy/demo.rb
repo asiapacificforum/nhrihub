@@ -1,5 +1,3 @@
-set :filter, :roles => %w{demo}
-
 # If the environment differs from the stage name
 set :rails_env, 'production'
 
