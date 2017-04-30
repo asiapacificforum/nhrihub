@@ -9,7 +9,7 @@ set :migration_role, "demo" # triggers migration
 
 set :passenger_roles, "demo" # triggers passenger restart after update
 
-set :branch, "demo"
+set :branch, "master"
 
 # server-based syntax
 # ======================
@@ -99,12 +99,32 @@ server 'demo',
   #}
 
 
+#namespace :deploy do
+  #task :ensure_build do
+    #run_locally  do
+      #rake "nhri_hub:ensure_build[demo]"
+    #end
+  #end
+
+  #before :starting, :ensure_build
+#end
+
 namespace :deploy do
-  task :ensure_build do
-    run_locally  do
-      rake "nhri_hub:ensure_build[demo]"
+
+  task :copy_config do
+    on release_roles :app do |role|
+      fetch(:linked_files).each do |linked_file|
+        #linked_files(shared_path).each do |file|
+          run_locally do
+            puts "uploading #{linked_file} to #{shared_path.join(linked_file)}"
+            `scp config/site_specific_linked_files/demo/#{linked_file} demo:#{shared_path.join(linked_file)}`
+            #execute :rsync, "config/#{file.to_s.gsub(/.*\/(.*)$/,"\\1")}", "#{user}#{hostname}:#{file.to_s.gsub(/(.*)\/[^\/]*$/, "\\1")}/"
+          end
+        #end
+      end
     end
   end
 
-  before :starting, :ensure_build
 end
+before "deploy:check:linked_files", "deploy:copy_config"
+
