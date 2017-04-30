@@ -116,7 +116,7 @@ namespace :deploy do
       fetch(:linked_files).each do |linked_file|
         #linked_files(shared_path).each do |file|
           run_locally do
-            puts "uploading #{linked_file} to #{shared_path.join(linked_file)}"
+            puts "uploading config/site_specific_linked_files/demo/#{linked_file} to #{shared_path.join(linked_file)}"
             `scp config/site_specific_linked_files/demo/#{linked_file} demo:#{shared_path.join(linked_file)}`
             #execute :rsync, "config/#{file.to_s.gsub(/.*\/(.*)$/,"\\1")}", "#{user}#{hostname}:#{file.to_s.gsub(/(.*)\/[^\/]*$/, "\\1")}/"
           end
