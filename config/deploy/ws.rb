@@ -1,6 +1,7 @@
 set :assets_roles, fetch(:asset_roles, []).push('ws')
 # If the environment differs from the stage name
 set :rails_env, 'production'
+set :site_name, 'ws'
 
 # server-based syntax
 # ======================
@@ -81,13 +82,3 @@ server 'ws',
   }
 
 #set :rvm_custom_path, "~/.rvm"
-
-namespace :deploy do
-  task :ensure_build do
-    run_locally  do
-      rake "nhri_hub:ensure_build[ws]"
-    end
-  end
-
-  before :starting, :ensure_build
-end

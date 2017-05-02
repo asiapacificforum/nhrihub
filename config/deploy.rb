@@ -74,8 +74,18 @@ namespace :deploy do
     end
   end
 
-  # Beware... this will overwrite critical files
-  # beware this clobbers database.yml
-  # before :finishing, 'linked_files:upload_files'
+  task :copy_config do
+    on release_roles :app do |role|
+      puts "uploading to server: #{fetch(:site_name)}"
+      fetch(:linked_files).each do |linked_file|
+        run_locally do
+          puts "uploading config/site_specific_linked_files/demo/#{linked_file} to #{shared_path.join(linked_file)}"
+          `scp config/site_specific_linked_files/demo/#{linked_file} demo:#{shared_path.join(linked_file)}`
+        end
+      end
+    end
+  end
 
 end
+before "deploy:check:linked_files", "deploy:copy_config"
+

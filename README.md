@@ -215,41 +215,36 @@ Uploaded documents are stored within the filesystem, under the Capistrano shared
 ## Storing Multiple Site Variants in a Single Repo
 The set of files that localise the application for a particular client are contained in config/site_specific_linked_files/%site_name/*.
 
-Each of the these files contains sensitive information pertaining to a particular site (e.g. database password) or simply site-specific attributes (banner text, theme colours, email text). The files may be incorporated locally (during development) and dispatched to the appropriate server with the following workflow:
+The files contain either sensitive information pertaining to a particular site (e.g. database password) or simply site-specific attributes (banner text, theme colours, email text). The files may be incorporated locally (during development) and dispatched to the appropriate server with the following workflow:
 
-
-### To add a new client to the repo
+### Add a new client to the repo
 
 1. invoke:
-
 ```
-rake "create_site[site_name]"
+rails g nhri_hub_site site_name
 ```
+This does the following:
+* sets up the directory structure and some place holders and example files for the site-specific files
+* adds the root directory of the site configuration to .gitignore, so that any site-specific files are not added to the repository.
+* adds a capistrano deploy file to the config/deploy directory for configuration of this site's capistrano configuration
 
-This quickly sets up the directory structure for the site-specific files.
+2. Within the newly-created config/site_specific_linked_files/site_name create the localization files required for the site, use the set of files in config/site_specific_linked_files/demo/* as a guide.
 
-2. create the localization files required for the client, use the set of files in config/site_specific_linked_files/demo/* as a guide.
+3. Configure the capistrano deploy file created in step 1 with the linked files that capistrano should add to the shared directory on the server. This list of linked files should match exactly the files within the config/site_specific_linked_files/%site_name% directory.
 
-3. IMPORTANT: be sure to include the newly-added directory system in .gitignore, so they remain local and are never uploaded to the repo.
-
-4. symlink the localization files into the filesystem with:
-
+### Deploy the site
+The localization files will be stored on the server in the Capistrano shared directory. Invoke capistrano for the site with 
 ```
-rake "localize[site_name]"
+cap %site_name% deploy
 ```
+The site-specific files will be automatically uploaded from the config/site_specific_linked_files/%site_name% directory.
 
-### To upload the localization files
-The localization files will be stored on the server in the Capistrano shared directory. After invoking:
-
+### Configure Local Machine with Site-Specific Configuration
+A rake task is provide to link the site-specific configuration for a site to the local repository files, so that the app takes on the site's characteristics when the local rails server is started. Use:
 ```
-rake "localize[site_name]"
+rake "localize[au]"
 ```
-
-The files may be uploaded to the Capistrano shared directory with:
-
-```
-cap linked_files:upload:files
-```
+and then restart the Rails server to see on the development machine how the site looks that is represented in config/site_specific_linked_files/au/*.
 
 ## Modules
 The application is structures as modules, located in the vendor/gems directory. The framework for a new module may be generated

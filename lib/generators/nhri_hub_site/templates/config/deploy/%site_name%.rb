@@ -1,14 +1,13 @@
 # If the environment differs from the stage name
 set :rails_env, 'production'
-set :site_name, 'demo'
 
 # .htaccess is required by passenger on this server
 append :linked_files, 'public/.htaccess', 'config/initializers/action_mailer.rb', 'vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb'
-append :assets_roles, 'demo' # triggers asset precompilation if necessary
+append :assets_roles, 'site_name' # triggers asset precompilation if necessary
 
-set :migration_role, "demo" # triggers migration
+set :migration_role, "site_name" # triggers migration
 
-set :passenger_roles, "demo" # triggers passenger restart after update
+set :passenger_roles, "site_name" # triggers passenger restart after update
 
 set :branch, "master"
 
@@ -48,7 +47,7 @@ set :branch, "master"
 
 #set :rvm_roles, :rvm
 #role :rvm, "web"
-role :app, "demo"
+role :app, "site_name"
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '~/www/nhri-hub.com'
@@ -85,9 +84,9 @@ set :deploy_to, '~/www/nhri-hub.com'
 #     auth_methods: %w(publickey password)
 #     # password: 'please use keys'
 #   }
-server 'demo',
+server 'site_name',
   user: 'nhrihubc',
-  roles: %w{demo}#,
+  roles: %w{site_name}#,
 # ssh_options configured in ~/.ssh/config
 #ssh_options: {
 #user: 'nhrihubc', # overrides user setting above
@@ -98,4 +97,21 @@ server 'demo',
 #auth_methods: %w(publickey)
 ## password: 'please use keys'
 #}
+
+
+namespace :deploy do
+
+  task :copy_config do
+    on release_roles :app do |role|
+      fetch(:linked_files).each do |linked_file|
+        run_locally do
+          puts "uploading config/site_specific_linked_files/site_name/#{linked_file} to #{shared_path.join(linked_file)}"
+          `scp config/site_specific_linked_files/site_name/#{linked_file} site_name:#{shared_path.join(linked_file)}`
+        end
+      end
+    end
+  end
+
+end
+before "deploy:check:linked_files", "deploy:copy_config"
 

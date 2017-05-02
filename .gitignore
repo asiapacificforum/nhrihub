@@ -30,12 +30,11 @@ config/deploy/nhri-hub.com.rb
 app/assets/images/banner_logo.png
 app/assets/stylesheets/theme.scss
 
-#config/locales/site_specific/*.yml
 config/site_specific_linked_files/ws/
 config/site_specific_linked_files/demo/config/database.yml
 config/database.yml
 config/site_specific_linked_files/demo/config/secrets.yml
-#config/secrets.yml
+config/secrets.yml
 config/site_specific_linked_files/demo/config/initializers/action_mailer.rb
 config/initializers/action_mailer.rb
 config/site_specific_linked_files/demo/key/keyfile.pem
@@ -58,3 +57,4 @@ lib/import_data
 lib/tasks/import.rake
 anomalous_case_references.txt
 docs/.sass-cache
+config/site_specific_linked_files/foo
