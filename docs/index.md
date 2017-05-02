@@ -56,6 +56,8 @@ Development assistance is available at no cost to tailor the software to the par
 
 Let us know of your interest and we will contact you and answer your questions. If the application seems like a good match for your needs we can work on any customization that you might need, or we can work with you deploy the application as it is.
 
+There is now a demonstration and evaluation instance of the app available for reviewing at [www.nhri-hub.com](www.nhri-hub.com). If you would like access to this application, please use the form below and let us know, we will register you as a user and notify you of your access code.
+
 <form method="POST" action="http://formspree.io/nhri.hub@gmail.com">
   <input type="email" name="email" placeholder="Your email">
   <textarea name="message" placeholder="Tell us about your requirement"></textarea>
