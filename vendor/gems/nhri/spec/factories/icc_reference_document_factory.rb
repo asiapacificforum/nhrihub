@@ -6,14 +6,7 @@ FactoryGirl.define do
     filesize            { rand(1000000) + 10000 }
     original_filename   { Faker::Lorem.words(4).join('_')+'.docx' }
     original_type       { "docx" }
-
-    after(:build) { |doc|
-      if User.count > 20
-        doc.user = User.all.sample
-      else
-        doc.user = FactoryGirl.create(:user, :with_password)
-      end
-    }
+    user_id { if User.count > 20 then User.pluck(:id).sample else FactoryGirl.create(:user, :with_password).id end }
 
     trait :with_reminder do
       after(:build) do |ref_doc|

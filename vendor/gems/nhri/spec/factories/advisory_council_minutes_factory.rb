@@ -6,6 +6,6 @@ FactoryGirl.define do
     lastModifiedDate    { Faker::Date.between(1.year.ago, Date.today) }
     date                { Faker::Time.between(1.year.ago, Time.now) }
     original_type       "docx"
-    user_id             { User.all.sample.id }
+    user_id { if User.count > 20 then User.pluck(:id).sample else FactoryGirl.create(:user, :with_password).id end }
   end
 end

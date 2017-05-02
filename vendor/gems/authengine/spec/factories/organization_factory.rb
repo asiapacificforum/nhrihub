@@ -8,10 +8,10 @@ FactoryGirl.define  do
     email  {Faker::Internet.email}
     contacts {ContactList.new([])}
 
-    trait :with_users do
-      after(:build) do |o|
-        o.users << FactoryGirl.build(:user, :organization_id => o.id)
-      end
-    end
+    #trait :with_users do
+      #after(:build) do |o|
+        #o.users << FactoryGirl.build(:user, :organization_id => o.id)
+      #end
+    #end
   end
 end

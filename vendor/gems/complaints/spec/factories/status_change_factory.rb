@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :status_change do
-    association :user
+    user_id { if User.count > 20 then User.pluck(:id).sample else FactoryGirl.create(:user, :with_password).id end }
 
     trait :open do
       after(:create) do |status_change|

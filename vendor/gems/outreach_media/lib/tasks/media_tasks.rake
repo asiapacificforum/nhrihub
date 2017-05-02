@@ -34,7 +34,6 @@ namespace :media do
 
   desc "populate both media, including dependencies"
   task :populate => :environment do
-    Rake::Task["populate_users"].invoke
     Rake::Task["corporate_services:populate_sp"].invoke
     Rake::Task["media:populate_areas"].invoke
     Rake::Task["media:populate_media"].invoke
