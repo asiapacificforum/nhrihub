@@ -13,11 +13,11 @@ Since the source code of NHRI Hub is open-source, it can be tailored or enhanced
 
 # Modules
 ## Complaints Log
-Human rights complaints may be logged directly into a database, at the time that the complainaint presents the complaint. A paper copy may then be printed for complainant and witness signature endorsements, and for the complainant's personal files.
+Human rights complaints may be logged directly into a database, at the time that the complainaint presents the complaint. A paper copy may then be printed for complainant and witness signature endorsements, and for the complainant's personal files. A complaint that is opened must be assigned to a staff member, although it may later be reassigned to someone else. An email notification is sent to the assignee, and subsequently to new assignees if the complaint is reassigned.
 
 As a complaint proceeds from being opened to its resolution, all communications, whether by phone, email or letter, may be recorded with the complaint, so that a complete record of communications is always available to staff within the NHRI.
 
-Future reminders may be set, to prompt followup on communications and commitments, notify participants in a future meeting, or simply as an *aide memoire* for personal tasks. Reminders are sent automatically by email.
+Future reminders may be set, to prompt followup on communications and commitments, notify participants of a meeting, or simply as an *aide memoire* for personal tasks. Reminders may be sent once, or periodically, and are sent automatically by email.
 
 The overall list of open complaints may be reviewed, as a printed list if required, as a management tool to monitor the organization's work load and progress, and also to understand the reporting rate.
 
