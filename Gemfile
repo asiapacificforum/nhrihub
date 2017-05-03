@@ -97,6 +97,9 @@ gem "underscore-rails"
 gem "capistrano-linked-files"
 gem "message_block", git: "https://github.com/lazylester/message_block.git"
 gem "surus", git: "https://github.com/asiapacificforum/surus.git", :ref => "36cb18a" # postgres direct to json
+gem "aws-sdk", "~> 2"
+
+gem "get_back", :path => "../get_back"
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'

@@ -59,6 +59,12 @@ GIT
       useragent
 
 PATH
+  remote: ../get_back
+  specs:
+    get_back (0.0.1)
+      rails (~> 5.0.0)
+
+PATH
   remote: vendor/gems/authengine
   specs:
     authengine (0.0.4)
@@ -170,6 +176,14 @@ GEM
     arel (7.1.4)
     autoprefixer-rails (6.7.7.2)
       execjs
+    aws-sdk (2.9.14)
+      aws-sdk-resources (= 2.9.14)
+    aws-sdk-core (2.9.14)
+      aws-sigv4 (~> 1.0)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.9.14)
+      aws-sdk-core (= 2.9.14)
+    aws-sigv4 (1.0.0)
     bindata (2.4.0)
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
@@ -268,6 +282,7 @@ GEM
       jekyll (~> 3.3)
     jekyll-watch (1.5.0)
       listen (~> 3.0, < 3.1)
+    jmespath (1.3.1)
     jquery-rails (4.3.1)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
@@ -452,6 +467,7 @@ PLATFORMS
 
 DEPENDENCIES
   authengine!
+  aws-sdk (~> 2)
   bootstrap-sass
   byebug
   capistrano (~> 3.8.1)
@@ -470,6 +486,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   faker
   font-awesome-sass
+  get_back!
   haml-rails
   internal_documents!
   issues_reporter!
