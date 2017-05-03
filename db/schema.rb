@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170401003007) do
+ActiveRecord::Schema.define(version: 20170503133854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -275,6 +275,15 @@ ActiveRecord::Schema.define(version: 20170401003007) do
     t.string   "original_type",     limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "glacier_archives", force: :cascade do |t|
+    t.text     "description"
+    t.text     "archive_id"
+    t.text     "checksum"
+    t.text     "location"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "headings", force: :cascade do |t|

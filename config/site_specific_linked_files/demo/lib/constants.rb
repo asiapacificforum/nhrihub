@@ -1,5 +1,6 @@
 TWO_FACTOR_AUTHENTICATION = 'disabled'
 SITE_URL = "nhri-hub.com"
+SITE_NAME = "demo"
 APPLICATION_ID = "https://#{SITE_URL}"
 ADMIN_EMAIL = "support@#{SITE_URL}"
 NO_REPLY_EMAIL = "no_reply@#{SITE_URL}"
