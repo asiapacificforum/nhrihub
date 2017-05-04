@@ -47,6 +47,7 @@ class User < ActiveRecord::Base
   end
 
   def register_request
+    return unless TwoFactorAuthentication.enabled?
     u2f = U2F::U2F.new(APPLICATION_ID)
     self.challenge = u2f.challenge
     self.challenge_timestamp = DateTime.now.utc

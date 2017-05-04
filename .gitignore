@@ -25,7 +25,7 @@ config/deploy/ws.rb
 
 app/assets/images/banner_logo.png
 app/assets/stylesheets/theme.scss
-lib/constants
+lib/constants.rb
 config/locales/site_specific/en.yml
 config/locales/site_specific/fr.yml
 public/.htaccess
