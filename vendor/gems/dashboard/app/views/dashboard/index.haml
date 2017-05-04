@@ -42,3 +42,10 @@ SSL Certificate expiry date:
 
     $('body').on 'click', '#csp_reports #delete_all', delete_all
 
+
+- if defined? GlacierArchive
+  %h2 AWS Glacier Archives
+  - if @glacier_archives.empty?
+    %p None have been created
+  - else
+    %p= @glacier_archives.count
