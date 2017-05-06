@@ -55,5 +55,6 @@ lib/import_data
 lib/tasks/import.rake
 anomalous_case_references.txt
 docs/.sass-cache
+db/backups
 
 config/site_specific_linked_files/ws/
