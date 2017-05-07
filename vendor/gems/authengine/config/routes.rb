@@ -74,7 +74,4 @@ Rails.application.routes.draw do
     get '/logout' => "authengine/sessions#destroy"
 
   end
-  # Catch all requests without a locale and redirect to the default...
-  match '*path', to: redirect("/#{I18n.default_locale}/%{path}"), constraints: lambda { |req| !req.path.starts_with? "/#{I18n.default_locale}/" }, via: [:get, :post]
-  match '', to: redirect("/#{I18n.default_locale}"), via: [:get, :post]
 end

@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   mount MagicLamp::Genie, at: "/magic_lamp" if defined?(MagicLamp)
 
   mount LetsencryptPlugin::Engine, at: '/'
+  mount GetBack::Engine, at: '/'
 
   scope "/:locale" do
   # this route is specified as it's used in authengine as the place
@@ -66,4 +67,8 @@ Rails.application.routes.draw do
     resources :csp_reports, :only => [:index, :create]
     get 'csp_reports/clear_all', :to => 'csp_reports#clear_all', :via => :get
   end
+  # Catch all requests without a locale and redirect to the default...
+  # see https://dhampik.com/blog/rails-routes-tricks-with-locales for explanation
+  match '*path', to: redirect("/#{I18n.default_locale}/%{path}"), constraints: lambda { |req| !req.path.starts_with? "/#{I18n.default_locale}/" }, via: [:get, :post]
+  match '', to: redirect("/#{I18n.default_locale}"), via: [:get, :post]
 end
