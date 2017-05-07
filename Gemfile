@@ -100,7 +100,7 @@ gem "surus", git: "https://github.com/asiapacificforum/surus.git", :ref => "36cb
 gem "aws-sdk", "~> 2"
 
 #gem "get_back", :path => "../get_back"
-gem "get_back", :git => "https://github.com/lazylester/get_back.git", :ref => "92640d7"
+gem "get_back", :git => "https://github.com/lazylester/get_back.git", :ref => "69a672d"
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'
