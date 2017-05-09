@@ -8,7 +8,7 @@
     %table.table{:style => 'width:300px'}
       %tr
         %td= label_tag :login, t("user_name", :scope => scope)
-        %td=text_field_tag "login"
+        %td=text_field_tag "login", nil, :autocomplete => 'off'
       %tr
         %td= label_tag :password, t("password", :scope => scope)
         %td
