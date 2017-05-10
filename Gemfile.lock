@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/lazylester/get_back.git
-  revision: d146cbfdccc1376df88635478a396c91df5b545b
-  ref: d146cbf
+  revision: 0b15db37c71fc6ca80e29378c54e53e9853d8836
+  ref: 0b15db3
   specs:
     get_back (0.0.1)
       httparty
@@ -75,7 +75,7 @@ PATH
       haml
       message_block
       rails (~> 5.0.0)
-      u2f
+      u2f (= 0.2.1)
 
 PATH
   remote: vendor/gems/complaint_reporter
@@ -450,7 +450,7 @@ GEM
       thread_safe (~> 0.1)
     tzinfo-data (1.2017.2)
       tzinfo (>= 1.0.0)
-    u2f (1.0.0)
+    u2f (0.2.1)
     uglifier (3.2.0)
       execjs (>= 0.3.0, < 3)
     underscore-rails (1.8.3)
