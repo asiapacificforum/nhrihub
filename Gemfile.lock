@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/lazylester/get_back.git
-  revision: 0e65f37445ca6126e063ea9f08d172c1d2573adc
-  ref: 0e65f37
+  revision: bb0a99ded514461b8eb1cce026dc63a7f56c9da6
+  ref: HEAD
   specs:
     get_back (0.0.1)
       httparty
