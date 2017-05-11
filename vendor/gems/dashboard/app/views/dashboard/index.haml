@@ -48,4 +48,11 @@ SSL Certificate expiry date:
   - if @glacier_archives.empty?
     %p None have been created
   - else
-    %p= @glacier_archives.count
+    %table
+      - @glacier_archives.each do |archive|
+        %tr
+          %td{:style => 'width:120px;'}= archive.created_at.to_date.to_s(:default)
+          - if archive.retrieval_status
+            %td= archive.retrieval_status
+          - else
+            %td= link_to 'initiate retrieval'
