@@ -69,6 +69,6 @@ Rails.application.routes.draw do
   end
   # Catch all requests without a locale and redirect to the default...
   # see https://dhampik.com/blog/rails-routes-tricks-with-locales for explanation
-  match '*path', to: redirect("/#{I18n.default_locale}/%{path}"), constraints: lambda { |req| !req.path.starts_with? "/#{I18n.default_locale}" }, via: [:get, :post]
-  match '', to: redirect("/#{I18n.default_locale}"), via: [:get, :post]
+  get "/*path", to: redirect("/#{I18n.default_locale}/%{path}", status: 302), constraints: {path: /(?!(#{I18n.available_locales.join("|")})).*/}, format: false
+  get '', to: redirect("/#{I18n.default_locale}")
 end
