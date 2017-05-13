@@ -1,12 +1,12 @@
 %h1=t('.heading')
 
 :css
-  #csp_link {
+  #csp_link, #initiate_retrieval {
     color: #337ab7;
     text-decoration: none;
     cursor : pointer;
   }
-  #csp_link:hover {
+  #csp_link:hover, #initiate_retrieval:hover {
     color: #23527c;
     text-decoration: underline;
     cursor : pointer;
@@ -48,11 +48,10 @@ SSL Certificate expiry date:
   - if @glacier_archives.empty?
     %p None have been created
   - else
-    %table
+    %table#glacier_archives
       - @glacier_archives.each do |archive|
-        %tr
-          %td{:style => 'width:120px;'}= archive.created_at.to_date.to_s(:default)
-          - if archive.retrieval_status
-            %td= archive.retrieval_status
-          - else
-            %td= link_to 'initiate retrieval'
+        = render :partial => 'glacier_archive', :locals => {:archive => archive}
+
+:coffeescript
+  @initiate_retrieval = (id)->
+    $('#glacier_archives').load("#{ get_back.aws_archive_retrieval_job_create_path}", {archive_id : id})
