@@ -21,4 +21,5 @@ set :output, 'log/cron_log.log'
 
 every 1.days, :at => '1:00 am' do
   rake "nhri_docs:mail_reminders"
+  rake "aws:create_db_archive" if defined? GetBack
 end
