@@ -1,6 +1,10 @@
 require 'rspec/core/shared_context'
 
 module AdvisoryCouncilMinutesSpecHelper
+  def attached_files
+    Dir.glob(Rails.root.join('tmp', 'uploads', 'store', '*'))
+  end
+
   def first_edit_icon
     page.all('.advisory_council_minutes .icon .no_edit i.fa-pencil-square-o').first
   end
