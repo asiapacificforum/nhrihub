@@ -1,6 +1,3 @@
 %tr
   %td{:style => 'width:120px;'}= archive.created_at.to_date.to_s(:default)
-  - if archive.retrieval_status
-    %td= archive.retrieval_status
-  - else
-    %td#initiate_retrieval{:onclick=>"initiate_retrieval("+archive.id.to_s+")"} initiate retrieval
+  = render :partial => archive.retrieval_status, :locals => {:archive => archive}

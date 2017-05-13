@@ -49,8 +49,7 @@ SSL Certificate expiry date:
     %p None have been created
   - else
     %table#glacier_archives
-      - @glacier_archives.each do |archive|
-        = render :partial => 'glacier_archive', :locals => {:archive => archive}
+      = render :partial => 'glacier_archive', :collection => @glacier_archives, :as => :archive
 
 :coffeescript
   @initiate_retrieval = (id)->
