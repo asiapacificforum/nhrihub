@@ -44,13 +44,4 @@ SSL Certificate expiry date:
 
 
 - if defined? GlacierArchive
-  %h2 AWS Glacier Archives
-  - if @glacier_archives.empty?
-    %p None have been created
-  - else
-    %table#glacier_archives
-      = render :partial => 'glacier_archive', :collection => @glacier_archives, :as => :archive
-
-:coffeescript
-  @initiate_retrieval = (id)->
-    $('#glacier_archives').load("#{ get_back.aws_archive_retrieval_job_create_path}", {archive_id : id})
+  = render :partial => 'get_back/aws_archive_retrieval_jobs/index', :locals => {:glacier_archives => @glacier_archives}
