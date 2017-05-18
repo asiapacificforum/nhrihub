@@ -7,15 +7,6 @@ GIT
       activerecord (> 4.1)
 
 GIT
-  remote: https://github.com/lazylester/get_back.git
-  revision: b07b43271cf039181ba087285ac8667cb0806f0c
-  ref: b07b432
-  specs:
-    get_back (0.0.1)
-      httparty
-      rails (~> 5.0.0)
-
-GIT
   remote: https://github.com/lazylester/message_block.git
   revision: cb7dc71a9f2ae71be8940788f43632c9b1057318
   specs:
@@ -66,6 +57,13 @@ GIT
   specs:
     secure_headers (3.6.3)
       useragent
+
+PATH
+  remote: ../get_back
+  specs:
+    get_back (0.0.1)
+      httparty
+      rails (~> 5.0.0)
 
 PATH
   remote: vendor/gems/authengine
