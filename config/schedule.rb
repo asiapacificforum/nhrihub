@@ -19,7 +19,7 @@
 env :PATH, ENV['PATH']
 
 set :output, 'log/cron_log.log'
-set :bundle_command, "/usr/local/bin/bundle"
+set :bundle_command, "/usr/local/bin/bundle exec"
 
 every 1.days, :at => '1:00 am' do
   rake "nhri_docs:mail_reminders"
