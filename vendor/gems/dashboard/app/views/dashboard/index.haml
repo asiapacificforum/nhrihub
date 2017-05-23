@@ -1,12 +1,12 @@
 %h1=t('.heading')
 
 :css
-  #csp_link, #initiate_retrieval {
+  .action_link {
     color: #337ab7;
     text-decoration: none;
     cursor : pointer;
   }
-  #csp_link:hover, #initiate_retrieval:hover {
+  .action_link:hover {
     color: #23527c;
     text-decoration: underline;
     cursor : pointer;
@@ -22,7 +22,7 @@ SSL Certificate expiry date:
 
 %h2 Content Security Policy
 %ul
-  %li#csp_link{:onclick=>"fetch_csp_reports()"} CSP reports
+  %li#csp_link.action_link{:onclick=>"fetch_csp_reports()"} CSP reports
 
 #csp_reports
 
