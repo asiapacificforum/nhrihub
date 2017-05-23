@@ -87,7 +87,7 @@ set :deploy_to, '~/www/nhri-hub.com'
 #   }
 server 'demo',
   user: 'nhrihubc',
-  roles: %w{demo}#,
+  roles: %w{demo}#, db  would triggers whenever callback
 # ssh_options configured in ~/.ssh/config
 #ssh_options: {
 #user: 'nhrihubc', # overrides user setting above

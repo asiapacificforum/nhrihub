@@ -1,5 +1,5 @@
 set :whenever_command, "bundle exec whenever"
-require 'whenever/capistrano'
+#require 'whenever/capistrano'
 # config valid only for current version of Capistrano
 lock '3.8.1'
 
@@ -64,8 +64,6 @@ set :migration_role, "web"
 
 
 namespace :deploy do
-  after :updated, 'whenever:update_crontab'
-  after :reverted, 'whenever:update_crontab'
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
@@ -89,5 +87,21 @@ namespace :deploy do
   end
 
 end
+#after "deploy:updated", 'whenever:update_crontab'
+#after "deploy:reverted", 'whenever:update_crontab'
+# could not get whenever gem's own update_crontab to work
+# as the release path was not set, so use this workaround
+namespace :deploy do
+ task :update_crontab do
+   on roles(:all) do
+     within release_path do
+       execute :bundle, :exec, :whenever, "--update-crontab"
+     end
+   end
+ end
+end
+after 'deploy:symlink:release', 'deploy:update_crontab'
+
+
 before "deploy:check:linked_files", "deploy:copy_config"
 

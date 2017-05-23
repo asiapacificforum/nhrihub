@@ -1,0 +1,170 @@
+00:00 git:wrapper
+      01 mkdir -p /tmp
+    ✔ 01 nhrihubc@demo 0.756s
+      Uploading /tmp/git-ssh-nhri_docs-demo-lesnightingill.sh 100.0%
+      02 chmod 700 /tmp/git-ssh-nhri_docs-demo-lesnightingill.sh
+    ✔ 02 nhrihubc@demo 0.154s
+00:01 git:check
+      01 git ls-remote git@github.com:asiapacificforum/nhridocs.git HEAD
+      01 c77a4917db975ad2f1e8cb2008bf7bdf1782ad66	HEAD
+    ✔ 01 nhrihubc@demo 0.593s
+00:01 deploy:check:directories
+      01 mkdir -p ~/www/nhri-hub.com/shared ~/www/nhri-hub.com/releases
+    ✔ 01 nhrihubc@demo 0.293s
+00:02 deploy:check:linked_dirs
+      01 mkdir -p ~/www/nhri-hub.com/shared/certificates ~/www/nhri-hub.com/shared/log ~/www/nhri-hub.com/shared/tmp/pids ~/www/nhri-hub.com/shared/tmp/cache ~/www/nhri-hub.com/shared/tmp/sockets ~/www/nhri-hub.com/shared/vendor/bundle ~/www/nhri-hub.com/shared/lib/import_data ~/www/nhri-hub.com/shared/public/assets
+    ✔ 01 nhrihubc@demo 0.542s
+00:02 deploy:check:make_linked_dirs
+      01 mkdir -p ~/www/nhri-hub.com/shared/config ~/www/nhri-hub.com/shared/lib ~/www/nhri-hub.com/shared/app/assets/images ~/www/nhri-hub.com/shared/config/locales/site_specific ~/www/nhri-hub.com/shared/key ~/www/nhri-hub.com/shared/app/assets/stylesheets ~/www/nhri-hub.com/shared/public ~/www/nhri-hub.com/shared/config/initializers ~/www/nhri-hub.com/shared/vendor/gems/authengine/app/views/authengine/user_mailer
+    ✔ 01 nhrihubc@demo 0.111s
+uploading to server: demo
+uploading config/site_specific_linked_files/demo/config/database.yml to ~/www/nhri-hub.com/shared/config/database.yml
+uploading config/site_specific_linked_files/demo/config/secrets.yml to ~/www/nhri-hub.com/shared/config/secrets.yml
+uploading config/site_specific_linked_files/demo/lib/constants.rb to ~/www/nhri-hub.com/shared/lib/constants.rb
+uploading config/site_specific_linked_files/demo/app/assets/images/banner_logo.png to ~/www/nhri-hub.com/shared/app/assets/images/banner_logo.png
+uploading config/site_specific_linked_files/demo/config/locales/site_specific/en.yml to ~/www/nhri-hub.com/shared/config/locales/site_specific/en.yml
+uploading config/site_specific_linked_files/demo/config/locales/site_specific/fr.yml to ~/www/nhri-hub.com/shared/config/locales/site_specific/fr.yml
+uploading config/site_specific_linked_files/demo/key/keyfile.pem to ~/www/nhri-hub.com/shared/key/keyfile.pem
+uploading config/site_specific_linked_files/demo/config/letsencrypt_plugin.yml to ~/www/nhri-hub.com/shared/config/letsencrypt_plugin.yml
+uploading config/site_specific_linked_files/demo/config/env.yml to ~/www/nhri-hub.com/shared/config/env.yml
+uploading config/site_specific_linked_files/demo/app/assets/stylesheets/theme.scss to ~/www/nhri-hub.com/shared/app/assets/stylesheets/theme.scss
+uploading config/site_specific_linked_files/demo/public/.htaccess to ~/www/nhri-hub.com/shared/public/.htaccess
+uploading config/site_specific_linked_files/demo/config/initializers/action_mailer.rb to ~/www/nhri-hub.com/shared/config/initializers/action_mailer.rb
+uploading config/site_specific_linked_files/demo/vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb to ~/www/nhri-hub.com/shared/vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb
+00:14 git:clone
+      The repository mirror is at ~/www/nhri-hub.com/repo
+00:14 git:update
+      01 git remote set-url origin git@github.com:asiapacificforum/nhridocs.git
+    ✔ 01 nhrihubc@demo 0.119s
+      02 git remote update --prune
+      02 Fetching origin
+    ✔ 02 nhrihubc@demo 0.362s
+00:14 git:create_release
+      01 mkdir -p ~/www/nhri-hub.com/releases/20170523143459
+    ✔ 01 nhrihubc@demo 0.107s
+      02 git archive master | /usr/bin/env tar -x -f - -C ~/www/nhri-hub.com/releases/20170523143459
+    ✔ 02 nhrihubc@demo 0.217s
+00:15 deploy:set_current_revision
+      01 echo "c77a4917db975ad2f1e8cb2008bf7bdf1782ad66" >> REVISION
+    ✔ 01 nhrihubc@demo 0.122s
+00:15 deploy:symlink:linked_files
+      01 mkdir -p ~/www/nhri-hub.com/releases/20170523143459/config ~/www/nhri-hub.com/releases/20170523143459/lib ~/www/nhri-hub.com/releases/20170523143459/app/assets/images ~/www/nhri-hub.com/releases/20170523143459/config/locales/site_specific ~/www/nhri-hub.com/releases/20170523143459/key ~/www/nhri-hub.com/releases/20170523143459/app/assets/stylesheets ~/www/nhri-hub.com/releases/20170523143459/public ~/www/nhri-hub.com/releases/20170523143459/config/initializers ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/authengine/app/views/authengine/user_mailer
+    ✔ 01 nhrihubc@demo 0.116s
+linking config/database.yml
+      02 ln -s ~/www/nhri-hub.com/shared/config/database.yml ~/www/nhri-hub.com/releases/20170523143459/config/database.yml
+    ✔ 02 nhrihubc@demo 0.129s
+linking config/secrets.yml
+      03 ln -s ~/www/nhri-hub.com/shared/config/secrets.yml ~/www/nhri-hub.com/releases/20170523143459/config/secrets.yml
+    ✔ 03 nhrihubc@demo 0.115s
+linking lib/constants.rb
+      04 ln -s ~/www/nhri-hub.com/shared/lib/constants.rb ~/www/nhri-hub.com/releases/20170523143459/lib/constants.rb
+    ✔ 04 nhrihubc@demo 0.123s
+linking app/assets/images/banner_logo.png
+      05 ln -s ~/www/nhri-hub.com/shared/app/assets/images/banner_logo.png ~/www/nhri-hub.com/releases/20170523143459/app/assets/images/banner_logo.png
+    ✔ 05 nhrihubc@demo 0.130s
+linking config/locales/site_specific/en.yml
+      06 ln -s ~/www/nhri-hub.com/shared/config/locales/site_specific/en.yml ~/www/nhri-hub.com/releases/20170523143459/config/locales/site_specific/en.yml
+    ✔ 06 nhrihubc@demo 0.122s
+linking config/locales/site_specific/fr.yml
+      07 ln -s ~/www/nhri-hub.com/shared/config/locales/site_specific/fr.yml ~/www/nhri-hub.com/releases/20170523143459/config/locales/site_specific/fr.yml
+    ✔ 07 nhrihubc@demo 0.110s
+linking key/keyfile.pem
+      08 ln -s ~/www/nhri-hub.com/shared/key/keyfile.pem ~/www/nhri-hub.com/releases/20170523143459/key/keyfile.pem
+    ✔ 08 nhrihubc@demo 0.115s
+linking config/letsencrypt_plugin.yml
+      09 ln -s ~/www/nhri-hub.com/shared/config/letsencrypt_plugin.yml ~/www/nhri-hub.com/releases/20170523143459/config/letsencrypt_plugin.yml
+    ✔ 09 nhrihubc@demo 0.112s
+linking config/env.yml
+      10 ln -s ~/www/nhri-hub.com/shared/config/env.yml ~/www/nhri-hub.com/releases/20170523143459/config/env.yml
+    ✔ 10 nhrihubc@demo 0.122s
+linking app/assets/stylesheets/theme.scss
+      11 ln -s ~/www/nhri-hub.com/shared/app/assets/stylesheets/theme.scss ~/www/nhri-hub.com/releases/20170523143459/app/assets/stylesheets/theme.scss
+    ✔ 11 nhrihubc@demo 0.123s
+linking public/.htaccess
+      12 ln -s ~/www/nhri-hub.com/shared/public/.htaccess ~/www/nhri-hub.com/releases/20170523143459/public/.htaccess
+    ✔ 12 nhrihubc@demo 0.114s
+linking config/initializers/action_mailer.rb
+      13 ln -s ~/www/nhri-hub.com/shared/config/initializers/action_mailer.rb ~/www/nhri-hub.com/releases/20170523143459/config/initializers/action_mailer.rb
+    ✔ 13 nhrihubc@demo 0.122s
+linking vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb
+      14 ln -s ~/www/nhri-hub.com/shared/vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb
+    ✔ 14 nhrihubc@demo 0.120s
+00:20 deploy:symlink:linked_dirs
+      01 mkdir -p ~/www/nhri-hub.com/releases/20170523143459 ~/www/nhri-hub.com/releases/20170523143459/tmp ~/www/nhri-hub.com/releases/20170523143459/vendor ~/www/nhri-hub.com/releases/20170523143459/lib ~/www/nhri-hub.com/releases/20170523143459/public
+    ✔ 01 nhrihubc@demo 0.124s
+      02 rm -rf ~/www/nhri-hub.com/releases/20170523143459/certificates
+    ✔ 02 nhrihubc@demo 0.107s
+      03 ln -s ~/www/nhri-hub.com/shared/certificates ~/www/nhri-hub.com/releases/20170523143459/certificates
+    ✔ 03 nhrihubc@demo 0.112s
+      04 rm -rf ~/www/nhri-hub.com/releases/20170523143459/log
+    ✔ 04 nhrihubc@demo 0.121s
+      05 ln -s ~/www/nhri-hub.com/shared/log ~/www/nhri-hub.com/releases/20170523143459/log
+    ✔ 05 nhrihubc@demo 0.112s
+      06 ln -s ~/www/nhri-hub.com/shared/tmp/pids ~/www/nhri-hub.com/releases/20170523143459/tmp/pids
+    ✔ 06 nhrihubc@demo 0.117s
+      07 ln -s ~/www/nhri-hub.com/shared/tmp/cache ~/www/nhri-hub.com/releases/20170523143459/tmp/cache
+    ✔ 07 nhrihubc@demo 0.113s
+      08 ln -s ~/www/nhri-hub.com/shared/tmp/sockets ~/www/nhri-hub.com/releases/20170523143459/tmp/sockets
+    ✔ 08 nhrihubc@demo 0.115s
+      09 ln -s ~/www/nhri-hub.com/shared/vendor/bundle ~/www/nhri-hub.com/releases/20170523143459/vendor/bundle
+    ✔ 09 nhrihubc@demo 0.109s
+      10 ln -s ~/www/nhri-hub.com/shared/lib/import_data ~/www/nhri-hub.com/releases/20170523143459/lib/import_data
+    ✔ 10 nhrihubc@demo 0.121s
+      11 ln -s ~/www/nhri-hub.com/shared/public/assets ~/www/nhri-hub.com/releases/20170523143459/public/assets
+    ✔ 11 nhrihubc@demo 0.117s
+00:23 bundler:install
+      01 bundle install --path ~/www/nhri-hub.com/shared/bundle --without development test --deployment --quiet
+      01 fatal: Not a git repository (or any of the parent directories): .git
+    ✔ 01 nhrihubc@demo 3.860s
+00:28 deploy:assets:precompile
+      01 ls ~/www/nhri-hub.com/releases/20170523142956/assets_manifest_backup
+    ✔ 01 nhrihubc@demo 0.138s
+      02 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/app/assets ~/www/nhri-hub.com/releases/20170523142956/app/assets
+    ✔ 02 nhrihubc@demo 0.117s
+      03 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/assets
+    ✔ 03 nhrihubc@demo 0.151s
+      04 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/Gemfile.lock ~/www/nhri-hub.com/releases/20170523142956/Gemfile.lock
+    ✔ 04 nhrihubc@demo 0.130s
+      05 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/config/routes.rb ~/www/nhri-hub.com/releases/20170523142956/config/routes.rb
+    ✔ 05 nhrihubc@demo 0.108s
+      06 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/complaint_reporter/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/complaint_reporter/app/assets
+    ✔ 06 nhrihubc@demo 0.121s
+      07 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/complaints/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/complaints/app/assets
+    ✔ 07 nhrihubc@demo 0.112s
+      08 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/corporate_services/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/corporate_services/app/assets
+    ✔ 08 nhrihubc@demo 0.307s
+      09 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/dashboard/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/dashboard/app/assets
+    ✔ 09 nhrihubc@demo 0.115s
+      10 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/internal_documents/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/internal_documents/app/assets
+    ✔ 10 nhrihubc@demo 0.122s
+      11 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/issues_reporter/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/issues_reporter/app/assets
+    ✔ 11 nhrihubc@demo 0.344s
+      12 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/nhri/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/nhri/app/assets
+    ✔ 12 nhrihubc@demo 0.109s
+      13 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/outreach_media/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/outreach_media/app/assets
+    ✔ 13 nhrihubc@demo 0.120s
+      14 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/projects/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/projects/app/assets
+    ✔ 14 nhrihubc@demo 0.116s
+      15 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/strategic_plan_reporter/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/strategic_plan_reporter/app/assets
+    ✔ 15 nhrihubc@demo 0.121s
+      Skipping asset precompile, no asset diff found
+      16 cp -r ~/www/nhri-hub.com/releases/20170523142956/public/assets ~/www/nhri-hub.com/releases/20170523143459/public/assets
+    ✔ 16 nhrihubc@demo 0.115s
+00:34 deploy:assets:backup_manifest
+      01 mkdir -p ~/www/nhri-hub.com/releases/20170523143459/assets_manifest_backup
+    ✔ 01 nhrihubc@demo 0.120s
+      02 cp /home/nhrihubc/www/nhri-hub.com/releases/20170523143459/public/assets/.sprockets-manifest-758e11474768f7f81048a474ff4227db.json ~/www/nhri-hub.com/releases/20170523143459/assets_manifest_backup
+    ✔ 02 nhrihubc@demo 0.106s
+00:34 deploy:migrate
+      [deploy:migrate] Run `rake db:migrate`
+00:35 deploy:migrating
+      01 bundle exec rake db:migrate
+      01 fatal: Not a git repository (or any of the parent directories): .git
+      01 /home/nhrihubc/www/nhri-hub.com/shared/bundle/ruby/2.4.0/gems/activesupport-5.0.1/lib/active_support/xml_mini.rb:51: warning: constant ::Fixnum is deprecated
+      01 /home/nhrihubc/www/nhri-hub.com/shared/bundle/ruby/2.4.0/gems/activesupport-5.0.1/lib/active_support/xml_mini.rb:52: warning: constant ::Bignum is deprecated
+      01 /home/nhrihubc/www/nhri-hub.com/releases/20170523143459/lib/ruby_class_extensions.rb:1: warning: constant ::Fixnum is deprecated
+      01 /home/nhrihubc/www/nhri-hub.com/shared/bundle/ruby/2.4.0/gems/activesupport-5.0.1/lib/active_support/core_ext/numeric/conversions.rb:138: warning: constant ::Fixnum is deprecated
+    ✔ 01 nhrihubc@demo 4.238s
+00:39 whenever:update_crontab
+      01 cd /var/www/nhri_docs/current && bundle exec whenever
+      01 bash: line 0: cd: /var/www/nhri_docs/current: No such file or directory
