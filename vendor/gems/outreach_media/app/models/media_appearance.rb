@@ -37,7 +37,7 @@ class MediaAppearance < ActiveRecord::Base
                        :create_note_url]})
   end
 
-  # assign a generic name so that javascript is reusable for differenct collections
+  # assign a generic name so that javascript is reusable for different collections
   alias_method :collection_item_areas, :media_areas
 
   def performance_indicator_associations
