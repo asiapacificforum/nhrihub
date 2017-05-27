@@ -44,5 +44,6 @@
     //  %li Admin
     //  %li User management
     .container.theme-showcase{:role => :main}
+      = render :partial => "shared/flash_error"
       = yield
     .attribution= attribution

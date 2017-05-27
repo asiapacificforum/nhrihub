@@ -1,3 +1,4 @@
+require 'byebug'
 set :whenever_command, "bundle exec whenever"
 #require 'whenever/capistrano'
 # config valid only for current version of Capistrano
@@ -89,18 +90,6 @@ namespace :deploy do
 end
 #after "deploy:updated", 'whenever:update_crontab'
 #after "deploy:reverted", 'whenever:update_crontab'
-# could not get whenever gem's own update_crontab to work
-# as the release path was not set, so use this workaround
-namespace :deploy do
- task :update_crontab do
-   on roles(:all) do
-     within release_path do
-       execute :bundle, :exec, :whenever, "--update-crontab"
-     end
-   end
- end
-end
-after 'deploy:symlink:release', 'deploy:update_crontab'
 
 
 before "deploy:check:linked_files", "deploy:copy_config"

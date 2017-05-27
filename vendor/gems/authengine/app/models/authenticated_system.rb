@@ -1,7 +1,9 @@
 # AuthenticatedSystem is 'include'd in ActionController by the authengine engine
 # see lib/authengine/engine.rb
 module AuthenticatedSystem
-protected
+  class XhrPermissionDenied < StandardError; end
+
+  protected
   # Returns true or false if the user is logged in.
   # Preloads @current_user with the user model if they're logged in.
   def logged_in?
@@ -98,37 +100,42 @@ protected
     # unless that page is on another site or has
     # the same address as the resource they're trying to access.
     flash[:error] = "You don't have permission to complete that action."
-    respond_to do |format|
-      format.html do
-        logger.info "format.html"
-        domain_name = SITE_URL
-        http_referer = request.env["HTTP_REFERER"]
+    if request.xhr?
+      logger.info "xhr request"
+      raise XhrPermissionDenied
+    else
+      respond_to do |format|
+        format.html do
+          logger.info "format.html"
+          domain_name = SITE_URL
+          http_referer = request.env["HTTP_REFERER"]
 
-        referer_domain = http_referer.match(/(http:\/\/)?([^\/]*)/)[2] unless http_referer.nil?
-        store_location
-        store_referer
+          referer_domain = http_referer.match(/(http:\/\/)?([^\/]*)/)[2] unless http_referer.nil?
+          store_location
+          store_referer
 
-        if http_referer.nil?
-          session[:refer_to] = nil
-          redirect_to root_path
-        elsif referer_domain != domain_name # came from another site, go to root path
-          session[:refer_to] = nil
-          redirect_to root_path
-        elsif http_referer.match(session[:return_to]) #requesting the same page again go to root path
-          redirect_to root_path
-        else # go back to previous page
-          redirect_to_referer_or_default(root_path)
+          if http_referer.nil?
+            session[:refer_to] = nil
+            redirect_to root_path
+          elsif referer_domain != domain_name # came from another site, go to root path
+            session[:refer_to] = nil
+            redirect_to root_path
+          elsif http_referer.match(session[:return_to]) #requesting the same page again go to root path
+            redirect_to root_path
+          else # go back to previous page
+            redirect_to_referer_or_default(root_path)
+          end
         end
-      end
-      format.js do
-        logger.info "format.js"
-        render :plain => "You don't have permission to complete that action.", :status => '401 Unauthorized'
-      end
-      format.xml do
-        logger.info "format.xml"
-        headers["Status"]           = "Unauthorized"
-        headers["WWW-Authenticate"] = %(Basic realm="Web Password")
-        render :plain => "You don't have permission to complete that action.", :status => '401 Unauthorized'
+        format.js do
+          logger.info "format.js"
+          render :plain => "You don't have permission to complete that action.", :status => '401 Unauthorized'
+        end
+        format.xml do
+          logger.info "format.xml"
+          headers["Status"]           = "Unauthorized"
+          headers["WWW-Authenticate"] = %(Basic realm="Web Password")
+          render :plain => "You don't have permission to complete that action.", :status => '401 Unauthorized'
+        end
       end
     end
   end

@@ -27,4 +27,5 @@
 //= require jquery_json_parse_hack
 //= require js-routes
 //= require locale
+//= require flash
 Ractive.DEBUG = false

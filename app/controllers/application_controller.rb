@@ -4,6 +4,7 @@ require 'authorized_system'
 class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   include AuthorizedSystem
+  rescue_from AuthenticatedSystem::XhrPermissionDenied, :with => :xhr_permission_denied
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -13,6 +14,10 @@ class ApplicationController < ActionController::Base
   before_action :set_title
 
 private
+  def xhr_permission_denied
+    # implement this in controllers, as response is controller-specific
+  end
+
   def no_method_error(exception)
     render :template => "/errors/404.html.haml", :status => 404
   end
