@@ -51,9 +51,6 @@
       $('td#empty',el).closest('tr').remove()
       $('.message_block').html ''
 
-    form.bind "ajax:error", (e,data,status,xhr)->
-      $('.message_block').html window.flash_error_template({message : data.responseText})
-
     el.on 'click', delete_link, (e)->
       e.preventDefault()
       context = $(@).closest('tr')
@@ -62,12 +59,9 @@
       $.ajax
         url: url
         method: 'delete'
-        dataType: 'json'
         context: context # becomes 'this' in the callback
         success: (data, status, xhr)->
           this.remove()
           if el.find(".type").length == 0
             el.append "<tr><td id='empty'>#{ t('.empty')}</td></tr>"
           $('.message_block').html('')
-        error: (data,status,xhr) ->
-          $('.message_block').html window.flash_error_template({message : data.responseText})

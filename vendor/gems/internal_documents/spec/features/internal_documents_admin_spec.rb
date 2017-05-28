@@ -29,7 +29,7 @@ feature "internal document admin when user not permitted", :js => true do
         not_to change{ SiteConfig['internal_documents.filetypes'] }
       expect(page.all('.type').map(&:text)).not_to include("docx")
     end
-    expect( flash_message ).to eq "You don't have permission to complete that action."
+    expect( flash_message ).to eq 'Sorry but you do not have requisite privileges for this action'
   end
 
   scenario "delete a filetype" do
@@ -38,7 +38,7 @@ feature "internal document admin when user not permitted", :js => true do
         not_to change{ SiteConfig['internal_documents.filetypes'] }
       expect(page.all('.type').map(&:text)).to include("pdf")
     end
-    expect( flash_message ).to eq "You don't have permission to complete that action."
+    expect( flash_message ).to eq "Sorry but you do not have requisite privileges for this action"
   end
 
   scenario "change filesize" do
@@ -50,6 +50,6 @@ feature "internal document admin when user not permitted", :js => true do
         not_to change{ SiteConfig['internal_documents.filesize']}
       expect( page.find('span#filesize').text ).to eq default_value
     end
-    expect( flash_message ).to eq "You don't have permission to complete that action."
+    expect( flash_message ).to eq "Sorry but you do not have requisite privileges for this action"
   end
 end

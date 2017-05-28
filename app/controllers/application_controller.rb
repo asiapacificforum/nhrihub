@@ -15,7 +15,8 @@ class ApplicationController < ActionController::Base
 
 private
   def xhr_permission_denied
-    # implement this in controllers, as response is controller-specific
+    # override this in controllers if this default response is not appropriate
+    render :js => "flash.set('error_message', '#{t('error_messages.not_permitted')}');flash.notify();", :status => 401
   end
 
   def no_method_error(exception)

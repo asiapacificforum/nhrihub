@@ -21,6 +21,3 @@
       if !_.isEmpty(data.trim())
         $("##{context} span#filesize").text(data)
       $("##{context} input#filesize").val("")
-
-    $("#update_#{context}_filesize").bind "ajax:error", (e,data,status,xhr)->
-      $('.message_block').html window.flash_error_template({message : data.responseText})

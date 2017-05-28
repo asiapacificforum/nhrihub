@@ -6,3 +6,4 @@ en:
     title_error_message: "Title cannot be blank"
     form_error : "Form has errors, cannot be saved"
     no_files_error: 'You must first click \"Add files...\" and select file(s) to upload'
+    not_permitted: 'Sorry but you do not have requisite privileges for this action'

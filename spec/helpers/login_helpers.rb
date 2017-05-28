@@ -79,7 +79,8 @@ module LoggedInEnAdminUserHelper
   include RegisteredUserHelper
   include IERemoteDetector
   before do
-    raise "two-factor authentication must be enabled in config/env.yml for integration tests" unless TwoFactorAuthentication.enabled?
+    allow(ENV).to receive(:fetch).with("two_factor_authentication").and_return("enabled")
+    #raise "two-factor authentication must be enabled in config/env.yml for integration tests" unless TwoFactorAuthentication.enabled?
     visit "/en"
     configure_keystore
     #unless ie_remote?(page) # IE doesn't delete cookies and terminate session between scenarios, so no need for login

@@ -4,7 +4,7 @@ class FiletypesController < ApplicationController
     if filetype.errors.empty?
       render :plain => filetype.ext, :status => 200, :content_type => 'text/plain'
     else
-      render :plain => filetype.errors.full_messages.first, :status => 422
+      render :js => "flash.set('error_message', '#{filetype.errors.full_messages.first}');flash.notify();", :status => 422
     end
   end
 
@@ -13,4 +13,5 @@ class FiletypesController < ApplicationController
     SiteConfig[config_param] = SiteConfig[config_param] - [params[:ext]]
     render :json => {}, :status => 200
   end
+
 end
