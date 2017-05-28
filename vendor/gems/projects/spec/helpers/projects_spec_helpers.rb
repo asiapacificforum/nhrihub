@@ -123,7 +123,7 @@ module ProjectsSpecHelpers
 
   def expand_last_project
     sleep(0.5) # seems to be necessary in order for bootstrap collapse('show') to be called
-    page.all('.project .actions #expand')[1].click
+    page.all('.project .actions #expand')[-1].click
   end
 
   def delete_project_icon

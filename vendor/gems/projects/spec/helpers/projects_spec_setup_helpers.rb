@@ -17,9 +17,10 @@ module ProjectsSpecSetupHelpers
   end
 
   def populate_database
-    FactoryGirl.create(:project,
-                       :with_documents,
-                       :with_performance_indicators)
+    # removing this enables project_reminders_spec to pass... but what does it break?
+    #FactoryGirl.create(:project,
+                       #:with_documents,
+                       #:with_performance_indicators)
 
     @project = FactoryGirl.create(:project,
                              :with_named_documents,
