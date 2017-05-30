@@ -3,9 +3,7 @@
 # modified for the two-factor authentication delays
 module WaitForAuthentication
   def wait_for_authentication
-    earlier_version = Capybara::VERSION == "2.5.0.dev" || Capybara::VERSION.to_f <= 2.4
-    wait_time = earlier_version ? "default_wait_time" : "default_max_wait_time"
-    Timeout.timeout(Capybara.send(wait_time)) do
+    Timeout.timeout(Capybara.default_max_wait_time) do
       loop until finished_authentication?
     end
   end

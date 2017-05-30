@@ -1,16 +1,12 @@
 module WaitForModal
   def wait_for_modal_close
-    earlier_version = Capybara::VERSION == "2.5.0.dev" || Capybara::VERSION.to_f <= 2.4
-    wait_time = earlier_version ? "default_wait_time" : "default_max_wait_time"
-    Timeout.timeout(Capybara.send(wait_time)) do
+    Timeout.timeout(Capybara.default_max_wait_time) do
       loop until modal_has_closed?
     end
   end
 
   def wait_for_modal_open
-    earlier_version = Capybara::VERSION == "2.5.0.dev" || Capybara::VERSION.to_f <= 2.4
-    wait_time = earlier_version ? "default_wait_time" : "default_max_wait_time"
-    Timeout.timeout(Capybara.send(wait_time)) do
+    Timeout.timeout(Capybara.default_max_wait_time) do
       loop until modal_is_open?
     end
   end

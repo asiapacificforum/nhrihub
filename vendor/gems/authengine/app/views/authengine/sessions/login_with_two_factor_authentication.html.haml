@@ -1,7 +1,6 @@
 - focus('login')
 - scope = 'authengine.sessions.new'
 = message_block
-%div#jflash
 - unless logged_in?
   %h1=t('heading', :scope => scope)
   =form_tag authengine_sessions_path do

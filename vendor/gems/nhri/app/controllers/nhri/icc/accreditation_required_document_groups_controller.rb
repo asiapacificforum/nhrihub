@@ -8,7 +8,7 @@ module Nhri
         if doc_group.errors.empty?
           render :plain => doc_group.title, :status => 200, :content_type => 'text/plain'
         else
-          render :plain => doc_group.errors.full_messages.first, :status => 422
+          render :js => "flash.set('error_message', '#{doc_group.errors.full_messages.first}');flash.notify();", :status => 422
         end
       end
 

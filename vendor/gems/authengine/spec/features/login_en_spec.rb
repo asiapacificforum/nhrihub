@@ -23,10 +23,6 @@ end
 feature "Registered user logs in with valid credentials", :js => true do
   context "two factor authentication is required" do
     include RegisteredUserHelper
-    before do
-      allow(ENV).to receive(:fetch)
-      allow(ENV).to receive(:fetch).with("two_factor_authentication").and_return("enabled")
-    end
 
     scenario "admin logs in" do
       visit "/en"

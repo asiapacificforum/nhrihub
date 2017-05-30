@@ -3,7 +3,6 @@
 //= require 'notable'
 //= require 'confirm_delete_modal'
 //= require 'ractive_validator'
-//= require 'flash'
 
 $ ->
   Ractive.DEBUG = false

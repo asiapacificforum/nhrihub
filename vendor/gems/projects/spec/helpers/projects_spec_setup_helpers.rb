@@ -1,6 +1,7 @@
 require 'rspec/core/shared_context'
 
 module ProjectsSpecSetupHelpers
+  mattr_accessor :project_count
   extend RSpec::Core::SharedContext
   before do
     setup_strategic_plan
@@ -17,10 +18,13 @@ module ProjectsSpecSetupHelpers
   end
 
   def populate_database
-    # removing this enables project_reminders_spec to pass... but what does it break?
-    #FactoryGirl.create(:project,
-                       #:with_documents,
-                       #:with_performance_indicators)
+    # project_reminders_spec needs 1 project
+    # projects_spec needs 2
+    unless self.class.name =~ /Reminder/
+      FactoryGirl.create(:project,
+                         :with_documents,
+                         :with_performance_indicators)
+    end
 
     @project = FactoryGirl.create(:project,
                              :with_named_documents,

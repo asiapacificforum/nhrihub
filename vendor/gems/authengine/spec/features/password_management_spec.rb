@@ -96,7 +96,9 @@ feature "Password management, user forgets password", :js => true do
   include UserManagementHelpers
 
   before do
-    raise "two-factor authentication must be enabled in config/env.yml for integration tests" unless TwoFactorAuthentication.enabled?
+    allow(ENV).to receive(:fetch).and_call_original
+    allow(ENV).to receive(:fetch).with("two_factor_authentication").and_return("enabled")
+    #raise "two-factor authentication must be enabled in config/env.yml for integration tests" unless TwoFactorAuthentication.enabled?
     visit "/en"
     configure_keystore
   end

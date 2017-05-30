@@ -2,9 +2,7 @@
 # https://robots.thoughtbot.com/automatically-wait-for-ajax-with-capybara
 module WaitForAjax
   def wait_for_ajax
-    earlier_version = Capybara::VERSION == "2.5.0.dev" || Capybara::VERSION.to_f <= 2.4
-    wait_time = earlier_version ? "default_wait_time" : "default_max_wait_time"
-    Timeout.timeout(Capybara.send(wait_time)) do
+    Timeout.timeout(Capybara.default_max_wait_time) do
       loop until finished_all_ajax_requests?
     end
   end

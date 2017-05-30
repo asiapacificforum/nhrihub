@@ -4,7 +4,7 @@ class ComplaintBasesController < ApplicationController
     if complaint_basis.save
       render :plain => complaint_basis.name, :status => 200, :content_type => 'text/plain'
     else
-      render :plain => complaint_basis.errors.full_messages.first, :status => 422
+      render :js => "flash.set('error_message', '#{complaint_basis.errors.full_messages.first}');flash.notify();", :status => 422
     end
   end
 

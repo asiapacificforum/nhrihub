@@ -1,7 +1,6 @@
 require 'rails_helper'
 require 'login_helpers'
 require 'navigation_helpers'
-#require 'projects_context_reminders_spec_helpers'
 require_relative '../helpers/projects_context_reminders_spec_helpers'
 require 'reminders_behaviour'
 

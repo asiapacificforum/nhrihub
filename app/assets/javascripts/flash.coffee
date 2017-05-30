@@ -15,4 +15,16 @@ $ ->
       $(@findAll('ul')).hide(30)
     notify : ->
       @show()
+    error : (message) ->
+      @set('error_message', message)
+      @show()
+    info : (message) ->
+      @set('info_message', message)
+      @show()
+    warn : (message) ->
+      @set('warn_mesage', message)
+      @show()
+    confirm : (message) ->
+      @set('confirm_message', message)
+      @show()
 

@@ -24,7 +24,7 @@ feature "Manage users -- French translation", :js => true do
     lines = Nokogiri::HTML(email.body.to_s).xpath(".//p").map(&:text)
     # lin[0] is addressee
     expect( lines[0] ).to eq "Norman Normal"
-    expect( lines[1] ).to match "#{ORGANIZATION_NAME} #{APPLICATION_NAME}"
+    expect( lines[1] ).to match "#{APPLICATION_NAME}"
     # activation url is embedded in the email
     url = Nokogiri::HTML(email.body.to_s).xpath(".//p/a").attr('href').value
     expect( url ).to match (/\/fr\/authengine\/activate\/[\d|a|b|c|d|e|f]{40}$/)

@@ -99,8 +99,8 @@ gem "message_block", git: "https://github.com/lazylester/message_block.git"
 gem "surus", git: "https://github.com/asiapacificforum/surus.git", :ref => "36cb18a" # postgres direct to json
 gem "aws-sdk", "~> 2"
 
-#gem "get_back", :path => "../get_back"
-gem "get_back", :git => "https://github.com/lazylester/get_back.git", :ref => "d04af8f"
+gem "get_back", :path => "../get_back"
+#gem "get_back", :git => "https://github.com/lazylester/get_back.git", :ref => "d04af8f"
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'
