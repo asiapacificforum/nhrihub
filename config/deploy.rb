@@ -80,8 +80,8 @@ namespace :deploy do
       puts "uploading to server: #{fetch(:site_name)}"
       fetch(:linked_files).each do |linked_file|
         run_locally do
-          puts "uploading config/site_specific_linked_files/demo/#{linked_file} to #{shared_path.join(linked_file)}"
-          `scp config/site_specific_linked_files/demo/#{linked_file} demo:#{shared_path.join(linked_file)}`
+          puts "scp config/site_specific_linked_files/#{fetch(:site_name)}/#{linked_file} #{role.user}@#{fetch(:site_name)}:#{shared_path.join(linked_file)}"
+          `scp config/site_specific_linked_files/#{fetch(:site_name)}/#{linked_file} #{role.user}@#{fetch(:site_name)}:#{shared_path.join(linked_file)}`
         end
       end
     end
