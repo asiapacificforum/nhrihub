@@ -22,14 +22,16 @@ namespace :media do
     end
   end
 
-  desc "populates media appearances with examples"
-  task :populate_media => :environment do
+  desc "depopulates media table"
+  task :depopulate => :environment do
     MediaAppearance.destroy_all
+  end
 
+  desc "populates media appearances with examples"
+  task :populate_media => "media:depopulate" do
     20.times do
       FactoryGirl.create(:media_appearance, :with_reminders, :with_notes, [:file, :link].sample, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
     end
-
   end
 
   desc "populate both media, including dependencies"

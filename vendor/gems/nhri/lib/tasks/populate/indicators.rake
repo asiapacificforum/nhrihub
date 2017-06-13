@@ -1,32 +1,45 @@
 require Nhri::Engine.root.join('app','models','nhri','heading_generator')
 
 namespace :nhri do
-  desc "populates indicators and related tables"
-  task :human_rights_indicators => [:populate_headings, :populate_attributes, :populate_indicators] do
-    puts "populate human rights indicators"
-  end
+  namespace :human_rights_indicators do
+    desc "populates indicators and related tables"
+    task :populate => ["headings:populate", "attributes:populate", "indicators:populate"]
 
+    task :depopulate => ["headings:depopulate", "attributes:depopulate", "indicators:depopulate"]
 
-  desc "populates headings"
-  task :populate_headings => :environment do
-    puts "populate headings"
-    Nhri::Heading.destroy_all
-    6.times do
-      FactoryGirl.create(:heading)
+    namespace :headings do
+      desc "populates headings"
+      task :populate => "nhri:human_rights_indicators:headings:depopulate" do
+        6.times do
+          FactoryGirl.create(:heading)
+        end
+      end
+
+      task :depopulate => :environment do
+        Nhri::Heading.destroy_all
+      end
+    end
+
+    namespace :attributes do
+      desc "populates human_rights_attributes"
+      task :populate => "nhri:human_rights_indicators:attributes:depopulate" do
+        Nhri::HeadingGenerator.generate_attributes
+      end
+
+      task :depopulate => :environment do
+        Nhri::HumanRightsAttribute.destroy_all
+      end
+    end
+
+    namespace :indicators do
+      desc "populates indicators"
+      task :populate => "nhri:human_rights_indicators:indicators:depopulate" do
+        Nhri::HeadingGenerator.generate
+      end #/task
+
+      task :depopulate => :environment do
+        Nhri::Indicator.destroy_all
+      end #/task
     end
   end
-
-  desc "populates human_rights_attributes"
-  task :populate_attributes => :environment do
-    puts "populate attributes"
-    Nhri::HumanRightsAttribute.destroy_all
-    Nhri::HeadingGenerator.generate_attributes
-  end
-
-  desc "populates indicators"
-  task :populate_indicators => :environment do
-    puts "populate indicators"
-    Nhri::Indicator.destroy_all
-    Nhri::HeadingGenerator.generate
-  end #/task
 end #/namespace

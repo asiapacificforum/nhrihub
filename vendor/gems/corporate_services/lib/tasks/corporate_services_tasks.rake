@@ -21,10 +21,14 @@ namespace :corporate_services do
   end
 
   desc "re-initialize strategic plans"
-  task :populate_sp => :environment do
+  task :depopulate => :environment do
     StrategicPlan.destroy_all
     MediaAppearance.destroy_all
     Project.destroy_all
+  end
+
+  desc "re-initialize strategic plans"
+  task :populate_sp => "corporate_services:depopulate" do
     previous_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => Date.new(Date.today.year-1,1,1))
     current_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => Date.new(Date.today.year,1,1))
     populate_strategic_plan(previous_strategic_plan)

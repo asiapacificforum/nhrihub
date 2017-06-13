@@ -2,9 +2,13 @@ namespace :projects do
   desc "populates all projects-related tables"
   task :populate => ["projects:populate_mandates", "projects:populate_types", "projects:populate_projects"]
 
-  desc "populates the projects table"
-  task "populate_projects" => :environment do
+  desc "depopulates projects, leaving mandates and types untouched"
+  task :depopulate => :environment do
     Project.destroy_all
+  end
+
+  desc "populates the projects table"
+  task "populate_projects" => "projects:depopulate" do
     5.times do
       FactoryGirl.create(:project, :with_reminders)
     end

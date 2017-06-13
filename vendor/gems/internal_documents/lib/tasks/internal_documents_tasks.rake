@@ -21,12 +21,13 @@ def rand_filename
 end
 
 namespace :internal_documents do
-  desc "populate database with internal documents: 5 primary, 10 archive"
-  task :populate => :environment do
+  task :depopulate => :environment do
     DocumentGroup.destroy_all
     InternalDocument.destroy_all
-    Organization.destroy_all
+  end
 
+  desc "populate database with internal documents: 5 primary, 10 archive"
+  task :populate => "internal_documents:depopulate" do
     5.times do
       current_doc_rev = first_doc_rev = (rand(49)+50).to_f/10
       doc = FactoryGirl.create(:internal_document, :revision => first_doc_rev.to_s, :title => rand_title, :original_filename => rand_filename)
@@ -39,13 +40,5 @@ namespace :internal_documents do
       end
     end
   end
-
-  #desc "set up accreditation required doc groups"
-  #task :populate_accred_groups => :environment do
-    #titles = ["Statement of Compliance", "Enabling Legislation", "Organization Chart", "Annual Report", "Budget"]
-    #titles.each do |title|
-      #AccreditationDocumentGroup.create(:title => title)
-    #end
-  #end
 end
 

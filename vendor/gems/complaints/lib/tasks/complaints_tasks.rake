@@ -3,9 +3,12 @@ namespace :complaints do
   desc "populates all complaint-related tables"
   task :populate => [:populate_complaints]
 
-  desc "populates complaints"
-  task :populate_complaints => [:environment, :populate_statuses, :populate_complaint_bases, 'projects:populate_mandates', 'projects:populate_agnc'] do
+  task :depopulate => :environment do
     Complaint.destroy_all
+  end
+
+  desc "populates complaints"
+  task :populate_complaints => [ :populate_statuses, :populate_complaint_bases, 'projects:populate_mandates', 'projects:populate_agnc', "complaints:depopulate"] do
     3.times do |i|
       complaint = FactoryGirl.create(:complaint, :case_reference => "C16-#{3-i}")
 
@@ -41,8 +44,6 @@ namespace :complaints do
 
   desc "populates complaint bases for all mandates"
   task :populate_complaint_bases => :environment do
-    #ComplaintBasis.destroy_all
-    #Convention.destroy_all
     ["GoodGovernance", "Nhri", "Siu"].each do |type_prefix|
       klass = type_prefix+"::ComplaintBasis"
       klass.constantize::DefaultNames.each do |name|
