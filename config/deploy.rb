@@ -65,6 +65,19 @@ set :migration_role, "web"
 
 
 namespace :deploy do
+  task :ensure_stage do
+    site_config = YAML.load_file('config/site_specific_linked_files/current_config.yml')
+    unless site_config[:current] == fetch(:site_name)
+      msg = <<-MSG
+        Capistrano aborted!
+        you must configure shared files for '#{site_config[:current]}' when deploying to site '#{fetch(:site_name)}'
+        use: rake "nhri_hub:localize[ws]" (including quotes)
+      MSG
+      abort msg
+    end
+  end
+
+  before :starting, :ensure_stage
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
