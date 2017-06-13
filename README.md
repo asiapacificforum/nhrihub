@@ -12,7 +12,7 @@ NHRIDocs is an internal web application for National Human Rights Institutions (
 All modules of the application have a range of functionality to assist in the course of your work such as the setting of automatic reminders, logging historical versions of all documents, assigning projects, complaints or other matters to registered users and setting different permission levels to protect the confidentiality and integrity of your documents. Each module can be enabled/disabled to reflect the work undertaken by your organisation.
 
 ## Current Status
-As of April 28, 2017 NHRIdocs is a "feature complete", and is being prepared for its first beta test in a live environment.
+As of June 12, 2017 NHRIdocs is a "feature complete", and is being prepared for its first beta test in a live environment.
 
 ## Ruby version
 Configured in the .ruby-version file, to support the RVM version manager, look in that file for the currently-configured version
@@ -35,7 +35,7 @@ The text of emails is contained in the localized files in the vendor/gems/authen
 ### Two-factor Authentication
 Two-factor authentication is supported, using the [emerging FIDO standard](https://fidoalliance.org/). The second authentication factor is provided by the [Yubico FIDO U2F Security Key](https://www.yubico.com/products/yubikey-hardware/fido-u2f-security-key).
 
-At the this time (September 2016), only the Chrome browser supports this protocol, therefore this is the requirement for this application. Furthermore, the https transport layer protocol is required, necessitating a public-key certificate on the server, issued by a Chrome-recognized certification authority. Future support in other browsers has been announced.
+At the this time (September 2016), only the Chrome browser supports this protocol, therefore this is the requirement for this application when two-factor authentication is enabled. Furthermore, the https transport layer protocol is required, necessitating a public-key certificate on the server, issued by a Chrome-recognized certification authority. Future support in other browsers has been announced.
 
 For convenience, the [letsencrypt_plugin](https://github.com/lgromanowski/letsencrypt-plugin) is bundled with the application, facilitating a command-line certificate request to the [Let's Encrypt](https://letsencrypt.org/) certification authority API. However there is no requirement to use Let's Encrypt certificates.
 
