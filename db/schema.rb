@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170509195716) do
+ActiveRecord::Schema.define(version: 20170619171501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,16 @@ ActiveRecord::Schema.define(version: 20170509195716) do
     t.string   "full_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "application_data_backups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "application_data_backups_glacier_file_archives", id: false, force: :cascade do |t|
+    t.integer "application_data_backup_id", null: false
+    t.integer "glacier_file_archive_id",    null: false
   end
 
   create_table "areas", force: :cascade do |t|
@@ -282,10 +292,13 @@ ActiveRecord::Schema.define(version: 20170509195716) do
     t.text     "archive_id"
     t.text     "checksum"
     t.text     "location"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.json     "notification"
     t.string   "archive_retrieval_job_id"
+    t.integer  "application_data_backup_id"
+    t.string   "type"
+    t.string   "filename"
   end
 
   create_table "headings", force: :cascade do |t|
