@@ -1,5 +1,5 @@
 class DashboardController < ApplicationController
   def index
-    @glacier_archives = GlacierArchive.all
+    @application_data_backups = ApplicationDataBackup.all
   end
 end
