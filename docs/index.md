@@ -52,6 +52,9 @@ You can download the software <a href="{{ site.github.zip_url }}" id="download-z
 # What will it cost?
 Whilst the software itself is offered at no charge, it will need to be hosted by a web hosting service. For the NHRI Hub application, the cost of hosting is mainly dependant on the amount of data that you will be storing. It is likely to be in the order of a few hundred dollars (US) per year, but this is a rough estimate, and we cannot be more precise without knowing details of your usage.
 
+# Who is behind NHRI Hub?
+NHRI Hub was designed by Ash Bowe whilst working as a consultant for the Asia Pacific Forum and at the request of the Samoa NHRI. The APF have provided ongoing support to the development of NHRI Hub but it remains an independent product. The design has been brought to life by developer Les Nightingill, who has generously donated his time to make this all possible.
+
 # How to get more information
 Development assistance is available at no cost to tailor the software to the particular needs of your NHRI.
 
@@ -64,6 +67,3 @@ There is now a demonstration and evaluation instance of the app available for re
   <textarea name="message" placeholder="Tell us about your requirement"></textarea>
   <button type="submit">Send</button>
 </form>
-
-# Who is behind NHRI Hub?
-NHRI Hub was designed by Ash Bowe whilst working as a consultant for the Asia Pacific Forum and at the request of the Samoa NHRI. The APF have provided ongoing support to the development of NHRI Hub but it remains an independent product. The design has been brought to life by developer Les Nightingill, who has generously donated his time to make this all possible.
