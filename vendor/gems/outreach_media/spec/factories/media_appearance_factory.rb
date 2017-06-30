@@ -8,7 +8,7 @@ FactoryGirl.define do
     end
 
     trait :file do
-      file_id             { SecureRandom.hex(30) }
+      file                { LoremIpsumDocument.new.docfile }
       filesize            { 10000 + (30000*rand).to_i }
       original_filename   { "#{Faker::Lorem.words(2).join("_")}.pdf" }
       original_type       "application/pdf"
