@@ -48,7 +48,6 @@ group :development do
   gem 'capistrano', '~>3.8.1'
   # capistrano add-ons
   gem 'capistrano-bundler'
-  #gem 'capistrano-rvm' # unmaintained gem is broken!
   gem 'capistrano-passenger'
   gem 'capistrano-faster-assets'
   # specify higher rev than required by capistrano in order to get
@@ -86,8 +85,6 @@ gem 'tzinfo-data' # so that we use the ruby tzinfo vs what is installed on the m
 
 gem 'letsencrypt_plugin', :git => "https://github.com/lgromanowski/letsencrypt-plugin.git", :ref => "6ef3a2ea450af2cec4be906842ebcbf809b5fc46"
 
-###not needed in rails 5
-###gem 'quiet_assets', group: :development
 gem "refile", :git => "https://github.com/refile/refile.git", :ref => "d7a42", require: "refile/rails" # for rails5 compatibility
 gem "sinatra", git: "https://github.com/sinatra/sinatra.git" #, :ref => "285275b42fa1bf096a5c9559b6cead2f31b65b66" # for rack 2 compatibility as required for rails5
 gem "rack", git: "https://github.com/rack/rack.git" # also for sinatra 2.0.0-alpha support
@@ -99,8 +96,9 @@ gem "message_block", git: "https://github.com/lazylester/message_block.git"
 gem "surus", git: "https://github.com/asiapacificforum/surus.git", :ref => "36cb18a" # postgres direct to json
 gem "aws-sdk", "~> 2"
 
-#gem "get_back", :path => "../get_back"
-gem "get_back", :git => "https://github.com/lazylester/get_back.git", :ref => "df193d1"
+#while working locally on the glacier_on_rails gem
+#gem "glacier_on_rails", :path => "../glacier_on_rails"
+gem "glacier_on_rails"
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'

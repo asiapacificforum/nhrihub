@@ -44,4 +44,4 @@ SSL Certificate expiry date:
 
 
 - if defined? ApplicationDataBackup
-  = render :partial => 'get_back/aws_archive_retrieval_jobs/index', :locals => {:application_data_backups => @application_data_backups}
+  = render :partial => 'glacier_on_rails/aws_archive_retrieval_jobs/index', :locals => {:application_data_backups => @application_data_backups}

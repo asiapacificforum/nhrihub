@@ -7,15 +7,6 @@ GIT
       activerecord (> 4.1)
 
 GIT
-  remote: https://github.com/lazylester/get_back.git
-  revision: df193d1160cd92abf9e1e480f9c3cd0d89f8e49a
-  ref: df193d1
-  specs:
-    get_back (0.0.1)
-      httparty
-      rails (~> 5.0.0)
-
-GIT
   remote: https://github.com/lazylester/message_block.git
   revision: cb7dc71a9f2ae71be8940788f43632c9b1057318
   specs:
@@ -250,6 +241,9 @@ GEM
     font-awesome-sass (4.7.0)
       sass (>= 3.2)
     forwardable-extended (2.6.0)
+    glacier_on_rails (0.9)
+      httparty
+      rails (~> 5.0.0)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
     haml (4.0.7)
@@ -492,7 +486,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   faker
   font-awesome-sass
-  get_back!
+  glacier_on_rails
   haml-rails
   internal_documents!
   issues_reporter!

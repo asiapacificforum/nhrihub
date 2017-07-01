@@ -1,6 +1,6 @@
-if defined? GetBack
-  require 'get_back/config'
-  GetBack::Config.setup do |config|
+if defined? GlacierOnRails
+  require 'glacier_on_rails/config'
+  GlacierOnRails::Config.setup do |config|
     config.attached_files_directory = FileUploadLocation.join('store')
     config.aws_region = 'us-east-1'
   end
