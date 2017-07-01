@@ -58,7 +58,7 @@ Rails.application.routes.draw do
   mount MagicLamp::Genie, at: "/magic_lamp" if defined?(MagicLamp)
 
   mount LetsencryptPlugin::Engine, at: '/'
-  mount GetBack::Engine, at: '/'
+  mount GlacierOnRails::Engine, at: '/'
 
   scope "/:locale" do
   # this route is specified as it's used in authengine as the place
