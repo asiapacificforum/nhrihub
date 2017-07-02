@@ -14,7 +14,6 @@ require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
 require File.expand_path('../../lib/rails_class_extensions', __FILE__)
-require File.expand_path('../../lib/ruby_class_extensions', __FILE__)
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
