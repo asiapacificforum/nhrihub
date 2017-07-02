@@ -267,6 +267,32 @@ feature "complaints index", :js => true do
     expect( url ).to match (/^http:\/\/#{SITE_URL}/)
   end
 
+  it "adds multiple complaints with no interaction" do #b/c there was a bug
+    add_complaint
+    within new_complaint do
+      fill_in('lastName', :with => "Normal")
+      fill_in('firstName', :with => "Norman")
+      fill_in('dob', :with => "08/09/1950")
+      fill_in('village', :with => "Normaltown")
+      fill_in('complaint_details', :with => "a long story about lots of stuff")
+      check('special_investigations_unit')
+      check('good_governance')
+      check_basis(:good_governance, "Delayed action")
+      check_basis(:human_rights, "CAT")
+      check_basis(:special_investigations_unit, "Unreasonable delay")
+      select(User.staff.first.first_last_name, :from => "assignee")
+    end
+    expect{save_complaint.click; wait_for_ajax}.to change{ Complaint.count }.by(1)
+                                               .and change{ page.all('.complaint').count }.by(1)
+                                               .and change{ page.all('.new_complaint').count }.by(-1)
+                                               .and change { ActionMailer::Base.deliveries.count }.by(1)
+    add_complaint
+    expect(page.find('input#dob').value).to be_blank
+    expect(page.find('input#special_investigations_unit')).not_to be_checked
+    expect(page.find('input#good_governance')).not_to be_checked
+  end
+
+
   it "does not add a new complaint that is invalid" do
     add_complaint
     within new_complaint do

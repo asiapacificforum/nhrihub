@@ -595,7 +595,7 @@ complaints_options =
         human_rights_complaint_basis_ids : []
         special_investigations_unit_complaint_basis_ids : []
         id : null
-        mandate_id : null
+        mandate_ids : []
         agency_ids : []
         notes : []
         phone : ""
@@ -605,6 +605,7 @@ complaints_options =
         imported : false
         complained_to_subject_agency : false
         date_received : null
+        dob : null
       UserInput.claim_user_input_request(@,'cancel_add_complaint')
       @unshift('complaints',new_complaint)
   cancel_add_complaint : ->
