@@ -42,18 +42,3 @@ en:
     document_filesize_configuration:
       current_val: "Current value"
       change: "Change to"
-  complaint_admin:
-    show:
-      heading: "Complaints Configuration"
-      complaint_filetypes: "Filetypes permitted for complaints"
-      complaint_filesize_max: "Maximum permitted complaint file size"
-      communication_filetypes: "Filetypes permitted for communications"
-      communication_filesize_max: "Maximum permitted communication file size"
-      gg_subareas: "Good Governance Subareas"
-      siu_subareas: "Special Investigations Unit Subareas"
-      cs_subareas: "Corporate Services Subareas"
-      good_governance_subareas: "Good Governance Subareas"
-      siu_subareas: "Special Investigations Unit Subareas"
-      corporate_services_subareas: "Corporate Services Subareas"
-      communicants: "Complaint communicants"
-

@@ -292,7 +292,6 @@ feature "complaints index", :js => true do
     expect(page.find('input#good_governance')).not_to be_checked
   end
 
-
   it "does not add a new complaint that is invalid" do
     add_complaint
     within new_complaint do

@@ -1,6 +1,7 @@
+$error_red : #a94442;
 .help-block {
   display: block;
-  color: #a94442;
+  color: $error_red;
 }
 
 // if either the element with class 'form-group' OR the
@@ -20,6 +21,6 @@
 
 .required:after, .required_before:before{
   content : '*';
-  color : #a94442;
+  color : $error_red;
   font-size : larger;
 }

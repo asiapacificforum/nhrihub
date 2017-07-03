@@ -1,5 +1,7 @@
 class ComplaintAdminController < ApplicationController
   def show
+    @agency = Agency.new
+    @agencies = Agency.all.to_json(:only => [:name, :full_name, :id], :methods => [:delete_allowed])
     @complaint_document_filetypes = ComplaintDocument.permitted_filetypes
     @complaint_filetype = Filetype.new
     @complaint_filesize = ComplaintDocument.maximum_filesize

@@ -32,7 +32,86 @@
                           :param => instance_variable_get("@#{name}_filesize"),
                           :context => "#{name}_document_filesize"}
 
+%h4= t(".agencies")
+%div{:id => "agencies"}
+  .admin.well
+    %table.table.borderless.agencies{:style => "width:auto;"}
+      %tbody
+
+    = form_for @agency, :url => agencies_url(:en), :remote => true, :html => {:id => :new_agency} do |f|
+      %div.inline{:style=>'display:flex'}
+        %div
+          %button.btn.btn-success.btn-xs#add_agency{:style => 'line-height:1.8;', :type => 'submit'}= t(".add_agency")
+        %div{:style => 'margin-left:30px;'}= f.text_field :name, :size => 10, :placeholder => "#{t('.abbrev')}"
+        %div{:style => 'margin-left:30px;'}= f.text_field :full_name, :size => 60, :placeholder => "#{t('.full_name')}"
+
+%script{:type => 'template/html', :id => "agency_template"}
+  %tr.agency{:data => { agency_id: '{{ agency.id }}', delete_allowed: '{{agency.delete_allowed}}' }}
+    %td.name {{ agency.name }}
+    %td.full_name {{ agency.full_name }}
+    %td
+      = link_to t('defaults.delete'), nil, :class => "delete_agency"
+
 :coffeescript
   $ ->
     _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
     window.flash_error_template = _.template("<ul class='error'><li>{{message}}</li></ul>")
+    agency_template = _.template($("#agency_template").html())
+
+    agencies = #{@agencies}
+    agency_names = _(agencies).map (a)->(a.name).toLowerCase()
+    agency_full_names = _(agencies).map (a)->(a.full_name).toLowerCase()
+    delete_url = "#{agency_url('id')}"
+    el = $(".agencies tbody")
+    form = $("#new_agency")
+    empty_string = "<tr><td id='empty'>#{ t('.empty')}</td></tr>"
+
+    if agencies.length == 0
+      el.append empty_string
+    else
+      _.each agencies, (agency)->
+        el.append agency_template({agency : agency})
+
+    $('body').on 'click', ->
+      $('#invalid_agency_error').remove()
+      $('#duplicate_agency_error').remove()
+      $('#delete_disallowed').remove()
+
+    form.bind "ajax:before", (e)->
+      if $('#agency_name').val() == '' || $('#agency_full_name').val() == ''
+        $('form#new_agency div.inline').append("<div id='invalid_agency_error' class='error' style='margin-left:30px;'>fields cannot be blank</div>")
+        false
+      else if _(agency_names).includes($('#agency_name').val().toLowerCase())
+        $('form#new_agency div.inline').append("<div id='duplicate_agency_error' class='error' style='margin-left:30px;'>duplicate agency not allowed</div>")
+        false
+      else if _(agency_full_names).includes($('#agency_full_name').val().toLowerCase())
+        $('form#new_agency div.inline').append("<div id='duplicate_agency_error' class='error' style='margin-left:30px;'>duplicate agency not allowed</div>")
+        false
+      else
+        $('#invalid_agency_error').remove()
+        true
+
+    form.bind "ajax:success", (e,data,status,xhr)->
+      el.append agency_template(agency : data)
+      form[0].reset()
+      $('td#empty',el).closest('tr').remove()
+      $('.message_block').html ''
+
+    el.on 'click', "a.delete_agency", (e)->
+      e.preventDefault()
+      e.stopPropagation()
+      context = $(@).closest('tr')
+      if context.data('deleteAllowed')
+        id = context.data('agencyId')
+        url = delete_url.replace(/id$/,id)
+        $.ajax
+          url: url
+          method: 'delete'
+          context: context # becomes 'this' in the callback
+          error: (jqxhr, status, statusText)-> # normal response is 410 'gone'
+            if jqxhr.status == 410
+              this.remove()
+              if el.find(".agency").length == 0
+                el.append empty_string
+      else
+        $(e.target).parent().after("<td id='delete_disallowed' class='error' style='margin-left:30px;'>cannot delete an agency that is associated with complaints</td>")

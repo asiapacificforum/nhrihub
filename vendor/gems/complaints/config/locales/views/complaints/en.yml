@@ -83,3 +83,23 @@ en:
       delete_communication_confirmation_message: "Are you sure you want to delete this communication?"
       delete_complaint_confirmation_message: "Are you sure you want to delete complaint "
       delete_document_confirmation_message: "Are you sure you want to delete the document "
+
+  complaint_admin:
+    show:
+      heading: "Complaints Configuration"
+      complaint_filetypes: "Filetypes permitted for complaints"
+      complaint_filesize_max: "Maximum permitted complaint file size"
+      communication_filetypes: "Filetypes permitted for communications"
+      communication_filesize_max: "Maximum permitted communication file size"
+      gg_subareas: "Good Governance Subareas"
+      siu_subareas: "Special Investigations Unit Subareas"
+      cs_subareas: "Corporate Services Subareas"
+      good_governance_subareas: "Good Governance Subareas"
+      siu_subareas: "Special Investigations Unit Subareas"
+      corporate_services_subareas: "Corporate Services Subareas"
+      communicants: "Complaint communicants"
+      agencies: "Agencies"
+      add_agency: "Add agency"
+      empty: "None configured"
+      abbrev: "abbreviation"
+      full_name: "full name"
