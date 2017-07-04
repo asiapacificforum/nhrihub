@@ -22,9 +22,12 @@ RSpec::Core::RakeTask.module_eval do
       r.ascend { |pr| pu<<pr }
       pu.any?{|pp| pp == Rails.root}
     end
+    modules << Rails.root
     modules.each do |dir|
       extras << File.join( dir, 'spec', 'features', '**', '*_spec.rb' ).to_s
       extras << File.join( dir, 'spec', 'models', '**', '*_spec.rb' ).to_s
+      extras << File.join( dir, 'spec', 'requests', '**', '*_spec.rb' ).to_s
+      extras << File.join( dir, 'spec', 'mailers', '**', '*_spec.rb' ).to_s
     end
     [@pattern] | extras
   end
