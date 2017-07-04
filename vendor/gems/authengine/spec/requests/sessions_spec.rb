@@ -1,11 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe "Sessions" do
   describe "GET /" do
     it "should show the login page" do
-      get root_path
-      response.status.should be(200)
-      response.body.should include("Please log in")
+      get root_path(:en)
+      expect(response.status).to eq 200
+      expect(response.body).to include "Please log in"
     end
   end
 end
