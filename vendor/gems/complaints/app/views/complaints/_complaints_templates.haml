@@ -382,7 +382,7 @@
             .col-md-9.date_received
               .no_edit.in {{formatted_date}}
               .edit
-                %input#date_received{:type => :text, :name => "{{formatted_date}}", :decorator => :single_month_datepicker, :value => "{{formatted_date}}"}
+                %input#date_received{:type => :text, :name => "{{formatted_date}}", :decorator => :single_month_datepicker, :value => "{{formatted_date}}", :style => "position:relative; z-index:12"}
           .row
             .col-md-3
               %label= t('.current_assignee')
