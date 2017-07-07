@@ -330,12 +330,14 @@ Complaint = Ractive.extend
       Routes.complaint_path(current_locale, @get('id'))
     formatted_date :
       get: ->
-        if _.isEmpty(@get('date_received'))
+        date_received = @get('date_received') # format on load is: "2017-07-02T19:40:01.949Z"
+        if _.isEmpty(date_received)
           ""
         else
-          $.datepicker.formatDate("yy, M d", new Date(@get('date_received')) )
+          $.datepicker.formatDate("yy, M d", new Date(date_received) )
       set: (val)->
-        @set('date_received', $.datepicker.parseDate( "yy, M d", val))
+        date = $.datepicker.parseDate( "yy, M d", val)
+        @set('date_received', date.toUTCString())
     formatted_dob :
       get: ->
         if _.isEmpty(@get('dob'))
