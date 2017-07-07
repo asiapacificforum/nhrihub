@@ -36,6 +36,8 @@ module Apf
     end
     config.action_mailer.preview_path = "#{Rails.root}/spec/mailers/previews"
 
+    config.action_dispatch.rescue_responses.merge!({ "ApplicationController::IncompatibleBrowserError" => :unprocessable_entity })
+
     # see http://railsapps.github.io/rails-environment-variables.html
     config.before_configuration do
       env_file = File.join(Rails.root, 'config', 'env.yml')

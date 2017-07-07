@@ -1,0 +1,4 @@
+fr:
+  exceptions:
+    default_message: "Oups, quelque chose a mal tourné, désolé."
+    incompatible_browser_message: "Vous devez utiliser le navigateur Chrome pour cette application."

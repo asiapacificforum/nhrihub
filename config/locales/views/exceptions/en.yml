@@ -1,0 +1,9 @@
+en:
+  exceptions:
+    default_message: "Oops, something went wrong, sorry."
+    incompatible_browser_message: "You must use the Chrome browser for this application."
+  errors:
+    generic_error:
+      click: 'Click'
+      here: 'here'
+      to_go_back: 'to go back to what you were doing.'

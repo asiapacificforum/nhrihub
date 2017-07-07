@@ -14,8 +14,8 @@ RSpec.describe ReminderMailer, type: :mailer do
     end
 
     it "renders the body" do
-      puts mail.body.encoded
-      puts reminder.text
+      #puts mail.body.encoded
+      #puts reminder.text
       expect(mail.body.encoded).to match(reminder.text)
       expect(mail.body.encoded).to include(reminder.link)
     end

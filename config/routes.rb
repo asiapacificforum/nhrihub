@@ -66,6 +66,10 @@ Rails.application.routes.draw do
     get 'home', :to => 'home#index'
     resources :csp_reports, :only => [:index, :create]
     get 'csp_reports/clear_all', :to => 'csp_reports#clear_all', :via => :get
+    exceptions = [:not_found, :method_not_allowed, :not_implemented, :not_acceptable, :unprocessable_entity, :bad_request, :conflict]
+    exceptions.each do |exception|
+      get exception, :to => "errors##{exception}"
+    end
   end
   # Catch all requests without a locale and redirect to the default...
   # see https://dhampik.com/blog/rails-routes-tricks-with-locales for explanation
