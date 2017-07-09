@@ -30,7 +30,7 @@
 // registerRequest is associated with the user
 :coffeescript
   $('#user_login').focus()
-  @registerRequest = #{@registerRequest}
+  @registerRequest = #{JSON.parse(@registerRequest).to_json.html_safe}
   # registerRequest is produced by the U2F ruby gem as U2F::RegisterRequest
   # console.log "registerRequest: "+JSON.stringify(@registerRequest)
 

@@ -3,13 +3,13 @@
 
 :javascript
   var maximum_filesize = #{InternalDocument.maximum_filesize * 1000000}
-  var permitted_filetypes = #{ InternalDocument.permitted_filetypes.to_json }
-  var files = #{ @internal_documents.to_json }
-  var flash_error = "#{t('error_messages.no_files_error')}"
-  var required_files_titles = #{@required_files_titles.to_json}
+  var permitted_filetypes = #{ InternalDocument.permitted_filetypes.to_json.html_safe }
+  var files = #{ @internal_documents.to_json.html_safe }
+  var flash_error = "#{t('error_messages.no_files_error').html_safe}"
+  var required_files_titles = #{@required_files_titles.to_json.html_safe}
   var context = "internal_document"
   var type = "InternalDocument"
   var delete_confirmation_message = "#{t('.delete_confirmation_message')}"
-  var filetypes = #{ InternalDocument::Filetypes.to_json }
+  var filetypes = #{ InternalDocument::Filetypes.to_json.html_safe }
 
 = javascript_include_tag "internal_documents"

@@ -72,7 +72,7 @@
 
 
 :coffeescript
-  @strategic_plan_data = #{@strategic_plans.to_json}
+  @strategic_plan_data = #{@strategic_plans.to_json.html_safe}
 
   StrategicPlan = Ractive.extend
     template : '#strategic_plan_template'
@@ -157,4 +157,3 @@
 
   $ =>
     @strategic_plans.observe('strategic_plans', (strategic_plans)=> @strategic_plan_menu.set('strategic_plans', strategic_plans))
-    #@strategic_plans.set('strategic_plans', #{@strategic_plans.to_json})

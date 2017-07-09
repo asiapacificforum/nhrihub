@@ -25,14 +25,14 @@
 
 :javascript
   var selected_title = ''
-  var collection_items = #{@advisory_council_issues.to_json}
+  var collection_items = #{@advisory_council_issues.to_json.html_safe}
   var item_name = "advisory_council_issue"
-  var areas = #{@areas.to_json}
-  var subareas = #{@subareas.to_json}
-  var new_collection_item = #{@advisory_council_issue.to_json}
+  var areas = #{@areas.to_json.html_safe}
+  var subareas = #{@subareas.to_json.html_safe}
+  var new_collection_item = #{@advisory_council_issue.to_json.html_safe}
   var create_collection_item_url = "#{@advisory_council_issue.create_url}"
   var maximum_filesize = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.maximum_filesize * 1000000}
-  var permitted_filetypes = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.permitted_filetypes }
+  var permitted_filetypes = #{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.permitted_filetypes.to_json.html_safe }
   var planned_results = null //variables need to be defined in shared js
   var performance_indicators = null //variables need to be defined in shared js
   var Collection = {}

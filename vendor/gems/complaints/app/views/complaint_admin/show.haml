@@ -8,7 +8,7 @@
       :locals => { :new_item => instance_variable_get("@#{name}_complaint_basis"),
                    :create_url => Rails.application.routes.url_helpers.send("#{name}_complaint_bases_path",'en'),
                    :delete_url => Rails.application.routes.url_helpers.send("#{name}_complaint_basis_path",'en','id'),
-                   :collection => instance_variable_get("@#{name}_complaint_bases").to_json,
+                   :collection => instance_variable_get("@#{name}_complaint_bases"),
                    :item_name => "#{name}_subarea",
                    :param_name => 'name',
                    :placeholder => 'e.g. delayed action'}
@@ -58,7 +58,7 @@
     window.flash_error_template = _.template("<ul class='error'><li>{{message}}</li></ul>")
     agency_template = _.template($("#agency_template").html())
 
-    agencies = #{@agencies}
+    agencies = #{@agencies.html_safe}
     agency_names = _(agencies).map (a)->(a.name).toLowerCase()
     agency_full_names = _(agencies).map (a)->(a.full_name).toLowerCase()
     delete_url = "#{agency_url('id')}"

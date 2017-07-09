@@ -67,7 +67,7 @@
   $ ->
     Ractive.DEBUG = false
 
-    areas_data =  #{@areas.to_json} 
+    areas_data =  #{@areas.to_json.html_safe}
 
     Subarea = Ractive.extend
       template : '#subarea_template'

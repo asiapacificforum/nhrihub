@@ -4,15 +4,15 @@
 = render :partial => 'notes/note' # it's in the main app
 
 :coffeescript
-  @selected_title = "#{params[:title] ? escape_javascript(params[:title]) : ''}"
-  @projects_data = #{@projects.to_json}
-  @areas = #{@areas.to_json}
-  @agencies = #{@agencies.to_json}
+  @selected_title = "#{params[:title] ? escape_javascript(params[:title]).html_safe : ''}"
+  @projects_data = #{@projects.to_json.html_safe}
+  @areas = #{@areas.to_json.html_safe}
+  @agencies = #{@agencies.to_json.html_safe}
   @all_agencies_in_threes = _.chain(@agencies).groupBy((el,i)->Math.floor(i/3)).toArray().value()
-  @conventions = #{@conventions.to_json}
-  @planned_results = #{@planned_results.to_json }
-  @project_types = #{@project_types.to_json}
-  @project_named_documents_titles = #{@project_named_documents_titles.to_json}
+  @conventions = #{@conventions.to_json.html_safe}
+  @planned_results = #{@planned_results.to_json.html_safe }
+  @project_types = #{@project_types.to_json.html_safe}
+  @project_named_documents_titles = #{@project_named_documents_titles.to_json.html_safe}
   @performance_indicators = _.chain(planned_results).
     map((pr)->pr.outcomes).
     flatten().
@@ -24,7 +24,7 @@
     object().
     value()
   @maximum_filesize    = #{@maximum_filesize}
-  @permitted_filetypes = #{@permitted_filetypes}
+  @permitted_filetypes = #{@permitted_filetypes.to_json.html_safe}
   @create_reminder_url = "#{@create_reminder_url}"
   @create_note_url     = "#{@create_note_url}"
   @filter_criteria =

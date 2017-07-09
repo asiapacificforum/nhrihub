@@ -10,9 +10,9 @@
 = javascript_include_tag 'in_page_edit'
 
 :javascript
-  var flash_error = "#{t('error_messages.no_files_error')}"
-  var files = #{ @advisory_council_minutes.to_json }
-  var permitted_filetypes = #{@permitted_filetypes}
+  var flash_error = "#{t('error_messages.no_files_error').html_safe}"
+  var files = #{ @advisory_council_minutes.to_json.html_safe }
+  var permitted_filetypes = #{@permitted_filetypes.to_json.html_safe}
   var maximum_filesize = #{@maximum_filesize * 1000000}
   var delete_confirmation_message = "#{t('.delete_confirmation_message')}"
 

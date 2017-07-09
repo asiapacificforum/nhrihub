@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.0.2'
+gem 'rails', '5.1.2'
 # Use postgresql as the database for Active Record
 gem 'pg'
 #gem 'mysql'
@@ -58,12 +58,14 @@ group :development do
 end
 
 gem 'haml-rails'
+gem 'haml', '~> 5.0.0'
+gem 'html2haml', '~> 2.2.0'
 
 group :development, :test, :jstest do
   gem 'rspec-rails'
   gem 'capybara'
   gem 'selenium-webdriver'
-  gem 'database_cleaner'
+  gem 'database_cleaner', '~>1.6.1'
   gem 'teaspoon'
   gem 'teaspoon-mocha'
   gem 'magic_lamp'
@@ -83,7 +85,7 @@ gem 'faker'
 
 gem 'tzinfo-data' # so that we use the ruby tzinfo vs what is installed on the machine e.g. /usr/share/zoneinfo
 
-gem 'letsencrypt_plugin', :git => "https://github.com/lgromanowski/letsencrypt-plugin.git", :ref => "6ef3a2ea450af2cec4be906842ebcbf809b5fc46"
+gem 'letsencrypt_plugin', "~> 0.0.10"
 
 gem "refile", :git => "https://github.com/refile/refile.git", :ref => "d7a42", require: "refile/rails" # for rails5 compatibility
 gem "sinatra", git: "https://github.com/sinatra/sinatra.git" #, :ref => "285275b42fa1bf096a5c9559b6cead2f31b65b66" # for rack 2 compatibility as required for rails5
@@ -98,7 +100,7 @@ gem "aws-sdk", "~> 2"
 
 #while working locally on the glacier_on_rails gem
 #gem "glacier_on_rails", :path => "../glacier_on_rails"
-gem "glacier_on_rails", '= 0.9.2'
+gem "glacier_on_rails", '= 0.9.4'
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'

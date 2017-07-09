@@ -173,8 +173,8 @@
 = javascript_include_tag 'confirm_delete_modal'
 
 :coffeescript
-  @members = #{@members.to_json}
-  @new_member = #{@new_member.to_json}
+  @members = #{@members.to_json.html_safe}
+  @new_member = #{@new_member.to_json.html_safe}
   @create_url = "#{AdvisoryCouncilMember.create_url}"
   @delete_confirmation_message = "#{t('.delete_confirmation_message')}"
 

@@ -22,22 +22,22 @@
 
 :coffeescript
   case_reference = "#{params[:case_reference] ? params[:case_reference] : ''}"
-  @source_all_good_governance_complaint_bases = #{@good_governance_complaint_bases.to_json}
-  @source_all_human_rights_complaint_bases = #{@human_rights_complaint_bases.to_json}
-  @source_all_special_investigations_unit_complaint_bases = #{@special_investigations_unit_complaint_bases.to_json}
-  @source_complaints_data = #{@complaints.to_json}
-  @source_all_mandates = #{@mandates.to_json}
-  @source_all_agencies = #{@agencies.to_json}
+  @source_all_good_governance_complaint_bases = #{@good_governance_complaint_bases.to_json.html_safe}
+  @source_all_human_rights_complaint_bases = #{@human_rights_complaint_bases.to_json.html_safe}
+  @source_all_special_investigations_unit_complaint_bases = #{@special_investigations_unit_complaint_bases.to_json.html_safe}
+  @source_complaints_data = #{@complaints.to_json.html_safe}
+  @source_all_mandates = #{@mandates.to_json.html_safe}
+  @source_all_agencies = #{@agencies.to_json.html_safe}
   @source_all_agencies_in_sixes = _.chain(@source_all_agencies).groupBy((el,i)->Math.floor(i/6)).toArray().value()
-  @source_complaint_bases = #{(@complaint_bases || []).map(&:to_h).to_json}
+  @source_complaint_bases = #{(@complaint_bases || []).map(&:to_h).to_json.html_safe}
   @source_next_case_reference = "#{@next_case_reference}"
-  @source_all_users = #{@users.to_json(:only => :id, :methods => :first_last_name)}
-  @source_all_staff = #{@staff.to_json}
-  @source_permitted_filetypes = #{@permitted_filetypes}
+  @source_all_users = #{@users.to_json(:only => :id, :methods => :first_last_name).html_safe}
+  @source_all_staff = #{@staff.to_json.html_safe}
+  @source_permitted_filetypes = #{@permitted_filetypes.html_safe}
   @source_maximum_filesize = #{@maximum_filesize}
-  @source_communication_permitted_filetypes = #{@communication_permitted_filetypes}
+  @source_communication_permitted_filetypes = #{@communication_permitted_filetypes.html_safe}
   @source_communication_maximum_filesize = #{@communication_maximum_filesize}
-  @source_statuses = #{@statuses.to_json}
+  @source_statuses = #{@statuses.to_json.html_safe}
   @source_filter_criteria =
     complainant : ""
     from : null

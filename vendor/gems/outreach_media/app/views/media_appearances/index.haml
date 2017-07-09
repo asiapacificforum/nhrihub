@@ -17,15 +17,15 @@
 
 :coffeescript
   @selected_title = "#{params[:title] ? escape_javascript(params[:title]) : ''}"
-  @collection_items = #{@media_appearances.to_json}
+  @collection_items = #{@media_appearances.to_json.html_safe}
   @item_name = "media_appearance"
-  @areas = #{@areas.to_json}
-  @subareas = #{@subareas.to_json}
-  @new_collection_item = #{@media_appearance.to_json}
+  @areas = #{@areas.to_json.html_safe}
+  @subareas = #{@subareas.to_json.html_safe}
+  @new_collection_item = #{@media_appearance.to_json.html_safe}
   @create_collection_item_url = "#{@media_appearance.create_url}"
   @maximum_filesize = #{MediaAppearance.maximum_filesize * 1000000}
-  @permitted_filetypes = #{MediaAppearance.permitted_filetypes }
-  @planned_results = #{@planned_results.to_json }
+  @permitted_filetypes = #{MediaAppearance.permitted_filetypes.to_json.html_safe }
+  @planned_results = #{@planned_results.to_json.html_safe }
   @Collection = {}
   @delete_confirmation_message = "#{t('.delete_confirmation_message')}"
 

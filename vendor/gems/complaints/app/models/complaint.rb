@@ -134,12 +134,13 @@ class Complaint < ActiveRecord::Base
 
   def current_assignee
     # first, b/c default sort is most-recent-first
-    assigns.first.assignee unless assigns.empty?
+    @current_assignee ||= assigns.first.assignee unless assigns.empty?
   end
 
   def new_assignee_id=(id)
     unless id.blank? || id=="null"
-      self.assignees << User.find(id)
+      #self.assignees << User.find(id) # this worked until rails 5.1!
+      User.find(id).complaints << self
     end
   end
 
@@ -163,20 +164,16 @@ class Complaint < ActiveRecord::Base
     [chiefly_title, firstName, lastName].join(' ')
   end
 
-  def gender
-    val = read_attribute(:gender)
-    def val.to_s
-      case self
-      when "M"
-        "male"
-      when "F"
-        "female"
-      when "O"
-        "other"
-      else
-        ""
-      end
+  def gender_full_text
+    case gender
+    when "M"
+      "male"
+    when "F"
+      "female"
+    when "O"
+      "other"
+    else
+      ""
     end
-    val
   end
 end

@@ -65,8 +65,8 @@ class InternalDocument < ActiveRecord::Base
   end
 
   after_save do |doc|
-    if doc.document_group_id_changed? && doc.document_group_id_was.present?
-      if (empty_group = DocumentGroup.find(doc.document_group_id_was)).internal_documents.count.zero?
+    if doc.saved_change_to_document_group_id? && doc.document_group_id_before_last_save.present?
+      if (empty_group = DocumentGroup.find(doc.document_group_id_before_last_save)).internal_documents.count.zero?
         empty_group.destroy
       end
     end

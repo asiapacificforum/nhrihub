@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
     @project_types = ProjectType.mandate_groups
     @project_named_documents_titles = ProjectDocument::NamedProjectDocumentTitles
     @maximum_filesize = ProjectDocument.maximum_filesize * 1000000
-    @permitted_filetypes = ProjectDocument.permitted_filetypes.to_json
+    @permitted_filetypes = ProjectDocument.permitted_filetypes
     @create_reminder_url = project_reminders_path('en','id')
     @create_note_url     = project_notes_path('en','id')
   end

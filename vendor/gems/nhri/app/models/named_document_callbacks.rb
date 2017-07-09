@@ -9,9 +9,9 @@ class NamedDocumentCallbacks
   end
 
   def after_save(doc)
-    if doc.document_group_id_changed? && doc.document_group_id_was.present?
+    if doc.saved_change_to_document_group_id? && doc.document_group_id_before_last_save.present?
       # destroy previous document group if it was empty
-      previous_document_group = DocumentGroup.find(doc.document_group_id_was)
+      previous_document_group = DocumentGroup.find(doc.document_group_id_before_last_save)
       previous_document_group.destroy if previous_document_group.empty?
     end
   end

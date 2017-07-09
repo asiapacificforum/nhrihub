@@ -18,7 +18,7 @@ $ ->
       @hide()
       @get('callback').apply(@get('deletable'),[response, statusText, jqxhr])
     error_callback : ->
-      console.log "error callback"
+      console.log "app/assets/javascripts/confirm_delete_modal error callback, shouldn't see this!"
     delete_item : ->
       -#ev = $.Event(event)
       -#ev.stopPropagation()

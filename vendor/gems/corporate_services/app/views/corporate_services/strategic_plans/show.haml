@@ -26,7 +26,7 @@
 
 :coffeescript
   @selected_performance_indicator_id = "#{params[:performance_indicator_id] ? params[:performance_indicator_id] : ''}"
-  @strategic_plan_data = #{@strategic_plan.to_json}
+  @strategic_plan_data = #{@strategic_plan.to_json.html_safe}
   @flash_error = "#{t('.strategic_priority_disallowed')}"
 
 :coffeescript

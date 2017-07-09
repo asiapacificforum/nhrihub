@@ -18,7 +18,7 @@
 
 :coffeescript
   $ ->
-    collection = #{collection}
+    collection = #{collection.to_json.html_safe}
     delete_url = "#{delete_url}"
     el = $(".#{item_name.pluralize} tbody")
     delete_link =  "a.delete_#{item_name}"
