@@ -22,7 +22,7 @@ $ ->
       @set('info_message', message)
       @show()
     warn : (message) ->
-      @set('warn_mesage', message)
+      @set('warn_message', message)
       @show()
     confirm : (message) ->
       @set('confirm_message', message)
