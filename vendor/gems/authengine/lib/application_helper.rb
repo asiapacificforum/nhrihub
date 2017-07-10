@@ -13,7 +13,7 @@ module ApplicationHelper
   end
 
   def focus(input)
-    haml_tag :script, "$(function(){$('##{input}').focus()})"
+    haml_tag :script, "$(function(){$('##{input}').focus()})".html_safe
   end
 
 end
