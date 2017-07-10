@@ -1,4 +1,4 @@
-set :assets_roles, fetch(:asset_roles, []).push('ws')
+#set :assets_roles, fetch(:asset_roles, []).push('ws')
 # If the environment differs from the stage name
 set :rails_env, 'production'
 set :site_name, 'ws'
