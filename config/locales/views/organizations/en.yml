@@ -15,7 +15,7 @@ en:
       edit:
         heading: 'Edit organization'
       show:
-        heading: 'Organization: %{name}'
+        heading: 'Organization'
         phones: 'Phone number(s)'
       # controller methods
       create:
