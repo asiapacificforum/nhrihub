@@ -1,7 +1,6 @@
 class CorporateServices::StrategicPlansController < ApplicationController
   def show
     @strategic_plan = StrategicPlan.where(:id => params[:id]).eager_loaded_associations.first
-    @title = t('.heading', :title => @strategic_plan.title)
     respond_to do |format|
       format.html
       format.json {render :json => @strategic_plan }

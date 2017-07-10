@@ -59,7 +59,7 @@ private
     if t('.page_title').match /translation missing/
       # yml file doesn't have an entry for the .title key
       # so use the heading value
-      @title = t('.heading')
+      @title = t('.heading') 
     else
       @title = t('.page_title')
     end
