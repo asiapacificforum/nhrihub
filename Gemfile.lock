@@ -231,9 +231,9 @@ GEM
     font-awesome-sass (4.7.0)
       sass (>= 3.2)
     forwardable-extended (2.6.0)
-    glacier_on_rails (0.9.4)
-      httparty
-      rails (~> 5.1.0)
+    glacier_on_rails (0.9.5)
+      httparty (~> 0.15.5)
+      rails (~> 5.1)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
     haml (5.0.1)
@@ -472,7 +472,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   faker
   font-awesome-sass
-  glacier_on_rails (= 0.9.4)
+  glacier_on_rails (= 0.9.5)
   haml (~> 5.0.0)
   haml-rails
   html2haml (~> 2.2.0)
