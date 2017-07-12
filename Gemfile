@@ -16,6 +16,8 @@ gem 'coffee-rails'#, '~> 4.0.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer',  "~> 0.12.3", platforms: :ruby
 
+gem 'i18n', "~>0.8.6" # bug in 0.8.5
+
 gem 'rb-readline'
 
 # Use jquery as the JavaScript library
@@ -100,7 +102,7 @@ gem "aws-sdk", "~> 2"
 
 #while working locally on the glacier_on_rails gem
 #gem "glacier_on_rails", :path => "../glacier_on_rails"
-gem "glacier_on_rails", '= 0.9.5'
+gem "glacier_on_rails", '= 0.9.6'
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'
