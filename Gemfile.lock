@@ -7,15 +7,6 @@ GIT
       activerecord (> 4.1)
 
 GIT
-  remote: https://github.com/lazylester/glacier_on_rails.git
-  revision: 33aeb5b6b07b742ccdcb3da8ea144f48d2076fe3
-  ref: 33aeb5b
-  specs:
-    glacier_on_rails (0.9.9pre)
-      httparty (~> 0.15.5)
-      rails (~> 5.1)
-
-GIT
   remote: https://github.com/lazylester/message_block.git
   revision: cb7dc71a9f2ae71be8940788f43632c9b1057318
   specs:
@@ -240,6 +231,9 @@ GEM
     font-awesome-sass (4.7.0)
       sass (>= 3.2)
     forwardable-extended (2.6.0)
+    glacier_on_rails (0.9.9)
+      httparty (~> 0.15.5)
+      rails (~> 5.1)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
     haml (5.0.1)
@@ -478,7 +472,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   faker
   font-awesome-sass
-  glacier_on_rails!
+  glacier_on_rails (= 0.9.9)
   haml (~> 5.0.0)
   haml-rails
   html2haml (~> 2.2.0)

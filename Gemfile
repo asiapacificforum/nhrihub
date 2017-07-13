@@ -102,8 +102,8 @@ gem "aws-sdk", "~> 2"
 
 #while working locally on the glacier_on_rails gem
 #gem "glacier_on_rails", :path => "../glacier_on_rails"
-gem "glacier_on_rails", git: "https://github.com/lazylester/glacier_on_rails.git", :ref => "33aeb5b"
-#gem "glacier_on_rails", '= 0.9.8'
+#gem "glacier_on_rails", git: "https://github.com/lazylester/glacier_on_rails.git", :ref => "33aeb5b"
+gem "glacier_on_rails", '= 0.9.9'
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'
