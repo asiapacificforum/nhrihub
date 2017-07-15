@@ -105,5 +105,7 @@ end
 #after "deploy:reverted", 'whenever:update_crontab'
 
 
-before "deploy:check:linked_files", "deploy:copy_config"
+#these files change rarely, no need to upload them for every deploy
+#it saves time to skip this, and prevents inadvertent modification of server
+#before "deploy:check:linked_files", "deploy:copy_config"
 
