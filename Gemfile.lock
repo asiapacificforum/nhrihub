@@ -323,6 +323,8 @@ GEM
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
     public_suffix (2.0.5)
+    rack-attack (5.0.1)
+      rack
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.1.2)
@@ -493,6 +495,7 @@ DEPENDENCIES
   poltergeist
   projects!
   rack!
+  rack-attack
   rack-protection
   rails (= 5.1.2)
   rails-settings-cached (~> 0.4.2)
