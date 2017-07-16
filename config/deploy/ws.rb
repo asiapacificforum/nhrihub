@@ -82,16 +82,3 @@ server 'ws',
   }
 
 #set :rvm_custom_path, "~/.rvm"
-
-# could not get whenever gem's own update_crontab to work
-# as the release path was not set, so use this workaround
-namespace :deploy do
- task :update_crontab do
-   on roles(:all) do
-     within current_path do
-       execute :bundle, :exec, :whenever, "--update-crontab", "~/var/www/nhri_docs/current/config/schedule.rb"
-     end
-   end
- end
-end
-after 'deploy:symlink:release', 'deploy:update_crontab'

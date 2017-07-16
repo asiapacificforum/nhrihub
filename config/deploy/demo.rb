@@ -100,16 +100,3 @@ server 'demo',
 #auth_methods: %w(publickey)
 ## password: 'please use keys'
 #}
-
-# could not get whenever gem's own update_crontab to work
-# as the release path was not set, so use this workaround
-namespace :deploy do
- task :update_crontab do
-   on roles(:all) do
-     within current_path do
-       execute :bundle, :exec, :whenever, "--update-crontab", "~/www/nhri-hub.com/current/config/schedule.rb"
-     end
-   end
- end
-end
-after 'deploy:symlink:release', 'deploy:update_crontab'
