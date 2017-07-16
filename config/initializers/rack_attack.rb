@@ -1,4 +1,6 @@
 class Rack::Attack
+  BlockPatterns = Regexp.union('/etc/passwd', 'wp-admin', 'wp-login', 'wp-content', /.*php.*/)
+
   ### Configure Cache ###
 
   # If you don't want to use Rails.cache (Rack::Attack's default), then
@@ -90,10 +92,8 @@ class Rack::Attack
     Rack::Attack::Fail2Ban.filter("pentesters-#{req.ip}", :maxretry => 3, :findtime => 10.minutes, :bantime => 5.minutes) do
       # The count for the IP is incremented if the return value is truthy
       CGI.unescape(req.query_string) =~ %r{/etc/passwd} ||
-      req.path.include?('/etc/passwd') ||
-      req.path.include?('wp-admin') ||
-      req.path.include?('wp-login')
-
+      req.path =~ BlockPatterns ||
+      ["POST","OPTIONS","DELETE","PUT"].include?(req.request_method) && req.path =~ %r{/(#{I18n.locale}/)?}
     end
   end
 
