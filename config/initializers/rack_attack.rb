@@ -93,7 +93,7 @@ class Rack::Attack
       # The count for the IP is incremented if the return value is truthy
       CGI.unescape(req.query_string) =~ %r{/etc/passwd} ||
       req.path =~ BlockPatterns ||
-      ["POST","OPTIONS","DELETE","PUT"].include?(req.request_method) && req.path =~ %r{/(#{I18n.locale}/)?}
+      ["POST","OPTIONS","DELETE","PUT"].include?(req.request_method) && req.path =~ %r{^/(#{I18n.locale})?(/)?$} 
     end
   end
 

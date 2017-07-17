@@ -46,7 +46,7 @@ module Apf
       end if File.exists?(env_file)
     end
 
-    #config.middleware.use Rack::Attack
+    config.middleware.use Rack::Attack
   end
 
 end
