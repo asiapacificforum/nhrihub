@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.date = "2014-01-13"
   s.description = "A rails authentication and authorization engine that\n                    reduces clutter in your controllers and views.\n                    Includes aliased link_to and button_to helpers that return an empty string\n                    if the current user is not permitted to follow the link.\n                    Authorization configuration is removed from the controllers and instead\n                    is stored in the database and configured through html views."
   s.email = ["codehacker@comcast.net"]
-  s.files         = `git ls-files`.split("\n")
+  s.files = Dir.glob("{{app,config,db,lib,spec}/**/*,*}").reject{|f| f =~ /(cache|\.log|\.gem$)/}
   s.homepage = ""
   s.require_paths = ["lib"]
   s.rubyforge_project = "authengine"
