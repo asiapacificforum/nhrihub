@@ -111,6 +111,7 @@ class Reminder < ActiveRecord::Base
   end
 
   def self.send_reminders_due_today
+    puts "#{Time.now}: #{due_today.count} reminders sent"
     due_today.each(&:remind)
   end
 
