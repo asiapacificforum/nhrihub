@@ -16,9 +16,12 @@ module StrategicPlanIndex
   end
 
   def lower_priority_siblings
+    siblings.select{|sibling| sibling >= self}
+  end
+
+  def siblings
     parent_id = (self.index_parent.class.name.underscore+"_id").to_sym
     siblings = self.class.send(:where, {parent_id => self.send(parent_id)})
-    siblings.select{|sibling| sibling >= self}
   end
 
   def <=>(other)

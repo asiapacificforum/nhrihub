@@ -1,20 +1,10 @@
-class CorporateServices::PlannedResults::OutcomesController < ApplicationController
+class CorporateServices::PlannedResults::OutcomesController < CorporateServicesController
   def create
-    outcome = Outcome.new(outcome_params)
-    if outcome.save
-      render :json => outcome.to_json, :status => 200
-    else
-      head :internal_server_error
-    end
+    super( Outcome.new(outcome_params) )
   end
 
   def destroy
-    outcome = Outcome.find(params[:id])
-    if outcome.destroy
-      render :json => Outcome.where(:planned_result_id => outcome.planned_result_id), :status => 200
-    else
-      head :internal_server_error
-    end
+    super Outcome
   end
 
   def update

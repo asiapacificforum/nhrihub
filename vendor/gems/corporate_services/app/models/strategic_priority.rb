@@ -5,7 +5,7 @@ class StrategicPriority < ActiveRecord::Base
   default_scope { order(:priority_level) }
 
   before_create do
-    all_in_plan.
+    siblings.
       select{|sp| sp.priority_level == priority_level}.
       each do |sp|
         priority_level = sp.priority_level
@@ -15,7 +15,7 @@ class StrategicPriority < ActiveRecord::Base
   end
 
   before_update do
-    all_in_plan.
+    siblings.
       select{|sp| (sp.id != id) && (sp.priority_level == priority_level)}.
       each do |sp|
         priority_level = sp.priority_level
@@ -60,7 +60,7 @@ class StrategicPriority < ActiveRecord::Base
     priority_level <=> other.priority_level
   end
 
-  def all_in_plan
+  def siblings
     StrategicPriority.where(:strategic_plan_id => strategic_plan_id)
   end
 

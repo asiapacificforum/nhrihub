@@ -1,4 +1,9 @@
-class CorporateServices::StrategicPlansController < ApplicationController
+class CorporateServices::StrategicPlansController < CorporateServicesController
+
+  def create
+    super( StrategicPlan.new(strategic_plan_params) )
+  end
+
   def show
     @strategic_plan = StrategicPlan.where(:id => params[:id]).eager_loaded_associations.first
     respond_to do |format|
@@ -7,15 +12,6 @@ class CorporateServices::StrategicPlansController < ApplicationController
       format.docx do
         send_file StrategicPlanReport.new(@strategic_plan).docfile
       end
-    end
-  end
-
-  def create
-    @strategic_plan = StrategicPlan.new(strategic_plan_params)
-    if @strategic_plan.save
-      render :json => @strategic_plan
-    else
-      render :status => 500
     end
   end
 

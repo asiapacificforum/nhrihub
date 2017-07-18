@@ -1,21 +1,11 @@
-class CorporateServices::Activities::PerformanceIndicatorsController < ApplicationController
+class CorporateServices::Activities::PerformanceIndicatorsController < CorporateServicesController
   def create
-    performance_indicator = PerformanceIndicator.new(performance_indicator_params)
-    if performance_indicator.save
-      render :json => performance_indicator, :status => 200
-    else
-      head :internal_server_error
-    end
+    super( PerformanceIndicator.new(performance_indicator_params) )
   end
 
   # response to destroy must be all remaining siblings due to re-indexing
   def destroy
-    performance_indicator = PerformanceIndicator.find(params[:id])
-    if performance_indicator.destroy
-      render :json => PerformanceIndicator.where(:activity_id => performance_indicator.activity_id), :status => 200
-    else
-      head :internal_server_error
-    end
+    super PerformanceIndicator
   end
 
   def update

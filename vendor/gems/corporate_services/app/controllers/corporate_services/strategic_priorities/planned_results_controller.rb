@@ -1,21 +1,10 @@
-class CorporateServices::StrategicPriorities::PlannedResultsController < ApplicationController
+class CorporateServices::StrategicPriorities::PlannedResultsController < CorporateServicesController
   def create
-    planned_result = PlannedResult.new(planned_result_params)
-    if planned_result.save
-      # call to_json here b/c the built in call seems to supply unwanted options!
-      render :json => planned_result.to_json, :status => 200
-    else
-      head :internal_server_error
-    end
+    super( PlannedResult.new(planned_result_params) )
   end
 
   def destroy
-    planned_result = PlannedResult.find(params[:id])
-    if planned_result.destroy
-      render :json => PlannedResult.where(:strategic_priority_id => planned_result.strategic_priority_id).to_json, :status => 200
-    else
-      head :internal_server_error
-    end
+    super( PlannedResult )
   end
 
   def update

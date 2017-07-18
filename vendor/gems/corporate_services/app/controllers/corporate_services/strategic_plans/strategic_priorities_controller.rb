@@ -1,8 +1,8 @@
-class CorporateServices::StrategicPlans::StrategicPrioritiesController < ApplicationController
+class CorporateServices::StrategicPlans::StrategicPrioritiesController < CorporateServicesController
   def create
     strategic_priority = StrategicPriority.new(strategic_priority_params)
     if strategic_priority.save
-      render :json => strategic_priority.all_in_plan, :status => 200
+      render :json => strategic_priority.siblings, :status => 200
     else
       head :internal_server_error
     end
@@ -11,19 +11,14 @@ class CorporateServices::StrategicPlans::StrategicPrioritiesController < Applica
   def update
     strategic_priority = StrategicPriority.find(params[:id])
     if strategic_priority.update_attributes(strategic_priority_params)
-      render :json => strategic_priority.all_in_plan, :status => 200
+      render :json => strategic_priority.siblings, :status => 200
     else
       head :internal_server_error
     end
   end
 
   def destroy
-    strategic_priority = StrategicPriority.find(params[:id])
-    if strategic_priority.destroy
-      render :json => strategic_priority.all_in_plan, :status => 200
-    else
-      head :internal_server_error
-    end
+    super StrategicPriority
   end
 
   private

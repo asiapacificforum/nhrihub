@@ -22,8 +22,7 @@ class PlannedResult < ActiveRecord::Base
   def as_json(options = {})
     default_options = {:except => [:updated_at, :created_at],
                        :methods => [:url, :indexed_description, :description, :outcomes, :create_outcome_url, :description_error]}
-    options = options.blank? ? default_options : options
-    super(options)
+    super(default_options)
   end
 
   def description_error
