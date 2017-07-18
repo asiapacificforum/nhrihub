@@ -25,7 +25,8 @@ FactoryGirl.define do
 
     trait :with_performance_indicators do
       after(:build) do |project|
-        project.performance_indicator_ids = PerformanceIndicator.pluck(:id).last(3)
+        performance_indicator_ids = PerformanceIndicator.joins(:activity => {:outcome => {:planned_result => {:strategic_priority => :strategic_plan}}}).merge(StrategicPlan.current).pluck(:id)
+        project.performance_indicator_ids = performance_indicator_ids.sample(3)
       end
     end
 

@@ -2,7 +2,7 @@ require 'active_support/concern'
 module StrategicPlanIndex
   extend ActiveSupport::Concern
   included do
-    default_scope ->{ order("string_to_array(index,'.')::int[]") }
+    default_scope ->{ order("string_to_array(#{table_name}.index,'.')::int[]") }
 
     after_destroy do
       lower_priority_siblings.each{|pr| pr.decrement_index }
