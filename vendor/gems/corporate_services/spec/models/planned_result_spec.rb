@@ -91,23 +91,7 @@ end
 
 describe "destroy" do
   before do
-    spl = StrategicPlan.new
-    spl.save
-    2.times do |i|
-      sp = FactoryGirl.create(:strategic_priority, :priority_level => i+1, :strategic_plan => spl)
-      2.times do
-        pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
-        2.times do
-          o = FactoryGirl.create(:outcome, :planned_result => pr)
-          2.times do
-            a = FactoryGirl.create(:activity, :outcome => o)
-            2.times do
-              FactoryGirl.create(:performance_indicator, :activity => a)
-            end
-          end
-        end
-      end
-    end
+    FactoryGirl.create(:strategic_plan, :well_populated)
   end
 
   it "should set the initial values of the indexes" do
@@ -151,10 +135,21 @@ describe ".all_with_associations scope" do
     @current_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => Date.new(Date.today.year,1,1))
     sp = FactoryGirl.create(:strategic_priority, :priority_level => 1, :strategic_plan_id => @current_strategic_plan.id)
     pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
+    o = FactoryGirl.create(:outcome, :planned_result => pr)
+    a = FactoryGirl.create(:activity, :outcome => o)
+    pi = FactoryGirl.create(:performance_indicator, :activity => a)
   end
 
   it "should include only planned results from current strategic plan" do
     expect(PlannedResult.all_with_associations.count).to eq 1
     expect(PlannedResult.all_with_associations.first.strategic_priority.strategic_plan).to eq @current_strategic_plan
+  end
+
+  it "should render to json with required planned_result options" do
+    json = JSON.parse(PlannedResult.all_with_associations.to_json)
+    expect(json[0].keys).to match_array ["indexed_description", "outcomes"]
+    expect(json[0]["outcomes"][0].keys).to match_array ["indexed_description", "activities"]
+    expect(json[0]["outcomes"][0]["activities"][0].keys).to match_array ["indexed_description", "performance_indicators"]
+    expect(json[0]["outcomes"][0]["activities"][0]["performance_indicators"][0].keys).to match_array ["indexed_description", "id"]
   end
 end

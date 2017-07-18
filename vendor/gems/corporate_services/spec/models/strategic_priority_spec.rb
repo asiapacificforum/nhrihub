@@ -138,23 +138,7 @@ end
 
 describe "destroy" do
   before do
-    spl = StrategicPlan.new
-    spl.save
-    2.times do |i|
-      sp = FactoryGirl.create(:strategic_priority, :priority_level => i+1, :strategic_plan => spl)
-      2.times do
-        pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
-        2.times do
-          o = FactoryGirl.create(:outcome, :planned_result => pr)
-          2.times do
-            a = FactoryGirl.create(:activity, :outcome => o)
-            2.times do
-              FactoryGirl.create(:performance_indicator, :activity => a)
-            end
-          end
-        end
-      end
-    end
+    FactoryGirl.create(:strategic_plan, :well_populated)
   end
 
   it "should set the initial values of the indexes" do

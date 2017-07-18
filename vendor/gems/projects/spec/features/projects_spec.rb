@@ -55,7 +55,6 @@ feature "projects index", :js => true do
           end
         end
         within performance_indicators do
-          debugger
           last_project.performance_indicators.each do |performance_indicator|
             expect(all('.performance_indicator').map(&:text)).to include performance_indicator.indexed_description
           end

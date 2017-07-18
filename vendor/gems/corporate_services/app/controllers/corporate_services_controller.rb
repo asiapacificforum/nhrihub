@@ -1,7 +1,7 @@
 class CorporateServicesController < ApplicationController
   def create(model)
     if model.save
-      render :json => model.to_json, :status => 200
+      render :json => model.as_json, :status => 200
     else
       head :internal_server_error
     end
@@ -10,7 +10,7 @@ class CorporateServicesController < ApplicationController
   def destroy(klass)
     model = klass.find(params[:id])
     if model.destroy
-      render :json => model.siblings, :status => 200
+      render :json => model.siblings.as_json, :status => 200
     else
       head :internal_server_error
     end
