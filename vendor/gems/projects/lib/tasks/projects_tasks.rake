@@ -10,7 +10,7 @@ namespace :projects do
   desc "populates the projects table"
   task "populate_projects" => "projects:depopulate" do
     5.times do
-      FactoryGirl.create(:project, :with_reminders)
+      FactoryGirl.create(:project, :with_reminders, :with_performance_indicators)
     end
   end
 
