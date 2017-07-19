@@ -15,3 +15,20 @@ describe "index_url" do
     end
   end
 end
+
+describe "#index_url" do
+  before do
+    @issue = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.new(:title => "the big issue")
+  end
+
+  it "should contain protocol, host, locale, issues path, and case_reference query string" do
+    route = Rails.application.routes.recognize_path(@issue.index_url)
+    expect(route[:locale]).to eq I18n.locale.to_s
+    url = URI.parse(@issue.index_url)
+    expect(url.host).to eq SITE_URL
+    expect(url.path).to eq "/en/nhri/advisory_council/issues"
+    params = CGI.parse(url.query)
+    expect(params.keys.first).to eq "selection"
+    expect(params.values.first).to eq [@issue.title]
+  end
+end

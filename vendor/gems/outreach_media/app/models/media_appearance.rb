@@ -73,7 +73,7 @@ class MediaAppearance < ActiveRecord::Base
   end
 
   def index_url
-    media_appearances_path(:en, {:title => title})
+    media_appearances_url(:en, {:host => SITE_URL, :protocol => 'https', :title => title})
   end
 
   def date

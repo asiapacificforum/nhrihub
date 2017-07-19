@@ -93,3 +93,21 @@ describe "destroy" do
     end
   end
 end
+
+describe "#index_url" do
+  before do
+    FactoryGirl.create(:strategic_plan, :populated)
+    @performance_indicator = PerformanceIndicator.first
+  end
+
+  it "should contain protocol, host, locale, strategic_plan path, and id query string" do
+    route = Rails.application.routes.recognize_path(@performance_indicator.index_url)
+    expect(route[:locale]).to eq I18n.locale.to_s
+    url = URI.parse(@performance_indicator.index_url)
+    expect(url.host).to eq SITE_URL
+    expect(url.path).to eq "/en/corporate_services/strategic_plans/1"
+    params = CGI.parse(url.query)
+    expect(params.keys.first).to eq "performance_indicator_id"
+    expect(params.values.first).to eq [@performance_indicator.id.to_s]
+  end
+end

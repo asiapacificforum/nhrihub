@@ -25,12 +25,6 @@ class IccReferenceDocument < ActiveRecord::Base
                        :create_reminder_url ] )
   end
 
-  #def url
-    #if persisted?
-      #Rails.application.routes.url_helpers.nhri_icc_reference_document_path(I18n.locale, self)
-    #end
-  #end
-
   def create_reminder_url
     nhri_icc_reference_document_reminders_path(:en,id) if persisted?
   end
@@ -40,7 +34,6 @@ class IccReferenceDocument < ActiveRecord::Base
   end
 
   def index_url
-    nhri_icc_reference_documents_path('en', :selected_document_id => id)
+    nhri_icc_reference_documents_url('en', {:host => SITE_URL, :protocol => 'https', :selected_document_id => id})
   end
-
 end

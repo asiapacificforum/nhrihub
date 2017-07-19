@@ -73,7 +73,7 @@ class Project < ActiveRecord::Base
   end
 
   def index_url
-    projects_path(:en, {:title => title})
+    projects_url(:en, {:host => SITE_URL, :protocol => 'https', :title => title})
   end
 
 end

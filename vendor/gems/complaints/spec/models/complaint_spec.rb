@@ -123,7 +123,6 @@ describe "next case reference" do
       expect(Complaint.next_case_reference).to eq("C#{ current_year }-1")
     end
   end
-
 end
 
 describe "sort algorithm" do
@@ -135,5 +134,22 @@ describe "sort algorithm" do
 
   it "should sort by ascending case reference" do
     expect(Complaint.all.sort.pluck(:case_reference)).to eq ["C16-1","C16-2","C16-3"]
+  end
+end
+
+describe "#index_url" do
+  before do
+    @complaint = Complaint.create(:case_reference => 'C12-35')
+  end
+
+  it "should contain protocol, host, locale, complaints path, and case_reference query string" do
+    route = Rails.application.routes.recognize_path(@complaint.index_url)
+    expect(route[:locale]).to eq I18n.locale.to_s
+    url = URI.parse(@complaint.index_url)
+    expect(url.host).to eq SITE_URL
+    expect(url.path).to eq "/en/complaints"
+    params = CGI.parse(url.query)
+    expect(params.keys.first).to eq "case_reference"
+    expect(params.values.first).to eq ["C12-35"]
   end
 end

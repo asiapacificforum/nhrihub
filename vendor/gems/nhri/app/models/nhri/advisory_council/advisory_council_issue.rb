@@ -79,7 +79,7 @@ class Nhri::AdvisoryCouncil::AdvisoryCouncilIssue < ActiveRecord::Base
   end
 
   def index_url
-    nhri_advisory_council_issues_path('en',{:selection => title})
+    nhri_advisory_council_issues_url('en',{:host => SITE_URL, :protocol => 'https', :selection => title})
   end
 
 end

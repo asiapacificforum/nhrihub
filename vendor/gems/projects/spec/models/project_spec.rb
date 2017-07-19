@@ -39,3 +39,20 @@ describe 'to_json' do
     expect(@project_ruby["project_types"][0]["types"].map{|t| t["id"]}).not_to include @type3.id
   end
 end
+
+describe "#index_url" do
+  before do
+    @project = Project.new(:title => 'some enchanted evening')
+  end
+
+  it "should contain protocol, host, locale, projects path, and title query string" do
+    route = Rails.application.routes.recognize_path(@project.index_url)
+    expect(route[:locale]).to eq I18n.locale.to_s
+    url = URI.parse(@project.index_url)
+    expect(url.host).to eq SITE_URL
+    expect(url.path).to eq "/en/projects"
+    params = CGI.parse(url.query)
+    expect(params.keys.first).to eq "title"
+    expect(params.values.first).to eq ["some enchanted evening"]
+  end
+end

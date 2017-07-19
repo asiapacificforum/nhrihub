@@ -19,6 +19,18 @@ RSpec.describe ReminderMailer, type: :mailer do
       expect(mail.body.encoded).to match(reminder.text)
       expect(mail.body.encoded).to include(reminder.link)
     end
+
+    it "includes link with full path to the originating page" do
+      html = mail.body.parts[1].body.raw_source
+      html = Nokogiri::HTML(html)
+      link = html.xpath(".//a/@href").text
+      url = URI.parse(link)
+      expect(url.host).to eq SITE_URL
+      expect(url.path).to eq "/en/complaints.html"
+      params = CGI.parse(url.query)
+      expect(params.keys.first).to eq "case_reference"
+      expect(params.values.first).to eq ["some string"]
+    end
   end
 
 end

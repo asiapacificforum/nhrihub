@@ -54,7 +54,7 @@ class Nhri::Indicator < ActiveRecord::Base
   end
 
   def index_url
-    nhri_heading_path(:en, heading.id,{:selected_indicator_id => id})
+    nhri_heading_url(:en, heading.id,{:host => SITE_URL, :protocol => 'https', :selected_indicator_id => id})
   end
 
 end

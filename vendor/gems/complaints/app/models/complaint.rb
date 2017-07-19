@@ -157,7 +157,7 @@ class Complaint < ActiveRecord::Base
   end
 
   def index_url
-    complaints_path('en', "html", {:case_reference => case_reference})
+    complaints_url('en', {:host => SITE_URL, :protocol => 'https', :case_reference => case_reference})
   end
 
   def complainant_full_name
