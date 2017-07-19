@@ -32,7 +32,8 @@ module MediaAdminSpecHelpers
   def open_accordion_for_area(text)
     target_area = area_called(text)
     target_area.find('#subareas_link').click
-    sleep(0.2) # transition
+    accordion_element = target_area.find(:xpath, "./parent::*/div[contains(@class,'collapse')]")['id']
+    wait_for_accordion("#"+accordion_element)
   end
 
   def area_called(text)

@@ -24,6 +24,7 @@ require 'selenium-webdriver'
 require_relative './support/wait_for_ajax'
 require_relative './support/wait_for_authentication'
 require_relative './support/wait_for_modal'
+require_relative './support/wait_for_accordion'
 require_relative 'helpers/download_helpers'
 
 #Capybara.default_max_wait_time = 5

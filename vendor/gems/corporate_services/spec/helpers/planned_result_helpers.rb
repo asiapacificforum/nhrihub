@@ -23,7 +23,7 @@ module PlannedResultHelpers
   end
 
   def save_planned_result
-    page.find("i#create_save")
+    page.find(".new_planned_result_actions i#create_save")
   end
 
   def add_planned_result

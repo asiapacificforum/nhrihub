@@ -129,7 +129,7 @@
             :value => "{{ description }}", :style => 'font-size: 14px; z-index:10; width:100%'}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
     .col-md-2{:style=>"width:85.7142%"}
-  .row
+  .row.new_planned_result_actions
     .col-md-2{:style=>"width:14.2857%"}
       %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:12px"}
       %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:40px"}
