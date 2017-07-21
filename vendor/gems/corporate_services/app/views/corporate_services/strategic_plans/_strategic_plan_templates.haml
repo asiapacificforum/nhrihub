@@ -1,5 +1,3 @@
-= render :partial => 'shared/flash_error'
-
 %script#show_strategic_priority{:type => 'text/ractive'}
   .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
     .panel-heading.strategic_priority_title{:style => "color:#404040; background-color:rgba(140, 123, 85, 0.56); background-image:none; padding-bottom:4px; padding-top:15px;"}
@@ -290,23 +288,23 @@
 
 %script#projects_template{:type => 'text/ractive'}
   {{#project_titles}}
-  <project title='{{title}}' index_url='{{index_url}}' />
+  <project title='{{title}}' index_path='{{index_path}}' />
   {{/project_titles}}
 
 %script#project_template{:type => 'text/ractive'}
   .title.project{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.project')}
     %span
-      %a{:href => "{{index_url}}"} {{title}}
+      %a{:href => "{{index_path}}"} {{title}}
 
 %script#media_appearances_template{:type => 'text/ractive'}
   {{#media_appearance_titles}}
-  <mediaappearance title='{{title}}' index_url='{{index_url}}' />
+  <mediaappearance title='{{title}}' index_path='{{index_path}}' />
   {{/media_appearance_titles}}
 
 %script#media_appearance_template{:type => 'text/ractive'}
   .title.media_appearance{'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.media_appearance')}
     %span
-      %a{:href => "{{index_url}}"} {{title}}
+      %a{:href => "{{index_path}}"} {{title}}
 
 = render :partial => 'shared/confirm_delete_modal'
 = render :partial => 'reminders/reminder' # it's in the main app

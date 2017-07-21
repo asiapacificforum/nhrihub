@@ -19,9 +19,6 @@
         %td
           %a#forgot_password{:onclick=>'reset_password()'}=t('forgot', :scope => scope)
 
-= render :partial => 'shared/flash_error'
-
-
 - if Rails.env.production?
   = javascript_include_tag 'u2f-api.js'
 
@@ -85,5 +82,3 @@
     $('#u2f_sign_response').val(JSON.stringify(signResponse))
     @authentication_pending = 0
     $('form').submit()
-
-= javascript_include_tag 'flash'
