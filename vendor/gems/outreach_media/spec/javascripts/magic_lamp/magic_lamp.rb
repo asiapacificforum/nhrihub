@@ -58,41 +58,4 @@ MagicLamp.define do
     render :partial => 'nhri/advisory_council/issues/index'
   end
 
-  #fixture(:name => 'outreach_event_data') do
-    #ImpactRatingTest.populate_test_data
-    ##AudienceTypeTest.populate_test_data
-    #AreaTest.populate_test_data
-    #OutreachEventTest.populate_test_data
-    #OutreachEvent.all
-  #end
-
-  #fixture(:name => 'selected_audience_type') do
-    #"Select audience type"
-  #end
-
-  #fixture(:name => 'selected_impact_rating') do
-    #"Select impact rating"
-  #end
-
-  #fixture(:name => 'audience_types') do
-    #AudienceTypeTest.populate_test_data
-    #AudienceType.all
-  #end
-
-  #fixture(:name => 'new_outreach_event') do
-    #OutreachEvent.new
-  #end
-
-  #fixture(:name => 'create_outreach_event_url') do
-    #OutreachEvent.new.create_url
-  #end
-
-  #fixture(:name => 'outreach_event_page') do
-    #render :partial => 'outreach_media/outreach_events/index'
-  #end
-
-  #fixture(:name => 'impact_ratings') do
-    #ImpactRatingTest.populate_test_data
-    #ImpactRating.all
-  #end
 end
