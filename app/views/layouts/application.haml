@@ -17,6 +17,7 @@
     <![endif]-->
 
     = javascript_include_tag 'application'
+    = javascript_include_tag 'flash' # cannot include this in application.js b/c of javascript tests
 
     - if Rails.env.test? || Rails.env.jstest?
       = javascript_tag "$.fx.off = true;"
