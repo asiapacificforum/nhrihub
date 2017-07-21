@@ -25,6 +25,7 @@ describe "within range evaluation", ->
     window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
     window.planned_results = []
     window.performance_indicators = []
+    window.selected_title = ''
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     $.getScript("/assets/media.js").
       done( -> 
@@ -48,6 +49,7 @@ describe "area and subarea matching algorithm", ->
     window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
     window.planned_results = []
     window.performance_indicators = []
+    window.selected_title = ''
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     $.getScript("/assets/media.js").
       done( -> 

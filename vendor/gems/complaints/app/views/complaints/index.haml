@@ -33,9 +33,9 @@
   @source_next_case_reference = "#{@next_case_reference}"
   @source_all_users = #{@users.to_json(:only => :id, :methods => :first_last_name).html_safe}
   @source_all_staff = #{@staff.to_json.html_safe}
-  @source_permitted_filetypes = #{@permitted_filetypes.html_safe}
+  @source_permitted_filetypes = #{@permitted_filetypes.to_json.html_safe}
   @source_maximum_filesize = #{@maximum_filesize}
-  @source_communication_permitted_filetypes = #{@communication_permitted_filetypes.html_safe}
+  @source_communication_permitted_filetypes = #{@communication_permitted_filetypes.to_json.html_safe}
   @source_communication_maximum_filesize = #{@communication_maximum_filesize}
   @source_statuses = #{@statuses.to_json.html_safe}
   @source_filter_criteria =

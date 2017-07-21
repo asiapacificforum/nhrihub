@@ -110,12 +110,14 @@ describe 'media filter', ->
     window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
     window.planned_results = []
     window.performance_indicators = []
+    window.selected_title = ''
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     @page = new MediaPage()
     $.getScript("/assets/media.js").
       done( ->
+        $.getScript("/assets/flash.js").done( ->
         log "(Media page) javascript was loaded"
-        done()). # the media_appearances.js app , start_page(), define_media
+        done())). # the media_appearances.js app , start_page(), define_media
       fail( (jqxhr, settings, exception) ->
         log "Triggered ajaxError handler"
         log settings
@@ -237,12 +239,14 @@ describe 'media_appearance attachment validation', ->
     window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
     window.planned_results = []
     window.performance_indicators = []
+    window.selected_title = ''
     MagicLamp.load("media_appearance_page") # that's the _index partial being loaded
     @page = new MediaPage()
     $.getScript("/assets/media.js").
       done( ->
+        $.getScript("/assets/flash.js").done( ->
         log "(Media page) javascript was loaded"
-        done()). # the media_appearances.js app , start_page(), define_media
+        done())). # the media_appearances.js app , start_page(), define_media
       fail( (jqxhr, settings, exception) ->
         log "Triggered ajaxError handler"
         log settings
@@ -383,6 +387,7 @@ describe 'advisory_council_issue attachment validation', ->
     window.permitted_filetypes = MagicLamp.loadJSON('permitted_filetypes')
     window.planned_results = []
     window.performance_indicators = []
+    window.selected_title = ''
     MagicLamp.load("advisory_council_issues_page") # that's the _index partial being loaded
     @page = new AdvisoryCouncilIssuePage()
     $.getScript("/assets/issues.js").

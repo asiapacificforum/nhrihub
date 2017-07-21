@@ -23,9 +23,9 @@ class ComplaintsController < ApplicationController
     @special_investigations_unit_complaint_bases = Siu::ComplaintBasis.all
     @staff = User.staff.order(:lastName,:firstName).select(:id,:firstName,:lastName)
     @maximum_filesize = ComplaintDocument.maximum_filesize * 1000000
-    @permitted_filetypes = ComplaintDocument.permitted_filetypes.to_json
+    @permitted_filetypes = ComplaintDocument.permitted_filetypes
     @communication_maximum_filesize    = CommunicationDocument.maximum_filesize * 1000000
-    @communication_permitted_filetypes = CommunicationDocument.permitted_filetypes.to_json
+    @communication_permitted_filetypes = CommunicationDocument.permitted_filetypes
     @statuses = ComplaintStatus.select(:id, :name).all
     respond_to do |format|
       format.html
