@@ -45,8 +45,6 @@ module Apf
         ENV[key.to_s] = value
       end if File.exists?(env_file)
     end
-
-    config.middleware.use Rack::Attack
   end
 
 end

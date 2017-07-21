@@ -44,4 +44,5 @@ Rails.application.configure do
   # permitted
   config.action_controller.action_on_unpermitted_parameters = :raise
 
+  config.middleware.use Rack::Attack
 end

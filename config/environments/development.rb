@@ -68,4 +68,5 @@ Rails.application.configure do
     "mocha/1.17.1.js"
   ]
 
+  config.middleware.use Rack::Attack
 end
