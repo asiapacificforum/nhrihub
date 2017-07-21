@@ -3,7 +3,7 @@ class NotesController < ApplicationController
     note = Note.new(note_params)
     note.author = note.editor = current_user
     if note.save
-      render :json => Note.includes(:author, :editor, :notable).where(:notable_id => note.notable_id, :notable_type => note.notable_type), :status => 200
+      render :json => note.siblings, :status => 200
     else
       head :internal_server_error
     end
@@ -21,9 +21,9 @@ class NotesController < ApplicationController
 
   def destroy
     note = Note.find(params[:id])
-    notable = note.notable
     if note.destroy
-      render :json => notable.reload.notes, :status => 200
+      # TODO why can't we just return status 410 ?
+      render :json => note.siblings, :status => 200
     else
       head :internal_server_error
     end

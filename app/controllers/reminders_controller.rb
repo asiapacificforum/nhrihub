@@ -1,9 +1,8 @@
 class RemindersController < ApplicationController
   def create
     reminder = Reminder.new(reminder_params)
-    remindable = reminder.remindable
     if reminder.save
-      render :json => Reminder.includes(:user, :remindable).where(:remindable_id => reminder.remindable_id, :remindable_type => reminder.remindable_type), :status => 200
+      render :json => reminder.siblings, :status => 200
     else
       head :internal_server_error
     end
@@ -20,9 +19,9 @@ class RemindersController < ApplicationController
 
   def destroy
     reminder = Reminder.find(params[:id])
-    remindable = reminder.remindable
     if reminder.destroy
-      render :json => remindable.reload.reminders, :status => 200
+      # TODO why can't we just return status 410 ?
+      render :json => reminder.siblings, :status => 200
     else
       head :internal_server_error
     end

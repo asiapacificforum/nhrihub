@@ -24,6 +24,10 @@ class Reminder < ActiveRecord::Base
 
   before_save :calculate_next
 
+  def siblings
+    remindable.reload.reminders.includes(:user, :remindable)
+  end
+
   # it's used in the reminder email
   def link
     remindable.index_url

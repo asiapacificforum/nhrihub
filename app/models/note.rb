@@ -16,6 +16,10 @@ class Note < ActiveRecord::Base
     notable.notable_url(id)
   end
 
+  def siblings
+    notable.reload.notes.includes(:author, :editor, :notable)
+  end
+
   def updated_on
     created_at.localtime.to_date.to_s(:short)
   end
