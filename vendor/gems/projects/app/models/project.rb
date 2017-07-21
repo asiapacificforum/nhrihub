@@ -76,4 +76,8 @@ class Project < ActiveRecord::Base
     projects_url(:en, {:host => SITE_URL, :protocol => 'https', :title => title})
   end
 
+  def index_path
+    projects_path(:en, {:title => title})
+  end
+
 end

@@ -26,7 +26,8 @@ feature "projects index", :js => true do
     end
 
     it "pre-populates the projects filter when a title is passed in the url" do
-      visit @project.index_url
+      url = URI(@project.index_url)
+      visit @project.index_url.gsub(%r{.*#{url.host}},'') # hack, don't know how else to do it, host otherwise is SITE_URL defined in lib/constants
       expect(number_of_rendered_projects).to eq 1
       expect(number_of_all_projects).to eq 2
       expect(page.find('#projects_controls #title').value).to eq @project.title

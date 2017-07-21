@@ -10,7 +10,8 @@ feature "indicators behaviour", :js => true do
     setup_fully_populated_heading
     indicator = Nhri::HumanRightsAttribute.first.indicators.where(:nature => "Structural").last
     @indicator_id = indicator.id
-    visit indicator.index_url
+    url = URI(indicator.index_url)
+    visit indicator.index_url.gsub(%r{.*#{url.host}},'') # hack, don't know how else to do it, host otherwise is SITE_URL defined in lib/constants
   end
 
   it "should highlight indicator and position page to display indicator selected with url" do

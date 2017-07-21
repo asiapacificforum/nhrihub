@@ -731,7 +731,8 @@ feature "complaints index", :js => true do
 
   it "shows a single complaint when a query string is appended to the url" do
     create_complaints # 3 complaints
-    visit @complaint.index_url
+    url = URI(@complaint.index_url)
+    visit @complaint.index_url.gsub(%r{.*#{url.host}},'') # hack, don't know how else to do it, host otherwise is SITE_URL defined in lib/constants
     expect(number_of_rendered_complaints).to eq 1
     expect(number_of_all_complaints).to eq 4
     expect(page.find('#complaints_controls #case_reference').value).to eq @complaint.case_reference

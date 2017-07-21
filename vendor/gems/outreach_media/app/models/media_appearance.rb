@@ -76,6 +76,10 @@ class MediaAppearance < ActiveRecord::Base
     media_appearances_url(:en, {:host => SITE_URL, :protocol => 'https', :title => title})
   end
 
+  def index_path
+    media_appearances_path(:en, {:title => title})
+  end
+
   def date
     created_at.to_time.to_date.to_s(:default) if persisted? # to_time converts to localtime
   end

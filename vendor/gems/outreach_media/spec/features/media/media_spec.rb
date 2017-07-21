@@ -37,7 +37,8 @@ feature "show media archive", :js => true do
   end
 
   scenario "prepopulates filter controls title in response to url query field" do
-    visit @media_appearance.index_url
+    url = URI(@media_appearance.index_url)
+    visit @media_appearance.index_url.gsub(%r{.*#{url.host}},'') # hack, don't know how else to do it, host otherwise is SITE_URL defined in lib/constants
     expect(number_of_rendered_media_appearances).to eq 1
     expect(number_of_all_media_appearances).to eq 4
     expect(page.find("#media_appearances_controls #title").value).to eq @media_appearance.title

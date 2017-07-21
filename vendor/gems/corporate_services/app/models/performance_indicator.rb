@@ -37,11 +37,11 @@ class PerformanceIndicator < ActiveRecord::Base
   end
 
   def media_appearance_titles
-    media_appearances.map{|ma| ma.slice(:title,:index_url)}
+    media_appearances.map{|ma| ma.slice(:title,:index_path)}
   end
 
   def project_titles
-    projects.map{|p| p.slice(:title,:index_url)}
+    projects.map{|p| p.slice(:title,:index_path)}
   end
 
   def index_url

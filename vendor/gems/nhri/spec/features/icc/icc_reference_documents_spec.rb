@@ -265,7 +265,8 @@ feature "reference document highlighted when its id is passed in via url query s
     15.times do
       FactoryGirl.create(:icc_reference_document)
     end
-    visit icc_reference_document.index_url
+    url = URI(icc_reference_document.index_url)
+    visit icc_reference_document.index_url.gsub(%r{.*#{url.host}},'') # hack, don't know how else to do it, host otherwise is SITE_URL defined in lib/constants
   end
 
   it "should highlight the selected document" do

@@ -179,7 +179,8 @@ feature "open strategic plan and highlight performance indicator when its id is 
       FactoryGirl.create(:performance_indicator, :activity_id => activity.id)
     end
     @id = selected_performance_indicator.id
-    visit selected_performance_indicator.index_url
+    url = URI(selected_performance_indicator.index_url)
+    visit selected_performance_indicator.index_url.gsub(%r{.*#{url.host}},'') # hack, don't know how else to do it, host otherwise is SITE_URL defined in lib/constants
     # it would be good if this worked, but mail preview adds the locale string and there's no route for that
     # I haven't found a solution, TODO either find a workaround or make a rails issue
     #host = Capybara.current_session.server.host

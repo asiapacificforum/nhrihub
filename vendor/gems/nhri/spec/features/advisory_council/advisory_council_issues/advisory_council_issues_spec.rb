@@ -30,7 +30,8 @@ feature "show advisory council issue archive", :js => true do
 
   scenario "prepopulates title filter when title is passed as url query" do
     expect(number_of_rendered_issues).to eq 2
-    visit @issue.index_url
+    url = URI(@issue.index_url)
+    visit @issue.index_url.gsub(%r{.*#{url.host}},'') # hack, don't know how else to do it, host otherwise is SITE_URL defined in lib/constants
     expect(number_of_rendered_issues).to eq 1
     clear_filter_fields
     expect(number_of_rendered_issues).to eq 2
