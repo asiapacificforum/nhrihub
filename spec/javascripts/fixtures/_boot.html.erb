@@ -1,0 +1,5 @@
+<%= javascript_include_tag *@suite.spec_assets, debug: @suite.config.expand_assets, allow_non_precompiled: true %>
+<%= stylesheet_link_tag "application", "nhri/headings", "expandable_list" %>
+<script type="text/javascript">
+  Teaspoon.onWindowLoad(Teaspoon.execute);
+</script>
