@@ -49,6 +49,7 @@ class @Validator
       #   ['notBlank, {if : true}]
       #   ['lessThan', 44, {if : true}]
       #   ['match', ['one','two']]
+      #   ['unique', ['a value', 'another']]
       #   -> passed in function
       [criterion, param, condition] = if _.isArray(params) then params else [params]
       if _.isUndefined(condition) && _.isObject(param) && !_.isArray(param)
@@ -94,7 +95,8 @@ class @Validator
     @validatee.set(attribute+"_error", _.isEmpty(param))
     !@validatee.get(attribute+"_error")
   unique : (attribute, params)->
-    exists = _(params).any (param)=> param == @validatee.get(attribute)
-    !exists
+    exists = _(params).any (param)=>param == @validatee.get(attribute)
+    @validatee.set(attribute+"_error",exists)
+    !@validatee.get(attribute+"_error")
   remove_attribute_error : (attribute)->
     @validatee.set(attribute+"_error",false)
