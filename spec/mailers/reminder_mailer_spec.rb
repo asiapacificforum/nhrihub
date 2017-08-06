@@ -26,7 +26,7 @@ RSpec.describe ReminderMailer, type: :mailer do
       link = html.xpath(".//a/@href").text
       url = URI.parse(link)
       expect(url.host).to eq SITE_URL
-      expect(url.path).to eq "/en/complaints.html"
+      expect(url.path).to eq "/en/complaints"
       params = CGI.parse(url.query)
       expect(params.keys.first).to eq "case_reference"
       expect(params.values.first).to eq ["some string"]

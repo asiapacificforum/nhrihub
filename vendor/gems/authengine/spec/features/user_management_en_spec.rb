@@ -164,9 +164,17 @@ feature "Edit profile of unactivated user", :js => true do
   # as the registration email has already been sent
   # if the email address is a problem, must delete and create new
   # TODO this doesn't work... can't disable an <a> tag with a disabled attribute... who knew?
-  xscenario "edit profile link should be disabled" do
+  scenario "edit profile link should be disabled" do
     within(:xpath, ".//tr[contains(td[3],'intern')]") do
-      expect(find('a', :text => "edit profile")).to be_disabled
+      expect(find('a', :text => "edit profile")['class']).to match /disabled/
+    end
+
+    within(:xpath, ".//tr[contains(td[3],'admin')]") do
+      expect(find('a', :text => "edit profile")['class']).not_to match /disabled/
+    end
+
+    within(:xpath, ".//tr[contains(td[3],'staff')]") do
+      expect(find('a', :text => "edit profile")['class']).not_to match /disabled/
     end
   end
 end
@@ -279,5 +287,4 @@ feature "user lost token replacement and registration", :js => true do
     expect(flash_message).to eq "Logged in successfully"
 
   end
-
 end

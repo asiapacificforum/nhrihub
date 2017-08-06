@@ -1,7 +1,7 @@
 [![Code Climate](https://codeclimate.com/github/asiapacificforum/nhridocs/badges/gpa.svg)](https://codeclimate.com/github/asiapacificforum/nhridocs)
-# NHRIDocs
+# NHRI Hub
 ## Description
-NHRIDocs is an internal web application for National Human Rights Institutions ("NHRI") and other complaint handling institutions or human rights monitoring civil society organisations. It comprises a suite of modules that assist in the planning and management of the NHRI's internal processes, accreditation, and performance metrics. It has a range of functionality designed to improve the efficiency and capacity of your organisation, including:
+NHRI Hub is an internal web application for National Human Rights Institutions ("NHRI") and other complaint handling institutions or human rights monitoring civil society organisations. It comprises a suite of modules that assist in the planning and management of the NHRI's internal processes, accreditation, and performance metrics. It has a range of functionality designed to improve the efficiency and capacity of your organisation, including:
   -  A dynamic human rights indicators monitoring tool aligned to the UN framework of indicators with the ability to download all data and evaluate trends. (ref: [http://www.ohchr.org/Documents/Publications/Human_rights_indicators_en.pdf](http://www.ohchr.org/Documents/Publications/Human_rights_indicators_en.pdf), page 88)
   -  A complaints handling database (set up for complaints relating to human rights or good governance but also customisable)
   -  Strategic plan monitoring – link all of your organisations work to your strategic plan and be able to continuously monitor progress and have a downloadable report available at the click of a button
@@ -268,7 +268,7 @@ The root application includes models, controllers and views that appear in multi
 Each of these shared elements has a feature test spec implemented as an rspec shared behaviour. So the behaviour can be tested when the shared model is incorporated as an association into a module.
 
 ### Sending Reminders
-A rake task is provided that should be run each day, exactly once per day, to send any reminders that are due on that day. This is done by the server's cron daemon. The configuration of the cron daemon is accomplished with the NHRIDocs app using the [whenever gem](https://github.com/javan/whenever). The configuration file is config/schedule.rb.
+A rake task is provided that should be run each day, exactly once per day, to send any reminders that are due on that day. This is done by the server's cron daemon. The configuration of the cron daemon is accomplished with the NHRI Hub app using the [whenever gem](https://github.com/javan/whenever). The configuration file is config/schedule.rb.
 
 # Github Pages
 All the files for a static informational website, served a Jekyll server, are included in the /docs directory. The Jekyll gem is included in the development environment, and is also available on GitHub to serve files from this directory. It is viewable on the web at [http://asiapacificforum.github.io/nhrihub/](http://asiapacificforum.github.io/nhrihub/). To view this locally, invoke

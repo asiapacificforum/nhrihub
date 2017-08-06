@@ -23,8 +23,12 @@ module ActivitiesSpecHelpers
     activity_description_field.first
   end
 
-  def activity_description_field
+  def activity_description_input
     page.all(activity_selector + ".description textarea").select{|i| i['id'] && i['id'].match(/activity_\d_description/)}
+  end
+
+  def activity_description_field
+    page.all(activity_selector + ".description")[0].all('span')
   end
 
   def activity_progress_field

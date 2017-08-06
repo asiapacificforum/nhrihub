@@ -28,13 +28,13 @@ feature "complaints index", :js => true do
   it "shows basic information for each complaint" do
     within first_complaint do
       expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
-      expect(find('.date_received').text).to eq Complaint.first.date_received.getlocal.to_date.to_s
+      expect(find('.date_received').text).to eq Complaint.first.date_received.getlocal.to_date.strftime("%b %-e, %Y")
       expect(all('#status_changes .status_change').first.text).to match /#{Complaint.first.status_changes.first.status_humanized}/
       expect(all('#status_changes .status_change .user_name').first.text).to match /#{Complaint.first.status_changes.first.user.first_last_name}/
-      expect(all('#status_changes .status_change .date').first.text).to match /#{Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%Y, %b %-d")}/
+      expect(all('#status_changes .status_change .date').first.text).to match /#{Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%b %-e, %Y")}/
       expect(all('#status_changes .status_change').last.text).to match /#{Complaint.first.status_changes.last.status_humanized}/
       expect(all('#status_changes .status_change .user_name').last.text).to match /#{Complaint.first.status_changes.last.user.first_last_name}/
-      expect(all('#status_changes .status_change .date').last.text).to match /#{Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%Y, %b %-d")}/
+      expect(all('#status_changes .status_change .date').last.text).to match /#{Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%b %-e, %Y")}/
       expect(find('.lastName').text).to eq Complaint.first.lastName
       expect(find('.firstName').text).to eq Complaint.first.firstName
     end
@@ -47,7 +47,7 @@ feature "complaints index", :js => true do
       expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
       status = Complaint.first.status_changes.first.status_humanized
       name =   Complaint.first.status_changes.first.user.first_last_name
-      date =   Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%Y, %b %-d")
+      date =   Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%b %-e, %Y")
       expect(all('#status_changes .status_change').first.text.gsub(/\s/,'')).to match "#{status} ( by #{name} , on #{date} )".gsub(/\s/,'')
       status = Complaint.first.status_changes.last.status_humanized
       name =   Complaint.first.status_changes.last.user.first_last_name
@@ -64,10 +64,10 @@ feature "complaints index", :js => true do
       expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
       status = Complaint.first.status_changes.first.status_humanized
       name =   Complaint.first.status_changes.first.user.first_last_name
-      date =   Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%Y, %b %-d")
+      date =   Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%b %-e, %Y")
       expect(all('#status_changes .status_change').first.text.gsub(/\s/,'')).to match "#{status} ( by #{name}, on #{date} )".gsub(/\s/,'')
       status = Complaint.first.status_changes.last.status_humanized
-      date =   Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%Y, %b %-d")
+      date =   Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%b %-e, %Y")
       expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to match "#{status} ( on #{date} )".gsub(/\s/,'')
       expect(find('.lastName').text).to eq Complaint.first.lastName
       expect(find('.firstName').text).to eq Complaint.first.firstName
@@ -106,8 +106,8 @@ feature "complaints index", :js => true do
         expect(page).to have_selector('.status_change', :count => 2)
         expect(all('.status_change .user_name')[0].text).to eq User.staff.first.first_last_name
         expect(all('.status_change .user_name')[1].text).to eq User.staff.second.first_last_name
-        expect(all('.status_change .date')[0].text).to eq Complaint.first.status_changes[0].created_at.localtime.to_date.strftime("%Y, %b %-d")
-        expect(all('.status_change .date')[1].text).to eq Complaint.first.status_changes[1].created_at.localtime.to_date.strftime("%Y, %b %-d")
+        expect(all('.status_change .date')[0].text).to eq Complaint.first.status_changes[0].created_at.localtime.to_date.strftime("%b %-e, %Y")
+        expect(all('.status_change .date')[1].text).to eq Complaint.first.status_changes[1].created_at.localtime.to_date.strftime("%b %-e, %Y")
         expect(all('.status_change .status_humanized')[0].text).to eq "Open"
         expect(all('.status_change .status_humanized')[1].text).to eq "Closed"
       end
@@ -225,7 +225,7 @@ feature "complaints index", :js => true do
     #expect(first_complaint.find('.gender').text).to eq "male" # this should work, but I postponed troubleshooting in favour of other activities!
     expect(first_complaint.find('.gender').text).to eq "M"
     expect(first_complaint.find('.complained_to_subject_agency').text).to eq "yes"
-    expect(first_complaint.find('.date_received').text).to eq Date.new(Date.today.year, Date.today.month, 16).to_s
+    expect(first_complaint.find('.date_received').text).to eq Date.new(Date.today.year, Date.today.month, 16).strftime("%b %-e, %Y")
 
     within good_governance_complaint_bases do
       Complaint.last.good_governance_complaint_bases.map(&:name).each do |complaint_basis_name|
@@ -388,7 +388,7 @@ feature "complaints index", :js => true do
     end
     expect{ edit_save }.to change{ Complaint.first.current_status }.from("Closed").to("Open")
     expect( first_complaint.all('#status_changes .status_change').last.text ).to match "Open"
-    expect( first_complaint.all('#status_changes .date').last.text ).to match /#{Date.today.strftime("%Y, %b %-d")}/
+    expect( first_complaint.all('#status_changes .date').last.text ).to match /#{Date.today.strftime("%b %-e, %Y")}/
     user = User.find_by(:login => 'admin')
     expect( first_complaint.all('#status_changes .user_name').last.text ).to match /#{user.first_last_name}/
   end
@@ -456,7 +456,7 @@ feature "complaints index", :js => true do
     expect(page).to have_selector('.desired_outcome', :text => "Things are more better")
     expect(page).to have_selector('.complaint_details', :text => "the boy stood on the burning deck")
     expect(page).to have_selector('.complained_to_subject_agency', :text => "no")
-    expect(page).to have_selector('.date_received',:text => Date.new(Date.today.year, Date.today.month, 23).to_s)
+    expect(page).to have_selector('.date_received',:text => Date.new(Date.today.year, Date.today.month, 23).strftime("%b %-e, %Y"))
 
     within good_governance_complaint_bases do
       Complaint.last.good_governance_complaint_bases.map(&:name).each do |complaint_basis_name|
@@ -566,7 +566,7 @@ feature "complaints index", :js => true do
       expect(page.find('#complaint_details').value).to eq original_complaint.details
       expect(page.find('#desired_outcome').value).to eq original_complaint.desired_outcome.to_s
       expect(page.find('#complained_to_subject_agency_yes')).not_to be_checked
-      expect(find('#date_received').value).to eq original_complaint.date_received.getlocal.to_date.to_s
+      expect(find('#date_received').value).to eq original_complaint.date_received.getlocal.to_date.strftime("%b %-e, %Y")
       expect(find('.current_assignee').text).to eq original_complaint.assignees.first.first_last_name
       expect(page.find(".mandate ##{original_complaint.mandates.first.key}")).to be_checked
       expect(page.find_field("ACC")).not_to be_checked

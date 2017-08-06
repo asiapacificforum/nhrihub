@@ -334,9 +334,9 @@ Complaint = Ractive.extend
         if _.isEmpty(date_received)
           ""
         else
-          $.datepicker.formatDate("yy, M d", new Date(date_received) )
+          $.datepicker.formatDate("M d, yy", new Date(date_received))
       set: (val)->
-        date = $.datepicker.parseDate( "yy, M d", val)
+        date = $.datepicker.parseDate( "M d, yy", val)
         @set('date_received', date.toUTCString())
     formatted_dob :
       get: ->
@@ -640,7 +640,7 @@ Ractive.decorators.inpage_edit = EditInPlace
 helpers = Ractive.defaults.data
 
 helpers.local = (gmt_date)->
-  $.datepicker.formatDate("yy, M d", new Date(gmt_date))
+  $.datepicker.formatDate("M d, yy", new Date(gmt_date))
 
 $ ->
   start_page()

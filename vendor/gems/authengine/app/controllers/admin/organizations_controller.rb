@@ -1,6 +1,7 @@
 class Admin::OrganizationsController < ApplicationController
   def show
     @organization = Organization.find(params[:id])
+    @title = t('.heading', :name => @organization.name)
   end
 
   def index

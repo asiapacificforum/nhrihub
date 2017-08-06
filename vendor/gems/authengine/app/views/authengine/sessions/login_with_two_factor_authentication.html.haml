@@ -54,6 +54,7 @@
   delete_username = ->
     $('#login').val("")
 
+  # ajax request to server for a challenge, request includes login fields
   @send_user_params = ->
     @authentication_pending = 1 # it's used as a flag in the test suite
     $.get
@@ -74,10 +75,13 @@
       appId = signRequest.appId
       challenge = signRequest.challenge
       registeredKeys = [{keyHandle : signRequest.keyHandle, version : signRequest.version}]
+      # token is requested to sign the challenge
       u2f.sign(appId, challenge, registeredKeys, signRequestCallback, opt_timeout_seconds)
     else
+      # mock token is requested to sign the challenge
       u2f.sign([signRequest], signRequestCallback, opt_timeout_seconds)
 
+  # response from token signRequest is sent to the server, with the login fields
   signRequestCallback = (signResponse)->
     $('#u2f_sign_response').val(JSON.stringify(signResponse))
     @authentication_pending = 0

@@ -36,7 +36,7 @@ feature "complaints communications", :js => true do
     add_communication
     expect(page).to have_selector('#new_communication')
     within new_communication do
-      set_datepicker('new_communication_date',"2016, May 19")
+      set_datepicker('new_communication_date',"May 19, 2016")
       choose("Email")
 
       # Received direction allows only one communicant
@@ -97,7 +97,7 @@ feature "complaints communications", :js => true do
                                 and change{ communications.count }.by(1).
                                 and change{ Communicant.count }.by(3)
     # on the server
-    communication = Communication.last
+    communication = Communication.find(Communication.maximum(:id)) # strange that this is necessary to reliably find the most recent!
     expect(communication.mode).to eq "email"
     # ActiveRecord stores the date field as Postgres "timestamp without time zone" type, with UTC being assumed
     raw_persisted_date = ActiveRecord::Base.connection.execute("select date from communications where note='Some note text'")[0]["date"]
@@ -115,7 +115,7 @@ feature "complaints communications", :js => true do
     # on the browser
     communication = page.all('#communications .communication')[1]
     within communication do
-      expect(find('.date').text).to eq "2016, May 19"
+      expect(find('.date').text).to eq "May 19, 2016"
       expect(find('.by').text).to eq User.first.first_last_name
       expect(all('.with')[0].text).to eq "Harry Harker"
       expect(all('.with')[1].text).to eq "Harriet Harker"
@@ -126,7 +126,7 @@ feature "complaints communications", :js => true do
     expect(page).to have_selector('#single_note_modal .note_text', :text => "Some note text")
     dismiss_the_note_modal
     # ensure reverse chronological order
-    expect(page.all('#communications .communication .date').map(&:text)).to eq [DateTime.now.to_date.to_s,"2016, May 19"]
+    expect(page.all('#communications .communication .date').map(&:text)).to eq [DateTime.now.to_date.strftime("%b %-e, %Y"),"May 19, 2016"]
   end
 
   it "should validate and not add invalid communication with null mode attribute" do
@@ -235,7 +235,7 @@ feature "complaints communications", :js => true do
     cancel_add
     add_communication
     expect(page).to have_selector('#new_communication')
-    expect(page.find('#new_communication_date').value).to eq DateTime.now.to_date.to_s
+    expect(page.find('#new_communication_date').value).to eq DateTime.now.to_date.strftime("%b %-e, %Y")
     expect(page).not_to have_checked_field('#email_mode')
     expect(page).not_to have_checked_field('#phone_mode')
     expect(page).not_to have_checked_field('#letter_mode')

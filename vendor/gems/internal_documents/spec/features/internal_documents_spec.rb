@@ -353,13 +353,30 @@ feature "internal document management", :js => true do
     end
   end
 
-  xscenario "add a new file without specifying the revision" do
-    # it should set the rev to 1.0
-    # use the buttonbar upload button 'cause it's not working!
+  scenario "add a new file without specifying the revision" do
+    expect(page_heading).to eq "Internal Documents"
+    document_group_id = DocumentGroup.first.id
+    attach_file("primary_file", upload_document)
+    page.all("input#internal_document_title")[0].set("fancy file")
+    # button bar upload button
+    expect{upload_files_link.click; wait_for_ajax}.to change{InternalDocument.count}.by(1)
+    doc = InternalDocument.where(:title => 'fancy file').first
+    expect(doc.revision_major).to eq 1
+    expect(doc.revision_minor).to eq 0
+    expect(page).to have_css(".files .template-download .title .no_edit span", :count => 2)
+    expect(page).to have_css(".files .template-download .title .no_edit span", :text => "fancy file", :count => 1)
   end
 
-  xscenario "add a file revision without specifying the revision" do
+  scenario "add a file revision without specifying the revision" do
     # it should increment the minor rev
+    expect(page_heading).to eq "Internal Documents"
+    # upload the revision
+    set_upload_source_to_revision
+    page.attach_file("primary_file", upload_document, :visible => false)
+    page.find("#internal_document_title").set("some replacement file name")
+    expect{upload_replace_files_link.click; wait_for_ajax}.to change{InternalDocument.count}.by(1)
+    doc = InternalDocument.where(:title => "some replacement file name").first
+    expect(doc.revision).to eq "3.1"
   end
 
   scenario "delete an archive file" do
@@ -558,5 +575,39 @@ feature "sequential operations", :js => true do
     page.attach_file("primary_file", upload_document, :visible => false)
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
+  end
+end
+
+feature "adding document which is a duplicate title", :js => true do
+  include IERemoteDetector
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include NavigationHelpers
+  include InternalDocumentDefaultSettings
+  include InternalDocumentsSpecHelpers
+  include InternalDocumentsSpecCommonHelpers
+  include DownloadHelpers
+
+  before do
+    SiteConfig['internal_documents.filetypes'] = ['pdf']
+    SiteConfig['internal_documents.filesize'] = 3
+    setup_accreditation_required_groups
+    @doc = create_a_document(:revision => "3.0", :title => "Statement of Compliance")
+    visit index_path
+  end
+
+  scenario "add a new primary document which is a duplicate" do
+    page.attach_file("primary_file", upload_document, :visible => false)
+    page.find("#internal_document_title").set("Statement of Compliance")
+    expect{upload_files_link.click; wait_for_ajax}.not_to change{InternalDocument.count}
+    expect(page).to have_selector("#duplicate_title_error", :text => "Duplicate")
+  end
+
+  xscenario "add two documents with the same title" do # have not succeeded in implementing this!!
+    page.attach_file("primary_file", upload_document, :visible => false)
+    page.find("#internal_document_title").set("Enabling Legislation")
+    page.attach_file("primary_file", upload_document, :visible => false)
+    page.find("#internal_document_title").set("Enabling Legislation")
+    expect{upload_files_link.click; wait_for_ajax}.not_to change{InternalDocument.count}
+    expect(page).to have_selector("#duplicate_title_error", :text => "Duplicate")
   end
 end

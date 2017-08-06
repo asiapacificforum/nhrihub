@@ -56,7 +56,6 @@ class Admin::UsersController < ApplicationController
   # account was created by admin and now user has entered and submitted username/password, with u2f registration data,
   # here we capture the user's public_key and public_key_handle
   def activate
-    # TODO must remember to reset the session[:activation_code]
     user = User.find_and_activate!(params[:activation_code])
     if user.update_attributes(activation_params)
       flash[:notice] =t('admin.users.activate.activated')

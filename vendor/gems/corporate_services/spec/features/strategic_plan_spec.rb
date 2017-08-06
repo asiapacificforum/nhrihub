@@ -19,14 +19,6 @@ feature "when there are no previous strategic plans", :js => true do
   end
 end
 
-feature "modifying strategic plan configuration", :js => true do
-  include LoggedInEnAdminUserHelper # sets up logged in admin user
-
-  xscenario "start date changed with existing strategic plans in the database" do
-    
-  end
-end
-
 feature "select strategic plan from prior years", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include StrategicPrioritySpecHelpers
@@ -107,7 +99,7 @@ feature "restrict user input to a single add or edit", :js => true do
     expect(page).not_to have_selector(".planned_result .description .edit.in #planned_result_description")
   end
 
-  xscenario "any add or edit sets the appropriate claim for user_input_request" do
+  scenario "any add or edit sets the appropriate claim for user_input_request" do
     add_priority_button.click
     expect(user_input_request).to be_claimed_by StrategicPriority
     add_planned_result.click
@@ -127,14 +119,6 @@ feature "restrict user input to a single add or edit", :js => true do
   end
 end
 
-feature "events after the end date of a strategic plan" do
-  include LoggedInEnAdminUserHelper
-
-  xscenario "new strategic plan created with strategic priorities copied" do
-    
-  end
-end
-
 RSpec::Matchers.define :be_claimed_by do |expected|
   match do |actual|
     actual = expected.send(:first).send(:description)
@@ -142,7 +126,15 @@ RSpec::Matchers.define :be_claimed_by do |expected|
 end
 
 def user_input_request
-  page.evaluate_script("strategic_plan.get('user_input_requested').get('description')")
+  #page.evaluate_script("strategic_plan.get('user_input_requested').get('description')")
+  js = <<-JS
+    if(_.isUndefined(UserInput.user_input_claimant.option)){
+      UserInput.user_input_claimant.get('description')
+    }else{
+      UserInput.user_input_claimant.options.object.get('description')
+    }
+  JS
+  page.evaluate_script("")
 end
 
 def add_strategic_priority(attrs)

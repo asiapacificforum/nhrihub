@@ -3,7 +3,7 @@ module Notifier
 
   included do
     after_commit :signup_notify,             :on => :create # don't send email if user is not valid, hence after_commit
-    after_save   :activate_notify,           :if => :pending?
+    after_save   :activate_notify,           :if => :activating?
     after_save   :forgotten_password_notify, :if => :recently_forgot_password?
     after_save   :reset_password_notify,     :if => :recently_reset_password?
     after_save   :lost_token_notify,         :if => :lost_token?

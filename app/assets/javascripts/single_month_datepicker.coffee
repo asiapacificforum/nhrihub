@@ -6,7 +6,7 @@ SingleMonthDatepicker = (node)->
     changeMonth: true
     changeYear: true
     numberOfMonths: 1
-    dateFormat: "yy, M d"
+    dateFormat: "M d, yy"
     onClose: (selectedDate) ->
       unless selectedDate == ""
         object = Ractive.getNodeInfo(node).ractive

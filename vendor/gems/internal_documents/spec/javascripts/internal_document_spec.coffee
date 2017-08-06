@@ -38,42 +38,49 @@ describe 'Internal document', ->
     #expect(upload_file.validate_icc_unique()).to.equal(true)
     #expect(upload_file.validate_pending_icc_unique(["statementofcompliance"])).to.equal(true)
 
-  xit "flags as errored when another primary file upload is attempted with duplicate icc file title", ->
+  it "flags as errored when another primary file upload is attempted with duplicate icc file title", ->
     internal_document_uploader.unshift('upload_documents',{title : "Statement of Compliance", fileupload : true, primary : true})
     upload_file = internal_document_uploader.findAllComponents('uploadDocument')[0]
     expect(upload_file.get('is_icc_doc')).to.equal true
-    expect(upload_file.validate_icc_unique()).to.equal false
-    expect(upload_file.get('duplicate_icc_title_error')).to.equal true
+    upload_file.validate()
+    expect(upload_file.get('duplicate_title_error')).to.equal true
     expect(upload_file.get('fileupload')).to.equal true
-    expect(upload_file.duplicate_icc_primary_file()).to.equal true
 
-  xit "does not flag as errored when an icc-titled primary file upload is attempted that does not duplicate existing icc title",->
+  it "does not flag as errored when an icc-titled primary file upload is attempted that does not duplicate existing icc title",->
     internal_document_uploader.unshift('upload_documents',{title : "Enabling Legislation", fileupload : true, primary : true})
     upload_file = internal_document_uploader.findAllComponents('uploadDocument')[0]
     expect(upload_file.get('is_icc_doc')).to.equal true
-    expect(upload_file.validate_icc_unique()).to.equal true
-    expect(upload_file.get('duplicate_icc_title_error')).to.equal false
+    upload_file.validate()
+    expect(upload_file.get('duplicate_title_error')).to.equal false
     expect(upload_file.get('fileupload')).to.equal true
-    expect(upload_file.duplicated_title_with_existing_file()).to.equal false
-    expect(upload_file.duplicate_icc_primary_file()).to.equal false
+
+  it "maintains the list of pending upload titles", ->
+    internal_document_uploader.unshift('upload_documents',{title : "Enabling Legislation", fileupload : true, primary : true})
+    internal_document_uploader.unshift('upload_documents',{title : "Enabling Legislation", fileupload : true, primary : true})
+
+    expect(_(internal_document_uploader.findAllComponents('uploadDocument')).map (doc) -> doc.get('title')).to.eql ["Enabling Legislation","Enabling Legislation" ]
+
+    internal_document_uploader.pop('upload_documents')
+    expect(_(internal_document_uploader.findAllComponents('uploadDocument')).map (doc) -> doc.get('title')).to.eql ["Enabling Legislation"]
 
   xit "flags as errored when two primary file uploads are attempted in the same upload with identical icc file titles", ->
+    # have been unable to get this working!!
     internal_document_uploader.unshift('upload_documents',{title : "Enabling Legislation", fileupload : true, primary : true})
     internal_document_uploader.unshift('upload_documents',{title : "Enabling Legislation", fileupload : true, primary : true})
 
     upload_file = internal_document_uploader.findAllComponents('uploadDocument')[0]
     expect(upload_file.get('is_icc_doc')).to.equal true
-    expect(upload_file.validate_pending_icc_unique(["enablinglegislation","enablinglegislation"])).to.equal false
-    expect(upload_file.get('duplicate_icc_title_error')).to.equal true
+    expect(upload_file.get('other_upload_document_titles')).to.equal ["Enabling Legislation"]
+    upload_file.validate()
+    expect(upload_file.get('duplicate_upload_pending_title_error')).to.equal true
     expect(upload_file.get('fileupload')).to.equal true
-    expect(upload_file.duplicated_title_in_this_upload()).to.equal true
 
     upload_file = internal_document_uploader.findAllComponents('uploadDocument')[1]
     expect(upload_file.get('is_icc_doc')).to.equal true
-    expect(upload_file.validate_pending_icc_unique(["enablinglegislation","enablinglegislation"])).to.equal false
-    expect(upload_file.get('duplicate_icc_title_error')).to.equal true
+    expect(upload_file.get('other_upload_document_titles')).to.equal ["Enabling Legislation"]
+    upload_file.validate()
+    expect(upload_file.get('duplicate_upload_pending_title_error')).to.equal true
     expect(upload_file.get('fileupload')).to.equal true
-    expect(upload_file.duplicated_title_in_this_upload()).to.equal true
 
   xit "does not flag as errored when two primary file uploads are attempted in the same upload with different icc file titles", ->
     internal_document_uploader.unshift('upload_documents',{title : "Enabling Legislation", fileupload : true, primary : true})

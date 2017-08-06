@@ -76,16 +76,12 @@ feature "Password management, admin resets user password", :js => true do
     click_link('Logout')
 
     # user whose password was reset responds to the link in the email
+    # but the reset token is blank
     url_with_blank_password_reset_token = new_password_activation_link.gsub(/[^\/]*$/,'')
     visit(url_with_blank_password_reset_token  )
     expect(flash_message).to eq "Invalid password reset."
   end
 
-  xscenario "reset user password, user does not insert token" do
-  end
-
-  xscenario "reset user password, user has the wrong token" do
-  end
 end
 
 feature "Password management, user forgets password", :js => true do

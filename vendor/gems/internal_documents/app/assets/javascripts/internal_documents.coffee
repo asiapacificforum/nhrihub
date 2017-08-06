@@ -77,11 +77,15 @@ $ ->
         original_type:
           ['match', window.permitted_filetypes]
         title : ['notBlank', {if : =>@get('icc_context')}]
+        duplicate_title :
+          ['unique', _.chain(required_files_titles).select( (rft)-> !rft.empty).map((rft)->rft.title).value()]
+        #duplicate_upload_pending_title :
+          #['unique', _(internal_document_uploader.findAllComponents('uploadDocument')).map (doc)-> doc.get('title') ]
       @set
         unconfigured_validation_parameter_error:false
         serialization_key:'internal_document'
         document_group_id: @parent.get('document_group_id')
-      if @get('is_icc_doc')
+      if @get('is_icc_doc') && !@get('primary')
         document_group = _(required_files_titles).find (req_doc)=>req_doc.document_group_id == @get('document_group_id')
         @set('title',document_group.title)
       @validator = new Validator(@)
@@ -104,8 +108,19 @@ $ ->
         context == 'icc'
       is_icc_doc : -> # see if a document is being added to an icc required document group
         document_group_id = @get('document_group_id')
-        required_document_ids = _(required_files_titles).pluck('document_group_id')
-        _(required_document_ids).any (id)-> id == document_group_id
+        if !_.isUndefined document_group_id # it's being added to a document group
+          required_document_ids = _(required_files_titles).pluck('document_group_id')
+          _(required_document_ids).any (id)-> id == document_group_id
+        else # it's a new primary file
+          titles = _(required_files_titles).map (doc)-> doc.title
+          _(titles).any (title)=>@get('title') == title
+      duplicate_title : -> @get('title')
+      #duplicate_upload_pending_title : -> @get('title')
+      #other_upload_document_titles : ->
+        #all_titles = _(internal_document_uploader.findAllComponents('uploadDocument')).map (doc)=>doc.get('title')
+        #index_of_this_title = all_titles.indexOf(@get('title'))
+        #all_titles.splice(index_of_this_title,1)
+        #all_titles
     remove_file : ->
       @parent.remove(@_guid)
     validate : ->

@@ -39,6 +39,8 @@ class @Validator
     !@has_errors()
   validate_attribute : (attribute)->
     params = @validation_criteria()[attribute]
+    #if attribute == "duplicate_upload_pending_title"
+      #debugger
     if _.isFunction(params) # not a simple validation, so the validation function is passed-in
       @validatee.set(attribute+"_error", !params())
       !@validatee.get(attribute+"_error")

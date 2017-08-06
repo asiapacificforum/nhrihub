@@ -37,6 +37,7 @@ class Nhri::HeadingsController < ApplicationController
                                       :all_attribute_process_indicators =>indicator_associations,
                                       :all_attribute_outcomes_indicators =>indicator_associations
                                       ).find(params[:id])
+    @title = t('.indicators_heading', :title => @heading.title)
   end
 
   private

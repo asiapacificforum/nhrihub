@@ -235,7 +235,7 @@ class User < ActiveRecord::Base
   end
 
   # Returns true if the user has just been activated.
-  def pending?
+  def activating?
     @activated
   end
 
@@ -375,8 +375,11 @@ protected
 private
 
   def activate!
-    @activated = true
-    self.update_attribute(:activated_at, Time.now.utc)
+    @activated = true # triggers the notification
+      # note, we leave the activation_code value in place here
+      # just so that the user gets an "already activated" notice if they click
+      # on the email link a second time
+      update_attribute( :activated_at, Time.now.utc)
     @activated = false
   end
 

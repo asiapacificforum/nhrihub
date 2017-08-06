@@ -26,9 +26,8 @@ describe "#next" do
       end
 
       it "should create a new next date" do
-        original_next_date = reminder.next
         reminder.update_attribute(:start_date, 8.days.ago)
-        expect(reminder.next.getlocal.to_date).to eq Date.yesterday.advance(:days => 7)
+        expect(reminder.next.to_date).to eq Date.yesterday.advance(:days => 7)
       end
     end
 

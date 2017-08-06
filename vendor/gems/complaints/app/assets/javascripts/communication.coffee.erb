@@ -135,9 +135,9 @@ Communication = Ractive.extend
     formatted_date :
       get: ->
         # date format example: "2017-07-20T07:00:00.000Z"
-        $.datepicker.formatDate("yy, M d", new Date(@get('date')) )
+        $.datepicker.formatDate("M d, yy", new Date(@get('date')) )
       set: (val)->
-        date = $.datepicker.parseDate( "yy, M d", val)
+        date = $.datepicker.parseDate( "M d, yy", val)
         @set('date', date.toUTCString())
     persistent_attributes : ->
       ['complaint_id', 'direction', 'mode', 'date', 'note', 'attached_documents_attributes', 'communicants_attributes']

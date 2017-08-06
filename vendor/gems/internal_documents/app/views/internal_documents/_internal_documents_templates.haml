@@ -170,9 +170,6 @@
   {{/if}}
 
 %script#icc_title_selector{:type => 'html/template'}
-  {{#if is_icc_doc}}
-  %span#icc_doc_title{:style => "margin-left:26px"} {{ title }}
-  {{else}}
   .form-horizontal
     .form-group
       %label.control-label.col-sm-3{:for =>"internal_document_title", :style => "left: -21px;"}= t('.doc_title')
@@ -182,7 +179,6 @@
           {{#unassigned_titles}}
           %option{:value=>'{{title}}'} {{title}}
           {{/unassigned_titles}}
-  {{/if}}
 
 %script#upload_documents_template{:type => 'html/template'}
   {{#upload_documents}}
@@ -223,4 +219,3 @@
               %td
                 %div.cancel
                   %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
-

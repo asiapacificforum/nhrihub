@@ -45,8 +45,11 @@ class PerformanceIndicator < ActiveRecord::Base
   end
 
   def index_url
-    strategic_plan = activity.outcome.planned_result.strategic_priority.strategic_plan
     corporate_services_strategic_plan_url(:en, strategic_plan.id, {:host => SITE_URL, :protocol => 'https', :performance_indicator_id => id})
+  end
+
+  def strategic_plan
+    StrategicPlan.with_performance_indicator(self)
   end
 
   def create_note_url

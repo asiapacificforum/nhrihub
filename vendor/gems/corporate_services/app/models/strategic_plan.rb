@@ -8,6 +8,15 @@ class StrategicPlan < ActiveRecord::Base
 
   default_scope { order(:created_at) }
 
+  def self.with_performance_indicator(performance_indicator)
+   StrategicPlan.joins(:strategic_priorities => {
+     :planned_results => {
+       :outcomes => {
+         :activities => :performance_indicators}}}).
+         where("performance_indicators.id = #{performance_indicator.id}").
+         first
+  end
+
   # leave this here as something to investigate in the future, At the moment it does not seem to improve
   # TTFB, but benchmark shows it's 10x faster than instantiating AR objects
   # it uses the surus gem, patched for has_many through associations

@@ -107,37 +107,35 @@ feature "actions on existing activities", :js => true do
 
   scenario "edit the first of multiple activities" do
     page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[0].click
-    activity_description_field.first.set("new description")
+    activity_description_input.first.set("new description")
     expect{ activity_save_icon.click; wait_for_ajax }.to change{ Activity.first.description }.to "new description"
     expect(page.all(activity_selector+".description .no_edit span:first-of-type")[0].text ).to eq "1.1.1.1 new description"
   end
 
   scenario "edit to blank description and cancel" do
     first_activity_description.click
-    #sleep(0.3)
     activity_edit_cancel.click
     expect(first_activity_description.text).to eq "1.1.1.1 work hard"
   end
 
   scenario "edit to blank description and cancel" do
     first_activity_description.click
-    activity_description_field.first.set("")
+    activity_description_input.first.set("")
     expect{ activity_save_icon.click; wait_for_ajax }.not_to change{ Activity.first.description }
     expect(page).to have_selector(".activity .description #description_error", :text => "You must enter a description")
     activity_edit_cancel.click
-    #sleep(0.2)
     # error msg disappears on cancel
     expect(page).not_to have_selector(".activity .description #description_error", :text => "You must enter a description")
     first_activity_description.click
     # error message doesn't reappear on re-edit
     expect(page).not_to have_selector(".activity .description #description_error", :text => "You must enter a description")
     # original value should be in the text area input field
-    expect(activity_description_field.first.value).to eq "work hard"
+    expect(activity_description_input.first.value).to eq "work hard"
   end
 
   scenario "edit one of multiple activities, not the first" do
     page.all(activity_selector + ".description div.no_edit span:nth-of-type(1)")[1].click
-    activity_description_field.last.set("new description")
+    activity_description_input.last.set("new description")
     activity_save_icon.click
     wait_for_ajax
     expect(page.all(activity_selector+".description .no_edit span:first-of-type")[1].text ).to eq "1.1.1.2 new description"

@@ -62,8 +62,9 @@ describe "password confirmation" do
   context "when account is activated" do
     it "should validate password when password confirmation matches" do
       @user.update_attributes(:password => "sekret", :password_confirmation => "sekret")
+      @user.send(:activate!)
       expect(@user.errors).to be_empty
-      expect(@user.activation_code).to be_blank
+      expect(@user.activation_code).not_to be_blank
     end
 
     it "should not validate password when password confirmation does not match" do
@@ -80,6 +81,7 @@ describe "password confirmation" do
 
     it "should validate password when password confirmation matches" do
       @user.update_attributes(:password => "sekret", :password_confirmation => "sekret")
+      @user.reset_password
       expect(@user.errors).to be_empty
       expect(@user.password_reset_code).to be_blank
     end
@@ -90,5 +92,4 @@ describe "password confirmation" do
       expect(@user.password_reset_code).not_to be_nil
     end
   end
-
 end

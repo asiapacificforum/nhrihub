@@ -14,7 +14,6 @@ en:
         title: "Title"
         add_attribute: "add attribute"
       show:
-        page_title: "Indicators"
         indicators_heading: "Indicators for: %{title}"
         structural: "Structural"
         process: "Process"
@@ -83,16 +82,3 @@ en:
         title_error_message : "Title can't be blank"
         monitor_format_error_message : "You must select a monitor format"
         numeric_monitor_explanation_error_message: "Explanation text can't be blank"
-    indicator:
-      indicators:
-        show:
-          heading: "%{nature} Indicator: %{title}"
-          indicator: "Indicator"
-          attribute: "Attribute"
-          nature: "Nature"
-          monitoring: "Monitoring"
-          notes: "Notes"
-          reminders: "Reminders"
-          add_entry: "Add entry"
-          add_note: "Add note"
-          add_reminder: "Add reminder"

@@ -105,7 +105,6 @@ feature "add a document", :js => true do
       page.attach_file("primary_file", upload_document, :visible => false)
       expect(page).to have_selector('#unconfigured_filetypes_error', :text => "No permitted file types have been configured")
     end
-
   end
 
 end
