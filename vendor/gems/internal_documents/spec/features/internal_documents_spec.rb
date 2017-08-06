@@ -537,12 +537,24 @@ feature "internal document management", :js => true do
   include InternalDocumentsSpecCommonHelpers
 
   before do
-    toggle_navigation_dropdown(navigation_menu_text)
-    select_dropdown_menu_item("Internal documents")
+    SiteConfig['internal_documents.filetypes'] = ['pdf']
+    SiteConfig['internal_documents.filesize'] = 3
+    setup_accreditation_required_groups
+    @doc = create_a_document(:revision => "3.0", :title => "my important document")
+    @archive_doc = create_a_document_in_the_same_group(:title => 'first archive document', :revision => '2.9')
+    visit index_path
   end
 
-  xscenario "add a new document when permission is not granted" do
-    # error is in ajax response, must handle it appropriately
+  scenario "add a new document when permission is not granted" do
+    allow_any_instance_of(ApplicationController).to receive(:permitted?)
+    allow_any_instance_of(ApplicationController).to receive(:permitted?).with("internal_documents", "create").and_return false
+    #error is in ajax response, must handle it appropriately
+    expect(page_heading).to eq "Internal Documents"
+    attach_file("primary_file", upload_document)
+    page.all("input#internal_document_title")[0].set("fancy file")
+    page.find('input#internal_document_revision').set("4.3")
+    expect{upload_files_link.click; wait_for_ajax}.not_to change{InternalDocument.count}
+    expect(flash_message).to eq "Sorry but you do not have requisite privileges for this action"
   end
 end
 

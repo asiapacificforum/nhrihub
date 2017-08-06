@@ -37,5 +37,4 @@ module AuthorizedSystem
     end
     permission
   end
-
 end
