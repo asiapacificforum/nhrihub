@@ -68,13 +68,13 @@ module ComplaintsSpecHelpers
   end
 
   def check_agency(text)
-    within page.find("#agencies") do
+    within page.find("#agencies_select") do
       check(text)
     end
   end
 
   def uncheck_agency(text)
-    within page.find("#agencies") do
+    within page.find("#agencies_select") do
       uncheck(text)
     end
   end
@@ -110,7 +110,6 @@ module ComplaintsSpecHelpers
   end
 
   def save_complaint
-    #page.execute_script("scrollTo(0,0)")
     page.find('#save_complaint')
   end
 
@@ -165,6 +164,9 @@ module ComplaintsSpecHelpers
   def select_datepicker_date(id,year,month,day)
     month = month -1 # js month  monthis 0-indexed
     page.execute_script %Q{ $('#{id}').trigger('focus') } # trigger datepicker
+    page.execute_script("$('.ui-datepicker-month').prop('selectedIndex',#{month}).trigger('change')")
+    year_index = page.evaluate_script("_($('.ui-datepicker-year option')).map(function(o){return o.text})").map(&:to_i).find_index(year)
+    page.execute_script("$('.ui-datepicker-year').prop('selectedIndex',#{year_index}).trigger('change')")
     page.execute_script("target=$('#ui-datepicker-div td[data-month=#{month}][data-year=#{year}] a').filter(function(){return $(this).text()==#{day}})[0]")
     page.execute_script("$(target).trigger('click')")
     #page.evaluate_script %Q{ $('#{id}').datepicker('hide') } # trigger the onClose handler

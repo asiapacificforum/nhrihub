@@ -789,12 +789,12 @@ describe "complaints index page", ->
 
     it "should set dob from formatted_dob", ->
       complaints.set('complaints',[{}])
-      complaints.findAllComponents('complaint')[0].set('formatted_dob',"8/9/1950") # user enters dob in this format
-      expect(complaints.findAllComponents('complaint')[0].get('dob')).to.equal "1950-09-08"
+      complaints.findAllComponents('complaint')[0].set('formatted_dob',"19/08/1950") # user enters dob in this format
+      expect(complaints.findAllComponents('complaint')[0].get('dob')).to.equal "19/08/1950"
 
     it "should set formatted_dob from dob", ->
-      complaints.set('complaints',[{ dob:"1950-08-19"}])
-      expect(complaints.findAllComponents('complaint')[0].get('formatted_dob')).to.equal "19/8/1950" # rendered to user in this format
+      complaints.set('complaints',[{ dob:"19/08/1950"}])
+      expect(complaints.findAllComponents('complaint')[0].get('formatted_dob')).to.equal "19/08/1950" # rendered to user in this format
 
   describe "complaint validation", ->
     beforeEach (done)->
@@ -805,55 +805,44 @@ describe "complaints index page", ->
       reset_page()
 
     it "should validate a well-formed complaint, excluding assignee when editing", ->
-      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance",complaint_basis_ids:[2],dob:null,details:"stuff here"}])
+      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance",good_governance_complaint_basis_ids: [5],dob:null,details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('formatted_dob',"19/8/1950")
       complaints.findAllComponents('complaint')[0].set('editing',true)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal false
 
     it "should validate a well-formed complaint, including assignee when not editing", ->
-      complaints.set('complaints',[{firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance",complaint_basis_ids:[2], dob:null, details:"stuff here"}])
+      complaints.set('complaints',[{firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance",good_governance_complaint_basis_ids:[2], dob:null, details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('formatted_dob',"19/8/1950")
       complaints.findAllComponents('complaint')[0].set('new_assignee_id', 8)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal false
 
-    it "should validate a complaint with no complainant if it is imported", ->
-      complaints.set('complaints',[{ village : "Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:true, dob:null, details:"stuff here"}])
-      complaints.findAllComponents('complaint')[0].set('formatted_dob',"19/8/1950")
-      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
-      expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal false
-
-    it "should validate a complaint with no village if it is imported", ->
-      complaints.set('complaints',[{ firstName : "Foo", lastName:"Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:true, dob:null, details:"stuff here"}])
-      complaints.findAllComponents('complaint')[0].set('formatted_dob',"19/8/1950")
-      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
-      expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal false
-
-    it "should not validate a complaint with no complainant if it is not imported", ->
-      complaints.set('complaints',[{ village : "Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:false, details:"stuff here"}])
+    it "should not validate a complaint with no complainant", ->
+      complaints.set('complaints',[{ village : "Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, details:"stuff here"}])
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal true
 
-    it "should not validate a complaint with no village if it is not imported", ->
-      complaints.set('complaints',[{ firstName : "Foo", lastName:"Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, imported:false, details:"stuff here"}])
+    it "should not validate a complaint with no village", ->
+      complaints.set('complaints',[{ firstName : "Foo", lastName:"Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], new_assignee_id:8, details:"stuff here"}])
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal true
 
-    it "should validate an imported complaint missing village, excluding assignee when editing", ->
-      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", mandate_name : "Good Governance", complaint_basis_ids:[2], imported:true, dob:"1950-08-19", details:"stuff here"}])
-      complaints.findAllComponents('complaint')[0].set('editing',true)
-      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
-      expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal false
+    it "should not validate with no assignee when not editing", ->
+      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village: "Barstow", mandate_name : "Good Governance", complaint_basis_ids:[2], dob:"19/08/1950", details:"stuff here"}])
+      complaints.findAllComponents('complaint')[0].set('editing',false)
+      complaints.findAllComponents('complaint')[0].validate()
+      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
+      expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal true
 
-    it "should validate an imported complaint missing complaint_basis_ids, including assignee when not editing", ->
-      complaints.set('complaints',[{firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", complaint_basis_ids:[], imported:true, dob:"1950-08-19", details:"stuff here"}])
+    it "should not validate a complaint missing complaint_basis_ids", ->
+      complaints.set('complaints',[{firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", complaint_basis_ids:[], dob:"1950-08-19", details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('new_assignee_id', 8)
-      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
-      expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal false
+      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
+      expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal true
 
-    it "should validate a complaint missing complaint_basis_ids, excluding assignee when editing, when not imported", ->
-      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance" ,complaint_basis_ids:[], imported:false, dob:"1950-08-19", details:"stuff here"}])
+    it "should validate a complaint excluding assignee when editing", ->
+      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance" ,complaint_basis_ids:[], dob:"1950-08-19", details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('good_governance_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('human_rights_complaint_basis_ids', [])
@@ -861,26 +850,24 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal true
 
-    it "should validate a complaint missing complaint_basis_ids, including assignee when not editing, when not imported", ->
-      complaints.set('complaints',[{firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", good_governance_complaint_basis_ids: [], special_investigations_unit_complaint_basis_ids: [], human_rights_complaint_basis_ids: [], imported:true, dob:"1950-08-19", details:"stuff here"}])
-      complaints.findAllComponents('complaint')[0].set('good_governance_complaint_basis_ids', [])
-      complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [])
-      complaints.findAllComponents('complaint')[0].set('human_rights_complaint_basis_ids', [])
+    it "should validate a complaint including assignee when not editing", ->
+      complaints.set('complaints',[{firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", good_governance_complaint_basis_ids: [5], special_investigations_unit_complaint_basis_ids: [], human_rights_complaint_basis_ids: [], dob:"19/8/1950", details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('new_assignee_id', 8)
+      complaints.findAllComponents('complaint')[0].set('editing',false)
       expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal false
 
-    it "should validate a complaint missing complaint_basis_ids, excluding assignee when editing, when imported", ->
-      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name:"Good Governance", imported:true, dob:"1950-08-19", details:"stuff here"}])
+    it "should not validate a complaint excluding assignee when not editing", ->
+      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name:"Good Governance", dob:"1950-08-19", details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('good_governance_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('human_rights_complaint_basis_ids', [])
-      complaints.findAllComponents('complaint')[0].set('editing',true)
-      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal true
-      expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal false
+      complaints.findAllComponents('complaint')[0].set('editing',false)
+      expect(complaints.findAllComponents('complaint')[0].validate()).to.equal false
+      expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal true
 
-    it "should validate a complaint missing complaint_basis_ids, including assignee when not editing, when imported", ->
-      complaints.set('complaints',[{firstName:"Foo", lastName:"Bar", village:"Bar", mandate_ids:[8],complaint_basis_ids:[], imported:false, details:"stuff here"}])
+    it "should validate a complaint including assignee when not editing", ->
+      complaints.set('complaints',[{firstName:"Foo", lastName:"Bar", village:"Bar", mandate_ids:[8],complaint_basis_ids:[], details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('good_governance_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [])
       complaints.findAllComponents('complaint')[0].set('human_rights_complaint_basis_ids', [])
@@ -889,7 +876,7 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal true
 
     it "should be valid if dob is entered with correct format", ->
-      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", imported: false, dob:null, details:"stuff here"}])
+      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", dob:null, details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('formatted_dob',"09/08/1950") # dd/mm/yyyy
       complaints.findAllComponents('complaint')[0].set('editing',true)
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [2])
@@ -898,7 +885,7 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal false
 
     it "should be invalid if dob is entered with incorrect format", ->
-      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", imported: false, dob:null, details:"stuff here"}])
+      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", dob:null, details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('formatted_dob',"1950-8-19")
       complaints.findAllComponents('complaint')[0].set('editing',true)
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [2])
@@ -907,7 +894,7 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal true
 
     it "should be invalid if dob is entered with out-of-range numerical values", ->
-      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", imported: false, dob:null, details:"stuff here"}])
+      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", dob:null, details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('formatted_dob',"09/15/1986") # expect dd/mm/yyyy
       complaints.findAllComponents('complaint')[0].set('editing',true)
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [2])
@@ -916,7 +903,7 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal true
 
     it "should be invalid if dob is blank", ->
-      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", imported: false, dob:null, details:"stuff here"}])
+      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", dob:null, details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('formatted_dob',"")
       complaints.findAllComponents('complaint')[0].set('editing',true)
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [2])
@@ -925,7 +912,7 @@ describe "complaints index page", ->
       expect(complaints.findAllComponents('complaint')[0].get('has_errors')).to.equal true
 
     it "should be invalid if dob is null", ->
-      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance", imported: false, dob:null, details:"stuff here"}])
+      complaints.set('complaints',[{ firstName:"Foo", lastName:"Bar", village:"Bar", mandate_name : "Good Governance",  dob:null, details:"stuff here"}])
       complaints.findAllComponents('complaint')[0].set('formatted_dob',null)
       complaints.findAllComponents('complaint')[0].set('editing',true)
       complaints.findAllComponents('complaint')[0].set('special_investigations_unit_complaint_basis_ids', [2])

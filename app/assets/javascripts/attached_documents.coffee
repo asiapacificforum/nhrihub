@@ -34,7 +34,8 @@
     @parent.remove(@_guid)
   download_attachment : ->
     window.location = @get('url')
-  , @ConfirmDeleteModal 
+.extend @ConfirmDeleteModal
+
 @AttachedDocuments = Ractive.extend
   template : "#attached_documents_template"
   components :

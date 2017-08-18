@@ -1,0 +1,20 @@
+Ractive 1.0.0 update checklist
+interpolation in element attributes must be removed
+
+decorators have new syntax "as-"
+  inpage_edit decorator is implemented with the directive: 'as-inpage_edit'=>'id'
+
+add html_safe to attribute text values
+add @this. prefix to dom methods
+extend for Ractive instances:
+  use $.extend if required
+extend for Ractive child:
+  .extend A
+  .extend B
+
+intro and outro replace with -in, -out and -in-out directives
+
+getNodeInfo replaced with getContext
+
+EditInPlace
+  #edit_save, #edit_cancel and #edit_start elements are assigned click handlers in EditInPlace, remove handlers from html inline definition

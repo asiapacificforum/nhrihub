@@ -28,7 +28,7 @@ feature "complaints index", :js => true do
   it "shows basic information for each complaint" do
     within first_complaint do
       expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
-      expect(find('.date_received').text).to eq Complaint.first.date_received.getlocal.to_date.strftime("%b %-e, %Y")
+      expect(find('.date_received').text).to eq Complaint.first.date_received.strftime("%b %-e, %Y")
       expect(all('#status_changes .status_change').first.text).to match /#{Complaint.first.status_changes.first.status_humanized}/
       expect(all('#status_changes .status_change .user_name').first.text).to match /#{Complaint.first.status_changes.first.user.first_last_name}/
       expect(all('#status_changes .status_change .date').first.text).to match /#{Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%b %-e, %Y")}/
@@ -185,7 +185,7 @@ feature "complaints index", :js => true do
     expect(complaint.lastName).to eq "Normal"
     expect(complaint.firstName).to eq "Norman"
     expect(complaint.chiefly_title).to eq "bossman"
-    expect(complaint.dob).to eq Date.new(1950,9,8)
+    expect(complaint.dob).to eq "08/09/1950" # dd/mm/yyyy
     expect(complaint.gender).to eq 'M'
     expect(complaint.email).to eq "norm@acme.co.ws"
     expect(complaint.complained_to_subject_agency).to eq true
@@ -216,7 +216,7 @@ feature "complaints index", :js => true do
     expect(first_complaint.find('.chiefly_title').text).to eq "bossman"
     expect(first_complaint.find('#status_changes .status_change .status_humanized').text).to eq 'Under Evaluation'
     expand
-    expect(first_complaint.find('.complainant_dob').text).to eq "8/9/1950"
+    expect(first_complaint.find('.complainant_dob').text).to eq "Sep 8, 1950"
     expect(first_complaint.find('.email').text).to eq "norm@acme.co.ws"
     expect(first_complaint.find('.complaint_details').text).to eq "a long story about lots of stuff"
     expect(first_complaint.find('.desired_outcome').text).to eq "Life gets better"
@@ -266,6 +266,29 @@ feature "complaints index", :js => true do
     url = Nokogiri::HTML(email.body.to_s).xpath(".//p/a").attr('href').value
     expect( url ).to match (/\/en\/complaints\.html\?case_reference=c#{Date.today.strftime("%y")}-1$/i)
     expect( url ).to match (/^http:\/\/#{SITE_URL}/)
+  end
+
+  it "sets date_received to today's date if it is not provided when adding" do
+    add_complaint
+    within new_complaint do
+      fill_in('lastName', :with => "Normal")
+      fill_in('firstName', :with => "Norman")
+      fill_in('dob', :with => "08/09/1950")
+      fill_in('village', :with => "Normaltown")
+      fill_in('complaint_details', :with => "a long story about lots of stuff")
+      check('special_investigations_unit')
+      check_basis(:good_governance, "Delayed action")
+      select(User.staff.first.first_last_name, :from => "assignee")
+    end
+    expect{save_complaint.click; wait_for_ajax}.to change{ Complaint.count }.by(1)
+                                               .and change{ page.all('.complaint').count }.by(1)
+                                               .and change{ page.all('.new_complaint').count }.by(-1)
+    # on the server
+    complaint = Complaint.last
+    expect(complaint.date_received.to_date).to eq Date.today
+
+    # on the client
+    expect(first_complaint.find('.date_received').text).to eq Date.today.strftime("%b %-e, %Y")
   end
 
   it "adds multiple complaints with no interaction" do #b/c there was a bug
@@ -416,14 +439,14 @@ feature "complaints index", :js => true do
       uncheck_basis(:special_investigations_unit, "Unreasonable delay") #originally had "Unreasonable delay" "Not properly investigated"
       # AGENCY
       uncheck_agency("SAA")
-      check_agency("ACC")
+      check_agency("MAF")
       # DOCUMENTS
       attach_file("complaint_fileinput", upload_document)
       fill_in("attached_document_title", :with => "added complaint document")
       expect(page).to have_selector("#complaint_documents .document .filename", :text => "first_upload_file.pdf")
       select_datepicker_date("#date_received",Date.today.year,Date.today.month,23)
-      # TODO can't figure out why this is necessary... it works find through the UI, but triggering via capybara needs this:
-      select_datepicker_date("#date_received",Date.today.year,Date.today.month,23)
+      sleep(0.2) # javascript
+      expect(page.find('#date_received').value).to eq "#{Date.today.strftime('%b 23, %Y')}"
     end
 
     expect{ edit_save }.to change{ Complaint.first.lastName }.to("Normal").
@@ -437,7 +460,7 @@ feature "complaints index", :js => true do
 
     expect( Complaint.first.chiefly_title ).to eq "kahunga"
     expect( Complaint.first.complained_to_subject_agency ).to eq false
-    expect( Complaint.first.dob ).to eq Date.new(1950,8,19)
+    expect( Complaint.first.dob ).to eq "19/08/1950"
     expect( Complaint.first.details ).to eq "the boy stood on the burning deck"
     expect( Complaint.first.desired_outcome ).to eq "Things are more better"
     expect( Complaint.first.mandates.map(&:key) ).to match_array [ "human_rights", "special_investigations_unit"]
@@ -448,11 +471,11 @@ feature "complaints index", :js => true do
     expect( Complaint.first.special_investigations_unit_complaint_bases.count ).to eq 1
     expect( Complaint.first.special_investigations_unit_complaint_bases.first.name ).to eq "Not properly investigated"
     expect( Complaint.first.assignees ).to include User.staff.last
-    expect( Complaint.first.agencies.map(&:name) ).to include "ACC"
+    expect( Complaint.first.agencies.map(&:name) ).to include "MAF"
     expect( Complaint.first.agencies.count ).to eq 1
     expect( Complaint.first.date_received.to_date).to eq Date.new(Date.today.year, Date.today.month, 23)
 
-    expect(page).to have_selector('.complainant_dob', :text => "19/8/1950")
+    expect(page).to have_selector('.complainant_dob', :text => "Aug 19, 1950")
     expect(page).to have_selector('.desired_outcome', :text => "Things are more better")
     expect(page).to have_selector('.complaint_details', :text => "the boy stood on the burning deck")
     expect(page).to have_selector('.complained_to_subject_agency', :text => "no")
@@ -477,7 +500,7 @@ feature "complaints index", :js => true do
     end
 
     within agencies do
-      expect(all('.agency').map(&:text)).to include "ACC"
+      expect(all('.agency').map(&:text)).to include "MAF"
     end
 
     within complaint_documents do
@@ -535,7 +558,6 @@ feature "complaints index", :js => true do
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
       check_basis(:good_governance, "Private")
-      check_basis(:human_rights, "CAT")
       check_basis(:good_governance, "Contrary to Law")
       fill_in('dob', :with => "11/11/1820")
       fill_in('email', :with => "harry@haricot.net")
@@ -559,14 +581,21 @@ feature "complaints index", :js => true do
       expect(page.find('#chiefly_title').value).to eq original_complaint.chiefly_title
       expect(page.find('#village').value).to eq original_complaint.village
       expect(page.find('#phone').value).to eq original_complaint.phone
-      expect(page.all('#good_governance_bases .complaint_basis input').first['name']).to eq original_complaint.good_governance_complaint_basis_ids.join(',')
-      expect(page.find('#dob').value).to eq original_complaint.dob.strftime("%-d/%-m/%Y")
+      expect(page.find('#good_governance_bases .complaint_basis', :text => 'Private').find('input')).not_to be_checked
+      expect(page.find('#good_governance_bases .complaint_basis', :text => 'Contrary to Law').find('input')).not_to be_checked
+      expect(page.find('#human_rights_bases .complaint_basis', :text => 'CAT').find('input')).to be_checked
+      expect(page.find('#human_rights_bases .complaint_basis', :text => 'ICESCR').find('input')).to be_checked
+      expect(page.find('#special_investigations_unit_bases .complaint_basis', :text => 'Unreasonable delay').find('input')).to be_checked
+      expect(page.find('#special_investigations_unit_bases .complaint_basis', :text => 'Not properly investigated').find('input')).to be_checked
+      expect(page.find('#good_governance_bases .complaint_basis', :text => 'Delayed action').find('input')).to be_checked
+      expect(page.find('#good_governance_bases .complaint_basis', :text => 'Failure to act').find('input')).to be_checked
+      expect(page.find('#dob').value).to eq original_complaint.dob
       expect(page.find('#email').value).to eq original_complaint.email.to_s
       expect(page.find('#m')).not_to be_checked
       expect(page.find('#complaint_details').value).to eq original_complaint.details
       expect(page.find('#desired_outcome').value).to eq original_complaint.desired_outcome.to_s
       expect(page.find('#complained_to_subject_agency_yes')).not_to be_checked
-      expect(find('#date_received').value).to eq original_complaint.date_received.getlocal.to_date.strftime("%b %-e, %Y")
+      expect(find('#date_received').value).to eq original_complaint.date_received.strftime("%b %-e, %Y")
       expect(find('.current_assignee').text).to eq original_complaint.assignees.first.first_last_name
       expect(page.find(".mandate ##{original_complaint.mandates.first.key}")).to be_checked
       expect(page.find_field("ACC")).not_to be_checked

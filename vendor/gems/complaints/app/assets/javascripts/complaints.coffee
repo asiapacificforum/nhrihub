@@ -45,8 +45,8 @@ Agency = Ractive.extend
   template : '#agency_template'
   computed :
     name : ->
-      agency = _(@get('all_agencies')).findWhere(id : @get('id'))
-      agency.name
+      agency = _(window.complaints_page_data().all_agencies).findWhere(id : @get('id'))
+      if _.isUndefined(agency) then null else agency.name
 
 Agencies = Ractive.extend
   template : '#agencies_template'
@@ -77,9 +77,12 @@ ComplaintBasis = Ractive.extend
   template : '#complaint_basis_template'
   computed :
     name : ->
-      mandate = _(@get('complaint_bases')).find (cb)=> _.isEqual(cb.key, @get(mandate).mandate)
-      complaint_basis = _(mandate.complaint_bases).find (cb)=> _.isEqual(cb.id, @get('id'))
-      complaint_basis.name
+      mandate = _(window.source_complaint_bases).find (cb)=> _.isEqual(cb.key, @get(mandate).mandate)
+      if _.isUndefined(mandate)
+        null
+      else
+        complaint_basis = _(mandate.complaint_bases).find (cb)=> _.isEqual(cb.id, @get('id'))
+        complaint_basis.name
 
 ComplaintBases = Ractive.extend
   template : '#complaint_bases_template'
@@ -143,7 +146,7 @@ Mandates = Ractive.extend
   components :
     mandate : Mandate
 
-Persistence = $.extend
+Persistence =
   delete_callback : (data,textStatus,jqxhr)->
     @parent.remove(@_guid)
   save_complaint: ->
@@ -174,19 +177,17 @@ Persistence = $.extend
         #xhr: @progress_bar_create.bind(@)
         method : 'put'
         data : data
-        url : Routes.complaint_path(current_locale, @get('id'))
+        url : Routes.complaint_path(current_locale, @get('id')) if @get('persisted')
         success : success
         context : context
         processData : false
         contentType : false # jQuery correctly sets the contentType and boundary values
-  , ConfirmDeleteModal
 
-ComplaintDocuments = Ractive.extend
+ComplaintDocuments = AttachedDocuments.extend
   oninit : ->
     @set
       parent_type : 'complaint'
       parent_named_document_datalist : @get('complaint_named_document_titles')
-  , AttachedDocuments
 
 FilterMatch =
   include : ->
@@ -302,58 +303,46 @@ StatusSelector = Ractive.extend
           @push('filter_criteria.selected_statuses', @get('name'))
         else
           @remove_from_array('filter_criteria.selected_statuses', @get('name'))
-  , Toggle
+.extend Toggle
 
 Complaint = Ractive.extend
   template : '#complaint_template'
   computed :
+    new_assignee_id : ->
+      @findComponent('assigneeSelector').get('new_assignee_id')
     delete_confirmation_message : ->
       "#{i18n.delete_complaint_confirmation_message} #{@get('case_reference')}?"
     include : ->
       @include()
     reminders_count : ->
-      @get('reminders').length
+      reminders = @get('reminders')
+      if _.isUndefined(reminders) then 0 else reminders.length
     notes_count : ->
-      @get('notes').length
+      notes = @get('notes')
+      if _.isUndefined(notes) then 0 else notes.length
     communications_count : ->
-      @get('communications').length
+      comms = @get('communications')
+      if _.isUndefined(comms) then 0 else comms.length
     persisted : ->
       !_.isNull(@get('id'))
     persistent_attributes : ->
-      ['case_reference','village','phone','mandate_ids', 'imported',
+      ['case_reference','village','phone','mandate_ids',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
         'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
         'agency_ids', 'attached_documents_attributes', 'details',
-        'dob', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date_received',
+        'dob', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date',
         'firstName', 'lastName', 'chiefly_title']
     url : ->
-      Routes.complaint_path(current_locale, @get('id'))
+      Routes.complaint_path(current_locale, @get('id')) if @get('persisted')
     formatted_date :
       get: ->
-        date_received = @get('date_received') # format on load is: "2017-07-02T19:40:01.949Z"
+        date_received = @get('date') # it's a formatted version of date_received
         if _.isEmpty(date_received)
           ""
         else
-          $.datepicker.formatDate("M d, yy", new Date(date_received))
+          @get('date')
       set: (val)->
-        date = $.datepicker.parseDate( "M d, yy", val)
-        @set('date_received', date.toUTCString())
-    formatted_dob :
-      get: ->
-        if _.isEmpty(@get('dob'))
-          ""
-        else
-          $.datepicker.formatDate("d/m/yy", $.datepicker.parseDate("yy-mm-dd",@get('dob')))
-      set: (val)->
-        date_regex = new RegExp(/(\d{1,2})\/(\d{1,2})\/\d{4}/)
-        match = date_regex.exec val
-        valid_day = match && (parseInt(match[1]) <= 31)
-        valid_month = match && (parseInt(match[2]) <= 12)
-        if !_.isNull(match) && valid_day && valid_month
-          @set('dob', $.datepicker.formatDate("yy-mm-dd",$.datepicker.parseDate( "dd/mm/yy", val)))
-          @validate_attribute('dob')
-        else
-          @set('dob', "")
+        @set('date', val)
     has_errors : ->
       @validator.has_errors()
     mandate_names : ->
@@ -361,32 +350,40 @@ Complaint = Ractive.extend
       names = _(mandates).map (mandate)-> mandate.name
       names.join(', ')
     create_reminder_url : ->
-      Routes.complaint_reminders_path('en', @get('id'))
+      Routes.complaint_reminders_path('en', @get('id')) if @get('persisted')
     create_note_url : ->
-      Routes.complaint_notes_path('en', @get('id'))
+      Routes.complaint_notes_path('en', @get('id')) if @get('persisted')
     complaint_basis_id_count : -> # aka subareas
-      @get('good_governance_complaint_basis_ids').length +
-      @get('special_investigations_unit_complaint_basis_ids').length +
-      @get('human_rights_complaint_basis_ids').length
+      gg = @get('good_governance_complaint_basis_ids')
+      ggl = if _.isUndefined(gg) then 0 else gg.length
+      si = @get('special_investigations_unit_complaint_basis_ids')
+      sil = if _.isUndefined(si) then 0 else si.length
+      hr = @get('human_rights_complaint_basis_ids')
+      hrl = if _.isUndefined(hr) then 0 else hr.length
+      ggl + sil + hrl
     mandate_id_count : -> # aka 'areas'
-      @get('mandate_ids').length
+      mandates = @get('mandate_ids')
+      if _.isUndefined(mandates) then 0 else mandates.length
     validation_criteria : ->
-      firstName : ['notBlank', {if : =>!@get('imported') }]
-      lastName : ['notBlank', {if : =>!@get('imported') }]
-      village : ['notBlank', {if : =>!@get('imported')}]
+      firstName : ['notBlank']
+      lastName : ['notBlank']
+      village : ['notBlank']
       mandate_id_count : 'nonZero'
-      complaint_basis_id_count : ['nonZero', {if : =>!@get('imported')}]
+      complaint_basis_id_count : 'nonZero'
       new_assignee_id : ['numeric', {if : =>!@get('editing')}]
       dob: =>
-        date_regex = new RegExp(/\d{4}-(\d{1,2})-(\d{1,2})/) # yyyy-mm-dd
+        date_regex = new RegExp(/(\d{1,2})\/(\d{1,2})\/(\d{4})/) # dd/mm/yyyy
         match = date_regex.exec @get('dob')
-        valid_month = match && (parseInt(match[1]) <= 12)
-        valid_day = match && (parseInt(match[2]) <= 31)
-        !_.isNull(match) && valid_day && valid_month
+        valid_day = match && (parseInt(match[1]) <= 31)
+        valid_month = match && (parseInt(match[2]) <= 12)
+        valid_year = match && (parseInt(match[3]) <= (new Date).getFullYear()) && (parseInt(match[3]) >= 1900 )
+        !_.isNull(match) && valid_day && valid_month && valid_year
       details : 'notBlank'
     error_vector : ->
-      complainant_error : @get('complainant_error')
+      firstName_error : @get('firstName_error')
+      lastName_error : @get('lastName_error')
       village_error : @get('village_error')
+      new_assignee_id_error : @get('new_assignee_id_error')
       mandate_id_count_error : @get('mandate_id_count_error')
       complaint_basis_id_count_error : @get('complaint_basis_id_count_error')
       dob_error : @get('dob_error')
@@ -400,12 +397,15 @@ Complaint = Ractive.extend
     @validator = new Validator(@)
   # this should work, but due to some weirdness in ractive, it doesn't, maybe a future release
   # will work better so that the callbacks can be removed from the view elements
-  #onchange: (obj)->
+  #onupdate: (obj)->
     #attr = _(obj).keys()[0]
     #console.log "change to #{attr}"
     #unless _.isUndefined(@validator)
       #if _(@validator.attributes).includes(attr)
         #@validate_attribute(attr)
+  data :
+    local : (gmt_date)->
+      $.datepicker.formatDate("M d, yy", new Date(gmt_date))
   components :
     mandates : Mandates
     mandatesSelector : MandatesSelector
@@ -437,6 +437,10 @@ Complaint = Ractive.extend
   cancel_add_complaint : ->
     UserInput.reset()
     @parent.shift('complaints')
+  remove : (guid)-> # required for Ractive 0.8.0, possibly can be removed in later revs
+    guids = _(@findAllComponents('attachedDocument')).pluck('_guid')
+    index = _(guids).indexOf(guid)
+    @splice('attached_documents',index,1)
   add_file : (file)->
     attached_document =
       id : null
@@ -450,7 +454,13 @@ Complaint = Ractive.extend
       original_type : file.type
       serialization_key : 'complaint[complaint_documents_attributes][]'
     @unshift('attached_documents', attached_document)
-  , EditBackup, Persistence, FilterMatch, @Remindable, @Notable, @Communications # Remindable, Notable and Communications are found in the _reminder.haml, _note.haml and _communication.haml files
+.extend  EditBackup
+.extend  Persistence
+.extend  ConfirmDeleteModal
+.extend  FilterMatch
+.extend  @Remindable
+.extend  @Notable
+.extend  @Communications # Remindable Notable and Communications are found in the _reminder.haml _note.haml and _communication.haml files
 
 GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
   template : "#good_governance_complaint_basis_filter_select_template"
@@ -463,7 +473,7 @@ GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
           @push('filter_criteria.selected_good_governance_complaint_basis_ids', @get('id'))
         else
           @remove_from_array('filter_criteria.selected_good_governance_complaint_basis_ids', @get('id'))
-  , Toggle
+.extend Toggle
 
 HumanRightsComplaintBasisFilterSelect = Ractive.extend
   template : "#human_rights_complaint_basis_filter_select_template"
@@ -476,7 +486,7 @@ HumanRightsComplaintBasisFilterSelect = Ractive.extend
           @push('filter_criteria.selected_human_rights_complaint_basis_ids', @get('id'))
         else
           @remove_from_array('filter_criteria.selected_human_rights_complaint_basis_ids', @get('id'))
-  , Toggle
+.extend Toggle
 
 SpecialInvestigationsUnitComplaintBasisFilterSelect = Ractive.extend
   template : "#special_investigations_unit_complaint_basis_filter_select_template"
@@ -489,7 +499,7 @@ SpecialInvestigationsUnitComplaintBasisFilterSelect = Ractive.extend
           @push('filter_criteria.selected_special_investigations_unit_complaint_basis_ids', @get('id'))
         else
           @remove_from_array('filter_criteria.selected_special_investigations_unit_complaint_basis_ids', @get('id'))
-  , Toggle
+.extend Toggle
 
 AgencyFilterSelect = Ractive.extend
   template : "#agency_filter_select_template"
@@ -502,7 +512,7 @@ AgencyFilterSelect = Ractive.extend
           @push('filter_criteria.selected_agency_ids', @get('id'))
         else
           @remove_from_array('filter_criteria.selected_agency_ids', @get('id'))
-  , Toggle
+.extend Toggle
 
 AssigneeFilterSelect = Ractive.extend
   template : "#assignee_filter_select_template"
@@ -515,7 +525,7 @@ AssigneeFilterSelect = Ractive.extend
           @set('filter_criteria.selected_assignee_id',@get('id'))
         else
           @set('filter_criteria.selected_assignee_id',null)
-  , Toggle
+.extend Toggle
 
 MandateFilterSelect = Ractive.extend
   template : "#mandate_filter_select_template"
@@ -528,7 +538,7 @@ MandateFilterSelect = Ractive.extend
           @set('filter_criteria.mandate_id',@get('id'))
         else
           @set('filter_criteria.mandate_id',null)
-  , Toggle
+.extend Toggle
 
 FilterControls = Ractive.extend
   template : "#filter_controls_template"
@@ -572,7 +582,8 @@ window.complaints_page_data = ->
 complaints_options =
   el : '#complaints'
   template : '#complaints_template'
-  data : $.extend(true,{},complaints_page_data())
+  data : ->
+    $.extend(true,{},complaints_page_data())
   oninit : ->
     @set
       'expanded' : false
@@ -604,10 +615,10 @@ complaints_options =
         reminders : []
         current_status_humanized : "Under Evaluation"
         village : ""
-        imported : false
         complained_to_subject_agency : false
         date_received : null
         dob : null
+        date_of_birth : null
       UserInput.claim_user_input_request(@,'cancel_add_complaint')
       @unshift('complaints',new_complaint)
   cancel_add_complaint : ->
@@ -637,9 +648,7 @@ window.start_page = ->
 
 Ractive.decorators.inpage_edit = EditInPlace
 
-helpers = Ractive.defaults.data
-
-helpers.local = (gmt_date)->
+Ractive.prototype.local = (gmt_date)->
   $.datepicker.formatDate("M d, yy", new Date(gmt_date))
 
 $ ->

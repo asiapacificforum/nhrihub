@@ -478,25 +478,26 @@ Ractive.components['modal-close'] = Ractive.extend({
 
 /* Pagination */
 
-Ractive.components['pagination'] = Ractive.extend({
-	isolated: true,
-	data: {
-		min: 1,
-		max: 10,
-		value: 1
-	},
-	computed: {
-		pages: function() {
-			var min = this.get('min')
-			var max = this.get('max')
-			var list = []
-			for( var i = min; i <= max; i++ )
-				list.push(i)
-			return list
-		}
-	},
-	template: "<nav><ul class='pagination {{#type}}pagination-{{type}}{{/}}'>{{#each pages}}<li {{#if . == value}}class='active'{{/if}}><a {{#url}}href='{{url}}{{.}}'{{/}} on-click='set(\"value\", .)'>{{.}}</a></li>{{/each}}</ul></nav>"
-})
+//caused problems with Ractive 0.8.0, so disable it
+//Ractive.components['pagination'] = Ractive.extend({
+	//isolated: true,
+	//data: {
+		//min: 1,
+		//max: 10,
+		//value: 1
+	//},
+	//computed: {
+		//pages: function() {
+			//var min = this.get('min')
+			//var max = this.get('max')
+			//var list = []
+			//for( var i = min; i <= max; i++ )
+				//list.push(i)
+			//return list
+		//}
+	//},
+	//template: "<nav><ul class='pagination {{#type}}pagination-{{type}}{{/}}'>{{#each pages}}<li {{#if . == value}}class='active'{{/if}}><a {{#url}}href='{{url}}{{.}}'{{/}} on-click='set(\"value\", .)'>{{.}}</a></li>{{/each}}</ul></nav>"
+//})
 
 
 /* Panels */
@@ -527,32 +528,33 @@ Ractive.components['b-table'] = Ractive.extend({
 
 /* Tabs & Pills */
 
-Ractive.components['tabs'] = Ractive.extend({isolated: true, template: "<ul class='nav nav-tabs'>{{yield}}</ul>"})
-Ractive.components['pills'] = Ractive.extend({isolated: true, template: "<ul class='nav nav-pills'>{{yield}}</ul>"})
+//caused problems with Ractive 0.8.0, so disable it
+//Ractive.components['tabs'] = Ractive.extend({isolated: true, template: "<ul class='nav nav-tabs'>{{yield}}</ul>"})
+//Ractive.components['pills'] = Ractive.extend({isolated: true, template: "<ul class='nav nav-pills'>{{yield}}</ul>"})
 
-Ractive.components['tab'] = Ractive.extend({
-	isolated: true,
-	data: {
-		active: false,
-	},
-	template: "<li role='presentation' class='{{#active}}active{{/}}'><a href='{{href}}' on-click='selectIt()'>{{yield}}</a></li>",
-	selectIt: function() {
-		this.container.set('selected', this.get('name'))
-		// return false
-	},
-	onrender: function() {
-		var container = this.container
-		var self = this
-		self.container.observe('selected', function( selected ) {
-			if( !selected )
-				return
-			var name = self.get('name')
-			self.set('active', name === selected )
-		})
-	}
-})
+//Ractive.components['tab'] = Ractive.extend({
+	//isolated: true,
+	//data: {
+		//active: false,
+	//},
+	//template: "<li role='presentation' class='{{#active}}active{{/}}'><a href='{{href}}' on-click='selectIt()'>{{yield}}</a></li>",
+	//selectIt: function() {
+		//this.container.set('selected', this.get('name'))
+		//// return false
+	//},
+	//onrender: function() {
+		//var container = this.container
+		//var self = this
+		//self.container.observe('selected', function( selected ) {
+			//if( !selected )
+				//return
+			//var name = self.get('name')
+			//self.set('active', name === selected )
+		//})
+	//}
+//})
 
-Ractive.components['pill'] = Ractive.components['tab'] // They are identical
+//Ractive.components['pill'] = Ractive.components['tab'] // They are identical
 
 /* Tags & Badges */
 

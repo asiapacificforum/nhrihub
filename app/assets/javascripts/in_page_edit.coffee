@@ -105,17 +105,17 @@ class @InpageEdit
       else
         $(@options.on).find('.editable_container')
 
-    $(@options.on).find("[id$='_edit_start']").on 'click', (e)=>
+    $(@options.on).find("[id='edit_start']").on 'click', (e)=>
       e.stopPropagation()
       $target = $(e.target)
       @edit_start($target)
 
-    $(@options.on).find("[id$='_edit_cancel']").on 'click', (e)=>
+    $(@options.on).find("[id='edit_cancel']").on 'click', (e)=>
       e.stopPropagation()
       $target = $(e.target)
       @edit_cancel($target)
 
-    $(@options.on).find("[id$='_edit_save']").on 'click', (e)=>
+    $(@options.on).find("[id='edit_save']").on 'click', (e)=>
       e.stopPropagation()
       $target = $(e.target)
       if $target.closest('.editable_container').get(0) == @root.get(0)

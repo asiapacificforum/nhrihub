@@ -72,7 +72,6 @@ class @Validator
     !@validatee.get(attribute+"_error")
   numeric : (attribute)->
     @validatee.set(attribute+"_error", _.isNaN(parseInt(@validatee.get(attribute))))
-    #console.log "validate numeric #{attribute} value #{parseInt(@validatee.get(attribute))} result #{@validatee.get(attribute+'_error')}"
     !@validatee.get(attribute+"_error")
   nonZero : (attribute)->
     @validatee.set(attribute+"_error", parseInt(@validatee.get(attribute)) == 0)

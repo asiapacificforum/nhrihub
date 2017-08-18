@@ -50,9 +50,8 @@ class Complaint < ActiveRecord::Base
     # workaround hack b/c FormData object sends "null" string for null values
     string_or_text_columns = Complaint.columns.select{|c| (c.type == :string) || (c.type == :text)}.map(&:name)
     string_or_text_columns.each do |column_name|
-      complaint.send("#{column_name}=", nil) if complaint.send(column_name) == "null"
+      complaint.send("#{column_name}=", nil) if complaint.send(column_name) == "null" || complaint.send(column_name) == "undefined"
     end
-    complaint.gender = nil if complaint.gender == 'undefined'
     integer_columns = Complaint.columns.select{|c| c.type == :integer}.map(&:name)
     # it's a hack... TODO there must be a better way!
     integer_columns.each do |column_name|
@@ -61,7 +60,7 @@ class Complaint < ActiveRecord::Base
   end
 
   before_create do |complaint|
-    if complaint.date_received.nil?
+    if complaint.date_received.nil? || complaint.date_received == "undefined" || complaint.date_received == "null"
       complaint.date_received = DateTime.now
     end
   end
@@ -73,8 +72,7 @@ class Complaint < ActiveRecord::Base
   def as_json(options = {})
     super( :methods => [:reminders, :notes, :assigns,
                         :current_assignee_id,
-                        :new_assignee_id,
-                        :current_assignee_name, :date,
+                        :current_assignee_name, :date, :date_of_birth, :dob,
                         :current_status_humanized, :attached_documents,
                         :mandate_ids, :good_governance_complaint_basis_ids,
                         :special_investigations_unit_complaint_basis_ids,
@@ -83,12 +81,21 @@ class Complaint < ActiveRecord::Base
                         :communications])
   end
 
-  def attached_documents
-    complaint_documents
+  # assumed to be valid date_string, checked in client before submitting
+  def dob=(date_string)
+    write_attribute("dob", Date.parse(date_string))
   end
 
-  def new_assignee_id
-    nil
+  def dob
+    read_attribute("dob").strftime("%d/%m/%Y") unless read_attribute("dob").blank?
+  end
+
+  def date_of_birth
+    read_attribute("dob").strftime("%b %e, %Y") unless read_attribute("dob").blank?
+  end
+
+  def attached_documents
+    complaint_documents
   end
 
   def self.next_case_reference
@@ -121,7 +128,13 @@ class Complaint < ActiveRecord::Base
   end
 
   def date
-    date_received.to_datetime.to_s unless date_received.nil?
+    date_received.strftime("%b %-e, %Y") unless date_received.nil?
+  end
+
+  def date=(val)
+    unless val=="undefined" || val=="null" || val.nil? || val.blank?
+      write_attribute(:date_received, Date.parse(val))
+    end
   end
 
   def report_date
@@ -133,14 +146,12 @@ class Complaint < ActiveRecord::Base
   end
 
   def current_assignee
-    # first, b/c default sort is most-recent-first
     @current_assignee ||= assigns.first.assignee unless assigns.empty?
   end
 
   def new_assignee_id=(id)
-    unless id.blank? || id=="null"
-      #self.assignees << User.find(id) # this worked until rails 5.1!
-      User.find(id).complaints << self
+    unless id.blank? || id=="null" || id=="undefined"
+      self.assignees << User.find(id)
     end
   end
 

@@ -62,6 +62,9 @@ en:
       communications : "Communications"
       notes : "Notes"
       reminders : "Reminders"
+      title : "Title"
+      filename : "File name"
+      no_documents : "no documents"
 
       # filter controls:
       search: "Search for complaints by:"

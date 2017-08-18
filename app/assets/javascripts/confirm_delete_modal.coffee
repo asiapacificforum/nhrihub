@@ -1,6 +1,5 @@
-confirm_delete_modal = null
 $ ->
-  confirm_delete_modal = new Ractive
+  window.confirm_delete_modal = new Ractive
     el : '#confirm_delete_modal_container'
     template : '#confirm_delete_modal_template'
     data :
@@ -16,16 +15,15 @@ $ ->
       $(@el).find('.modal#confirm-delete').modal('hide')
     success_callback : (response, statusText, jqxhr)->
       @hide()
-      @get('callback').apply(@get('deletable'),[response, statusText, jqxhr])
+      @get('unbound.callback').apply(@get('deletable'),[response, statusText, jqxhr])
+      return
     error_callback : ->
       console.log "app/assets/javascripts/confirm_delete_modal error callback, shouldn't see this!"
     delete_item : ->
-      -#ev = $.Event(event)
-      -#ev.stopPropagation()
       if _.isEmpty(@get('local_data'))
         data = [{name:'_method', value: 'delete'}]
       else
-        # this should be generalized
+        #TODO this should be generalized
         data = [{name:'_method', value: 'delete'},{name:'monitor[type]', value:@get('local_data').type}]
       $.ajax
         url : @get('url')
@@ -36,14 +34,13 @@ $ ->
         success : @success_callback
         error : @error_callback
 
-
 @ConfirmDeleteModal =
   show_confirm_delete_modal : (local_data={})->
     confirm_delete_modal.set
       deletable : @
       url : @get('url')
       message : @get('delete_confirmation_message')
-      callback : @delete_callback
+      'unbound.callback' : @delete_callback # seems strange? see https://github.com/ractivejs/ractivejs.github.io/issues/92
       local_data : local_data
     confirm_delete_modal.show()
     return

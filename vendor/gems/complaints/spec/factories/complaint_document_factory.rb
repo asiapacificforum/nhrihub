@@ -6,5 +6,9 @@ FactoryGirl.define do
     filename   { "#{Faker::Lorem.words(2).join("_")}.pdf" }
     lastModifiedDate    { Faker::Date.between(1.year.ago, Date.today) }
     original_type       "application/pdf"
+
+    after(:create) do |doc|
+      `touch tmp/uploads/store/#{doc.file_id}`
+    end
   end
 end

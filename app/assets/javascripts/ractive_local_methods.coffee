@@ -73,5 +73,8 @@ Ractive.prototype.serialize = (attributes)->
   result
 
 Ractive.prototype.remove_from_array = (array,item)->
-  i = _(@get(array)).indexOf(item)
-  @splice(array,i,1)
+  if @get(array).length == 0
+    []
+  else
+    i = _(@get(array)).indexOf(item)
+    @splice(array,i,1)

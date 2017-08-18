@@ -9,7 +9,7 @@
       %span.btn.btn-xs.btn-success.fileinput-button
         %i.fa.fa-plus.fa-lg{ :style => "color:white"}
         %span= t('add_document')
-      %input.hidden_fileinput{:id => "{{key}}_fileinput", :multiple => "multiple", :name => "{{key}}_file", :type => "file", :decorator=>:ractive_fileupload}
+      %input.hidden_fileinput{:id => "{{key}}_fileinput", :multiple => "multiple", :name => "{{key}}_file", :type => "file", "as-ractive_fileupload" => true}
     .col-md-10.fileupload_progress
       <progressBar />
 
@@ -26,7 +26,7 @@
     .col-md-4.filename=t('.filename')
   {{/if}}
   {{#attached_documents}}
-  <attachedDocument parent='{{parent}}' permitted_filetypes='{{permitted_filetypes}}' maximum_filesize='{{maximum_filesize}}' communication_id='{{communication_id}}' file='{{file}}' file_id='{{file_id}}' filename='{{filename}}' filesize='{{filesize}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' original_type='{{original_type}}' serialization_key='{{serialization_key}}' title='{{title}}' user_id='{{user_id}}' />
+  <attachedDocument key='{{key}}' parent_type='{{../../parent_type}}' permitted_filetypes='{{permitted_filetypes}}' maximum_filesize='{{maximum_filesize}}' communication_id='{{communication_id}}' file='{{file}}' file_id='{{file_id}}' filename='{{filename}}' filesize='{{filesize}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' original_type='{{original_type}}' serialization_key='{{serialization_key}}' title='{{title}}' user_id='{{user_id}}' />
   {{/attached_documents}}
   {{^attached_documents}}
   %div{:style => 'padding-left:15px;'}=t('.no_documents')
@@ -45,9 +45,9 @@
       .col-md-6.title {{title}}
       .col-md-4.filename {{truncated_filename}}
       .col-md-1.download
-        %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+        %i.fa.fa-cloud-download{'on-click' => '@this.download_attachment()'}
       .col-md-1.delete
-        %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()'}
+        %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'@this.show_confirm_delete_modal()'}
 
 %script#new_attached_document_template{:type => 'template/ractive'}
   .row.document

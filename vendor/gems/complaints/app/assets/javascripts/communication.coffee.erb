@@ -3,13 +3,12 @@
 #= require 'single_note_modal'
 #= require 'single_month_datepicker'
 
-CommunicationDocuments = Ractive.extend
+CommunicationDocuments = AttachedDocuments.extend
   oninit : ->
     @set
       parent_type : 'communication'
       parent_named_document_datalist : @get('communication_named_document_titles')
     return
-  , AttachedDocuments
 
 ModeIcon = Ractive.extend
   template : ->
@@ -196,7 +195,9 @@ Communication = Ractive.extend
   validate_direction : ->
     @validator.validate_attribute('direction')
     @validator.validate_attribute('multiple_sender')
-  , Note, Persistence, ConfirmDeleteModal
+.extend Note
+.extend Persistence
+.extend ConfirmDeleteModal
 
 @communications = new Ractive
   el : '#communication'

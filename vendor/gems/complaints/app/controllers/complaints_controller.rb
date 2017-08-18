@@ -75,7 +75,7 @@ class ComplaintsController < ApplicationController
   def complaint_params
     params.require(:complaint).permit( :case_reference, :firstName, :lastName, :chiefly_title, :village, :phone, :new_assignee_id,
                                        :dob, :email, :complained_to_subject_agency, :desired_outcome, :gender, :details,
-                                       :date_received, :imported, :good_governance_complaint_basis_ids => [],
+                                       :date, :imported, :good_governance_complaint_basis_ids => [],
                                        :special_investigations_unit_complaint_basis_ids => [],
                                        :human_rights_complaint_basis_ids => [],
                                        :status_changes_attributes => [:user_id, :name],
