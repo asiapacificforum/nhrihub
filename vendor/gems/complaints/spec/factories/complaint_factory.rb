@@ -11,6 +11,12 @@ FactoryGirl.define do
     occupation { Faker::Company.profession }
     employer { Faker::Company.name }
 
+    trait :with_comm do
+      after(:create) do |complaint|
+        complaint.communications = [FactoryGirl.create(:communication), FactoryGirl.create(:communication)]
+      end
+    end
+
     trait :open do
       after(:build) do |complaint|
         complaint.status_changes = [FactoryGirl.create(:status_change, :open)]

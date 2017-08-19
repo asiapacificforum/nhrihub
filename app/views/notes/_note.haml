@@ -1,21 +1,3 @@
-
-%script#notes_template{:type => 'ractive/template'}
-  <modal-custom id="notes_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
-  <modal-header>
-  <h4>#{t('.notes')}<modal-close/></h4>
-  </modal-header>
-  <modal-body>
-  <i class="fa fa-plus fa-sm" id="add_note" on-click='new_note()' data-toggle="tooltip" data-placement="bottom" title="add note"/>
-  #notes{:style => "margin-bottom:80px;"}
-    .row
-      %h5.col-md-1{:style => "width:15%;"}= t('.date')
-      %h5.col-md-1{:style => "width:70%;"}= t('.text')
-    {{#notes}}
-    <note date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' text='{{text}}'/>
-    {{/notes}}
-  </modal-body>
-  </modal-custom>
-
 %script#note_template{:type => 'text/ractive'}
   {{#if !persisted }}
   {{> new_note_template }}
@@ -31,20 +13,20 @@
     .form-group#text{:class => '{{#text_error}}has-error{{/}}'}
       %label.control-label.topaligned.col-sm-2.required= t('.text')
       .col-sm-10
-        =text_area :note, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
+        =text_area :note, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"@this.remove_errors('text')".html_safe
         %span.help-block= t('.note_text_error_message')
     .form-group
       .col-sm-3.col-sm-offset-3{:style => "text-align:center;"}
-        .btn.btn-danger.btn-sm#cancel_note{"on-click" => "cancel_note()"}
+        .btn.btn-danger.btn-sm#cancel_note{"on-click" => "@this.cancel_note()".html_safe}
           %i.fa.fa-remove.fa-lg{:style => "color:white"}
           %span{:style => "color:white"}= t("defaults.cancel")
       .col-sm-3{:style => "text-align:center;"}
-        .btn.btn-success.btn-sm#save_note{:style => "color:white;", "on-click" => "save_note()"}
+        .btn.btn-success.btn-sm#save_note{:style => "color:white;", "on-click" => "@this.save_note()".html_safe}
           %i.fa.fa-check.fa-lg{:style => "color:white"}
           %span= t("defaults.save")
 
 %script#show_note_template{:type => 'text/ractive'}
-  .note.row.editable_container{:id => "note_editable{{id}}", :decorator => 'note_edit:{{id}}'}
+  .note.row.editable_container{:id => "note_editable{{id}}", 'as-note_edit'=>'id'}
     .col-md-1.date.form-group{:style => "width:15%"}
       %span {{ date }}
     .col-md-6.text.form-group{:class => '{{#text_error}}has-error{{/}}', :style => "width:65%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'text'}
@@ -52,20 +34,20 @@
         .fade.no_edit.in
           %span {{text}}
         .fade.edit{:style => "height:140px;"}
-          %textarea#note_text.form-control{:name => 'note[text]', :cols=>78, :rows=>4, :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"}
+          %textarea#note_text.form-control{:name => 'note[text]', :cols=>78, :rows=>4, :value => '{{text}}', 'on-keydown'=>"@this.remove_errors('text')".html_safe}
           %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.note_text_error_message')
     .col-md-1.icon.note_info{:style => "width:5%"}
-      %i.fa.fa-info-circle.fa-lg{:decorator => 'popover'}
+      %i.fa.fa-info-circle.fa-lg{'as-popover'=>true}
     .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px; width:5%", 'data-toggle' => 'edit'}
       .fade.edit
-        %i.fa.fa-remove.fa-lg{:style => "position:relative;", :id => "note_editable{{id}}_edit_cancel"}
+        %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative;"}
     .col-md-1.icon{:style => "text-align:center; font-size:14px; width:5%", 'data-toggle' => 'edit'}
       .fade.edit
-        %i.fa.fa-check.fa-lg{:id => "note_editable{{id}}_edit_save"}
+        %i.fa.fa-check.fa-lg#edit_save
       .fade.no_edit.in{:style => "left:-14px;"}
-        %i.fa.fa-pencil-square-o.fa-lg{:id => "note_editable{{id}}_edit_start"}
+        %i.fa.fa-pencil-square-o.fa-lg#edit_start
     .col-md-1{:style => "text-align:center; font-size:14px; width:5%;"}
-      %i.fa.fa-trash-o.fa-lg#delete_note{'on-click' => 'show_confirm_delete_modal()', :style => "position:relative; left:-12px; top:-2px;"}
+      %i.fa.fa-trash-o.fa-lg#delete_note{'on-click' => '@this.show_confirm_delete_modal()'.html_safe, :style => "position:relative; left:-12px; top:-2px;"}
 
 %script#detailsContent{:type => 'text/ractive'}
   %table#details{:style => 'width:200px'}
@@ -163,7 +145,7 @@
           _(error_attrs).each (a)=> @set(a,false)
         else # user types into input or changes select
           @set(field+"_error",false)
-    , ConfirmDeleteModal
+    .extend ConfirmDeleteModal
 
     window.notes = new Ractive
       el: '#note'
@@ -198,3 +180,22 @@
 
     Ractive.decorators.popover = Popover
     Ractive.components.note = Note
+
+
+%script#notes_template{:type => 'ractive/template'}
+  <modal-custom id="notes_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
+  <modal-header>
+  <h4>#{t('.notes')}<modal-close/></h4>
+  </modal-header>
+  <modal-body>
+  <i class="fa fa-plus fa-sm" id="add_note" on-click='@this.new_note()' data-toggle="tooltip" data-placement="bottom" title="add note"/>
+  #notes{:style => "margin-bottom:80px;"}
+    .row
+      %h5.col-md-1{:style => "width:15%;"}= t('.date')
+      %h5.col-md-1{:style => "width:70%;"}= t('.text')
+    {{#notes}}
+    <note url='{{url}}' parent='{{parent}}' id='{{id}}' date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' text='{{text}}'/>
+    {{/notes}}
+  </modal-body>
+  </modal-custom>
+

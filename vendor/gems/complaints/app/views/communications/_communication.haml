@@ -4,10 +4,10 @@
   <h4>#{t('.communications')}<modal-close/></h4>
   </modal-header>
   <modal-body>
-  <i class="fa fa-plus fa-sm" id="add_communication" on-click='new_communication()' data-toggle="tooltip" data-placement="bottom" title="add communication"/>
+  <i class="fa fa-plus fa-sm" id="add_communication" on-click='@this.new_communication()' data-toggle="tooltip" data-placement="bottom" title="add communication"/>
   #communications{:style => "margin-bottom:80px;"}
     {{#communications}}
-    <communication maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' complaint_id='{{complaint_id}}' direction='{{direction}}' mode='{{mode}}' note='{{note}}' user='{{user}}' date='{{date}}' attached_documents='{{attached_documents}}' complaint_id='{{complaint_id}}' />
+    <communication parent='{{parent}}' communicants='{{communicants}}' id='{{id}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' complaint_id='{{complaint_id}}' direction='{{direction}}' mode='{{mode}}' note='{{note}}' user='{{user}}' date='{{date}}' attached_documents='{{attached_documents}}' />
     {{/communications}}
   </modal-body>
   </modal-custom>
@@ -22,7 +22,7 @@
 %script#communicants_template{:type => 'template/ractive'}
   .col-md-12
     {{#communicants:i}}
-    <communicant />
+    <communicant i='{{i}}' id='{{id}}' name='{{name}}' received_direction='{{received_direction}}' has_email='{{has_email}}' has_phone='{{has_phone}}' has_letter='{{has_letter}}' />
     {{/communicants}}
 
 %script#communicant_template{:type => 'template/ractive'}
@@ -42,32 +42,32 @@
             = t('.communicant')
             </span>
         .col-sm-4.form-group{:class => "{{#name_error}}has-error{{/name_error}}"}
-          %input.communicant{:type => :text, :style => "width:100%", :value=>"{{name}}", "on-keydown"=>"remove_errors('name')"}
+          %input.communicant{:type => :text, :style => "width:100%", :value=>"{{name}}", "on-keydown"=>"@this.remove_errors('name')".html_safe}
           %span.help-block.name_error= t('.name_error_message')
         .col-sm-1
-          <button id="add_communicant_button" class="btn btn-xs btn-success {{#if i>0}}hidden{{/if}} {{#received_direction}}disabled{{/}}" data-toggle='tooltip' title="#{t('.add_communicant')}">
-          %i.fa.fa-plus.fa-lg#add_communicant{:style=>'color:white;', 'on-click'=>'add_communicant()'}
+          <button id="add_communicant_button" class="btn btn-xs btn-success" class-disabled="received_direction" class-hidden="i>0" data-toggle='tooltip' title="#{t('.add_communicant')}">
+          %i.fa.fa-plus.fa-lg#add_communicant{:style=>'color:white;', 'on-click'=>'@this.add_communicant()'}
           </button>
-          <i class="fa fa-remove fa-lg remove_communicant {{#unless i>0}}hidden{{/unless}}" on-click="remove_communicant(i)" data-toggle='tooltip' title="#{t('.remove_communicant')}" />
+          <i class="fa fa-remove fa-lg remove_communicant {{#unless i>0}}hidden{{/unless}}" on-click="@this.remove_communicant(i)" data-toggle='tooltip' title="#{t('.remove_communicant')}" />
       {{#has_email}}
       .row.form-group{'intro-outro' => 'slide', :class => '{{#email_error}}has-error{{/email_error}}'}
         .col-sm-2=t('.email')
         .col-sm-4
-          %input#email_address{:type => :text, :style => "width:100%", :value => "{{email}}", 'on-keydown'=>"remove_errors('email')"}
+          %input#email_address{:type => :text, :style => "width:100%", :value => "{{email}}", 'on-keydown'=>"@this.remove_errors('email')".html_safe}
         %span.help-block.email_error= t('.email_error_message')
       {{/has_email}}
       {{#has_phone}}
       .row.form-group{'intro-outro' => 'slide', :class => '{{#phone_error}}has-error{{/phone_error}}'}
         .col-sm-2=t('.phone')
         .col-sm-4
-          %input#phone{:type => :text, :style => "width:100%", :value => "{{phone}}", 'on-keydown'=>"remove_errors('phone')"}
+          %input#phone{:type => :text, :style => "width:100%", :value => "{{phone}}", 'on-keydown'=>"@this.remove_errors('phone')".html_safe}
         %span.help-block.phone_error= t('.phone_error_message')
       {{/has_phone}}
       {{#has_letter}}
       .row.form-group{'intro-outro' => 'slide', :class => '{{#address_error}}has-error{{/address_error}}'}
-        .col-sm-2=t('.address')
+        .col-sm-2.required=t('.address')
         .col-sm-4
-          %input#address{:type => :text, :style => "width:100%", :value => "{{address}}", 'on-keydown'=>"remove_errors('address')"}
+          %input#address{:type => :text, :style => "width:100%", :value => "{{address}}", 'on-keydown'=>"@this.remove_errors('address')".html_safe}
         %span.help-block.address_error= t('.address_error_message')
       {{/has_letter}}
 
@@ -79,10 +79,10 @@
   .col-sm-2
     %label.radio-inline
       // aargh ractive bug requires attributes in a specific order! so must use html
-      <input id='sent' type="radio" name="{{direction}}" value="sent" on-change="validate_direction()" disabled="{{face_to_face}}" >
+      <input id='sent' type="radio" name="{{direction}}" value="sent" on-change="@this.validate_direction()" disabled="{{face_to_face}}" >
       = t('.sent')
     %label.radio-inline
-      <input id='received' type="radio" name="{{direction}}" value="received" on-change="validate_direction()" disabled="{{face_to_face}}" >
+      <input id='received' type="radio" name="{{direction}}" value="received" on-change="@this.validate_direction()" disabled="{{face_to_face}}" >
       = t('.received')
   .col-sm-6
     %span.help-block{:class => '{{#direction_error}}has-error{{/}}', :style => 'margin:0px'}= t('.sent_or_received_error_message')
@@ -96,27 +96,27 @@
     .row.form-group#date
       %label.control-label.col-sm-2=t('.date')
       .col-sm-4
-        %input#new_communication_date{:type => :text, :decorator=>:single_month_datepicker, :style => "width:150px", :value => "{{formatted_date}}"}
+        %input#new_communication_date{:type => :text, "as-single_month_datepicker"=>true, :style => "width:150px", :value => "{{formatted_date}}"}
     .row.form-group#sent_or_received
       {{> select_direction }}
     .row.form-group#mode{:class => '{{#mode_error}}has-error{{/}}'}
       %label.control-label.col-sm-2.required= t('.method')
       .col-sm-8
         %label.radio-inline
-          <input type='radio' id='email_mode' name='{{mode}}' value='email' on-change="remove_errors('mode')" >
+          %input{:type=>'radio', :id=>'email_mode', :name=>'{{mode}}', :value=>'email', 'on-change'=>"@this.remove_errors('mode')".html_safe}
           = t('.email')
         %label.radio-inline
-          <input type='radio' id='phone_mode' name='{{mode}}' value='phone' on-change="remove_errors('mode')" >
+          %input{:type=>'radio', :id=>'phone_mode', :name=>'{{mode}}', :value=>'phone', 'on-change'=>"@this.remove_errors('mode')".html_safe}
           = t('.phone')
         %label.radio-inline
-          <input type='radio' id='letter_mode' name='{{mode}}' value='letter' on-change="remove_errors('mode')" >
+          %input{:type=>'radio', :id=>'letter_mode', :name=>'{{mode}}', :value=>'letter', 'on-change'=>"@this.remove_errors('mode')".html_safe}
           = t('.letter')
         %label.radio-inline
-          <input type='radio' id='face_to_face_mode' name='{{mode}}' value='face to face' on-change="disable_direction()" >
+          %input{:type=>'radio', :id=>'face_to_face_mode', :name=>'{{mode}}', :value=>'face to face', 'on-change'=>"@this.remove_errors('mode')".html_safe}
           = t('.face_to_face')
         %span.help-block= t('.method_error_message')
     .row#communicants
-      <communicants communicants='{{communicants}}' />
+      <communicants communicants='{{communicants}}' received_direction='{{received_direction}}' has_email='{{has_email}}' has_phone='{{has_phone}}' has_letter='{{has_letter}}' />
     .row.form-group#note
       %label.control-label.col-sm-2= t('.note')
       .col-sm-8
@@ -125,14 +125,14 @@
       .panel-heading= t('.communication_documents')
       .panel-body
         {{> file_selector_template {key : 'communication_document'} }}
-        <attachedDocuments attached_documents='{{attached_documents}}' key='communication_document'>
+        <attachedDocuments parent_type='{{parent_type}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' attached_documents='{{attached_documents}}' key='communication_document' />
     .row
       .col-sm-3.col-sm-offset-3{:style => "text-align:center;"}
-        .btn.btn-danger.btn-xs#cancel_communication{"on-click" => "cancel_communication()"}
+        .btn.btn-danger.btn-xs#cancel_communication{"on-click" => "@this.cancel_communication()"}
           %i.fa.fa-remove.fa-lg{:style => "color:white"}
           %span{:style => "color:white"}= t("defaults.cancel")
       .col-sm-3{:style => "text-align:center;"}
-        .btn.btn-success.btn-xs#save_communication{:style => "color:white;", "on-click" => "save_communication()"}
+        .btn.btn-success.btn-xs#save_communication{:style => "color:white;", "on-click" => "@this.save_communication()"}
           %i.fa.fa-check.fa-lg{:style => "color:white"}
           %span= t("defaults.save")
 
@@ -146,21 +146,22 @@
           {{ user.first_last_name }}
         .col-md-1{:style=>'display:flex'}
           .mode
-            <modeIcon />
+            <modeIcon mode='{{mode}}' />
           .direction{:style => "padding-left:15px;"}
-            <directionIcon />
+            <directionIcon direction='{{direction}}' />
         .col-md-3{'data-toggle'=>:edit}
           <communicants communicants='{{communicants}}' />
         .col-md-1.note{'data-toggle'=>:edit}
-          .note_icon{'data-toggle' => :tooltip, :title => t('icon.note'), 'on-click'=>'show_note()'}
+          .note_icon{'data-toggle' => :tooltip, :title => t('icon.note'), 'on-click'=>'@this.show_note()'}
         .col-md-1.documents
-          .fa.fa-file-text-o.counter#show_document_modal{'on-click'=>"show_document_modal()", 'data-count' => '{{document_count}}', 'data-toggle' => :tooltip, :title => t('icon.documents'), :style => "position:relative;"}
+          .fa.fa-file-text-o.counter#show_document_modal{'on-click'=>"@this.show_document_modal()", 'data-count' => '{{document_count}}', 'data-toggle' => :tooltip, :title => t('icon.documents'), :style => "position:relative;"}
         .col-md-1.delete
-          %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()', 'data-toggle' => :tooltip, :title => t('icon.delete')}
+          %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'@this.show_confirm_delete_modal()', 'data-toggle' => :tooltip, :title => t('icon.delete')}
 
 #communication
 
 :coffeescript
+  # it' a mixin for the Complaint object
   @Communications =
     show_communications_panel : ->
       communications.set

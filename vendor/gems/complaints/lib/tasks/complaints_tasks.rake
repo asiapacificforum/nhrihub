@@ -10,7 +10,7 @@ namespace :complaints do
   desc "populates complaints"
   task :populate_complaints => [ :populate_statuses, :populate_complaint_bases, 'projects:populate_mandates', 'projects:populate_agnc', "complaints:depopulate"] do
     3.times do |i|
-      complaint = FactoryGirl.create(:complaint, :case_reference => "C16-#{3-i}")
+      complaint = FactoryGirl.create(:complaint, :with_comm, :case_reference => "C16-#{3-i}")
 
       # avoid creating too many users... creates login collisions
       if User.count > 20

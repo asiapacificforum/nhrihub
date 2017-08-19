@@ -577,6 +577,8 @@ window.complaints_page_data = ->
   all_staff : source_all_staff
   permitted_filetypes : source_permitted_filetypes
   maximum_filesize : source_maximum_filesize
+  communication_permitted_filetypes : source_communication_permitted_filetypes
+  communication_maximum_filesize : source_communication_maximum_filesize
   statuses : source_statuses
 
 complaints_options =

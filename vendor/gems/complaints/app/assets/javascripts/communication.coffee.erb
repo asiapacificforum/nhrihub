@@ -36,6 +36,8 @@ Communicant = Ractive.extend
         address : ['notBlank', {if : =>@get('has_letter')}]
     @validator = new Validator(@)
   computed :
+    persisted : ->
+      !isNaN(parseInt(@get('id')))
     persistent_attributes : ->
       ['name']
     serialization_key : ->

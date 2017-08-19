@@ -4,7 +4,7 @@ module NotesSpecCommonHelpers
   extend RSpec::Core::SharedContext
 
   def save_edit
-    page.all('.note i.fa').detect{|el| el['id'] && el['id'].match(/note_editable\d*_edit_save/)}
+    page.find('.note #edit_save')
   end
 
   def open_notes_modal
@@ -22,11 +22,11 @@ module NotesSpecCommonHelpers
   end
 
   def cancel_edit
-    page.all('.note i.fa').detect{|el| el['id'] && el['id'].match(/note_editable\d*_edit_cancel/)}
+    page.find('.note #edit_cancel')
   end
 
   def edit_note
-    page.all('.note i.fa').select{|el| el['id'] && el['id'].match(/note_editable\d*_edit_start/)}
+    page.all('.note #edit_start')
   end
 
   def delete_note
