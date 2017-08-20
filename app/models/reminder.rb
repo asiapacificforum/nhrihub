@@ -86,12 +86,8 @@ class Reminder < ActiveRecord::Base
   # decrementing next is still in the future
   # otherwise returns a time object
   def previous
-    if one_time? and start_date.past?
-      previous = start_date
-    elsif reminder_prior_to_next.past?
-      previous = reminder_prior_to_next
-    end
-    previous
+    return start_date if one_time? and start_date.past?
+    return reminder_prior_to_next if reminder_prior_to_next.past?
   end
 
   def previous_date

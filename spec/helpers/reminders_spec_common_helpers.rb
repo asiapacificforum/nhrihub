@@ -54,11 +54,11 @@ module RemindersSpecCommonHelpers
   end
 
   def edit_reminder_icon
-    page.find(:xpath, ".//i[@id='reminder_editable1_edit_start']")
+    page.find("#reminders .reminder i#edit_start")
   end
 
   def edit_reminder_save_icon
-    page.find(:xpath, ".//i[@id='reminder_editable1_edit_save']")
+    page.find("#reminders .reminder i#edit_save")
   end
 
   def save_reminder
@@ -66,7 +66,7 @@ module RemindersSpecCommonHelpers
   end
 
   def edit_reminder_cancel
-    page.all("#reminders .reminder i").detect{|el| el['id'].match(/reminder_editable\d*_edit_cancel/)}
+    page.find("#reminders .reminder i#edit_cancel")
   end
 
   def cancel_reminder

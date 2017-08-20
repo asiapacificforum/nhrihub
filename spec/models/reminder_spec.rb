@@ -204,6 +204,27 @@ describe "#next" do
   end
 end
 
+describe "#previous" do
+  context "when reminder_type is one-time" do
+
+    context "and start_date is tomorrow" do
+      it "previous date should be nil" do
+        reminder = Reminder.new(:reminder_type => "one-time", :start_date => DateTime.now.advance(:days => 1))
+        reminder.calculate_next
+        expect(reminder.previous).to be_nil
+      end
+    end
+
+    context "and start_date is today" do
+      it "previous date should be nil" do
+        reminder = Reminder.new(:reminder_type => "one-time", :start_date => DateTime.now)
+        reminder.calculate_next
+        expect(reminder.previous).to be_nil
+      end
+    end
+  end
+end
+
 describe "due_today scope" do
   let(:reminder){ Reminder.create(:reminder_type => 'weekly', :start_date => 1.month.ago)}
   it "should include reminders with next value today" do

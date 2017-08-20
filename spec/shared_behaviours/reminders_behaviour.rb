@@ -12,13 +12,13 @@ RSpec.shared_examples "reminders" do
         new_reminder_button.click
         select("one-time", :from => :reminder_reminder_type)
         page.find('#reminder_start_date_1i') # forces wait until the element is available
-        select_date("Aug 19 2017", :from => :reminder_start_date)
+        select_date("Aug 19 2018", :from => :reminder_start_date)
         select(User.first.first_last_name, :from => :reminder_user_id)
         fill_in(:reminder_text, :with => "time to check the database")
         expect{save_reminder.click; wait_for_ajax}.to change{Reminder.count}.from(1).to(2).
                                                   and change{ page.all('#reminders .reminder').count }.from(1).to(2)
         expect(page.all("#reminders .reminder .reminder_type .in").last.text).to eq "one-time"
-        expect(page.all("#reminders .reminder .next .in").last.text).to eq "Aug 19, 2017"
+        expect(page.all("#reminders .reminder .next .in").last.text).to eq "Aug 19, 2018"
         expect(page.all("#reminders .reminder .text .in").last.text).to eq "time to check the database"
         expect(page.all("#reminders .reminder .recipient").last.text).to eq User.first.first_last_name
         expect(page.all("#reminders .reminder .previous").last.text).to eq "none"
@@ -92,6 +92,12 @@ RSpec.shared_examples "reminders" do
         expect(page).not_to have_selector('#new_reminder')
         close_reminders_modal
         expect(reminders_icon['data-count']).to eq "1"
+      end
+
+      xscenario "start date is <= today" do
+        # permitting start date today creates complexity. Have today's reminders been sent already or not?
+        # it's less confusing to disallow start date of today (or earlier)
+        expect(1).to eq 0
       end
     end
 

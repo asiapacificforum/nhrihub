@@ -6,14 +6,14 @@
   {{/if}}
 
 %script#show_reminder_template{:type => 'text/ractive'}
-  .reminder.row.editable_container{:id => "reminder_editable{{id}}", :decorator => 'popover_edit:{{id}}'}
+  .reminder.row.editable_container{:id => "reminder_editable{{id}}", 'as-popover_edit'=>'id'}
     .col-md-1.tight.reminder_type.form-group{:class => '{{#reminder_type_error}}has-error{{/}}', :style => "width:10%", 'data-toggle' => 'edit', 'data-id' => '{{id}}', 'data-attribute'=>'reminder_type'}
       .fade.no_edit.in
         %span {{ reminder_type }}
       .fade.edit{:style => "height:140px;"}
         =select :reminder, :reminder_type, options_for_select(reminder_type_options),
           {:prompt => "select type"},
-          {:style => "height:22px", :class => 'form-control', :value => '{{reminder_type}}', 'on-change'=>"remove_errors('reminder_type')"}
+          {:style => "height:22px", :class => 'form-control', :value => '{{reminder_type}}', 'on-change'=>"@this.remove_errors('reminder_type')".html_safe}
         %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.reminder_type_error_message')
     .col-md-1.tight.next.form-group{:style => "width:18%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'["start_month","start_day","start_year"]'}
       .fade.no_edit.in
@@ -28,25 +28,25 @@
         .fade.no_edit.in
           %span {{text}}
         .fade.edit{:style => "height:140px;"}
-          %textarea#reminder_text.form-control{:name => 'reminder[text]', :cols=>78, :rows=>4, :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"}
+          %textarea#reminder_text.form-control{:name => 'reminder[text]', :cols=>78, :rows=>4, :value => '{{text}}', 'on-keydown'=>"@this.remove_errors('text')".html_safe}
           %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.reminder_text_error_message')
     .col-md-1.tight.recipient.form-group{:class => '{{#user_id_error}}has-error{{/}}', :style => "width:13%", 'data-toggle'=>'edit', 'data-id'=>'{{id}}', 'data-attribute'=>'user_id'}
       .fade.no_edit.in
         .name{:style => "margin-bottom: 0px;"} {{ recipient.first_last_name }}
       .fade.edit{:style => "height:140px;"}
         =select :reminder, :user_id, options_for_select(recipient_options), {},
-          {:class=>'form-control', :value => '{{user_id}}', 'on-change'=>"remove_errors('user_id')", :style => "height:82px;"}
+          {:class=>'form-control', :value => '{{user_id}}', 'on-change'=>"@this.remove_errors('user_id')".html_safe, :style => "height:82px;"}
         %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-6px; width:100%; background-color:#fff"}= t('.reminder_recipient_error_message')
     .col-md-1.icon.tight{:style => "text-align:center; font-size:14px; height:20px; width:3%", 'data-toggle' => 'edit'}
       .fade.edit
-        %i.fa.fa-remove.fa-lg{:style => "position:relative;", :id => "reminder_editable{{id}}_edit_cancel"}
+        %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative;"}
     .col-md-1.icon{:style => "text-align:center; font-size:14px; width:3%", 'data-toggle' => 'edit'}
       .fade.edit
-        %i.fa.fa-check.fa-lg{:id => "reminder_editable{{id}}_edit_save"}
+        %i.fa.fa-check.fa-lg#edit_save
       .fade.no_edit.in{:style => "left:-14px;"}
-        %i.fa.fa-pencil-square-o.fa-lg{:id => "reminder_editable{{id}}_edit_start"}
+        %i.fa.fa-pencil-square-o.fa-lg#edit_start
     .col-md-1{:style => "text-align:center; font-size:14px; width:3%;"}
-      %i.fa.fa-trash-o.fa-lg#delete_reminder{'on-click' => 'show_confirm_delete_modal()', :style => "position:relative; left:-12px; top:-2px;"}
+      %i.fa.fa-trash-o.fa-lg#delete_reminder{'on-click' => '@this.show_confirm_delete_modal()'.html_safe, :style => "position:relative; left:-12px; top:-2px;"}
 
 %script#new_reminder_template{:type => 'text/ractive'}
   .form-horizontal#new_reminder
@@ -56,7 +56,7 @@
     .form-group#reminder_type{:class => '{{#reminder_type_error}}has-error{{/}}'}
       %label.control-label.col-sm-2.required= t('.type')
       .col-sm-10
-        =select :reminder, :reminder_type, options_for_select(reminder_type_options), {:prompt => "select type"}, {:class => 'form-control', :style => "width:31%", :value => '{{reminder_type}}', 'on-change'=>"remove_errors('reminder_type')"}
+        =select :reminder, :reminder_type, options_for_select(reminder_type_options), {:prompt => "select type"}, {:class => 'form-control', :style => "width:31%", :value => '{{reminder_type}}', 'on-change'=>"@this.remove_errors('reminder_type')".html_safe}
         %span.help-block= t('.reminder_type_error_message')
     .form-group
       %label.control-label.col-sm-2= t('.start_date')
@@ -65,55 +65,22 @@
     .form-group#text{:class => '{{#text_error}}has-error{{/}}'}
       %label.control-label.topaligned.col-sm-2.required= t('.text')
       .col-sm-10
-        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"remove_errors('text')"
+        =text_area :reminder, :text, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{text}}', 'on-keydown'=>"@this.remove_errors('text')".html_safe
         %span.help-block= t('.reminder_text_error_message')
     .form-group#recipient{:class => '{{#user_id_error}}has-error{{/}}'}
       %label.control-label.topaligned.col-sm-2.required= t('.recipient')
       .col-sm-10
-        =select :reminder, :user_id, options_for_select(recipient_options), {:prompt => t('.select_recipient')}, { :class=>'form-control', :style => "width:24%", :value => '{{user_id}}', 'on-change'=>"remove_errors('user_id')"}
+        =select :reminder, :user_id, options_for_select(recipient_options), {:prompt => t('.select_recipient')}, { :class=>'form-control', :style => "width:24%", :value => '{{user_id}}', 'on-change'=>"@this.remove_errors('user_id')".html_safe}
         %span.help-block= t('.reminder_recipient_error_message')
     .form-group
       .col-sm-3.col-sm-offset-3{:style => "text-align:center;"}
-        .btn.btn-danger.btn-sm#cancel_reminder{"on-click" => "cancel_reminder()"}
+        .btn.btn-danger.btn-sm#cancel_reminder{"on-click" => "@this.cancel_reminder()".html_safe}
           %i.fa.fa-remove.fa-lg{:style => "color:white"}
           %span{:style => "color:white"}= t("defaults.cancel")
       .col-sm-3{:style => "text-align:center;"}
-        .btn.btn-success.btn-sm#save_reminder{:style => "color:white;", "on-click" => "save_reminder()"}
+        .btn.btn-success.btn-sm#save_reminder{:style => "color:white;", "on-click" => "@this.save_reminder()".html_safe}
           %i.fa.fa-check.fa-lg{:style => "color:white"}
           %span= t("defaults.save")
-
-%script#reminders_template{:type => 'ractive/template'}
-  <modal-custom id="reminders_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
-  <modal-header>
-  <h4>#{t('.reminders')}<modal-close/></h4>
-  </modal-header>
-  <modal-body>
-  <i class="fa fa-plus fa-sm" id="add_reminder" on-click="new_reminder()" data-toggle="tooltip" data-placement="bottom" title="add reminder"/>
-  #reminders{:style => "margin-bottom:80px;"}
-    .row
-      %h5.col-md-1.tight{:style => "width:10%;"}= t('.type')
-      %h5.col-md-1.tight{:style => "width:18%;"}= t('.next')
-      %h5.col-md-1.tight{:style => "width:8%;"}= t('.previous')
-      %h5.col-md-6.tight{:style => "width:41%;"}= t('.text')
-      %h5.col-md-1.tight{:style => "width:13%;"}= t('.recipient')
-      %h5.col-md-1.tight{:style => "width:3%;"}
-      %h5.col-md-1.tight{:style => "width:3%;"}
-      %h5.col-md-1.tight{:style => "width:3%;"}
-    {{#reminders}}
-    <reminder reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next_date="{{next_date}}" previous_date="{{previous_date}}" recipient="{{recipient}}"/>
-    {{/reminders}}
-  </modal-body>
-  </modal-custom>
-  <modal-custom id="rules_modal" type="xl">
-  <modal-header>
-  <h4>#{t('.rules')}<modal-close/></h4>
-  </modal-header>
-  <modal-body>
-  #rules{:style => "margin-bottom:80px;"}
-    .row
-      %h5.col-md-1.col-md-offset-4{:style => "width:25%;"} Not yet implemented
-  </modal-body>
-  </modal-custom>
 
 #reminder
 
@@ -213,3 +180,36 @@
 
     Ractive.components.reminder = Reminder
     return
+
+%script#reminders_template{:type => 'ractive/template'}
+  <modal-custom id="reminders_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
+  <modal-header>
+  <h4>#{t('.reminders')}<modal-close/></h4>
+  </modal-header>
+  <modal-body>
+  <i class="fa fa-plus fa-sm" id="add_reminder" on-click="@this.new_reminder()" data-toggle="tooltip" data-placement="bottom" title="add reminder"/>
+  #reminders{:style => "margin-bottom:80px;"}
+    .row
+      %h5.col-md-1.tight{:style => "width:10%;"}= t('.type')
+      %h5.col-md-1.tight{:style => "width:18%;"}= t('.next')
+      %h5.col-md-1.tight{:style => "width:8%;"}= t('.previous')
+      %h5.col-md-6.tight{:style => "width:41%;"}= t('.text')
+      %h5.col-md-1.tight{:style => "width:13%;"}= t('.recipient')
+      %h5.col-md-1.tight{:style => "width:3%;"}
+      %h5.col-md-1.tight{:style => "width:3%;"}
+      %h5.col-md-1.tight{:style => "width:3%;"}
+    {{#reminders}}
+    <reminder parent='{{parent}}' id='{{id}}' url='{{url}}' reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next_date="{{next_date}}" previous_date="{{previous_date}}" recipient="{{recipient}}"/>
+    {{/reminders}}
+  </modal-body>
+  </modal-custom>
+  <modal-custom id="rules_modal" type="xl">
+  <modal-header>
+  <h4>#{t('.rules')}<modal-close/></h4>
+  </modal-header>
+  <modal-body>
+  #rules{:style => "margin-bottom:80px;"}
+    .row
+      %h5.col-md-1.col-md-offset-4{:style => "width:25%;"} Not yet implemented
+  </modal-body>
+  </modal-custom>
