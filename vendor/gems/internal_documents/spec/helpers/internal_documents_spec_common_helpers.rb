@@ -84,6 +84,10 @@ module InternalDocumentsSpecCommonHelpers
     sleep(0.1)
   end
 
+  def confirm_delete_modal
+    page.find('.modal#confirm-delete .modal-body')
+  end
+
   def upload_replace_files_link
     page.find('.template-upload .start .fa-cloud-upload')
   end

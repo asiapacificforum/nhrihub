@@ -1,6 +1,6 @@
 %script#filetype_selector_template{:type => 'template/ractive'}
   %li{:class =>'status_filter {{#if selected}}selected{{/if}}'}
-    %a.opt{'on-click'=>'toggle()'}
+    %a.opt{'on-click'=>'@this.toggle()'.html_safe}
       %span {{name}}
       %span.fa.fa-check
 
@@ -25,13 +25,13 @@
               <filetypeSelector filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
               {{/filetypes}}
         .col-md-1{:style => 'text-align:center'}
-          %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
+          %i.erase.fa.fa-refresh{'on-click'=>'@this.clear_filter()'.html_safe, 'data-toggle'=>'tooltip', 'title' => t('.clear')}
 
 %script#uploader_template{:type => 'html/template'}
   .fileupload.buttonbar
     {{> fileuploadButtonbar }}
-    <uploadDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' upload_documents='{{upload_documents}}' named_document_datalist='{{complaint_named_documents_titles}}' />
-    <filterControls filter_criteria='{{filter_criteria}}' />
+    <uploadDocuments id='{{id}}' context='{{context}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' upload_documents='{{upload_documents}}' named_document_datalist='{{complaint_named_documents_titles}}' />
+    <filterControls filetypes='{{filetypes}}' filter_criteria='{{filter_criteria}}' />
     .row
       .col-lg-9
         / The table listing the files available for upload/download
@@ -47,7 +47,7 @@
               %td= t('.add1')
               %td= t('.delete')
         #accordion.panel-group.files{:role => "tablist", :name => 'internal_document[file]'}
-          <docs/>
+          <docs required_files_titles='{{required_files_titles}}' files='{{files}}' filter_criteria='{{filter_criteria}}' filetypes='{{filetypes}}' />
 
 %script#document_group_template{:type => 'html/template'}
   .panel.panel-default.template-download{:style => "display:{{#if include}}block{{else}}none{{/if}}"}
@@ -60,8 +60,8 @@
         {{^archive_files}}
         %p empty
         {{/}}
-        {{#_(archive_files).sortBy(revision).reverse()}}
-        <archivedoc filter_criteria='{{filter_criteria}}' id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' />
+        {{#sorted_archive}}
+        <archivedoc required_files_titles='{{required_files_titles}}' filter_criteria='{{filter_criteria}}' id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' />
         {{/}}
 
 %script#popover_template{:type => "template/ractive"}
@@ -96,7 +96,7 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 %script#document_template{:type => 'template/html'}
-  %table.internal_document.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"internal_document_editable{{id}}"}
+  %table.internal_document.editable_container{:style => "width:800px", 'as-inpage_edit'=>true, :id=>"internal_document_editable{{id}}"}
     %tr
       %td.title.form-group{'data-toggle' => '{{#title_edit_permitted}}edit{{/}}', :style => "width:36%", 'data-attribute' => :title}
         .fade.edit
@@ -115,21 +115,21 @@
           %span {{ revision }}
       -# make sure it's on top of the next td, even though it precedes in the html
       %td.include_popover{:style => "text-align:center; width:8%"}
-        .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
+        .icon.details{'as-popover'=>true, :'data-toggle' => 'edit'}
           %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
       %td{:style => "text-align:center; width:8%"}
         .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
           .fade.edit
-            %i.fa.fa-remove.fa-lg{:id => "internal_document_editable{{id}}_edit_cancel",:style => "position:relative; left:30px;"}
+            %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative; left:30px;"}
       %td{:style => "text-align:center; width:8%"}
         %div.icon{:'data-toggle' => 'edit'}
           .fade.edit
-            %i.fa.fa-check.fa-lg{:id => "internal_document_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+            %i.fa.fa-check.fa-lg#edit_save{:style => "position:relative; left:21px;"}
           .fade.no_edit.in
-            %i.fa.fa-pencil-square-o.fa-lg{:id => "internal_document_editable{{id}}_edit_start"}
+            %i.fa.fa-pencil-square-o.fa-lg#edit_start
       %td{:style => "text-align:center; width:8%"}
         .icon
-          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
+          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'@this.download_file()'.html_safe}
       %td{:style => "text-align:center; width:8%"}
         {{#if file}}
         .icon.collapsed{:'data-toggle' => "collapse", :'data-parent' => "#accordion", :href => "#collapse{{ id }}"}
@@ -142,19 +142,19 @@
       %td{:style => "text-align:center; width:8%"}
         {{#if file}}
         .fileupload.icon
-          %i.fa.fa-plus.fa-lg.fileinput-button{:decorator => :file_select_trigger}
+          %i.fa.fa-plus.fa-lg.fileinput-button{'as-file_select_trigger'=>true}
         {{else}}
         -# just to keep the spacing the same
         #file_replace{:style => 'visibility:hidden'}
           %i.fa.fa-plus.fa-lg
         {{/if}}
       %td{:style => "text-align:center; width:8%"}
-        .icon.delete{'on-click'=>'show_confirm_delete_modal()'}
+        .icon.delete{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
           %i.fa.fa-trash-o.fa-lg
 
 %script#document_groups_template{:type => 'ractive/template'}
   {{#files}}
-  <doc file_extension='{{file_extension}}' filter_criteria='{{filter_criteria}}' id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' />
+  <doc required_files_titles='{{required_files_titles}}' archive_files='{{archive_files}}' file_extension='{{file_extension}}' filter_criteria='{{filter_criteria}}' id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' />
   {{/files}}
 
 %script#internal_document_title_selector{:type => 'html/template'}
@@ -174,7 +174,7 @@
     .form-group
       %label.control-label.col-sm-3{:for =>"internal_document_title", :style => "left: -21px;"}= t('.doc_title')
       .col-sm-6
-        %select.form-control#internal_document_title{'on-change'=>'validate_icc_title()', :value => '{{title}}', :style => "height:28px; position: relative; top:3px;"}
+        %select.form-control#internal_document_title{'on-change'=>'@this.validate_icc_title()'.html_safe, :value => '{{title}}', :style => "height:28px; position: relative; top:3px;"}
           %option{:value => "", :disabled=>true}= t('.select_icc')
           {{#unassigned_titles}}
           %option{:value=>'{{title}}'} {{title}}
@@ -182,7 +182,7 @@
 
 %script#upload_documents_template{:type => 'html/template'}
   {{#upload_documents}}
-  <uploadDocument document_group_id='{{document_group_id}}' title='{{title}}', original_filename='{{original_filename}}', filesize='{{filesize}}', lastModifiedDate='{{lastModifiedDate}}', file='{{file}}', original_type='{{original_type}}', type='{{type}}', revision='{{revision}}' />
+  <uploadDocument context='{{context}}' document_group_id='{{document_group_id}}' title='{{title}}', original_filename='{{original_filename}}', filesize='{{filesize}}', lastModifiedDate='{{lastModifiedDate}}', file='{{file}}', original_type='{{original_type}}', type='{{type}}', revision='{{revision}}' />
   {{/upload_documents}}
 
 %script#upload_document_template{:type => 'html/template'}
@@ -214,8 +214,8 @@
                 %label{:for => "internal_document_revision"}= t('.revision')
                 %input{:type => :text, :name => "internal_document[revision]", :id => "internal_document_revision", :style => "width:40px", :value => "{{revision}}"}
               %td
-                %div.start{'on-click'=>'submit()'}
+                %div.start{'on-click'=>'@this.submit()'.html_safe}
                   %i.fa.fa-cloud-upload.fa-lg
               %td
                 %div.cancel
-                  %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
+                  %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"@this.cancel_upload()".html_safe}

@@ -386,6 +386,13 @@ feature "internal document management", :js => true do
     expect( archive_panel ).to have_selector("p", :text => 'empty')
   end
 
+  scenario "delete confirmation message for deletion of an archive file" do
+    visit index_path
+    click_the_archive_icon
+    click_the_archive_delete_icon
+    expect(confirm_delete_modal.text).to eq "Are you sure you want to delete the file \"first archive document\"?"
+  end
+
   scenario "view archive file details" do
     visit index_path
     click_the_archive_icon

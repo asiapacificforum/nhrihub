@@ -99,7 +99,7 @@ $ ->
       unconfigured_filetypes_error : ->
         @get('unconfigured_validation_parameter_error')
       persisted : ->
-        !_.isNull(@get('id'))
+        !_.isNull(@get('id')) && !_.isUndefined(@get('id'))
       url : ->
         Routes[@get('parent_type')+"_document_path"](current_locale,@get('id'))
       unassigned_titles : ->
@@ -129,7 +129,7 @@ $ ->
       @parent.remove(@_guid)
     validate_icc_title : ->
       @validator.validate_attribute('title')
-    , Persistence
+  .extend Persistence
 
   UploadDocuments = Ractive.extend
     template : "#upload_documents_template"
@@ -140,7 +140,7 @@ $ ->
       index = _(guids).indexOf(guid)
       @splice('upload_documents',index,1)
 
-  EditInPlace = (node,id)->
+  EditInPlace = (node)->
     edit = new InpageEdit
       object : @
       on : node
@@ -215,7 +215,7 @@ $ ->
           re = new RegExp(title)
           re.test @get('title')
       delete_confirmation_message : ->
-        i18n.delete_confirmation_message
+        "#{delete_confirmation_message} \"#{@get('title')}\"?"
       include : -> @inclusionMatcher.include()
       inclusion_criteria : ->
         title : "asText"
@@ -234,7 +234,7 @@ $ ->
       false
     download_file : ->
       window.location = @get('url')
-  , ConfirmDeleteModal
+  .extend ConfirmDeleteModal
 
   class InclusionMatcher
     constructor : (item)->
@@ -293,6 +293,8 @@ $ ->
           !active_title_filter && !active_filetypes_filter
         archivedocs : =>
           _(@findAllComponents('archivedoc')).any (doc)-> doc.get('include')
+      sorted_archive : ->
+        _(@get('archive_files')).sortBy('revision').reverse()
     components :
       archivedoc : ArchiveDoc
     download_file : ->
@@ -321,7 +323,7 @@ $ ->
         @parent.replace(data)
     validate : ->
       @validator.validate()
-  , ConfirmDeleteModal
+  .extend ConfirmDeleteModal
 
   FiletypeSelector = Ractive.extend
     template : "#filetype_selector_template"
@@ -404,6 +406,8 @@ $ ->
         revision : null
       @unshift('upload_documents', attached_document)
     start_upload : ->
+      event.stopPropagation() # b/c the event fires on both the span ('start upload') and bubbles to the button
+      event.preventDefault()
       flash.notify() if @get('empty_upload_files_list')
       _(@findAllComponents('uploadDocument')).each (upload_document)->
         upload_document.submit()

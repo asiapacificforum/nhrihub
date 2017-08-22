@@ -1,14 +1,14 @@
 %script#fileuploadButtonbar{:type => 'template/ractive'}
   .row.fileupload-buttonbar
     .col-lg-9
-      %input.hidden_fileinput{:id => "primary_fileinput", :multiple => "multiple", :name => "primary_file", :type => "file", :decorator=>:ractive_fileupload, :style => "position:absolute; left:1000px;"}
-      %span.btn.btn-success.fileinput-button{'on-click'=>'flash_hide()', :decorator => :file_select_trigger}
+      %input.hidden_fileinput{:id => "primary_fileinput", :multiple => "multiple", :name => "primary_file", :type => "file", "as-ractive_fileupload"=>true, :style => "position:absolute; left:1000px;"}
+      %span.btn.btn-success.fileinput-button{'on-click'=>'@this.flash_hide()', "as-file_select_trigger"=>true}
         %i.fa.fa-plus.fa-lg{ :style => "color:white"}
         %span= t('.add')
-      %button.btn.btn-primary.start{'on-click'=>'start_upload()', :type => "submit"}
+      %button.btn.btn-primary.start{'on-click'=>'@this.start_upload()', :type => "submit"}
         %i.fa.fa-cloud-upload.fa-lg{:style => "color:white"}
         %span= t('.start')
-      %button.btn.btn-warning.cancel{:type => "reset", 'on-click'=>'cancel_all()'}
+      %button.btn.btn-warning.cancel{:type => "reset", 'on-click'=>'@this.cancel_all()'}
         %i.fa.fa-ban.fa-lg{:style => "color:white"}
         %span= t('.cancel')
 
