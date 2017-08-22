@@ -359,14 +359,16 @@ $ ->
     docs_without : (doc)->
       _(@findAllComponents('doc')).reject((this_doc)-> this_doc.get('id') == doc.get('id'))
     replace : (primary_file)-> # an archive file was added or deleted... replace the document group with the returned primary plus archive files
-      what_to_replace = _(@findAllComponents('doc')).find (doc) ->
-        doc.get('document_group_id') == primary_file.document_group_id
-      index_to_replace = @findAllComponents('doc').indexOf(what_to_replace)
-      @splice('files',index_to_replace,1,primary_file)
+      what_to_replace = _(@get('files')).find (file)->
+        file.document_group_id == primary_file.document_group_id
+      index_to_replace = @get('files').indexOf(what_to_replace)
+      @get('files').splice(index_to_replace,1,primary_file)
+      @update('files')
     remove : (document)->
       what_to_replace = _(@findAllComponents('doc')).find (doc) -> doc.get('document_group_id') == document.get('document_group_id')
       index_to_replace = @findAllComponents('doc').indexOf(what_to_replace)
       @splice('files',index_to_replace,1)
+      @update('files')
 
   uploader_options =
     el: '#container'

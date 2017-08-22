@@ -101,13 +101,13 @@ feature "internal document management", :js => true do
   end
 
   scenario "delete a file from database" do
-    expect{ click_delete_document; confirm_deletion; wait_for_ajax }.to change{ InternalDocument.count }.to 1
+    expect{ click_delete_document; confirm_deletion; wait_for_ajax }.to change{ InternalDocument.count }.from(2).to(1)
   end
 
   scenario "delete the last file in a document group" do
-    expect{ click_delete_document; confirm_deletion; wait_for_ajax }.to change{ InternalDocument.count }.to 1
+    expect{ click_delete_document; confirm_deletion; wait_for_ajax }.to change{ InternalDocument.count }.from(2).to(1)
     sleep(0.5) # javascript
-    expect{ click_delete_document; confirm_deletion; wait_for_ajax }.to change{ InternalDocument.count }.to 0
+    expect{ click_delete_document; confirm_deletion; wait_for_ajax }.to change{ InternalDocument.count }.from(1).to(0)
     expect(DocumentGroup.count).to eq 5 # the 5 icc doc groups
   end
 
