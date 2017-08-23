@@ -4,15 +4,16 @@ module StrategicPrioritySpecHelpers
   extend RSpec::Core::SharedContext
 
   def strategic_priority_cancel_edit_icon
-    page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_cancel']")
+    page.find('#edit_cancel')
   end
 
   def strategic_priority_edit_save_icon
-    page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_save']")
+    page.find('#edit_save')
   end
 
   def second_strategic_priority_edit_icon
-    page.all(:xpath, ".//i").select{|el| el['id'] && el['id']=~/strategic_priority_editable\d+_edit_start/}[1]
+    page.all('#edit_start')[1]
+    #page.all(:xpath, ".//i").select{|el| el['id'] && el['id']=~/strategic_priority_editable\d+_edit_start/}[1]
   end
 
   def edit_strategic_priority
