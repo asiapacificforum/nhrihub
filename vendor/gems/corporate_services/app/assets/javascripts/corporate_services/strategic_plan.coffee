@@ -178,9 +178,8 @@ $ ->
       UserInput.reset()
       @parent.remove_outcome_form()
     create_save : ->
-      context = $(@el)
       url = @parent.get('create_outcome_url')
-      data = context.find('.row#new_outcome :input').serializeArray()
+      data = $(@find('.row#new_outcome textarea')).serializeArray()
       data.push({name: 'outcome[planned_result_id]', value : @get('planned_result_id')})
       if @validate()
         $.ajax

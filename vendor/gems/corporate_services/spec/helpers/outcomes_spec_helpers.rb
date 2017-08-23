@@ -7,7 +7,7 @@ module OutcomesSpecHelpers
   end
 
   def outcome_edit_cancel
-    page.all('.row.outcome .description i').detect{|el| el['id'].match(/outcome_editable\d*_edit_cancel/)}
+    page.find("#edit_cancel")
   end
 
   def outcome_descriptions
@@ -23,7 +23,7 @@ module OutcomesSpecHelpers
   end
 
   def outcome_save_icon
-    page.all('.outcome.editable_container .edit.in div.icon>i').select{|i| i['id'] && i['id'].match(/outcome_editable\d+_edit_save/)}.last
+    page.find('#edit_save')
   end
 
   def save_outcome
