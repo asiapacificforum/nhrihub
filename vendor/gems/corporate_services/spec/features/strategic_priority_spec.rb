@@ -151,8 +151,8 @@ feature "deleting strategic priorities", :js => true do
     include StrategicPrioritySpecHelpers
     before do
       @sp1 = StrategicPlan.create(:start_date => 6.months.ago.to_date, :title => "a plan for the millenium")
-      StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
-      StrategicPriority.create(:strategic_plan_id => @sp1.id, :priority_level => 2, :description => "second priority stuff")
+      FactoryGirl.create(:strategic_priority, :populated, :strategic_plan_id => @sp1.id, :priority_level => 1, :description => "Gonna do things betta")
+      FactoryGirl.create(:strategic_priority, :populated, :strategic_plan_id => @sp1.id, :priority_level => 2, :description => "second priority stuff")
       visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
     end
 
@@ -160,7 +160,7 @@ feature "deleting strategic priorities", :js => true do
       expect{ strategic_priority_delete_icon.first.click; confirm_deletion; wait_for_ajax }.to change{StrategicPriority.count}.from(2).to(1)
                                                                                            .and change{ page.all('.strategic_priority').length }.from(2).to(1)
       open_strategic_priority
-      expect(page.find('.planned_result .description #edit_start').text).to eq PlannedResult.first.description
+      expect(page.find('.planned_result>.description #edit_start').text).to include PlannedResult.first.description
     end
   end
 
