@@ -72,7 +72,6 @@ feature "populate strategic plan contents", :js => true do
       #to change{page.all("#description_error", :text => "You must enter a description", :visible => true).count }.from(0).to(1).
       #and change{PlannedResult.count}.by(0)
   end
-
 end
 
 

@@ -15,11 +15,11 @@ module PlannedResultHelpers
   end
 
   def cancel_edit_planned_result
-    page.all(".planned_result .description i").detect{|el| el['id'] && el['id'].match(/planned_result_editable\d*_edit_cancel/)}
+    page.find('#edit_cancel')
   end
 
   def planned_result_save_icon
-    page.find('.editable_container i#planned_result_editable1_edit_save')
+    page.find('#edit_save')
   end
 
   def save_planned_result

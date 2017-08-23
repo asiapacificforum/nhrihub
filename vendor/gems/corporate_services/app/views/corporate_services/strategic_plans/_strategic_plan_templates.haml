@@ -40,7 +40,7 @@
           .col-md-2= t('.progress')
           .col-md-2= t('.reminders_etc')
         {{#planned_results}}
-        <pr create_outcome_url="{{create_outcome_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" outcomes="{{outcomes}}" strategic_priority_id="{{strategic_priority_id}}" url="{{url}}" />
+        <pr create_planned_result_url='{{create_planned_result_url}}' create_outcome_url="{{create_outcome_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" outcomes="{{outcomes}}" strategic_priority_id="{{strategic_priority_id}}" url="{{url}}" />
         {{/planned_results}}
         .row.planned_result_control
           .col-md-2{:style=>"width:14.2857%"}

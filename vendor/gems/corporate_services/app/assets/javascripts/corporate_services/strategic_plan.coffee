@@ -247,9 +247,8 @@ $ ->
       UserInput.reset()
       @parent.remove_planned_result_form()
     create_save : ->
-      context = $(@el)
       url = @parent.get('create_planned_result_url')
-      data = context.find('.new_planned_result :input').serializeArray()
+      data = $(@find('textarea')).serializeArray()
       data.push({name: 'planned_result[strategic_priority_id]', value : @get('strategic_priority_id')})
       if @validate()
         $.ajax
@@ -369,6 +368,8 @@ $ ->
         !isNaN(parseInt(@get('id')))
       delete_confirmation_message : ->
         i18n.delete_strategic_priority_confirmation_message + @get('priority_level')+ "?"
+      create_planned_result_url : ->
+        Routes.corporate_services_strategic_priority_planned_results_path('en',@get('id'))
     new_planned_result: ->
       UserInput.claim_user_input_request(@,'remove_planned_result_form')
       new_planned_result_attributes = 
