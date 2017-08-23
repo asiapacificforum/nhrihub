@@ -111,6 +111,8 @@ $ ->
         i18n.delete_activity_confirmation_message + "\""+@get('truncated_description')+"\"" + "?"
       url : ->
         Routes.corporate_services_outcome_activity_path('en',@get('outcome_id'),@get('id'))
+      create_performance_indicator_url : ->
+        Routes.corporate_services_activity_performance_indicators_path('en',@get('id'))
     create_stop : ->
       UserInput.reset()
       @parent.remove_activity_form()
@@ -213,7 +215,7 @@ $ ->
                 performance_indicators: []
                 url: ''
                 description_error: null
-                create_performance_indicator_url: ''
+                #create_performance_indicator_url: ''
       @push('activities',new_activity_attributes)
       UserInput.claim_user_input_request(@,'remove_activity_form')
     remove_activity_form : ->

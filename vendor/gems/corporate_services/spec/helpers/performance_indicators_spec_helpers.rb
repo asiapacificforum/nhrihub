@@ -11,7 +11,7 @@ module PerformanceIndicatorsSpecHelpers
   end
 
   def performance_indicator_edit_cancel
-    page.all(performance_indicator_selector+" i").detect{|el| el['id'].match(/performance_indicator_editable\d*_edit_cancel/)}
+    page.find('#edit_cancel')
   end
 
   def performance_indicator_selector
@@ -31,7 +31,7 @@ module PerformanceIndicatorsSpecHelpers
   end
 
   def performance_indicator_save_icon
-    page.all(performance_indicator_selector + ".description .edit.in i.fa-check").detect{|i| i['id'] && i['id'].match(/performance_indicator_editable\d+_edit_save/)}
+    page.find('#edit_save')
   end
 
   def save_performance_indicator
@@ -40,12 +40,6 @@ module PerformanceIndicatorsSpecHelpers
 
   def add_performance_indicator
     page.find(".new_performance_indicator")
-  end
-
-  def resize_browser_window
-    if page.driver.browser.respond_to?(:manage)
-      page.driver.browser.manage.window.resize_to(1400,800) # b/c selenium driver doesn't seem to click when target is not in the view
-    end
   end
 
   def cancel_performance_indicator_addition

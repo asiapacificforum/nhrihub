@@ -90,7 +90,8 @@ module LoggedInEnAdminUserHelper
       login_button.click # triggers ajax request for challenge, THEN form submit
       wait_for_authentication
     end
-    resize_browser_window
+    #causes errors only in performance_indicators_spec.rb!! don't know why
+    #resize_browser_window
   end
 end
 

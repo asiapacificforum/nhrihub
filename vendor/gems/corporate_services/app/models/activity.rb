@@ -7,13 +7,8 @@ class Activity < ActiveRecord::Base
     super(:except =>  [:updated_at, :created_at, :progress], #progress shouldn't even be in the schema!
           :methods => [:indexed_description,
                        :performance_indicators,
-                       :description_error,
-                       :create_performance_indicator_url]
+                       :description_error]
          )
-  end
-
-  def create_performance_indicator_url
-    Rails.application.routes.url_helpers.corporate_services_activity_performance_indicators_path(:en,id)
   end
 
   def page_data

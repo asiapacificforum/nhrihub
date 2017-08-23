@@ -219,7 +219,7 @@
           %i.fa.fa-check.fa-lg#edit_save{:style => "margin-left:56px"}
     .col-md-2{:style=>"width:80%;", :class => "{{^performance_indicators}}empty{{/performance_indicators}}"}
       {{#performance_indicators}}
-      <pi activity_id="{{activity_id}}" create_note_url="{{create_note_url}}" create_reminder_url="{{create_reminder_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" indexed_target="{{indexed_target}}" media_appearance_titles="{{media_appearance_titles}}" notes="{{notes}}" project_titles="{{project_titles}}" reminders="{{reminders}}" target="{{target}}" url="{{url}}" />
+      <pi create_performance_indicator_url='{{create_performance_indicator_url}}' activity_id="{{activity_id}}" create_note_url="{{create_note_url}}" create_reminder_url="{{create_reminder_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" indexed_target="{{indexed_target}}" media_appearance_titles="{{media_appearance_titles}}" notes="{{notes}}" project_titles="{{project_titles}}" reminders="{{reminders}}" target="{{target}}" url="{{url}}" />
       {{/performance_indicators}}
       {{^performance_indicators}}
       .row.performance_indicator
@@ -258,7 +258,7 @@
       %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()'.html_safe, :style => "margin-left:56px"}
 
 %script#show_performance_indicator_template{:type => 'text/ractive'}
-  .row.performance_indicator.editable_container{ 'as-inpage_edit'=>'id', :style => "padding-top:6px;", 'on-click'=>'@this.remove_highlight()'.html_safe}
+  .row.performance_indicator.editable_container{:id=>"performance_indicator_editable{{id}}", 'as-inpage_edit'=>'id', :style => "padding-top:6px;", 'on-click'=>'@this.remove_highlight()'.html_safe}
     .col-md-3.description.form-group{'data-toggle'=>'edit', :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>'description'}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span#edit_start{:style => 'cursor:pointer'} {{ indexed_description }}

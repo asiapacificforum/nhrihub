@@ -98,7 +98,7 @@ feature "actions on existing performance indicators", :js => true do
 
   before do
     activity = setup_activity
-    resize_browser_window
+    #resize_browser_window
     PerformanceIndicator.create(:activity_id => activity.id, :description => "great effort", :target => "15% improvement")
     PerformanceIndicator.create(:activity_id => activity.id, :description => "things get better", :target => "85% improvement")
     visit corporate_services_strategic_plan_path(:en, StrategicPlan.most_recent.id)
@@ -169,7 +169,7 @@ feature "open strategic plan and highlight performance indicator when its id is 
 
   before do
     activity = setup_activity
-    resize_browser_window
+    #resize_browser_window
     15.times do
       FactoryGirl.create(:performance_indicator, :activity_id => activity.id)
     end
@@ -205,7 +205,7 @@ feature "renders performance indicators in order of index", :js => true do
 
   before do
     activity = setup_activity
-    resize_browser_window
+    #resize_browser_window
     15.times do
       FactoryGirl.create(:performance_indicator, :activity_id => activity.id)
     end
