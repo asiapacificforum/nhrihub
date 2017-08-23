@@ -63,8 +63,8 @@
           %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
         .form-group
           .nothing{:style => 'visibility:hidden'} nothing
-          %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'cancel()'}
-          %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'save()'}
+          %i.fa.fa-remove.fa-lg#edit_cancel{:style => 'padding-left:30px', 'on-click'=>'@this.cancel()'.html_safe}
+          %i.fa.fa-check.fa-lg#edit-save{:style => 'padding-left:30px', 'on-click'=>'@this.save()'.html_safe}
 
 %script#strategic_priority_template{:type => 'text/ractive'}
   {{#if !persisted }}
@@ -91,7 +91,7 @@
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span#edit_start{:style => 'cursor:pointer'}
           {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]', 'on-keydown' => "@this.remove_description_errors()".html_safe}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
@@ -129,8 +129,8 @@
     .col-md-2{:style=>"width:85.7142%"}
   .row.new_planned_result_actions
     .col-md-2{:style=>"width:14.2857%"}
-      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()', :style => "margin-left:12px"}
-      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()', :style => "margin-left:40px"}
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()'.html_safe, :style => "margin-left:12px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()'.html_safe, :style => "margin-left:40px"}
     .col-md-2{:style=>"width:85.7142%"}
 
 %script#outcome_template{:type => 'text/ractive'}
@@ -150,8 +150,8 @@
       %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:inherit"}= t('.description_error_message')
   .row
     .col-md-2{:style=>"width:16.6667%"}
-      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()', :style => "margin-left:12px"}
-      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()', :style => "margin-left:40px"}
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()'.html_safe, :style => "margin-left:12px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()'.html_safe, :style => "margin-left:40px"}
     .col-md-2{:style=>"width:83.3335%"}
 
 %script#show_outcome_template{:type => 'text/ractive'}
@@ -160,7 +160,7 @@
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span#edit_start{:style => 'cursor:pointer'}
           {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
             :name => "outcome[description]", :value => "{{ description }}", "on-keydown"=>"@this.remove_description_errors()".html_safe}
@@ -200,8 +200,8 @@
       %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.description_error_message')
   .row.new_activity_control
     .col-md-2.description{:style=>"width:20%"}
-      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()', :style => "margin-left:20px"}
-      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()', :style => "margin-left:56px"}
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()'.html_safe, :style => "margin-left:20px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()'.html_safe, :style => "margin-left:56px"}
     .col-md-2{:style=>"width:80%"}
 
 %script#show_activity_template{:type => 'text/ractive'}
@@ -209,7 +209,7 @@
     .col-md-2.description.form-group{'data-toggle' => 'edit', :style=>"width:20%; padding-top:6px;", :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>'description'}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span#edit_start{:style => 'cursor:pointer'} {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'.html_safe}
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
             :name => "activity[description]", :value => "{{ description }}", :style => "width:initial; height:45px"}
@@ -254,15 +254,15 @@
     .col-md-2{:style=>"width:50%"}
   .row.new_performance_indicator_control
     .col-md-2.description{:style=>"width:25%"}
-      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()', :style => "margin-left:36px"}
-      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()', :style => "margin-left:56px"}
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()'.html_safe, :style => "margin-left:36px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()'.html_safe, :style => "margin-left:56px"}
 
 %script#show_performance_indicator_template{:type => 'text/ractive'}
-  .row.performance_indicator.editable_container{ 'as-inpage_edit'=>'id', :style => "padding-top:6px;", 'on-click'=>'remove_highlight()'}
+  .row.performance_indicator.editable_container{ 'as-inpage_edit'=>'id', :style => "padding-top:6px;", 'on-click'=>'@this.remove_highlight()'.html_safe}
     .col-md-3.description.form-group{'data-toggle'=>'edit', :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>'description'}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
         %span#edit_start{:style => 'cursor:pointer'} {{ indexed_description }}
-        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
+        %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_description', :placeholder => "Enter performance indicator",
             :name => "performance_indicator[description]", :value => "{{ description }}", :style => "width:initial; height:45px;"}
@@ -280,9 +280,9 @@
       <mediaappearances />
       <projects />
     .col-md-1.actions{:style=>"padding-top:4px;"}
-      .alarm_icon.counter{'data-count'=>'{{reminders_count}}', 'on-click' => "show_reminders_panel()"}
+      .alarm_icon.counter{'data-count'=>'{{reminders_count}}', 'on-click' => "@this.show_reminders_panel()".html_safe}
     .col-md-1.actions{:style=>"padding-top:4px;"}
-      .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()"}
+      .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "@this.show_notes_panel()".html_safe}
     -#.col-md-1.actions{:style=>"padding-top:4px;"}
       -#.rule{'on-click' => "show_rules_panel()"}
 
