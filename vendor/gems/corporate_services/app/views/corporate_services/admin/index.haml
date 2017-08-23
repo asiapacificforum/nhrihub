@@ -13,7 +13,7 @@
     .row.form-inline
       .col-md-3.strategic_plan.form-group
         %label{:for => 'strategic_plan_title', :style => "padding-right:12px;"}= t('.title')
-        %input.form-control#strategic_plan_title{:type => :text, :placeholder => t('.placeholder'), :name => 'strategic_plan[title]', :value => '{{title}}', 'on-keydown' => 'remove_error()', :style => "width:200px;"}
+        %input.form-control#strategic_plan_title{:type => :text, :placeholder => t('.placeholder'), :name => 'strategic_plan[title]', :value => '{{title}}', 'on-keydown' => '@this.remove_error()'.html_safe, :style => "width:200px;"}
         %span.help-block#title_error{:style => "display:{{#title_error}}block{{else}}none{{/title_error}}"}= t('.title_error')
         %span.help-block#unique_title_error{:style => "display:{{#unique_title_error}}block{{else}}none{{/unique_itle_error}}"}= t('.unique_title_error')
       .col-md-2.form-group
@@ -21,7 +21,7 @@
           %span{:style => "padding-right:18px"}= t('.copy')
           %input.form-control#copy{:type => :checkbox, :style => "position:relative; top :-3px;", :checked => '{{copy}}'}
       .col-md-2
-        %button.btn.btn-success.btn-m#save{'on-click' => 'submit()'}= t('.create')
+        %button.btn.btn-success.btn-m#save{'on-click' => '@this.submit()'.html_safe}= t('.create')
 
 %script#strategic_plans_template{:type => 'template/ractive'}
   <newStrategicPlan />
@@ -47,7 +47,7 @@
       (current)
       {{/if}}
     %td
-      %a{:class => 'delete_strategic_plan {{#unless delete_permitted}}disallowed{{/unless}}', 'on-click' => "delete_if_permitted()"}= t('delete')
+      %a{:class => 'delete_strategic_plan {{#unless delete_permitted}}disallowed{{/unless}}', 'on-click' => "@this.delete_if_permitted()".html_safe}= t('delete')
 
 %script#strategic_plan_menu_template{:type => 'template/ractive'}
   %a.dropdown-toggle{ "data-toggle"=>"dropdown", "data-target"=>"#"}
@@ -87,7 +87,7 @@
         @show_confirm_delete_modal()
     delete_callback : ->
       @parent.remove(@)
-    , ConfirmDeleteModal
+  .extend ConfirmDeleteModal
 
   NewStrategicPlan = Ractive.extend
     template : '#new_strategic_plan_template'
@@ -144,7 +144,7 @@
       newStrategicPlan : NewStrategicPlan
     remove : (strategic_plan)->
       index = @findAllComponents('strategicPlan').indexOf(strategic_plan)
-      window.strategic_plan_data.splice(index,1)
+      @splice('strategic_plans',index,1)
     add_strategic_plan : (strategic_plan)->
       @push('strategic_plans',strategic_plan)
 

@@ -8,6 +8,7 @@ module CorporateServicesAdminSpecHelpers
 
   def strategic_plan_menu
     page.find('#strat_plan').hover
+    sleep(0.5)
     page.all('#strat_plan #sp_item').map(&:text)
   end
 
