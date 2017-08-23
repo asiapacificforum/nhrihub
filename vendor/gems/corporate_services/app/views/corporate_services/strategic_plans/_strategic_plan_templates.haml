@@ -277,8 +277,8 @@
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_target', :placeholder => "Enter target",
             :name => "performance_indicator[target]", :value => "{{ target }}", :style => "width:initial; height:45px;"}
     .col-md-3.performance_indicator_progress
-      <mediaappearances />
-      <projects />
+      <mediaappearances media_appearance_titles='{{media_appearance_titles}}' />
+      <projects project_titles='{{project_titles}}' />
     .col-md-1.actions{:style=>"padding-top:4px;"}
       .alarm_icon.counter{'data-count'=>'{{reminders_count}}', 'on-click' => "@this.show_reminders_panel()".html_safe}
     .col-md-1.actions{:style=>"padding-top:4px;"}
