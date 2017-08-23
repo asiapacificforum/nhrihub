@@ -1,5 +1,5 @@
 %script#show_strategic_priority{:type => 'text/ractive'}
-  .panel.panel-default.strategic_priority.editable_container{"data-url" => "{{ url }}", :id => "strategic_priority_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
+  .panel.panel-default.strategic_priority.editable_container{'as-inpage_edit'=>'id'}
     .panel-heading.strategic_priority_title{:style => "color:#404040; background-color:rgba(140, 123, 85, 0.56); background-image:none; padding-bottom:4px; padding-top:15px;"}
       %h4.panel-title.clearfix
         .row
@@ -15,20 +15,20 @@
             .fade.no_edit.in
               %span {{ description }}
             .fade.edit{:style=>"width:100%"}
-              %input.form-control#strategic_priority_description{:name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'background-color:#D6CDB8; width:100%; font-size: 16px; margin-left:2px; height:22px;', 'on-keydown' => "remove_description_errors()"}
+              %input.form-control#strategic_priority_description{:name => "strategic_priority[description]", :'value' => "{{ description }}", :style => 'background-color:#D6CDB8; width:100%; font-size: 16px; margin-left:2px; height:22px;', 'on-keydown' => "@this.remove_description_errors()".html_safe}
               %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.description_error_message')
           .col-md-1.collapsed{:style => "text-align:center; font-size:14px;", "data-parent" => "#strategic_plan", "data-toggle" => "collapse", :href => "#collapse{{id}}"}
             %i.fa.fa-folder-o.fa-lg#toggle
           .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px;", 'data-toggle' => 'edit'}
             .fade.edit
-              %i.fa.fa-remove.fa-lg{:style => "position:relative; left:30px;", :id => "strategic_priority_editable{{id}}_edit_cancel"}
+              %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative; left:30px;"}
           .col-md-1.icon{:style => "text-align:center; font-size:14px;", 'data-toggle' => 'edit'}
             .fade.edit
-              %i.fa.fa-check.fa-lg{:id => "strategic_priority_editable{{id}}_edit_save", :style => "position:relative; left:34px;"}
+              %i.fa.fa-check.fa-lg#edit_save{:style => "position:relative; left:34px;"}
             .fade.no_edit.in
-              %i.fa.fa-pencil-square-o.fa-lg{:id => "strategic_priority_editable{{id}}_edit_start"}
+              %i.fa.fa-pencil-square-o.fa-lg#edit_start
           .col-md-1{:style => "text-align:center; font-size:14px;"}
-            %i.fa.fa-trash-o.fa-lg#delete{'on-click' => 'show_confirm_delete_modal()'}
+            %i.fa.fa-trash-o.fa-lg#delete{'on-click' => '@this.show_confirm_delete_modal()'.html_safe}
     .panel-collapse.collapse.strategic_priority_content{:id => "collapse{{id}}"}
       .panel-body.table#planned_results
         .row.heading
@@ -44,7 +44,7 @@
         {{/planned_results}}
         .row.planned_result_control
           .col-md-2{:style=>"width:14.2857%"}
-            %i.fa.fa-plus.fa-sm.new_planned_result{'on-click' => 'new_planned_result()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_planned_result')}
+            %i.fa.fa-plus.fa-sm.new_planned_result{'on-click' => '@this.new_planned_result()'.html_safe, :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_planned_result')}
           .col-md-2{:style=>"width:81.7143%"}
 
 %script#new_strategic_priority_template{:type => 'text/ractive'}
@@ -54,12 +54,12 @@
         .form-group{:class => "{{#priority_level_error}}has-error{{/}}", :style => "vertical-align: top"}
           .nothing{:style => 'visibility:hidden'} nothing
           =f.label :priority_level, t('.priority'), :class => 'control-label sr-only'
-          =f.select :priority_level, priority_level_options, {:include_blank => 'Select priority level'}, {'on-change' => 'remove_priority_level_errors()', :class => 'form-control sp-select', :value => "{{priority_level}}"}
+          =f.select :priority_level, priority_level_options, {:include_blank => 'Select priority level'}, {'on-change' => '@this.remove_priority_level_errors()'.html_safe, :class => 'form-control sp-select', :value => "{{priority_level}}"}
           %span.help-block#priority_level_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.priority_level_error_message')
         .form-group.clearfix{:class => "{{#description_error}}has-error{{/}}", :style=>"display:flex;flex-direction:column;"}
           =f.label :description, t('.description'), :class => 'control-label sr-only'
           .chars_remaining{:style => "float:right"}= t('.chars_remaining')
-          =f.text_field :description, :class => 'form-control', :placeholder => "Enter description", :size => 100, :maxlength => 100, :value => "{{description}}", 'on-keydown' => "remove_description_errors()"
+          =f.text_field :description, :class => 'form-control', :placeholder => "Enter description", :size => 100, :maxlength => 100, :value => "{{description}}", 'on-keydown' => "@this.remove_description_errors()".html_safe
           %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
         .form-group
           .nothing{:style => 'visibility:hidden'} nothing
@@ -86,33 +86,33 @@
   {{/if}}
 
 %script#show_planned_result_template{:type => 'text/ractive'}
-  .row.planned_result.editable_container{:id => "planned_result_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "vertical-align:top; display:flex;"}
+  .row.planned_result.editable_container{ 'as-inpage_edit'=>'id', :style => "vertical-align:top; display:flex;"}
     .col-md-2.form-group.description{ 'data-toggle' => 'edit', 'data-id' => '{{id}}', :style=>"width:14.2857%; padding-top: 6px;", :class=>"{{#description_error}}has-error{{/}}", 'data-attribute'=>:description}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
-        %span{:id => "planned_result_editable{{id}}_edit_start", :style => 'cursor:pointer'}
+        %span#edit_start{:style => 'cursor:pointer'}
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
-        %textarea.form-control{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]', 'on-keydown' => "remove_description_errors()"}
+        %textarea.form-control{:id => 'planned_result_description', :value => '{{description}}', :name => 'planned_result[description]', 'on-keydown' => "@this.remove_description_errors()".html_safe}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#fff"}= t('.description_error_message')
         .icon{'data-toggle' => 'edit', :style => 'height:20px'}
-          %i.fa.fa-remove.fa-lg{:id => "planned_result_editable{{id}}_edit_cancel", :style => "margin-left:17px"}
-          %i.fa.fa-check.fa-lg{:id => "planned_result_editable{{id}}_edit_save", :style => "margin-left:56px"}
+          %i.fa.fa-remove.fa-lg#edit_cancel{:style => "margin-left:17px"}
+          %i.fa.fa-check.fa-lg#edit_save{:style => "margin-left:56px"}
     .col-md-10{:style=>"width:85.7143%{{^outcomes}}; display:flex{{/outcomes}}"}
       {{#outcomes:i}}
-      <outcome id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
+      <outcome create_activity_url='{{create_activity_url}}' activities='{{activities}}' id="{{id}}" planned_result_id="{{planned_result_id}}" description="{{description}}" indexed_description="{{indexed_description}}" url="{{url}}"/>
       {{/outcomes}}
       {{^outcomes}}
       .row.outcome_control{:style => "display:flex; width:110%"}
         .col-md-2{:style=>"width:16.6667%"}
-          %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_outcome')}
+          %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => '@this.new_outcome()'.html_safe, :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_outcome')}
         .col-md-2{:style=>"width:83.3333%"}
       {{/outcomes}}
   {{#if outcomes.length != 0}}
   .row.outcome_control{:style => "display:flex"}
     .col-md-2{:style=>"width:14.2857%"}
     .col-md-2{:style=>"width:14.2857%"}
-      %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => 'new_outcome()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_outcome')}
+      %i.fa.fa-plus.fa-sm.new_outcome{'on-click' => '@this.new_outcome()'.html_safe, :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_outcome')}
     .col-md-2{:style=>"width:71.4285%"}
   {{/if}}
 
@@ -120,7 +120,7 @@
   .row.new_planned_result
     .col-md-2.form-group{:style=>"width:14.2857%; margin-bottom:0px; padding-left:0px;", :class=>"{{#description_error}}has-error{{/}}"}
       %div
-        %textarea.form-control{'on-keydown' => "remove_description_errors()",
+        %textarea.form-control{'on-keydown' => "@this.remove_description_errors()".html_safe,
             :cols => 24, :rows => 4,
             :id=>'planned_result_description', :placeholder => "Enter description",
             :name => "planned_result[description]",
@@ -129,8 +129,8 @@
     .col-md-2{:style=>"width:85.7142%"}
   .row.new_planned_result_actions
     .col-md-2{:style=>"width:14.2857%"}
-      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:12px"}
-      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:40px"}
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()', :style => "margin-left:12px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()', :style => "margin-left:40px"}
     .col-md-2{:style=>"width:85.7142%"}
 
 %script#outcome_template{:type => 'text/ractive'}
@@ -144,44 +144,44 @@
   .row#new_outcome
     .col-md-2.description.form-group{:style=>"width:16.6667%; margin-bottom:0px; padding-left:0px;", :class => "{{#description_error}}has-error{{/}}"}
       %textarea.form-control{:id=>'new_outcome_description', :placeholder => "Enter description",
-        :name => "outcome[description]", 'on-keydown' => "remove_description_errors()",
+        :name => "outcome[description]", 'on-keydown' => "@this.remove_description_errors()".html_safe,
         :value => "{{description}}",
         :style => 'font-size: 14px; padding:0px; z-index:10; width:initial; height:45px;'}
       %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:inherit"}= t('.description_error_message')
   .row
     .col-md-2{:style=>"width:16.6667%"}
-      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:12px"}
-      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:40px"}
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()', :style => "margin-left:12px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()', :style => "margin-left:40px"}
     .col-md-2{:style=>"width:83.3335%"}
 
 %script#show_outcome_template{:type => 'text/ractive'}
-  .row.outcome.editable_container{:id => "outcome_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
+  .row.outcome.editable_container{ 'as-inpage_edit'=>'id'}
     .col-md-2.description.form-group{'data-toggle' => 'edit', :style=>"width:16.6667%; padding-top:6px;", :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>:description}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
-        %span{:id => "outcome_editable{{id}}_edit_start", :style => 'cursor:pointer'}
+        %span#edit_start{:style => 'cursor:pointer'}
           {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'outcome_{{id}}_description', :placeholder => "Enter description",
-            :name => "outcome[description]", :value => "{{ description }}", "on-keydown"=>"remove_description_errors()"}
+            :name => "outcome[description]", :value => "{{ description }}", "on-keydown"=>"@this.remove_description_errors()".html_safe}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.description_error_message')
         .icon{'data-toggle' => 'edit', :style => 'height:16.6667px; top:0px'}
-          %i.fa.fa-remove.fa-lg{:id => "outcome_editable{{id}}_edit_cancel", :style => "margin-left:17px"}
-          %i.fa.fa-check.fa-lg{:id => "outcome_editable{{id}}_edit_save", :style => "margin-left:56px"}
+          %i.fa.fa-remove.fa-lg#edit_cancel{ :style => "margin-left:17px"}
+          %i.fa.fa-check.fa-lg#edit_save{:style => "margin-left:56px"}
     .col-md-2{:style=>"width:83.3333%;", :class => "{{^activities}}empty{{/activities}}"}
       {{#activities}}
-      <activity outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicators="{{performance_indicators}}" \>
+      <activity id='{{id}}' outcome_id="{{outcome_id}}" description="{{description}}" indexed_description="{{indexed_description}}" performance_indicators="{{performance_indicators}}" \>
       {{/activities}}
       {{^activities}}
       .row.activity
         .col-md-2{:style=>"width:100%"}
-          %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9; top:6px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_activity')}
+          %i.fa.fa-plus.fa-sm.new_activity{'on-click' => '@this.new_activity()'.html_safe, :style => 'position:relative; z-index:9; top:6px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_activity')}
       {{/activities}}
   {{#if activities.length != 0}}
   .row.activity_control
     .col-md-2{:style=>"width:16.6667%"}
     .col-md-2{:style=>"width:83.3335%"}
-      %i.fa.fa-plus.fa-sm.new_activity{'on-click' => 'new_activity()', :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_activity')}
+      %i.fa.fa-plus.fa-sm.new_activity{'on-click' => '@this.new_activity()'.html_safe, :style => 'position:relative; z-index:9', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_activity')}
   {{/if}}
 
 %script#activity_template{:type => 'text/ractive'}
@@ -195,28 +195,28 @@
   .row.new_activity
     .col-md-2.description.form-group{:style=>"width:20%; z-index:10; padding-left:0px;", :class => "{{#description_error}}has-error{{/}}"}
       %textarea.form-control{ :id=>'new_activity_description', :placeholder => "Enter description",
-        :name => "activity[description]", :style => "z-index:10; width: 100%;", "on-keydown"=>"remove_description_errors()",
+        :name => "activity[description]", :style => "z-index:10; width: 100%;", "on-keydown"=>"@this.remove_description_errors()".html_safe,
         :value => "{{description}}"}
       %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.description_error_message')
   .row.new_activity_control
     .col-md-2.description{:style=>"width:20%"}
-      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:20px"}
-      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:56px"}
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()', :style => "margin-left:20px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()', :style => "margin-left:56px"}
     .col-md-2{:style=>"width:80%"}
 
 %script#show_activity_template{:type => 'text/ractive'}
-  .row.activity.editable_container{:id => "activity_editable{{id}}", :decorator => 'inpage_edit:{{id}}'}
+  .row.activity.editable_container{ 'as-inpage_edit'=>'id'}
     .col-md-2.description.form-group{'data-toggle' => 'edit', :style=>"width:20%; padding-top:6px;", :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>'description'}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
-        %span{:id => "activity_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
+        %span#edit_start{:style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'activity_{{id}}_description', :placeholder => "Enter description",
             :name => "activity[description]", :value => "{{ description }}", :style => "width:initial; height:45px"}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.description_error_message')
         .icon{'data-toggle' => 'edit', :style => 'height:20px; top:0px'}
-          %i.fa.fa-remove.fa-lg{:id => "activity_editable{{id}}_edit_cancel", :style => "margin-left:17px"}
-          %i.fa.fa-check.fa-lg{:id => "activity_editable{{id}}_edit_save", :style => "margin-left:56px"}
+          %i.fa.fa-remove.fa-lg#edit_cancel{:style => "margin-left:17px"}
+          %i.fa.fa-check.fa-lg#edit_save{:style => "margin-left:56px"}
     .col-md-2{:style=>"width:80%;", :class => "{{^performance_indicators}}empty{{/performance_indicators}}"}
       {{#performance_indicators}}
       <pi activity_id="{{activity_id}}" create_note_url="{{create_note_url}}" create_reminder_url="{{create_reminder_url}}" description="{{description}}" description_error="{{description_error}}" id="{{id}}" index="{{index}}" indexed_description="{{indexed_description}}" indexed_target="{{indexed_target}}" media_appearance_titles="{{media_appearance_titles}}" notes="{{notes}}" project_titles="{{project_titles}}" reminders="{{reminders}}" target="{{target}}" url="{{url}}" />
@@ -224,13 +224,13 @@
       {{^performance_indicators}}
       .row.performance_indicator
         .col-md-2{:style=>"width:100%"}
-          %i.fa.fa-plus.fa-sm.new_performance_indicator{'on-click' => 'new_performance_indicator()', :style => 'position:relative; z-index:9;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_performance_indicator')}
+          %i.fa.fa-plus.fa-sm.new_performance_indicator{'on-click' => '@this.new_performance_indicator()'.html_safe, :style => 'position:relative; z-index:9;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_performance_indicator')}
       {{/performance_indicators}}
   {{#if performance_indicators.length != 0}}
   .row.performance_indicator_control
     .col-md-2{:style=>"width:20%"}
     .col-md-2{:style=>"width:80%"}
-      %i.fa.fa-plus.fa-sm.new_performance_indicator{'on-click' => 'new_performance_indicator()', :style => 'position:relative; z-index:9;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_performance_indicator')}
+      %i.fa.fa-plus.fa-sm.new_performance_indicator{'on-click' => '@this.new_performance_indicator()'.html_safe, :style => 'position:relative; z-index:9;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_performance_indicator')}
   {{/if}}
 
 %script#performance_indicator_template{:type => 'text/ractive'}
@@ -244,7 +244,7 @@
   .row.new_performance_indicator
     .col-md-2.description.form-group{:style=>"width:25%; z-index:10; padding-left:0px;", :class => "{{#description_error}}has-error{{/}}"}
       %textarea.form-control{ :id=>'new_performance_indicator_description', :placeholder => "Enter description",
-        :name => "performance_indicator[description]", :style => "z-index:10; width: initial;", "on-keydown"=>"remove_description_errors()",
+        :name => "performance_indicator[description]", :style => "z-index:10; width: initial;", "on-keydown"=>"@this.remove_description_errors()".html_safe,
         :value => "{{description}}"}
       %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%"}= t('.description_error_message')
     .col-md-2{:style=>"width:25%; z-index:10; padding-left:0px;"}
@@ -254,25 +254,25 @@
     .col-md-2{:style=>"width:50%"}
   .row.new_performance_indicator_control
     .col-md-2.description{:style=>"width:25%"}
-      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'create_stop()', :style => "margin-left:36px"}
-      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'create_save()', :style => "margin-left:56px"}
+      %i.fa.fa-remove.fa-lg#create_stop{'on-click'=>'@this.create_stop()', :style => "margin-left:36px"}
+      %i.fa.fa-check.fa-lg#create_save{'on-click'=>'@this.create_save()', :style => "margin-left:56px"}
 
 %script#show_performance_indicator_template{:type => 'text/ractive'}
-  .row.performance_indicator.editable_container{:id => "performance_indicator_editable{{id}}", :decorator => 'inpage_edit:{{id}}', :style => "padding-top:6px;", 'on-click'=>'remove_highlight()'}
+  .row.performance_indicator.editable_container{ 'as-inpage_edit'=>'id', :style => "padding-top:6px;", 'on-click'=>'remove_highlight()'}
     .col-md-3.description.form-group{'data-toggle'=>'edit', :class => "{{#description_error}}has-error{{/}}", 'data-attribute'=>'description'}
       .fade.no_edit.in{ 'onMouseOver' => "$(this).find('.delete_icon').show()", 'onMouseOut' => "$(this).find('.delete_icon').hide()"}
-        %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_description }}
+        %span#edit_start{:style => 'cursor:pointer'} {{ indexed_description }}
         %span.delete_icon{:style => 'float:right; display:none', 'on-click'=>'show_confirm_delete_modal()'}
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_description', :placeholder => "Enter performance indicator",
             :name => "performance_indicator[description]", :value => "{{ description }}", :style => "width:initial; height:45px;"}
         %span.help-block#description_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.description_error_message')
         .icon{'data-toggle' => 'edit', :style => 'height:20px; top:0px'}
-          %i.fa.fa-remove.fa-lg{:id => "performance_indicator_editable{{id}}_edit_cancel", :style => "margin-left:15%"}
-          %i.fa.fa-check.fa-lg{:id => "performance_indicator_editable{{id}}_edit_save", :style => "margin-left:40%"}
+          %i.fa.fa-remove.fa-lg#edit_cancel{:style => "margin-left:15%"}
+          %i.fa.fa-check.fa-lg#edit_save{:style => "margin-left:40%"}
     .col-md-3.target{'data-toggle'=>'edit', 'data-attribute'=>'target'}
       .fade.no_edit.in
-        %span{:id => "performance_indicator_editable{{id}}_edit_start", :style => 'cursor:pointer'} {{ indexed_target }}
+        %span#edit_start{:style => 'cursor:pointer'} {{ indexed_target }}
       .fade.edit{:style => "margin-left:-15px; margin-right:-15px;"}
         %textarea.form-control{ :id=>'performance_indicator_{{id}}_target', :placeholder => "Enter target",
             :name => "performance_indicator[target]", :value => "{{ target }}", :style => "width:initial; height:45px;"}

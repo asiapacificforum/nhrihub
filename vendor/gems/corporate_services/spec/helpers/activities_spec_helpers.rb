@@ -12,7 +12,7 @@ module ActivitiesSpecHelpers
   end
 
   def activity_edit_cancel
-    page.all(activity_selector+" i").detect{|el| el['id'].match(/activity_editable\d*_edit_cancel/)}
+    page.find(activity_selector + " #edit_cancel")
   end
 
   def activity_selector
@@ -40,7 +40,7 @@ module ActivitiesSpecHelpers
   end
 
   def activity_save_icon
-    page.all(activity_selector + ".description .edit.in i.fa-check").detect{|i| i['id'] && i['id'].match(/activity_editable\d+_edit_save/)}
+    page.find(activity_selector+".description .edit.in #edit_save")
   end
 
   def save_activity

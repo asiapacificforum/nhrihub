@@ -7,7 +7,6 @@ class Activity < ActiveRecord::Base
     super(:except =>  [:updated_at, :created_at, :progress], #progress shouldn't even be in the schema!
           :methods => [:indexed_description,
                        :performance_indicators,
-                       :url,
                        :description_error,
                        :create_performance_indicator_url]
          )
@@ -31,10 +30,6 @@ class Activity < ActiveRecord::Base
 
   def index_parent
     outcome
-  end
-
-  def url
-    Rails.application.routes.url_helpers.corporate_services_outcome_activity_path(:en,outcome_id,id)
   end
 
   def description_error

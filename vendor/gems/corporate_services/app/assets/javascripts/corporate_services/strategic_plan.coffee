@@ -89,7 +89,9 @@ $ ->
       $("#performance_indicator_editable#{@get('id')}").addClass('highlight')
     remove_highlight : ->
       $("#performance_indicator_editable#{@get('id')}").removeClass('highlight')
-  , Remindable, Notable, ConfirmDeleteModal
+  .extend Remindable
+  .extend Notable
+  .extend ConfirmDeleteModal
 
   Activity = Ractive.extend
     template : '#activity_template'
@@ -107,13 +109,14 @@ $ ->
         @get('description').split(' ').slice(0,4).join(' ')+"... etc."
       delete_confirmation_message : ->
         i18n.delete_activity_confirmation_message + "\""+@get('truncated_description')+"\"" + "?"
+      url : ->
+        Routes.corporate_services_outcome_activity_path('en',@get('outcome_id'),@get('id'))
     create_stop : ->
       UserInput.reset()
       @parent.remove_activity_form()
     create_save : ->
-      context = $(@el)
       url = @parent.get('create_activity_url')
-      data = context.find('.row.new_activity :input').serializeArray()
+      data = $(@find('.row.new_activity textarea')).serializeArray()
       data.push({name: 'activity[outcome_id]', value : @get('outcome_id')})
       if @validate()
         $.ajax
@@ -153,7 +156,7 @@ $ ->
         @pop('performance_indicators')
     edit_update : (activity)->
       @set(activity)
-  , ConfirmDeleteModal
+  .extend ConfirmDeleteModal
 
   Outcome = Ractive.extend
     template : '#outcome_template'
@@ -219,7 +222,7 @@ $ ->
         @pop('activities')
     edit_update : (outcome)->
       @set(outcome)
-  , ConfirmDeleteModal
+  .extend ConfirmDeleteModal
 
   PlannedResult = Ractive.extend
     template : '#planned_result_template'
@@ -298,7 +301,7 @@ $ ->
       @_add_outcome().show()
     edit_update : (planned_result)->
       @set(planned_result)
-  , ConfirmDeleteModal
+  .extend ConfirmDeleteModal
 
   # response to save is assumed to be an array of all
   # the strategic priorities on the page
@@ -420,7 +423,7 @@ $ ->
     open : ->
       $( @find('.collapsed') ).removeClass('collapsed')
       $( @find('.collapse') ).addClass('in')
-  , ConfirmDeleteModal
+  .extend ConfirmDeleteModal
 
   window.strategic_plan = new Ractive
     el : "#strategic_plan"
