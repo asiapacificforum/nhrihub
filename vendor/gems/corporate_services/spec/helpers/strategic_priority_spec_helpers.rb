@@ -13,7 +13,6 @@ module StrategicPrioritySpecHelpers
 
   def second_strategic_priority_edit_icon
     page.all('#edit_start')[1]
-    #page.all(:xpath, ".//i").select{|el| el['id'] && el['id']=~/strategic_priority_editable\d+_edit_start/}[1]
   end
 
   def edit_strategic_priority
@@ -29,11 +28,15 @@ module StrategicPrioritySpecHelpers
   end
 
   def strategic_priority_delete_icon
-    page.find('i#delete')
+    page.all('i#delete')
   end
 
   def add_priority_button
     page.find('#add_strategic_priority')
+  end
+
+  def open_strategic_priority
+    page.find('#toggle').click
   end
 
   def click_anywhere
