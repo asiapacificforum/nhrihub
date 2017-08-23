@@ -387,7 +387,7 @@ $ ->
       UserInput.reset()
       @parent.get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
     form : ->
-      $(@nodes.new_strategic_priority)
+      $(@find('#new_strategic_priority'))
     save : ->
       data = @form().serializeArray()
       url = @form().attr('action')
@@ -443,5 +443,5 @@ $ ->
       else
         flash.notify()
     remove_strategic_priorities_form : ->
-      @get('strategic_priorities').shift() # it's only the first one that ever gets cancelled
+      @shift('strategic_priorities') # it's only the first one that ever gets cancelled
 

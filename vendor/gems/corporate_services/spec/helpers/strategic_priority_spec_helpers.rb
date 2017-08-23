@@ -20,7 +20,7 @@ module StrategicPrioritySpecHelpers
   end
 
   def strategic_priority_edit_icon
-    page.find(:xpath, ".//i[@id='strategic_priority_editable1_edit_start']")
+    page.all('.strategic_priority #edit_start').first
   end
 
   def second_strategic_priority_delete_icon
