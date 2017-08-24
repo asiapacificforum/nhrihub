@@ -71,13 +71,13 @@ $ ->
 
   Collection.SubareaFilter = Ractive.extend
     template : '#subarea_template'
-  , SelectableSubarea
+  .extend SelectableSubarea
 
   Collection.AreaFilter = Ractive.extend
     template : '#area_filter_template'
     components :
       subarea : Collection.SubareaFilter
-  , SelectableArea
+  .extend SelectableArea
 
   FileInput = (node)->
     $(node).on 'change', (event)->
@@ -309,7 +309,11 @@ $ ->
       @validator.validate_attribute('single_attachment')
     validate_attribute : (attribute)->
       @validator.validate_attribute(attribute)
-  , PerformanceIndicatorAssociation, Remindable, Notable, ConfirmDeleteModal, EditBackup
+  .extend PerformanceIndicatorAssociation
+  .extend Remindable
+  .extend Notable
+  .extend ConfirmDeleteModal
+  .extend EditBackup
 
   window.collection_items_data = -> # an initialization data set so that tests can reset between
     expanded : false
@@ -318,7 +322,7 @@ $ ->
     create_collection_item_url: create_collection_item_url
     performance_indicator_url : Routes.media_appearance_media_appearance_performance_indicator_path(current_locale, 'id')
     planned_results : planned_results
-    all_performance_indicators : performance_indicators
+    performance_indicators : performance_indicators
     item_name : item_name
     filter_criteria :
       title : selected_title

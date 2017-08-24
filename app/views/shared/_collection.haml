@@ -9,14 +9,14 @@
   .col-md-1{'data-toggle'=>:edit}
     .no_edit.in
       {{#if has_link }}
-      %i.fa.fa-globe{'on-click' => 'fetch_link()', 'data-toggle'=>'tooltip', 'title'=>'{{article_link}}'}
+      %i.fa.fa-globe{'on-click' => '@this.fetch_link()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>'{{article_link}}'}
       {{elseif has_scanned_doc }}
-      %i.fa.fa-cloud-download{'on-click' => 'download_attachment()', 'data-toggle'=>'tooltip', 'title'=>'{{original_filename}}'}
+      %i.fa.fa-cloud-download{'on-click' => '@this.download_attachment()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>'{{original_filename}}'}
       {{/if}}
     .edit
 
 %script#show_collection_item_template{:type => 'template/ractive'}
-  .row.well.well-sm.expandable_well.editable_container{:class=> "#{item}", :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+  .row.well.well-sm.expandable_well.editable_container{:class=> "#{item}", :style => "{{#if !include}}display:none{{/if}}", 'as-inpage_edit'=>'id'}
     .col-md-12
       .row.basic_info
         .col-md-2.date{'data-toggle'=>:edit, 'data-attribute'=>:date, :style => "width:15%"}
@@ -39,11 +39,11 @@
           .row{:style => "margin-left:0px;"}
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()"}
+                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "@this.show_reminders_panel()".html_safe}
               .edit
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                .note_icon.counter.show_notes{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+                .note_icon.counter.show_notes{'data-count'=>'{{notes_count}}', 'on-click' => "@this.show_notes_panel()".html_safe, :style => "position:relative; left: -3px;"}
               .edit
             {{>attachments_icons}}
             .col-md-1.icon{'data-toggle' => 'edit'}
@@ -52,15 +52,15 @@
                 %i.fa.fa-pencil-square-o{:id => "#{item}_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                .delete_icon_sm.delete_indicator{'on-click' => 'show_confirm_delete_modal()'}
+                .delete_icon_sm.delete_indicator{'on-click' => '@this.show_confirm_delete_modal()'.html_safe}
               .edit
             .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
               %div{'data-toggle'=>:edit}
                 .no_edit.in
                   {{#if expanded}}
-                  %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
+                  %i#compact{'on-click'=>'@this.compact()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
                   {{else}}
-                  %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
+                  %i#expand{'on-click'=>'@this.expand()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
                   {{/if}}
                 .edit
       .row.fileupload{'data-toggle'=>:edit}
@@ -70,10 +70,10 @@
             .col-md-2{:style => "width:15%"}
               %label{:for => "#{item}_article_link"}= t('.weblink')
             .col-md-9{:style => "padding-left:8px"}
-              %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "validate()"}
+              %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "@this.validate()".html_safe}
           .row{:style => "margin-bottom: 12px;"}
             .col-md-2#fileinput_button{:style => "width:15%"}
-              %span.btn.btn-success.btn-xs{:decorator => :file_select_trigger}= t('.choose_file')
+              %span.btn.btn-success.btn-xs{'as-file_select_trigger'=>true}= t('.choose_file')
             .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row; padding-left:8px;"}
               {{#original_filename}}
               <file/>
@@ -81,7 +81,7 @@
       .collapse.expanded_info{:class => "collapse{{id}}"}
         {{> reported_by}}
         {{#unless issue_context}}
-        <performanceIndicators />
+        <performanceIndicators performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' />
         {{/unless issue_context}}
         .panel.panel-default
           .panel-heading
@@ -130,7 +130,7 @@
               .progress-extended  
           .row
             .col-md-2#fileinput_button
-              %span.btn.btn-success.btn-xs{:decorator => :file_select_trigger}= t('.choose_file')
+              %span.btn.btn-success.btn-xs{'as-file_select_trigger'=>true}= t('.choose_file')
             .col-md-9#selected_file_container{:style=>"display:flex; flex-direction: row"}
               {{#original_filename}}
               <file/>
@@ -145,9 +145,9 @@
         .col-md-2
           %label{:for => "#{item}_article_link"}= t('.weblink')
         .col-md-2
-          %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "validate()"}
+          %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "@this.validate()".html_safe}
       {{#unless issue_context}}
-      <performanceIndicators />
+      <performanceIndicators planned_results='{{planned_results}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' />
       {{/unless issue_context}}
       .panel.panel-default.expanded_info
         .panel-heading
@@ -157,11 +157,11 @@
           {{> collection_item_edit}}
       .row
         .col-sm-3.col-sm-offset-3{:style => "text-align:center;"}
-          .btn.btn-danger.btn-sm#cancel_add{"on-click" => "cancel()"}
+          .btn.btn-danger.btn-sm#cancel_add{"on-click" => "@this.cancel()".html_safe}
             %i.fa.fa-remove.fa-lg{:style => "color:white"}
             %span{:style => "color:white"}= t("defaults.cancel")
         .col-sm-3{:style => "text-align:center;"}
-          .btn.btn-success.btn-sm#save_add{:style => "color:white;", "on-click" => "save()"}
+          .btn.btn-success.btn-sm#save_add{:style => "color:white;", "on-click" => "@this.save()".html_safe}
             %i.fa.fa-check.fa-lg{:style => "color:white"}
             %span= t("defaults.save")
           .form-group{:class => "{{#has_errors}}has-error{{/}}"}
@@ -186,7 +186,7 @@
 
 %script#area_filter_template{:type=> 'template/ractive'}
   %li{:class => 'area dropdown-header {{#if area_selected}}selected{{/if}}'}
-    %a{'on-click'=>'toggle()'}
+    %a{'on-click'=>'@this.toggle()'.html_safe}
       %span {{name}}
       %span.fa.fa-check
   {{#subareas}}
@@ -196,7 +196,7 @@
 %script#selected_file_template{:type => 'template/ractive'}
   #selected_file {{ original_filename }}
   %div
-    %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px', 'on-click'=>'deselect_file()'}
+    %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px', 'on-click'=>'@this.deselect_file()'.html_safe}
   .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
     %span.help-block#filesize_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.too_large')
   .form-group{:class => "{{#original_type_error}}has-error{{/}}"}
@@ -217,7 +217,7 @@
 
 %script#subarea_template{:type=> 'template/ractive'}
   %li{:class => 'subarea {{#if subarea_selected}}selected{{/if}}'}
-    %a.opt{'on-click'=>'toggle()'}
+    %a.opt{'on-click'=>'@this.toggle()'.html_safe}
       %span.text {{name}}
       %span.fa.fa-check
 
@@ -231,13 +231,13 @@
   .row.form-group{:class => "{{#title_error}}has-error{{/}}"}
     .col-md-12.clearfix
       .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
-      =text_field_tag '{{model_name}}[title]', nil, :class => 'form-control', :id => '{{model_name}}_title', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_title_errors()"
+      =text_field_tag '{{model_name}}[title]', nil, :class => 'form-control', :id => '{{model_name}}_title', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "@this.remove_title_errors()".html_safe
       %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
 %script#collection{:type => 'template/ractive'}
-  %input.hidden_fileinput{:id => "primary_fileinput", :multiple => "multiple", :name => "primary_file", :type => "file", :decorator=>:ractive_fileupload}
+  %input.hidden_fileinput{:id => "primary_fileinput", :multiple => "multiple", :name => "primary_file", :type => "file", 'as-ractive_fileupload'=>true}
   {{#collection_items}}
-  <collectionItem area_ids='{{area_ids}}' areas='{{areas}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' file_id='{{file_id}}' filesize='{{filesize}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' initiator='{{initiator}}' lastModifiedDate='{{lastModifiedDate}}' collection_item_areas='{{collection_item_areas}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' performance_indicators='{{performance_indicators}}' planned_results='{{planned_results}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' />
+  <collectionItem area_ids='{{area_ids}}' areas='{{areas}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' file_id='{{file_id}}' filesize='{{filesize}}' filter_criteria='{{filter_criteria}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' initiator='{{initiator}}' lastModifiedDate='{{lastModifiedDate}}' collection_item_areas='{{collection_item_areas}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' performance_indicators='{{performance_indicators}}' planned_results='{{planned_results}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' />
   {{/collection_items}}
 
 %script#item_areas{:type=>'template/ractive'}

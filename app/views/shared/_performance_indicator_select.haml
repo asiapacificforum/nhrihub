@@ -14,7 +14,7 @@
   .row.selected_performance_indicator
     .col-md-8 {{indexed_description}}
     .col-md-4
-      %i.fa.fa-remove.remove{'on-click' => 'remove_indicator(association_id,id)'}
+      %i.fa.fa-remove.remove{'on-click' => '@this.remove_indicator(association_id,id)'.html_safe}
 
 %script#performance_indicator_edit{:type => 'template/ractive'}
   .form-group.row#performance_indicator
@@ -26,7 +26,7 @@
         {{> performance_indicator_filter_select_template }}
     .col-md-8#performance_indicators
       {{#performance_indicator_associations}}
-      <selectedPerformanceIndicator association_id='{{association_id}}' indexed_description='{{performance_indicator.indexed_description}}' id='{{id}}' performance_indicator_url='{{performance_indicator_url}}' />
+      <selectedPerformanceIndicator planned_results='{{planned_results}}' association_id='{{association_id}}' indexed_description='{{performance_indicator.indexed_description}}' id='{{id}}' performance_indicator_url='{{performance_indicator_url}}' />
       {{/performance_indicator_associations}}
       {{^performance_indicator_associations}}
       %div.selected_performance_indicator=t('.none_assigned')
@@ -50,7 +50,7 @@
               %ul
                 {{#performance_indicators}}
                 %li.performance_indicator
-                  %a.opt{ 'on-click'=>'select(id)'}
+                  %a.opt{ 'on-click'=>'@this.select(id)'.html_safe}
                     %span.text {{ indexed_description }}
                     %span.fa.fa-check
                 {{/performance_indicators}}
@@ -63,7 +63,7 @@
     .col-md-11.col-md-offset-1#performance_indicators{:style => "display:flex; flex-direction:column"}
       {{#performance_indicator_associations}}
       .row.performance_indicator
-        .col-md-6 {{all_performance_indicators[performance_indicator.id]}}
+        .col-md-6 {{performance_indicators[performance_indicator.id]}}
       {{/performance_indicator_associations}}
       {{^performance_indicator_associations}}
       %div.performance_indicator=t('.none_assigned')

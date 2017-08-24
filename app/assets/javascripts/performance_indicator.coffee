@@ -48,7 +48,7 @@ Ractive.components.performanceIndicators = @PerformanceIndicators
   performance_indicator_index : (indexed_description)->
     @performance_indicator_ids().indexOf(indexed_description)
   performance_indicator_ids : ->
-    _(@get('performance_indicator_associations')).map (pia)-> pia.indexed_description
+    _(@get('performance_indicator_associations')).map (pia)-> pia.performance_indicator.indexed_description
   has_performance_indicator_id : (performance_indicator_id)-> # it's the id of the performance indicator, i.e. performance_indicator.id
     ids = _(@get('performance_indicator_associations')).map (pia)-> pia.performance_indicator.id
     ids.indexOf(performance_indicator_id) != -1
@@ -56,11 +56,11 @@ Ractive.components.performanceIndicators = @PerformanceIndicators
     unless @has_performance_indicator_id(performance_indicator_id)
       performance_indicator_association =
         id : null
-        association_id : @get('id')
-        performance_indicator_id : performance_indicator_id
+        association_id : @get('id') # no id for a new collectionItem
+        performance_indicator_id : performance_indicator_id # need this
         performance_indicator :
           id : performance_indicator_id
-          indexed_description : @get('all_performance_indicators')[performance_indicator_id]
+          indexed_description : @get('performance_indicators')[performance_indicator_id]
       @push('performance_indicator_associations', performance_indicator_association)
       @remove_attribute_error('performance_indicator_associations')
   remove_attribute_error : (attribute)->
