@@ -67,7 +67,7 @@ class Complaint < ActiveRecord::Base
   end
 
   def <=>(other)
-    case_reference_vector <=> other.case_reference_vector
+    CaseReference.new(case_reference) <=> CaseReference.new(other.case_reference)
   end
 
   def case_reference_vector

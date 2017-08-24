@@ -125,12 +125,6 @@ describe "next case reference" do
   end
 end
 
-describe "case_reference_vector" do
-  it "should return numeric portions of case reference as an array" do
-    expect(Complaint.new(:case_reference => "C17-12").case_reference_vector).to eq [17,12]
-  end
-end
-
 describe "sort algorithm" do
   before do
     Complaint.create(:case_reference => "C17-4")
