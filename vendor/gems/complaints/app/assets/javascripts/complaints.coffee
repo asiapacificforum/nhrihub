@@ -167,6 +167,7 @@ Persistence =
   save_complaint_callback : (response, status, jqxhr)->
     UserInput.reset()
     @set(response)
+    complaints.increment_next_case_reference(response.case_reference)
   progress_bar_create : ->
     @findComponent('progressBar').start()
   update_persist : (success, error, context) -> # called by EditInPlace
@@ -580,6 +581,7 @@ window.complaints_page_data = ->
   communication_permitted_filetypes : source_communication_permitted_filetypes
   communication_maximum_filesize : source_communication_maximum_filesize
   statuses : source_statuses
+  next_case_reference : source_next_case_reference
 
 complaints_options =
   el : '#complaints'
@@ -598,7 +600,7 @@ complaints_options =
     unless @add_complaint_active()
       new_complaint =
         assigns : []
-        case_reference : source_next_case_reference
+        case_reference : @get('next_case_reference')
         firstName : ""
         lastName : ""
         attached_documents : []
@@ -644,6 +646,10 @@ complaints_options =
     _(@findAllComponents('complaint')).each (ma)-> ma.compact()
   generate_report : ->
     window.location=Routes.complaints_path('en',{format : 'docx'})
+  increment_next_case_reference : (last_ref)->
+    ref_components = last_ref.split('-')
+    new_ref = "#{ref_components[0]}-#{parseInt(ref_components[1])+1}"
+    @set('next_case_reference', new_ref)
 
 window.start_page = ->
   window.complaints = new Ractive complaints_options

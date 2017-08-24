@@ -15,11 +15,11 @@ class CaseReference
   end
 
   def <=>(other)
-    [year,ref] <=> [other.year, other.ref]
+    [year,sequence] <=> [other.year, other.sequence]
   end
 
   def next_ref
-    "C" + next_year.to_s + "-" + next_sequence.to_s
+    "C#{next_year}-#{next_sequence}"
   end
 
   def next_year

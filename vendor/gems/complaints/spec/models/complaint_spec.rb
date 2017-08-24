@@ -127,13 +127,16 @@ end
 
 describe "sort algorithm" do
   before do
+    Complaint.create(:case_reference => "C17-4")
+    Complaint.create(:case_reference => "C16-10")
     Complaint.create(:case_reference => "C16-2")
     Complaint.create(:case_reference => "C16-1")
-    Complaint.create(:case_reference => "C16-3")
+    Complaint.create(:case_reference => "C16-5")
+    Complaint.create(:case_reference => "C15-11")
   end
 
   it "should sort by ascending case reference" do
-    expect(Complaint.all.sort.pluck(:case_reference)).to eq ["C16-1","C16-2","C16-3"]
+    expect(Complaint.all.sort.pluck(:case_reference)).to eq ["C15-11","C16-1","C16-2","C16-5","C16-10","C17-4"]
   end
 end
 
