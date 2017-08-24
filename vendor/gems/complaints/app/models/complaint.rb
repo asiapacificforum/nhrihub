@@ -67,7 +67,12 @@ class Complaint < ActiveRecord::Base
   end
 
   def <=>(other)
-    case_reference <=> other.case_reference
+    case_reference_vector <=> other.case_reference_vector
+  end
+
+  def case_reference_vector
+    parts = case_reference.split("-")
+    [parts[0][1,5],parts[1]].map(&:to_i)
   end
 
   def as_json(options = {})
