@@ -28,7 +28,7 @@ feature "complaints index", :js => true do
   it "shows basic information for each complaint" do
     within first_complaint do
       expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
-      expect(find('.date_received').text).to eq Complaint.first.date_received.getlocal.to_date.strftime("%b %-e, %Y")
+      expect(find('.date_received').text).to eq Complaint.first.date_received.strftime("%b %-e, %Y")
       expect(all('#status_changes .status_change').first.text).to match /#{Complaint.first.status_changes.first.status_humanized}/
       expect(all('#status_changes .status_change .user_name').first.text).to match /#{Complaint.first.status_changes.first.user.first_last_name}/
       expect(all('#status_changes .status_change .date').first.text).to match /#{Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%b %-e, %Y")}/
@@ -291,6 +291,28 @@ feature "complaints index", :js => true do
     expect(page.find('input#dob').value).to be_blank
     expect(page.find('input#special_investigations_unit')).not_to be_checked
     expect(page.find('input#good_governance')).not_to be_checked
+  end
+
+  it "adds 20 complaints and increments case reference for each" do #b/c there was a bug
+    20.times do
+      page.execute_script('scrollTo(0,60)')
+      add_complaint
+      within new_complaint do
+        fill_in('lastName', :with => "Normal")
+        fill_in('firstName', :with => "Norman")
+        fill_in('dob', :with => "08/09/1950")
+        fill_in('village', :with => "Normaltown")
+        fill_in('complaint_details', :with => "a long story about lots of stuff")
+        check('special_investigations_unit')
+        check('good_governance')
+        check_basis(:good_governance, "Delayed action")
+        check_basis(:human_rights, "CAT")
+        check_basis(:special_investigations_unit, "Unreasonable delay")
+        select(User.staff.first.first_last_name, :from => "assignee")
+      end
+      expect{save_complaint.click; wait_for_ajax}.to change{ Complaint.count }.by(1)
+    end
+    expect(Complaint.pluck(:case_reference)).to eq ["c12-34", "C17-1", "C17-2", "C17-3", "C17-4", "C17-5", "C17-6", "C17-7", "C17-8", "C17-9", "C17-10", "C17-11", "C17-12", "C17-13", "C17-14", "C17-15", "C17-16", "C17-17", "C17-18", "C17-19", "C17-20"]
   end
 
   it "does not add a new complaint that is invalid" do
@@ -566,7 +588,7 @@ feature "complaints index", :js => true do
       expect(page.find('#complaint_details').value).to eq original_complaint.details
       expect(page.find('#desired_outcome').value).to eq original_complaint.desired_outcome.to_s
       expect(page.find('#complained_to_subject_agency_yes')).not_to be_checked
-      expect(find('#date_received').value).to eq original_complaint.date_received.getlocal.to_date.strftime("%b %-e, %Y")
+      expect(find('#date_received').value).to eq original_complaint.date_received.strftime("%b %-e, %Y")
       expect(find('.current_assignee').text).to eq original_complaint.assignees.first.first_last_name
       expect(page.find(".mandate ##{original_complaint.mandates.first.key}")).to be_checked
       expect(page.find_field("ACC")).not_to be_checked
