@@ -102,39 +102,6 @@ EditBackup =
     @stashed_instance = $.extend(true,{},stashed_attributes)
   restore : ->
     @set(@stashed_instance)
-    @restore_checkboxes()
-    @restore_radio_checkboxes()
-    @remove_pending_file_uploads()
-  remove_pending_file_uploads : ->
-  restore_checkboxes : ->
-    # major hack to circumvent ractive bug,
-    # it will not be necessary in ractive 0.8.0
-    _(['good_governance_complaint_basis','human_rights_complaint_basis','special_investigations_unit_complaint_basis', 'agency']).
-      each (association)=>
-        @restore_checkboxes_for(association)
-  restore_checkboxes_for : (association)->
-    ids = @get("#{association}_ids")
-    _(@findAll(".edit .#{association} input")).each (checkbox)->
-      is_checked = ids.indexOf(parseInt($(checkbox).attr('value'))) != -1
-      $(checkbox).prop('checked',is_checked)
-  restore_radio_checkboxes : ->
-    selected_mandate = @get('mandate_name')
-    $("input:radio[value='#{selected_mandate}']",@find('*')).prop('checked',true)
-    selected_gender = @get('gender')
-    if _.isNull(selected_gender)
-      $("input:radio#m", @find('*')).prop('checked',false)
-      $("input:radio#f", @find('*')).prop('checked',false)
-      $("input:radio#o", @find('*')).prop('checked',false)
-    else if selected_gender == "M"
-      $("input:radio#m", @find('*')).prop('checked',true)
-    else if selected_gender == "F"
-      $("input:radio#f", @find('*')).prop('checked',true)
-    else if selected_gender == "O"
-      $("input:radio#o", @find('*')).prop('checked',true)
-    complained_to_subject_agency = @get('complained_to_subject_agency') == "true"
-    $("input#complained_to_subject_agency_yes", @find('*')).prop('checked',complained_to_subject_agency)
-    $("input#complained_to_subject_agency_no", @find('*')).prop('checked',!complained_to_subject_agency)
-    return
 
 Mandate = Ractive.extend
   template : '#mandate_template'
