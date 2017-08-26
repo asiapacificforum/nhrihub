@@ -9,6 +9,8 @@ class PerformanceIndicator < ActiveRecord::Base
   has_many :project_performance_indicators, :dependent => :destroy
   has_many :projects, :through => :project_performance_indicators
 
+  scope :in_current_strategic_plan, ->{ joins(:activity => {:outcome => {:planned_result => {:strategic_priority => :strategic_plan}}}).merge(StrategicPlan.current) }
+
   def as_json(options={})
     default_options = {:except =>  [:updated_at, :created_at],
                        :methods => [:indexed_description,

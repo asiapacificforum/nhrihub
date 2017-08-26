@@ -6,6 +6,7 @@ class MediaAppearancePerformanceIndicator < ActiveRecord::Base
     super(:except => [:updated_at, :created_at, :media_appearance_id, :performance_indicator_id], :methods => [:association_id], :include => {:performance_indicator => {:only => [:id], :methods => [:indexed_description]}})
   end
 
+  # TODO just alias the next two methods
   def association_id
     media_appearance_id
   end

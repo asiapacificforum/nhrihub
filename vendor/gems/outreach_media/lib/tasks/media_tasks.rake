@@ -30,7 +30,7 @@ namespace :media do
   desc "populates media appearances with examples"
   task :populate_media => "media:depopulate" do
     20.times do
-      FactoryGirl.create(:media_appearance, :with_reminders, :with_notes, [:file, :link].sample, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
+      FactoryGirl.create(:media_appearance, :with_reminders, :with_notes, :with_performance_indicators, [:file, :link].sample, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
     end
   end
 

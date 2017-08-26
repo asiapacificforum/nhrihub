@@ -25,7 +25,7 @@ module MediaIssuesCommonHelpers
   end
 
   def edit_save
-    page.find('#_edit_save').click
+    page.find('#edit_save').click
     wait_for_ajax
   end
 
@@ -46,7 +46,7 @@ module MediaIssuesCommonHelpers
   end
 
   def edit_cancel
-    page.find('#_edit_cancel').click
+    page.find('#edit_cancel').click
   end
 
   def click_delete_article

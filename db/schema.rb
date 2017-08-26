@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170619171501) do
+ActiveRecord::Schema.define(version: 20170816130213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,7 +224,7 @@ ActiveRecord::Schema.define(version: 20170619171501) do
     t.datetime "updated_at"
     t.text "desired_outcome"
     t.boolean "complained_to_subject_agency"
-    t.datetime "date_received"
+    t.date "date_received"
     t.boolean "imported", default: false
     t.integer "mandate_id"
     t.string "email"

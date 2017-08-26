@@ -112,3 +112,25 @@ describe "#index_url" do
     expect(params.values.first).to eq [id.to_s]
   end
 end
+
+describe ".in_current_strategic_plan scope" do
+  before do
+    previous_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => Date.new(Date.today.year-1,1,1))
+    sp = FactoryGirl.create(:strategic_priority, :priority_level => 1, :strategic_plan_id => previous_strategic_plan.id)
+    pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
+    o = FactoryGirl.create(:outcome, :planned_result => pr)
+    a = FactoryGirl.create(:activity, :outcome => o)
+    pi = FactoryGirl.create(:performance_indicator, :activity => a)
+    @current_strategic_plan = FactoryGirl.create(:strategic_plan, :created_at => Date.new(Date.today.year,1,1))
+    sp = FactoryGirl.create(:strategic_priority, :priority_level => 1, :strategic_plan_id => @current_strategic_plan.id)
+    pr = FactoryGirl.create(:planned_result, :strategic_priority => sp)
+    o = FactoryGirl.create(:outcome, :planned_result => pr)
+    a = FactoryGirl.create(:activity, :outcome => o)
+    @pi = FactoryGirl.create(:performance_indicator, :activity => a)
+  end
+
+  it "should include only planned results from current strategic plan" do
+    expect(PerformanceIndicator.in_current_strategic_plan.count).to eq 1
+    expect(PerformanceIndicator.in_current_strategic_plan.first).to eq @pi
+  end
+end

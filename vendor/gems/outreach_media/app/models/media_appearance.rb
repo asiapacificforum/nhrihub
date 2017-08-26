@@ -72,6 +72,7 @@ class MediaAppearance < ActiveRecord::Base
     media_appearance_reminder_path('en',id,remindable_id)
   end
 
+  # used in reminder mailer
   def index_url
     media_appearances_url(:en, {:host => SITE_URL, :protocol => 'https', :title => title})
   end

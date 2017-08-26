@@ -20,3 +20,5 @@ EditInPlace
   #edit_save, #edit_cancel and #edit_start elements are assigned click handlers in EditInPlace, remove handlers from html inline definition
 
 #splice does not reuse dom elements, see https://github.com/ractivejs/ractive/issues/3061
+
+restore_checkboxes can be eliminated as the ractive bug has been fixed

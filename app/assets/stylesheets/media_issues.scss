@@ -10,14 +10,7 @@
     content : ":";
   }
   .subareas{
-
     margin-left : 20px;
-
-    .subarea:not(:first-child){
-      &:before {
-        content : ", ";
-      }
-    }
   }
 }
 

@@ -124,21 +124,9 @@ $ ->
 
   EditBackup =
     stash : ->
-      @stashed_instance = $.extend(true,{},_(@get()).omit('expanded','editing'))
+      @stashed_instance = $.extend(true,{},_(@get()).omit("validation_criteria", "has_errors", "performance_indicator_required", "truncated_title", "delete_confirmation_message", "error_vector", "reminders_count", "notes_count", "model_name", "issue_context", "count", "model_name", "issue_context", "count", "include", "persisted", "match_vector","expanded","editing"))
     restore : ->
-      @restore_checkboxes()
       @set(@stashed_instance)
-    restore_checkboxes : ->
-      # major hack to circumvent ractive bug,
-      # it will not be necessary in ractive 0.8.0
-      _(['area','subarea']).
-        each (association)=>
-          @restore_checkboxes_for(association)
-    restore_checkboxes_for : (association)->
-      ids = @get("#{association}_ids")
-      _(@findAll(".edit .#{association} input")).each (checkbox)->
-        is_checked = ids.indexOf(parseInt($(checkbox).attr('value'))) != -1
-        $(checkbox).prop('checked',is_checked)
 
   Collection.CollectionItem = Ractive.extend
     template : '#collection_item_template'
@@ -439,3 +427,8 @@ $ ->
   window.onpopstate = (event)->
     if event.state # to ensure that it doesn't trigger on page load, it's a problem with phantomjs but not with chrome
       collection.set_filter_from_query_string()
+
+
+
+
+

@@ -4,8 +4,6 @@
     @set
       serialization_key : "#{@parent.get('serialization_key')}[performance_indicator_associations_attributes][]"
   computed :
-    performance_indicator_id : ->
-      @get('performance_indicator.id')
     persistent_attributes : ->
       [ 'association_id', 'performance_indicator_id'] unless @get('persisted')
     persisted : ->
@@ -14,7 +12,7 @@
     if _.isNull(id) # not yet persisted
       @parent.remove_indicator(@get('indexed_description'))
     else
-      url = @get('performance_indicator_url').replace('id',id)
+      url = Routes.media_appearance_media_appearance_performance_indicator_path('en',@get('id'))
       data = {"_method" : 'delete'}
       $.ajax
         method : 'post'
@@ -29,6 +27,9 @@
   template : '#performance_indicators_template'
   components :
     selectedPerformanceIndicator : SelectedPerformanceIndicator
+  computed :
+    sorted_performance_indicator_associations: ->
+      _(this.get('performance_indicator_associations')).sortBy (pia)->pia.performance_indicator.indexed_description.split(' ')[0].split('.')
   select : (id)->
     @parent.add_unique_performance_indicator_id(id)
     false
@@ -44,6 +45,7 @@ Ractive.components.performanceIndicators = @PerformanceIndicators
   remove_performance_indicator : (indexed_description)->
     index = @performance_indicator_index(indexed_description)
     @get('performance_indicator_associations').splice(index,1)
+    @update('performance_indicator_associations') # b/c splice no longer updates the model
     @validate_attribute('performance_indicator_associations') if @get('performance_indicator_required')
   performance_indicator_index : (indexed_description)->
     @performance_indicator_ids().indexOf(indexed_description)

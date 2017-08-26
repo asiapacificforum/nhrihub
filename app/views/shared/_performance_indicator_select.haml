@@ -25,12 +25,12 @@
           %span.caret
         {{> performance_indicator_filter_select_template }}
     .col-md-8#performance_indicators
-      {{#performance_indicator_associations}}
-      <selectedPerformanceIndicator planned_results='{{planned_results}}' association_id='{{association_id}}' indexed_description='{{performance_indicator.indexed_description}}' id='{{id}}' performance_indicator_url='{{performance_indicator_url}}' />
-      {{/performance_indicator_associations}}
-      {{^performance_indicator_associations}}
+      {{#sorted_performance_indicator_associations}}
+      <selectedPerformanceIndicator performance_indicator_associations='{{performance_indicator_associations}}' planned_results='{{planned_results}}' performance_indicator_id='{{performance_indicator.id}}' association_id='{{association_id}}' indexed_description='{{performance_indicator.indexed_description}}' id='{{id}}' />
+      {{/sorted_performance_indicator_associations}}
+      {{^sorted_performance_indicator_associations}}
       %div.selected_performance_indicator=t('.none_assigned')
-      {{/performance_indicator_associations}}
+      {{/sorted_performance_indicator_associations}}
   .form-group
     %span.help-block#performance_indicator_associations_error.error{:class => "{{#performance_indicator_associations_error}}has-error{{/}}"} There must be at least one performance indicator
 
@@ -61,10 +61,10 @@
 %script#performance_indicator_show{:type => 'template/ractive'}
   .row
     .col-md-11.col-md-offset-1#performance_indicators{:style => "display:flex; flex-direction:column"}
-      {{#performance_indicator_associations}}
+      {{#sorted_performance_indicator_associations}}
       .row.performance_indicator
         .col-md-6 {{performance_indicators[performance_indicator.id]}}
-      {{/performance_indicator_associations}}
-      {{^performance_indicator_associations}}
+      {{/sorted_performance_indicator_associations}}
+      {{^sorted_performance_indicator_associations}}
       %div.performance_indicator=t('.none_assigned')
-      {{/performance_indicator_associations}}
+      {{/sorted_performance_indicator_associations}}
