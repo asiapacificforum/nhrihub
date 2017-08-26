@@ -306,7 +306,7 @@
         .col-md-2
           %label.required=t('.assignee')
         .col-md-6
-          <assigneeSelector all_staff='{{all_staff}}' />
+          <assigneeSelector new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
           %span.help-block.error#new_assignee_id_error= t('.assignee_error_message')
       .row.form-group{:class => "{{#mandate_id_count_error}}has-error{{/}}"}
         .col-md-2
@@ -592,7 +592,7 @@
           <assignees assigns='{{assigns}}' />
           .no_edit.in
           .edit
-            <assigneeSelector all_staff='{{all_staff}}' />
+            <assigneeSelector new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
       .row.collapse
         .col-md-12.form-group{'data-toggle'=>:edit, :class => "{{#mandate_id_count_error}}has-error{{/}}"}
           .row

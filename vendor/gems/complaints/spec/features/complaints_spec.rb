@@ -317,8 +317,8 @@ feature "complaints index", :js => true do
   end
 
   it "adds 15 complaints and increments case reference for each" do #b/c there was a bug
-    15.times do
-      page.execute_script('scrollTo(0,60)')
+    15.times do |i|
+      page.execute_script('scrollTo(0,80)')
       add_complaint
       within new_complaint do
         fill_in('lastName', :with => "Normal")
@@ -334,6 +334,7 @@ feature "complaints index", :js => true do
     end
     expect(Complaint.pluck(:case_reference)).to eq ["c12-34", "C17-1", "C17-2", "C17-3", "C17-4", "C17-5", "C17-6", "C17-7", "C17-8", "C17-9", "C17-10", "C17-11", "C17-12", "C17-13", "C17-14", "C17-15"]
     expect(page.all('.complaint .basic_info .case_reference').map(&:text)).to eq ["C17-15", "C17-14", "C17-13", "C17-12", "C17-11", "C17-10", "C17-9", "C17-8", "C17-7", "C17-6", "C17-5", "C17-4", "C17-3", "C17-2", "C17-1", "c12-34"]
+    page.execute_script('scrollTo(0,80)')
     add_complaint
     expect(page.find('.new_complaint #case_reference').text).to eq "C17-16"
   end
@@ -571,6 +572,7 @@ feature "complaints index", :js => true do
   end
 
   it "restores previous values when editing is cancelled" do
+    new_assignee_id = page.evaluate_script("complaints.findAllComponents('complaint')[0].get('new_assignee_id')")
     original_complaint = Complaint.first
     edit_complaint
     within first_complaint do
@@ -618,6 +620,8 @@ feature "complaints index", :js => true do
       expect(page.find('#desired_outcome').value).to eq original_complaint.desired_outcome.to_s
       expect(page.find('#complained_to_subject_agency_yes')).not_to be_checked
       expect(find('#date_received').value).to eq original_complaint.date_received.strftime("%b %-e, %Y")
+      new_assignee_id = page.evaluate_script("complaints.findAllComponents('complaint')[0].get('new_assignee_id')")
+      expect(new_assignee_id).to be_nil
       expect(find('.current_assignee').text).to eq original_complaint.assignees.first.first_last_name
       expect(page.find(".mandate ##{original_complaint.mandates.first.key}")).to be_checked
       expect(page.find_field("ACC")).not_to be_checked

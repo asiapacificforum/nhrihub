@@ -31,7 +31,9 @@ EditInPlace = (node,id)->
       @load()
     error : ->
       console.log "Changes were not saved, for some reason"
-    start_callback : -> ractive.expand()
+    start_callback : =>
+      @set('new_assignee_id',undefined)
+      ractive.expand()
   return {
     teardown : (id)=>
       edit.off()
@@ -309,8 +311,6 @@ StatusSelector = Ractive.extend
 Complaint = Ractive.extend
   template : '#complaint_template'
   computed :
-    new_assignee_id : ->
-      @findComponent('assigneeSelector').get('new_assignee_id')
     delete_confirmation_message : ->
       "#{i18n.delete_complaint_confirmation_message} #{@get('case_reference')}?"
     include : ->
