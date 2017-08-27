@@ -52,7 +52,7 @@ ProjectTypes = Ractive.extend
 
 EditBackup =
   stash : ->
-    stashed_attributes = _(@get()).omit('url', 'reminders_count', 'notes_count', 'count', 'persisted', 'type', 'include', 'expanded', 'editing')
+    stashed_attributes = _(@get()).omit('expanded', 'editing', 'performance_indicator_required', 'persistent_attributes', 'url', 'truncated_title', 'delete_confirmation_message', 'reminders_count', 'notes_count', 'count', 'persisted', 'type', 'include', 'create_note_url', 'create_reminder_url', 'has_errors', 'validation_criteria')
     @stashed_instance = $.extend(true,{},stashed_attributes)
   restore : ->
     @restore_checkboxes()
@@ -95,7 +95,7 @@ ProjectDocument = Ractive.extend
     persisted : ->
       !_.isNull(@get('id'))
     url : ->
-      Routes.project_document_path(current_locale, @get('id'))
+      Routes.project_document_path(current_locale, @get('id')) unless _.isNull(@get('id'))
     truncated_title : ->
       @get('title').split(' ').slice(0,4).join(' ')+"..."
     truncated_title_or_filename : ->
@@ -111,7 +111,8 @@ ProjectDocument = Ractive.extend
     @parent.remove(@_guid)
   download_attachment : ->
     window.location = @get('url')
-  , ProjectDocumentValidator, ConfirmDeleteModal
+.extend ProjectDocumentValidator
+.extend ConfirmDeleteModal
 
 ProjectDocuments = Ractive.extend
   template : "#project_documents_template"
@@ -239,7 +240,6 @@ Project = Ractive.extend
     create_reminder_url : ->
       window.create_reminder_url.replace('id',@get('id'))
     has_errors : ->
-      #@has_errors()
       attributes = _(@get('validation_criteria')).keys()
       error_attributes = _(attributes).map (attr)->attr+"_error"
       _(error_attributes).any (attr)=>@get(attr)
@@ -281,7 +281,13 @@ Project = Ractive.extend
     @unshift('project_documents', project)
   show_file_selector : ->
     @find('#project_fileinput').click()
-  , Validator, PerformanceIndicatorAssociation, EditBackup, Persistence, FilterMatch, Remindable, Notable
+.extend Validator
+.extend PerformanceIndicatorAssociation
+.extend EditBackup
+.extend Persistence
+.extend FilterMatch
+.extend Remindable
+.extend Notable
 
 FilterSelect = Ractive.extend
   computed :
@@ -299,19 +305,17 @@ FilterSelect = Ractive.extend
   unselect : ->
     @set("filter_criteria.#{@get('collection')}", _(@get("filter_criteria.#{@get('collection')}")).without(@get('id')))
 
-AreaFilterSelect = Ractive.extend
+AreaFilterSelect = FilterSelect.extend
   template : "#area_filter_select_template"
   computed :
     collection : ->
       "area_ids"
-  , FilterSelect
 
-ProjectTypeFilterSelect = Ractive.extend
+ProjectTypeFilterSelect = FilterSelect.extend
   template : "#project_type_filter_select_template"
   computed :
     collection : ->
       "project_type_ids"
-  , FilterSelect
 
 PerformanceIndicatorFilterSelect = Ractive.extend
   template: "#performance_indicator_filter_select_template"
@@ -345,7 +349,7 @@ window.projects_page_data = ->
   projects : projects_data
   all_areas : areas
   planned_results : planned_results
-  all_performance_indicators : performance_indicators
+  performance_indicators : performance_indicators
   all_area_project_types : project_types
   project_named_documents_titles : project_named_documents_titles
   permitted_filetypes : permitted_filetypes
@@ -403,3 +407,7 @@ $ ->
 window.onpopstate = (event)->
   if event.state # to ensure that it doesn't trigger on page load, it's a problem with phantomjs but not with chrome
     window.projects.findComponent('filterControls').set_filter_from_query_string()
+
+
+
+

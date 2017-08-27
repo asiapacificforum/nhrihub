@@ -6,6 +6,7 @@ class ProjectPerformanceIndicator < ActiveRecord::Base
     super(:except => [:updated_at, :created_at, :project_id, :performance_indicator_id], :methods => [:association_id], :include => {:performance_indicator => {:only => [:id], :methods => [:indexed_description]}})
   end
 
+  #TODO just alias these methods
   def association_id
     project_id
   end

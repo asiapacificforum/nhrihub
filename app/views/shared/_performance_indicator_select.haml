@@ -26,7 +26,7 @@
         {{> performance_indicator_filter_select_template }}
     .col-md-8#performance_indicators
       {{#sorted_performance_indicator_associations}}
-      <selectedPerformanceIndicator performance_indicator_associations='{{performance_indicator_associations}}' planned_results='{{planned_results}}' performance_indicator_id='{{performance_indicator.id}}' association_id='{{association_id}}' indexed_description='{{performance_indicator.indexed_description}}' id='{{id}}' />
+      <selectedPerformanceIndicator performance_indicator_url='{{performance_indicator_url}}' performance_indicator_associations='{{performance_indicator_associations}}' planned_results='{{planned_results}}' performance_indicator_id='{{performance_indicator.id}}' association_id='{{association_id}}' indexed_description='{{performance_indicator.indexed_description}}' id='{{id}}' />
       {{/sorted_performance_indicator_associations}}
       {{^sorted_performance_indicator_associations}}
       %div.selected_performance_indicator=t('.none_assigned')

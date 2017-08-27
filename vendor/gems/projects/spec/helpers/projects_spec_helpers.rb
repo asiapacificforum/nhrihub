@@ -181,11 +181,11 @@ module ProjectsSpecHelpers
     if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
       # when the performance_indicator dropdown is still active, phantomjs can't
       # click on the icon due to dropdown backdrop being present
-      page.find("#project_editable1_edit_cancel").trigger('click')
+      page.find("#edit_cancel").trigger('click')
     else
       #selenium has no problem, finding the icon
       #but it doesn't support 'trigger'
-      page.find('#project_editable1_edit_cancel').click
+      page.find('#edit_cancel').click
     end
   end
 

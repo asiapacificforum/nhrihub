@@ -1,7 +1,7 @@
 %script#projects_template{:type => 'template/ractive'}
   <filterControls filter_criteria='{{filter_criteria}}' />
   {{#projects}}
-  <project maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' area_ids='{{area_ids}}'  performance_indicator_associations='{{performance_indicator_associations}}' project_type_ids='{{project_type_ids}}' all_areas='{{all_areas}}'  project_types='{{project_types}}' areas='{{areas}}'  reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
+  <project performance_indicator_url='{{performance_indicator_url}}' project_types='{{project_types}}' planned_results='{{planned_results}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' filter_criteria='{{filter_criteria}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' area_ids='{{area_ids}}'  performance_indicator_associations='{{performance_indicator_associations}}' project_type_ids='{{project_type_ids}}' all_areas='{{all_areas}}'  project_types='{{project_types}}' areas='{{areas}}'  reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
   {{/projects}}
 
 %script#project_template{:type => 'template/ractive'}
@@ -20,30 +20,30 @@
         .col-md-2
           %label.required{:for => 'project_title'}=t('.title')
         .col-md-7
-          %input.form-control#project_title{:value => '{{title}}', 'on-keydown'=>"remove_attribute_error('title')"}
+          %input.form-control#project_title{:value => '{{title}}', 'on-keydown'=>"@this.remove_attribute_error('title')".html_safe}
           %span.help-block.error#title_error= t('.title_error_message')
         .col-sm-3
       .row.form-group{:class => "{{#description_error}}has-error{{/}}"}
         .col-md-2
           %label.required{:for => 'project_description'}=t('.description')
         .col-md-7
-          %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"remove_attribute_error('description')"}
+          %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"@this.remove_attribute_error('description')".html_safe}
           %span.help-block.error#description_error= t('.description_error_message')
-      <areasSelector areas='{{all_areas}}' />
-      <projectTypesSelector all_areas='{{all_areas}}' />
-      <performanceIndicators />
+      <areasSelector area_ids='{{area_ids}}' areas='{{all_areas}}' />
+      <projectTypesSelector project_type_ids='{{project_type_ids}}' all_areas='{{all_areas}}' />
+      <performanceIndicators performance_indicator_url='{{performance_indicator_url}}' performance_indicator_associations_error='{{performance_indicator_associations_error}}' serialization_key='{{serialization_key}}' persisted='{{persisted}}' planned_results='{{planned_results}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' />
       .panel.panel-default#documents
         .panel-heading= t('.project_documents')
         .panel-body
           {{> file_selector_template {key : 'project'} }}
-          <projectDocuments project_documents='{{project_documents}}'>
+          <projectDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' filter_criteria='{{filter_criteria}}' filesize_error='{{filesize_error}}' filetype_error='{{filetype_error}}' project_documents='{{project_documents}}'>
       .row
         .col-sm-3.col-sm-offset-3{:style => "text-align:center;"}
-          .btn.btn-danger.btn-sm#cancel_project{"on-click" => "cancel_project()"}
+          .btn.btn-danger.btn-sm#cancel_project{"on-click" => "@this.cancel_project()".html_safe}
             %i.fa.fa-remove.fa-lg{:style => "color:white"}
             %span{:style => "color:white"}= t("defaults.cancel")
         .col-sm-3{:style => "text-align:center;"}
-          .btn.btn-success.btn-sm#save_project{:style => "color:white;", "on-click" => "save_project()"}
+          .btn.btn-success.btn-sm#save_project{:style => "color:white;", "on-click" => "@this.save_project()".html_safe}
             %i.fa.fa-check.fa-lg{:style => "color:white"}
             %span= t("defaults.save")
           .form-group{:class => "{{#has_errors}}has-error{{/}}"}
@@ -54,7 +54,7 @@
     .col-md-6.title=t('.title')
     .col-md-4.filename=t('.filename')
   {{#project_documents}}
-  <projectDocument id='{{id}}' file='{{file}}' title='{{title}}' file_id='{{file_id}}' filename='{{filename}}' project_named_documents_titles='{{ project_named_documents_titles}}' />
+  <projectDocument maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' filesize_error='{{filesize_error}}' filetype_error='{{filetype_error}}' validation_criteria='{{validation_criteria}}' id='{{id}}' file='{{file}}' title='{{title}}' file_id='{{file_id}}' filename='{{filename}}' project_named_documents_titles='{{ project_named_documents_titles}}' />
   {{/project_documents}}
   {{^project_documents}}
   %div{:style => 'padding-left:15px;'}=t('.no_documents')
@@ -73,9 +73,9 @@
       .col-md-6.title {{title}}
       .col-md-4.filename {{filename}}
       .col-md-1
-        %i.fa.fa-cloud-download{'on-click' => 'download_attachment()'}
+        %i.fa.fa-cloud-download{'on-click' => '@this.download_attachment()'.html_safe}
       .col-md-1.delete
-        %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()'}
+        %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
 
 %script#new_project_document_template{:type => 'template/ractive'}
   .row.document
@@ -93,7 +93,7 @@
         %span.help-block.error#unconfigured_filetypes_error= t('error_messages.noFileTypes')
     .col-md-4.filename{:style => "overflow-wrap:break-word"} {{filename}}
     .col-md-2
-      %i.fa.fa-remove.remove{'on-click' => 'remove_file()'}
+      %i.fa.fa-remove.remove{'on-click' => '@this.remove_file()'.html_safe}
 
 %script#project_types_selector_template{:type => 'template/ractive'}
   .row
@@ -139,11 +139,11 @@
         %span.required=t('.title')
     .col-md-10.clearfix
       .chars_remaining{:style => "float:right"}= t('.chars_remaining') # the count variable is embedded in the i18n text
-      =text_field_tag 'project[title]', nil, :class => 'form-control', :id => 'project_title', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "remove_attribute_error('title')"
+      =text_field_tag 'project[title]', nil, :class => 'form-control', :id => 'project_title', :placeholder => "Enter title", :size => 100, :maxlength => 100, :value => "{{title}}", 'on-keydown' => "@this.remove_attribute_error('title')".html_safe
       %span.help-block#title_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%; background-color:#d9d0a5"}= t('.title_error_message')
 
 %script#show_project_template{:type => 'template/ractive'}
-  .row.well.well-sm.expandable_well.project.editable_container{ :style => "{{#if !include}}display:none{{/if}}", :decorator => 'inpage_edit:{{id}}'}
+  .row.well.well-sm.expandable_well.project.editable_container{ :style => "{{#if !include}}display:none{{/if}}", 'as-inpage_edit'=>'id'}
     .col-md-12
       .row
         .col-md-9{'data-toggle' => 'edit'}
@@ -159,25 +159,25 @@
           .row{:style => "margin-left:0px;"}
             .col-md-1.col-md-offset-2{'data-toggle'=>:edit}
               .no_edit.in
-                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()"}
+                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "@this.show_reminders_panel()".html_safe}
               .edit
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "show_notes_panel()", :style => "position:relative; left: -3px;"}
+                .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "@this.show_notes_panel()".html_safe, :style => "position:relative; left: -3px;"}
               .edit
             .col-md-1.icon{'data-toggle' => 'edit'}
               .fade.no_edit.in
-                %i.fa.fa-pencil-square-o{:id => "project_editable{{id}}_edit_start", :style=> "position:relative; top:1px;"}
+                %i.fa.fa-pencil-square-o#edit_start{ :style=> "position:relative; top:1px;"}
             .col-md-1{'data-toggle'=>:edit}
               .no_edit.in
-                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'show_confirm_delete_modal()'}
+                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
             .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
               %div{'data-toggle'=>:edit}
                 .no_edit.in
                   {{#if expanded}}
-                  %i#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
+                  %i#compact{'on-click'=>'@this.compact()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
                   {{else}}
-                  %i#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
+                  %i#expand{'on-click'=>'@this.expand()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
                   {{/if}}
                 .edit
       .collapse.expanded_info{:class => "collapse{{id}}"}
@@ -191,17 +191,17 @@
             .fade.no_edit.in
               %span {{description}}
             .fade.edit{:style => "width: 100%"}
-              %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"remove_attribute_error('description')"}
+              %textarea.form-control#project_description{:value => '{{description}}', 'on-keydown'=>"@this.remove_attribute_error('description')".html_safe}
               %span.help-block.error#description_error= t('.description_error_message')
-        <performanceIndicators />
+        <performanceIndicators performance_indicator_url='{{performance_indicator_url}}' performance_indicator_associations_error='{{performance_indicator_associations_error}}' serialization_key='{{serialization_key}}' persisted='{{persisted}}' planned_results='{{planned_results}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' />
         .panel.panel-default
           .panel-body{'data-toggle'=>'edit'}
             .fade.no_edit.in
               <areas areas='{{areas}}' />
-              <projectTypes projectTypes='{{projectTypes}}' />
+              <projectTypes project_types='{{project_types}}' />
             .fade.edit
-              <areasSelector areas='{{all_areas}}' />
-              <projectTypesSelector all_areas='{{all_areas}}'/>
+              <areasSelector area_ids='{{area_ids}}' areas='{{all_areas}}' />
+              <projectTypesSelector project_type_ids='{{project_type_ids}}' all_areas='{{all_areas}}'/>
         .panel.panel-default.documents
           .panel-heading
             .row
@@ -210,14 +210,14 @@
             .fade.edit{:style => "padding-left:15px; padding-top:15px;"}
               {{> file_selector_template {key : 'project'} }}
             .fade.no_edit.in
-            <projectDocuments project_documents='{{project_documents}}' />
+            <projectDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' filter_criteria='{{filter_criteria}}' filesize_error='{{filesize_error}}' filetype_error='{{filetype_error}}' project_documents='{{project_documents}}' />
         .row{'data-toggle'=>:edit, :style => "margin-top:30px;"}
           .col-sm-3.col-sm-offset-3.edit{:style => "text-align:center;"}
-            .btn.btn-danger.btn-sm.edit_cancel{"on-click" => "project_editable{{id}}_edit_cancel()", :id => "project_editable{{id}}_edit_cancel"}
+            .btn.btn-danger.btn-sm#edit_cancel
               %i.fa.fa-remove.fa-lg{:style => "color:white"}
               %span{:style => "color:white"}= t("defaults.cancel")
           .col-sm-3.edit{:style => "text-align:center;"}
-            .btn.btn-success.btn-sm.save_project{:style => "color:white;", "on-click" => "project_editable{{id}}_edit_save()", :id => "project_editable{{id}}_edit_save"}
+            .btn.btn-success.btn-sm.save_project#edit_save{:style => "color:white;"}
               %i.fa.fa-check.fa-lg{:style => "color:white"}
               %span= t("defaults.save")
             .form-group{:class => "{{#has_errors}}has-error{{/}}"}
@@ -247,13 +247,13 @@
 
 %script#area_filter_select_template{:type => 'template/ractive'}
   %li{:class => 'dropdown-header area_filter {{#if selected}}selected{{/if}}'}
-    %a{'on-click'=>'toggle(id)'}
+    %a{'on-click'=>'@this.toggle(id)'.html_safe}
       %span {{name}}
       %span.fa.fa-check
 
 %script#project_type_filter_select_template{:type => 'template/ractive'}
   %li{:class => 'project_type_filter {{#if selected}}selected{{/if}}'}
-    %a{'on-click'=>'toggle(id)'}
+    %a{'on-click'=>'@this.toggle(id)'.html_safe}
       %span {{name}}
       %span.fa.fa-check
 
@@ -292,12 +292,12 @@
                 {{/.}}
             {{/all_area_project_types}}
       .col-md-1.col-md-offset-1
-        %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
+        %i.erase.fa.fa-refresh{'on-click'=>'@this.clear_filter()'.html_safe, 'data-toggle'=>'tooltip', 'title' => t('.clear')}
       .col-md-1
         {{#if expanded}}
-        %a#compact{'on-click'=>'compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all')}
+        %a#compact{'on-click'=>'@this.compact()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>t('.compact_all')}
         {{else}}
-        %a#expand{'on-click'=>'expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
+        %a#expand{'on-click'=>'@this.expand()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
         {{/if}}
     .row.labels
       .col-md-3= t('.performance_indicators')

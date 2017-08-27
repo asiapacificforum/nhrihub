@@ -12,7 +12,7 @@
     if _.isNull(id) # not yet persisted
       @parent.remove_indicator(@get('indexed_description'))
     else
-      url = Routes.media_appearance_media_appearance_performance_indicator_path('en',@get('id'))
+      url = @get('performance_indicator_url').replace('id',@get('id'))
       data = {"_method" : 'delete'}
       $.ajax
         method : 'post'
