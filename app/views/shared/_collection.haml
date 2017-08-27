@@ -81,7 +81,7 @@
       .collapse.expanded_info{:class => "collapse{{id}}"}
         {{> reported_by}}
         {{#unless issue_context}}
-        <performanceIndicators serialization_key='{{serialization_key}}' persisted='{{persisted}}' planned_results='{{planned_results}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' />
+        <performanceIndicators performance_indicator_url='{{performance_indicator_url}}' serialization_key='{{serialization_key}}' persisted='{{persisted}}' planned_results='{{planned_results}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' />
         {{/unless issue_context}}
         .panel.panel-default
           .panel-heading
@@ -147,7 +147,7 @@
         .col-md-2
           %input.article_link{:name => "#{item}_article_link", :value => "{{article_link}}", "on-input" => "@this.validate()".html_safe}
       {{#unless issue_context}}
-      <performanceIndicators serialization_key='{{serialization_key}}' persisted='{{persisted}}' planned_results='{{planned_results}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' />
+      <performanceIndicators performance_indicator_url='{{performance_indicator_url}}' serialization_key='{{serialization_key}}' persisted='{{persisted}}' planned_results='{{planned_results}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' />
       {{/unless issue_context}}
       .panel.panel-default.expanded_info
         .panel-heading
@@ -237,7 +237,7 @@
 %script#collection{:type => 'template/ractive'}
   %input.hidden_fileinput{:id => "primary_fileinput", :multiple => "multiple", :name => "primary_file", :type => "file", 'as-ractive_fileupload'=>true}
   {{#collection_items}}
-  <collectionItem maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' area_ids='{{area_ids}}' areas='{{areas}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' file_id='{{file_id}}' filesize='{{filesize}}' filter_criteria='{{filter_criteria}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' initiator='{{initiator}}' lastModifiedDate='{{lastModifiedDate}}' collection_item_areas='{{collection_item_areas}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' planned_results='{{planned_results}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' />
+  <collectionItem performance_indicator_url='{{performance_indicator_url}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' area_ids='{{area_ids}}' areas='{{areas}}' article_link='{{article_link}}' create_note_url='{{create_note_url}}' create_reminder_url='{{create_reminder_url}}' date='{{date}}' file_id='{{file_id}}' filesize='{{filesize}}' filter_criteria='{{filter_criteria}}' expanded='false' has_link='{{has_link}}' has_scanned_doc='{{has_scanned_doc}}' id='{{id}}' initiator='{{initiator}}' lastModifiedDate='{{lastModifiedDate}}' collection_item_areas='{{collection_item_areas}}' notes='{{notes}}' on-edit='edit' original_filename='{{original_filename}}' original_type='{{original_type}}' performance_indicator_ids='{{performance_indicator_ids}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' planned_results='{{planned_results}}' reminders='{{reminders}}' subarea_ids='{{subarea_ids}}' title='{{title}}' url='{{url}}' user_id='{{user_id}}' />
   {{/collection_items}}
 
 %script#item_areas{:type=>'template/ractive'}
