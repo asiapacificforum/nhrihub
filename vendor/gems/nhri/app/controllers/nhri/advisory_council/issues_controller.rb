@@ -51,7 +51,6 @@ class Nhri::AdvisoryCouncil::IssuesController < ApplicationController
     params.
       require(:advisory_council_issue).
       permit(:title,
-             :affected_people_count,
              :file,
              :remove_file,
              :original_filename,

@@ -413,6 +413,7 @@ feature "view attachments", :js => true do
       visit nhri_advisory_council_issues_path(:en)
       click_the_link_icon
       page.switch_to_window(page.windows[1])
+      page.find('h1',:text => "Example Domain") # better than sleep to await the page load
       expect( page.evaluate_script('window.location.href')).to include first_article_link
     end
   end

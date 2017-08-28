@@ -152,6 +152,7 @@
       template : "#notes_template"
       data :
         notes : []
+        fade : window.env != "test"
       new_note : ->
         unless @_new_note_is_active()
           @push('notes',{id:null, type:null, frequency:null, text:'', notable_id:@get('id')})
@@ -182,7 +183,7 @@
     Ractive.components.note = Note
 
 %script#notes_template{:type => 'ractive/template'}
-  <modal-custom id="notes_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
+  <modal-custom fade='{{fade}}' id="notes_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
   <modal-header>
   <h4>#{t('.notes')}<modal-close/></h4>
   </modal-header>

@@ -1,8 +1,0 @@
-en:
-  activerecord:
-    attributes:
-      outreach_event:
-        affected_people_count: "# People affected"
-        audience_name: "Audience name"
-        participant_count: "# participants"
-        description: "Description"

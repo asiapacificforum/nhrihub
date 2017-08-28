@@ -2,13 +2,13 @@
   .col-md-1{'data-toggle'=>:edit}
     .no_edit.in
       {{#if has_link }}
-      %i.fa.fa-globe{'on-click' => 'fetch_link()', 'data-toggle'=>'tooltip', 'title'=>'{{article_link}}'}
+      %i.fa.fa-globe{'on-click' => '@this.fetch_link()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>'{{article_link}}'}
       {{/if}}
     .edit
   .col-md-1{'data-toggle'=>:edit}
     .no_edit.in
       {{#if has_scanned_doc }}
-      %i.fa.fa-cloud-download{'on-click' => 'download_attachment()', 'data-toggle'=>'tooltip', 'title'=>'{{original_filename}}'}
+      %i.fa.fa-cloud-download{'on-click' => '@this.download_attachment()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>'{{original_filename}}'}
       {{/if}}
     .edit
 
@@ -16,6 +16,3 @@
   .row
     .col-md-2{:style => 'width:188px;'}= t('.initiator')
     .col-md-2{:style => 'padding-left:0px;'} {{initiator}}
-
-%script#positivity_rating_input{:type => 'template/ractive'}
-  // empty, positivity rating not supported for advisory council issues
