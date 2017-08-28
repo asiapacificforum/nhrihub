@@ -6,7 +6,7 @@
 = render :partial => 'shared/confirm_delete_modal'
 
 %script#membership_template{:type => 'template/ractive'}
-  .btn.btn-success#add_member{'on-click'=>'add_member()'}
+  .btn.btn-success#add_member{'on-click'=>'@this.add_member()'.html_safe}
     %i.fa.fa-plus.fa-lg{:style => "color:white"}
     %span= t('.add')
 
@@ -16,8 +16,8 @@
     .col-md-4= t('.contact')
     .col-md-1
   #members
-    <members />
-  <newmember first_name='{{first_name}}' last_name='{{last_name}}' title='{{title}}' organization='{{organization}}' department='{{department}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' home_phone='{{home_phone}}' email='{{email}}' alternate_email='{{alternate_email}}' bio='{{bio}}' />
+    <members members='{{members}}' />
+  <newmember first_name_error=false last_name_error=false first_name='{{first_name}}' last_name='{{last_name}}' title='{{title}}' organization='{{organization}}' department='{{department}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' home_phone='{{home_phone}}' email='{{email}}' alternate_email='{{alternate_email}}' bio='{{bio}}' />
 
 :css
   table#new_member tr td {
@@ -39,23 +39,23 @@
     height : 56px;
   }
 
+%script#members_template{:type => 'template/ractive'}
+  {{#members}}
+  <member alternate_email='{{alternate_email}}' bio='{{bio}}' created_at='{{created_at}}' department='{{department}}' email='{{email}}' first_name='{{first_name}}' home_phone='{{home_phone}}' id='{{id}}' last_name='{{last_name}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' organization='{{organization}}' title='{{title}}' />
+  {{/members}}"
+
 %script#new_member_template{:type => 'template/ractive'}
-  {{>member_form {type : 'new_member', id:''}}}
+  {{>member_form {type : 'new_member', id:'', heading : '#{t('.new_member')}'}}}
 
 %script#edit_member_template{:type => 'template/ractive'}
-  {{>member_form {type : 'edit_member', id:id} }}
+  {{>member_form {type : 'edit_member', id:id, heading : '#{t('.edit_member')}'} }}
 
 %script#member_form{:type => 'template/ractive'}
-  <modal-custom id="{{type}}{{id}}_modal" type="xl">
+  <modal-custom id="{{type}}_modal" type="xl">
   <modal-header>
-  <h4>
-  {{#type==='new_member'}}
-  #{t(".new_member")}
-  {{/type}}
-  {{#type==='edit_member'}}
-  #{t(".edit_member")}
-  {{/type}}
-  <modal-close/></h4>
+  <h4> {{heading}} <modal-close/></h4>
+  </modal-header>
+  <modal-body>
   %table#new_member
     %tr
       %td
@@ -112,12 +112,10 @@
       %td
       %td
         .icon{:style => 'height:20px'}
-          %i.fa.fa-remove.fa-lg#cancel{'on-click' => 'cancel_modal()', :style => "position:relative; left:15px;"}
+          %i.fa.fa-remove.fa-lg#cancel{'on-click' => '@this.cancel_modal()'.html_safe, :style => "position:relative; left:15px;"}
       %td
         .icon
-          %i.fa.fa-check.fa-lg#save{'on-click' => 'save_member()'}
-  </modal-header>
-  <modal-body>
+          %i.fa.fa-check.fa-lg#save{'on-click' => '@this.save_member()'.html_safe}
   </modal-body>
   </modal-custom>
 
@@ -125,15 +123,15 @@
   .row.member{:style => 'width:860px; margin-bottom:12px;'}
     .col-md-2.name{:style => "width:20%"} {{first_name}} {{last_name}}
     .col-md-4 {{bio}}
-    .col-md-4 <contact home_phone='{{home_phone}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' />
+    .col-md-4 <contact home_phone='{{home_phone}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' email='{{email}}' alternate_email='{{alternate_email}}'/>
     .col-md-1{:style => "display:flex; flex-direction:row;"}
-      .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
+      .icon.details{'as-popover'=>true, :'data-toggle' => 'edit'}
         %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
-      .icon.edit{'on-click'=>'edit_this()', :style=>'margin-left:18px;'}
+      .icon.edit{'on-click'=>'@this.edit_this()'.html_safe, :style=>'margin-left:18px;'}
         %i.fa.fa-lg.fa-pencil-square-o
-      .icon.delete{'on-click'=>'show_confirm_delete_modal()', :style=>'margin-left:18px;'}
+      .icon.delete{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe, :style=>'margin-left:18px;'}
         %i.fa.fa-trash-o.fa-lg
-  <editmember />
+  <editmember id='' alternate_email='' bio='' created_at='' department='' email='' first_name='' home_phone='' last_name='' mobile_phone='' office_phone='' organization='' title='' />
 
 %script#contact_template{:type => 'template/ractive'}
   {{#home_phone}}<homephone class='home_phone' letter='h' value='{{home_phone}}' />{{/}}
@@ -211,13 +209,13 @@
         alternateemail : AlternateEmail
 
     EditMember = Ractive.extend
-      isolated : true
+      isolated: true
       template : '#edit_member_template'
-      oninit : ->
-        @copy_parent_attrs()
+      onrender : ->
+        $(@find("#edit_member_modal")).on 'show.bs.modal', => @copy_parent_attrs()
       save_member : ->
         url = Routes.nhri_advisory_council_member_path(current_locale, @get('id'))
-        data = {member : _(@get()).omit(['url', 'id', 'first_name_error', 'last_name_error']), '_method':'put'}
+        data = {member : _(@get()).omit(['url', 'id', 'first_name_error', 'last_name_error', 'delete_confirmation_message']), '_method':'put'}
         context = @
         $.ajax
           url : url
@@ -230,7 +228,7 @@
         @cancel_modal()
       cancel_modal : ->
         @copy_parent_attrs()
-        $("#edit_member"+@get('id')+"_modal").modal('hide')
+        $(@find("#edit_member_modal")).modal('hide')
       copy_parent_attrs : ->
         @set(@parent.get())
 
@@ -245,13 +243,14 @@
         delete_confirmation_message : ->
           delete_confirmation_message + @get('first_name') + " " +@get('last_name') + "?"
       edit_this : ->
-        $("#edit_member"+@get('id')+"_modal").modal('show')
+        $(@find('#edit_member_modal')).modal('show')
+        @findComponent('editmember').set(@get())
       delete_callback : ->
         @parent.remove(@get('id'))
     , ConfirmDeleteModal
 
     Members = Ractive.extend
-      template : "{{#members}}<member alternate_email='{{alternate_email}}' bio='{{bio}}' created_at='{{created_at}}' department='{{department}}' email='{{email}}' first_name='{{first_name}}' home_phone='{{home_phone}}' id='{{id}}' last_name='{{last_name}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' organization='{{organization}}' title='{{title}}' />{{/}}"
+      template : "#members_template"
       components :
         member : Member
       remove : (id)->
@@ -260,8 +259,6 @@
 
     NewMember = Ractive.extend
       template : '#new_member_template'
-      oninit : ->
-        @set('first_name_error',false)
       onrender : ->
         $('#new_member_modal').on 'hidden.bs.modal', => @set(new_member)
       cancel_modal : ->
@@ -269,7 +266,7 @@
         @set(new_member)
       save_member : ->
         if @validate()
-          data = {member : _(@get()).omit(['first_name_error', 'last_name_error'])}
+          data = {member : _(@get()).omit(['url', 'id', 'first_name_error', 'last_name_error', 'delete_confirmation_message'])}
           $.post(create_url, data, @create_callback )
           @cancel_modal()
       create_callback : (response, statusText, jqxhr)->

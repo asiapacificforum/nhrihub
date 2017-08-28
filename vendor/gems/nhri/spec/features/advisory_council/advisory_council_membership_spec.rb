@@ -24,6 +24,7 @@ feature "index page", :js => true do
     page.find('#add_member').click
     wait_for_modal_open
     expect(page).to have_selector('#new_member_modal h4', :text => 'New advisory council member')
+    sleep(0.2)
     fill_in("First name", :with => "Cathryn")
     fill_in("Last name", :with => "McKenzie")
     fill_in("Title", :with => "Director")
@@ -118,7 +119,8 @@ feature "index page", :js => true do
     first_member_edit.click
     wait_for_modal_open
     id = AdvisoryCouncilMember.first.id
-    expect(page).to have_selector("#edit_member#{id}_modal h4", :text => 'Edit advisory council member')
+    expect(page).to have_selector("#edit_member_modal h4", :text => 'Edit advisory council member')
+    sleep(0.2)
     new_bio = Faker::Lorem.sentences(2).join(' ')
     fill_in("First name", :with => "Letitia")
     fill_in("Last name", :with => "Effertz")
@@ -151,7 +153,7 @@ feature "index page", :js => true do
     wait_for_modal_open
     advisory_council_member = AdvisoryCouncilMember.first
     id = advisory_council_member.id
-    expect(page).to have_selector("#edit_member#{id}_modal h4", :text => 'Edit advisory council member')
+    expect(page).to have_selector("#edit_member_modal h4", :text => 'Edit advisory council member')
     new_bio = Faker::Lorem.sentences(2).join(' ')
     fill_in("First name", :with => "Letitia")
     fill_in("Last name", :with => "Effertz")
@@ -161,10 +163,10 @@ feature "index page", :js => true do
     fill_in("Biography", :with => new_bio)
     fill_in("Organization", :with => "Some organization")
     fill_in("Department", :with => "Department of public affairs")
-    page.find("#edit_member#{id}_modal #cancel")
+    page.find("#edit_member_modal #cancel")
     page.find('#cancel').click
     wait_for_modal_close
-    expect(page).not_to have_selector("#edit_member#{id}_modal")
+    expect(page).not_to have_selector("#edit_member_modal")
     expect(page).to have_selector('#members .member .name', :text => "#{advisory_council_member.first_name} #{advisory_council_member.last_name}")
     expect(page).to have_selector('#members .member .email', :text => advisory_council_member.email)
     expect(page).to have_selector('#members .member .alternate_email', :text => advisory_council_member.alternate_email)
