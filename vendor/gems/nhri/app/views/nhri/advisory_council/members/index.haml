@@ -17,7 +17,7 @@
     .col-md-1
   #members
     <members members='{{members}}' />
-  <newmember first_name_error=false last_name_error=false first_name='{{first_name}}' last_name='{{last_name}}' title='{{title}}' organization='{{organization}}' department='{{department}}' mobile_phone='{{mobile_phone}}' office_phone='{{office_phone}}' home_phone='{{home_phone}}' email='{{email}}' alternate_email='{{alternate_email}}' bio='{{bio}}' />
+  <newMember />
 
 :css
   table#new_member tr td {
@@ -131,7 +131,7 @@
         %i.fa.fa-lg.fa-pencil-square-o
       .icon.delete{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe, :style=>'margin-left:18px;'}
         %i.fa.fa-trash-o.fa-lg
-  <editmember id='' alternate_email='' bio='' created_at='' department='' email='' first_name='' home_phone='' last_name='' mobile_phone='' office_phone='' organization='' title='' />
+  <editMember />
 
 %script#contact_template{:type => 'template/ractive'}
   {{#home_phone}}<homephone class='home_phone' letter='h' value='{{home_phone}}' />{{/}}
@@ -208,7 +208,8 @@
         email : Email
         alternateemail : AlternateEmail
 
-    EditMember = Ractive.extend
+    Ractive.components.editMember = Ractive.extend
+      data : new_member
       isolated: true
       template : '#edit_member_template'
       onrender : ->
@@ -236,7 +237,6 @@
       template : '#member_template'
       components :
         contact : Contact
-        editmember : EditMember
       computed :
         url : ->
           Routes.nhri_advisory_council_member_path(current_locale, @get('id'))
@@ -244,7 +244,7 @@
           delete_confirmation_message + @get('first_name') + " " +@get('last_name') + "?"
       edit_this : ->
         $(@find('#edit_member_modal')).modal('show')
-        @findComponent('editmember').set(@get())
+        @findComponent('editMember').set(@get())
       delete_callback : ->
         @parent.remove(@get('id'))
     , ConfirmDeleteModal
@@ -257,13 +257,26 @@
         index = _(@get('members')).pluck('id').indexOf(id)
         @splice('members',index,1)
 
-    NewMember = Ractive.extend
+    Ractive.components.newMember = Ractive.extend
       template : '#new_member_template'
+      data :
+        first_name_error:false
+        last_name_error:false
+        first_name:''
+        last_name:''
+        title:''
+        organization:''
+        department:''
+        mobile_phone:''
+        office_phone:''
+        home_phone:''
+        email:''
+        alternate_email:''
+        bio:''
       onrender : ->
         $('#new_member_modal').on 'hidden.bs.modal', => @set(new_member)
       cancel_modal : ->
         $('#new_member_modal').modal('hide')
-        @set(new_member)
       save_member : ->
         if @validate()
           data = {member : _(@get()).omit(['url', 'id', 'first_name_error', 'last_name_error', 'delete_confirmation_message'])}
@@ -283,6 +296,5 @@
         members : members
       components :
         members : Members
-        newmember : NewMember
       add_member : ->
         $('#new_member_modal').modal('show')
