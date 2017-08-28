@@ -51,7 +51,7 @@
   {{>member_form {type : 'edit_member', id:id, heading : '#{t('.edit_member')}'} }}
 
 %script#member_form{:type => 'template/ractive'}
-  <modal-custom id="{{type}}_modal" type="xl">
+  <modal-custom fade='{{fade}}' id="{{type}}_modal" type="xl">
   <modal-header>
   <h4> {{heading}} <modal-close/></h4>
   </modal-header>
@@ -216,7 +216,7 @@
         $(@find("#edit_member_modal")).on 'show.bs.modal', => @copy_parent_attrs()
       save_member : ->
         url = Routes.nhri_advisory_council_member_path(current_locale, @get('id'))
-        data = {member : _(@get()).omit(['url', 'id', 'first_name_error', 'last_name_error', 'delete_confirmation_message']), '_method':'put'}
+        data = {member : _(@get()).omit(['fade', 'url', 'id', 'first_name_error', 'last_name_error', 'delete_confirmation_message']), '_method':'put'}
         context = @
         $.ajax
           url : url
@@ -273,13 +273,14 @@
         email:''
         alternate_email:''
         bio:''
+        fade : window.env != 'test'
       onrender : ->
         $('#new_member_modal').on 'hidden.bs.modal', => @set(new_member)
       cancel_modal : ->
         $('#new_member_modal').modal('hide')
       save_member : ->
         if @validate()
-          data = {member : _(@get()).omit(['url', 'id', 'first_name_error', 'last_name_error', 'delete_confirmation_message'])}
+          data = {member : _(@get()).omit(['fade', 'url', 'id', 'first_name_error', 'last_name_error', 'delete_confirmation_message'])}
           $.post(create_url, data, @create_callback )
           @cancel_modal()
       create_callback : (response, statusText, jqxhr)->

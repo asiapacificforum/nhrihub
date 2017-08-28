@@ -22,9 +22,8 @@ feature "index page", :js => true do
 
   it "should add a member" do
     page.find('#add_member').click
-    wait_for_modal_open
+    #wait_for_modal_open
     expect(page).to have_selector('#new_member_modal h4', :text => 'New advisory council member')
-    sleep(0.2)
     fill_in("First name", :with => "Cathryn")
     fill_in("Last name", :with => "McKenzie")
     fill_in("Title", :with => "Director")
@@ -34,11 +33,11 @@ feature "index page", :js => true do
     fill_in("Organization", :with => "Some organization")
     fill_in("Department", :with => "Department of public affairs")
     expect{page.find('#save').click; wait_for_ajax}.to change{AdvisoryCouncilMember.count}.by(1)
-    wait_for_modal_close
+    #wait_for_modal_close
     expect(page).not_to have_selector('#new_member_modal')
     expect(page).to have_selector('#members .member .name', :text => 'Cathryn McKenzie')
     page.find('#add_member').click
-    wait_for_modal_open
+    #wait_for_modal_open
     expect(page).to have_selector('#new_member_modal h4', :text => 'New advisory council member')
     expect(page.find(:field, "First name").value).to be_blank
   end
@@ -75,7 +74,7 @@ feature "index page", :js => true do
     fill_in("Organization", :with => "Some organization")
     fill_in("Department", :with => "Department of public affairs")
     modal_close_icon.click
-    wait_for_modal_close
+    #wait_for_modal_close
     page.find('#add_member').click
     expect(page).to have_selector('#new_member_modal h4', :text => 'New advisory council member')
     expect(page.find(:field, "First name").value).to be_blank
@@ -90,7 +89,7 @@ feature "index page", :js => true do
 
   it "should clear the form when adding is canceled by closing the modal by clicking cancel icon" do
     page.find('#add_member').click
-    wait_for_modal_open
+    #wait_for_modal_open
     expect(page).to have_selector('#new_member_modal h4', :text => 'New advisory council member')
     fill_in("First name", :with => "Cathryn")
     fill_in("Last name", :with => "McKenzie")
@@ -101,9 +100,9 @@ feature "index page", :js => true do
     fill_in("Organization", :with => "Some organization")
     fill_in("Department", :with => "Department of public affairs")
     add_member_cancel_icon.click
-    wait_for_modal_close
+    #wait_for_modal_close
     page.find('#add_member').click
-    wait_for_modal_open
+    #wait_for_modal_open
     expect(page).to have_selector('#new_member_modal h4', :text => 'New advisory council member')
     expect(page.find(:field, "First name").value).to be_blank
     expect(page.find(:field, "Last name").value).to be_blank
@@ -117,7 +116,7 @@ feature "index page", :js => true do
 
   it "should save edited fields" do
     first_member_edit.click
-    wait_for_modal_open
+    #wait_for_modal_open
     id = AdvisoryCouncilMember.first.id
     expect(page).to have_selector("#edit_member_modal h4", :text => 'Edit advisory council member')
     sleep(0.2)
@@ -132,7 +131,7 @@ feature "index page", :js => true do
     fill_in("Department", :with => "Department of public affairs")
     page.find('#save').click
     wait_for_ajax
-    wait_for_modal_close
+    #wait_for_modal_close
     advisory_council_member = AdvisoryCouncilMember.first
     expect(advisory_council_member.first_name).to eq "Letitia"
     expect(advisory_council_member.last_name).to eq "Effertz"
@@ -150,7 +149,7 @@ feature "index page", :js => true do
 
   it "should restore values if edit is cancelled" do
     first_member_edit.click
-    wait_for_modal_open
+    #wait_for_modal_open
     advisory_council_member = AdvisoryCouncilMember.first
     id = advisory_council_member.id
     expect(page).to have_selector("#edit_member_modal h4", :text => 'Edit advisory council member')
@@ -165,13 +164,13 @@ feature "index page", :js => true do
     fill_in("Department", :with => "Department of public affairs")
     page.find("#edit_member_modal #cancel")
     page.find('#cancel').click
-    wait_for_modal_close
+    #wait_for_modal_close
     expect(page).not_to have_selector("#edit_member_modal")
     expect(page).to have_selector('#members .member .name', :text => "#{advisory_council_member.first_name} #{advisory_council_member.last_name}")
     expect(page).to have_selector('#members .member .email', :text => advisory_council_member.email)
     expect(page).to have_selector('#members .member .alternate_email', :text => advisory_council_member.alternate_email)
     first_member_edit.click
-    wait_for_modal_open
+    #wait_for_modal_open
     advisory_council_member = AdvisoryCouncilMember.first
     expect(page.find('input#new_member_first_name').value).to eq advisory_council_member.first_name
   end
