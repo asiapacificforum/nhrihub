@@ -15,7 +15,7 @@
               %td= t('.download')
               %td= t('.delete')
         .panel-group.files#advisory_council_minutes
-          <docs/>
+          <docs files="{{files}}" />
 
 %script#template-download{:type => 'html/template'}
   .panel.panel-default.template-download
@@ -55,27 +55,27 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 %script#document_template{:type => 'template/html'}
-  %table.advisory_council_minutes.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"advisory_council_minutes_editable{{id}}"}
+  %table.advisory_council_minutes.editable_container{:style => "width:800px", 'as-inpage_edit'=>'id', :id=>"advisory_council_minutes_editable{{id}}"}
     %tr
       %td.title.form-group{ :style => "width:36%", 'data-attribute' => :title}
         %span {{ title }}
       -# make sure it's on top of the next td, even though it precedes in the html
       %td.include_popover{:style => "text-align:center; width:8%"}
-        .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
+        .icon.details{'as-popover'=>true, :'data-toggle' => 'edit'}
           %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
       %td{:style => "text-align:center; width:8%"}
         .icon
-          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
+          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'@this.download_file()'.html_safe}
       %td{:style => "text-align:center; width:8%"}
-        %div.icon.delete{'on-click'=>'show_confirm_delete_modal()'}
+        %div.icon.delete{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
           %i.fa.fa-trash-o.fa-lg
 
-%script#files{:type => 'ractive/template'}
+%script#documents_template{:type => 'ractive/template'}
   {{#files}}
   <doc id='{{id}}' title='{{title}}' date='{{date}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_date='{{formatted_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}'  />
   {{/files}}
 
-%script#upload_template{:type => 'html/template'}
+%script#upload_document_template{:type => 'html/template'}
   .row
     .col-md-9
       .panel.panel-default.template-upload{:intro => :fade}
@@ -97,10 +97,10 @@
             %tr
               %td.date
                 %label{:for => "advisory_council_minutes_date"}= t('.date')
-                %input{:type => :text, :decorator=>:datepicker, :name => "advisory_council_minutes[date]", :id => "advisory_council_minutes_date", :style => "width:150px", :value => "{{date}}"}
+                %input{:type => :text, 'as-datepicker'=>true, :name => "advisory_council_minutes[date]", :id => "advisory_council_minutes_date", :style => "width:150px", :value => "{{date}}"}
               %td
-                %div.start{'on-click'=>'submit()'}
+                %div.start{'on-click'=>'@this.submit()'.html_safe}
                   %i.fa.fa-cloud-upload.fa-lg
               %td
                 %div.cancel
-                  %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
+                  %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"@this.cancel_upload()".html_safe}
