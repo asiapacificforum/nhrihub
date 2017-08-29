@@ -16,21 +16,21 @@
             .form-group{:class => '{{#title_error}}has-error{{/}}'}
               %label.col-sm-3.control-label= t('.title')
               .col-sm-5
-                =text_area(:indicator, :title, :id => :indicator_title, :placeholder => t('.enter_title'), :class => 'form-control', :value=>'{{title}}', 'on-keydown'=>'remove_title_error()')
+                =text_area(:indicator, :title, :id => :indicator_title, :placeholder => t('.enter_title'), :class => 'form-control', :value=>'{{title}}', 'on-keydown'=>'@this.remove_title_error()'.html_safe)
                 %span.help-block#title_error= t('.title_error_message')
             .form-group{:class => '{{#monitor_format_error}}has-error{{/}}'}
               %label.col-sm-3.control-label= t('.monitor')
               .col-sm-5
-                =select_tag(:indicator_monitor_format, monitor_format_options, :include_blank => t('.select_format'), :value => '{{monitor_format}}', :id => :indicator_monitor_format, :class => 'form-control', 'on-change'=>'validate_monitor_format()')
+                =select_tag(:indicator_monitor_format, monitor_format_options, :include_blank => t('.select_format'), :value => '{{monitor_format}}', :id => :indicator_monitor_format, :class => 'form-control', 'on-change'=>'@this.validate_monitor_format()'.html_safe)
                 %span.help-block#monitor_format_error= t('.monitor_format_error_message')
             .form-group#explanation{:class => '{{#numeric_monitor_explanation_error}}has-error{{/}}', :style => 'display:{{#numeric_monitor_format}}block{{else}}none{{/}}'}
               %label.col-sm-3.control-label= t('.explanation')
               .col-sm-5
-                =text_field(:indicator, :numeric_monitor_explanation, :id => :indicator_numeric_monitor_explanation, :placeholder => t('.enter_explanation'), :class => 'form-control', :value => '{{numeric_monitor_explanation}}', 'on-keydown'=>'remove_numeric_monitor_explanation_error()')
+                =text_field(:indicator, :numeric_monitor_explanation, :id => :indicator_numeric_monitor_explanation, :placeholder => t('.enter_explanation'), :class => 'form-control', :value => '{{numeric_monitor_explanation}}', 'on-keydown'=>'@this.remove_numeric_monitor_explanation_error()'.html_safe)
                 %span.help-block#numeric_monitor_explanation_error= t('.numeric_monitor_explanation_error_message')
             .row
               .col-sm-5.col-sm-offset-3
-                .btn.btn-success.btn-sm#save_indicator{:style => "margin-bottom:12px; color:white;", 'on-click' => "save_indicator()"}
+                .btn.btn-success.btn-sm#save_indicator{:style => "margin-bottom:12px; color:white;", 'on-click' => "@this.save_indicator()".html_safe}
                   %span= t('.save')
 
 :coffeescript

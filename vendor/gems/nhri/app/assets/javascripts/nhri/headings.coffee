@@ -72,7 +72,7 @@ EditHumanRightsAttribute = Ractive.extend
     {human_rights_attribute : {description : @get('description')}}
   remove_description_error : ->
     @set('description_error', false)
-, ConfirmDeleteModal
+.extend ConfirmDeleteModal
 
 Heading = Ractive.extend
   template : "#heading_template"
@@ -97,6 +97,7 @@ Heading = Ractive.extend
     @remove_errors()
     @set('expanded',false)
   save_heading : ->
+    event.stopPropagation()
     data = {heading : {title : @get('title'), human_rights_attributes_attributes : @get('human_rights_attributes_attributes')}}
     url = Routes.nhri_headings_path(current_locale)
     if @validate()
@@ -125,6 +126,7 @@ Heading = Ractive.extend
   add_attribute_to_new_heading : ->
     # here we don't claim_user_input_request b/c
     # we will allow adding heading and adding attribute simultaneously
+    event.stopPropagation()
     @_add_attribute_in('attribute')
   add_attribute_to_existing_heading : ->
     UserInput.claim_user_input_request(@,'remove_attribute_from_existing_heading')
@@ -150,7 +152,7 @@ Heading = Ractive.extend
     UserInput.reset()
     @set('expanded',!@get('expanded'))
     $("#edit_attributes#{@get('id')}").collapse('toggle')
-, ConfirmDeleteModal
+.extend ConfirmDeleteModal
 
 Headings = Ractive.extend
   template : "{{#headings}}<heading id='{{id}}' title='{{title}}' human_rights_attributes='{{human_rights_attributes}}'/>{{/headings}}"

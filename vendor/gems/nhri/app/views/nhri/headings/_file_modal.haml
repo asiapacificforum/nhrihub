@@ -11,11 +11,11 @@
       .col-md-1
       .col-md-1
       .col-md-1
-        %i.fa.fa-info-circle.fa-lg#show_details{:decorator => :popover, :style=>"display:{{#unless original_filename}}none{{/unless}}"}
+        %i.fa.fa-info-circle.fa-lg#show_details{'as-popover'=>true, :style=>"display:{{#unless original_filename}}none{{/unless}}"}
       .col-md-1
-        %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()', 'data-toggle'=>'tooltip', :title => t('.download'), :style=>"display:{{#unless original_filename}}none{{/unless}}"}
+        %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'@this.download_file()'.html_safe, 'data-toggle'=>'tooltip', :title => t('.download'), :style=>"display:{{#unless original_filename}}none{{/unless}}"}
       .col-md-1
-        %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => "show_confirm_delete_modal({type:'FileMonitor'})", :style => "position:relative; top:-2px; display:{{#unless original_filename}}none{{/unless}}"}
+        %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => "@this.show_confirm_delete_modal({type:'FileMonitor'})".html_safe, :style => "position:relative; top:-2px; display:{{#unless original_filename}}none{{/unless}}"}
     .row.fileupload
       .col-md-12
         .row.fileupload_progress
@@ -29,19 +29,19 @@
         .row{:style => 'min-height:75px;'}
           .col-md-2#fileinput_button
             %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
-            %input#monitor_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"monitor[file]", :decorator=>:ractive_fileupload}
+            %input#monitor_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"monitor[file]", 'as-ractive_fileupload'=>true}
           .col-md-10#selected_file_container
             <selectedFile />
         .row
           .col-md-2
-            %span.btn.btn-success.btn-xs#save_monitor{'on-click' => "save_file()"}= t('.save')
+            %span.btn.btn-success.btn-xs#save_monitor{'on-click' => "@this.save_file()".html_safe}= t('.save')
   </modal-body>
   </modal-custom>
 
 %script#selected_file_template{:type => 'template/ractive'}
   %span#selected_file {{ name }}
   %span
-    %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px; display:{{#name}}inline{{else}}none{{/}}', 'on-click'=>'deselect_file()'}
+    %i.fa.fa-remove.fa-lg#deselect_file{:style =>'padding-left:30px; display:{{#name}}inline{{else}}none{{/}}', 'on-click'=>'@this.deselect_file()'.html_safe}
   %div
   .form-group{:class => "{{#filesize_error}}has-error{{/}}"}
     %span.help-block#filesize_error{:style => "margin-top:0; margin-bottom:0;"}= t('.too_large')

@@ -6,10 +6,10 @@
   {{/if}}
 
 %script#show_heading_template{:type => 'template/ractive'}
-  .row.heading.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"heading_editable{{id}}"}
+  .row.heading.editable_container{'as-inpage_edit'=>'id', :id=>"heading_editable{{id}}"}
     .col-md-8.title.form-group{'data-attribute' => :title, 'data-toggle' => :edit, :'data-name' => 'title', :style => "margin-bottom:0px; min-height:34px;"}
       .fade.edit
-        %input#heading_title.form-control{'value' => "{{title}}", 'on-keydown'=>'remove_errors()'}
+        %input#heading_title.form-control{'value' => "{{title}}", 'on-keydown'=>'@this.remove_errors()'.html_safe}
         %span.help-block.error#title_error{:class=>"{{#title_error}}has-error{{/}}"}=t('.blank_title_error')
       .fade.no_edit.editable.in
         %span
@@ -18,22 +18,22 @@
       .icon{'data-toggle' => 'edit'}
         .fade.edit
         .fade.no_edit.in
-          %i.show_attributes{:id => "{{#if expanded}}compact{{else}}expand{{/if}}", 'on-click'=>'toggle_attributes()', 'data-toggle'=>'tooltip', 'title'=>t('.show_attributes'), :style => "position:relative; top:3px;"}
+          %i.show_attributes{:id => "{{#if expanded}}compact{{else}}expand{{/if}}", 'on-click'=>'@this.toggle_attributes()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>t('.show_attributes'), :style => "position:relative; top:3px;"}
     .col-md-1
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
         .fade.edit
-          %i.fa.fa-remove.fa-lg{:id => "heading_editable{{id}}_edit_cancel"}
+          %i.fa.fa-remove.fa-lg#edit_cancel
     .col-md-1
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
-          %i.fa.fa-check.fa-lg{:id => "heading_editable{{id}}_edit_save"}
+          %i.fa.fa-check.fa-lg#edit_save
         .fade.no_edit.in
-          %i.fa.fa-pencil-square-o.fa-lg{:id => "heading_editable{{id}}_edit_start"}
+          %i.fa.fa-pencil-square-o.fa-lg#edit_start
     .col-md-1
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
         .fade.no_edit.in
-          .delete_heading{'on-click'=>'show_confirm_delete_modal()'}
+          .delete_heading{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
             %i.fa.fa-trash-o.fa-lg
   .row.collapse{:id => "edit_attributes{{id}}"}
     .col-md-12#attributes
@@ -41,7 +41,7 @@
         .col-md-8
           %label=t('.attributes')
         .col-md-1
-          %i.fa.fa-plus.fa-lg#add_attribute{'on-click'=>'add_attribute_to_existing_heading()', 'data-toggle'=>'tooltip', 'title'=>t('.add_attribute'), :style => "position:relative; top:-5px; left:-4px;"}
+          %i.fa.fa-plus.fa-lg#add_attribute{'on-click'=>'@this.add_attribute_to_existing_heading()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>t('.add_attribute'), :style => "position:relative; top:-5px; left:-4px;"}
       {{#human_rights_attributes}}
       <editHumanRightsAttribute heading_id='{{heading_id}}' description='{{description}}' id='{{id}}' />
       {{/human_rights_attributes}}
@@ -56,28 +56,28 @@
 
 // when attributes are being shown in the attributes dropdown, they're editable
 %script#editable_attribute_template{:type => 'ractive/template'}
-  .row.attribute.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"attribute_editable{{id}}"}
+  .row.attribute.editable_container{'as-inpage_edit'=>'id', :id=>"attribute_editable{{id}}"}
     .col-md-9.description.form-group{'data-attribute' => :description, 'data-toggle' => :edit, :'data-name' => 'description', :class=>"{{#description_error}}has-error{{/}}"}
       .fade.edit
-        %input#attribute_description.form-control{'value' => "{{description}}", :style=>"width:500px;", 'on-keydown'=>'remove_description_error()'}
+        %input#attribute_description.form-control{'value' => "{{description}}", :style=>"width:500px;", 'on-keydown'=>'@this.remove_description_error()'.html_safe}
         %span.help-block.error#description_error=t('.blank_description_error')
       .fade.no_edit.editable.in
         %span {{description}}
     .col-md-1
       .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
         .fade.edit
-          %i.fa.fa-remove.fa-lg{:id => "attribute_editable{{id}}_edit_cancel"}
+          %i.fa.fa-remove.fa-lg#edit_cancel
     .col-md-1
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
-          %i.fa.fa-check.fa-lg{:id => "attribute_editable{{id}}_edit_save"}
+          %i.fa.fa-check.fa-lg#edit_save
         .fade.no_edit.in
-          %i.fa.fa-pencil-square-o.fa-lg{:id => "attribute_editable{{id}}_edit_start"}
+          %i.fa.fa-pencil-square-o.fa-lg#edit_start
     .col-md-1
       .icon{:'data-toggle' => 'edit'}
         .fade.edit
         .fade.no_edit.in
-          .delete_attribute{'on-click'=>'show_confirm_delete_modal()'}
+          .delete_attribute{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
             %i.fa.fa-trash-o.fa-lg
 
 %script#new_heading_template{:type => 'template/ractive'}
@@ -85,21 +85,21 @@
     .row{:style => "background-color: #c7be9a; margin-left:0px; margin-right:0px;"}
       .col-md-8.form-group{:class => "{{#title_error}}has-error{{/}}"}
         %label{:for => 'heading_title'}=t('.title')
-        %input#heading_title.form-control{:type => :text, :value => "{{title}}", 'on-keydown'=>"remove_errors()"}
+        %input#heading_title.form-control{:type => :text, :value => "{{title}}", 'on-keydown'=>"@this.remove_errors()".html_safe}
         %span.help-block.error#title_error=t('.blank_title_error')
       .col-md-1
         .icon
-          %i.fa.fa-remove.fa-lg#heading_cancel{'on-click' => 'cancel_new_heading()'}
+          %i.fa.fa-remove.fa-lg#heading_cancel{'on-click' => '@this.cancel_new_heading()'.html_safe}
       .col-md-1
         .icon
-          %i.fa.fa-check.fa-lg#heading_save{'on-click' => 'save_heading()'}
+          %i.fa.fa-check.fa-lg#heading_save{'on-click' => '@this.save_heading()'.html_safe}
     .row{:style => "background-color: #c7be9a; margin-left:0px; margin-right:0px;"}
       .col-md-8
         %label=t('.attributes')
       .col-md-1
-        %i.fa.fa-plus.fa-lg#add_attribute{'on-click'=>'add_attribute_to_new_heading()', 'data-toggle'=>'tooltip', 'title'=>t('.add_attribute')}
+        %i.fa.fa-plus.fa-lg#add_attribute{'on-click'=>'@this.add_attribute_to_new_heading()'.html_safe, 'data-toggle'=>'tooltip', 'title'=>t('.add_attribute')}
     {{#human_rights_attributes}}
-    <attribute />
+    <attribute description='{{description}}' id='{{id}}' />
     {{/human_rights_attributes}}
 
 // when attributes are added while a new heading is being added
@@ -120,15 +120,15 @@
     .col-md-8.form-group
       %input.form-control.attribute_description{:type => :text, :value =>'{{ description }}'}
     .col-md-2
-      %i.fa.fa-remove.fa-lg.deselect_attribute{:style =>'position:relative; top:6px;', 'on-click'=>'deselect_attribute()'}
+      %i.fa.fa-remove.fa-lg.deselect_attribute{:style =>'position:relative; top:6px;', 'on-click'=>'@this.deselect_attribute()'.html_safe}
 
 // when attributes are added individually
 %script#new_edit_attribute_template{:type => 'template/ractive'}
   .row#new_attribute
     .col-md-8.form-group{:class=>"{{#description_error}}has-error{{/}}"}
-      %input#attribute_description{:type => :text, :value =>'{{ description }}', 'on-keydown'=>"remove_errors()"}
+      %input#attribute_description{:type => :text, :value =>'{{ description }}', 'on-keydown'=>"@this.remove_errors()".html_safe}
       %span.help-block.error#description_error=t('.blank_description_error')
     .col-md-1
-      %i.fa.fa-remove.fa-lg#terminate_attribute{'on-click'=>'terminate_attribute()'}
+      %i.fa.fa-remove.fa-lg#terminate_attribute{'on-click'=>'@this.terminate_attribute()'.html_safe}
     .col-md-1
-      %i.fa.fa-check.fa-lg{'on-click'=>'save_attribute()'}
+      %i.fa.fa-check.fa-lg{'on-click'=>'@this.save_attribute()'.html_safe}

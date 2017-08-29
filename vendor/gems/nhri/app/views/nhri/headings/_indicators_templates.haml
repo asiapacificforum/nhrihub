@@ -13,11 +13,11 @@
   %li.indicator
     {{title}}
     .indicator_actions.actions{:style => "display:flex; flex-direction:row; margin-left:-15px; margin-bottom:12px; padding-top:5px;"}
-      .edit_icon.edit_indicator{'on-click'=>'edit_indicator()', :style => "line-height:initial;"}
-      .monitor_icon.show_monitors{'data-count'=>"{{monitors_count}}", 'on-click' => "show_monitors_panel()", :style => " margin-left:28px;"}
-      .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "margin-left:30px;"}
-      .note_icon.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "show_notes_panel()", :style => "margin-left:30px;"}
-      .delete_icon.delete_indicator{'on-click' => 'show_confirm_delete_modal()', :style => "position:relative;left:28px;line-height:initial;"}
+      .edit_icon.edit_indicator{'on-click'=>'@this.edit_indicator()'.html_safe, :style => "line-height:initial;"}
+      .monitor_icon.show_monitors{'data-count'=>"{{monitors_count}}", 'on-click' => "@this.show_monitors_panel()".html_safe, :style => " margin-left:28px;"}
+      .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "@this.show_reminders_panel()".html_safe, :style => "margin-left:30px;"}
+      .note_icon.show_notes.counter{'data-count'=>"{{notes_count}}", 'on-click' => "@this.show_notes_panel()".html_safe, :style => "margin-left:30px;"}
+      .delete_icon.delete_indicator{'on-click' => '@this.show_confirm_delete_modal()'.html_safe, :style => "position:relative;left:28px;line-height:initial;"}
   <fileMonitor />
 
 %script#natures_template{:type => 'ractive/template'}
@@ -39,7 +39,7 @@
 
 %script#nature_all_attributes_template{:type => 'ractive/template'}
   .col-md-12{:style => "padding-left: 30%;", :class =>"all_attribute_indicators"}
-    %i.fa.fa-plus.fa-sm.new_indicator{'on-click'=>'new_indicator()', :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_indicator')}
+    %i.fa.fa-plus.fa-sm.new_indicator{'on-click'=>'@this.new_indicator()'.html_safe, :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>t('.add_indicator')}
     %div{:style => "display:inline-block;"}
       %ul{:style => "padding-left:10px"}
         {{#all_attribute_indicators}}
@@ -48,7 +48,7 @@
 
 %script#nature_attribute_template{:type => 'ractive/template'}
   .col-md-2{:style => "width:{{100/human_rights_attributes.length}}%", :class => "single_attribute_indicators"}
-    %i.fa.fa-plus.fa-sm.new_indicator{ 'on-click'=>'new_indicator()', :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add indicator"}
+    %i.fa.fa-plus.fa-sm.new_indicator{ 'on-click'=>'@this.new_indicator()'.html_safe, :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add indicator"}
     %ul{:style => "padding-left:10px"}
       {{#this[name+'_indicators']}}
       <indicator heading_id='{{heading_id}}' monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' numeric_monitors='{{numeric_monitors}}' text_monitors='{{text_monitors}}' file_monitor='{{file_monitor}}' title='{{title}}' />
