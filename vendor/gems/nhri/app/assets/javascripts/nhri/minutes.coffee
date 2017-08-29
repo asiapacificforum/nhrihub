@@ -135,7 +135,7 @@ $ ->
       @parent.remove(@_guid)
 
   UploadDocuments = Ractive.extend
-    template: "{{#upload_documents}}<uploadDocument filesize='{{filesize}}' name='{{name}}' original_filename='{{original_filename}}' original_type='{{original_type}}' lastModifiedDate='{{lastModifiedDate}}' date='{{date}}' />{{/upload_documents}}"
+    template: "#upload_documents_template"
     components:
       uploadDocument : UploadDocument
     remove : (guid)->

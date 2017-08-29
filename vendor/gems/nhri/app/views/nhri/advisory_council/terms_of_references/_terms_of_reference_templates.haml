@@ -14,7 +14,7 @@
               %td= t('.download')
               %td= t('.delete')
         .panel-group.files#terms_of_reference_versions
-          <docs/>
+          <docs files="{{files}}" />
 
 %script#template-download{:type => 'html/template'}
   .panel.panel-default.template-download
@@ -54,7 +54,7 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 %script#document_template{:type => 'template/html'}
-  %table.terms_of_reference_version.editable_container{:style => "width:800px", :decorator=>'inpage_edit:{{id}}', :id=>"terms_of_reference_version_editable{{id}}"}
+  %table.terms_of_reference_version.editable_container{:style => "width:800px", 'as-inpage_edit'=>'id', :id=>"terms_of_reference_version_editable{{id}}"}
     %tr
       %td.title.form-group{ :style => "width:36%", 'data-attribute' => :title}
         %span {{ title }}
@@ -65,33 +65,32 @@
           %span.help-block.error#revision_format_error{:class =>"{{#revision_format_error}}has-error{{/}}"}= t('.revision_format_error_message')
         .fade.no_edit.editable.in
           %span {{ revision }}
-      -# make sure it's on top of the next td, even though it precedes in the html
       %td.include_popover{:style => "text-align:center; width:8%"}
-        .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
+        .icon.details{'as-popover'=>true, :'data-toggle' => 'edit'}
           %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
       %td{:style => "width:8%"}
         .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
           .fade.edit
-            %i.fa.fa-remove.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_cancel",:style => "position:relative; left:40px;"}
+            %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative; left:40px;"}
       %td{:style => "width:8%"}
         %div.icon{:'data-toggle' => 'edit'}
           .fade.edit
-            %i.fa.fa-check.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_save", :style => "position:relative; left:21px;"}
+            %i.fa.fa-check.fa-lg#edit_save{:style => "position:relative; left:21px;"}
           .fade.no_edit.in
-            %i.fa.fa-pencil-square-o.fa-lg{:id => "terms_of_reference_version_editable{{id}}_edit_start", :style => "position:relative; left:-5px;"}
+            %i.fa.fa-pencil-square-o.fa-lg#edit_start{:style => "position:relative; left:-5px;"}
       %td{:style => "text-align:center; width:8%"}
         .icon
-          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
+          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'@this.download_file()'.html_safe}
       %td{:style => "text-align:center; width:8%"}
-        %div.icon.delete{'on-click'=>'show_confirm_delete_modal()'}
+        %div.icon.delete{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
           %i.fa.fa-trash-o.fa-lg
 
-%script#files{:type => 'ractive/template'}
+%script#documents_template{:type => 'ractive/template'}
   {{#files}}
-  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' document_group_id='{{document_group_id}}' type='{{type}}' />
+  <doc id='{{id}}' title='{{title}}' revision='{{revision}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_modification_date='{{formatted_modification_date}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' type='{{type}}' />
   {{/files}}
 
-%script#upload_template{:type => 'html/template'}
+%script#upload_document_template{:type => 'html/template'}
   .row
     .col-md-9
       .panel.panel-default.template-upload{:intro => :fade}
@@ -117,13 +116,13 @@
                 %span.help-block.error#unique_revision_error{:class =>"{{#unique_revision_error}}has-error{{/}}"}= t('.unique_revision_error_message')
                 %span.help-block.error#revision_format_error{:class =>"{{#revision_format_error}}has-error{{/}}"}= t('.revision_format_error_message')
               %td
-                %div.start{'on-click'=>'submit()'}
+                %div.start{'on-click'=>'@this.submit()'.html_safe}
                   %i.fa.fa-cloud-upload.fa-lg
               %td
                 %div.cancel
-                  %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
+                  %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"@this.cancel_upload()".html_safe}
 
 %script#upload_documents_template{:type => 'html/template'}
   {{#upload_documents}}
-  <uploadDocument revision='{{revision}}' size='{{size}}' name='{{name}}' lastModifiedDate='{{lastModifiedDate}}' document_group_id='{{document_group_id}}' />
+  <uploadDocument file='{{file}}' id='{{id}}' revision='{{revision}}' filesize='{{filesize}}' original_filename='{{original_filename}}' original_type='{{original_type}}' lastModifiedDate='{{lastModifiedDate}}' />
   {{/upload_documents}}

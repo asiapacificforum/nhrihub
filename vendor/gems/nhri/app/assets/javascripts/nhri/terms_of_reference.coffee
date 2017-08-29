@@ -71,7 +71,7 @@ $ ->
   Ractive.decorators.popover = Popover
 
   UploadDocument = Ractive.extend
-    template : "#upload_template"
+    template : "#upload_document_template"
     oninit : ->
       @set 'validation_criteria',
         filesize :
@@ -169,10 +169,10 @@ $ ->
       @validator.validate_attribute('revision_format') && @validator.validate_attribute('unique_revision')
     delete_callback : (data,textStatus,jqxhr)->
       @parent.delete(@)
-  , ConfirmDeleteModal
+  .extend ConfirmDeleteModal
 
   Docs = Ractive.extend
-    template: '#files'
+    template: '#documents_template'
     components:
       doc : Doc
     delete : (doc)->
@@ -206,6 +206,7 @@ $ ->
         lastModifiedDate : file.lastModifiedDate
       terms_of_reference_document_uploader.unshift('upload_documents', attached_document)
     start_upload : ->
+      event.stopPropagation()
       flash.notify() if @get('empty_upload_files_list')
       _(@findAllComponents('uploadDocument')).each (upload_document)->
         upload_document.submit()
