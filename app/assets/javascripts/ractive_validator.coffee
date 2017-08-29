@@ -27,6 +27,7 @@ class @Validator
     error_attributes = _(attributes).map (attribute)-> attribute+"_error"
     _(error_attributes).each (attribute)->
       validatee.set(attribute,false)
+    @validatee.validate = @validate.bind(@)
   validation_criteria : ->
     @validatee.get('validation_criteria')
   has_errors : ->

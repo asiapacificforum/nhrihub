@@ -144,7 +144,7 @@ $ ->
       _(@findAllComponents('uploadDocument')).reject((doc)-> doc["_guid"] == guid)
 
   Doc = Ractive.extend
-    template: '#template-download'
+    template: '#document_template'
     oninit : ->
       @set 'validation_criteria',
         unique_revision: =>
@@ -162,11 +162,9 @@ $ ->
         "#{delete_confirmation_message} \"#{@get('title')}\"?"
     download_file : ->
       window.location = @get('url')
-    remove_errors : ->
+    remove_errors : -> # TODO this should be moved to Validator
       @set("unique_revision_error", false)
       @set("revision_format_error", false)
-    validate : ->
-      @validator.validate_attribute('revision_format') && @validator.validate_attribute('unique_revision')
     delete_callback : (data,textStatus,jqxhr)->
       @parent.delete(@)
   .extend ConfirmDeleteModal

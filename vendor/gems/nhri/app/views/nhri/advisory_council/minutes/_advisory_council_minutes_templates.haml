@@ -14,11 +14,23 @@
         .panel-group.files#advisory_council_minutes
           <docs files="{{files}}" />
 
-%script#template-download{:type => 'html/template'}
+%script#document_template{:type => 'html/template'}
   .panel.panel-default.template-download
     #headingOne.panel-heading{:role => "tab"}
       %strong.error.text-danger {{= file.error }}
-      {{> document_template }}
+      %table.advisory_council_minutes.editable_container{:style => "width:800px", 'as-inpage_edit'=>'id', :id=>"advisory_council_minutes_editable{{id}}"}
+        %tr
+          %td.title.form-group{ :style => "width:36%", 'data-attribute' => :title}
+            %span {{ title }}
+          %td.include_popover{:style => "text-align:center; width:8%"}
+            .icon.details{'as-popover'=>true, :'data-toggle' => 'edit'}
+              %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
+          %td{:style => "text-align:center; width:8%"}
+            .icon
+              %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'@this.download_file()'.html_safe}
+          %td{:style => "text-align:center; width:8%"}
+            %div.icon.delete{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
+              %i.fa.fa-trash-o.fa-lg
 
 %script#popover_template{:type => "template/ractive"}
   .popover.fileDetails{:role=>"tooltip"}
@@ -50,21 +62,6 @@
 
 %script#detailsTitle{:type => "template/ractive"}
   %span{:style => 'z-index:20'}= t('.details')
-
-%script#document_template{:type => 'template/html'}
-  %table.advisory_council_minutes.editable_container{:style => "width:800px", 'as-inpage_edit'=>'id', :id=>"advisory_council_minutes_editable{{id}}"}
-    %tr
-      %td.title.form-group{ :style => "width:36%", 'data-attribute' => :title}
-        %span {{ title }}
-      %td.include_popover{:style => "text-align:center; width:8%"}
-        .icon.details{'as-popover'=>true, :'data-toggle' => 'edit'}
-          %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
-      %td{:style => "text-align:center; width:8%"}
-        .icon
-          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'@this.download_file()'.html_safe}
-      %td{:style => "text-align:center; width:8%"}
-        %div.icon.delete{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
-          %i.fa.fa-trash-o.fa-lg
 
 %script#documents_template{:type => 'ractive/template'}
   {{#files}}

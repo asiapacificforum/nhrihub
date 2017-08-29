@@ -144,7 +144,7 @@ $ ->
       @splice('upload_documents',index,1)
 
   Doc = Ractive.extend
-    template: '#template-download'
+    template: '#document_template'
     computed:
       url : ->
         Routes.nhri_advisory_council_minutes_path(current_locale, @get('id'))
