@@ -244,6 +244,7 @@ feature "open document from source_url", :js => true do
   scenario "open the source_url link" do
     click_the_source_url_link
     page.switch_to_window(page.windows[1])
+    page.find('h1',:text => "Example Domain") # better than sleep to await the page load
     expect(page.evaluate_script('window.location.href')).to include @doc.source_url
   end
 end

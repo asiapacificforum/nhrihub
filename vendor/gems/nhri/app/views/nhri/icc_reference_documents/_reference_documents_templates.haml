@@ -13,7 +13,7 @@
           .col-md-1{:style => "text-align: center; padding-left:3px; padding-right:3px; width:8%"}= t('.download')
           .col-md-1{:style => "text-align: center; padding-left:3px; padding-right:3px; width: 8%"}= t('.delete')
         .panel-group.files
-          <docs/>
+          <docs files='{{files}}' />
 
 %script#template-download{:type => 'html/template'}
   .panel.panel-default.template-download
@@ -91,9 +91,9 @@
         .icon.delete{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
           %i.fa.fa-trash-o.fa-lg
 
-%script#files{:type => 'ractive/template'}
+%script#documents_template{:type => 'ractive/template'}
   {{#files}}
-  <doc id='{{id}}' title='{{title}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' source_url='{{source_url}}' />
+  <doc reminders='{{reminders}}' id='{{id}}' title='{{title}}' original_filename='{{original_filename}}' formatted_filesize='{{formatted_filesize}}' formatted_creation_date='{{formatted_creation_date}}' uploaded_by='{{uploaded_by}}' source_url='{{source_url}}' />
   {{/files}}
 
 %script#upload_documents_template{:type => 'html/template'}

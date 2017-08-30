@@ -97,7 +97,7 @@ $ ->
       @validator.validate_attribute('original_type')
     computed :
       persisted : ->
-        !_.isNull(@get('id'))
+        !(_.isNull(@get('id')) || _.isUndefined(@get('id')))
       persistent_attributes : ->
         ['title', 'file', 'original_filename', 'original_type', 'lastModifiedDate', 'filesize', 'user_id', 'source_url'] unless @get('persisted')
       stripped_title : ->
@@ -109,8 +109,7 @@ $ ->
     cancel_upload : ->
       @parent.remove(@)
     submit : ->
-      @save_upload_document()
-    save_upload_document: ->
+      event.stopPropagation()
       if @validate()
         data = @formData()
         $.ajax
@@ -191,11 +190,11 @@ $ ->
         css('background-image','none')
     slide_into_view : ->
       $('body').animate({scrollTop:$("#icc_reference_document_editable#{@get('id')}").offset().top-100},1000)
-
-  , Remindable, ConfirmDeleteModal
+  .extend Remindable
+  .extend ConfirmDeleteModal
 
   Docs = Ractive.extend
-    template: '#files'
+    template: '#documents_template'
     components:
       doc : Doc
     docs_without : (doc)->
