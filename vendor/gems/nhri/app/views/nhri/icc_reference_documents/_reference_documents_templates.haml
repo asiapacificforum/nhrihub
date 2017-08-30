@@ -50,7 +50,7 @@
   %span{:style => 'z-index:20'}= t('.details')
 
 %script#document_template{:type => 'template/html'}
-  .icc_reference_document.editable_container{:decorator=>'inpage_edit:{{id}}', :id=>"icc_reference_document_editable{{id}}"}
+  .icc_reference_document.editable_container{'as-inpage_edit'=>'id', :id=>"icc_reference_document_editable{{id}}"}
     .row
       .col-md-2.title.form-group{'data-toggle' => '{{#title_edit_permitted}}edit{{/}}', :style => "width:30%; margin-bottom:0px;", 'data-attribute' => :title}
         .fade.edit
@@ -69,26 +69,26 @@
             %a.source_url{:href=>'{{ source_url }}', :target=>"_new"} {{truncated_source_url}}
       -# make sure it's on top of the next td, even though it precedes in the html
       .col-md-2.include_popover{:style => "text-align:center; width:8%"}
-        .icon.details{:decorator => 'popover', :'data-toggle' => 'edit'}
+        .icon.details{'as-popover'=>true, :'data-toggle' => 'edit'}
           %i.fa.fa-info-circle.fa-lg <!-- popover is attached as a sibling below this -->
       .col-md-1{:style => "text-align:center; width:8%"}
         .icon{:'data-toggle' => 'edit', :style => 'height:20px'}
           .fade.edit
-            %i.fa.fa-remove.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_cancel",:style => "position:relative; left:15px;"}
+            %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative; left:15px;"}
       .col-md-1{:style => "text-align:center; width:8%"}
         .icon{:'data-toggle' => 'edit'}
           .fade.edit
-            %i.fa.fa-check.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_save"}
+            %i.fa.fa-check.fa-lg#edit_save
           .fade.no_edit.in
-            %i.fa.fa-pencil-square-o.fa-lg{:id => "icc_reference_document_editable{{id}}_edit_start", :style => "position:relative; left:-34px;"}
+            %i.fa.fa-pencil-square-o.fa-lg#edit_start{:style => "position:relative; left:-34px;"}
       -# the actions class it just to facilitate testing with a common reminders test spec
       .col-md-1.actions{:style => "text-align:center; width: 8%"}
-        .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "show_reminders_panel()", :style => "position:relative; top:2px; background-position-x:50%;"}
+        .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "@this.show_reminders_panel()".html_safe, :style => "position:relative; top:2px; background-position-x:50%;"}
       .col-md-1{:style => "text-align:center; width:8%"}
         .icon
-          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'download_file()'}
+          %i.fa.fa-cloud-download.fa-lg.download{'on-click'=>'@this.download_file()'.html_safe}
       .col-md-1{:style => "text-align:center; width:8%"}
-        .icon.delete{'on-click'=>'show_confirm_delete_modal()'}
+        .icon.delete{'on-click'=>'@this.show_confirm_delete_modal()'.html_safe}
           %i.fa.fa-trash-o.fa-lg
 
 %script#files{:type => 'ractive/template'}
@@ -131,9 +131,9 @@
                 %label{:for =>"icc_reference_document_source_url"}= t('.doc_url')
                 %input#icc_reference_document_source_url{:type => :text, :name => "icc_reference_document[source_url]", :value => "{{source_url}}"}
               %td
-                %div.start{'on-click'=>'submit()'}
+                %div.start{'on-click'=>'@this.submit()'.html_safe}
                   %i.fa.fa-cloud-upload.fa-lg
               %td
                 %div.cancel
-                  %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"cancel_upload()"}
+                  %i.fa.fa-ban.cancel.fa-lg{"on-click"=>"@this.cancel_upload()".html_safe}
 

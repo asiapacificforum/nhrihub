@@ -12,6 +12,7 @@
   var required_files_titles = #{@required_files_titles.to_json.html_safe}
   var context = "icc"
   var type = "AccreditationRequiredDoc"
+  var delete_confirmation_message = "#{t('.delete_confirmation_message')}"
   var filetypes = #{ InternalDocument::Filetypes.to_json.html_safe }
 
 = render :partial => 'shared/confirm_delete_modal'

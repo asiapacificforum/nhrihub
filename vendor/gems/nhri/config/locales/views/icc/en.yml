@@ -11,6 +11,7 @@ en:
         archive: "Archive"
         add1: "Add file"
         delete: "Delete"
+        delete_confirmation_message: "Are you sure you wish to delete: "
       template_upload:
         start_one: "Start"
         cancel_one: "Cancel"
