@@ -1,5 +1,5 @@
 %script#numeric_modal{:type => 'ractive/template'}
-  <modal-custom id="numeric_monitors_modal" type="md" onclose="monitors.onModalClose()" >
+  <modal-custom fade="{{fade}}" id="numeric_monitors_modal" type="md" onclose="monitors.onModalClose()" >
   <modal-header>
   <h4>#{t('.monitor')}: {{numeric_monitor_explanation}}<modal-close/></h4>
   </modal-header>
@@ -10,7 +10,7 @@
       %h5.col-md-3= t('.date')
       %h5.col-md-3= t('.value')
     {{#numeric_monitors}}
-    <numericMonitor id='{{id}}' monitor_format='{{monitor_format}}' date='{{formatted_date}}' author_name='{{author.first_last_name}}' value='{{value}}'/>
+    <numericMonitor indicator_id='{{indicator_id}}' id='{{id}}' monitor_format='{{monitor_format}}' date='{{formatted_date}}' author_name='{{author.first_last_name}}' value='{{value}}'/>
     {{/numeric_monitors}}
   </modal-body>
   </modal-custom>

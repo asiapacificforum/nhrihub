@@ -6,14 +6,10 @@ class Nhri::NumericMonitor < ActiveRecord::Base
   default_scope ->{ order(:date => :asc, :created_at => :asc) }
 
   def as_json(options={})
-    super(:except => [:updated_at, :created_at], :methods => [:url, :value, :author, :formatted_date])
+    super(:except => [:updated_at, :created_at], :methods => [:value, :author, :formatted_date])
   end
 
   def formatted_date
     date.localtime.to_date.to_s(:short)
-  end
-
-  def url
-    Rails.application.routes.url_helpers.nhri_indicator_monitor_path(:en,indicator_id,id) if persisted?
   end
 end

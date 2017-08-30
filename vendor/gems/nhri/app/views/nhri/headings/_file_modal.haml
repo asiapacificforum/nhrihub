@@ -31,7 +31,7 @@
             %span.btn.btn-success.btn-xs{:onClick => "$(this).parent().find('input:file').click()"}= t('.choose_file')
             %input#monitor_file{:type=>'file', :style => "opacity:0.01; width:0.01px; height:0.01px", :name=>"monitor[file]", 'as-ractive_fileupload'=>true}
           .col-md-10#selected_file_container
-            <selectedFile />
+            <selectedFile serialization_key='{{serialization_key}}' />
         .row
           .col-md-2
             %span.btn.btn-success.btn-xs#save_monitor{'on-click' => "@this.save_file()".html_safe}= t('.save')

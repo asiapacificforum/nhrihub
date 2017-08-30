@@ -20,7 +20,7 @@ module IndicatorTextMonitorSpecHelpers
   end
 
   def edit_save_monitor
-    page.find('#monitor_editable2_edit_save')
+    page.find('#edit_save')
   end
 
   def close_monitors_modal

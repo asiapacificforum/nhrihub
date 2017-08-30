@@ -39,7 +39,7 @@ feature "monitors behaviour when indicator is configured to monitor with numeric
     close_monitors_modal
     wait_for_modal_close
     show_monitors.click
-    wait_for_modal_open
+    # wait_for_modal_open
     expect(page).not_to have_selector("#new_monitor #monitor_value")
   end
 
@@ -79,7 +79,7 @@ feature "monitors behaviour when indicator is configured to monitor with numeric
     wait_for_modal_close
     expect( monitor_icon_count ).to eq 1
     show_monitors.click
-    wait_for_modal_open
+    # wait_for_modal_open
     expect(number_of_numeric_monitors).to eq Nhri::NumericMonitor.count
   end
 
@@ -116,7 +116,7 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
     close_monitors_modal
     wait_for_modal_close
     show_monitors.click
-    wait_for_modal_open
+    # wait_for_modal_open
     expect(page).not_to have_selector("#new_monitor #monitor_description")
   end
 
@@ -157,7 +157,7 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
     wait_for_modal_close
     expect( monitor_icon_count ).to eq 1
     show_monitors.click
-    wait_for_modal_open
+    # wait_for_modal_open
     expect(number_of_text_monitors).to eq Nhri::TextMonitor.count
   end
 
@@ -263,7 +263,7 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
     close_monitors_modal
     wait_for_modal_close
     show_monitors.click
-    wait_for_modal_open
+    # wait_for_modal_open
     expect(page).not_to have_selector('#selected_file', :text => 'first_upload_file.pdf')
   end
 
@@ -284,7 +284,7 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
     wait_for_modal_close
     expect( monitor_icon_count ).to eq 0
     show_monitors.click
-    wait_for_modal_open
+    # wait_for_modal_open
     expect(number_of_file_monitors).to eq Nhri::FileMonitor.count
   end
 

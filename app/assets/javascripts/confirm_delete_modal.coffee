@@ -36,6 +36,8 @@ $ ->
 
 @ConfirmDeleteModal =
   show_confirm_delete_modal : (local_data={})->
+    throw "url not defined" if _.isUndefined(@get('url'))
+    throw "delete confirmation message not defined" if _.isUndefined(@get('delete_confirmation_message'))
     confirm_delete_modal.set
       deletable : @
       url : @get('url')

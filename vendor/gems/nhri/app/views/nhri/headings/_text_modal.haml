@@ -14,7 +14,7 @@
         .fade.no_edit.in
           %span {{description}}
         .fade.edit{:style => "height:140px;"}
-          %textarea#text_monitor_description.form-control{:name => 'monitor[description]', :cols=>78, :rows=>4, :value => '{{description}}', 'on-keydown'=>"@this.remove_errors('description')"}
+          %textarea#text_monitor_description.form-control{:name => 'monitor[description]', :cols=>78, :rows=>4, :value => '{{description}}', 'on-keydown'=>"@this.remove_errors('description')".html_safe}
           %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff"}= t('.monitor_description_error_message')
     .col-md-1.icon.monitor_info{:style => "width:5%"}
       %i.fa.fa-info-circle.fa-lg{'as-popover'=>true}
@@ -37,15 +37,15 @@
       .form-horizontal
         .row
           .col-md-12.form-group#description{:class => '{{#description_error}}has-error{{/}}'}
-            =text_area :monitor, :description, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{description}}', 'on-keydown'=>"@this.remove_errors('description')"
+            =text_area :monitor, :description, :size=>"78x4", :class => 'form-control', :style => "width:70%", :value => '{{description}}', 'on-keydown'=>"@this.remove_errors('description')".html_safe
             %span.help-block= t('.monitor_description_error_message')
         .row
           .col-md-12.form-group
-            <i class="fa fa-remove fa-lg" id="cancel_monitor" style="padding-left:30px" on-click="@this.cancel_monitor()".html_safe data-toggle="tooltip" data-placement="bottom" title="cancel"/>
-            <i class="fa fa-check fa-lg" id="save_monitor" style="padding-left:60px" on-click="@this.save_monitor()".html_safe data-toggle="tooltip" data-placement="bottom" title="save"/>
+            %i.fa.fa-remove.fa-lg#cancel_monitor{:style => "padding-left:30px;", 'on-click'=>"@this.cancel_monitor()".html_safe, :data => {:toggle => "tooltip", :placement => "bottom"}, :title => "cancel"}
+            %i.fa.fa-check.fa-lg#save_monitor{:style => "padding-left:60px;", 'on-click'=>"@this.save_monitor()".html_safe, :data => {:toggle => "tooltip", :placement => "bottom"}, :title => "save"}
 
 %script#text_modal{:type => 'ractive/template'}
-  <modal-custom id="text_monitors_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
+  <modal-custom fade="{{fade}}" id="text_monitors_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
   <modal-header>
   <h4>#{t('.monitors')}<modal-close/></h4>
   </modal-header>
@@ -56,7 +56,7 @@
       %h5.col-md-1{:style => "width:15%;"}= t('.date')
       %h5.col-md-1{:style => "width:70%;"}= t('.description')
     {{#text_monitors}}
-    <textMonitor monitor_format='{{monitor_format}}' id='{{id}}' date='{{formatted_date}}' author_name='{{author.first_last_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' description='{{description}}'/>
+    <textMonitor indicator_id='{{indicator_id}}' monitor_format='{{monitor_format}}' id='{{id}}' date='{{formatted_date}}' author_name='{{author.first_last_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' description='{{description}}'/>
     {{/text_monitors}}
   </modal-body>
   </modal-custom>

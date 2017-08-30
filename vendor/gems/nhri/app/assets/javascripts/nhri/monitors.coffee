@@ -31,7 +31,10 @@ $ ->
         set: (val)-> 
           @set('date', $.datepicker.parseDate( "M d, yy", val))
       delete_confirmation_message : ->
-        "you want to what?"
+        "Are you sure you want to delete this monitor?"
+      url : ->
+        unless _.isNull(@get('id'))
+          Routes.nhri_indicator_monitor_path(current_locale,@get('indicator_id'),@get('id'))
     persisted_attributes : ->
       {monitor : _.chain(@get()).pick(@get('params')).extend({type:@get('type')}).value() }
     save_monitor : ->
@@ -88,7 +91,7 @@ $ ->
       !@get('value_error')
     onrender : ->
       $(@find('#monitor_value')).focus()
-  , Monitor
+  .extend Monitor
 
   TextMonitor = Ractive.extend
     template : '#text_monitor_template'
@@ -112,14 +115,18 @@ $ ->
         true
     onrender : ->
       $(@find('#monitor_description')).focus()
-  , Monitor
+  .extend Monitor
 
+  # dual-purpose. Indicator sets monitor_format
+  # for this collection to either text or numeric
+  # just before it invokes "show" on the modal
   window.monitors = new Ractive
     el: '#monitor'
     template : "#monitors_template"
     computed :
       collection : ->
         "#{@get('monitor_format')}_monitors"
+      fade : -> window.env != "test"
     new_monitor : ->
       unless @_new_monitor_is_active()
         @push(@get('collection'),{id:null, date: new Date, value:null, indicator_id:@get('indicator_id'), formatted_date : $.datepicker.formatDate("M d, yy", new Date())})
