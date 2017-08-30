@@ -20,12 +20,12 @@
       %i.fa.fa-info-circle.fa-lg{'as-popover'=>true}
     .col-md-1.icon{:style => "text-align:center; font-size:14px; height:20px; width:5%", 'data-toggle' => 'edit'}
       .fade.edit
-        %i.fa.fa-remove.fa-lg{:style => "position:relative;", :id => "monitor_editable{{id}}_edit_cancel"}
+        %i.fa.fa-remove.fa-lg#edit_cancel{:style => "position:relative;" }
     .col-md-1.icon{:style => "text-align:center; font-size:14px; width:5%", 'data-toggle' => 'edit'}
       .fade.edit
-        %i.fa.fa-check.fa-lg{:id => "monitor_editable{{id}}_edit_save"}
+        %i.fa.fa-check.fa-lg#edit_save
       .fade.no_edit.in{:style => "left:-14px;"}
-        %i.fa.fa-pencil-square-o.fa-lg{:id => "monitor_editable{{id}}_edit_start"}
+        %i.fa.fa-pencil-square-o.fa-lg#edit_start
     .col-md-1{:style => "text-align:center; font-size:14px; width:5%;"}
       %i.fa.fa-trash-o.fa-lg#delete_monitor{'on-click' => "@this.show_confirm_delete_modal({type:'TextMonitor'})".html_safe, :style => "position:relative; left:-12px; top:-2px;"}
 

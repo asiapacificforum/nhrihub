@@ -207,14 +207,16 @@ $ ->
     delete_callback : ->
       @parent.remove_indicator(@get('id'))
     edit_indicator : ->
-      new_indicator.set(@get())
+      new_indicator.set(_(@get()).omit(['selected', 'monitors_count', 'reminders_count', 'notes_count', 'create_reminder_url', 'create_note_url', 'url', 'truncated_title', 'delete_confirmation_message']))
       new_indicator.set('source',@)
       $('#new_indicator_modal').modal('show')
     highlight : ->
       $(@find('.indicator')).addClass('highlight')
     slide_into_view : ->
       $('body').animate( {scrollTop:$(".indicator.highlight").offset().top-100}, 1000)
-    , Remindable, Notable, ConfirmDeleteModal
+  .extend Remindable
+  .extend Notable
+  .extend ConfirmDeleteModal
 
   NatureHumanRightsAttribute = Ractive.extend
     template : "#nature_attribute_template"
@@ -256,7 +258,7 @@ $ ->
       $('#new_indicator_modal').modal('show')
     remove_indicator : (id)->
       index = @get('indicator_ids').indexOf(id)
-      @splice("all_attribute_#{@get('name')}_indicators",index,1)
+      @splice("all_attribute_#{@get('nature')}_indicators",index,1)
 
   Nature = Ractive.extend
     template : "#nature_template"
@@ -305,3 +307,8 @@ $ ->
     $('#low-left').css('top', ll_vert_pos+'px').css('right',ll_right_pos+'px').show()
     $('#high-right').css('bottom',height/2+'px').css('left',hr_left_pos+'px').show()
   position_labels()
+
+
+
+
+

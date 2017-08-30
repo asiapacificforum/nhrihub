@@ -7,7 +7,7 @@
       .col-md-11
         .row.row-eq-height
           <attributes human_rights_attributes='{{human_rights_attributes}}' />
-    <natures heading_id='{{id}}' natures='{{natures}}' all_attribute_structural_indicators='{{all_attribute_structural_indicators}}' all_attribute_process_indicators='{{all_attribute_process_indicators}}' all_attribute_outcomes_indicators='{{all_attribute_outcomes_indicators}}'/>
+    <natures heading_id='{{id}}' natures='{{natures}}' all_attribute_structural_indicators='{{all_attribute_structural_indicators}}' all_attribute_process_indicators='{{all_attribute_process_indicators}}' all_attribute_outcomes_indicators='{{all_attribute_outcomes_indicators}}' human_rights_attributes='{{human_rights_attributes}}' />
 
 %script#indicator_template{:type => 'ractive/template'}
   %li.indicator
@@ -22,7 +22,7 @@
 
 %script#natures_template{:type => 'ractive/template'}
   {{#natures}}
-  <nature heading_id='{{heading_id}}' name='{{name}}' text='{{text}}' all_attribute_structural_indicators='{{all_attribute_structural_indicators}}' all_attribute_process_indicators='{{all_attribute_process_indicators}}' all_attribute_outcomes_indicators='{{all_attribute_outcomes_indicators}}'/>
+  <nature heading_id='{{heading_id}}' name='{{name}}' text='{{text}}' all_attribute_structural_indicators='{{all_attribute_structural_indicators}}' all_attribute_process_indicators='{{all_attribute_process_indicators}}' all_attribute_outcomes_indicators='{{all_attribute_outcomes_indicators}}' human_rights_attributes='{{human_rights_attributes}}' />
   {{/natures}}
 
 %script#nature_template{:type => 'ractive/template'}
@@ -31,10 +31,10 @@
       %div {{text}}
     .col-md-11
       .row
-        <natureAllHumanRightsAttributes heading_id='{{heading_id}}' nature='{{name}}' all_attribute_indicators='{{all_attribute_indicators}}' />
+        <natureAllHumanRightsAttributes all_attribute_structural_indicators='{{all_attribute_structural_indicators}}' all_attribute_process_indicators='{{all_attribute_process_indicators}}' all_attribute_outcomes_indicators='{{all_attribute_outcomes_indicators}}' heading_id='{{heading_id}}' nature='{{name}}' all_attribute_indicators='{{all_attribute_indicators}}' />
       .row.row-eq-height
         {{#human_rights_attributes}}
-        <natureHumanRightsAttribute heading_id='{{heading_id}}' nature='{{name}}' attribute_id='{{id}}' structural_indicators='{{structural_indicators}}' process_indicators='{{process_indicators}}' outcomes_indicators='{{outcomes_indicators}}' />
+        <natureHumanRightsAttribute human_rights_attributes='{{human_rights_attributes}}' heading_id='{{heading_id}}' nature='{{name}}' attribute_id='{{id}}' structural_indicators='{{structural_indicators}}' process_indicators='{{process_indicators}}' outcomes_indicators='{{outcomes_indicators}}' />
         {{/human_rights_attributes}}
 
 %script#nature_all_attributes_template{:type => 'ractive/template'}
@@ -43,13 +43,13 @@
     %div{:style => "display:inline-block;"}
       %ul{:style => "padding-left:10px"}
         {{#all_attribute_indicators}}
-        <indicator monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' numeric_monitors='{{numeric_monitors}}' text_monitors='{{text_monitors}}' file_monitor='{{file_monitor}}' title='{{title}}' />
+        <indicator all_attribute_structural_indicators='{{all_attribute_structural_indicators}}' all_attribute_process_indicators='{{all_attribute_process_indicators}}' all_attribute_outcomes_indicators='{{all_attribute_outcomes_indicators}}' all_attribute_structural_indicators='{{all_attribute_structural_indicators}}' all_attribute_process_indicators='{{all_attribute_process_indicators}}' all_attribute_outcomes_indicators='{{all_attribute_outcomes_indicators}}' heading_id='{{heading_id}}' monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' numeric_monitors='{{numeric_monitors}}' text_monitors='{{text_monitors}}' file_monitor='{{file_monitor}}' title='{{title}}' />
         {{/all_attribute_indicators}}
 
 %script#nature_attribute_template{:type => 'ractive/template'}
   .col-md-2{:style => "width:{{100/human_rights_attributes.length}}%", :class => "single_attribute_indicators"}
     %i.fa.fa-plus.fa-sm.new_indicator{ 'on-click'=>'@this.new_indicator()'.html_safe, :style => 'position:absolute; right:4px; top:4px;', 'data-toggle'=>"tooltip", 'data-placement'=>"right", :title=>"add indicator"}
     %ul{:style => "padding-left:10px"}
-      {{#this[name+'_indicators']}}
+      {{#this[nature+'_indicators']}}
       <indicator heading_id='{{heading_id}}' monitor_format='{{monitor_format}}' title='{{title}}' numeric_monitor_explanation='{{numeric_monitor_explanation}}' id='{{id}}' reminders='{{reminders}}' notes='{{notes}}' numeric_monitors='{{numeric_monitors}}' text_monitors='{{text_monitors}}' file_monitor='{{file_monitor}}' title='{{title}}' />
-      {{/this[name+'_indicators']}}
+      {{/this[nature+'_indicators']}}
