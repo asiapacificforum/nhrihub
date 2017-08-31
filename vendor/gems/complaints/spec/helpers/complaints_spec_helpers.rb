@@ -154,6 +154,7 @@ module ComplaintsSpecHelpers
   end
 
   def add_complaint
+    page.execute_script("scrollTo(80,0)")
     page.find('#add_complaint').click
   end
 

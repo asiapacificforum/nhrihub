@@ -34,6 +34,19 @@ require_relative 'helpers/download_helpers'
 # to confirm, uncomment this line:
 # puts ENV['TZ']
 
+Capybara.register_driver :headless_chrome do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    chromeOptions: { args: %w(headless disable-gpu --window-size=1400,800),
+                     prefs: {"download.default_directory" => DownloadHelpers::PATH } }
+  )
+
+  Capybara::Selenium::Driver.new app,
+    browser: :chrome,
+    desired_capabilities: capabilities
+end
+
+
+
 Capybara.register_driver :chrome do |app|
   caps = Selenium::WebDriver::Remote::Capabilities.chrome(
     "chromeOptions" => {
@@ -67,10 +80,14 @@ end
 if ENV["client"] =~ /(sel|ff)/i
   puts "Browser: Firefox via Selenium"
   Capybara.javascript_driver = :selenium
-elsif ENV["client"] =~ /chr/i
+elsif ENV["client"] =~ /^chrome$/i
   puts "Browser: Chrome"
 
   Capybara.javascript_driver = :chrome
+elsif ENV["client"] =~ /headless/i
+  puts "Browser: headless Chrome"
+
+  Capybara.javascript_driver = :headless_chrome
 elsif ENV["client"] =~ /ie/i
   puts "Browser: IE"
   CONFIGURATION FOR REMOTE TESTING OF IE

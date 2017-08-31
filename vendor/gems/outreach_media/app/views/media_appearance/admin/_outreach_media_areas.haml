@@ -4,14 +4,12 @@
   .row
     .col-md-12.areas.panel-group#accordion
 
-
 %script#area_template{:type => 'ractive/template'}
   {{#if persisted }}
   {{>persisted_area_template}}
   {{else}}
   {{>new_area_template}}
   {{/if}}
-
 
 %script#persisted_area_template{:type => 'ractive/template'}
   .panel.panel-default{:style => "border-color: #B5AD8B;"}
@@ -21,24 +19,24 @@
         %a#subareas_link{'data-toggle'=>:collapse, 'data-parent'=>'#accordion', :href => '#collapse_{{ id }}'}
           %i.fa.fa-caret-right{'data-toggle'=>:tooltip, :title=>'show subareas'}
       .col-md-4
-        %a.delete_area{:href => '#', 'on-click' => 'delete_area()'}= t('defaults.delete') 
+        %a.delete_area{:href => '#', 'on-click' => '@this.delete_area()'.html_safe}= t('defaults.delete') 
     .row.panel-collapse.collapse{:id => 'collapse_{{ id }}', :style => 'margin-left:0px; margin-right:0px; background-color: #D8D0AA'}
       .col-md-12{:style => "margin-left:15px"}
         {{#subareas}}
-        <subarea id={{id}} name={{name}} />
+        <subarea id='{{id}}' name='{{name}}' />
         {{/subareas}}
 
 %script#new_area_template{:type => 'ractive/template'}
   .row.form-group{:class => "{{#area_error}}has-error{{/}}", :style => "margin-top:15px;"}
     .col-md-1
-      %button.btn.btn-success.btn-xs#add_area{:style => 'line-height:1.8; position:relative; top:2px;', 'on-click'=>'create()'}= t('.add_area')
+      %button.btn.btn-success.btn-xs#add_area{:style => 'line-height:1.8; position:relative; top:2px;', 'on-click'=>'@this.create()'.html_safe}= t('.add_area')
     .col-md-4
-      = text_field_tag :name, '{{name}}', :id => 'area_name', :class => 'form-control', :placeholder => t('.enter_area_text'), :style => "height: 28px; padding: 6px 12px;", 'on-keydown'=>'remove_errors()'
+      = text_field_tag :name, '{{name}}', :id => 'area_name', :class => 'form-control', :placeholder => t('.enter_area_text'), :style => "height: 28px; padding: 6px 12px;", 'on-keydown'=>'@this.remove_errors()'.html_safe
       %span.help-block#area_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.area_error_message')
 
 %script#areas_template{:type => 'ractive/template'}
   {{#areas}}
-  <area id={{id}} name={{name}} subareas={{subareas}} />
+  <area id='{{id}}' name='{{name}}' subareas='{{subareas}}' />
   {{/areas}}
 
 %script#subarea_template{:type => 'ractive/template'}
@@ -53,14 +51,14 @@
     .col-md-3
     .col-md-3.name {{ name }}
     .col-md-3
-      %a.delete_subarea{:href => '#', 'on-click' => 'delete_subarea()'}= t('defaults.delete') 
+      %a.delete_subarea{:href => '#', 'on-click' => '@this.delete_subarea()'.html_safe}= t('defaults.delete') 
 
 %script#new_subarea_template{:type => 'ractive/template'}
   .row.form-group{:class => "{{#subarea_error}}has-error{{/}}", :style => "padding-top:6px; padding-bottom:6px;"}
     .col-md-1
-      %button.btn.btn-success.btn-xs#add_subarea{:style => 'line-height:1.8; position:relative; top:2px;', 'on-click'=>'create()'}= t('.add_subarea')
+      %button.btn.btn-success.btn-xs#add_subarea{:style => 'line-height:1.8; position:relative; top:2px;', 'on-click'=>'@this.create()'.html_safe}= t('.add_subarea')
     .col-md-4
-      = text_field_tag :name, '{{name}}', :id => 'subarea_name', :placeholder => t('.enter_subarea_text'), :class => 'form-control', :style => "height:28px; padding:6px 12px;", 'on-keydown'=>'remove_errors()'
+      = text_field_tag :name, '{{name}}', :id => 'subarea_name', :placeholder => t('.enter_subarea_text'), :class => 'form-control', :style => "height:28px; padding:6px 12px;", 'on-keydown'=>'@this.remove_errors()'.html_safe
       %span.help-block#subarea_error{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-4px; width:100%;"}= t('.subarea_error_message')
 
 :coffeescript
@@ -75,10 +73,11 @@
         persisted : ->
           !isNaN(parseInt(@get('id')))
       create: ->
+        create_subarea_url = Routes.media_appearance_area_subareas_path(current_locale, @parent.get('id'))
         if @valid()
           $.ajax
             type : 'post'
-            url : @get('create_subarea_url')
+            url : create_subarea_url
             data : {subarea : {name : @get('name')}}
             dataType : 'json'
             success : @update
@@ -96,9 +95,10 @@
         @set("subarea_error",false)
       delete_subarea : ->
         @event.original.preventDefault()
+        url = Routes.media_appearance_area_subarea_path(current_locale, @parent.get('id'), @get('id'))
         $.ajax
           type : 'post'
-          url : @get('url')
+          url : url
           data : {'_method' : 'delete'}
           dataType : 'json'
           success : @delete_subarea_callback
@@ -113,16 +113,15 @@
       computed :
         persisted : ->
           !isNaN(parseInt(@get('id')))
-        create_subarea_url : ->
-          @get('subarea_url').replace('id',@get('id'))
       onconfig : ->
         if @get('persisted')
           @add_new_subarea_form()
       create: ->
         if @valid()
+          url = Routes.media_appearance_areas_path(current_locale)
           $.ajax
             type : 'post'
-            url : @get('area_url')
+            url : url
             data : {area : {name : @get('name')}}
             dataType : 'json'
             success : @update
@@ -140,9 +139,10 @@
         @set("area_error",false)
       delete_area : ->
         @event.original.preventDefault()
+        url = Routes.media_appearance_area_path(current_locale, @get('id'))
         $.ajax
           type : 'post'
-          url : @get('url')
+          url : url
           data : {'_method' : 'delete'}
           dataType : 'json'
           success : @delete_area_callback
@@ -160,8 +160,6 @@
       template : '#areas_template'
       data :
         areas : areas_data
-        area_url : "#{media_appearance_areas_path}"
-        subarea_url : "#{media_appearance_area_subareas_path('id')}"
       components :
         area : Area
       onconfig : ->
