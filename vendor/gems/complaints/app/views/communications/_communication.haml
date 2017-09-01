@@ -50,7 +50,7 @@
           </button>
           <i class="fa fa-remove fa-lg remove_communicant {{#unless i>0}}hidden{{/unless}}" on-click="@this.remove_communicant(i)" data-toggle='tooltip' title="#{t('.remove_communicant')}" />
       {{#has_email}}
-      .row.form-group{'intro-outro' => 'slide', :class => '{{#email_error}}has-error{{/email_error}}'}
+      .row.form-group{'slide-in-out'=>true, :class => '{{#email_error}}has-error{{/email_error}}'}
         .col-sm-2=t('.email')
         .col-sm-4
           %input#email_address{:type => :text, :style => "width:100%", :value => "{{email}}", 'on-keydown'=>"@this.remove_errors('email')".html_safe}

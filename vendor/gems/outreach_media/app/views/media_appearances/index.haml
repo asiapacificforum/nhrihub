@@ -33,7 +33,7 @@
   @performance_indicators = _.chain(planned_results).
     map((pr)->pr.outcomes).
     flatten().
-    map((pr)->pr.activities).
+    map((o)->o.activities).
     flatten().
     map((a)->a.performance_indicators).
     flatten().

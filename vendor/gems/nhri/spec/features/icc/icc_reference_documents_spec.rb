@@ -237,11 +237,13 @@ feature "open document from source_url", :js => true do
   include IccReferenceDocumentDefaultSettings
 
   before do
-    @doc = FactoryGirl.create(:icc_reference_document, :title => "my important document", :source_url => "http://www.example.com")
+    #@example_dot_com_server = FakeExampleDotCom.boot
+    #@source_url = "http://#{@example_dot_com_server.host}:#{@example_dot_com_server.port}/something"
+    @doc = FactoryGirl.create(:icc_reference_document, :title => "my important document", :source_url => example_dot_com )
     visit nhri_icc_reference_documents_path('en')
   end
 
-  scenario "open the source_url link" do
+  it "should open the source_url link", :driver => :chrome do
     click_the_source_url_link
     page.switch_to_window(page.windows[1])
     page.find('h1',:text => "Example Domain") # better than sleep to await the page load

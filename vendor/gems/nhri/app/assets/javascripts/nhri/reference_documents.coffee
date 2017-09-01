@@ -159,6 +159,8 @@ $ ->
         @get('reminders').length
       url : ->
         Routes.nhri_icc_reference_document_path(current_locale, @get('id'))
+      create_reminder_url : ->
+        Routes.nhri_icc_reference_document_reminders_path(current_locale, @get('id'))
       truncated_source_url : ->
         @get('source_url').slice(0,30)+"..."
       truncated_title : ->

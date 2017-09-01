@@ -25,7 +25,9 @@ require_relative './support/wait_for_ajax'
 require_relative './support/wait_for_authentication'
 require_relative './support/wait_for_modal'
 require_relative './support/wait_for_accordion'
+require_relative './support/example_dot_com'
 require_relative 'helpers/download_helpers'
+
 
 #Capybara.default_max_wait_time = 5
 
@@ -84,10 +86,10 @@ elsif ENV["client"] =~ /^chrome$/i
   puts "Browser: Chrome"
 
   Capybara.javascript_driver = :chrome
-elsif ENV["client"] =~ /headless/i
-  puts "Browser: headless Chrome"
+elsif ENV["client"] =~ /phantom/i
+  puts "Browser: Phantomjs via Poltergeist"
 
-  Capybara.javascript_driver = :headless_chrome
+  Capybara.javascript_driver = :poltergeist
 elsif ENV["client"] =~ /ie/i
   puts "Browser: IE"
   CONFIGURATION FOR REMOTE TESTING OF IE
@@ -105,9 +107,9 @@ elsif ENV["client"] =~ /ie/i
   Capybara.remote = true
 
 else
-  puts "Browser: Phantomjs via Poltergeist"
+  puts "Browser: headless Chrome"
 
-  Capybara.javascript_driver = :poltergeist
+  Capybara.javascript_driver = :headless_chrome
 end
 
 #require 'simplecov'

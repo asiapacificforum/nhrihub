@@ -21,12 +21,7 @@ class IccReferenceDocument < ActiveRecord::Base
           :methods => [:uploaded_by,
                        :formatted_creation_date,
                        :formatted_filesize,
-                       :reminders,
-                       :create_reminder_url ] )
-  end
-
-  def create_reminder_url
-    nhri_icc_reference_document_reminders_path(:en,id) if persisted?
+                       :reminders] )
   end
 
   def remindable_url(remindable_id)

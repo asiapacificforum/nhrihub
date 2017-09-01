@@ -456,7 +456,7 @@ feature "view attachments", :js => true do
     expect(downloaded_file).to eq filename
   end
 
-  scenario "visit link" do
+  scenario "visit link", :driver => :chrome do # headless chrome can't handle switching windows, try again with chrome 62 when it's available
     if page.driver.is_a?(Capybara::Poltergeist::Driver)
       # b/c triggering a reload of another page triggers a phantomjs bug/error
       expect(1).to eq 1

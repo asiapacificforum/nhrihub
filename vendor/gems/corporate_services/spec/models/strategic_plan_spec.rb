@@ -59,7 +59,7 @@ describe "eager loading via scopes" do
     expect(ruby["strategic_priorities"].length).to eq 2
 
     strategic_priority = ruby["strategic_priorities"][0]
-    expect(strategic_priority.keys).to match_array ["id", "priority_level", "description", "strategic_plan_id", "url", "create_planned_result_url", "planned_results", "description_error"]
+    expect(strategic_priority.keys).to match_array ["id", "priority_level", "description", "strategic_plan_id", "url", "planned_results", "description_error"]
     expect(ruby["strategic_priorities"][0]["planned_results"].length).to eq 2
     expect(ruby["strategic_priorities"][1]["planned_results"].length).to eq 2
 
@@ -73,7 +73,7 @@ describe "eager loading via scopes" do
 
     activity = outcome["activities"][0]
     expect(activity["performance_indicators"].length).to eq 2
-    expect(activity.keys).to match_array ["id", "outcome_id", "description", "index", "indexed_description", "performance_indicators", "url", "description_error", "create_performance_indicator_url"]
+    expect(activity.keys).to match_array ["id", "outcome_id", "description", "index", "indexed_description", "performance_indicators", "description_error"]
 
     performance_indicator = activity["performance_indicators"][0]
     expect(performance_indicator.keys).to match_array ["id", "activity_id", "description", "target", "index", "indexed_description", "url", "indexed_target", "description_error", "reminders", "create_reminder_url", "notes", "media_appearance_titles", "project_titles", "create_note_url"]

@@ -1,5 +1,5 @@
 %script#new_indicator_template{:type => "template/ractive"}
-  #new_indicator_modal.modal.fade{"aria-hidden" => "true", "data-backdrop" => "true", "data-keyboard" => "true", :role => "dialog", :tabindex => "-1"}
+  #new_indicator_modal.modal{"class-fade"=>"fade", "aria-hidden" => "true", "data-backdrop" => "true", "data-keyboard" => "true", :role => "dialog", :tabindex => "-1"}
     .modal-dialog.modal-xl
       .modal-content
         .modal-header
@@ -58,6 +58,8 @@
             @update_callback
           else
             @create_callback
+        fade : ->
+          window.env != "test" # disable fade for test env
       validate_monitor_format : ->
         @set('monitor_format_error', _.isEmpty(@get('monitor_format')))
         !@get('monitor_format_error')

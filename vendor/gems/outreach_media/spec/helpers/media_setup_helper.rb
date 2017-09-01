@@ -14,7 +14,7 @@ module MediaSetupHelper
       FactoryGirl.create(:media_appearance,
                          :with_performance_indicators,
                          :hr_area,
-                         :link,
+                         :article_link => example_dot_com,
                          :reminders=>[] )
     else
       FactoryGirl.create(:media_appearance,

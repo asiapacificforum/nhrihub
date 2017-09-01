@@ -41,7 +41,6 @@ feature "indicators behaviour", :js => true do
 
   it "should add valid multi-attribute indicator" do
     add_all_attribute_indicator
-    wait_for_modal_open
     fill_in('indicator_title', :with => "Some arbitrary indicator title")
     select("Text", :from => "indicator_monitor_format")
     expect(page).not_to have_selector("#indicator_numeric_monitor_explanation")
@@ -62,7 +61,6 @@ feature "indicators behaviour", :js => true do
     expect(page).not_to have_selector "#new_indicator_modal"
     expect(page).to have_selector('li.indicator', :text => "Some arbitrary indicator title")
     add_all_attribute_indicator # b/c there was a bug
-    wait_for_modal_open
     expect(page.find('#indicator_monitor_format').value).to eq ""
     cancel_add
     wait_for_modal_close
@@ -73,7 +71,6 @@ feature "indicators behaviour", :js => true do
 
   it "should add single attribute indicator" do
     add_single_attribute_indicator
-    wait_for_modal_open
     fill_in('indicator_title', :with => "Some arbitrary indicator title")
     select("Text", :from => "indicator_monitor_format")
     expect(page).not_to have_selector("#indicator_numeric_monitor_explanation")

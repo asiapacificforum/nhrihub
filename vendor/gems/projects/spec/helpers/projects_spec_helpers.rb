@@ -141,6 +141,8 @@ module ProjectsSpecHelpers
   end
 
   def edit_first_project
+    element_top = page.evaluate_script("$('.project .icon .fa-pencil-square-o').first().offset().top")
+    page.execute_script("scrollTo(0,#{element_top-200})")
     page.all('.project .icon .fa-pencil-square-o')[0]
   end
 
