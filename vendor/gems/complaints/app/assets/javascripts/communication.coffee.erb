@@ -2,6 +2,7 @@
 #= require 'progress_bar'
 #= require 'single_note_modal'
 #= require 'single_month_datepicker'
+#= require 'slide'
 
 CommunicationDocuments = AttachedDocuments.extend
   oninit : ->
@@ -35,6 +36,8 @@ Communicant = Ractive.extend
         phone : ['notBlank', {if : =>@get('has_phone')}]
         address : ['notBlank', {if : =>@get('has_letter')}]
     @validator = new Validator(@)
+  onrender : ->
+    $(@find('.fade')).addClass('in')
   computed :
     persisted : ->
       !isNaN(parseInt(@get('id')))

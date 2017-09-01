@@ -33,14 +33,12 @@
   {{/if}}
 
 %script#new_communicant_template{:type => 'template/ractive'}
-  .row.new_communicant
+  .row.new_communicant.fade
     .col-sm-12
       .row
         .col-sm-2
           %label
-            <span class="{{#if i>0}}hidden{{/if}} {{#if i==0}}required{{/if}}">
-            = t('.communicant')
-            </span>
+            %span{'class-hidden'=>"i>0".html_safe, 'class-required'=>"i==0".html_safe}= t('.communicant')
         .col-sm-4.form-group{:class => "{{#name_error}}has-error{{/name_error}}"}
           %input.communicant{:type => :text, :style => "width:100%", :value=>"{{name}}", "on-keydown"=>"@this.remove_errors('name')".html_safe}
           %span.help-block.name_error= t('.name_error_message')
@@ -50,21 +48,21 @@
           </button>
           <i class="fa fa-remove fa-lg remove_communicant {{#unless i>0}}hidden{{/unless}}" on-click="@this.remove_communicant(i)" data-toggle='tooltip' title="#{t('.remove_communicant')}" />
       {{#has_email}}
-      .row.form-group{'slide-in-out'=>true, :class => '{{#email_error}}has-error{{/email_error}}'}
+      .row.form-group{'class-has-error' => 'email_error'}
         .col-sm-2=t('.email')
         .col-sm-4
           %input#email_address{:type => :text, :style => "width:100%", :value => "{{email}}", 'on-keydown'=>"@this.remove_errors('email')".html_safe}
         %span.help-block.email_error= t('.email_error_message')
       {{/has_email}}
       {{#has_phone}}
-      .row.form-group{'intro-outro' => 'slide', :class => '{{#phone_error}}has-error{{/phone_error}}'}
+      .row.form-group{'class-has-error'=>'phone_error'}
         .col-sm-2=t('.phone')
         .col-sm-4
           %input#phone{:type => :text, :style => "width:100%", :value => "{{phone}}", 'on-keydown'=>"@this.remove_errors('phone')".html_safe}
         %span.help-block.phone_error= t('.phone_error_message')
       {{/has_phone}}
       {{#has_letter}}
-      .row.form-group{'intro-outro' => 'slide', :class => '{{#address_error}}has-error{{/address_error}}'}
+      .row.form-group{'class-has-error'=>'address_error'}
         .col-sm-2.required=t('.address')
         .col-sm-4
           %input#address{:type => :text, :style => "width:100%", :value => "{{address}}", 'on-keydown'=>"@this.remove_errors('address')".html_safe}
