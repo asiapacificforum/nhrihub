@@ -3,7 +3,11 @@ require 'rspec/core/shared_context'
 module ComplaintsCommunicationsSpecHelpers
   extend RSpec::Core::SharedContext
   def remove_last_communicant
-    page.all(:xpath, ".//div[contains(@class,'new_communicant')]")[2].find('i.remove_communicant').click
+    page.all(:xpath, ".//div[contains(@class,'new_communicant')]")[-1].find('i.remove_communicant').click
+  end
+
+  def remove_second_communicant
+    page.all(:xpath, ".//div[contains(@class,'new_communicant')]")[1].find('i.remove_communicant').click
   end
 
   def add_communicant

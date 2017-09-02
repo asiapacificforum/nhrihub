@@ -36,8 +36,6 @@ Communicant = Ractive.extend
         phone : ['notBlank', {if : =>@get('has_phone')}]
         address : ['notBlank', {if : =>@get('has_letter')}]
     @validator = new Validator(@)
-  onrender : ->
-    $(@find('.fade')).addClass('in')
   computed :
     persisted : ->
       !isNaN(parseInt(@get('id')))
@@ -64,6 +62,7 @@ Communicants = Ractive.extend
     @push('communicants',{name : ""}) unless blank_inputs
   remove_communicant : (index)->
     @splice('communicants',index,1)
+    @update('communicants')
 
 Persistence =
   save_communication : ->

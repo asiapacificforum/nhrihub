@@ -129,6 +129,35 @@ feature "complaints communications", :js => true do
     expect(page.all('#communications .communication .date').map(&:text)).to eq [DateTime.now.to_date.strftime("%b %-e, %Y"),"May 19, 2016"]
   end
 
+  it "should add a communication with multiple communicants, changing method midway" do
+    add_communication
+    expect(page).to have_selector('#new_communication')
+    within new_communication do
+      set_datepicker('new_communication_date',"May 19, 2016")
+      choose("Email")
+
+      page.all('input.communicant')[0].set("Harry Harker")
+      page.all(:css, 'input#email_address')[0].set("harry@acme.com")
+
+      add_communicant
+      page.all('input.communicant')[1].set("Harriet Harker")
+      page.all(:css, 'input#email_address')[1].set("harriet@acme.com")
+
+      add_communicant
+      page.all('input.communicant')[2].set("Otto Maggio")
+      page.all(:css, 'input#email_address')[2].set("otto@acme.com")
+
+      choose("Phone")
+      # can remove a communicant
+      remove_second_communicant
+      expect(all('input.communicant').count).to eq 2
+
+      remove_last_communicant
+      expect(all('input.communicant').count).to eq 1
+
+    end
+  end
+
   it "should validate and not add invalid communication with null mode attribute" do
     add_communication
     expect{ save_communication }.not_to change{ Communication.count }

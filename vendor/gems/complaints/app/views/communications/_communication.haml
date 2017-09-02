@@ -21,8 +21,8 @@
 
 %script#communicants_template{:type => 'template/ractive'}
   .col-md-12
-    {{#communicants:i}}
-    <communicant i='{{i}}' id='{{id}}' name='{{name}}' received_direction='{{received_direction}}' has_email='{{has_email}}' has_phone='{{has_phone}}' has_letter='{{has_letter}}' />
+    {{#communicants}}
+    <communicant id='{{id}}' name='{{name}}' received_direction='{{received_direction}}' has_email='{{has_email}}' has_phone='{{has_phone}}' has_letter='{{has_letter}}' />
     {{/communicants}}
 
 %script#communicant_template{:type => 'template/ractive'}
@@ -33,20 +33,20 @@
   {{/if}}
 
 %script#new_communicant_template{:type => 'template/ractive'}
-  .row.new_communicant.fade
+  .row.new_communicant
     .col-sm-12
       .row
         .col-sm-2
           %label
-            %span{'class-hidden'=>"i>0".html_safe, 'class-required'=>"i==0".html_safe}= t('.communicant')
+            %span{'class-hidden'=>"@index>0".html_safe, 'class-required'=>"@index==0".html_safe}= t('.communicant')
         .col-sm-4.form-group{:class => "{{#name_error}}has-error{{/name_error}}"}
           %input.communicant{:type => :text, :style => "width:100%", :value=>"{{name}}", "on-keydown"=>"@this.remove_errors('name')".html_safe}
           %span.help-block.name_error= t('.name_error_message')
         .col-sm-1
-          <button id="add_communicant_button" class="btn btn-xs btn-success" class-disabled="received_direction" class-hidden="i>0" data-toggle='tooltip' title="#{t('.add_communicant')}">
+          <button id="add_communicant_button" class="btn btn-xs btn-success" class-disabled="received_direction" class-hidden="@index>0" data-toggle='tooltip' title="#{t('.add_communicant')}">
           %i.fa.fa-plus.fa-lg#add_communicant{:style=>'color:white;', 'on-click'=>'@this.add_communicant()'}
           </button>
-          <i class="fa fa-remove fa-lg remove_communicant {{#unless i>0}}hidden{{/unless}}" on-click="@this.remove_communicant(i)" data-toggle='tooltip' title="#{t('.remove_communicant')}" />
+          <i class="fa fa-remove fa-lg remove_communicant {{#unless @index>0}}hidden{{/unless}}" on-click="@this.remove_communicant(@index)" data-toggle='tooltip' title="#{t('.remove_communicant')}" />
       {{#has_email}}
       .row.form-group{'class-has-error' => 'email_error'}
         .col-sm-2=t('.email')
