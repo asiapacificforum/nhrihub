@@ -20,6 +20,17 @@ feature "complaints index", :js => true do
     visit complaints_path('en')
   end
 
+  it "populates filter select dropdown selectors" do
+    page.find('button', :text => 'Select area').click
+    Mandate.all.each do |mandate|
+      expect(page).to have_selector('#mandate_filter_select li a span', :text => mandate.name)
+    end
+    page.find('button', :text => 'Select assignee').click
+    User.staff.all.each do |user|
+      expect(page).to have_selector('#assignee_filter_select li a span', :text => user.first_last_name)
+    end
+  end
+
   it "shows a list of complaints" do
     expect(page.find('h1').text).to eq "Complaints"
     expect(page).to have_selector('#complaints .complaint', :count => 1)

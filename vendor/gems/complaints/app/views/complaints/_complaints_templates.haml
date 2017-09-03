@@ -13,49 +13,13 @@
       {{/all_agencies_in_sixes}}
 
 %script#complaints_template{:type => 'template/ractive'}
-  <filterControls expanded='{{expanded}}' filter_criteria='{{filter_criteria}}' all_good_governance_complaint_bases='{{all_good_governance_complaint_bases}}' all_human_rights_complaint_bases='{{all_human_rights_complaint_bases}}' all_special_investigations_unit_complaint_bases='{{all_special_investigations_unit_complaint_bases}}' statuses='{{statuses}}' />
+  <filterControls expanded='{{expanded}}' filter_criteria='{{filter_criteria}}' all_good_governance_complaint_bases='{{all_good_governance_complaint_bases}}' all_human_rights_complaint_bases='{{all_human_rights_complaint_bases}}' all_special_investigations_unit_complaint_bases='{{all_special_investigations_unit_complaint_bases}}' statuses='{{statuses}}' all_mandates='{{all_mandates}}' all_staff='{{all_staff}}' />
   {{#complaints}}
   <complaint communication_permitted_filetypes='{{communication_permitted_filetypes}}' communication_maximum_filesize='{{communication_maximum_filesize}}' date_of_birth='{{date_of_birth}}' dob='{{dob}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' all_staff='{{all_staff}}' editing=false expanded=false agency_ids='{{agency_ids}}' all_agencies_in_sixes='{{all_agencies_in_sixes}}' all_mandates='{{all_mandates}}' all_users='{{all_users}}' assigns='{{assigns}}' attached_documents='{{attached_documents}}' case_reference='{{case_reference}}' chiefly_title='{{chiefly_title}}' communications='{{communications}}' complained_to_subject_agency='{{complained_to_subject_agency}}' complaint_bases='{{complaint_bases}}' complaint_named_documents_titles='{{complaint_named_documents_titles}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' date='{{date}}' date_received='{{date_received}}' desired_outcome='{{desired_outcome}}' details='{{details}}' date_of_birth='{{date_of_birth}}' email='{{email}}' employer='{{employer}}' firstName='{{firstName}}' filter_criteria='{{filter_criteria}}' gender='{{gender}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' lastName='{{lastName}}' mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' notes='{{notes}}' occupation='{{occupation}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}' age='{{age}}' />
   {{/complaints}}
 
-%script#good_governance_complaint_basis_filter_select_template{:type => "template/ractive"}
-  %li{:class => 'good_governance_complaint_basis_filter {{#if selected}}selected{{/if}}'}
-    %a.opt{'on-click'=>'@this.toggle(id)'}
-      %span {{name}}
-      %span.fa.fa-check
-
-%script#human_rights_complaint_basis_filter_select_template{:type => "template/ractive"}
-  %li{:class => 'human_rights_complaint_basis_filter {{#if selected}}selected{{/if}}'}
-    %a.opt{'on-click'=>'@this.toggle(id)'}
-      %span {{name}}
-      %span.fa.fa-check
-
-%script#special_investigations_unit_complaint_basis_filter_select_template{:type => "template/ractive"}
-  %li{:class => 'special_investigations_unit_complaint_basis_filter {{#if selected}}selected{{/if}}'}
-    %a.opt{'on-click'=>'@this.toggle(id)'}
-      %span {{name}}
-      %span.fa.fa-check
-
-%script#agency_filter_select_template{:type => 'template/ractive'}
-  %li{:class => 'agency_filter {{#if selected}}selected{{/if}}'}
-    %a.opt{'on-click'=>'@this.toggle(id)'}
-      %span {{name}}
-      %span.fa.fa-check
-
-%script#assignee_filter_select_template{:type => 'template/ractive'}
-  %li{:class => 'assignee_filter {{#if selected}}selected{{/if}}'}
-    %a.opt{'on-click'=>'@this.toggle(id)'}
-      %span {{name}}
-      %span.fa.fa-check
-
-%script#mandate_filter_select_template{:type => 'template/ractive'}
-  %li{:class => 'mandate_filter {{#if selected}}selected{{/if}}'}
-    %a.opt{'on-click'=>'@this.toggle(id)', :style => 'padding-left:1em;'}
-      %span {{name}}
-      %span.fa.fa-check
-
-%script#status_selector_template{:type => 'template/ractive'}
-  %li{:class =>'status_filter {{#if selected}}selected{{/if}}'}
+%script#filter_select_template{:type => "template/ractive"}
+  %li{'class-selected' => 'selected'}
     %a.opt{'on-click'=>'@this.toggle()'}
       %span {{name}}
       %span.fa.fa-check
@@ -121,7 +85,7 @@
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left= t('.select_area')
             %span.caret
-          %ul.dropdown-menu
+          %ul.dropdown-menu#mandate_filter_select
             {{#all_mandates}}
             <mandateFilterSelect id='{{id}}' name='{{name}}' />
             {{/all_mandates}}
@@ -148,7 +112,7 @@
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left= t('.select_assignee')
             %span.caret
-          %ul.dropdown-menu
+          %ul.dropdown-menu#assignee_filter_select
             {{#all_staff}}
             <assigneeFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{first_last_name}}'/>
             {{/all_staff}}
@@ -234,15 +198,15 @@
             .col-md-4.form-group{:style => 'padding-top:0px;'}
               %label{:for => :chiefly_title, :style => 'font-weight:normal'}=t('.chiefly_title')
               %input.form-control#chiefly_title{:value => '{{chiefly_title}}'}
-            .col-md-4.form-group{:class => "{{#firstName_error}}has-error{{/}}", :style => 'padding-top:0px;'}
+            .col-md-4.form-group{'class-has-error' => 'firstName_error', :style => 'padding-top:0px;'}
               %label.required{:for => :firstName, :style => 'font-weight:normal'}=t('.first_name')
               %input.form-control#firstName{:value => '{{firstName}}', 'on-keydown'=>"@this.remove_attribute_error('firstName')".html_safe}
               %span.help-block.error#firstName_error= t('.firstName_error_message')
-            .col-md-4.form-group{:class => "{{#lastName_error}}has-error{{/}}", :style => 'padding-top:0px;'}
+            .col-md-4.form-group{'class-has-error' => 'lastName_error', :style => 'padding-top:0px;'}
               %label.required{:for => :lastName, :style => 'font-weight:normal'}=t('.last_name')
               %input.form-control#lastName{:value => '{{lastName}}', 'on-keydown'=>"@this.remove_attribute_error('lastName')".html_safe}
               %span.help-block.error#lastName_error= t('.lastName_error_message')
-      .row.form-group{:class => "{{#dob_error}}has-error{{/}}"}
+      .row.form-group{'class-has-error' => 'dob_error'}
         .col-md-2
           %span.required=t('.dob')
           %span dd/mm/yyyy
@@ -261,7 +225,7 @@
             %label{:style => 'font-weight:normal'}
               %span{:style => "margin-right:6px; margin-left:12px;"}=t('.other')
               %input#o{:type=>:radio, :name=>'{{gender}}', :value=>'O'}
-      .row.form-group{:class => "{{#village_error}}has-error{{/}}"}
+      .row.form-group{'class-has-error' => 'village_error'}
         .col-md-2
           %span.required=t('.village')
         .col-md-6
@@ -277,7 +241,7 @@
           %span=t('.phone')
         .col-md-6
           %input.form-control#phone{:value => '{{phone}}'}
-      .row.form-group{:class => "{{#details_error}}has-error{{/}}"}
+      .row.form-group{'class-has-error' => 'details_error'}
         .col-md-2
           %span.required= t('.details')
         .col-md-6
@@ -302,20 +266,20 @@
         .col-md-2= t('.date_received')
         .col-md-2
           %input#date_received{:type => :text, :name => "{{date_received}}", "as-single_month_datepicker"=>true}
-      .row.form-group{:class => "{{#new_assignee_id_error}}has-error{{/}}"}
+      .row.form-group{'class-has-error' => 'new_assignee_id_error'}
         .col-md-2
           %label.required=t('.assignee')
         .col-md-6
           <assigneeSelector new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
           %span.help-block.error#new_assignee_id_error= t('.assignee_error_message')
-      .row.form-group{:class => "{{#mandate_id_count_error}}has-error{{/}}"}
+      .row.form-group{'class-has-error' => 'mandate_id_count_error'}
         .col-md-2
           %label.required=t('.mandate')
         .col-md-10
           .row
             <mandatesSelector mandate_ids='{{mandate_ids}}' all_mandates='{{all_mandates}}' />
           %span.help-block.error#mandate_id_count_error= t('.mandate_ids_error_message')
-      .row.form-group{:class => "{{#complaint_basis_id_count_error}}has-error{{/}}"}
+      .row.form-group{'class-has-error' => 'complaint_basis_id_count_error'}
         .col-md-2
           %label.required=t('.complaint_basis')
         .col-md-10
@@ -341,7 +305,7 @@
           .btn.btn-success.btn-sm#save_complaint{:style => "color:white;", "on-click" => "@this.save_complaint()"}
             %i.fa.fa-check.fa-lg{:style => "color:white"}
             %span= t("defaults.save")
-          .form-group{:class => "{{#has_errors}}has-error{{/}}"}
+          .form-group{'class-has-error' => 'has_errors'}
             %span#complaint_error.help-block.error= t("error_messages.form_error")
 
 %script#mandates_template{:type => 'template/ractive'}
@@ -438,11 +402,11 @@
                   .col-md-4.form-group
                     %label{:for => :chiefly_title}=t('.chiefly_title')
                     %input.form-control#chiefly_title{:value => '{{chiefly_title}}'}
-                  .col-md-4.form-group{:class => "{{#firstName_error}}has-error{{/}}"}
+                  .col-md-4.form-group{'class-has-error' => 'firstName_error'}
                     %label.required{:for => :firstName}=t('.first_name')
                     %input.form-control#firstName{:value => '{{firstName}}', 'on-keydown'=>"@this.remove_attribute_error('firstName')".html_safe}
                     %span.help-block.error#firstName_error= t('.firstName_error_message')
-                  .col-md-4.form-group{:class => "{{#lastName_error}}has-error{{/}}"}
+                  .col-md-4.form-group{'class-has-error' => 'lastName_error'}
                     %label.required{:for => :lastName}=t('.last_name')
                     %input.form-control#lastName{:value => '{{lastName}}', 'on-keydown'=>"@this.remove_attribute_error('lastName')".html_safe}
                     %span.help-block.error#lastName_error= t('.lastName_error_message')
@@ -482,7 +446,7 @@
                   {{/if}}
                 .edit
       .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', :class => "{{#dob_error}}has-error{{/}}"}
+        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', 'class-has-error' => 'dob_error'}
           .row.no_edit.in
             .col-md-3
               %label= t('.dob')
@@ -523,7 +487,7 @@
               .edit
                 %input.form-control#email{:value => '{{email}}'}
       .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', :class => "{{#village_error}}has-error{{/}}"}
+        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', 'class-has-error' => 'village_error'}
           .row
             .col-md-3
               .no_edit.in
@@ -547,7 +511,7 @@
               .edit
                 %input.form-control#phone{:value => '{{phone}}'}
       .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>:edit, :class => "{{#details_error}}has-error{{/}}"}
+        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>:edit, 'class-has-error' => 'details_error'}
           .row
             .col-md-3
               .no_edit.in
@@ -594,7 +558,7 @@
           .edit
             <assigneeSelector new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
       .row.collapse
-        .col-md-12.form-group{'data-toggle'=>:edit, :class => "{{#mandate_id_count_error}}has-error{{/}}"}
+        .col-md-12.form-group{'data-toggle'=>:edit, 'class-has-error' => 'mandate_id_count_error'}
           .row
             .col-md-2
               .no_edit.in=t('.mandate')
@@ -606,7 +570,7 @@
                   <mandatesSelector mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' all_mandates='{{all_mandates}}' />
                 %span.help-block.error#mandate_id_count_error= t('.mandate_ids_error_message')
       .row.collapse
-        .col-md-12.form-group{'data-toggle'=>:edit, :class => "{{#complaint_basis_id_count_error}}has-error{{/}}"}
+        .col-md-12.form-group{'data-toggle'=>:edit, 'class-has-error' => 'complaint_basis_id_count_error'}
           .row
             .col-md-2
               .no_edit.in=t('.complaint_basis')
@@ -641,7 +605,7 @@
           .btn.btn-success.btn-sm.save_complaint#edit_save{:style => "color:white;"}
             %i.fa.fa-check.fa-lg{:style => "color:white"}
             %span= t("defaults.save")
-          .form-group{:class => "{{#has_errors}}has-error{{/}}"}
+          .form-group{'class-has-error' => 'has_errors'}
             %span#complaint_error.help-block.error= t("error_messages.form_error")
 
 %script#complaint_bases_template{:type => 'template/ractive'}

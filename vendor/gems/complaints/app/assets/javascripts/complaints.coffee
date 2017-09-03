@@ -263,7 +263,7 @@ Toggle =
     @set('selected',!@get('selected'))
 
 StatusSelector = Ractive.extend
-  template : '#status_selector_template'
+  template : '#filter_select_template'
   computed :
     selected :
       get : ->
@@ -431,7 +431,7 @@ Complaint = Ractive.extend
 .extend  @Communications # Remindable Notable and Communications are found in the _reminder.haml _note.haml and _communication.haml files
 
 GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
-  template : "#good_governance_complaint_basis_filter_select_template"
+  template : "#filter_select_template"
   computed :
     selected :
       get : ->
@@ -444,7 +444,7 @@ GoodGovernanceComplaintBasisFilterSelect = Ractive.extend
 .extend Toggle
 
 HumanRightsComplaintBasisFilterSelect = Ractive.extend
-  template : "#human_rights_complaint_basis_filter_select_template"
+  template : "#filter_select_template"
   computed :
     selected :
       get : ->
@@ -457,7 +457,7 @@ HumanRightsComplaintBasisFilterSelect = Ractive.extend
 .extend Toggle
 
 SpecialInvestigationsUnitComplaintBasisFilterSelect = Ractive.extend
-  template : "#special_investigations_unit_complaint_basis_filter_select_template"
+  template : "#filter_select_template"
   computed :
     selected :
       get : ->
@@ -470,7 +470,7 @@ SpecialInvestigationsUnitComplaintBasisFilterSelect = Ractive.extend
 .extend Toggle
 
 AgencyFilterSelect = Ractive.extend
-  template : "#agency_filter_select_template"
+  template : "#filter_select_template"
   computed :
     selected :
       get : ->
@@ -483,7 +483,7 @@ AgencyFilterSelect = Ractive.extend
 .extend Toggle
 
 AssigneeFilterSelect = Ractive.extend
-  template : "#assignee_filter_select_template"
+  template : "#filter_select_template"
   computed :
     selected :
       get : ->
@@ -496,7 +496,7 @@ AssigneeFilterSelect = Ractive.extend
 .extend Toggle
 
 MandateFilterSelect = Ractive.extend
-  template : "#mandate_filter_select_template"
+  template : "#filter_select_template"
   computed :
     selected :
       get : ->
