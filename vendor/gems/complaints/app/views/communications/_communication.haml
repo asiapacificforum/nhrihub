@@ -4,7 +4,7 @@
   <h4>#{t('.communications')}<modal-close/></h4>
   </modal-header>
   <modal-body>
-  <i class="fa fa-plus fa-sm" id="add_communication" on-click='@this.new_communication()' data-toggle="tooltip" data-placement="bottom" title="add communication"/>
+  %i.fa.fa-plus.fa-sm#add_communication{ 'on-click'=>'@this.new_communication()', 'data-toggle'=>"tooltip", 'data-placement'=>"bottom", :title=>"add communication"}
   #communications{:style => "margin-bottom:80px;"}
     {{#communications}}
     <communication parent='{{parent}}' communicants='{{communicants}}' id='{{id}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' complaint_id='{{complaint_id}}' direction='{{direction}}' mode='{{mode}}' note='{{note}}' user='{{user}}' date='{{date}}' attached_documents='{{attached_documents}}' />
@@ -43,10 +43,9 @@
           %input.communicant{:type => :text, :style => "width:100%", :value=>"{{name}}", "on-keydown"=>"@this.remove_errors('name')".html_safe}
           %span.help-block.name_error= t('.name_error_message')
         .col-sm-1
-          <button id="add_communicant_button" class="btn btn-xs btn-success" class-disabled="received_direction" class-hidden="@index>0" data-toggle='tooltip' title="#{t('.add_communicant')}">
-          %i.fa.fa-plus.fa-lg#add_communicant{:style=>'color:white;', 'on-click'=>'@this.add_communicant()'}
-          </button>
-          <i class="fa fa-remove fa-lg remove_communicant {{#unless @index>0}}hidden{{/unless}}" on-click="@this.remove_communicant(@index)" data-toggle='tooltip' title="#{t('.remove_communicant')}" />
+          %button#add_communicant_button.btn.btn-xs.btn-success{'class-disabled'=>"received_direction", 'class-hidden'=>"@index>0".html_safe, 'data-toggle'=>'tooltip', :title=>"#{t('.add_communicant')}"}
+            %i.fa.fa-plus.fa-lg#add_communicant{:style=>'color:white;', 'on-click'=>'@this.add_communicant()'}
+          %i.fa.fa-remove.fa-lg.remove_communicant{'class-hidden'=>'@index==0'.html_safe, 'on-click'=>"@this.remove_communicant(@index)".html_safe, 'data-toggle'=>'tooltip', :title=>"#{t('.remove_communicant')}"}
       {{#has_email}}
       .row.form-group{'class-has-error' => 'email_error'}
         .col-sm-2=t('.email')
@@ -76,11 +75,10 @@
   %label.control-label.col-sm-2= t('.sent_or_received')
   .col-sm-2
     %label.radio-inline
-      // aargh ractive bug requires attributes in a specific order! so must use html
-      <input id='sent' type="radio" name="{{direction}}" value="sent" on-change="@this.validate_direction()" disabled="{{face_to_face}}" >
+      %input#sent{ 'disabled'=>"{{face_to_face}}", :type=>"radio", :name=>"{{direction}}", :value=>"sent", "on-change"=>"@this.validate_direction()".html_safe }
       = t('.sent')
     %label.radio-inline
-      <input id='received' type="radio" name="{{direction}}" value="received" on-change="@this.validate_direction()" disabled="{{face_to_face}}" >
+      %input#received{ 'disabled'=>"{{face_to_face}}", :type=>"radio", :name=>"{{direction}}", :value=>"received", "on-change"=>"@this.validate_direction()".html_safe }
       = t('.received')
   .col-sm-6
     %span.help-block{:class => '{{#direction_error}}has-error{{/}}', :style => 'margin:0px'}= t('.sent_or_received_error_message')
@@ -101,16 +99,16 @@
       %label.control-label.col-sm-2.required= t('.method')
       .col-sm-8
         %label.radio-inline
-          %input{:type=>'radio', :id=>'email_mode', :name=>'{{mode}}', :value=>'email', 'on-change'=>"@this.remove_errors('mode')".html_safe}
+          %input#email_mode{:type=>'radio', :name=>'{{mode}}', :value=>'email', 'on-change'=>"@this.remove_errors('mode')".html_safe}
           = t('.email')
         %label.radio-inline
-          %input{:type=>'radio', :id=>'phone_mode', :name=>'{{mode}}', :value=>'phone', 'on-change'=>"@this.remove_errors('mode')".html_safe}
+          %input#phone_mode{:type=>'radio', :name=>'{{mode}}', :value=>'phone', 'on-change'=>"@this.remove_errors('mode')".html_safe}
           = t('.phone')
         %label.radio-inline
-          %input{:type=>'radio', :id=>'letter_mode', :name=>'{{mode}}', :value=>'letter', 'on-change'=>"@this.remove_errors('mode')".html_safe}
+          %input#letter_mode{:type=>'radio', :name=>'{{mode}}', :value=>'letter', 'on-change'=>"@this.remove_errors('mode')".html_safe}
           = t('.letter')
         %label.radio-inline
-          %input{:type=>'radio', :id=>'face_to_face_mode', :name=>'{{mode}}', :value=>'face to face', 'on-change'=>"@this.remove_errors('mode')".html_safe}
+          %input#face_to_face_mode{:type=>'radio', :name=>'{{mode}}', :value=>'face to face', 'on-change'=>"@this.remove_errors('mode')".html_safe}
           = t('.face_to_face')
         %span.help-block= t('.method_error_message')
     .row#communicants
