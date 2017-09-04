@@ -4,7 +4,7 @@ module UserManagementHelpers
   extend RSpec::Core::SharedContext
 
   def user_record_for(user)
-    page.find(:xpath, "//tr[contains(td[2]/text(),'#{user.lastName}')]")
+    page.find(:xpath, "//tr[contains(td[2]/text(),\"#{user.lastName}\")]")
   end
 
   def norman_normal_to_be_in_the_database
