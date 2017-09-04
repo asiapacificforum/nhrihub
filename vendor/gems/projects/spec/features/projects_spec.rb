@@ -482,3 +482,26 @@ feature "performance indicator association", :js => true do
   include ProjectsContextPerformanceIndicatorSpecHelpers
   it_behaves_like "has performance indicator association"
 end
+
+feature "filter controls dropdown options", :js => true do # b/c there was a bug
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include IERemoteDetector
+  include NavigationHelpers
+  include ProjectsSpecHelpers
+
+  # all_areas (areas) Mandate.all, all_area_project_types (project_types) ProjectTypes.mandate_groups, planned_results (planned_results) PlannedResult.all_with_associations
+  it "populates area, project_type, and performance_indicator dropdowns" do
+    page.find('button', :text => 'Select area').click
+    Mandate.all.each do |area|
+      expect(page).to have_selector('#area_filter_select li a span', :text => area.name)
+    end
+    page.find('button', :text => 'Select project type').click
+    ProjectType.mandate_groups.values.flatten.map(&:name).each do |name|
+      expect(page).to have_selector('#project_type_filter_select li a span', :text => name)
+    end
+    page.find('button', :text => 'Select performance indicators').click
+    PerformanceIndicator.in_current_strategic_plan.all.each do |pi|
+      expect(page).to have_selector('#performance_indicator_filter_select .planned_result .outcome .activity li.performance_indicator a span.text', :text => pi.indexed_description)
+    end
+  end
+end

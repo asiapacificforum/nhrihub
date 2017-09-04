@@ -227,6 +227,7 @@ describe "matching performance indicator", ->
     it "should match project with matching performance_indicator_id", ->
       projects.set('projects',[{performance_indicator_id : 42}])
       project = projects.findComponent('project')
+      debugger
       expect(project.matches_performance_indicator()).to.be.true
       expect(project.get('include')).to.be.true
 

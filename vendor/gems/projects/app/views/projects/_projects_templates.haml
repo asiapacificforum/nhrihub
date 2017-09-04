@@ -1,5 +1,5 @@
 %script#projects_template{:type => 'template/ractive'}
-  <filterControls filter_criteria='{{filter_criteria}}' />
+  <filterControls planned_results='{{planned_results}}' all_areas='{{all_areas}}' all_area_project_types='{{all_area_project_types}}' filter_criteria='{{filter_criteria}}' />
   {{#projects}}
   <project performance_indicator_url='{{performance_indicator_url}}' project_types='{{project_types}}' planned_results='{{planned_results}}' performance_indicator_associations='{{performance_indicator_associations}}' performance_indicators='{{performance_indicators}}' filter_criteria='{{filter_criteria}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' id='{{id}}' title='{{title}}' description='{{description}}' area_ids='{{area_ids}}'  performance_indicator_associations='{{performance_indicator_associations}}' project_type_ids='{{project_type_ids}}' all_areas='{{all_areas}}'  project_types='{{project_types}}' areas='{{areas}}'  reminders='{{reminders}}' notes='{{notes}}' project_documents='{{project_documents}}' expanded='false' />
   {{/projects}}
@@ -273,7 +273,7 @@
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left= t('.select_area')
             %span.caret
-          %ul.dropdown-menu
+          %ul.dropdown-menu#area_filter_select
             {{#all_areas}}
             <areaFilterSelect id='{{id}}' name='{{name}}'/>
             {{/all_areas}}
@@ -282,13 +282,13 @@
           %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left= t('.select_project_type')
             %span.caret
-          %ul.dropdown-menu
+          %ul.dropdown-menu#project_type_filter_select
             {{#all_area_project_types:area_name}}
             %li.dropdown-header{:style => "padding: 3px 0px 3px 20px;"}
               {{area_name}}
               %ul{:style => "list-style:none; padding-left:18px;"}
                 {{#.}}
-                <projectTypeFilterSelect />
+                <projectTypeFilterSelect name='{{name}}'/>
                 {{/.}}
             {{/all_area_project_types}}
       .col-md-1.col-md-offset-1
@@ -307,5 +307,5 @@
           %button.btn.btn-default.dropdown-toggle{:type => :button, 'data-toggle'=>'dropdown'}
             %span.filter-option.pull-left= t('.select_performance_indicators')
             %span.caret
-          <performanceIndicatorFilterSelect />
+          <performanceIndicatorFilterSelect planned_results='{{planned_results}}' />
 
