@@ -29,6 +29,7 @@ $ ->
   FileSelectTrigger = (node)->
     $(node).on 'click', (event)->
       source = Ractive.getNodeInfo(@).ractive # might be an archive doc (has document_group_id) or primary doc (no document_group_id)
+      #temporarily set document_group_id onto the uploadDocuments component, for this particular upload
       internal_document_uploader.findComponent('uploadDocuments').set('document_group_id', source.get('document_group_id'))
       UserInput.terminate_user_input_request()
       UserInput.reset()
@@ -84,7 +85,7 @@ $ ->
       @set
         unconfigured_validation_parameter_error:false
         serialization_key:'internal_document'
-        document_group_id: @parent.get('document_group_id')
+        document_group_id: @parent.get('document_group_id') # document_group_id is passed in through the uploadDocuments collection
       if @get('is_icc_doc') && !@get('primary')
         document_group = _(required_files_titles).find (req_doc)=>req_doc.document_group_id == @get('document_group_id')
         @set('title',document_group.title)
@@ -106,6 +107,8 @@ $ ->
         _(required_files_titles).select (title)-> title.empty
       icc_context : ->
         context == 'icc'
+      primary : ->
+        _.isUndefined(@get('document_group_id'))
       is_icc_doc : -> # see if a document is being added to an icc required document group
         document_group_id = @get('document_group_id')
         if !_.isUndefined document_group_id # it's being added to a document group
