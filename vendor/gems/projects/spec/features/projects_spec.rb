@@ -96,7 +96,7 @@ feature "projects index", :js => true do
       expect(project.description).to eq "new project description"
       mandate = Mandate.find_by(:key => "good_governance")
       expect(project.area_ids).to include mandate.id
-      mandate = Mandate.find_by(:key => "corporate_services")
+      mandate = Mandate.find_by(:key => "strategic_plan")
       expect(project.area_ids).to include mandate.id
 
       # CHECK CLIENT
@@ -392,7 +392,7 @@ feature "projects index", :js => true do
       expect(page.find('#project_description').value).to eq project.description
       expect(checkbox('good_governance')).not_to be_checked
       expect(checkbox('human_rights')).not_to be_checked
-      expect(checkbox('corporate_services')).not_to be_checked
+      expect(checkbox('strategic_plan')).not_to be_checked
       expect(checkbox('project_type_1')).not_to be_checked
       expect(checkbox('project_type_2')).not_to be_checked
       expect(checkbox('project_type_3')).not_to be_checked

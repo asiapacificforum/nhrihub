@@ -16,7 +16,7 @@ feature "complaint bases admin", :js => true do
     sleep(0.1)
     expect(page).to have_selector '#good_governance_subareas #empty'
     expect(page).to have_selector '#siu_subareas #empty'
-    expect(page).to have_selector '#corporate_services_subareas #empty'
+    expect(page).to have_selector '#strategic_plan_subareas #empty'
   end
 
   scenario "special investigations unit complaint bases configured" do
@@ -31,10 +31,10 @@ feature "complaint bases admin", :js => true do
     expect(page.find('#good_governance_subareas .good_governance_subarea').text).to eq "foo"
   end
 
-  scenario "corporate services complaint bases configured" do
-    CorporateServices::ComplaintBasis.create(:name=>"foo")
+  scenario "strategic plan complaint bases configured" do
+    StrategicPlans::ComplaintBasis.create(:name=>"foo")
     visit complaint_admin_path('en')
-    expect(page.find('#corporate_services_subareas .corporate_services_subarea').text).to eq "foo"
+    expect(page.find('#strategic_plan_subareas .strategic_plan_subarea').text).to eq "foo"
   end
 
   scenario "add siu complaint basis" do
@@ -63,17 +63,17 @@ feature "complaint bases admin", :js => true do
     expect(page.all('#good_governance_subareas .good_governance_subarea')[1].text).to eq "Another thing"
   end
 
-  scenario "add corporate services complaint basis" do
+  scenario "add strategic plan complaint basis" do
     visit complaint_admin_path('en')
     sleep(0.1)
-    expect(page).to have_selector '#corporate_services_subareas #empty'
-    page.find('#corporate_services_subareas #corporate_services_subarea_name').set('A thing')
-    expect{ new_corporate_services_complaint_subarea_button.click; wait_for_ajax }.to change{ CorporateServices::ComplaintBasis.all.map(&:name) }.from([]).to(["A thing"])
-    expect(page.find('#corporate_services_subareas .corporate_services_subarea').text).to eq "A thing"
-    expect(page).not_to have_selector '#corporate_services_subareas #empty'
-    page.find('#corporate_services_subareas #corporate_services_subarea_name').set('Another thing')
-    expect{ new_corporate_services_complaint_subarea_button.click; wait_for_ajax }.to change{ CorporateServices::ComplaintBasis.count }.from(1).to(2)
-    expect(page.all('#corporate_services_subareas .corporate_services_subarea')[1].text).to eq "Another thing"
+    expect(page).to have_selector '#strategic_plan_subareas #empty'
+    page.find('#strategic_plan_subareas #strategic_plan_subarea_name').set('A thing')
+    expect{ new_strategic_plan_complaint_subarea_button.click; wait_for_ajax }.to change{ StrategicPlans::ComplaintBasis.all.map(&:name) }.from([]).to(["A thing"])
+    expect(page.find('#strategic_plan_subareas .strategic_plan_subarea').text).to eq "A thing"
+    expect(page).not_to have_selector '#strategic_plan_subareas #empty'
+    page.find('#strategic_plan_subareas #strategic_plan_subarea_name').set('Another thing')
+    expect{ new_strategic_plan_complaint_subarea_button.click; wait_for_ajax }.to change{ StrategicPlans::ComplaintBasis.count }.from(1).to(2)
+    expect(page.all('#strategic_plan_subareas .strategic_plan_subarea')[1].text).to eq "Another thing"
   end
 
   scenario "add duplicate complaint basis under same mandate" do
@@ -107,11 +107,11 @@ feature "complaint bases admin", :js => true do
     expect(page).to have_selector '#good_governance_subareas #empty'
   end
 
-  scenario "delete a corporate services complaint basis" do
-    CorporateServices::ComplaintBasis.create(:name => "A thing")
+  scenario "delete a strategic plan complaint basis" do
+    StrategicPlans::ComplaintBasis.create(:name => "A thing")
     visit complaint_admin_path('en')
-    expect{ delete_complaint_subarea("A thing").click; wait_for_ajax }.to change{ CorporateServices::ComplaintBasis.count }.by -1
-    expect(page).to have_selector '#corporate_services_subareas #empty'
+    expect{ delete_complaint_subarea("A thing").click; wait_for_ajax }.to change{ StrategicPlans::ComplaintBasis.count }.by -1
+    expect(page).to have_selector '#strategic_plan_subareas #empty'
   end
 end
 

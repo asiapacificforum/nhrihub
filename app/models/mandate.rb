@@ -9,7 +9,7 @@ class Mandate < ActiveRecord::Base
   scope :good_governance,    ->{ where(:key => "good_governance") }
   scope :human_rights,       ->{ where(:key => "human_rights") }
   scope :siu,                ->{ where(:key => "special_investigations_unit") }
-  scope :corporate_services, ->{ where(:key => "corporate_services") }
+  scope :strategic_plan, ->{ where(:key => "strategic_plan") }
 
   scope :project_types_for_project, ->(id){
     # alias the name attribute to avoid collision with the Mandate#name method

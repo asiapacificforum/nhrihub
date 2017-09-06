@@ -25,7 +25,7 @@ en:
         add: "Add Subarea"
       siu_subarea:
         add: "Add Subarea"
-      corporate_services_subarea:
+      strategic_plan_subarea:
         add: "Add Subarea"
       good_governance_project_type:
         add: "Add project type"
@@ -33,7 +33,7 @@ en:
         add: "Add project type"
       special_investigations_unit_project_type:
         add: "Add project type"
-      corporate_services_project_type:
+      strategic_plan_project_type:
         add: "Add project type"
       complaint_document_filetype:
         add: "Add file type"

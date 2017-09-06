@@ -17,7 +17,7 @@ namespace :projects do
   desc "populates the mandates table"
   task :populate_mandates => :environment do
     Mandate.destroy_all
-    ["good_governance", "human_rights", "special_investigations_unit", "corporate_services"].each do |key|
+    ["good_governance", "human_rights", "special_investigations_unit", "strategic_plan"].each do |key|
       Mandate.create(:key => key)
     end
   end
@@ -28,7 +28,7 @@ namespace :projects do
     gg = Mandate.find_or_create_by(:key => 'good_governance')
     hr = Mandate.find_or_create_by(:key => 'human_rights')
     siu = Mandate.find_or_create_by(:key => 'special_investigations_unit')
-    corp = Mandate.find_or_create_by(:key => 'corporate_services')
+    corp = Mandate.find_or_create_by(:key => 'strategic_plan')
 
     gg_types = ["Own motion investigation", "Consultation", "Awareness raising", "Other"]
     gg_types.each do |type|

@@ -81,26 +81,26 @@ feature "project admin", :js => true do
     expect(page).to have_selector '.special_investigations_unit_project_types #empty'
   end
 
-  scenario "add corporate_services project type" do
+  scenario "add strategic_plan project type" do
     visit project_admin_path('en')
-    expect(page).to have_selector '.corporate_services_project_types #empty'
-    page.find('#corporate_services_project_type_name').set('some random text')
-    new_corporate_services_project_type_button = page.find('#new_corporate_services_project_type button')
-    expect{ new_corporate_services_project_type_button.click; wait_for_ajax }.to change{ ProjectType.corporate_services.all.map(&:name) }.from([]).to(["some random text"])
-    expect(page).not_to have_selector '.corporate_services_project_types #empty'
-    expect(page).to have_selector '#corporate_services_project_types .corporate_services_project_type', :text => "some random text"
+    expect(page).to have_selector '.strategic_plan_project_types #empty'
+    page.find('#strategic_plan_project_type_name').set('some random text')
+    new_strategic_plan_project_type_button = page.find('#new_strategic_plan_project_type button')
+    expect{ new_strategic_plan_project_type_button.click; wait_for_ajax }.to change{ ProjectType.strategic_plan.all.map(&:name) }.from([]).to(["some random text"])
+    expect(page).not_to have_selector '.strategic_plan_project_types #empty'
+    expect(page).to have_selector '#strategic_plan_project_types .strategic_plan_project_type', :text => "some random text"
   end
 
-  scenario "delete corporate_services project type" do
+  scenario "delete strategic_plan project type" do
     ['mooky', 'balooky'].each do |name|
-      Mandate.find_by(:key => 'corporate_services').project_types.create(:name => name)
+      Mandate.find_by(:key => 'strategic_plan').project_types.create(:name => name)
     end
     visit project_admin_path('en')
-    expect(page).to have_selector '#corporate_services_project_types .corporate_services_project_type', :text => "mooky"
-    expect(page).to have_selector '#corporate_services_project_types .corporate_services_project_type', :text => "balooky"
-    expect{ delete_project_type("mooky"); wait_for_ajax }.to change{ ProjectType.corporate_services.count }.by(-1)
-    expect{ delete_project_type("balooky"); wait_for_ajax }.to change{ ProjectType.corporate_services.count }.by(-1)
-    expect(page).to have_selector '.corporate_services_project_types #empty'
+    expect(page).to have_selector '#strategic_plan_project_types .strategic_plan_project_type', :text => "mooky"
+    expect(page).to have_selector '#strategic_plan_project_types .strategic_plan_project_type', :text => "balooky"
+    expect{ delete_project_type("mooky"); wait_for_ajax }.to change{ ProjectType.strategic_plan.count }.by(-1)
+    expect{ delete_project_type("balooky"); wait_for_ajax }.to change{ ProjectType.strategic_plan.count }.by(-1)
+    expect(page).to have_selector '.strategic_plan_project_types #empty'
   end
     #gg_types = ["Own motion investigation", "Consultation", "Awareness Raising", "Other"]
     #hr_types = ["Schools", "Report or Inquiry", "Awareness Raising", "Legislative Review",

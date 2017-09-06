@@ -1,7 +1,7 @@
 .message_block
 %h1=t('.heading')
 
--["good_governance", "siu", "corporate_services"].each do |name|
+-["good_governance", "siu", "strategic_plan"].each do |name|
   %h4= t(".#{name}_subareas")
   %div{:id => "#{name}_subareas"}
     = render :partial => 'admin/collection_configuration',

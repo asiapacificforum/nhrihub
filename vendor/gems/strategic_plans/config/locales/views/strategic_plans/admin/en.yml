@@ -1,0 +1,12 @@
+en:
+  strategic_plans:
+    admin:
+      index:
+        heading: "Strategic Plan configuration"
+        placeholder: "Enter title"
+        create: "Create new strategic plan"
+        title_error: "title cannot be blank"
+        unique_title_error: "title already exists"
+        delete_confirmation_message: "Are you sure you want to delete the strategic plan: "
+        title: "Title:"
+        copy: "Copy previous?"

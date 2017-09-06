@@ -35,7 +35,7 @@ module ProjectsSpecSetupHelpers
   end
 
   def populate_mandates
-    ["good_governance", "human_rights", "special_investigations_unit", "corporate_services"].each do |key|
+    ["good_governance", "human_rights", "special_investigations_unit", "strategic_plan"].each do |key|
       Mandate.create(:key => key)
     end
   end

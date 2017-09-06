@@ -142,7 +142,7 @@
       .col-md-9
         %span {{name}}
       .col-md-3
-        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{corporate_services_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"@this.remove_error()"}
+        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{strategic_plan_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"@this.remove_error()"}
     {{/complaint_bases}}
   {{/complaint_bases.0}}
   {{#complaint_bases.1}}
@@ -284,7 +284,7 @@
           %label.required=t('.complaint_basis')
         .col-md-10
           .row
-            <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' corporate_services_complaint_basis_ids='{{corporate_services_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' complaint_bases='{{complaint_bases}}' />
+            <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' complaint_bases='{{complaint_bases}}' />
           %span.help-block.error#complaint_basis_id_count_error= t('.complaint_basis_error_message')
       .row
         .col-md-2
@@ -580,7 +580,7 @@
                 <complaintBases good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' />
               .edit
                 .row
-                  <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' corporate_services_complaint_basis_ids='{{corporate_services_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' complaint_bases='{{complaint_bases}}' />
+                  <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' complaint_bases='{{complaint_bases}}' />
               %span.help-block.error#complaint_basis_id_count_error= t('.complaint_basis_error_message')
       .row.collapse{'data-toggle'=>:edit}
         .col-md-2=t('.agency')

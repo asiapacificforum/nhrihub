@@ -1,0 +1,159 @@
+= stylesheet_link_tag 'form_errors'
+= render :partial => 'shared/confirm_delete_modal'
+= javascript_include_tag 'confirm_delete_modal'
+= javascript_include_tag 'ractive_validator'
+
+.message_block
+%h1=t('.heading')
+
+#strategic_plans
+
+%script#new_strategic_plan_template{:type => 'template/ractive'}
+  .admin.well
+    .row.form-inline
+      .col-md-3.strategic_plan.form-group
+        %label{:for => 'strategic_plan_title', :style => "padding-right:12px;"}= t('.title')
+        %input.form-control#strategic_plan_title{:type => :text, :placeholder => t('.placeholder'), :name => 'strategic_plan[title]', :value => '{{title}}', 'on-keydown' => '@this.remove_error()'.html_safe, :style => "width:200px;"}
+        %span.help-block#title_error{:style => "display:{{#title_error}}block{{else}}none{{/title_error}}"}= t('.title_error')
+        %span.help-block#unique_title_error{:style => "display:{{#unique_title_error}}block{{else}}none{{/unique_itle_error}}"}= t('.unique_title_error')
+      .col-md-2.form-group
+        %label
+          %span{:style => "padding-right:18px"}= t('.copy')
+          %input.form-control#copy{:type => :checkbox, :style => "position:relative; top :-3px;", :checked => '{{copy}}'}
+      .col-md-2
+        %button.btn.btn-success.btn-m#save{'on-click' => '@this.submit()'.html_safe}= t('.create')
+
+%script#strategic_plans_template{:type => 'template/ractive'}
+  <newStrategicPlan />
+  %table.table.borderless{:style => "width: 500px;"}
+    %tbody
+      {{#strategic_plans}}
+      <strategicPlan strategic_plans='{{strategic_plans}}' title='{{title}}' id='{{id}}' />
+      {{/strategic_plans}}
+      {{^strategic_plans}}
+      %tr.strategic_plan{'intro-outro' => :fade}
+        %td none configured
+      {{/strategic_plans}}
+
+%style
+  a { cursor : pointer; }
+  a.disallowed { cursor : not-allowed; opacity : 0.75; }
+
+%script#strategic_plan_template{:type => 'template/ractive'}
+  %tr.strategic_plan{'intro-outro' => :fade}
+    %td
+      {{title}}
+      {{#if current}}
+      (current)
+      {{/if}}
+    %td
+      %a{:class => 'delete_strategic_plan {{#unless delete_permitted}}disallowed{{/unless}}', 'on-click' => "@this.delete_if_permitted()".html_safe}= t('delete')
+
+%script#strategic_plan_menu_template{:type => 'template/ractive'}
+  %a.dropdown-toggle{ "data-toggle"=>"dropdown", "data-target"=>"#"}
+    Strategic plan
+    %b.caret
+  %ul.dropdown-menu
+    {{#strategic_plans}}
+    <strategicPlanMenuItem strategic_plans='{{strategic_plans}}' title='{{title}}' id='{{id}}' />
+    {{/strategic_plans}}
+    {{^strategic_plans}}
+    %li#sp_item
+      %a none configured
+    {{/strategic_plans}}
+
+%script#strategic_plan_menu_item_template{:type => 'template/ractive'}
+  %li#sp_item
+    %a{:href => "{{url}}"}
+      {{title}}
+      {{#if current}}
+      (current)
+      {{/if}}
+
+
+:coffeescript
+  @strategic_plan_data = #{@strategic_plans.to_json.html_safe}
+
+  StrategicPlan = Ractive.extend
+    template : '#strategic_plan_template'
+    computed :
+      delete_confirmation_message : -> "#{t('.delete_confirmation_message')}" + "\""+@get('title') + "\"" + "?"
+      url : -> Routes.strategic_plans_strategic_plan_path('en',@get('id'))
+      delete_permitted : -> #{@delete_permitted}
+      current : -> @get('title') == @get('last_title')
+      last_title : -> @get('strategic_plans')[@get('strategic_plans').length-1].title
+    delete_if_permitted : ->
+      if @get('delete_permitted')
+        @show_confirm_delete_modal()
+    delete_callback : ->
+      @parent.remove(@)
+  .extend ConfirmDeleteModal
+
+  NewStrategicPlan = Ractive.extend
+    template : '#new_strategic_plan_template'
+    oninit : ->
+      @validator = new Validator(@)
+      @set
+        validation_criteria :
+          title : 'notBlank'
+          unique_title : =>
+            titles = _(@parent.get('strategic_plans')).pluck('title')
+            duplicate = _(titles).any (title)=> title == @get('title')
+            !duplicate
+    computed :
+      unique_title : -> @get('title')
+    data :
+      title : "" 
+      url : Routes.strategic_plans_strategic_plan_index_path('en')
+    submit : ->
+      if @validate()
+        data = {strategic_plan : {title : @get('title'), copy : @get('copy')}}
+        $.ajax
+          url : @get('url')
+          method : 'post'
+          data : data
+          success : @create_callback
+          context : @
+      else
+        $('.form-group').addClass('has-error')
+    validate : ->
+      @validator.validate()
+    remove_error : ->
+      @set('title_error',false)
+      @set('unique_title_error',false)
+      $('.form-group').removeClass('has-error')
+    create_callback : (data, status, jqxhr)->
+      @set(title : "", copy : false)
+      @remove_error()
+      @parent.add_strategic_plan(data)
+
+  StrategicPlanMenuItem = Ractive.extend
+    template : "#strategic_plan_menu_item_template"
+    computed :
+      url : -> Routes.strategic_plans_strategic_plan_path('en', @get('id'))
+      current : -> @get('title') == @get('last_title')
+      last_title : -> @get('strategic_plans')[@get('strategic_plans').length-1].title
+
+  @strategic_plans = new Ractive
+    el: '#strategic_plans'
+    template: '#strategic_plans_template'
+    data :
+      strategic_plans : window.strategic_plan_data
+    components :
+      strategicPlan : StrategicPlan
+      newStrategicPlan : NewStrategicPlan
+    remove : (strategic_plan)->
+      index = @findAllComponents('strategicPlan').indexOf(strategic_plan)
+      @splice('strategic_plans',index,1)
+    add_strategic_plan : (strategic_plan)->
+      @push('strategic_plans',strategic_plan)
+
+  @strategic_plan_menu = new Ractive
+    el: "#strat_plan"
+    template : "#strategic_plan_menu_template"
+    components :
+      strategicPlanMenuItem : StrategicPlanMenuItem
+
+
+  $ =>
+    @strategic_plans.observe('strategic_plans', (strategic_plans)=> @strategic_plan_menu.set('strategic_plans', strategic_plans))

@@ -18,10 +18,10 @@ SimpleNavigation::Configuration.run do |navigation|
     end
     primary.item :strat_plan, t('layout.nav.strat_plan') do |st_pl|
       StrategicPlan.all.each do |sp|
-        st_pl.item :sp_item, menu_text(sp), corporate_services_strategic_plan_path(sp.id)
+        st_pl.item :sp_item, menu_text(sp), strategic_plans_strategic_plan_path(sp.id)
       end
       if StrategicPlan.count.zero?
-        st_pl.item :sp_item, "none configured", corporate_services_admin_path, :highlights_on => /corporate_services\/strategic_plans/
+        st_pl.item :sp_item, "none configured", strategic_plans_admin_path, :highlights_on => /strategic_plan\/strategic_plans/
       end
     end
     primary.item :media, t('layout.nav.media'), media_appearances_path
@@ -32,7 +32,7 @@ SimpleNavigation::Configuration.run do |navigation|
       ad.item :access, t('layout.nav.access'), authengine_action_roles_path
       ad.item :nhri, t('layout.nav.nhri'), nhri_admin_path
       ad.item :gg, t('layout.nav.projects'), project_admin_path
-      ad.item :corp_svcs, t('layout.nav.strat_plan'), corporate_services_admin_path
+      ad.item :corp_svcs, t('layout.nav.strat_plan'), strategic_plans_admin_path
       ad.item :or_media, t('layout.nav.media'), media_appearance_admin_path
       ad.item :compl, t('layout.nav.complaints'), complaint_admin_path
       ad.item :doc, t('layout.nav.int_docs'), internal_document_admin_path

@@ -12,7 +12,7 @@ class ComplaintAdminController < ApplicationController
     @good_governance_complaint_bases = GoodGovernance::ComplaintBasis.pluck(:name)
     @siu_complaint_basis = Siu::ComplaintBasis.new
     @siu_complaint_bases = Siu::ComplaintBasis.pluck(:name)
-    @corporate_services_complaint_basis = CorporateServices::ComplaintBasis.new
-    @corporate_services_complaint_bases = CorporateServices::ComplaintBasis.pluck(:name)
+    @strategic_plan_complaint_basis = StrategicPlans::ComplaintBasis.new
+    @strategic_plan_complaint_bases = StrategicPlans::ComplaintBasis.pluck(:name)
   end
 end

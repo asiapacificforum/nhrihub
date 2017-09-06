@@ -131,7 +131,7 @@ linking vendor/gems/authengine/app/views/authengine/user_mailer/signup_notificat
     ✔ 06 nhrihubc@demo 0.121s
       07 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/complaints/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/complaints/app/assets
     ✔ 07 nhrihubc@demo 0.112s
-      08 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/corporate_services/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/corporate_services/app/assets
+      08 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/strategic_plan/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/strategic_plan/app/assets
     ✔ 08 nhrihubc@demo 0.307s
       09 diff -Nqr ~/www/nhri-hub.com/releases/20170523143459/vendor/gems/dashboard/app/assets ~/www/nhri-hub.com/releases/20170523142956/vendor/gems/dashboard/app/assets
     ✔ 09 nhrihubc@demo 0.115s

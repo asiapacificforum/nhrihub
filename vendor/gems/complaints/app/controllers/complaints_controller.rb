@@ -12,7 +12,7 @@ class ComplaintsController < ApplicationController
                                      :reminders,:notes).sort.reverse
     @mandates = Mandate.all.sort_by(&:name)
     @agencies = Agency.all
-    @complaint_bases = [ CorporateServices::ComplaintBasis.named_list,
+    @complaint_bases = [ StrategicPlans::ComplaintBasis.named_list,
                         GoodGovernance::ComplaintBasis.named_list,
                         Nhri::ComplaintBasis.named_list,
                         Siu::ComplaintBasis.named_list ]

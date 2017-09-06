@@ -70,11 +70,6 @@ PATH
     complaints (0.0.1)
 
 PATH
-  remote: vendor/gems/corporate_services
-  specs:
-    corporate_services (0.0.1)
-
-PATH
   remote: vendor/gems/dashboard
   specs:
     dashboard (0.0.1)
@@ -110,6 +105,11 @@ PATH
   remote: vendor/gems/strategic_plan_reporter
   specs:
     strategic_plan_reporter (0.0.1)
+
+PATH
+  remote: vendor/gems/strategic_plans
+  specs:
+    strategic_plans (0.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -468,7 +468,6 @@ DEPENDENCIES
   coffee-rails
   complaint_reporter!
   complaints!
-  corporate_services!
   dashboard!
   database_cleaner (~> 1.6.1)
   factory_girl_rails (~> 4.0)
@@ -512,6 +511,7 @@ DEPENDENCIES
   spring
   sshkit (~> 1.5)
   strategic_plan_reporter!
+  strategic_plans!
   surus!
   teaspoon
   teaspoon-mocha

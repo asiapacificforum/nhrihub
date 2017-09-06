@@ -59,15 +59,15 @@
                 :placeholder => ''}
 
 %h4
-  = t('.corporate_services')
+  = t('.strategic_plan')
   = t('.project_types')
-#corporate_services_project_types
+#strategic_plan_project_types
   = render :partial => 'admin/collection_configuration',
-   :locals => { :new_item => @corporate_services_project_type,
-                :create_url => corporate_services_project_types_path('en'),
-                :delete_url => corporate_services_project_type_path('en','id'),
-                :collection => @corporate_services_project_types,
-                :item_name => 'corporate_services_project_type',
+   :locals => { :new_item => @strategic_plan_project_type,
+                :create_url => strategic_plan_project_types_path('en'),
+                :delete_url => strategic_plan_project_type_path('en','id'),
+                :collection => @strategic_plan_project_types,
+                :item_name => 'strategic_plan_project_type',
                 :param_name => 'name',
                 :placeholder => ''}
 

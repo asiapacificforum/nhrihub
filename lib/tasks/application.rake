@@ -2,7 +2,7 @@ desc "populate the entire application"
 task :populate => :environment do
   Note.destroy_all
   Reminder.destroy_all
-  modules = ["users", "csp_reports", "projects", "complaints", "corporate_services", "media", "nhri", "internal_documents"]
+  modules = ["users", "csp_reports", "projects", "complaints", "strategic_plan", "media", "nhri", "internal_documents"]
   modules.each do |mod|
     Rake::Task[mod+":populate"].invoke
   end
@@ -13,7 +13,7 @@ desc "remove user-added data and wipes database ready for 'go-live'"
 task :depopulate => :environment do
   Note.destroy_all
   Reminder.destroy_all
-  modules = ["users", "csp_reports", "projects", "complaints", "corporate_services", "media", "nhri", "internal_documents"]
+  modules = ["users", "csp_reports", "projects", "complaints", "strategic_plan", "media", "nhri", "internal_documents"]
   modules.each do |mod|
     Rake::Task[mod+":depopulate"].invoke
   end
