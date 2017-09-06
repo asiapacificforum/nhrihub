@@ -22,7 +22,7 @@
             %span.caret
           %ul.dropdown-menu
             {{#areas}}
-            <area id='{{id}}' name='{{name}}'/>
+            <area id='{{id}}' name='{{name}}' subareas='{{subareas}}'/>
             {{/areas}}
       .col-md-1
         %i.erase.fa.fa-refresh{'on-click'=>'clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}

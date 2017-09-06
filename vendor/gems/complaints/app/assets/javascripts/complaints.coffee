@@ -292,7 +292,7 @@ Complaint = Ractive.extend
       comms = @get('communications')
       if _.isUndefined(comms) then 0 else comms.length
     persisted : ->
-      !_.isNull(@get('id'))
+      !(_.isNull(@get('id')) || _.isUndefined(@get('id')))
     persistent_attributes : ->
       ['case_reference','village','phone','mandate_ids',
         'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',

@@ -52,7 +52,7 @@ ProjectTypes = Ractive.extend
 
 EditBackup =
   stash : ->
-    stashed_attributes = _(@get()).omit('expanded', 'editing', 'performance_indicator_required', 'persistent_attributes', 'url', 'truncated_title', 'delete_confirmation_message', 'reminders_count', 'notes_count', 'count', 'persisted', 'type', 'include', 'create_note_url', 'create_reminder_url', 'has_errors', 'validation_criteria')
+    stashed_attributes = _(@get()).omit('performance_indicator_ids', 'expanded', 'editing', 'performance_indicator_required', 'persistent_attributes', 'url', 'truncated_title', 'delete_confirmation_message', 'reminders_count', 'notes_count', 'count', 'persisted', 'type', 'include', 'create_note_url', 'create_reminder_url', 'has_errors', 'validation_criteria')
     @stashed_instance = $.extend(true,{},stashed_attributes)
   restore : ->
     @restore_checkboxes()
@@ -188,9 +188,9 @@ FilterMatch =
     @contains(criterion,value)
   matches_performance_indicator : ->
     criterion = parseInt(@get('filter_criteria.performance_indicator_id'))
-    value = parseInt(@get('performance_indicator_id'))
+    values = @get('performance_indicator_ids')
     return true if _.isUndefined(criterion) || _.isNaN(criterion)
-    _.isEqual(criterion, value)
+    _(values).indexOf(criterion) != -1
   contains : ( criterion, value) ->
     return true if _.isEmpty(criterion)
     common_elements = _.intersection(criterion, value)
@@ -212,6 +212,8 @@ Project = Ractive.extend
       'serialization_key':'project'
   computed :
     performance_indicator_required : -> true
+    performance_indicator_ids : ->
+      _(@get('performance_indicator_associations')).map (pia)->pia.performance_indicator.id
     persistent_attributes : ->
       # the asFormData method knows how to interpret 'project_documents_attributes'
       ['title', 'description', 'area_ids', 'project_type_ids',

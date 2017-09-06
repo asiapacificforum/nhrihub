@@ -60,7 +60,7 @@ feature "Manage users", :js => true do
   end
 
   scenario "add a new user and reset password before user has first logged in" do
-    user = FactoryGirl.create(:user)
+    user = FactoryGirl.create(:user, :lastName => "D'Amore")
     ActiveRecord::Base.connection.execute("update users set salt = NULL, crypted_password = NULL where users.id = #{user.id}")
     visit admin_users_path(:en)
     email_count = ActionMailer::Base.deliveries.length

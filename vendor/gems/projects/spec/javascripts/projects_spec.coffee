@@ -203,19 +203,7 @@ describe "matching performance indicator", ->
       projects.set('filter_criteria.performance_indicator',null)
 
     it "should match project with null performance_indicator_id", ->
-      projects.set('projects',[{performance_indicator : null}])
-      project = projects.findComponent('project')
-      expect(project.matches_performance_indicator()).to.be.true
-      expect(project.get('include')).to.be.true
-
-    it "should match project with undefined performance_indicator_id", ->
-      projects.set('projects',[{performance_indicator : undefined}])
-      project = projects.findComponent('project')
-      expect(project.matches_performance_indicator()).to.be.true
-      expect(project.get('include')).to.be.true
-
-    it "should match project with empty string performance_indicator_id", ->
-      projects.set('projects',[{performance_indicator : " "}])
+      projects.set('projects',[{performance_indicator_associations : []}])
       project = projects.findComponent('project')
       expect(project.matches_performance_indicator()).to.be.true
       expect(project.get('include')).to.be.true
@@ -225,20 +213,13 @@ describe "matching performance indicator", ->
       projects.set('filter_criteria.performance_indicator_id',42)
 
     it "should match project with matching performance_indicator_id", ->
-      projects.set('projects',[{performance_indicator_id : 42}])
+      projects.set('projects',[{performance_indicator_associations : [{performance_indicator : {id: 42}}]}])
       project = projects.findComponent('project')
-      debugger
       expect(project.matches_performance_indicator()).to.be.true
       expect(project.get('include')).to.be.true
 
     it "should not match project with non-matching performance_indicator_id", ->
-      projects.set('projects',[{performance_indicator_id : 43}])
-      project = projects.findComponent('project')
-      expect(project.matches_performance_indicator(),"matches_performance_indicator()").to.be.false
-      expect(project.get('include')).to.be.false
-
-    it "should not match project with undefined performance_indicator_id", ->
-      projects.set('projects',[{performance_indicator_id : undefined}])
+      projects.set('projects',[{performance_indicator_associations : [{performance_indicator : {id: 43}}]}])
       project = projects.findComponent('project')
       expect(project.matches_performance_indicator(),"matches_performance_indicator()").to.be.false
       expect(project.get('include')).to.be.false

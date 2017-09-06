@@ -29,6 +29,10 @@ feature "complaints index", :js => true do
     User.staff.all.each do |user|
       expect(page).to have_selector('#assignee_filter_select li a span', :text => user.first_last_name)
     end
+    page.find('button', :text => 'Select agency').click
+    Agency.all.each do |agency|
+      expect(page).to have_selector('#agency_filter_select li a span', :text => agency.name)
+    end
   end
 
   it "shows a list of complaints" do

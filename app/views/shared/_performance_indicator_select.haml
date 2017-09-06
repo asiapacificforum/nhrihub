@@ -35,7 +35,7 @@
     %span.help-block#performance_indicator_associations_error.error{:class => "{{#performance_indicator_associations_error}}has-error{{/}}"} There must be at least one performance indicator
 
 %script#performance_indicator_filter_select_template{:type => 'template/ractive'}
-  %ul.dropdown-menu{:style => "width: 450px;"}
+  %ul.dropdown-menu#performance_indicator_filter_select{:style => "width: 450px;"}
     {{#planned_results }}
     %li.dropdown-submenu.planned_result
       %div {{ indexed_description }}

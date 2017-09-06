@@ -78,13 +78,15 @@ describe "area and subarea matching algorithm", ->
       expect(media_appearance_area_matches()).to.eql [false]
 
     it "should succeed when any of the sort criteria areas or any of the sort criteria subareas is matched", ->
-      collection.reset({'collection_items':[{"area_ids":[1,2], "subarea_ids":[1,8], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
+      collection.reset()
+      collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[1]})
+      collection.set({'collection_items':[
+                                        {"area_ids":[1,2], "subarea_ids":[1,8], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
                                         {"area_ids":[1],   "subarea_ids":[1],   "media_areas":[{"area_id":1, "subarea_ids":[1]}]}
                                         {"area_ids":[2],   "subarea_ids":[8],   "media_areas":[{"area_id":2, "subarea_ids":[8]}]}
                                         {"area_ids":[1],   "subarea_ids":[],    "media_areas":[{"area_id":1                   }]}
                                         {"area_ids":[2],   "subarea_ids":[],    "media_areas":[{"area_id":2                   }]}
                                        ]})
-      collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[1]})
       expect(media_appearance_area_matches()).to.eql [true,true,true,true,true]
 
     it "should succeed when areas attributes are empty", ->
@@ -100,13 +102,13 @@ describe "area and subarea matching algorithm", ->
 
   describe "match criteria for areas and subareas", ->
     it "should succeed when any of the sort criteria areas or subareas is matched", ->
-      collection.reset({'collection_items':[{"area_ids":[1,2], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
+      collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[1]})
+      collection.set({'collection_items':[{"area_ids":[1,2], "media_areas":[{"area_id":1, "subarea_ids":[1]}, {"area_id":2, "subarea_ids":[8]}]},
                                         {"area_ids":[1],   "media_areas":[{"area_id":1, "subarea_ids":[1]}]}
                                         {"area_ids":[2],   "media_areas":[{"area_id":2, "subarea_ids":[8]}]}
                                         {"area_ids":[1],   "media_areas":[{"area_id":1                   }]}
                                         {"area_ids":[2],   "media_areas":[{"area_id":2                   }]}
                                        ]})
-      collection.set({'filter_criteria.areas':[1,2], 'filter_criteria.subareas':[1]})
       expect(media_appearance_area_subarea_matches()).to.eql [true,true,true,true,true]
 
     it "should fail when filter_criteria areas and subareas are both empty", ->
