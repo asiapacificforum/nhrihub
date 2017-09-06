@@ -105,7 +105,7 @@ gem "rack-attack"
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'
 gem 'strategic_plans', :path => 'vendor/gems/strategic_plans'
-gem 'outreach_media', :path => 'vendor/gems/outreach_media'
+gem 'media', :path => 'vendor/gems/media'
 gem 'nhri', :path => 'vendor/gems/nhri'
 gem 'complaints', :path => 'vendor/gems/complaints'
 gem 'projects', :path => 'vendor/gems/projects'

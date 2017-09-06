@@ -1,0 +1,44 @@
+= stylesheet_link_tag 'media'
+= stylesheet_link_tag 'media_issues'
+%h1= t('.heading')
+
+.btn.btn-success.btn-sm.add_article{:style => "margin-bottom:12px; color:white;", :onclick => "collection.new_article()"}
+  %i.fa.fa-plus.fa-lg{:style => "color:white"}
+  %span= t('.add_article')
+
+#collection_container
+
+= render :partial => 'shared/confirm_delete_modal'
+= render :partial => 'shared/performance_indicator_select'
+= render :partial => 'shared/collection_filter_controls', :locals => {:collection => :media_appearances, :search_heading => t('.search_heading')}
+= render :partial => 'shared/collection', :locals => {:item => :media_appearance, :i18n_key => "media_appearances.index"}
+= render :partial => 'reminders/reminder' # it's in the main app
+= render :partial => 'notes/note' # it's in the main app
+
+:coffeescript
+  @selected_title = "#{params[:title] ? escape_javascript(params[:title]) : ''}"
+  @collection_items = #{@media_appearances.to_json.html_safe}
+  @item_name = "media_appearance"
+  @areas = #{@areas.to_json.html_safe}
+  @subareas = #{@subareas.to_json.html_safe}
+  @new_collection_item = #{@media_appearance.to_json.html_safe}
+  @create_collection_item_url = "#{@media_appearance.create_url}"
+  @maximum_filesize = #{MediaAppearance.maximum_filesize * 1000000}
+  @permitted_filetypes = #{MediaAppearance.permitted_filetypes.to_json.html_safe }
+  @planned_results = #{@planned_results.to_json.html_safe }
+  @Collection = {}
+  @delete_confirmation_message = "#{t('.delete_confirmation_message')}"
+
+:coffeescript
+  @performance_indicators = _.chain(planned_results).
+    map((pr)->pr.outcomes).
+    flatten().
+    map((o)->o.activities).
+    flatten().
+    map((a)->a.performance_indicators).
+    flatten().
+    map((a)->_(a).values()).
+    object().
+    value()
+
+= javascript_include_tag "media"

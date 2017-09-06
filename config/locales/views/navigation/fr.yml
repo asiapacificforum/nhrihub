@@ -8,7 +8,7 @@ fr:
       access: 'Gestion des rôles'
       logout: "Déconnecter"
       strategic_plan: "Services Corporatifs"
-      outreach_media: 'Sensibilisation et médias'
+      media: 'Sensibilisation et médias'
       nhri: "NHRI"
       adv_council: "Conseil consultatif"
       headings: "Indicateurs des droits de l'homme"
@@ -30,7 +30,7 @@ fr:
         gg: "Bonne gouvernance"
         docs: 'Documents'
       projects: 'Projets'
-      outreach_media: "Sensibilisation et les médias"
+      media: "Sensibilisation et les médias"
       outreach: "Sensibilisation"
       media: "Médias"
       spec_inv: "Unité des enquêtes spéciales"

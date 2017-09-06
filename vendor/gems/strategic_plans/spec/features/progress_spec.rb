@@ -5,7 +5,7 @@ require_relative '../helpers/performance_indicators_spec_helpers'
 require_relative '../helpers/strategic_plan_helpers'
 require_relative '../helpers/setup_helpers'
 require_relative '../helpers/progress_spec_helpers'
-require OutreachMedia::Engine.root.join('spec','helpers','media_spec_helper.rb').to_s
+require Media::Engine.root.join('spec','helpers','media_spec_helper.rb').to_s
 
 
 feature "performance indicators outreach events and media appearances", :js => true do

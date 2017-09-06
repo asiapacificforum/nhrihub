@@ -7,13 +7,13 @@ Teaspoon.configure do |config|
   # be useful to set this to your engines root (e.g. `Teaspoon::Engine.root`).
   # Note: Defaults to `Rails.root` if nil.
   #config.root = nil
-  #config.root = OutreachMedia::Engine.root
+  #config.root = Media::Engine.root
 
   # Paths that will be appended to the Rails assets paths
   # Note: Relative to `config.root`.
   #config.asset_paths = ["spec/javascripts", "spec/javascripts/stylesheets"]
-  config.asset_paths = [OutreachMedia::Engine.root.join("spec/javascripts"),
-                        OutreachMedia::Engine.root.join("spec/support/javascript"),
+  config.asset_paths = [Media::Engine.root.join("spec/javascripts"),
+                        Media::Engine.root.join("spec/support/javascript"),
                         InternalDocuments::Engine.root.join("spec/javascripts"),
                         InternalDocuments::Engine.root.join("spec/support/javascript"),
                         Nhri::Engine.root.join("spec/javascripts"),
@@ -26,7 +26,7 @@ Teaspoon.configure do |config|
 
   # Fixtures are rendered through a controller, which allows using HAML, RABL/JBuilder, etc. Files in these paths will
   # be rendered as fixtures.
-  #config.fixture_paths = [OutreachMedia::Engine.root.join("spec/javascripts/fixtures")] # there aren't any fixtures in this path!
+  #config.fixture_paths = [Media::Engine.root.join("spec/javascripts/fixtures")] # there aren't any fixtures in this path!
 
   # SUITES
   #
@@ -51,7 +51,7 @@ Teaspoon.configure do |config|
     # Specify a file matcher as a regular expression and all matching files will be loaded when the suite is run. These
     # files need to be within an asset path. You can add asset paths using the `config.asset_paths`.
     #suite.matcher = "{spec/javascripts,app/assets}/**/*_spec.{js,js.coffee,coffee}"
-    #suite.matcher = "vendor/gems/outreach_media/spec/javascripts/**/*_spec.coffee"
+    #suite.matcher = "vendor/gems/media/spec/javascripts/**/*_spec.coffee"
     suite.matcher = "**/spec/javascripts/**/*_spec.coffee"
 
     # Load additional JS files, but requiring them in your spec helper is the preferred way to do this.
@@ -191,8 +191,8 @@ Teaspoon.configure do |config|
     #coverage.lines = nil
   end
   config.suite :media do |suite|
-    suite.helper = Rails.root.join("vendor","gems","outreach_media","spec","javascripts","spec_helper.js")
-    suite.matcher = "vendor/gems/outreach_media/spec/javascripts/**/*_spec.coffee"
+    suite.helper = Rails.root.join("vendor","gems","media","spec","javascripts","spec_helper.js")
+    suite.matcher = "vendor/gems/media/spec/javascripts/**/*_spec.coffee"
   end
   config.suite :internal_documents do |suite|
     suite.helper = Rails.root.join("vendor","gems","internal_documents","spec","javascripts","spec_helper.js")

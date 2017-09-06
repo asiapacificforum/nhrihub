@@ -1,0 +1,36 @@
+= stylesheet_link_tag 'form_errors'
+
+.message_block
+%h1=t('.heading')
+
+%h4=t('.subheading.filetypes')
+#media_appearance_filetypes
+  = render :partial => 'admin/collection_configuration',
+    :locals => { :new_item => @media_filetype,
+                 :create_url => media_appearance_filetypes_path,
+                 :delete_url => media_appearance_filetype_path('id'),
+                 :collection => @media_filetypes,
+                 :item_name => 'filetype',
+                 :param_name => 'ext',
+                 :placeholder => 'e.g. ppt'}
+
+%h4=t('.subheading.filesize')
+#media_appearance_filesize
+  = render :partial => 'admin/document_filesize_configuration',
+    :locals => { :update_url => media_appearance_filesize_path,
+                 :param => @media_filesize,
+                 :context => "media_appearance"}
+
+%h4=t('.subheading.areas')
+= render :partial => 'media_areas'
+
+:coffeescript
+  $ ->
+    _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g }
+
+    window.flash_error_template = _.template($("#flash_error_template").html())
+
+
+%script{:type => 'template/html', :id => :flash_error_template}
+  %ul.error
+    %li {{ message }}

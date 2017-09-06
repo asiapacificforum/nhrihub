@@ -91,9 +91,9 @@ PATH
       rails (>= 5.0.0)
 
 PATH
-  remote: vendor/gems/outreach_media
+  remote: vendor/gems/media
   specs:
-    outreach_media (0.0.1)
+    media (0.0.1)
       rails (>= 5.0.0)
 
 PATH
@@ -489,7 +489,7 @@ DEPENDENCIES
   magic_lamp
   message_block!
   nhri!
-  outreach_media!
+  media!
   pg
   poltergeist
   projects!

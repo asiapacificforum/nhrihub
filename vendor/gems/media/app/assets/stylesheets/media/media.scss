@@ -1,0 +1,39 @@
+.media_appearance.well, .outreach_event.well {
+  @extend .expandable_well // in main app, expandable_list
+}
+
+// the display of the metrics of a media appearance
+.metric {
+  margin-bottom : 4px;
+
+  .name {
+    float : left;
+    width : 35%;
+
+    &:after {
+      content : ":";
+    }
+  }
+
+  .value {
+    float : left;
+    width : 65%;
+  }
+}
+
+// the next two change the icon from a right caret to a down caret
+// in the media admin page
+[aria-expanded='false'] .fa-caret-right:before {
+  content: "\f0da";
+}
+
+[aria-expanded='true'] .fa-caret-right:before {
+  content: "\f0d7";
+}
+
+.checkbox label {
+  padding-left : 70px;
+}
+.checkbox.subarea {
+  padding-left: 60px;
+}
