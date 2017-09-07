@@ -8,10 +8,6 @@ FactoryGirl.define do
       notable_type "MediaAppearance"
     end
 
-    trait :outreach_event do
-      notable_type "OutreachEvent"
-    end
-
     trait :activity do
       notable_type "Activity"
     end

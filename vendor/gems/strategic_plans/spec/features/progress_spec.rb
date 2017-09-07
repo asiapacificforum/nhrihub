@@ -8,7 +8,7 @@ require_relative '../helpers/progress_spec_helpers'
 require Media::Engine.root.join('spec','helpers','media_spec_helper.rb').to_s
 
 
-feature "performance indicators outreach events and media appearances", :js => true do
+feature "performance indicators and media appearances", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include PerformanceIndicatorsSpecHelpers
   include StrategicPlanHelpers
