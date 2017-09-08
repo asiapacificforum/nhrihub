@@ -21,7 +21,7 @@
 // the bootply solution works, but the github plugin does not...
 // so this is the bootply code!
 //= require bootstrap-multimodal
-//= require ractive-1.0.0-build-9
+//= require ractive-1.0.0-build-64
 //= require ractive-bootstrap
 // TODO this hack (below) is not required, it's b/c I made a mistake, see my jquery pullrequest
 //= require jquery_json_parse_hack
