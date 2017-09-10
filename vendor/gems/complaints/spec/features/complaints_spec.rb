@@ -333,7 +333,6 @@ feature "complaints index", :js => true do
 
   it "adds 15 complaints and increments case reference for each" do #b/c there was a bug
     15.times do |i|
-      page.execute_script('scrollTo(0,80)')
       add_complaint
       within new_complaint do
         fill_in('lastName', :with => "Normal")
@@ -349,7 +348,6 @@ feature "complaints index", :js => true do
     end
     expect(Complaint.pluck(:case_reference)).to eq ["c12-34", "C17-1", "C17-2", "C17-3", "C17-4", "C17-5", "C17-6", "C17-7", "C17-8", "C17-9", "C17-10", "C17-11", "C17-12", "C17-13", "C17-14", "C17-15"]
     expect(page.all('.complaint .basic_info .case_reference').map(&:text)).to eq ["C17-15", "C17-14", "C17-13", "C17-12", "C17-11", "C17-10", "C17-9", "C17-8", "C17-7", "C17-6", "C17-5", "C17-4", "C17-3", "C17-2", "C17-1", "c12-34"]
-    page.execute_script('scrollTo(0,80)')
     add_complaint
     expect(page.find('.new_complaint #case_reference').text).to eq "C17-16"
   end
@@ -729,7 +727,6 @@ feature "complaints index", :js => true do
       fill_in('village', :with => "Normaltown")
       fill_in('phone', :with => "555-1212")
     end
-    page.execute_script("scrollTo(0,0)")
     add_complaint
     expect(page.evaluate_script("_.chain(complaints.findAllComponents('complaint')).map(function(c){return c.get('editing')}).filter(function(c){return c}).value().length")).to eq 0
     cancel_add
@@ -759,7 +756,7 @@ feature "complaints index", :js => true do
       fill_in('dob', :with => "")
       fill_in('complaint_details', :with => "")
       # MANDATE
-      uncheck('human_rights')
+      scroll_to_and_uncheck('human_rights')
       # BASIS
       uncheck_basis(:good_governance, "Delayed action") # originally had "Delayed action" and "Failure to Act"
       uncheck_basis(:good_governance, "Failure to act") # originally had "Delayed action" and "Failure to Act"

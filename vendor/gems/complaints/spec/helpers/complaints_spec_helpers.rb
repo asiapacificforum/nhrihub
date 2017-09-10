@@ -1,9 +1,12 @@
 require 'rspec/core/shared_context'
+require 'application_helpers'
 
 module ComplaintsSpecHelpers
   extend RSpec::Core::SharedContext
+  include ApplicationHelpers
+
   def click_the_download_icon
-    page.all('#complaint_documents .complaint_document .fa-cloud-download')[0].click
+    scroll_to(page.all('#complaint_documents .complaint_document .fa-cloud-download')[0]).click
   end
 
   def new_complaint
@@ -15,12 +18,11 @@ module ComplaintsSpecHelpers
   end
 
   def delete_document
-    page.all('#complaint_documents .complaint_document i.delete_icon').first.click
+    scroll_to(page.all('#complaint_documents .complaint_document i.delete_icon').first).click
   end
 
   def cancel_add
-    page.execute_script("scrollTo(0,0)")
-    page.find('#cancel_complaint').click
+    find('#cancel_complaint').click
   end
 
   def edit_cancel
@@ -48,7 +50,7 @@ module ComplaintsSpecHelpers
   end
 
   def edit_first_complaint
-    page.all('.actions .fa-pencil-square-o')[0].click
+    scroll_to(page.all('.actions .fa-pencil-square-o')[0]).click
   end
 
   def edit_second_complaint
@@ -57,13 +59,11 @@ module ComplaintsSpecHelpers
   end
 
   def select_male_gender
-    page.execute_script("scrollTo(0,0)")
     choose('m')
   end
 
   def edit_save
-    #page.execute_script("scrollTo(0,0)")
-    page.find('.save_complaint').click
+    find('.save_complaint').click
     wait_for_ajax
   end
 
@@ -110,7 +110,7 @@ module ComplaintsSpecHelpers
   end
 
   def save_complaint
-    page.find('#save_complaint')
+    find('#save_complaint')
   end
 
   def new_complaint_case_reference
@@ -153,9 +153,9 @@ module ComplaintsSpecHelpers
     all('.complaint #expand').first.click
   end
 
+
   def add_complaint
-    page.execute_script("scrollTo(80,0)")
-    page.find('#add_complaint').click
+    find('#add_complaint').click
   end
 
   def open_communications_modal

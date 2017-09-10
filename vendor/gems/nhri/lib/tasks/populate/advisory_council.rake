@@ -47,7 +47,7 @@ namespace :nhri do
       desc "populates advisory council issues"
       task :populate => "nhri:advisory_council:issues:depopulate" do
         20.times do
-          ma = FactoryGirl.create(:advisory_council_issue, :with_reminders, :with_notes, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample)
+          ma = FactoryGirl.create(:advisory_council_issue, :with_reminders, :with_notes, [:hr_area, :si_area, :gg_area, :hr_violation_subarea].sample, :created_at => Date.today.advance(:days => -(rand(365))).to_datetime)
         end
       end
     end

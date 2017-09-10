@@ -84,7 +84,7 @@ feature "projects index", :js => true do
       add_a_performance_indicator
 
       # SAVE IT
-      page.execute_script("scrollTo(0,0)")
+      #page.execute_script("scrollTo(0,0)")
       expect{ save_project.click; wait_for_ajax }.to change{ Project.count }.from(2).to(3)
 
       # CHECK SERVER

@@ -8,6 +8,7 @@ module ProjectsSpecHelpers
   def add_a_performance_indicator
     select_performance_indicators.click
     page.all("li.performance_indicator a").first.click
+    select_performance_indicators.click
     PerformanceIndicator.first
   end
 

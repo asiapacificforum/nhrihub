@@ -198,16 +198,16 @@ feature "agency admin", :js => true do
   scenario "delete an agency that is not associated with any complaint" do
     FactoryGirl.create(:agency, :name => "ABC", :full_name => "Anywhere But Colma")
     visit complaint_admin_path('en')
-    expect{page.find("#agencies .agency .delete_agency").click; wait_for_ajax}.to change{Agency.count}.from(1).to(0)
+    expect{find("#agencies .agency .delete_agency").click; wait_for_ajax}.to change{Agency.count}.from(1).to(0)
   end
 
   scenario "delete an agency that is already associated with a complaint" do
     agency = FactoryGirl.create(:agency, :name => "ABC", :full_name => "Anywhere But Colma")
     FactoryGirl.create(:complaint, :agencies => [agency])
     visit complaint_admin_path('en')
-    expect{page.find("#agencies .agency .delete_agency").click; wait_for_ajax}.not_to change{Agency.count}
+    expect{find("#agencies .agency .delete_agency").click; wait_for_ajax}.not_to change{Agency.count}
     expect(page).to have_selector('#delete_disallowed', :text => "cannot delete an agency that is associated with complaints")
-    page.find('body').click # click anywhere
+    find('h1').click # click anywhere, 'body' doesn't seem to work anymore
     expect(page).not_to have_selector('#delete_disallowed')
   end
 end

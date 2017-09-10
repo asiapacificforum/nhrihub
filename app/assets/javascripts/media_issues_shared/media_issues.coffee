@@ -344,9 +344,9 @@ $ ->
           if !_.isNull(collectionItem.get('date'))
             $.datepicker.parseDate("yy, M d",collectionItem.get('date'))
       earliest : ->
-        @min('dates')
+        @min('dates') unless _.isEmpty(@findAllComponents('collectionItem'))
       most_recent : ->
-        @max('dates')
+        @max('dates') unless _.isEmpty(@findAllComponents('collectionItem'))
       formatted_from_date:
         get: -> $.datepicker.formatDate("yy, M d", @get('filter_criteria.from'))
         set: (val)-> @set('filter_criteria.from', $.datepicker.parseDate( "yy, M d", val))

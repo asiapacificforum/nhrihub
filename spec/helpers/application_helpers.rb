@@ -11,6 +11,44 @@ module ApplicationHelpers
     #end
   end
 
+  def check(el)
+    scroll_to_and_check(el)
+  end
+
+  def choose(el)
+    scroll_to_and_choose(el)
+  end
+
+  def scroll_to_and_check(el)
+    scroll_to(page.find_field(el))
+    page.check(el)
+  end
+
+  def scroll_to_and_choose(el)
+    scroll_to(page.find_field(el))
+    page.choose(el)
+  end
+
+  def scroll_to_and_uncheck(el)
+    scroll_to(page.find_field(el))
+    page.uncheck(el)
+  end
+
+  def scroll_to(field)
+    js = <<-JS
+      el=document.evaluate('#{field.path}',document)\;
+      itn=el.iterateNext()\;
+      tt = itn.getBoundingClientRect().top\;
+      scrollBy({left:0, top:tt-100})\;
+    JS
+    page.execute_script(js)
+    field
+  end
+
+  def find(method=:css, selector)
+    scroll_to(page.find(method, selector))
+  end
+
   def select_date(date,options)
     base = options[:from].to_s
     year_selector = base+"_1i"
