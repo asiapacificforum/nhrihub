@@ -9,7 +9,7 @@ module ProjectAdminSpecHelpers
   end
 
   def delete_project_type(text)
-    page.find(:xpath, ".//tr[contains(td,'#{text}')]").find('a').click
+    find(:xpath, ".//tr[contains(td,'#{text}')]").find('a').click
   end
 
   def model

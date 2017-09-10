@@ -153,7 +153,6 @@ module ComplaintsSpecHelpers
     all('.complaint #expand').first.click
   end
 
-
   def add_complaint
     find('#add_complaint').click
   end
