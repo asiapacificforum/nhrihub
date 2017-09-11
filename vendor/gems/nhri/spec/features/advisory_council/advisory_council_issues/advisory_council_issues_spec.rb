@@ -64,7 +64,7 @@ feature "create a new article", :js => true do
     check("Good Governance")
     check("CRC")
     fill_in('advisory_council_issue_article_link', :with => "http://www.example.com")
-    expect{page.execute_script("scrollTo(0,0)"); add_save}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(0).to(1)
+    expect{add_save}.to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}.from(0).to(1)
     expect(page).to have_selector("#advisory_council_issues .advisory_council_issue", :count => 1)
     expect(page.find("#advisory_council_issues .advisory_council_issue .basic_info .title").text).to eq "My new article title"
     expand_all_panels
@@ -199,7 +199,7 @@ feature "when there are existing articles", :js => true do
       check("advisory_council_issue_subarea_ids_1") # violation
       add_cancel
       expect(page).not_to have_selector('.form #advisory_council_issue_title')
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
     end
 
     scenario "delete an article" do
@@ -211,7 +211,7 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit an article without introducing errors" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       fill_in("advisory_council_issue_title", :with => "My new article title")
       expect(chars_remaining).to eq "You have 80 characters left"
       uncheck("Human Rights")
@@ -226,7 +226,7 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit an article and upload a different file" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       expect(page.find('#selected_file_container').text).not_to be_blank
       previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
@@ -239,7 +239,7 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit a file article and change to link" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
       clear_file_attachment
@@ -253,7 +253,7 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit a file article and add a link" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       previous_file = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
@@ -268,7 +268,7 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit an article and add title error" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       fill_in("advisory_council_issue_title", :with => "")
       expect(chars_remaining).to eq "You have 100 characters left"
       expect{edit_save}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
@@ -278,38 +278,38 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit an article and add file error" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
       page.attach_file("primary_file", upload_image, :visible => false)
       expect(page).to have_css('#original_type_error', :text => "File type not allowed")
       clear_file_attachment
       expect(page).not_to have_selector('#attachment_error', :text => "A file or link must be included")
       edit_cancel
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       expect(page).not_to have_selector('#attachment_error', :text => "A file or link must be included")
     end
 
     scenario "edit an article, add errors, and cancel" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       fill_in("advisory_council_issue_title", :with => "")
       expect(chars_remaining).to eq "You have 100 characters left"
       expect{edit_save}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       edit_cancel
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       expect(page).not_to have_selector("#title_error", :visible => true)
     end
 
     scenario "edit an article and cancel without saving" do
       original_advisory_council_issue = Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       fill_in("advisory_council_issue_title", :with => "My new article title")
       expect(chars_remaining).to eq "You have 80 characters left"
       uncheck("Human Rights")
       check("advisory_council_issue_subarea_ids_1")
       check("Good Governance")
       check("CRC")
-      expect{page.execute_script("scrollTo(0,0)"); edit_cancel}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.title}
+      expect{edit_cancel}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.first.title}
       expect(page.all("#advisory_council_issues .advisory_council_issue .basic_info .title").first.text).to eq original_advisory_council_issue.title
       sleep(0.3) # seems to be required for proper operation in chrome
       expand_all_panels
@@ -323,7 +323,7 @@ feature "when there are existing articles", :js => true do
       expect{add_save}.not_to change{Nhri::AdvisoryCouncil::AdvisoryCouncilIssue.count}
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       add_cancel
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       expect(page).not_to have_selector("#title_error", :visible => true)
     end
   end
@@ -336,7 +336,7 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit a link article and add a file" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
       page.attach_file("primary_file", upload_document, :visible => false)
       edit_save
@@ -361,22 +361,22 @@ feature "enforce single user add or edit action", :js => true do
   end
 
   scenario "user tries to edit two articles" do
-    edit_article[0].click
+    scroll_to(edit_article[0]).click
     expect(page).to have_selector('.title .edit.in', :count => 1)
-    edit_article[0].click # not the same one as before, it isn't visible any more, this is another one
+    scroll_to(edit_article[0]).click # not the same one as before, it isn't visible any more, this is another one
     expect(page).to have_selector('.title .edit.in', :count => 1)
   end
 
   scenario "user tries to edit while adding" do
     add_article_button.click
     expect(page).to have_selector('.row.advisory_council_issue.well.well-sm.form.template-upload')
-    edit_article[0].click
+    scroll_to(edit_article[0]).click
     expect(page).to have_selector('.title .edit.in', :count => 1)
     expect(page).not_to have_selector('.row.advisory_council_issue.well.well-sm.form.template-upload')
   end
 
   scenario "user tries to add while editing" do
-    edit_article[0].click
+    scroll_to(edit_article[0]).click
     expect(page).to have_selector('.title .edit.in', :count => 1)
     add_article_button.click
     expect(page).not_to have_selector('.title .edit.in', :count => 1)

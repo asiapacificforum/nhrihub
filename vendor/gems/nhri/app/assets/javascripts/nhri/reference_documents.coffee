@@ -191,7 +191,7 @@ $ ->
         addClass('highlight').
         css('background-image','none')
     slide_into_view : ->
-      $('body').animate({scrollTop:$("#icc_reference_document_editable#{@get('id')}").offset().top-100},1000)
+      $('html').animate({scrollTop:$("#icc_reference_document_editable#{@get('id')}").offset().top-100},1000)
   .extend Remindable
   .extend ConfirmDeleteModal
 

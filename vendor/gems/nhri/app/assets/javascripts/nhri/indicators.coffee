@@ -213,7 +213,7 @@ $ ->
     highlight : ->
       $(@find('.indicator')).addClass('highlight')
     slide_into_view : ->
-      $('body').animate( {scrollTop:$(".indicator.highlight").offset().top-100}, 1000)
+      $('html').animate( {scrollTop:$(".indicator.highlight").offset().top-100}, 1000)
   .extend Remindable
   .extend Notable
   .extend ConfirmDeleteModal

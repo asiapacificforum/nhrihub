@@ -72,11 +72,11 @@ module ProjectsSpecHelpers
   end
 
   def save_project
-    page.find('#save_project')
+    find('#save_project')
   end
 
   def cancel_project
-    page.find('#cancel_project')
+    find('#cancel_project')
   end
 
   def first_project
@@ -100,7 +100,7 @@ module ProjectsSpecHelpers
   end
 
   def good_governance_area
-    page.find(:xpath, ".//div[contains(@class,'area_project_type')][div[contains(.,'Good Governance')]]")
+    find(:xpath, ".//div[contains(@class,'area_project_type')][div[contains(.,'Good Governance')]]")
   end
 
   def agencies
@@ -132,23 +132,20 @@ module ProjectsSpecHelpers
   end
 
   def delete_file
-    page.all('#project_documents .project_document .delete_icon')[0]
+    scroll_to(page.all('#project_documents .project_document .delete_icon')[0])
   end
 
   def edit_save
-    page.execute_script("scrollTo(0,0)")
-    page.find('i.fa-check').click
+    find('i.fa-check').click
     wait_for_ajax
   end
 
   def edit_first_project
-    element_top = page.evaluate_script("$('.project .icon .fa-pencil-square-o').first().offset().top")
-    page.execute_script("scrollTo(0,#{element_top-200})")
-    page.all('.project .icon .fa-pencil-square-o')[0]
+    scroll_to(page.all('.project .icon .fa-pencil-square-o')[0])
   end
 
   def edit_last_project
-    page.all('.project .icon .fa-pencil-square-o').last
+    scroll_to(page.all('.project .icon .fa-pencil-square-o').last)
   end
 
   def select_performance_indicators
@@ -161,43 +158,34 @@ module ProjectsSpecHelpers
   end
 
   def performance_indicators
-    page.find('#performance_indicators')
+    find('#performance_indicators')
   end
 
   def remove_first_indicator
-    page.all('.selected_performance_indicator .remove')[0]
+    scroll_to(page.all('.selected_performance_indicator .remove')[0])
   end
 
   def remove_last_indicator
-    page.all('.selected_performance_indicator .remove')[-1]
+    scroll_to(page.all('.selected_performance_indicator .remove')[-1])
   end
 
   def uncheck_all_checkboxes
     sleep(0.3)
     page.
       all(:xpath, "//input[@type='checkbox']").
-      each{|cb| uncheck(cb["id"]) }
+      each{|cb| scroll_to(cb); uncheck(cb["id"]) }
   end
 
   def edit_cancel
-    page.execute_script("scrollTo(0,0)")
-    if page.evaluate_script('navigator.userAgent').match(/phantomjs/i)
-      # when the performance_indicator dropdown is still active, phantomjs can't
-      # click on the icon due to dropdown backdrop being present
-      page.find("#edit_cancel").trigger('click')
-    else
-      #selenium has no problem, finding the icon
-      #but it doesn't support 'trigger'
-      page.find('#edit_cancel').click
-    end
+    find('#edit_cancel').click
   end
 
   def checkbox(id)
-    page.find(:xpath, "//input[@type='checkbox'][@id='#{id}']")
+    find(:xpath, "//input[@type='checkbox'][@id='#{id}']")
   end
 
   def click_the_download_icon
-    page.all("#projects .project .project_document .fa-cloud-download")[0].click
+    scroll_to(page.all("#projects .project .project_document .fa-cloud-download")[0]).click
   end
 
   def project_documents

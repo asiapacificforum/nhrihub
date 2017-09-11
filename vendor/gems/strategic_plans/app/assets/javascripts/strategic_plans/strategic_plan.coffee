@@ -84,7 +84,7 @@ $ ->
     edit_update : (performance_indicator) ->
       @set(performance_indicator)
     slide_into_view : ->
-      $('body').animate({scrollTop:$("#performance_indicator_editable#{@get('id')}").offset().top-100},1000)
+      $('html').animate({scrollTop:$("#performance_indicator_editable#{@get('id')}").offset().top-100},1000)
     highlight : ->
       $("#performance_indicator_editable#{@get('id')}").addClass('highlight')
     remove_highlight : ->

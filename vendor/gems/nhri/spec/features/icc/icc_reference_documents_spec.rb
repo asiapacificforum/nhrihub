@@ -277,7 +277,7 @@ feature "reference document highlighted when its id is passed in via url query s
   end
 
   it "should scroll the selected document into view" do
-    page_position = page.evaluate_script("$('body').scrollTop()")
+    page_position = page.evaluate_script("$(document).scrollTop()")
     element_offset = page.evaluate_script("$('#icc_reference_document_editable#{@id}').offset().top")
     expect(page_position).to eq element_offset - 100
   end
