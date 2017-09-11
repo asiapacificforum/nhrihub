@@ -78,7 +78,7 @@ feature "create a new article", :js => true do
     select_first_performance_indicator
     pi = PerformanceIndicator.first
     expect(page).to have_selector("#performance_indicators .selected_performance_indicator", :text => pi.indexed_description )
-    expect{page.execute_script("scrollTo(0,0)"); add_save}.to change{MediaAppearance.count}.from(0).to(1)
+    expect{add_save}.to change{MediaAppearance.count}.from(0).to(1)
     ma = MediaAppearance.first
     expect(ma.performance_indicator_ids).to eq [pi.id]
     sleep(0.4)
@@ -243,14 +243,14 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit an article without introducing errors" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       fill_in("media_appearance_title", :with => "My new article title")
       expect(chars_remaining).to eq "You have 80 characters left"
       uncheck("Human Rights")
       check("media_appearance_subarea_ids_1")
       check("Good Governance")
       check("CRC")
-      expect{page.execute_script("scrollTo(0,0)"); edit_save}.to change{MediaAppearance.first.title}
+      expect{edit_save}.to change{MediaAppearance.first.title}
       expect(MediaAppearance.first.area_ids).to eql [2]
       sleep(0.4)
       expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq "My new article title"
@@ -260,7 +260,7 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit an article and upload a different file" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       expect(page.find('#selected_file_container').text).not_to be_blank
       previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
@@ -273,7 +273,7 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit a file article and change to link" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       previous_file_id = page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('file_id')")
       expect(File.exists?(File.join('tmp','uploads','store',previous_file_id))).to eq true
       clear_file_attachment
@@ -287,7 +287,7 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit an article and add title error" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       fill_in("media_appearance_title", :with => "")
       expect(chars_remaining).to eq "You have 100 characters left"
       expect{edit_save}.not_to change{MediaAppearance.count}
@@ -299,19 +299,19 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit an article and add file error" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
       page.attach_file("primary_file", upload_image, :visible => false)
       expect(page).to have_css('#original_type_error', :text => "File type not allowed")
       clear_file_attachment
       expect(page).to have_selector('#attachment_error', :text => "A file or link must be included")
       edit_cancel
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       expect(page).not_to have_selector('#attachment_error', :text => "A file or link must be included")
     end
 
     scenario "edit an article, add errors, and cancel" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       fill_in("media_appearance_title", :with => "")
       expect(chars_remaining).to eq "You have 100 characters left"
       expect{edit_save}.not_to change{MediaAppearance.count}
@@ -319,21 +319,21 @@ feature "when there are existing articles", :js => true do
       expect(page).to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
       edit_cancel
       sleep(0.2)
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       expect(page).not_to have_selector("#title_error", :visible => true)
       expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
 
     scenario "edit an article and cancel without saving" do
       original_media_appearance = MediaAppearance.first
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       fill_in("media_appearance_title", :with => "My new article title")
       expect(chars_remaining).to eq "You have 80 characters left"
       uncheck("Human Rights")
       check("media_appearance_subarea_ids_1")
       check("Good Governance")
       check("CRC")
-      expect{page.execute_script("scrollTo(0,0)"); edit_cancel}.not_to change{MediaAppearance.first.title}
+      expect{edit_cancel}.not_to change{MediaAppearance.first.title}
       expect(page.all("#media_appearances .media_appearance .basic_info .title").first.text).to eq original_media_appearance.title
       sleep(0.3) # seems to be required for test passing in chrome
       expand_all_panels
@@ -349,7 +349,7 @@ feature "when there are existing articles", :js => true do
       expect(page).to have_selector("#title_error", :text => "Title cannot be blank")
       expect(page).to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
       add_cancel
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       expect(page).not_to have_selector("#title_error", :visible => true)
       expect(page).not_to have_selector("#media_appearance_error", :text => "Form has errors, cannot be saved")
     end
@@ -362,7 +362,7 @@ feature "when there are existing articles", :js => true do
     end
 
     scenario "edit a link article and change to file" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       page.execute_script("collection.set('document_target',collection.findComponent('collectionItem'))")
       page.attach_file("primary_file", upload_document, :visible => false)
       fill_in('media_appearance_article_link', :with => "")
@@ -381,11 +381,11 @@ feature "when there are existing articles", :js => true do
     end
 
     it "panel expanding should behave" do
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       edit_save
       expect(page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('expanded')")).to eq true
       expect(page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('editing')")).to eq false
-      edit_article[0].click
+      scroll_to(edit_article[0]).click
       expect(page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('expanded')")).to eq true
       expect(page.evaluate_script("collection.findAllComponents('collectionItem')[0].get('editing')")).to eq true
       edit_cancel
@@ -409,22 +409,22 @@ feature "enforce single user add or edit action", :js => true do
   end
 
   scenario "user tries to edit two articles" do
-    edit_article[0].click
+    scroll_to(edit_article[0]).click
     expect(page).to have_selector('.title .edit.in', :count => 1)
-    edit_article[0].click # not the same one as before, it isn't visible any more, this is another one
+    scroll_to(edit_article[0]).click # not the same one as before, it isn't visible any more, this is another one
     expect(page).to have_selector('.title .edit.in', :count => 1)
   end
 
   scenario "user tries to edit while adding" do
     add_article_button.click
     expect(page).to have_selector('.row.media_appearance.well.well-sm.form.template-upload')
-    edit_article[0].click
+    scroll_to(edit_article[0]).click
     expect(page).to have_selector('.title .edit.in', :count => 1)
     expect(page).not_to have_selector('.row.media_appearance.well.well-sm.form.template-upload')
   end
 
   scenario "user tries to add while editing" do
-    edit_article[0].click
+    scroll_to(edit_article[0]).click
     expect(page).to have_selector('.title .edit.in', :count => 1)
     add_article_button.click
     expect(page).not_to have_selector('.title .edit.in', :count => 1)

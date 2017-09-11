@@ -12,7 +12,7 @@ module MediaIssuesCommonHelpers
   end
 
   def add_save
-    page.find('#save_add').click
+    find('#save_add').click
     wait_for_ajax
   end
 
@@ -21,11 +21,11 @@ module MediaIssuesCommonHelpers
   end
 
   def add_article_button
-    page.find('.add_article')
+    find('.add_article')
   end
 
   def edit_save
-    page.find('#edit_save').click
+    find('#edit_save').click
     wait_for_ajax
   end
 
@@ -42,19 +42,19 @@ module MediaIssuesCommonHelpers
   end
 
   def add_cancel
-    page.find("#{single_item_selector} #cancel_add").click
+    find("#{single_item_selector} #cancel_add").click
   end
 
   def edit_cancel
-    page.find('#edit_cancel').click
+    find('#edit_cancel').click
   end
 
   def click_delete_article
-    page.find("#{single_item_selector} .delete_icon_sm").click
+    find("#{single_item_selector} .delete_icon_sm").click
   end
 
   def click_note_icon
-    page.find("#{single_item_selector} .basic_info .actions .show_notes").click
+    find("#{single_item_selector} .basic_info .actions .show_notes").click
     sleep(0.4)
   end
 
