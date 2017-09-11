@@ -101,6 +101,7 @@ gem "surus", git: "https://github.com/asiapacificforum/surus.git", :ref => "36cb
 gem "aws-sdk", "~> 2"
 gem "glacier_on_rails", '= 0.9.9'
 gem "rack-attack"
+gem "rack-mini-profiler"
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'
