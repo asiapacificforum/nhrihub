@@ -63,15 +63,9 @@ feature "Manage an existing organizations", :js => true do
   scenario "remove an organization with no users" do
     expect(page_heading).to eq 'Organizations list'
     selector = ".//tr[@class='organization'][contains(td/a,'Government of Maldonia')]"
-    if page.driver.browser.is_a? Capybara::Poltergeist::Browser
+    page.accept_confirm 'Are you sure?' do
       within(:xpath, selector) do
         click_link('delete')
-      end
-    else
-      page.accept_alert 'Are you sure?' do
-        within(:xpath, selector) do
-          click_link('delete')
-        end
       end
     end
     expect(page).not_to have_selector(:xpath, selector)

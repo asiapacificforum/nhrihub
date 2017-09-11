@@ -28,19 +28,19 @@ feature "configure description areas and subareas", :js => true do
   end
 
   scenario 'add an area with blank text' do
-    expect{ page.find('button#add_area').click; sleep(0.2)}.not_to change{ Area.count }
+    expect{ find('button#add_area').click; sleep(0.2)}.not_to change{ Area.count }
     expect( page.find('#area_error') ).to have_text "Area can't be blank"
   end
 
   scenario 'add an area with whitespace text' do
     page.find('#area_name').set('    ')
-    expect{ page.find('button#add_area').click; sleep(0.2)}.not_to change{ Area.count }
+    expect{ find('button#add_area').click; sleep(0.2)}.not_to change{ Area.count }
     expect( page.find('#area_error') ).to have_text "Area can't be blank"
   end
 
   scenario 'add an area with leading/trailing whitespace' do
     page.find('#area_name').set('     What else       ')
-    expect{ page.find('button#add_area').click; sleep(0.2)}.to change{ Area.count }.by 1
+    expect{ find('button#add_area').click; sleep(0.2)}.to change{ Area.count }.by 1
     expect(page.all('.area .text').map(&:text)).to include "What else"
   end
 
@@ -74,7 +74,7 @@ feature "configure description areas and subareas", :js => true do
 
   scenario 'add a subarea with blank text' do
     open_accordion_for_area("Human Rights")
-    expect{ page.find('#add_subarea').click; sleep(0.2)}.not_to change{ Subarea.count }
+    expect{ find('#add_subarea').click; sleep(0.2)}.not_to change{ Subarea.count }
     expect( page.find('#subarea_error') ).to have_text "Subarea can't be blank"
   end
 
@@ -94,7 +94,7 @@ feature "configure description areas and subareas", :js => true do
 
   scenario 'blank subarea error message removed on keydown' do
     open_accordion_for_area("Human Rights")
-    page.find('#add_subarea').click
+    find('#add_subarea').click
     sleep(0.2)
     expect( page.find('#subarea_error') ).to have_text "Subarea can't be blank"
     name_field = page.find("#subarea_name").native
