@@ -19,12 +19,13 @@ feature "indicators behaviour", :js => true do
   end
 
   it "should scroll the highlighted indicator into view" do
+    # required in order for the second expectation to pass!
+    # AND the previous test must be present!
+    # don't know why
+    expect(page).to have_selector(".indicator.highlight", :text => Nhri::Indicator.find(@indicator_id).title)
     page_position = page.evaluate_script("$(document).scrollTop()")
     element_offset = page.evaluate_script("$('.indicator.highlight').offset().top")
-    # it is a mystery to me why this needs to be 88 and not 100, as designed
-    # but it appears to work, and I have been unable to find an explanation,
-    # it's not worth spending any more time to understand it!
-    expect(page_position).to eq element_offset - 88
+    expect(page_position).to eq element_offset - 100
   end
 end
 

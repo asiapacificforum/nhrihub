@@ -60,7 +60,7 @@ feature "Manage an existing organizations", :js => true do
     select_dropdown_menu_item("Manage organizations")
   end
 
-  scenario "remove an organization with no users" do
+  scenario "remove an organization with no users", :driver => :chrome do # chrome required since headless chrome 61 doesn't support alerts
     expect(page_heading).to eq 'Organizations list'
     selector = ".//tr[@class='organization'][contains(td/a,'Government of Maldonia')]"
     page.accept_confirm 'Are you sure?' do
