@@ -21,7 +21,7 @@ class Note < ActiveRecord::Base
   end
 
   def updated_on
-    created_at.localtime.to_date.to_s(:short)
+    updated_at.localtime.to_date.to_s(:short)
   end
 
   def date

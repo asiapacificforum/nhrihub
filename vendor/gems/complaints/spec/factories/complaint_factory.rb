@@ -38,6 +38,17 @@ FactoryGirl.define do
       end
     end
 
+    trait :with_fixed_associations do
+      after :build do |complaint|
+        complaint.good_governance_complaint_bases << GoodGovernance::ComplaintBasis.all
+        complaint.human_rights_complaint_bases << Nhri::ComplaintBasis.all
+        complaint.special_investigations_unit_complaint_bases << Siu::ComplaintBasis.all
+        complaint.status_changes << FactoryGirl.create(:status_change, :open, :change_date => DateTime.now, :user_id => User.all.sample.id)
+        complaint.mandate_id = Mandate.pluck(:id).sample(1)
+        complaint.agency_ids = Agency.pluck(:id).sample(2)
+      end
+    end
+
     trait :with_document do
       after :build do |complaint|
         complaint_document = FactoryGirl.create(:complaint_document, :title => rand_title, :filename => rand_filename)
@@ -70,6 +81,14 @@ FactoryGirl.define do
       after(:create) do |complaint|
         rand(3).times do
           FactoryGirl.create(:note, :complaint, :notable_id => complaint.id)
+        end
+      end
+    end
+
+    trait :with_two_notes do
+      after(:create) do |complaint|
+        2.times do
+          FactoryGirl.create(:note, :complaint, :notable_id => complaint.id, :created_at => DateTime.new(2017,5,5))
         end
       end
     end

@@ -79,7 +79,7 @@ class Complaint < ActiveRecord::Base
                         :current_assignee_id,
                         :current_assignee_name, :date, :date_of_birth, :dob,
                         :current_status_humanized, :attached_documents,
-                        :mandate_ids, :good_governance_complaint_basis_ids,
+                        :good_governance_complaint_basis_ids,
                         :special_investigations_unit_complaint_basis_ids,
                         :human_rights_complaint_basis_ids, :status_changes,
                         :agency_ids,
