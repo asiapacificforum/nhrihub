@@ -151,6 +151,7 @@ class Complaint < ActiveRecord::Base
   end
 
   def current_assignee
+    # default order for assigns is most-recent-first
     @current_assignee ||= assigns.first.assignee unless assigns.empty?
   end
 

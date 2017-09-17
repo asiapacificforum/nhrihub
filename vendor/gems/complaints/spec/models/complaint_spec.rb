@@ -212,6 +212,9 @@ describe "#as_json" do
       expect(@complaints.first["human_rights_complaint_basis_ids"]).to be_an Array
       expect(@complaints.first["current_assignee_id"]).to eq Complaint.first.current_assignee_id
       expect(@complaints.first["status_changes"].first.keys).to match_array ["date", "status_humanized", "user_name"]
+      expect(@complaints.first["status_changes"].first["date"]).to eq Complaint.first.status_changes.first.date
+      expect(@complaints.first["status_changes"].first["status_humanized"]).to eq Complaint.first.status_changes.first.status_humanized
+      expect(@complaints.first["status_changes"].first["user_name"]).to eq Complaint.first.status_changes.first.user_name
       expect(@complaints.first["agency_ids"]).to be_an Array
       expect(@complaints.first["communications"].first.keys).to match_array ["attached_documents", "communicants", "complaint_id", "date", "direction", "id", "mode", "note", "user", "user_id"]
       expect(@complaints.first["communications"].first["attached_documents"].first.keys ).to match_array ["communication_id", "file_id", "filename", "filesize", "id", "lastModifiedDate", "original_type", "title", "user_id"]
@@ -222,8 +225,8 @@ describe "#as_json" do
       @complaints = ComplaintSerializer.to_json
       expect(@complaints).to be_an Array
       expect(@complaints.length).to be 2
-      #expect(@complaints.first.keys).to match_array ["id", "case_reference", "village", "phone", "created_at", "updated_at", "desired_outcome", "complained_to_subject_agency", "date_received", "imported", "mandate_id", "email", "gender", "dob", "details", "firstName", "lastName", "chiefly_title", "occupation", "employer", "notes", "assigns", "attached_documents", "good_governance_complaint_basis_ids", "special_investigations_unit_complaint_basis_ids", "human_rights_complaint_basis_ids", "current_assignee_id", "reminders", "current_assignee_name", "date", "date_of_birth", "current_status_humanized", "status_changes", "agency_ids", "communications"]
-      expect(@complaints.first.keys).to match_array ["id", "case_reference", "village", "phone", "created_at", "updated_at", "desired_outcome", "complained_to_subject_agency", "date_received", "imported", "mandate_id", "email", "gender", "dob", "details", "firstName", "lastName", "chiefly_title", "occupation", "employer", "notes", "assigns", "attached_documents", "good_governance_complaint_basis_ids", "special_investigations_unit_complaint_basis_ids", "human_rights_complaint_basis_ids", "current_assignee_id"]
+      #expect(@complaints.first.keys).to match_array ["id", "case_reference", "village", "phone", "created_at", "updated_at", "desired_outcome", "complained_to_subject_agency", "date_received", "imported", "mandate_id", "email", "gender", "dob", "details", "firstName", "lastName", "chiefly_title", "occupation", "employer", "notes", "assigns", "attached_documents", "good_governance_complaint_basis_ids", "special_investigations_unit_complaint_basis_ids", "human_rights_complaint_basis_ids", "current_assignee_id", "current_assignee_name", "current_status_humanized", "status_changes", "agency_ids", "communications", "reminders", "date", "date_of_birth"]
+      expect(@complaints.first.keys).to match_array ["id", "case_reference", "village", "phone", "created_at", "updated_at", "desired_outcome", "complained_to_subject_agency", "date_received", "imported", "mandate_id", "email", "gender", "dob", "details", "firstName", "lastName", "chiefly_title", "occupation", "employer", "notes", "assigns", "attached_documents", "good_governance_complaint_basis_ids", "special_investigations_unit_complaint_basis_ids", "human_rights_complaint_basis_ids", "current_assignee_id", "current_assignee_name", "current_status_humanized", "status_changes", "agency_ids", "communications"]
       #expect(@complaints.first["reminders"].first.keys).to match_array ["id", "text", "reminder_type", "remindable_id", "remindable_type", "start_date", "next", "user_id", "recipient", "next_date", "previous_date", "url", "start_year", "start_month", "start_day"]
       #expect(@complaints.first["reminders"].first["recipient"].keys).to match_array ["id", "first_last_name"]
       expect(@complaints.first["notes"].first.keys).to match_array ["author_id", "author_name", "created_at", "date", "editor_id", "editor_name", "id", "notable_id", "notable_type", "text", "updated_at", "updated_on", "url"]
@@ -233,7 +236,7 @@ describe "#as_json" do
       #expect(@complaints.first["notes"].first["updated_on"]).to eq Complaint.first.notes.first.updated_on
       #expect(@complaints.first["notes"].first["date"]).to eq Complaint.first.notes.first.date
       expect(@complaints.first["assigns"].first.keys).to match_array ["date", "name"]
-      expect(@complaints.first["assigns"].first["date"]).to eq Complaint.first.assigns.last.date
+      #expect(@complaints.first["assigns"].first["date"]).to eq Complaint.first.assigns.last.date
       expect(@complaints.first["assigns"].first["name"]).to eq Complaint.first.assigns.last.name
       expect(@complaints.first["attached_documents"].first.keys).to match_array ["complaint_id", "file_id", "filename", "filesize", "id", "lastModifiedDate", "original_type", "serialization_key", "title", "url", "user_id"]
       expect(@complaints.first["attached_documents"].first["url"]).to eq Complaint.first.attached_documents.first.url
@@ -244,11 +247,18 @@ describe "#as_json" do
       expect(@complaints.first["human_rights_complaint_basis_ids"]).to be_an Array
       expect(@complaints.first["human_rights_complaint_basis_ids"]).to match_array Complaint.first.human_rights_complaint_basis_ids
       expect(@complaints.first["current_assignee_id"]).to eq Complaint.first.current_assignee_id
-      #expect(@complaints.first["status_changes"].first.keys).to match_array ["date", "status_humanized", "user_name"]
-      #expect(@complaints.first["agency_ids"]).to be_an Array
-      #expect(@complaints.first["communications"].first.keys).to match_array ["attached_documents", "communicants", "complaint_id", "date", "direction", "id", "mode", "note", "user", "user_id"]
-      #expect(@complaints.first["communications"].first["attached_documents"].first.keys ).to match_array ["communication_id", "file_id", "filename", "filesize", "id", "lastModifiedDate", "original_type", "title", "user_id"]
-      #expect(@complaints.first["communications"].first["communicants"].first.keys).to match_array ["address", "email", "id", "name", "organization_id", "phone", "title_key"]
+      expect(@complaints.first["current_assignee_name"]).to eq Complaint.first.current_assignee_name
+      expect(@complaints.first["current_status_humanized"]).to eq Complaint.first.current_status_humanized
+      expect(@complaints.first["status_changes"].first.keys).to match_array ["date", "status_humanized", "user_name"]
+      #expect(@complaints.first["status_changes"].first["date"]).to eq Complaint.first.status_changes.first.date
+      expect(@complaints.first["status_changes"].first["status_humanized"]).to eq Complaint.first.status_changes.first.status_humanized
+      expect(@complaints.first["status_changes"].first["user_name"]).to eq Complaint.first.status_changes.first.user_name
+      expect(@complaints.first["agency_ids"]).to match_array Complaint.first.agency_ids
+      expect(@complaints.first["communications"].first.keys).to match_array ["attached_documents", "communicants", "complaint_id", "date", "direction", "id", "mode", "note", "user", "user_id"]
+      expect(@complaints.first["communications"].first["user"]["id"]).to eq Complaint.first.communications.first.user.id
+      expect(@complaints.first["communications"].first["user"]["first_last_name"]).to eq Complaint.first.communications.first.user.first_last_name
+      expect(@complaints.first["communications"].first["attached_documents"].first.keys ).to match_array ["communication_id", "file_id", "filename", "filesize", "id", "lastModifiedDate", "original_type", "title", "user_id"]
+      expect(@complaints.first["communications"].first["communicants"].first.keys).to match_array ["address", "email", "id", "name", "organization_id", "phone", "title_key"]
     end
   end
 
@@ -280,17 +290,17 @@ describe "#as_json" do
       @complaints = ComplaintSerializer.to_json
       expect(@complaints).to be_an Array
       expect(@complaints.length).to be 2
-      #expect(@complaints.first.keys).to match_array ["id", "case_reference", "village", "phone", "created_at", "updated_at", "desired_outcome", "complained_to_subject_agency", "date_received", "imported", "mandate_id", "email", "gender", "dob", "details", "firstName", "lastName", "chiefly_title", "occupation", "employer", "reminders", "notes", "assigns", "current_assignee_id", "current_assignee_name", "date", "date_of_birth", "current_status_humanized", "attached_documents", "good_governance_complaint_basis_ids", "special_investigations_unit_complaint_basis_ids", "human_rights_complaint_basis_ids", "status_changes", "agency_ids", "communications"]
-      expect(@complaints.first.keys).to match_array ["id", "case_reference", "village", "phone", "created_at", "updated_at", "desired_outcome", "complained_to_subject_agency", "date_received", "imported", "mandate_id", "email", "gender", "dob", "details", "firstName", "lastName", "chiefly_title", "occupation", "employer", "notes", "assigns", "attached_documents", "good_governance_complaint_basis_ids"]
+      #expect(@complaints.first.keys).to match_array ["id", "case_reference", "village", "phone", "created_at", "updated_at", "desired_outcome", "complained_to_subject_agency", "date_received", "imported", "mandate_id", "email", "gender", "dob", "details", "firstName", "lastName", "chiefly_title", "occupation", "employer", "notes", "assigns", "attached_documents","good_governance_complaint_basis_ids", "special_investigations_unit_complaint_basis_ids", "human_rights_complaint_basis_ids", "current_assignee_id", "current_assignee_name", "current_status_humanized", "status_changes", "agency_ids", "reminders", "date", "date_of_birth", "communications"]
+      expect(@complaints.first.keys).to match_array ["id", "case_reference", "village", "phone", "created_at", "updated_at", "desired_outcome", "complained_to_subject_agency", "date_received", "imported", "mandate_id", "email", "gender", "dob", "details", "firstName", "lastName", "chiefly_title", "occupation", "employer", "notes", "assigns", "attached_documents", "good_governance_complaint_basis_ids", "special_investigations_unit_complaint_basis_ids", "human_rights_complaint_basis_ids", "current_assignee_id", "current_assignee_name", "current_status_humanized", "status_changes", "agency_ids", "communications"]
       expect(@complaints.first["notes"]).to be_empty
       expect(@complaints.first["assigns"]).to be_empty
       expect(@complaints.first["attached_documents"]).to be_empty
       expect(@complaints.first["good_governance_complaint_basis_ids"]).to be_empty
       expect(@complaints.first["special_investigations_unit_complaint_basis_ids"]).to be_empty
       expect(@complaints.first["human_rights_complaint_basis_ids"]).to be_empty
-      #expect(@complaints.first["status_changes"]).to be_empty
-      #expect(@complaints.first["agency_ids"]).to be_empty
-      #expect(@complaints.first["communications"]).to be_empty
+      expect(@complaints.first["status_changes"]).to be_empty
+      expect(@complaints.first["agency_ids"]).to be_empty
+      expect(@complaints.first["communications"]).to be_empty
     end
   end
 end
