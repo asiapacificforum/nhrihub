@@ -291,8 +291,9 @@ class User < ActiveRecord::Base
 
   # called from users_controller#send_change_authentication_email
   def prepare_to_send_lost_token_email
-    @lost_token = true
+    @lost_token = false # don't send email when nullify_public_key_params
     nullify_public_key_params
+    @lost_token = true
     make_access_nonce('replacement_token_registration_code')
   end
 

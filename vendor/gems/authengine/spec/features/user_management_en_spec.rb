@@ -256,10 +256,9 @@ feature "user lost token replacement and registration", :js => true do
     select_dropdown_menu_item("Manage users")
   end
 
-  # chrome is required so that the keystore contains the private and public keys of the user
-  scenario "normal operation", :driver => :chrome do
+  scenario "normal operation" do
     within(:xpath, ".//tr[contains(td[3],'staff')]") do
-      click_link('lost access token')
+      expect{ click_link('lost access token') }.to change { ActionMailer::Base.deliveries.length }.by 1
     end
     expect(page_heading).to eq "Manage users"
     expect(flash_message).to match /A token registration email has been sent to/
