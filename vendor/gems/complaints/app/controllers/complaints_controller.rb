@@ -11,7 +11,6 @@ class ComplaintsController < ApplicationController
                                      :complaint_documents,
                                      {:reminders => :user},
                                      {:notes =>[:author, :editor]}).sort.reverse.to_a
-    #@complaints = ComplaintSerializer.to_json
     @mandates = Mandate.all.sort_by(&:name)
     @agencies = Agency.all
     @complaint_bases = [ StrategicPlans::ComplaintBasis.named_list,
