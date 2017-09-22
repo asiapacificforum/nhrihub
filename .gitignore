@@ -29,6 +29,7 @@ lib/constants.rb
 config/locales/site_specific/en.yml
 config/locales/site_specific/fr.yml
 public/.htaccess
+public/assets
 config/site_specific_linked_files/demo/config/database.yml
 config/database.yml
 config/site_specific_linked_files/demo/config/secrets.yml

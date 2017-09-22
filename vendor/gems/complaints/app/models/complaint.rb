@@ -75,7 +75,22 @@ class Complaint < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super( :methods => [:reminders, :notes, :assigns, :current_assignee_id, :current_assignee_name, :date, :date_of_birth, :dob, :current_status_humanized, :attached_documents, :good_governance_complaint_basis_ids, :special_investigations_unit_complaint_basis_ids, :human_rights_complaint_basis_ids, :agency_ids, :status_changes, :communications])
+    super( :methods => [:reminders,
+                        :notes,
+                        :assigns,
+                        :current_assignee_id,
+                        :current_assignee_name,
+                        :date,
+                        :date_of_birth,
+                        :dob,
+                        :current_status_humanized,
+                        :attached_documents,
+                        :good_governance_complaint_basis_ids,
+                        :special_investigations_unit_complaint_basis_ids,
+                        :human_rights_complaint_basis_ids,
+                        :agency_ids,
+                        :status_changes,
+                        :communications])
   end
 
   # overwrite the built-in method, as this approach does not add extra sql queries
