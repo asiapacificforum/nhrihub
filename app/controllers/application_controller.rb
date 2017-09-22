@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :check_browser
   before_action :check_permissions, :log_exception_notifier_data
+  before_action :mini_profiler if Rails.env.staging?
 
   around_action :with_locale
   before_action :set_title
@@ -74,6 +75,10 @@ private
 
   def default_url_options(options = {})
     options.merge({ locale: I18n.locale })
+  end
+
+  def mini_profiler
+    Rack::MiniProfiler.authorize_request
   end
   
 end

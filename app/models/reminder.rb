@@ -19,7 +19,8 @@ class Reminder < ActiveRecord::Base
     }
 
   def as_json(options = {})
-    super(:except => [:updated_at, :created_at], :methods => [ :recipient, :next_date, :previous_date, :user_id, :url, :start_year, :start_month, :start_day ])
+    super(:except => [:updated_at, :created_at],
+          :methods => [ :recipient, :next_date, :previous_date, :user_id, :url, :start_year, :start_month, :start_day ])
   end
 
   before_save :calculate_next

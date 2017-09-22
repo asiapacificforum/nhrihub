@@ -7,8 +7,8 @@ class Complaint < ActiveRecord::Base
   has_many :special_investigations_unit_complaint_bases, :class_name => 'Siu::ComplaintBasis', :through => :complaint_special_investigations_unit_complaint_bases
   has_many :human_rights_complaint_bases, :class_name => 'Convention', :through => :complaint_human_rights_complaint_bases
   has_many :strategic_plan_complaint_bases, :class_name => 'StrategicPlans::ComplaintBasis', :through => :complaint_strategic_plan_complaint_bases
-  has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy
-  has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy
+  has_many :reminders, :as => :remindable, :autosave => true, :dependent => :destroy, :inverse_of => :remindable
+  has_many :notes, :as => :notable, :autosave => true, :dependent => :destroy, :inverse_of => :notable
   has_many :assigns, :autosave => true, :dependent => :destroy
   has_many :assignees, :through => :assigns
   has_many :complaint_mandates, :dependent => :destroy
@@ -75,15 +75,24 @@ class Complaint < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super( :methods => [:reminders, :notes, :assigns,
-                        :current_assignee_id,
-                        :current_assignee_name, :date, :date_of_birth, :dob,
-                        :current_status_humanized, :attached_documents,
-                        :good_governance_complaint_basis_ids,
-                        :special_investigations_unit_complaint_basis_ids,
-                        :human_rights_complaint_basis_ids, :status_changes,
-                        :agency_ids,
-                        :communications])
+    super( :methods => [:reminders, :notes, :assigns, :current_assignee_id, :current_assignee_name, :date, :date_of_birth, :dob, :current_status_humanized, :attached_documents, :good_governance_complaint_basis_ids, :special_investigations_unit_complaint_basis_ids, :human_rights_complaint_basis_ids, :agency_ids, :status_changes, :communications])
+  end
+
+  # overwrite the built-in method, as this approach does not add extra sql queries
+  def good_governance_complaint_basis_ids
+    complaint_good_governance_complaint_bases.map(&:complaint_basis_id)
+  end
+
+  def special_investigations_unit_complaint_basis_ids
+    complaint_special_investigations_unit_complaint_bases.map(&:complaint_basis_id)
+  end
+
+  def human_rights_complaint_basis_ids
+    complaint_human_rights_complaint_bases.map(&:complaint_basis_id)
+  end
+
+  def agency_ids
+    complaint_agencies.map(&:agency_id)
   end
 
   # assumed to be valid date_string, checked in client before submitting

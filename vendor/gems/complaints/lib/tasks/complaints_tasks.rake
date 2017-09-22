@@ -9,7 +9,7 @@ namespace :complaints do
 
   desc "populates complaints"
   task :populate_complaints => [ :populate_statuses, :populate_complaint_bases, 'projects:populate_mandates', 'projects:populate_agnc', "complaints:depopulate"] do
-    50.times do |i|
+    1.times do |i|
       complaint = FactoryGirl.create(:complaint, :with_associations, :with_assignees, :with_document, :with_comm, :with_reminders, :with_notes, :case_reference => "C17-#{3-i}")
     end
   end
