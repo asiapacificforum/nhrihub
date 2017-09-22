@@ -27,7 +27,8 @@ class Mandate < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super(:only => [:id, :key], :methods => [:name, :project_types])
+    options = {:only => [:id, :key], :methods => [:name, :project_types]} if options.blank?
+    super(options)
   end
 
   def name

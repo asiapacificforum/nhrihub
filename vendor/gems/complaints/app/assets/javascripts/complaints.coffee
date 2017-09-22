@@ -558,6 +558,8 @@ complaints_options =
   oninit : ->
     @set
       'expanded' : false
+  onrender : ->
+    console.timeEnd "render"
   components :
     complaint : Complaint
     filterControls : FilterControls
@@ -627,6 +629,7 @@ Ractive.prototype.local = (gmt_date)->
   $.datepicker.formatDate("M d, yy", new Date(gmt_date))
 
 $ ->
+  console.time "render"
   start_page()
   filter_criteria_datepicker.start(complaints)
   # so that a state object is present when returnng to the initial state with the back button

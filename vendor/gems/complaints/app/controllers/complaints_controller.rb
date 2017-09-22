@@ -1,15 +1,17 @@
 class ComplaintsController < ApplicationController
   def index
-    @complaints = Complaint.includes(:assigns,
+    @complaints = Complaint.includes({:assigns => :assignee},
                                      :mandates,
-                                     {:status_changes => :complaint_status},
+                                     {:status_changes => [:user, :complaint_status]},
                                      {:complaint_good_governance_complaint_bases=>:good_governance_complaint_basis},
                                      {:complaint_special_investigations_unit_complaint_bases => :special_investigations_unit_complaint_basis},
                                      {:complaint_human_rights_complaint_bases=>:human_rights_complaint_basis},
                                      {:complaint_agencies => :agency},
-                                     :communications,
+                                     {:communications => [:user, :communication_documents, :communicants]},
                                      :complaint_documents,
-                                     :reminders,:notes).sort.reverse
+                                     {:reminders => :user},
+                                     {:notes =>[:author, :editor]}).sort.reverse.to_a
+    #@complaints = ComplaintSerializer.to_json
     @mandates = Mandate.all.sort_by(&:name)
     @agencies = Agency.all
     @complaint_bases = [ StrategicPlans::ComplaintBasis.named_list,

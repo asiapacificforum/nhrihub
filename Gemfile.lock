@@ -85,15 +85,15 @@ PATH
     issues_reporter (0.0.1)
 
 PATH
-  remote: vendor/gems/nhri
-  specs:
-    nhri (0.0.1)
-      rails (>= 5.0.0)
-
-PATH
   remote: vendor/gems/media
   specs:
     media (0.0.1)
+      rails (>= 5.0.0)
+
+PATH
+  remote: vendor/gems/nhri
+  specs:
+    nhri (0.0.1)
       rails (>= 5.0.0)
 
 PATH
@@ -325,6 +325,8 @@ GEM
     public_suffix (2.0.5)
     rack-attack (5.0.1)
       rack
+    rack-mini-profiler (0.10.5)
+      rack (>= 1.2.0)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.1.2)
@@ -487,14 +489,15 @@ DEPENDENCIES
   launchy
   letsencrypt_plugin (~> 0.0.10)
   magic_lamp
+  media!
   message_block!
   nhri!
-  media!
   pg
   poltergeist
   projects!
   rack!
   rack-attack
+  rack-mini-profiler
   rack-protection
   rails (= 5.1.2)
   rails-settings-cached (~> 0.4.2)

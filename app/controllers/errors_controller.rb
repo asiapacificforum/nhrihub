@@ -5,8 +5,12 @@ class ErrorsController < ApplicationController
     @message = t('exceptions.default_message')
   end
 
-  ActionDispatch::ExceptionWrapper.rescue_responses.values.each do |exception|
+  ActionDispatch::ExceptionWrapper.rescue_responses.values.uniq.each do |exception|
     define_method ( exception ) { render :generic_error, :status => Rack::Utils::SYMBOL_TO_STATUS_CODE[exception] }
+  end
+
+  def internal_server_error
+    render :generic_error, :status => 500
   end
 
   # overrides method defined above
