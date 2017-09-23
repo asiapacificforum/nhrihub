@@ -85,6 +85,7 @@ class Complaint < ActiveRecord::Base
                         :dob,
                         :current_status_humanized,
                         :attached_documents,
+                        :mandate_ids,
                         :good_governance_complaint_basis_ids,
                         :special_investigations_unit_complaint_basis_ids,
                         :human_rights_complaint_basis_ids,
@@ -94,6 +95,10 @@ class Complaint < ActiveRecord::Base
   end
 
   # overwrite the built-in method, as this approach does not add extra sql queries
+  def mandate_ids
+    mandates.map(&:id)
+  end
+
   def good_governance_complaint_basis_ids
     complaint_good_governance_complaint_bases.map(&:complaint_basis_id)
   end

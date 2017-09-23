@@ -26,6 +26,9 @@ FactoryGirl.define do
     chiefly_title { Faker::Name.last_name }
     occupation { Faker::Company.profession }
     employer { Faker::Company.name }
+    email { Faker::Internet.email }
+    gender { ["m","f","o"].sample }
+    dob { y=20+rand(40); m=rand(12); d=rand(31); Date.today.advance(:years => -y, :months => -m, :days => -d).to_s }
 
     trait :with_associations do
       after :build do |complaint|
@@ -34,6 +37,7 @@ FactoryGirl.define do
         complaint.special_investigations_unit_complaint_bases << Siu::ComplaintBasis.all.sample(2)
         complaint.status_changes << FactoryGirl.create(:status_change, :open, :change_date => DateTime.now, :user_id => User.all.sample.id)
         complaint.mandate_id = Mandate.pluck(:id).sample(1)
+        complaint.mandate_ids = Mandate.pluck(:id).sample(2)
         complaint.agency_ids = Agency.pluck(:id).sample(2)
       end
     end
@@ -45,6 +49,7 @@ FactoryGirl.define do
         complaint.special_investigations_unit_complaint_bases << Siu::ComplaintBasis.all
         complaint.status_changes << FactoryGirl.create(:status_change, :open, :change_date => DateTime.now, :user_id => User.all.sample.id)
         complaint.mandate_id = Mandate.pluck(:id).sample(1)
+        complaint.mandate_ids = Mandate.pluck(:id).sample(2)
         complaint.agency_ids = Agency.pluck(:id).sample(2)
       end
     end
