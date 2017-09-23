@@ -228,6 +228,7 @@ GEM
     faraday (0.12.1)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.18)
+    flamegraph (0.9.5)
     font-awesome-sass (4.7.0)
       sass (>= 3.2)
     forwardable-extended (2.6.0)
@@ -420,6 +421,7 @@ GEM
     sshkit (1.13.1)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    stackprof (0.2.10)
     teaspoon (1.1.5)
       railties (>= 3.2.5, < 6)
     teaspoon-mocha (2.3.3)
@@ -474,6 +476,7 @@ DEPENDENCIES
   database_cleaner (~> 1.6.1)
   factory_girl_rails (~> 4.0)
   faker
+  flamegraph
   font-awesome-sass
   glacier_on_rails (= 0.9.9)
   haml (~> 5.0.0)
@@ -513,6 +516,7 @@ DEPENDENCIES
   sinatra!
   spring
   sshkit (~> 1.5)
+  stackprof
   strategic_plan_reporter!
   strategic_plans!
   surus!

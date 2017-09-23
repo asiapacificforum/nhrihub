@@ -102,6 +102,8 @@ gem "aws-sdk", "~> 2"
 gem "glacier_on_rails", '= 0.9.9'
 gem "rack-attack"
 gem "rack-mini-profiler"
+gem "flamegraph"
+gem "stackprof", :require => false
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'
