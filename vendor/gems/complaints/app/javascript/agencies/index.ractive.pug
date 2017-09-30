@@ -1,0 +1,17 @@
+
+| {{#agency_ids}}
+<agency id='{{.}}' />
+| {{/agency_ids}}
+| {{^agency_ids}}
+div(style = 'padding-left:15px;') no mandates
+| {{/agency_ids}}
+
+script.
+  import Agency from '../agency'
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    components : {
+      agency : Agency
+    }
+  });

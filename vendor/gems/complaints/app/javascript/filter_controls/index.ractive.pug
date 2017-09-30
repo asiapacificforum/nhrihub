@@ -1,0 +1,134 @@
+.row.filter_control_box#complaints_controls
+  .row
+    .col-md-12
+      h4 t=search
+  .row.labels
+    .col-md-2 t=complainant
+    .col-md-2 t=village
+    .col-md-2 t=phone
+    .col-md-2 t=case_reference
+  .row(style = "margin-bottom:12px;")
+    .col-md-2
+      input.form-control#complainant(name='complainant', value="{{filter_criteria.complainant}}", :placeholder ='t=enter_complainant')
+    .col-md-2
+      input.form-control#village(name='village', value="{{filter_criteria.village}}", :placeholder ='t=enter_village')
+    .col-md-2
+      input.form-control#phone(name='phone', value="{{filter_criteria.phone}}", :placeholder ='t=phone')
+    .col-md-2
+      input.form-control#case_reference(name='case_reference', value="{{filter_criteria.case_reference}}", :placeholder ='t=case_reference')
+    .col-md-1(style = 'text-align:center')
+      i.erase.fa.fa-refresh('on-click'='@this.clear_filter()', 'data-toggle'='tooltip', 'title' ='t=clear')
+    .col-md-1
+      | {{#if expanded}}
+      a#compact('on-click'='@this.compact()', 'data-toggle'='tooltip', 'title'='t=.compact_all' )
+      | {{else}}
+      a#expand('on-click'='@this.expand()', 'data-toggle'='tooltip', 'title'='t=.expand_all')
+      | {{/if}}
+  .row.labels
+    .col-md-2 t=status
+    .col-md-2 t=date_from
+    .col-md-2 t=date_to
+    .col-md-2 t=agency
+  .row(style = "margin-bottom:12px;")
+    .col-md-2
+      .btn-group.select
+        button.btn.btn-default.dropdown-toggle(type='button', 'data-toggle'='dropdown')
+          span.filter-option.pull-left t=select_status
+          span.caret
+        ul.dropdown-menu
+          | {{#statuses}}
+          <statusSelector filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
+          | {{/statuses}}
+    .col-md-2
+      input.form-control#from(type="text", name="from", placeholder ='t=date_from', value = "{{filter_criteria.from}}", style = 'position:relative; z-index:12;')
+    .col-md-2
+      input.form-control#to(type="text", name="to", placeholder ='t=date_to', value = "{{filter_criteria.to}}", style = 'position:relative; z-index:12;')
+    .col-md-2
+      .btn-group.select
+        button.btn.btn-default.dropdown-toggle(type='button', 'data-toggle'='dropdown')
+          span.filter-option.pull-left t=select_agency
+          span.caret
+        ul.dropdown-menu#agency_filter_select
+          | {{#all_agencies}}
+          <agencyFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
+          | {{/all_agencies}}
+  .row.labels
+    .col-md-2 t=area
+    .col-md-2 t=complaint_basis
+    .col-md-2 t=assignee
+  .row(style = "margin-bottom:12px;")
+    .col-md-2
+      .btn-group.select
+        button.btn.btn-default.dropdown-toggle(type='button', 'data-toggle'='dropdown')
+          span.filter-option.pull-left t=select_area
+          span.caret
+        ul.dropdown-menu#mandate_filter_select
+          | {{#all_mandates}}
+          <mandateFilterSelect id='{{id}}' name='{{name}}' />
+          | {{/all_mandates}}
+    .col-md-2
+      .btn-group.select
+        button.btn.btn-default.dropdown-toggle(type='button', 'data-toggle'='dropdown')
+          span.filter-option.pull-left t=select_basis
+          span.caret
+        ul.dropdown-menu
+          li.dropdown-header t=good_governance
+          | {{#all_good_governance_complaint_bases}}
+          <goodGovernanceComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
+          | {{/all_good_governance_complaint_bases}}
+          li.dropdown-header t=human_rights
+          | {{#all_human_rights_complaint_bases}}
+          <humanRightsComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
+          | {{/all_human_rights_complaint_bases}}
+          li.dropdown-header t=special_investigations_unit
+          | {{#all_special_investigations_unit_complaint_bases}}
+          <specialInvestigationsUnitComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
+          | {{/all_special_investigations_unit_complaint_bases}}
+    .col-md-2
+      .btn-group.select
+        button.btn.btn-default.dropdown-toggle(type='button', 'data-toggle'='dropdown')
+          span.filter-option.pull-left t=select_assignee
+          span.caret
+        ul.dropdown-menu#assignee_filter_select
+          | {{#all_staff}}
+          <assigneeFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{first_last_name}}'/>
+          | {{/all_staff}}
+
+
+script.
+  import GoodGovernanceComplaintBasisFilterSelect from '../good_governance_complaint_basis_filter_select'
+  import HumanRightsComplaintBasisFilterSelect from '../human_rights_complaint_basis_filter_select'
+  import SpecialInvestigationsUnitComplaintBasisFilterSelect from '../special_investigations_unit_complaint_basis_filter_select'
+  import AgencyFilterSelect from '../agency_filter_select'
+  import MandateFilterSelect from '../mandate_filter_select'
+  import AssigneeFilterSelect from '../assignee_filter_select'
+  import StatusSelector from '../status_selector'
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    components : {
+      goodGovernanceComplaintBasisFilterSelect : GoodGovernanceComplaintBasisFilterSelect,
+      humanRightsComplaintBasisFilterSelect : HumanRightsComplaintBasisFilterSelect,
+      specialInvestigationsUnitComplaintBasisFilterSelect : SpecialInvestigationsUnitComplaintBasisFilterSelect,
+      agencyFilterSelect : AgencyFilterSelect,
+      mandateFilterSelect : MandateFilterSelect,
+      assigneeFilterSelect : AssigneeFilterSelect,
+      statusSelector : StatusSelector
+    },
+    expand() {
+      return this.parent.expand();
+    },
+    compact() {
+      return this.parent.compact();
+    },
+    clear_filter() {
+      this.set('filter_criteria',$.extend(true,{},complaints_page_data().filter_criteria));
+      window.history.pushState({foo: "bar"},"unused title string",window.location.origin + window.location.pathname);
+      return this.set_filter_from_query_string();
+    },
+    set_filter_from_query_string() {
+      const search_string = (_.isEmpty( window.location.search) || _.isNull( window.location.search)) ? '' : window.location.search.split("=")[1];
+      const filter_criteria = _.extend(source_filter_criteria,{case_reference : search_string});
+      return this.set('filter_criteria',filter_criteria);
+    }
+  });

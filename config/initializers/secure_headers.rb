@@ -39,6 +39,7 @@ SecureHeaders::Configuration.default do |config|
     #report_uri: %w(https://report-uri.io/example-csp)
   #}
   config.csp = {
+    :connect_src => %w('self' ws://localhost:3035 wss://localhost:3035 http://localhost:3035), # localhost:3035 used by webpacker for chrome live update
     :default_src => %w(https: 'self'),
     :script_src => %w('self' 'unsafe-inline' 'unsafe-eval'),
     :img_src => %w('self' data:),

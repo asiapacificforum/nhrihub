@@ -1,0 +1,83 @@
+// Use it like this:
+// 1. extend a ractive component with ConfirmDeleteModal to add the show_confirm_delete_modal method
+// 2. make the 'on-click' handler for the delete icon 'show_confirm_delete_modal()'
+// 3. add a computed attribute to the object called delete_confirmation_message
+// 4. ensure that the object has a url attribute as a rack endpoint for delete
+// 5. ensure that the callback action for the delete method is called "delete_callback"
+// 6. ensure that the object does not have its own delete method
+#confirm_delete_modal_container
+
+.modal.fade#confirm-delete
+  .modal-dialog.modal-sm
+    .modal-content
+      .modal-body
+      .modal-footer
+        a.btn.btn-sm.btn-default#cancel(type = 'button', 'data-dismiss'='modal') cancel
+        a.btn.btn-sm.btn-danger.btn-ok#confirm('on-click' = 'delete_item()') delete`
+
+
+
+script.
+  //import Ractive from 'ractive'
+ //$(function() {
+    //return window.confirm_delete_modal = new Ractive({
+      //el : '#confirm_delete_modal_container',
+      //template : '#confirm_delete_modal_template',
+      //data : {
+        //deletable : null,
+        //url : null,
+        //message : null,
+        //callback : null,
+        //local_data : null
+      //},
+      //show() {
+        //$(this.el).find('.modal#confirm-delete').modal('show');
+        //return $(this.el).find('.modal#confirm-delete').find('.modal-body').html(this.get('message'));
+      //},
+      //hide() {
+        //return $(this.el).find('.modal#confirm-delete').modal('hide');
+      //},
+      //success_callback(response, statusText, jqxhr){
+        //this.hide();
+        //this.get('unbound.callback').apply(this.get('deletable'),[response, statusText, jqxhr]);
+      //},
+      //error_callback() {
+        //return console.log("app/assets/javascripts/confirm_delete_modal error callback, shouldn't see this!");
+      //},
+      //delete_item() {
+        //let data;
+        //if (_.isEmpty(this.get('local_data'))) {
+          //data = [{name:'_method', value: 'delete'}];
+        //} else {
+          ////TODO this should be generalized
+          //data = [{name:'_method', value: 'delete'},{name:'monitor[type]', value:this.get('local_data').type}];
+        //}
+        //return $.ajax({
+          //url : this.get('url'),
+          //data,
+          //method : 'post',
+          //dataType : 'json',
+          //context : this,
+          //success : this.success_callback,
+          //error : this.error_callback
+        //});
+      //}
+    //});
+  //});
+
+  export default {
+    show_confirm_delete_modal(local_data){
+      if (local_data == null) { local_data = {}; }
+      if (_.isUndefined(this.get('url'))) { throw "url not defined"; }
+      if (_.isUndefined(this.get('delete_confirmation_message'))) { throw "delete confirmation message not defined"; }
+      confirm_delete_modal.set({
+        deletable : this,
+        url : this.get('url'),
+        message : this.get('delete_confirmation_message'),
+        'unbound.callback' : this.delete_callback, // seems strange? see https://github.com/ractivejs/ractivejs.github.io/issues/92
+        local_data
+      });
+      confirm_delete_modal.show();
+    }
+  };
+

@@ -1,0 +1,12 @@
+
+script.
+  import AttachedDocuments from '../../../../../../app/javascript/attached_documents'
+
+  export default AttachedDocuments.extend({
+    oninit() {
+      return this.set({
+        parent_type : 'complaint',
+        parent_named_document_datalist : this.get('complaint_named_document_titles')
+      });
+    }
+  });

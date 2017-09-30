@@ -1,0 +1,14 @@
+
+#assignees
+  | {{#assigns}}
+  <assignee  name='{{name}}' date='{{date}}' />
+  | {{/assigns}}
+
+script.
+  import Assignee from '../assignee'
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    components : {
+      assignee : Assignee
+    }
+  });

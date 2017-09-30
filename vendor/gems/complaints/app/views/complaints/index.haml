@@ -11,14 +11,13 @@
 #complaints
 #documents
 
-= render :partial => 'shared/confirm_delete_modal'
-= render :partial => 'reminders/reminder' # it's in the main app
-= render :partial => 'notes/note'
-= render :partial => 'notes/single_note'
-= render :partial => 'shared/file_selector'
-= render :partial => 'communications/communication'
-= render :partial => 'complaints/complaints_templates'
-= render :partial => 'complaints/documents_templates'
+-#= render :partial => 'reminders/reminder' # it's in the main app
+-#= render :partial => 'notes/note'
+-#= render :partial => 'notes/single_note'
+-#= render :partial => 'shared/file_selector'
+-#= render :partial => 'communications/communication'
+-#= render :partial => 'complaints/complaints_templates'
+-#= render :partial => 'complaints/documents_templates'
 
 :coffeescript
   case_reference = "#{params[:case_reference] ? params[:case_reference] : ''}"
@@ -66,4 +65,4 @@
     delete_complaint_confirmation_message: "#{t('.delete_complaint_confirmation_message')}"
     delete_document_confirmation_message: "#{t('.delete_document_confirmation_message')}"
 
-= javascript_include_tag 'complaints'
+= javascript_pack_tag 'complaints'

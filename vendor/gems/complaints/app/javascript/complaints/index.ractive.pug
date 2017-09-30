@@ -1,0 +1,95 @@
+<filterControls expanded='{{expanded}}' filter_criteria='{{filter_criteria}}' all_good_governance_complaint_bases='{{all_good_governance_complaint_bases}}' all_human_rights_complaint_bases='{{all_human_rights_complaint_bases}}' all_special_investigations_unit_complaint_bases='{{all_special_investigations_unit_complaint_bases}}' statuses='{{statuses}}' all_mandates='{{all_mandates}}' all_staff='{{all_staff}}' all_agencies='{{all_agencies}}' />
+| {{#complaints}}
+<complaint new_assignee_id=null communication_permitted_filetypes='{{communication_permitted_filetypes}}' communication_maximum_filesize='{{communication_maximum_filesize}}' date_of_birth='{{date_of_birth}}' dob='{{dob}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' all_staff='{{all_staff}}' editing=false expanded=false agency_ids='{{agency_ids}}' all_agencies_in_sixes='{{all_agencies_in_sixes}}' all_mandates='{{all_mandates}}' all_users='{{all_users}}' assigns='{{assigns}}' attached_documents='{{attached_documents}}' case_reference='{{case_reference}}' chiefly_title='{{chiefly_title}}' communications='{{communications}}' complained_to_subject_agency='{{complained_to_subject_agency}}' complaint_bases='{{complaint_bases}}' complaint_named_documents_titles='{{complaint_named_documents_titles}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' date='{{date}}' date_received='{{date_received}}' desired_outcome='{{desired_outcome}}' details='{{details}}' date_of_birth='{{date_of_birth}}' email='{{email}}' employer='{{employer}}' firstName='{{firstName}}' filter_criteria='{{filter_criteria}}' gender='{{gender}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' lastName='{{lastName}}' mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' notes='{{notes}}' occupation='{{occupation}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}' age='{{age}}' />
+| {{/complaints}}
+
+script.
+  import Complaint from '../complaint'
+  import FilterControls from '../filter_controls'
+
+  export default {
+    el : '#complaints',
+    template : $TEMPLATE,
+    data() {
+      return $.extend(true,{},complaints_page_data());
+    },
+    oninit() {
+      return this.set({
+        'expanded' : false});
+    },
+    components : {
+      complaint : Complaint,
+      filterControls : FilterControls
+    },
+    computed : {
+      selected_agency_ids() { return this.findComponent('filterControls').get('agency_ids'); }
+    },
+    new_complaint() {
+      if (!this.add_complaint_active()) {
+        const new_complaint = {
+          assigns : [],
+          case_reference : this.get('next_case_reference'),
+          firstName : "",
+          lastName : "",
+          attached_documents : [],
+          current_assignee : "",
+          current_assignee_id : "",
+          new_assignee_id : null,
+          formatted_date : "",
+          good_governance_complaint_basis_ids : [],
+          human_rights_complaint_basis_ids : [],
+          special_investigations_unit_complaint_basis_ids : [],
+          id : null,
+          mandate_ids : [],
+          agency_ids : [],
+          notes : [],
+          phone : "",
+          reminders : [],
+          current_status_humanized : "Under Evaluation",
+          village : "",
+          complained_to_subject_agency : false,
+          date_received : null,
+          dob : null,
+          date_of_birth : null
+        };
+        UserInput.claim_user_input_request(this,'cancel_add_complaint');
+        return this.unshift('complaints',new_complaint);
+      }
+    },
+    cancel_add_complaint() {
+      const new_complaint = _(this.findAllComponents('complaint')).find(complaint=> !complaint.get('persisted'));
+      return this.remove(new_complaint._guid);
+    },
+    remove(guid){
+      const complaint_guids = _(this.findAllComponents('complaint')).map(complaint=> complaint._guid);
+      const index = complaint_guids.indexOf(guid);
+      return this.splice('complaints',index,1);
+    },
+    add_complaint_active() {
+      return !_.isEmpty(this.findAllComponents('complaint')) && !this.findAllComponents('complaint')[0].get('persisted');
+    },
+    set_filter_criteria_from_date(selectedDate){
+      return this.set('filter_criteria.from',selectedDate);
+    },
+    set_filter_criteria_to_date(selectedDate){
+      return this.set('filter_criteria.to',selectedDate);
+    },
+    expand() {
+      this.set('expanded', true);
+      return _(this.findAllComponents('complaint')).each(ma=> ma.expand());
+    },
+    compact() {
+      this.set('expanded', false);
+      return _(this.findAllComponents('complaint')).each(ma=> ma.compact());
+    },
+    generate_report() {
+      return window.location=Routes.complaints_path('en',{format : 'docx'});
+    },
+    increment_next_case_reference(last_ref){
+      const ref_components = last_ref.split('-');
+      const new_ref = `${ref_components[0]}-${parseInt(ref_components[1])+1}`;
+      return this.set('next_case_reference', new_ref);
+    }
+  };
+
+

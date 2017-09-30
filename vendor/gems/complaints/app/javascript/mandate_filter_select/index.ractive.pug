@@ -1,0 +1,23 @@
+script#filter_select_template(type='text/ractive', src='../filter_select_template.pug').
+
+| {{>filter_select_template}}
+
+script.
+  import Toggle from '../toggle'
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    computed : {
+      selected : {
+        get() {
+          return this.get('filter_criteria.mandate_id') === this.get('id');
+        },
+        set(val){
+          if (val) {
+            return this.set('filter_criteria.mandate_id',this.get('id'));
+          } else {
+            return this.set('filter_criteria.mandate_id',null);
+          }
+        }
+      }
+    }}).extend(Toggle);

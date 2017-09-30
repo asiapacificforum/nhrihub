@@ -1,23 +1,3 @@
-# for example:
-#  oninit : ->
-#    @set
-#      validation_criteria :
-#        name : 'notBlank'
-#        age : ['lessThan', 21]
-#        user_id : 'numeric'
-#        email : ['notBlank', {if : =>@get('has_email')}]
-#        recipient : ['match', ['Fred', 'Wilma']}
-#        credit_card : =>
-#          @get('ccn').length == 10
-#        unique_title : ['unique', ['Discovery', 'The big storm', 'Lost']]
-# here email validation is notBlank, which has no parameters
-#      age validation is lessThan, with a threshold parameter
-#      user_id validation has no parameters, tests numeric
-#      email validation is conditional depending on the value returned in the 'if' function
-#      recipient validation is match against the array of acceptable values. If array is blank an 'unconfigured_validation_parameter' error is set to true
-#      credit_card validation uses passed-in function
-#      unique_title must not be the same as any of the values in the array of existing titles
-
 class Validator
   constructor : (validatee)->
     if typeof validatee != 'object'
@@ -102,3 +82,5 @@ class Validator
     !@validatee.get(attribute+"_error")
   remove_attribute_error : (attribute)->
     @validatee.set(attribute+"_error",false)
+
+export default Validator

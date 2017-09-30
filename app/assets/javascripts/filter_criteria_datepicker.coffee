@@ -1,4 +1,4 @@
-window.filter_criteria_datepicker =
+filter_criteria_datepicker =
   start : (collection)->
     $('#from').datepicker
       maxDate: new Date()
@@ -22,3 +22,4 @@ window.filter_criteria_datepicker =
         unless selectedDate == ""
           collection.set_filter_criteria_to_date(selectedDate)
 
+export default filter_criteria_datepicker

@@ -1,0 +1,91 @@
+script#show_attached_document_template(type = 'template/ractive')
+  div(class = "{{key}}_document")
+    .row
+      .col-md-6.title
+        | {{title}}
+      .col-md-4.filename
+        | {{truncated_filename}}
+      .col-md-1.download
+        i.fa.fa-cloud-download('on-click' = '@this.download_attachment()')
+      .col-md-1.delete
+        i.fa.fa-sm.fa-trash-o.delete_icon('on-click'='@this.show_confirm_delete_modal()')
+
+script#new_attached_document_template(type = 'template/ractive')
+  .row.document
+    .col-md-6.title
+      input.form-control#attached_document_title(type = 'text', value='{{title}}', list = '{{key}}_named_documents')
+      datalist(id = '{{key}}_named_documents')
+        | {{#named_document_datalist}}
+        option(value='{{.}}')
+          | {{.}}
+          | {{/named_document_datalist}}
+      .errors.form-group(class = "{{#filesize_error}}has-error{{/}}")
+        span.help-block.error#filesize_error too large
+      .errors.form-group(class = "{{#original_type_error}}has-error{{/}}")
+        span.help-block.error#original_type_error unpermitted type
+      .errors.form-group(class = "{{#unconfigured_filetypes_error}}has-error{{/}}")
+        span.help-block.error#unconfigured_filetypes_error filetypes not configured
+    .col-md-4.filename(style = "overflow-wrap:break-word")
+      | {{filename}}
+    .col-md-2
+      i.fa.fa-remove.remove('on-click' = 'remove_file()')
+
+|  {{#if persisted}}
+|  {{> show_attached_document_template  }}
+|  {{else}}
+|  {{> new_attached_document_template  }}
+|  {{/if}}
+
+script.
+  import Ractive from 'ractive';
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    oninit() {
+      this.set('validation_criteria', {
+        filesize :
+          ['lessThan', this.get('maximum_filesize')],
+        original_type:
+          ['match', this.get('permitted_filetypes')]
+      });
+      this.set('unconfigured_validation_parameter_error',false);
+      this.validator = new Validator(this);
+      if (!this.get('persisted')) { return this.validator.validate(); }
+    },
+    computed : {
+      persistent_attributes() {
+        if (!this.get('persisted')) { return ['title', 'filename', 'filesize', 'lastModifiedDate', 'file', 'original_type']; }
+      },
+      unconfigured_filetypes_error() {
+        return this.get('unconfigured_validation_parameter_error');
+      },
+      persisted() {
+        return !_.isNull(this.get('id'));
+      },
+      url() {
+        return Routes[this.get('parent_type')+"_document_path"](current_locale,this.get('id'));
+      },
+      truncated_title() {
+        return `"${this.get('title').split(' ').slice(0,4).join(' ')}..."`;
+      },
+      truncated_filename() {
+        if (this.get('filename').length > 50) {
+          const [base,extension] = Array.from(this.get('filename').split('.'));
+          return base.slice(0,40)+"..."+extension;
+        } else {
+          return this.get('filename');
+        }
+      },
+      delete_confirmation_message() {
+        return i18n.delete_document_confirmation_message + this.get('truncated_title') + "?";
+      }
+    },
+    remove_file() {
+      return this.parent.remove(this._guid);
+    },
+    delete_callback(data,textStatus,jqxhr){
+      return this.parent.remove(this._guid);
+    },
+    download_attachment() {
+      return window.location = this.get('url');
+    }}).extend(this.ConfirmDeleteModal);

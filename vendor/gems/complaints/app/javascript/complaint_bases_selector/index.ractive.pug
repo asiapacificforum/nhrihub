@@ -1,0 +1,62 @@
+| {{#complaint_bases.0}}
+.col-md-3(class = '{{key}}_complaint_basis', id = '{{key}}_bases', style = "padding-top:0;")
+  label
+    | {{name}}:
+  | {{#complaint_bases}}
+  .row.complaint_basis
+    .col-md-9
+      span
+        | {{name}}
+    .col-md-3
+      input(id="{{key}}_complaint_basis_{{id}}", type = 'checkbox', name = "{{strategic_plan_complaint_basis_ids}}", value = '{{id}}', 'on-change'="@this.remove_error()")
+  | {{/complaint_bases}}
+| {{/complaint_bases.0}}
+| {{#complaint_bases.1}}
+.col-md-3(class = '{{key}}_complaint_basis', id = '{{key}}_bases', style = "padding-top:0;")
+  label
+    | {{name}}:
+  | {{#complaint_bases}}
+  .row.complaint_basis
+    .col-md-9
+      span
+        | {{name}}
+    .col-md-3
+      input(id="{{key}}_complaint_basis_{{id}}", type = 'checkbox', name = "{{../../../../good_governance_complaint_basis_ids}}", value = '{{id}}', 'on-change'="@this.remove_error()")
+  | {{/complaint_bases}}
+| {{/complaint_bases.1}}
+| {{#complaint_bases.2}}
+.col-md-3(class = '{{key}}_complaint_basis', id = '{{key}}_bases', style = "padding-top:0;")
+  label
+    | {{name}}:
+  | {{#complaint_bases}}
+  .row.complaint_basis
+    .col-md-9
+      span
+        | {{name}}
+    .col-md-3
+      input(id="{{key}}_complaint_basis_{{id}}", type = 'checkbox', name = "{{../../../../human_rights_complaint_basis_ids}}", value = '{{id}}', 'on-change'="@this.remove_error()")
+  | {{/complaint_bases}}
+| {{/complaint_bases.2}}
+| {{#complaint_bases.3}}
+.col-md-3(class = '{{key}}_complaint_basis', id = '{{key}}_bases', style = "padding-top:0;")
+  label
+    | {{name}}:
+  | {{#complaint_bases}}
+  .row.complaint_basis
+    .col-md-9
+      span
+        | {{name}}
+    .col-md-3
+      input(id="{{key}}_complaint_basis_{{id}}", type = 'checkbox', name = "{{../../../../special_investigations_unit_complaint_basis_ids}}", value = '{{id}}', 'on-change'="@this.remove_error()")
+  | {{/complaint_bases}}
+| {{/complaint_bases.3}}
+
+script.
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    remove_error() {
+      if (this.parent.get('complaint_basis_id_count') !== 0) {
+        return this.parent.remove_attribute_error('complaint_basis_id_count');
+      }
+    }
+  });

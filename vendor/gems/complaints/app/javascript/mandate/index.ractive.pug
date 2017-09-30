@@ -1,0 +1,13 @@
+.mandate
+  | {{name}}
+
+script.
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    computed : {
+      name() {
+        const mandate = _(this.get('all_mandates')).findWhere({id : this.get('id')});
+        return mandate.name;
+      }
+    }
+  });

@@ -1,0 +1,825 @@
+script#new_complaint_template(type = 'template/ractive')
+  .row.well.well-sm.expandable_well.new_complaint.editable_container(intro = 'slide')
+    .col-md-12
+      .row
+        .col-md-12
+          span.required_before t=required
+      .row
+        .col-md-2
+          span t=.case_reference
+        .col-md-6
+          span#case_reference {{case_reference}}
+      .row
+        .col-md-2
+          span t=.complainant
+        .col-md-6(style = 'padding-top:0px')
+          .row
+            .col-md-4.form-group(style = 'padding-top:0px;')
+              label(for = 'chiefly_title', style = 'font-weight:normal') t=.chiefly_title
+              input.form-control#chiefly_title(value = '{{chiefly_title}}')
+            .col-md-4.form-group('class-has-error' = 'firstName_error', style = 'padding-top:0px;')
+              label.required(for = 'firstName', style = 'font-weight:normal') t=.first_name
+              input.form-control#firstName(value = '{{firstName}}', 'on-keydown'="@this.remove_attribute_error('firstName')")
+              span.help-block.error#firstName_error t=.firstName_error_message
+            .col-md-4.form-group('class-has-error' = 'lastName_error', style = 'padding-top:0px;')
+              label.required(for = 'lastName', style = 'font-weight:normal') t=.last_name
+              input.form-control#lastName(value = '{{lastName}}', 'on-keydown'="@this.remove_attribute_error('lastName')")
+              span.help-block.error#lastName_error t=.lastName_error_message
+      .row.form-group('class-has-error' = 'dob_error')
+        .col-md-2
+          span.required t=.dob
+          span dd/mm/yyyy
+        .col-md-2
+          input.form-control#dob(value = '{{dob}}', 'on-keydown'="@this.remove_attribute_error('dob')", style="width:112px;")
+          span.help-block.error#dob_error t=.dob_error_message
+        .col-md-7
+          span(style = "margin-right:16px") t=.gender
+          form(style = "display:inline")
+            label(style = 'font-weight:normal')
+              span(style = "margin-right:6px;") t=.male
+              input#m(type='radio', name='{{gender}}', value='M')
+            label(style = 'font-weight:normal')
+              span(style = "margin-right:6px; margin-left:12px;") t=.female
+              input#f(type='radio', name='{{gender}}', value='F')
+            label(style = 'font-weight:normal')
+              span(style = "margin-right:6px; margin-left:12px;") t=.other
+              input#o(type='radio', name='{{gender}}', value='O')
+      .row.form-group('class-has-error' = 'village_error')
+        .col-md-2
+          span.required t=.village
+        .col-md-6
+          input.form-control#village(value = '{{village}}', 'on-keydown'="@this.remove_attribute_error('village')")
+          span.help-block.error#village_error t=.village_error_message
+      .row.form-group
+        .col-md-2
+          span t=.email
+        .col-md-6
+          input.form-control#email(value = '{{email}}')
+      .row.form-group
+        .col-md-2
+          span t=.phone
+        .col-md-6
+          input.form-control#phone(value = '{{phone}}')
+      .row.form-group('class-has-error' = 'details_error')
+        .col-md-2
+          span.required t=.details
+        .col-md-6
+          textarea.form-control#complaint_details(value = '{{details}}', 'on-keydown'="@this.remove_attribute_error('details')")
+          span.help-block.error#details_error t=.details_error_message
+      .row.form-group
+        .col-md-2
+          span t=.desired_outcome
+        .col-md-6
+          input.form-control#desired_outcome(value = '{{desired_outcome}}')
+      .row.form-group
+        .col-md-2
+          span t=.complained_to_subject_agency
+        .col-md-2
+          form
+            label(style = "font-weight:normal;") t=yes
+              input#complained_to_subject_agency_yes(type = 'radio', name = '{{complained_to_subject_agency}}', value = 'true')
+            label(style = "font-weight:normal;") t=no
+              input#complained_to_subject_agency_no(type = 'radio', name = '{{complained_to_subject_agency}}', value = 'false')
+        .col-md-2 t=.date_received
+        .col-md-2
+          input#date_received(type = 'text', name = "{{date_received}}", "as-single_month_datepicker"=true)
+      .row.form-group('class-has-error' = 'new_assignee_id_error')
+        .col-md-2
+          label.required t=.assignee
+        .col-md-6
+          <assigneeSelector new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
+          span.help-block.error#new_assignee_id_error t=.assignee_error_message
+      .row.form-group('class-has-error' = 'mandate_id_count_error')
+        .col-md-2
+          label.required t=.mandate
+        .col-md-10
+          .row
+            <mandatesSelector mandate_ids='{{mandate_ids}}' all_mandates='{{all_mandates}}' />
+          span.help-block.error#mandate_id_count_error t=.mandate_ids_error_message
+      .row.form-group('class-has-error' = 'complaint_basis_id_count_error')
+        .col-md-2
+          label.required t=.complaint_basis
+        .col-md-10
+          .row
+            <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' complaint_bases='{{complaint_bases}}' />
+          span.help-block.error#complaint_basis_id_count_error t=.complaint_basis_error_message
+      .row
+        .col-md-2
+          label t=.agency
+        .col-md-10
+          <agenciesSelector agency_ids='{{agency_ids}}' all_agencies_in_sixes='{{all_agencies_in_sixes}}'/>
+      .panel.panel-default#documents
+        .panel-heading t=.complaint_documents
+        .panel-body
+          | {{> file_selector_template {key : 'complaint'} }}
+          <attachedDocuments parent_type='{{parent_type}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' attached_documents='{{attached_documents}}' key='complaint' named_document_datalist='{{complaint_named_documents_titles}}' />
+      .row
+        .col-sm-3.col-sm-offset-3(style = "text-align:center;")
+          .btn.btn-danger.btn-sm#cancel_complaint("on-click" = "@this.cancel_add_complaint()")
+            i.fa.fa-remove.fa-lg(style = "color:white")
+            span(style = "color:white") t=defaults.cancel
+        .col-sm-3(style = "text-align:center;")
+          .btn.btn-success.btn-sm#save_complaint(style = "color:white;", "on-click" = "@this.save_complaint()")
+            i.fa.fa-check.fa-lg(style = "color:white")
+            span t=defaults.save
+          .form-group('class-has-error' = 'has_errors')
+            span#complaint_error.help-block.error t=error_messages.form_error
+          <attachedDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' key='complaint' attached_documents='{{attached_documents}}' />
+      .row.collapse('data-toggle'='edit', style = "margin-top:30px;")
+        .col-sm-3.col-sm-offset-3.edit(style = "text-align:center;")
+          .btn.btn-danger.btn-sm.edit_cancel#edit_cancel
+            i.fa.fa-remove.fa-lg(style = "color:white")
+            span(style = "color:white") t=defaults.cancel
+        .col-sm-3.edit(style = "text-align:center;")
+          .btn.btn-success.btn-sm.save_complaint#edit_save(style = "color:white;")
+            i.fa.fa-check.fa-lg(style = "color:white")
+            span t=defaults.save
+          .form-group('class-has-error' = 'has_errors')
+            span#complaint_error.help-block.error t=error_messages.form_error
+
+script#show_complaint_template(type = 'template/ractive')
+  .row.well.well-sm.expandable_well.complaint.editable_container( style = "{{#if !include}}display:none{{/if}}", 'as-inpage_edit'='id')
+    .col-md-12('data-toggle' = 'edit')
+      .fade.edit
+        span.required_before 't=required'
+    .col-md-12
+      .row.basic_info
+        .col-md-2
+          .row
+            .col-md-12
+              label 't=.reference'
+              span.case_reference
+                | {{ case_reference }}
+        .col-md-7
+          .row('data-toggle' = 'edit')
+            .col-md-3
+              label 't=.date_received'
+            .col-md-9.date_received
+              .no_edit.in
+                | {{formatted_date}}
+              .edit
+                input#date_received(type = 'text',  "as-single_month_datepicker"=true, value = "{{formatted_date}}", style = "position:relative; z-index:12")
+          .row
+            .col-md-3
+              label 't=.current_assignee'
+            .col-md-9
+              span.current_assignee
+                | {{ current_assignee_name }}
+          .row('data-toggle'= 'edit')
+            .col-md-3
+              label 't=.status'
+            .col-md-9
+              .fade.no_edit.in#status_changes
+                | {{# status_changes}}
+                .status_change
+                  span.status_humanized
+                    | {{status_humanized}}
+                  | {{#if date || user_name}}
+                  | (
+                  | {{#if user_name}} 't=.by'
+                  span.user_name
+                    | {{user_name}}
+                  | {{/if}}
+                  | {{#if date && user_name}}
+                  | ,
+                  | {{/if}}
+                  | {{#if date}} 't=.on'
+                  span.date
+                    | {{local(date)}}
+                  | {{/if}}
+                  | )
+                  | {{/if}}
+                | {{/ status_changes}}
+              .fade.edit#current_status
+                form
+                  span 't=.open'
+                  input#open(type = 'radio', name ='{{current_status_humanized}}', value ='Open')
+                  span 't=.suspended'
+                  input#suspended(type = 'radio', name ='{{current_status_humanized}}', value ='Suspended')
+                  span 't=.closed'
+                  input#closed(type = 'radio', name ='{{current_status_humanized}}', value ='Closed')
+          .row
+            .col-md-3('data-toggle' = 'edit')
+              .no_edit.in
+                label 't=.complainant'
+              .edit
+                label 't=.complainant'
+            .col-md-9('data-toggle'='edit')
+              .no_edit.in
+                span.chiefly_title
+                  | {{ chiefly_title }}
+                span.firstName
+                  | {{ firstName }}
+                span.lastName
+                  | {{ lastName }}
+              .edit
+                .row
+                  .col-md-4.form-group
+                    label(for = 'chiefly_title') 't=.chiefly_title'
+                    input.form-control#chiefly_title(value = '{{chiefly_title}}')
+                  .col-md-4.form-group('class-has-error' = 'firstName_error')
+                    label.required(for = 'firstName') 't=.first_name'
+                    input.form-control#firstName(value = '{{firstName}}', 'on-keydown'="@this.remove_attribute_error('firstName')")
+                    span.help-block.error#firstName_error 't=.firstName_error_message'
+                  .col-md-4.form-group('class-has-error' = 'lastName_error')
+                    label.required(for = 'lastName') 't=.last_name'
+                    input.form-control#lastName(value = '{{lastName}}', 'on-keydown'="@this.remove_attribute_error('lastName')")
+                    span.help-block.error#lastName_error 't=.lastName_error_message'
+        .col-md-3.actions
+          .row(style = "margin-left:0px;")
+            .col-md-1.col-md-offset-2('data-toggle'= 'edit')
+              .no_edit.in
+                .alarm_icon.counter('data-count'="{{reminders_count}}", 'on-click' = "@this.show_reminders_panel()", 'data-toggle' = 'tooltip', title = 't=.reminders')
+              .edit
+            .col-md-1('data-toggle'= 'edit')
+              .no_edit.in
+                .note_icon.show_notes.counter('data-count'='{{notes_count}}', 'on-click' = "@this.show_notes_panel()", 'data-toggle' = 'tooltip', title = 't=.notes')
+              .edit
+            .col-md-1('data-toggle'= 'edit')
+              .no_edit.in
+                i.fa.fa-comments-o.fa-lg.counter('data-count'='{{communications_count}}', 'on-click' = '@this.show_communications_panel()', style = "position:relative;", 'data-toggle' = 'tooltip', title = 't=.communications')
+              .fade.edit
+            .col-md-1.icon('data-toggle' = 'edit')
+              .fade.edit
+              .fade.no_edit.in
+                i.fa.fa-pencil-square-o#edit_start(style = "position:relative; top:1px;", 'data-toggle' = 'tooltip', title = 't=.edit')
+            .col-md-1('data-toggle'= 'edit')
+              .no_edit.in
+                i.fa.fa-sm.fa-trash-o.delete_icon('on-click'='@this.show_confirm_delete_modal()', 'data-toggle' = 'tooltip', title = 't=.delete')
+              .edit
+            .col-md-1('data-toggle'= 'edit')
+              .no_edit.in
+                i.fa.fa-sm.fa-file-word-o.word_document('on-click'='@this.generate_word_doc()', 'data-toggle' = 'tooltip', title = 't=.download')
+              .edit
+            .col-md-1('data-toggle'= 'collapse', href = ".collapse{{id}}", style = "width:45px;")
+              div('data-toggle'= 'edit')
+                .no_edit.in
+                  | {{#if expanded}}
+                  i#compact('on-click'='@this.compact()', 'data-toggle'='tooltip', 'title' 't=.compact', style = "position:relative; top:3px;")
+                  | {{else}}
+                  i#expand('on-click'='@this.expand()', 'data-toggle'='tooltip', 'title' 't=.expand', style = "position:relative; top:3px;")
+                  | {{/if}}
+                .edit
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2.form-group('data-toggle'='edit', 'class-has-error' = 'dob_error')
+          .row.no_edit.in
+            .col-md-3
+              label 't=.dob'
+            .col-md-3
+              span.complainant_dob
+                | {{ date_of_birth }}
+            .col-md-2(style = "text-align:right")
+              label 't=.gender'
+            .col-md-4
+              span.gender
+                | {{gender}}
+          .row.edit
+            .col-md-3
+              label.required 't=.dob'
+              span dd/mm/yyyy
+            .col-md-2
+              input.form-control#dob(value = '{{dob}}', 'on-keydown'="@this.remove_attribute_error('dob')", style ="width:112px;")
+              span.help-block.error#dob_error 't=.dob_error_message'
+            .col-md-2(style = "text-align:right")
+              label 't=.gender'
+            .col-md-5
+              form
+                label(style = 'font-weight:normal')
+                  span(style = "margin-right:6px;") 't=.male'
+                  input#m(type = 'radio', name ='{{gender}}', value ='M')
+                label(style = 'font-weight:normal')
+                  span(style = "margin-right:6px; margin-left:12px;") 't=.female'
+                  input#f(type = 'radio', name ='{{gender}}', value ='F')
+                label(style = 'font-weight:normal')
+                  span(style = "margin-right:6px; margin-left:12px;") 't=.other'
+                  input#o(type = 'radio', name ='{{gender}}', value ='O')
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2.form-group('data-toggle'='edit')
+          .row
+            .col-md-3
+              label 't=.email'
+            .col-md-9
+              .no_edit.in
+                span.email
+                  | {{ email }}
+              .edit
+                input.form-control#email(value = '{{email}}')
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2.form-group('data-toggle'='edit', 'class-has-error' = 'village_error')
+          .row
+            .col-md-3
+              .no_edit.in
+                label 't=.village'
+              .edit
+                label.required 't=.village'
+            .col-md-9
+              .no_edit.in
+                span.complainant_village
+                  | {{ village }}
+              .edit
+                input.form-control#village(value = '{{village}}', 'on-keydown'="@this.remove_attribute_error('village')")
+                span.help-block.error#village_error 't=.village_error_message'
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2('data-toggle'= 'edit')
+          .row
+            .col-md-3
+              label 't=.phone'
+            .col-md-9
+              .no_edit.in
+                span.complainant_phone
+                  | {{ phone }}
+              .edit
+                input.form-control#phone(value = '{{phone}}')
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2.form-group('data-toggle'= 'edit', 'class-has-error' = 'details_error')
+          .row
+            .col-md-3
+              .no_edit.in
+                label 't=.details'
+              .edit
+                label.required 't=.details'
+            .col-md-9
+              .no_edit.in
+                span.complaint_details
+                  | {{ details }}
+              .edit
+                input.form-control#complaint_details(value = '{{details}}', 'on-keydown'="@this.remove_attribute_error('details')")
+                span.help-block.error#details_error 't=.details_error_message'
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2('data-toggle'= 'edit')
+          .row
+            .col-md-3
+              label 't=.desired_outcome'
+            .col-md-9
+              .no_edit.in
+                span.desired_outcome
+                  | {{ desired_outcome }}
+              .edit
+                input.form-control#desired_outcome(value = '{{desired_outcome}}')
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2('data-toggle'= 'edit')
+          .row
+            .col-md-3
+              label 't=.complained_to_subject_agency'
+            .col-md-2
+              .no_edit.in
+                span.complained_to_subject_agency
+                  | {{#if complained_to_subject_agency }} yes {{else}} no {{/if}}
+              .edit
+                form
+                  label(style = "font-weight:normal;") 't=yes'
+                    input#complained_to_subject_agency_yes(type = 'radio', name = "{{complained_to_subject_agency}}", value = 'true')
+                  label(style = "font-weight:normal;") 't=no')
+                    input#complained_to_subject_agency_no(type = 'radio', name = "{{complained_to_subject_agency}}", value = 'false')
+      .row.collapse
+        .col-md-2 't=.assignees_history'
+        .col-md-5('data-toggle'= 'edit')
+          <assignees assigns='{{assigns}}' />
+          .no_edit.in
+          .edit
+            <assigneeSelector new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
+      .row.collapse
+        .col-md-12.form-group('data-toggle'= 'edit', 'class-has-error' = 'mandate_id_count_error')
+          .row
+            .col-md-2
+              .no_edit.in 't=.mandate'
+              .edit.required 't=.mandate'
+            .col-md-10
+              .no_edit.in#mandate
+                | {{ mandate_names }}
+              .edit
+                .row
+                  <mandatesSelector mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' all_mandates='{{all_mandates}}' />
+                span.help-block.error#mandate_id_count_error 't=.mandate_ids_error_message'
+      .row.collapse
+        .col-md-12.form-group('data-toggle'= 'edit', 'class-has-error' = 'complaint_basis_id_count_error')
+          .row
+            .col-md-2
+              .no_edit.in 't=.complaint_basis'
+              .edit.required 't=.complaint_basis'
+            .col-md-10
+              .no_edit.in
+                <complaintBases good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' />
+              .edit
+                .row
+                  <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' complaint_bases='{{complaint_bases}}' />
+              span.help-block.error#complaint_basis_id_count_error 't=.complaint_basis_error_message'
+      .row.collapse('data-toggle'= 'edit')
+        .col-md-2 't=.agency'
+        .col-md-10
+          .no_edit.in.comma-list#agencies(style = 'display:flex')
+            <agencies agency_ids='{{agency_ids}}' />
+          .edit
+            <agenciesSelector agency_ids='{{agency_ids}}' all_agencies_in_sixes='{{all_agencies_in_sixes}}' />
+      .row.collapse('data-toggle'= 'edit')
+        .col-md-2 't=.documents'
+        .col-md-10#complaint_documents
+          .edit(style = "padding-left:15px; padding-top:15px;")
+            | {{> file_selector_template {key : 'complaint'} }}
+          .no_edit.in
+          <attachedDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' key='complaint' attached_documents='{{attached_documents}}' />
+      .row.collapse('data-toggle'= 'edit', style = "margin-top:30px;")
+        .col-sm-3.col-sm-offset-3.edit(style = "text-align:center;")
+          .btn.btn-danger.btn-sm.edit_cancel#edit_cancel
+            i.fa.fa-remove.fa-lg(style = "color:white")
+            span(style = "color:white") "t=defaults.cancel"
+        .col-sm-3.edit(style = "text-align:center;")
+          .btn.btn-success.btn-sm.save_complaint#edit_save(style = "color:white;")
+            i.fa.fa-check.fa-lg(style = "color:white")
+            span "t=defaults.save"
+          .form-group('class-has-error' = 'has_errors')
+            span#complaint_error.help-block.error "t=error_messages.form_error"
+
+| {{#if persisted }}
+| {{> show_complaint_template}}
+| {{else}}
+| {{> new_complaint_template}}
+| {{/if}}
+
+script.
+  import Mandates from '../mandates'
+  import MandatesSelector from '../mandates_selector'
+  import ComplaintBases from '../complaint_bases'
+  import ComplaintBasesSelector from '../complaint_bases_selector'
+  import Agencies from '../agencies'
+  import AgenciesSelector from '../agencies_selector'
+  import Assignees from '../assignees'
+  import AssigneeSelector from '../assignee_selector'
+  import ComplaintDocuments from '../complaint_documents'
+  import ConfirmDeleteModal from '../../../../../../app/javascript/confirm_delete_modal'
+  import Validator from '../../../../../../app/javascript/validator'
+
+  const FilterMatch = {
+    include() {
+      //console.log "call include()"
+      // console.log JSON.stringify "matches_complainant" : @matches_complainant(), "matches_case_reference" : @matches_case_reference(), "matches_village" : @matches_village(), "matches_date" : @matches_date(), "matches_phone" : @matches_phone(), "matches_agencies" : @matches_agencies(), "matches_assignee" : @matches_assignee(), "matches_status" : @matches_status(), "matches_basis" : @matches_basis
+      // console.log JSON.stringify "matches_good_governance_complaint_basis" : @matches_good_governance_complaint_basis(), "matches_human_rights_complaint_basis" : @matches_human_rights_complaint_basis(), "matches_special_investigations_unit_complaint_basis" : @matches_special_investigations_unit_complaint_basis(), "basis_rule" : @get('filter_criteria.basis_rule'), "matches_basis" : @matches_basis(), "basis_requirement_is_specified" : @basis_requirement_is_specified(), "good_governance_basis_requirement_is_specified" : @good_governance_basis_requirement_is_specified(), "human_rights_basis_requirement_is_specified" : @human_rights_basis_requirement_is_specified(), "special_investigations_unit_basis_requirement_is_specified" : @special_investigations_unit_basis_requirement_is_specified()
+      // console.log JSON.stringify "matches_area" : @matches_area()
+      return this.matches_complainant() &&
+      this.matches_case_reference() &&
+      this.matches_village() &&
+      this.matches_date() &&
+      this.matches_phone() &&
+      this.matches_agencies() &&
+      this.matches_basis() &&
+      this.matches_assignee() &&
+      this.matches_status() &&
+      this.matches_area();
+    },
+    matches_area() {
+      if (!_.isNumber(this.get('filter_criteria.mandate_id')) || _.isNull(this.get('filter_criteria.mandate_id'))) { return true; }
+      return parseInt(this.get('mandate_id')) === parseInt(this.get('filter_criteria.mandate_id'));
+    },
+    matches_complainant() {
+      if (_.isEmpty(this.get('filter_criteria.complainant'))) { return true; }
+      const flexible_space_match = this.get('filter_criteria.complainant').trim().replace(/\s+/g, "\\s+");
+      const re = new RegExp(flexible_space_match,"i");
+      const full_name = [this.get('chiefly_title'),this.get('firstName'),this.get('lastName')].join(' ');
+      return re.test(full_name);
+    },
+    matches_case_reference() {
+      if (_.isEmpty(this.get('filter_criteria.case_reference'))) { return true; }
+      const criterion_digits = this.get('filter_criteria.case_reference').replace(/\D/g,'');
+      const value_digits = this.get('case_reference').replace(/\D/g,'');
+      const re = new RegExp(criterion_digits);
+      return re.test(value_digits);
+    },
+    matches_village() {
+      if (_.isEmpty(this.get('filter_criteria.village'))) { return true; }
+      const re = new RegExp(this.get('filter_criteria.village').trim(),"i");
+      return re.test(this.get('village'));
+    },
+    matches_date() {
+      return this.matches_from() && this.matches_to();
+    },
+    matches_from() {
+      if (_.isNull(this.get('date')) || _.isEmpty(this.get('filter_criteria.from'))) { return true; }
+      return (new Date(this.get('date'))).valueOf() >= Date.parse(this.get('filter_criteria.from'));
+    },
+    matches_to() {
+      if (_.isNull(this.get('date')) || _.isEmpty(this.get('filter_criteria.to'))) { return true; }
+      return (new Date(this.get('date'))).valueOf() <= Date.parse(this.get('filter_criteria.to'));
+    },
+    matches_phone() {
+      if (_.isEmpty(this.get('filter_criteria.phone'))) { return true; }
+      const criterion_digits = this.get('filter_criteria.phone').replace(/\D/g,'');
+      const value_digits = this.get('phone').replace(/\D/g,'');
+      const re = new RegExp(criterion_digits);
+      return re.test(value_digits);
+    },
+    matches_agencies() {
+      if (_.isEmpty(this.get('filter_criteria.selected_agency_ids'))) { return true; }
+      return _.intersection(this.get('filter_criteria.selected_agency_ids'), this.get('agency_ids')).length > 0;
+    },
+    matches_basis() {
+      const match = this.matches_good_governance_complaint_basis() || // each val is undefined if no ids were selected
+              this.matches_human_rights_complaint_basis() || // if all of them are undefined, match is undefined
+              this.matches_special_investigations_unit_complaint_basis(); // if any is true, true is returned
+      if (_.isUndefined(match)) { return true; }
+      if (!this.basis_requirement_is_specified()) {
+        return true;
+      } else {
+        return match;
+      }
+    },
+    basis_requirement_is_specified() {
+      return this.good_governance_basis_requirement_is_specified() ||
+      this.human_rights_basis_requirement_is_specified() ||
+      this.special_investigations_unit_basis_requirement_is_specified();
+    },
+    good_governance_basis_requirement_is_specified() {
+      const selected = this.get('filter_criteria.selected_good_governance_complaint_basis_ids');
+      return !(_.isEmpty(selected) || _.isUndefined(selected));
+    },
+    human_rights_basis_requirement_is_specified() {
+      const selected = this.get('filter_criteria.selected_human_rights_complaint_basis_ids');
+      return !(_.isEmpty(selected) || _.isUndefined(selected));
+    },
+    special_investigations_unit_basis_requirement_is_specified() {
+      const selected = this.get('filter_criteria.selected_special_investigations_unit_complaint_basis_ids');
+      return !(_.isEmpty(selected) || _.isUndefined(selected));
+    },
+    matches_good_governance_complaint_basis() {
+      const selected = this.get('filter_criteria.selected_good_governance_complaint_basis_ids');
+      const attrs = this.get('good_governance_complaint_basis_ids');
+      return _.intersection(selected,attrs).length > 0;
+    },
+    matches_human_rights_complaint_basis() {
+      const selected = this.get('filter_criteria.selected_human_rights_complaint_basis_ids');
+      const attrs = this.get('human_rights_complaint_basis_ids');
+      return _.intersection(selected,attrs).length > 0;
+    },
+    matches_special_investigations_unit_complaint_basis() {
+      const selected = this.get('filter_criteria.selected_special_investigations_unit_complaint_basis_ids');
+      const attrs = this.get('special_investigations_unit_complaint_basis_ids');
+      return _.intersection(selected,attrs).length > 0;
+    },
+    matches_assignee() {
+      const selected_assignee_id = this.get('filter_criteria.selected_assignee_id');
+      const assignee_id = this.get('current_assignee_id');
+      return _.isNaN(parseInt(selected_assignee_id)) || (assignee_id === selected_assignee_id);
+    },
+    matches_status() {
+      const selected_statuses = this.get('filter_criteria.selected_statuses');
+      const status_name = this.get('current_status_humanized');
+      return _.isEmpty(selected_statuses) || (selected_statuses.indexOf(status_name) !== -1);
+    }
+  };
+
+
+  const EditBackup = {
+    stash() {
+      const stashed_attributes = _(this.get()).pick(this.get('persistent_attributes'));
+      return this.stashed_instance = $.extend(true,{},stashed_attributes);
+    },
+    restore() {
+      return this.set(this.stashed_instance);
+    }
+  };
+
+
+  const Persistence = {
+    delete_callback(data,textStatus,jqxhr){
+      return this.parent.remove(this._guid);
+    },
+    save_complaint() {
+      if (this.validate()) {
+        const data = this.formData();
+        return $.ajax({
+          // thanks to http://stackoverflow.com/a/22987941/451893
+          //xhr: @progress_bar_create.bind(@)
+          method : 'post',
+          data,
+          url : Routes.complaints_path(current_locale),
+          success : this.save_complaint_callback,
+          context : this,
+          processData : false,
+          contentType : false
+        });
+      }
+    }, // jQuery correctly sets the contentType and boundary values
+    formData() {
+      return this.asFormData(this.get('persistent_attributes'));
+    }, // in ractive_local_methods, returns a FormData instance
+    save_complaint_callback(response, status, jqxhr){
+      UserInput.reset();
+      this.set(response);
+      return complaints.increment_next_case_reference(response.case_reference);
+    },
+    progress_bar_create() {
+      return this.findComponent('progressBar').start();
+    },
+    update_persist(success, error, context) { // called by EditInPlace
+      if (this.validate()) {
+        const data = this.formData();
+        return $.ajax({
+          // thanks to http://stackoverflow.com/a/22987941/451893
+          //xhr: @progress_bar_create.bind(@)
+          method : 'put',
+          data,
+          url : this.get('persisted') ? Routes.complaint_path(current_locale, this.get('id')) : undefined,
+          success,
+          context,
+          processData : false,
+          contentType : false
+        });
+      }
+    } // jQuery correctly sets the contentType and boundary values
+  };
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    computed : {
+      delete_confirmation_message() {
+        return `${i18n.delete_complaint_confirmation_message} ${this.get('case_reference')}?`;
+      },
+      include() {
+        return this.include();
+      },
+      reminders_count() {
+        const reminders = this.get('reminders');
+        if (_.isUndefined(reminders)) { return 0; } else { return reminders.length; }
+      },
+      notes_count() {
+        const notes = this.get('notes');
+        if (_.isUndefined(notes)) { return 0; } else { return notes.length; }
+      },
+      communications_count() {
+        const comms = this.get('communications');
+        if (_.isUndefined(comms)) { return 0; } else { return comms.length; }
+      },
+      persisted() {
+        return !(_.isNull(this.get('id')) || _.isUndefined(this.get('id')));
+      },
+      persistent_attributes() {
+        return ['case_reference','village','phone','mandate_ids',
+          'good_governance_complaint_basis_ids', 'special_investigations_unit_complaint_basis_ids',
+          'human_rights_complaint_basis_ids', 'current_status_humanized', 'new_assignee_id',
+          'agency_ids', 'attached_documents_attributes', 'details',
+          'dob', 'email', 'complained_to_subject_agency', 'desired_outcome', 'gender', 'date',
+          'firstName', 'lastName', 'chiefly_title'];
+      },
+      url() {
+        if (this.get('persisted')) { return Routes.complaint_path(current_locale, this.get('id')); }
+      },
+      formatted_date : {
+        get() {
+          const date_received = this.get('date'); // it's a formatted version of date_received
+          if (_.isEmpty(date_received)) {
+            return "";
+          } else {
+            return this.get('date');
+          }
+        },
+        set(val){
+          return this.set('date', val);
+        }
+      },
+      has_errors() {
+        return this.validator.has_errors();
+      },
+      mandate_names() {
+        const mandates = _(this.get('all_mandates')).select(mandate=> _(this.get('mandate_ids')).include(mandate.id));
+        const names = _(mandates).map(mandate=> mandate.name);
+        return names.join(', ');
+      },
+      create_reminder_url() {
+        if (this.get('persisted')) { return Routes.complaint_reminders_path('en', this.get('id')); }
+      },
+      create_note_url() {
+        if (this.get('persisted')) { return Routes.complaint_notes_path('en', this.get('id')); }
+      },
+      complaint_basis_id_count() { // aka subareas
+        const gg = this.get('good_governance_complaint_basis_ids');
+        const ggl = _.isUndefined(gg) ? 0 : gg.length;
+        const si = this.get('special_investigations_unit_complaint_basis_ids');
+        const sil = _.isUndefined(si) ? 0 : si.length;
+        const hr = this.get('human_rights_complaint_basis_ids');
+        const hrl = _.isUndefined(hr) ? 0 : hr.length;
+        return ggl + sil + hrl;
+      },
+      mandate_id_count() { // aka 'areas'
+        const mandates = this.get('mandate_ids');
+        if (_.isUndefined(mandates)) { return 0; } else { return mandates.length; }
+      },
+      validation_criteria() {
+        return {
+          firstName : ['notBlank'],
+          lastName : ['notBlank'],
+          village : ['notBlank'],
+          mandate_id_count : 'nonZero',
+          complaint_basis_id_count : 'nonZero',
+          new_assignee_id : ['numeric', {if : () => !this.get('editing')}],
+          dob: () => {
+            const date_regex = new RegExp(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); // dd/mm/yyyy
+            const match = date_regex.exec(this.get('dob'));
+            const valid_day = match && (parseInt(match[1]) <= 31);
+            const valid_month = match && (parseInt(match[2]) <= 12);
+            const valid_year = match && (parseInt(match[3]) <= (new Date).getFullYear()) && (parseInt(match[3]) >= 1900 );
+            return !_.isNull(match) && valid_day && valid_month && valid_year;
+          },
+          details : 'notBlank'
+        };
+      },
+      error_vector() {
+        return {
+          firstName_error : this.get('firstName_error'),
+          lastName_error : this.get('lastName_error'),
+          village_error : this.get('village_error'),
+          new_assignee_id_error : this.get('new_assignee_id_error'),
+          mandate_id_count_error : this.get('mandate_id_count_error'),
+          complaint_basis_id_count_error : this.get('complaint_basis_id_count_error'),
+          dob_error : this.get('dob_error'),
+          details_error : this.get('details_error')
+        };
+      }
+    },
+    oninit() {
+      return this.set({
+        editing : false,
+        expanded:false,
+        serialization_key:'complaint'
+      });
+    },
+    onconfig() {
+      return this.validator = new Validator(this);
+    },
+    // this should work, but due to some weirdness in ractive, it doesn't, maybe a future release
+    // will work better so that the callbacks can be removed from the view elements
+    //onupdate: (obj)->
+      //attr = _(obj).keys()[0]
+      //console.log "change to #{attr}"
+      //unless _.isUndefined(@validator)
+        //if _(@validator.attributes).includes(attr)
+          //@validate_attribute(attr)
+    data : {
+      local(gmt_date){
+        return $.datepicker.formatDate("M d, yy", new Date(gmt_date));
+      }
+    },
+    components : {
+      mandates : Mandates,
+      mandatesSelector : MandatesSelector,
+      complaintBases : ComplaintBases,
+      complaintBasesSelector : ComplaintBasesSelector, 
+      agencies : Agencies,
+      agenciesSelector : AgenciesSelector,
+      assignees : Assignees,
+      assigneeSelector : AssigneeSelector,
+      attachedDocuments : ComplaintDocuments,
+      //progressBar : ProgressBar
+    },
+    generate_word_doc() {
+      return window.location = Routes.complaint_path('en',this.get('id'),{format : 'docx'});
+    },
+    expand() {
+      this.set('expanded',true);
+      return $(this.findAll('.collapse')).collapse('show');
+    },
+    compact() {
+      this.set('expanded',false);
+      return $(this.findAll('.collapse')).collapse('hide');
+    },
+    validate() {
+      return this.validator.validate();
+    },
+    validate_attribute(attribute){
+      return this.validator.validate_attribute(attribute);
+    },
+    remove_attribute_error(attribute){
+      return this.set(attribute+"_error",false);
+    },
+    remove_errors() {
+      this.compact(); //nothing to do with errors, but this method is called on edit_cancel
+      return this.restore();
+    },
+    cancel_add_complaint() {
+      UserInput.reset();
+      return this.parent.shift('complaints');
+    },
+    remove(guid){ // required for Ractive 0.8.0, possibly can be removed in later revs
+      const guids = _(this.findAllComponents('attachedDocument')).pluck('_guid');
+      const index = _(guids).indexOf(guid);
+      return this.splice('attached_documents',index,1);
+    },
+    add_file(file){
+      const attached_document = {
+        id : null,
+        complaint_id : this.get('id'),
+        file,
+        title: '',
+        file_id : '',
+        url : '',
+        filename : file.name,
+        filesize : file.size,
+        original_type : file.type,
+        serialization_key : 'complaint[complaint_documents_attributes][]'
+      };
+      return this.unshift('attached_documents', attached_document);
+    }}).extend(EditBackup)
+  .extend(Persistence)
+  .extend(ConfirmDeleteModal)
+  .extend(FilterMatch)
+  .extend(this.Remindable)
+  .extend(this.Notable)
+  .extend(this.Communications); // Remindable Notable and Communications are found in the _reminder.haml _note.haml and _communication.haml files

@@ -104,6 +104,7 @@ gem "rack-attack"
 gem "rack-mini-profiler"
 gem "flamegraph"
 gem "stackprof", :require => false
+gem "webpacker"
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'

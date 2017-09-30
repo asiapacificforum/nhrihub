@@ -1,0 +1,13 @@
+| {{#mandate_ids}}
+<mandate id='{{.}}' />
+| {{/mandate_ids}}
+
+script.
+  import Mandate from '../mandate'
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    components : {
+      mandate : Mandate
+    }
+  });

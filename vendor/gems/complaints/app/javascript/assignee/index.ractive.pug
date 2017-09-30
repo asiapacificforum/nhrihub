@@ -1,0 +1,10 @@
+.row.assignee
+  .col-md-6.date
+    | {{date}}
+  .col-md-6.name
+    | {{name}}
+
+script.
+  export default Ractive.extend({
+    template : $TEMPLATE
+    });

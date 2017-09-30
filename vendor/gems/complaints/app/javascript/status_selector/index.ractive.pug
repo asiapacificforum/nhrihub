@@ -1,0 +1,24 @@
+script#filter_select_template(type='text/ractive', src='../filter_select_template.pug').
+
+| {{>filter_select_template}}
+
+script.
+  import Toggle from '../toggle'
+  import RactiveLocalMethods from '../../../../../../app/assets/javascripts/ractive_local_methods'
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    computed : {
+      selected : {
+        get() {
+          return this.get('filter_criteria.selected_statuses').indexOf(this.get('name')) !== -1;
+        },
+        set(val){
+          if (val) {
+            return this.push('filter_criteria.selected_statuses', this.get('name'));
+          } else {
+            return this.remove_from_array('filter_criteria.selected_statuses', this.get('name'));
+          }
+        }
+      }
+    }}).extend(Toggle).extend(RactiveLocalMethods);

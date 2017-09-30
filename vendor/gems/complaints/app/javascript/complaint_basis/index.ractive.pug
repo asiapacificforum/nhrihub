@@ -1,0 +1,19 @@
+span.complaint_basis
+  | {{name}}
+
+
+script.
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    computed : {
+      name() {
+        var mandate = _(window.source_complaint_bases).find(cb=> _.isEqual(cb.key, this.get(mandate).mandate));
+        if (_.isUndefined(mandate)) {
+          return null;
+        } else {
+          const complaint_basis = _(mandate.complaint_bases).find(cb=> _.isEqual(cb.id, this.get('id')));
+          return complaint_basis.name;
+        }
+      }
+    }
+  });

@@ -1,0 +1,19 @@
+select.form-control#assignee(value = '{{new_assignee_id}}', 'on-change'="@this.remove_error()")
+  option(selected = true, disabled = true, style = "color:#333")
+    | {{#if editing}}
+    reassign
+    | {{else}}
+    | select assignee
+    | {{/if}}
+  | {{#all_staff}}
+  option(value = '{{id}}')
+    | {{ first_last_name }}
+  | {{/all_staff}}
+
+script.
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    remove_error() {
+      return this.parent.remove_attribute_error('new_assignee_id');
+    }
+  });

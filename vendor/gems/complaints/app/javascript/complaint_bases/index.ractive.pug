@@ -1,0 +1,30 @@
+#good_governance_complaint_bases.comma-list
+  | {{#if good_governance_complaint_basis_ids}}
+  span.basis_name good governance
+  | {{/if}}
+  | {{#good_governance_complaint_basis_ids}}
+  <complaintBasis mandate="good_governance" id='{{.}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' />
+  | {{/good_governance_complaint_basis_ids}}
+#human_rights_complaint_bases.comma-list
+  | {{#if human_rights_complaint_basis_ids}}
+  span.basis_name human rights
+  | {{/if}}
+  | {{#human_rights_complaint_basis_ids}}
+  <complaintBasis mandate="human_rights" id='{{.}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' />
+  | {{/human_rights_complaint_basis_ids}}
+#special_investigations_unit_complaint_bases.comma-list
+  | {{#if special_investigations_unit_complaint_basis_ids}}
+  span.basis_name special investigations unit
+  | {{/if}}
+  | {{#special_investigations_unit_complaint_basis_ids}}
+  <complaintBasis mandate="special_investigations_unit" id='{{.}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' />
+  | {{/special_investigations_unit_complaint_basis_ids}}
+
+script.
+  import ComplaintBasis from '../complaint_basis'
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    components : {
+      complaintBasis : ComplaintBasis
+    }
+  });

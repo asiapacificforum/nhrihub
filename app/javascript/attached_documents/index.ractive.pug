@@ -1,0 +1,28 @@
+| {{#if attached_documents}}
+.row
+  .col-md-6.title title
+  .col-md-4.filename filename
+| {{/if}}
+| {{#attached_documents}}
+attachedDocument(key='{{key}}' parent_type='{{../../parent_type}}' permitted_filetypes='{{permitted_filetypes}}' maximum_filesize='{{maximum_filesize}}' communication_id='{{communication_id}}' file='{{file}}' file_id='{{file_id}}' filename='{{filename}}' filesize='{{filesize}}' id='{{id}}' lastModifiedDate='{{lastModifiedDate}}' original_type='{{original_type}}' serialization_key='{{serialization_key}}' title='{{title}}' user_id='{{user_id}}')
+| {{/attached_documents}}
+| {{^attached_documents}}
+div(style = 'padding-left:15px;') no documents
+| {{/attached_documents}}
+
+script.
+  import Ractive from 'ractive'
+  import AttachedDocument from '../attached_document'
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    components : {
+      attachedDocument : AttachedDocument
+    },
+    remove(guid){
+      const guids = _(this.findAllComponents('attachedDocument')).pluck('_guid');
+      const index = _(guids).indexOf(guid);
+      return this.splice('attached_documents',index,1);
+    }
+  });
+
