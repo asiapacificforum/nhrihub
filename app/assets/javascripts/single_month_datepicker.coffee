@@ -1,3 +1,6 @@
+import $ from 'jquery'
+import 'jquery-ui/ui/widgets/datepicker'
+
 SingleMonthDatepicker = (node)->
   $(node).datepicker
     #altField: $(node).attr['id'] can't use this b/c it doesn't trigger ractive change

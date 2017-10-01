@@ -1,4 +1,4 @@
-script#show_attached_document_template(type = 'template/ractive')
+script#show_attached_document_template(type = 'text/ractive')
   div(class = "{{key}}_document")
     .row
       .col-md-6.title
@@ -10,7 +10,7 @@ script#show_attached_document_template(type = 'template/ractive')
       .col-md-1.delete
         i.fa.fa-sm.fa-trash-o.delete_icon('on-click'='@this.show_confirm_delete_modal()')
 
-script#new_attached_document_template(type = 'template/ractive')
+script#new_attached_document_template(type = 'text/ractive')
   .row.document
     .col-md-6.title
       input.form-control#attached_document_title(type = 'text', value='{{title}}', list = '{{key}}_named_documents')
@@ -18,7 +18,7 @@ script#new_attached_document_template(type = 'template/ractive')
         | {{#named_document_datalist}}
         option(value='{{.}}')
           | {{.}}
-          | {{/named_document_datalist}}
+        | {{/named_document_datalist}}
       .errors.form-group(class = "{{#filesize_error}}has-error{{/}}")
         span.help-block.error#filesize_error too large
       .errors.form-group(class = "{{#original_type_error}}has-error{{/}}")
@@ -38,6 +38,7 @@ script#new_attached_document_template(type = 'template/ractive')
 
 script.
   import Ractive from 'ractive';
+  import Validator from '../validator'
 
   export default Ractive.extend({
     template : $TEMPLATE,

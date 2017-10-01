@@ -1,9 +1,9 @@
-script#filter_select_template(type='text/ractive', src='../filter_select_template.pug').
+script#filter_select_template(type='text/ractive', src='./filter_select_template.pug').
 
 | {{>filter_select_template}}
 
 script.
-  import Toggle from '../toggle'
+  import Toggle from './toggle'
 
   export default Ractive.extend({
     template : $TEMPLATE,

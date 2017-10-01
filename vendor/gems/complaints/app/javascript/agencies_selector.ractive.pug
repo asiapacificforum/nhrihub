@@ -11,3 +11,8 @@
         input(:id='agency_{{.id}}', :type = 'checkbox', :name = '{{../../../agency_ids}}', :value = '{{.id}}')
       | {{/}}
     | {{/all_agencies_in_sixes}}
+
+
+script.
+  export default Ractive.extend({
+    template : $TEMPLATE});

@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@rails/webpacker": "^3.0.1",
+    "jquery": "^3.2.1",
+    "jquery-ui": "^1.12.1",
     "pug": "^2.0.0-rc.4",
     "pug-html-loader": "^1.1.5",
     "ractive": "^0.9.4",

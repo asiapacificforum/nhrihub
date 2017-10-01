@@ -212,3 +212,5 @@ class @InpageEdit
       object = @options.object
       attribute = $(el).data('attribute')
       new InpageEditElement(el,object,attribute)
+
+export default @InpageEdit

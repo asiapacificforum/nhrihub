@@ -1,4 +1,6 @@
-script#new_complaint_template(type = 'template/ractive')
+script#file_selector_template(type='text/ractive', src='file_selector_template.pug')
+
+script#new_complaint_template(type = 'text/ractive')
   .row.well.well-sm.expandable_well.new_complaint.editable_container(intro = 'slide')
     .col-md-12
       .row
@@ -8,7 +10,8 @@ script#new_complaint_template(type = 'template/ractive')
         .col-md-2
           span t=.case_reference
         .col-md-6
-          span#case_reference {{case_reference}}
+          span#case_reference
+            | {{case_reference}}
       .row
         .col-md-2
           span t=.complainant
@@ -137,8 +140,8 @@ script#new_complaint_template(type = 'template/ractive')
           .form-group('class-has-error' = 'has_errors')
             span#complaint_error.help-block.error t=error_messages.form_error
 
-script#show_complaint_template(type = 'template/ractive')
-  .row.well.well-sm.expandable_well.complaint.editable_container( style = "{{#if !include}}display:none{{/if}}", 'as-inpage_edit'='id')
+script#show_complaint_template(type = 'text/ractive')
+  .row.well.well-sm.expandable_well.complaint.editable_container( style-display = "{{display}}", 'as-inpage_edit'='id')
     .col-md-12('data-toggle' = 'edit')
       .fade.edit
         span.required_before 't=required'
@@ -176,14 +179,16 @@ script#show_complaint_template(type = 'template/ractive')
                     | {{status_humanized}}
                   | {{#if date || user_name}}
                   | (
-                  | {{#if user_name}} 't=.by'
+                  | {{#if user_name}}
+                  | 't=.by'
                   span.user_name
                     | {{user_name}}
                   | {{/if}}
                   | {{#if date && user_name}}
                   | ,
                   | {{/if}}
-                  | {{#if date}} 't=.on'
+                  | {{#if date}}
+                  | 't=.on'
                   span.date
                     | {{local(date)}}
                   | {{/if}}
@@ -255,9 +260,9 @@ script#show_complaint_template(type = 'template/ractive')
               div('data-toggle'= 'edit')
                 .no_edit.in
                   | {{#if expanded}}
-                  i#compact('on-click'='@this.compact()', 'data-toggle'='tooltip', 'title' 't=.compact', style = "position:relative; top:3px;")
+                  i#compact('on-click'='@this.compact()', 'data-toggle'='tooltip', title='t=.compact', style = "position:relative; top:3px;")
                   | {{else}}
-                  i#expand('on-click'='@this.expand()', 'data-toggle'='tooltip', 'title' 't=.expand', style = "position:relative; top:3px;")
+                  i#expand('on-click'='@this.expand()', 'data-toggle'='tooltip', title='t=.expand', style = "position:relative; top:3px;")
                   | {{/if}}
                 .edit
       .row.collapse.expanded_info
@@ -437,17 +442,20 @@ script#show_complaint_template(type = 'template/ractive')
 | {{/if}}
 
 script.
-  import Mandates from '../mandates'
-  import MandatesSelector from '../mandates_selector'
-  import ComplaintBases from '../complaint_bases'
-  import ComplaintBasesSelector from '../complaint_bases_selector'
-  import Agencies from '../agencies'
-  import AgenciesSelector from '../agencies_selector'
-  import Assignees from '../assignees'
-  import AssigneeSelector from '../assignee_selector'
-  import ComplaintDocuments from '../complaint_documents'
-  import ConfirmDeleteModal from '../../../../../../app/javascript/confirm_delete_modal'
-  import Validator from '../../../../../../app/javascript/validator'
+  import Mandates from './mandates'
+  import MandatesSelector from './mandates_selector'
+  import ComplaintBases from './complaint_bases'
+  import ComplaintBasesSelector from './complaint_bases_selector'
+  import Agencies from './agencies'
+  import AgenciesSelector from './agencies_selector'
+  import Assignees from './assignees'
+  import AssigneeSelector from './assignee_selector'
+  import ComplaintDocuments from './complaint_documents'
+  import ConfirmDeleteModal from '../../../../../app/javascript/confirm_delete_modal'
+  import Validator from '../../../../../app/javascript/validator'
+  import $ from 'jquery'
+  import 'jquery-ui/ui/widgets/datepicker'
+  import './edit_in_place.js'
 
   const FilterMatch = {
     include() {
@@ -634,7 +642,15 @@ script.
         return `${i18n.delete_complaint_confirmation_message} ${this.get('case_reference')}?`;
       },
       include() {
-        return this.include();
+        //TODO FIXME faking the return value here
+        //return this.include();
+        return true;
+      },
+      display() {
+        if(!this.get('include'))
+          {return 'none';}
+        else
+          {return 'block';}
       },
       reminders_count() {
         const reminders = this.get('reminders');

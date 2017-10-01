@@ -49,8 +49,6 @@ const EditInPlace = function(node,id){
     };
 };
 
-//const AgenciesSelector = Ractive.extend({
-  //template : '#agencies_selector_template'});
 
 const Agency = Ractive.extend({
   template : '#agency_template',

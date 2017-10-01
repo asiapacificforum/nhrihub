@@ -1,3 +1,6 @@
+import $ from 'jquery'
+import 'jquery-ui/ui/widgets/datepicker'
+
 filter_criteria_datepicker =
   start : (collection)->
     $('#from').datepicker

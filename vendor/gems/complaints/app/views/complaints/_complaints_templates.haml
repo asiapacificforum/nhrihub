@@ -12,6 +12,647 @@
         {{/}}
       {{/all_agencies_in_sixes}}
 
+%script#complaints_template{:type => 'template/ractive'}
+  <filterControls expanded='{{expanded}}' filter_criteria='{{filter_criteria}}' all_good_governance_complaint_bases='{{all_good_governance_complaint_bases}}' all_human_rights_complaint_bases='{{all_human_rights_complaint_bases}}' all_special_investigations_unit_complaint_bases='{{all_special_investigations_unit_complaint_bases}}' statuses='{{statuses}}' all_mandates='{{all_mandates}}' all_staff='{{all_staff}}' all_agencies='{{all_agencies}}' />
+  {{#complaints}}
+  <complaint new_assignee_id=null communication_permitted_filetypes='{{communication_permitted_filetypes}}' communication_maximum_filesize='{{communication_maximum_filesize}}' date_of_birth='{{date_of_birth}}' dob='{{dob}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' all_staff='{{all_staff}}' editing=false expanded=false agency_ids='{{agency_ids}}' all_agencies_in_sixes='{{all_agencies_in_sixes}}' all_mandates='{{all_mandates}}' all_users='{{all_users}}' assigns='{{assigns}}' attached_documents='{{attached_documents}}' case_reference='{{case_reference}}' chiefly_title='{{chiefly_title}}' communications='{{communications}}' complained_to_subject_agency='{{complained_to_subject_agency}}' complaint_bases='{{complaint_bases}}' complaint_named_documents_titles='{{complaint_named_documents_titles}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' date='{{date}}' date_received='{{date_received}}' desired_outcome='{{desired_outcome}}' details='{{details}}' date_of_birth='{{date_of_birth}}' email='{{email}}' employer='{{employer}}' firstName='{{firstName}}' filter_criteria='{{filter_criteria}}' gender='{{gender}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' lastName='{{lastName}}' mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' notes='{{notes}}' occupation='{{occupation}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}' age='{{age}}' />
+  {{/complaints}}
 
+%script#filter_select_template{:type => "template/ractive"}
+  %li{'class-selected' => 'selected'}
+    %a.opt{'on-click'=>'@this.toggle()'}
+      %span {{name}}
+      %span.fa.fa-check
 
+%script#filter_controls_template{:type => 'template/ractive'}
+  .row.filter_control_box#complaints_controls
+    .row
+      .col-md-12
+        %h4= t('.search')
+    .row.labels
+      .col-md-2= t('.complainant')
+      .col-md-2= t('.village')
+      .col-md-2= t('.phone')
+      .col-md-2= t('.case_reference')
+    .row{:style => "margin-bottom:12px;"}
+      .col-md-2= text_field_tag :complainant, "{{filter_criteria.complainant}}", :placeholder => t('.enter_complainant'), :class => 'form-control'
+      .col-md-2= text_field_tag :village, "{{filter_criteria.village}}", :placeholder => t('.enter_village'), :class => 'form-control'
+      .col-md-2= text_field_tag :phone, "{{filter_criteria.phone}}", :placeholder => t('.phone'), :class => 'form-control'
+      .col-md-2= text_field_tag :case_reference, "{{filter_criteria.case_reference}}", :placeholder => t('.case_reference'), :class => 'form-control'
+      .col-md-1{:style => 'text-align:center'}
+        %i.erase.fa.fa-refresh{'on-click'=>'@this.clear_filter()', 'data-toggle'=>'tooltip', 'title' => t('.clear')}
+      .col-md-1
+        {{#if expanded}}
+        %a#compact{'on-click'=>'@this.compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact_all') }
+        {{else}}
+        %a#expand{'on-click'=>'@this.expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand_all')}
+        {{/if}}
+    .row.labels
+      .col-md-2= t('.status')
+      .col-md-2= t('.date_from')
+      .col-md-2= t('.date_to')
+      .col-md-2= t('.agency')
+    .row{:style => "margin-bottom:12px;"}
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_status')
+            %span.caret
+          %ul.dropdown-menu
+            {{#statuses}}
+            <statusSelector filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
+            {{/statuses}}
+      .col-md-2
+        %input.form-control#from{:type=>"text", :name=>"from", :placeholder => t('.date_from'), :value => "{{filter_criteria.from}}", :style => 'position:relative; z-index:12;'}
+      .col-md-2
+        %input.form-control#to{:type=>"text", :name=>"to", :placeholder => t('.date_to'), :value => "{{filter_criteria.to}}", :style => 'position:relative; z-index:12;'}
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_agency')
+            %span.caret
+          %ul.dropdown-menu#agency_filter_select
+            {{#all_agencies}}
+            <agencyFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}' />
+            {{/all_agencies}}
+    .row.labels
+      .col-md-2= t('.area')
+      .col-md-2= t('.complaint_basis')
+      .col-md-2= t('.assignee')
+    .row{:style => "margin-bottom:12px;"}
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_area')
+            %span.caret
+          %ul.dropdown-menu#mandate_filter_select
+            {{#all_mandates}}
+            <mandateFilterSelect id='{{id}}' name='{{name}}' />
+            {{/all_mandates}}
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_basis')
+            %span.caret
+          %ul.dropdown-menu
+            %li.dropdown-header= t('.good_governance')
+            {{#all_good_governance_complaint_bases}}
+            <goodGovernanceComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
+            {{/all_good_governance_complaint_bases}}
+            %li.dropdown-header= t('.human_rights')
+            {{#all_human_rights_complaint_bases}}
+            <humanRightsComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
+            {{/all_human_rights_complaint_bases}}
+            %li.dropdown-header= t('.special_investigations_unit')
+            {{#all_special_investigations_unit_complaint_bases}}
+            <specialInvestigationsUnitComplaintBasisFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{name}}'/>
+            {{/all_special_investigations_unit_complaint_bases}}
+      .col-md-2
+        .btn-group.select
+          %button.btn.btn-default.dropdown-toggle{:type=>:button, 'data-toggle'=>'dropdown'}
+            %span.filter-option.pull-left= t('.select_assignee')
+            %span.caret
+          %ul.dropdown-menu#assignee_filter_select
+            {{#all_staff}}
+            <assigneeFilterSelect filter_criteria='{{filter_criteria}}' id='{{id}}' name='{{first_last_name}}'/>
+            {{/all_staff}}
 
+%script#complaint_template{:type => 'template/ractive'}
+  {{#if persisted }}
+  {{> show_complaint_template}}
+  {{else}}
+  {{> new_complaint_template}}
+  {{/if}}
+
+%script#mandates_selector_template{:type => 'template/ractive'}
+  %form
+    {{#all_mandates}}
+    .col-md-2{:style => "padding-top:0;"}
+      %span {{ name }}
+    .col-md-1.mandate{:style => "padding-top:0;"}
+      %input{:type => :checkbox, :name => '{{mandate_ids}}', :value => '{{ id }}', 'on-change'=>'@this.remove_error()', :id => '{{key}}'}
+    {{/all_mandates}}
+
+%script#complaint_bases_selector_template{:type => 'template/ractive'}
+  {{#complaint_bases.0}}
+  .col-md-3{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
+    %label {{name}}:
+    {{#complaint_bases}}
+    .row.complaint_basis
+      .col-md-9
+        %span {{name}}
+      .col-md-3
+        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{strategic_plan_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"@this.remove_error()"}
+    {{/complaint_bases}}
+  {{/complaint_bases.0}}
+  {{#complaint_bases.1}}
+  .col-md-3{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
+    %label {{name}}:
+    {{#complaint_bases}}
+    .row.complaint_basis
+      .col-md-9
+        %span {{name}}
+      .col-md-3
+        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{../../../../good_governance_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"@this.remove_error()"}
+    {{/complaint_bases}}
+  {{/complaint_bases.1}}
+  {{#complaint_bases.2}}
+  .col-md-3{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
+    %label {{name}}:
+    {{#complaint_bases}}
+    .row.complaint_basis
+      .col-md-9
+        %span {{name}}
+      .col-md-3
+        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{../../../../human_rights_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"@this.remove_error()"}
+    {{/complaint_bases}}
+  {{/complaint_bases.2}}
+  {{#complaint_bases.3}}
+  .col-md-3{:class => '{{key}}_complaint_basis', :id => '{{key}}_bases', :style => "padding-top:0;"}
+    %label {{name}}:
+    {{#complaint_bases}}
+    .row.complaint_basis
+      .col-md-9
+        %span {{name}}
+      .col-md-3
+        %input{:id=>"{{key}}_complaint_basis_{{id}}", :type => :checkbox, :name => "{{../../../../special_investigations_unit_complaint_basis_ids}}", :value => '{{id}}', 'on-change'=>"@this.remove_error()"}
+    {{/complaint_bases}}
+  {{/complaint_bases.3}}
+
+%script#new_complaint_template{:type => 'template/ractive'}
+  .row.well.well-sm.expandable_well.new_complaint.editable_container{:intro => 'slide'}
+    .col-md-12
+      .row
+        .col-md-12
+          %span.required_before=t('required')
+      .row
+        .col-md-2
+          %span=t('.case_reference')
+        .col-md-6
+          %span#case_reference {{case_reference}}
+      .row
+        .col-md-2
+          %span=t('.complainant')
+        .col-md-6{:style => 'padding-top:0px'}
+          .row
+            .col-md-4.form-group{:style => 'padding-top:0px;'}
+              %label{:for => :chiefly_title, :style => 'font-weight:normal'}=t('.chiefly_title')
+              %input.form-control#chiefly_title{:value => '{{chiefly_title}}'}
+            .col-md-4.form-group{'class-has-error' => 'firstName_error', :style => 'padding-top:0px;'}
+              %label.required{:for => :firstName, :style => 'font-weight:normal'}=t('.first_name')
+              %input.form-control#firstName{:value => '{{firstName}}', 'on-keydown'=>"@this.remove_attribute_error('firstName')".html_safe}
+              %span.help-block.error#firstName_error= t('.firstName_error_message')
+            .col-md-4.form-group{'class-has-error' => 'lastName_error', :style => 'padding-top:0px;'}
+              %label.required{:for => :lastName, :style => 'font-weight:normal'}=t('.last_name')
+              %input.form-control#lastName{:value => '{{lastName}}', 'on-keydown'=>"@this.remove_attribute_error('lastName')".html_safe}
+              %span.help-block.error#lastName_error= t('.lastName_error_message')
+      .row.form-group{'class-has-error' => 'dob_error'}
+        .col-md-2
+          %span.required=t('.dob')
+          %span dd/mm/yyyy
+        .col-md-2
+          %input.form-control#dob{:value => '{{dob}}', 'on-keydown'=>"@this.remove_attribute_error('dob')".html_safe, :style=>"width:112px;"}
+          %span.help-block.error#dob_error= t('.dob_error_message')
+        .col-md-7
+          %span{:style => "margin-right:16px"}=t('.gender')
+          %form{:style => "display:inline"}
+            %label{:style => 'font-weight:normal'}
+              %span{:style => "margin-right:6px;"}=t('.male')
+              %input#m{:type=>:radio, :name=>'{{gender}}', :value=>'M'}
+            %label{:style => 'font-weight:normal'}
+              %span{:style => "margin-right:6px; margin-left:12px;"}=t('.female')
+              %input#f{:type=>:radio, :name=>'{{gender}}', :value=>'F'}
+            %label{:style => 'font-weight:normal'}
+              %span{:style => "margin-right:6px; margin-left:12px;"}=t('.other')
+              %input#o{:type=>:radio, :name=>'{{gender}}', :value=>'O'}
+      .row.form-group{'class-has-error' => 'village_error'}
+        .col-md-2
+          %span.required=t('.village')
+        .col-md-6
+          %input.form-control#village{:value => '{{village}}', 'on-keydown'=>"@this.remove_attribute_error('village')".html_safe}
+          %span.help-block.error#village_error= t('.village_error_message')
+      .row.form-group
+        .col-md-2
+          %span= t('.email')
+        .col-md-6
+          %input.form-control#email{:value => '{{email}}'}
+      .row.form-group
+        .col-md-2
+          %span=t('.phone')
+        .col-md-6
+          %input.form-control#phone{:value => '{{phone}}'}
+      .row.form-group{'class-has-error' => 'details_error'}
+        .col-md-2
+          %span.required= t('.details')
+        .col-md-6
+          %textarea.form-control#complaint_details{:value => '{{details}}', 'on-keydown'=>"@this.remove_attribute_error('details')".html_safe}
+          %span.help-block.error#details_error= t('.details_error_message')
+      .row.form-group
+        .col-md-2
+          %span= t('.desired_outcome')
+        .col-md-6
+          %input.form-control#desired_outcome{:value => '{{desired_outcome}}'}
+      .row.form-group
+        .col-md-2
+          %span= t('.complained_to_subject_agency')
+        .col-md-2
+          %form
+            %label{:style => "font-weight:normal;"}
+              =t('yes')
+              %input#complained_to_subject_agency_yes{:type => :radio, :name => "{{complained_to_subject_agency}}", :value => 'true'}
+            %label{:style => "font-weight:normal;"}
+              =t('no')
+              %input#complained_to_subject_agency_no{:type => :radio, :name => "{{complained_to_subject_agency}}", :value => 'false'}
+        .col-md-2= t('.date_received')
+        .col-md-2
+          %input#date_received{:type => :text, :name => "{{date_received}}", "as-single_month_datepicker"=>true}
+      .row.form-group{'class-has-error' => 'new_assignee_id_error'}
+        .col-md-2
+          %label.required=t('.assignee')
+        .col-md-6
+          <assigneeSelector new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
+          %span.help-block.error#new_assignee_id_error= t('.assignee_error_message')
+      .row.form-group{'class-has-error' => 'mandate_id_count_error'}
+        .col-md-2
+          %label.required=t('.mandate')
+        .col-md-10
+          .row
+            <mandatesSelector mandate_ids='{{mandate_ids}}' all_mandates='{{all_mandates}}' />
+          %span.help-block.error#mandate_id_count_error= t('.mandate_ids_error_message')
+      .row.form-group{'class-has-error' => 'complaint_basis_id_count_error'}
+        .col-md-2
+          %label.required=t('.complaint_basis')
+        .col-md-10
+          .row
+            <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' complaint_bases='{{complaint_bases}}' />
+          %span.help-block.error#complaint_basis_id_count_error= t('.complaint_basis_error_message')
+      .row
+        .col-md-2
+          %label=t('.agency')
+        .col-md-10
+          <agenciesSelector agency_ids='{{agency_ids}}' all_agencies_in_sixes='{{all_agencies_in_sixes}}'/>
+      .panel.panel-default#documents
+        .panel-heading= t('.complaint_documents')
+        .panel-body
+          {{> file_selector_template {key : 'complaint'} }}
+          <attachedDocuments parent_type='{{parent_type}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' attached_documents='{{attached_documents}}' key='complaint' named_document_datalist='{{complaint_named_documents_titles}}' />
+      .row
+        .col-sm-3.col-sm-offset-3{:style => "text-align:center;"}
+          .btn.btn-danger.btn-sm#cancel_complaint{"on-click" => "@this.cancel_add_complaint()"}
+            %i.fa.fa-remove.fa-lg{:style => "color:white"}
+            %span{:style => "color:white"}= t("defaults.cancel")
+        .col-sm-3{:style => "text-align:center;"}
+          .btn.btn-success.btn-sm#save_complaint{:style => "color:white;", "on-click" => "@this.save_complaint()"}
+            %i.fa.fa-check.fa-lg{:style => "color:white"}
+            %span= t("defaults.save")
+          .form-group{'class-has-error' => 'has_errors'}
+            %span#complaint_error.help-block.error= t("error_messages.form_error")
+
+%script#mandates_template{:type => 'template/ractive'}
+  {{#mandate_ids}}
+  <mandate id='{{.}}' />
+  {{/mandate_ids}}
+
+%script#mandate_template{:type => 'template/ractive'}
+  .mandate {{name}}
+
+%script#agencies_template{:type => 'template/ractive'}
+  {{#agency_ids}}
+  <agency id='{{.}}' />
+  {{/agency_ids}}
+  {{^agency_ids}}
+  %div{:style => 'padding-left:15px;'}=t('.no_mandates')
+  {{/agency_ids}}
+
+%script#agency_template{:type => 'template/ractive'}
+  %span.agency {{name}}
+
+%script#show_complaint_template{:type => 'template/ractive'}
+  .row.well.well-sm.expandable_well.complaint.editable_container{ :style => "{{#if !include}}display:none{{/if}}", 'as-inpage_edit'=>'id'}
+    .col-md-12{'data-toggle' => :edit}
+      .fade.edit
+        %span.required_before=t('required')
+    .col-md-12
+      .row.basic_info
+        .col-md-2
+          .row
+            .col-md-12
+              %label= t('.reference')
+              %span.case_reference {{ case_reference }}
+        .col-md-7
+          .row{'data-toggle' => :edit}
+            .col-md-3
+              %label= t('.date_received')
+            .col-md-9.date_received
+              .no_edit.in {{formatted_date}}
+              .edit
+                %input#date_received{:type => :text,  "as-single_month_datepicker"=>true, :value => "{{formatted_date}}", :style => "position:relative; z-index:12"}
+          .row
+            .col-md-3
+              %label= t('.current_assignee')
+            .col-md-9
+              %span.current_assignee {{ current_assignee_name }}
+          .row{'data-toggle'=>:edit}
+            .col-md-3
+              %label= t('.status')
+            .col-md-9
+              .fade.no_edit.in#status_changes
+                {{# status_changes}}
+                .status_change
+                  %span.status_humanized {{status_humanized}}
+                  {{#if date || user_name}}
+                  (
+                  {{#if user_name}}
+                  =t('.by')
+                  %span.user_name
+                    {{user_name}}
+                  {{/if}}
+                  {{#if date && user_name}}
+                  ,
+                  {{/if}}
+                  {{#if date}}
+                  =t('.on')
+                  %span.date
+                    {{local(date)}}
+                  {{/if}}
+                  )
+                  {{/if}}
+                {{/ status_changes}}
+              .fade.edit#current_status
+                %form
+                  %span= t('.open')
+                  %input#open{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Open'}
+                  %span= t('.suspended')
+                  %input#suspended{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Suspended'}
+                  %span= t('.closed')
+                  %input#closed{:type=>:radio, :name=>'{{current_status_humanized}}', :value=>'Closed'}
+          .row
+            .col-md-3{'data-toggle' => :edit}
+              .no_edit.in
+                %label= t('.complainant')
+              .edit
+                %label= t('.complainant')
+            .col-md-9{'data-toggle'=>'edit'}
+              .no_edit.in
+                %span.chiefly_title {{ chiefly_title }}
+                %span.firstName {{ firstName }}
+                %span.lastName  {{ lastName }}
+              .edit
+                .row
+                  .col-md-4.form-group
+                    %label{:for => :chiefly_title}=t('.chiefly_title')
+                    %input.form-control#chiefly_title{:value => '{{chiefly_title}}'}
+                  .col-md-4.form-group{'class-has-error' => 'firstName_error'}
+                    %label.required{:for => :firstName}=t('.first_name')
+                    %input.form-control#firstName{:value => '{{firstName}}', 'on-keydown'=>"@this.remove_attribute_error('firstName')".html_safe}
+                    %span.help-block.error#firstName_error= t('.firstName_error_message')
+                  .col-md-4.form-group{'class-has-error' => 'lastName_error'}
+                    %label.required{:for => :lastName}=t('.last_name')
+                    %input.form-control#lastName{:value => '{{lastName}}', 'on-keydown'=>"@this.remove_attribute_error('lastName')".html_safe}
+                    %span.help-block.error#lastName_error= t('.lastName_error_message')
+        .col-md-3.actions
+          .row{:style => "margin-left:0px;"}
+            .col-md-1.col-md-offset-2{'data-toggle'=>:edit}
+              .no_edit.in
+                .alarm_icon.counter{'data-count'=>"{{reminders_count}}", 'on-click' => "@this.show_reminders_panel()", 'data-toggle' => :tooltip, :title => t('.reminders')}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                .note_icon.show_notes.counter{'data-count'=>'{{notes_count}}', 'on-click' => "@this.show_notes_panel()", 'data-toggle' => :tooltip, :title => t('.notes')}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-comments-o.fa-lg.counter{'data-count'=>'{{communications_count}}', 'on-click' => '@this.show_communications_panel()', :style => "position:relative;", 'data-toggle' => :tooltip, :title => t('.communications')}
+              .fade.edit
+            .col-md-1.icon{'data-toggle' => 'edit'}
+              .fade.edit
+              .fade.no_edit.in
+                %i.fa.fa-pencil-square-o#edit_start{:style=> "position:relative; top:1px;", 'data-toggle' => 'tooltip', :title => t('.edit')}
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-sm.fa-trash-o.delete_icon{'on-click'=>'@this.show_confirm_delete_modal()', 'data-toggle' => 'tooltip', :title => t('.delete')}
+              .edit
+            .col-md-1{'data-toggle'=>:edit}
+              .no_edit.in
+                %i.fa.fa-sm.fa-file-word-o.word_document{'on-click'=>'@this.generate_word_doc()', 'data-toggle' => 'tooltip', :title => t('.download')}
+              .edit
+            .col-md-1{'data-toggle'=>:collapse, :href => ".collapse{{id}}", :style => "width:45px;"}
+              %div{'data-toggle'=>:edit}
+                .no_edit.in
+                  {{#if expanded}}
+                  %i#compact{'on-click'=>'@this.compact()', 'data-toggle'=>'tooltip', 'title'=>t('.compact'), :style => "position:relative; top:3px;"}
+                  {{else}}
+                  %i#expand{'on-click'=>'@this.expand()', 'data-toggle'=>'tooltip', 'title'=>t('.expand'), :style => "position:relative; top:3px;"}
+                  {{/if}}
+                .edit
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', 'class-has-error' => 'dob_error'}
+          .row.no_edit.in
+            .col-md-3
+              %label= t('.dob')
+            .col-md-3
+              %span.complainant_dob {{ date_of_birth }}
+            .col-md-2{:style => "text-align:right"}
+              %label= t('.gender')
+            .col-md-4
+              %span.gender {{gender}}
+          .row.edit
+            .col-md-3
+              %label.required= t('.dob')
+              %span dd/mm/yyyy
+            .col-md-2
+              %input.form-control#dob{:value => '{{dob}}', 'on-keydown'=>"@this.remove_attribute_error('dob')".html_safe, :style=>"width:112px;"}
+              %span.help-block.error#dob_error= t('.dob_error_message')
+            .col-md-2{:style => "text-align:right"}
+              %label= t('.gender')
+            .col-md-5
+              %form
+                %label{:style => 'font-weight:normal'}
+                  %span{:style => "margin-right:6px;"}=t('.male')
+                  %input#m{:type=>:radio, :name=>'{{gender}}', :value=>'M'}
+                %label{:style => 'font-weight:normal'}
+                  %span{:style => "margin-right:6px; margin-left:12px;"}=t('.female')
+                  %input#f{:type=>:radio, :name=>'{{gender}}', :value=>'F'}
+                %label{:style => 'font-weight:normal'}
+                  %span{:style => "margin-right:6px; margin-left:12px;"}=t('.other')
+                  %input#o{:type=>:radio, :name=>'{{gender}}', :value=>'O'}
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit'}
+          .row
+            .col-md-3
+              %label= t('.email')
+            .col-md-9
+              .no_edit.in
+                %span.email {{ email }}
+              .edit
+                %input.form-control#email{:value => '{{email}}'}
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>'edit', 'class-has-error' => 'village_error'}
+          .row
+            .col-md-3
+              .no_edit.in
+                %label= t('.village')
+              .edit
+                %label.required= t('.village')
+            .col-md-9
+              .no_edit.in
+                %span.complainant_village {{ village }}
+              .edit
+                %input.form-control#village{:value => '{{village}}', 'on-keydown'=>"@this.remove_attribute_error('village')".html_safe}
+                %span.help-block.error#village_error= t('.village_error_message')
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2{'data-toggle'=>:edit}
+          .row
+            .col-md-3
+              %label= t('.phone')
+            .col-md-9
+              .no_edit.in
+                %span.complainant_phone {{ phone }}
+              .edit
+                %input.form-control#phone{:value => '{{phone}}'}
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2.form-group{'data-toggle'=>:edit, 'class-has-error' => 'details_error'}
+          .row
+            .col-md-3
+              .no_edit.in
+                %label= t('.details')
+              .edit
+                %label.required= t('.details')
+            .col-md-9
+              .no_edit.in
+                %span.complaint_details {{ details }}
+              .edit
+                %input.form-control#complaint_details{:value => '{{details}}', 'on-keydown'=>"@this.remove_attribute_error('details')".html_safe}
+                %span.help-block.error#details_error= t('.details_error_message')
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2{'data-toggle'=>:edit}
+          .row
+            .col-md-3
+              %label= t('.desired_outcome')
+            .col-md-9
+              .no_edit.in
+                %span.desired_outcome {{ desired_outcome }}
+              .edit
+                %input.form-control#desired_outcome{:value => '{{desired_outcome}}'}
+      .row.collapse.expanded_info
+        .col-md-7.col-md-offset-2{'data-toggle'=>:edit}
+          .row
+            .col-md-3
+              %label= t('.complained_to_subject_agency')
+            .col-md-2
+              .no_edit.in
+                %span.complained_to_subject_agency {{#if complained_to_subject_agency }} yes {{else}} no {{/if}}
+              .edit
+                %form
+                  %label{:style => "font-weight:normal;"}
+                    =t('yes')
+                    %input#complained_to_subject_agency_yes{:type => :radio, :name => "{{complained_to_subject_agency}}", :value => 'true'}
+                  %label{:style => "font-weight:normal;"}
+                    =t('no')
+                    %input#complained_to_subject_agency_no{:type => :radio, :name => "{{complained_to_subject_agency}}", :value => 'false'}
+      .row.collapse
+        .col-md-2=t('.assignees_history')
+        .col-md-5{'data-toggle'=>:edit}
+          <assignees assigns='{{assigns}}' />
+          .no_edit.in
+          .edit
+            <assigneeSelector new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
+      .row.collapse
+        .col-md-12.form-group{'data-toggle'=>:edit, 'class-has-error' => 'mandate_id_count_error'}
+          .row
+            .col-md-2
+              .no_edit.in=t('.mandate')
+              .edit.required=t('.mandate')
+            .col-md-10
+              .no_edit.in#mandate {{ mandate_names }}
+              .edit
+                .row
+                  <mandatesSelector mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' all_mandates='{{all_mandates}}' />
+                %span.help-block.error#mandate_id_count_error= t('.mandate_ids_error_message')
+      .row.collapse
+        .col-md-12.form-group{'data-toggle'=>:edit, 'class-has-error' => 'complaint_basis_id_count_error'}
+          .row
+            .col-md-2
+              .no_edit.in=t('.complaint_basis')
+              .edit.required=t('.complaint_basis')
+            .col-md-10
+              .no_edit.in
+                <complaintBases good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' />
+              .edit
+                .row
+                  <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' complaint_bases='{{complaint_bases}}' />
+              %span.help-block.error#complaint_basis_id_count_error= t('.complaint_basis_error_message')
+      .row.collapse{'data-toggle'=>:edit}
+        .col-md-2=t('.agency')
+        .col-md-10
+          .no_edit.in.comma-list#agencies{:style => 'display:flex'}
+            <agencies agency_ids='{{agency_ids}}' />
+          .edit
+            <agenciesSelector agency_ids='{{agency_ids}}' all_agencies_in_sixes='{{all_agencies_in_sixes}}' />
+      .row.collapse{'data-toggle'=>:edit}
+        .col-md-2=t('.documents')
+        .col-md-10#complaint_documents
+          .edit{:style => "padding-left:15px; padding-top:15px;"}
+            {{> file_selector_template {key : 'complaint'} }}
+          .no_edit.in
+          <attachedDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' key='complaint' attached_documents='{{attached_documents}}' />
+      .row.collapse{'data-toggle'=>:edit, :style => "margin-top:30px;"}
+        .col-sm-3.col-sm-offset-3.edit{:style => "text-align:center;"}
+          .btn.btn-danger.btn-sm.edit_cancel#edit_cancel
+            %i.fa.fa-remove.fa-lg{:style => "color:white"}
+            %span{:style => "color:white"}= t("defaults.cancel")
+        .col-sm-3.edit{:style => "text-align:center;"}
+          .btn.btn-success.btn-sm.save_complaint#edit_save{:style => "color:white;"}
+            %i.fa.fa-check.fa-lg{:style => "color:white"}
+            %span= t("defaults.save")
+          .form-group{'class-has-error' => 'has_errors'}
+            %span#complaint_error.help-block.error= t("error_messages.form_error")
+
+%script#complaint_bases_template{:type => 'template/ractive'}
+  #good_governance_complaint_bases.comma-list
+    {{#if good_governance_complaint_basis_ids}}
+    %span.basis_name=t('.good_governance')
+    {{/if}}
+    {{#good_governance_complaint_basis_ids}}
+    <complaintBasis mandate="good_governance" id='{{.}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' />
+    {{/good_governance_complaint_basis_ids}}
+  #human_rights_complaint_bases.comma-list
+    {{#if human_rights_complaint_basis_ids}}
+    %span.basis_name=t('.human_rights')
+    {{/if}}
+    {{#human_rights_complaint_basis_ids}}
+    <complaintBasis mandate="human_rights" id='{{.}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' />
+    {{/human_rights_complaint_basis_ids}}
+  #special_investigations_unit_complaint_bases.comma-list
+    {{#if special_investigations_unit_complaint_basis_ids}}
+    %span.basis_name=t('.special_investigations_unit')
+    {{/if}}
+    {{#special_investigations_unit_complaint_basis_ids}}
+    <complaintBasis mandate="special_investigations_unit" id='{{.}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' />
+    {{/special_investigations_unit_complaint_basis_ids}}
+
+%script#complaint_basis_template{:type => 'template/ractive'}
+  %span.complaint_basis {{name}}
+
+%script#assignee_selector_template{:type => 'template/ractive'}
+  %select.form-control#assignee{:value => '{{new_assignee_id}}', 'on-change'=>"@this.remove_error()"}
+    %option{:selected => true, :disabled => true, :style => "color:#333"}
+      {{#if editing}}
+      =t('.reassign')
+      {{else}}
+      =t('.select_assignee')
+      {{/if}}
+    {{#all_staff}}
+    %option{:value => '{{id}}'} {{ first_last_name }}
+    {{/all_staff}}
+
+%script#assignees_template{:type => 'template/ractive'}
+  #assignees
+    {{#assigns}}
+    <assignee  name='{{name}}' date='{{date}}' />
+    {{/assigns}}
+
+%script#assignee_template{:type => 'template/ractive'}
+  .row.assignee
+    .col-md-6.date {{date}}
+    .col-md-6.name {{name}}

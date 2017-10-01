@@ -24,34 +24,6 @@ import ConfirmDeleteModal from '../../../../../../app/javascript/confirm_delete_
 //= require 'notable'
 //= require 'remindable'
 
-
-const EditInPlace = function(node,id){
-  const ractive = this;
-  const edit = new InpageEdit({
-    object : this,
-    on : node,
-    focus_element : 'input.title',
-    success(response, textStatus, jqXhr){
-      this.options.object.set(response);
-      return this.load();
-    },
-    error() {
-      return console.log("Changes were not saved, for some reason");
-    },
-    start_callback : () => {
-      this.set('new_assignee_id',undefined);
-      return ractive.expand();
-    }
-  });
-  return {
-    teardown : id=> {
-      return edit.off();
-    },
-    update : id=> {}
-    };
-};
-
-
 window.complaints_page_data = () =>
   ({
     complaints : source_complaints_data,
@@ -74,12 +46,12 @@ window.complaints_page_data = () =>
   })
 ;
 
-import complaints_options from '../complaints'
+import complaints_options from '../complaints_page.ractive.pug'
 import filter_criteria_datepicker from '../../../../../../app/assets/javascripts/filter_criteria_datepicker'
 
-window.start_page = () => window.complaints = new Ractive(complaints_options);
+import '../../../../../../app/assets/javascripts/single_month_datepicker.coffee'
 
-Ractive.decorators.inpage_edit = EditInPlace;
+window.start_page = () => window.complaints = new Ractive(complaints_options);
 
 Ractive.prototype.local = gmt_date=> $.datepicker.formatDate("M d, yy", new Date(gmt_date));
 

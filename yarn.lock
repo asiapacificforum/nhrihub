@@ -2690,6 +2690,14 @@ javascript-natural-sort@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/javascript-natural-sort/-/javascript-natural-sort-0.7.1.tgz#f9e2303d4507f6d74355a73664d1440fb5a0ef59"
 
+jquery-ui@^1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.12.1.tgz#bcb4045c8dd0539c134bc1488cdd3e768a7a9e51"
+
+jquery@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
+
 js-base64@^2.1.8, js-base64@^2.1.9:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.3.2.tgz#a79a923666372b580f8e27f51845c6f7e8fbfbaf"
@@ -4348,13 +4356,13 @@ querystringify@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-1.0.0.tgz#6286242112c5b712fa654e526652bf6a13ff05cb"
 
-ractive-bin-loader@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/ractive-bin-loader/-/ractive-bin-loader-1.0.1.tgz#d7a45cbe708ad6ad38805f8a7e6de74e989c07ca"
+ractive-bin-loader@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ractive-bin-loader/-/ractive-bin-loader-1.0.2.tgz#9d48cd81039ae72abf4efffc095f52c6ad8307cb"
 
-ractive@^0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/ractive/-/ractive-0.9.3.tgz#7762fa53b204cf0f48bff68fe9dec9727b2a59f6"
+ractive@^0.9.4:
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/ractive/-/ractive-0.9.4.tgz#f996380a7c9769295555927d96178cb04807b3cd"
 
 rails-erb-loader@^5.2.1:
   version "5.2.1"
