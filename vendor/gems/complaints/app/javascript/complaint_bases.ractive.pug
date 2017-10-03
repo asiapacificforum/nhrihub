@@ -1,30 +1,39 @@
 #good_governance_complaint_bases.comma-list
   | {{#if good_governance_complaint_basis_ids}}
-  span.basis_name good governance
+  span.basis_name
+    | {{ t.good_governance }}
   | {{/if}}
   | {{#good_governance_complaint_basis_ids}}
   <complaintBasis mandate="good_governance" id='{{.}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' />
   | {{/good_governance_complaint_basis_ids}}
 #human_rights_complaint_bases.comma-list
   | {{#if human_rights_complaint_basis_ids}}
-  span.basis_name human rights
+  span.basis_name
+    | {{ t.human_rights }}
   | {{/if}}
   | {{#human_rights_complaint_basis_ids}}
   <complaintBasis mandate="human_rights" id='{{.}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' />
   | {{/human_rights_complaint_basis_ids}}
 #special_investigations_unit_complaint_bases.comma-list
   | {{#if special_investigations_unit_complaint_basis_ids}}
-  span.basis_name special investigations unit
+  span.basis_name
+    | {{ t.special_investigations_unit }}
   | {{/if}}
   | {{#special_investigations_unit_complaint_basis_ids}}
   <complaintBasis mandate="special_investigations_unit" id='{{.}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' />
   | {{/special_investigations_unit_complaint_basis_ids}}
 
 script.
+  import Ractive from 'ractive'
   import ComplaintBasis from './complaint_basis'
+  import I18n from './translations.js'
+
   export default Ractive.extend({
     template : $TEMPLATE,
     components : {
       complaintBasis : ComplaintBasis
-    }
+    },
+    data : function(){ return {
+      t : I18n.t('complaint_bases')
+    }},
   });

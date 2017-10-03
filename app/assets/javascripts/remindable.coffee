@@ -5,3 +5,5 @@
       create_reminder_url : @get('create_reminder_url')
       parent : @
     $('#reminders_modal').modal('show')
+
+export default @Remindable

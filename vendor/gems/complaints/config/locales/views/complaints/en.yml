@@ -1,84 +1,18 @@
 en:
   complaints:
     complaints_templates:
-      no_mandates : 'None designated'
-      compact: 'Compact'
-      compact_all: 'Compact all'
-      expand: 'Expand'
-      expand_all: 'Expand all'
       reference: 'Ref'
-      current_assignee: 'Current assignee'
-      assignee_error_message: "You must designate an assignee"
-      status: 'Status'
-      complainant: 'Complainant'
-      village: 'Village'
-      village_error_message : "You must enter a village"
-      dob: 'Date of birth'
-      dob_error_message: "You must enter the complainant's date of birth with format dd/mm/yyyy"
-      email : "Email"
-      phone: 'Phone'
-      gender : 'Gender'
-      complained_to_subject_agency : 'Complained to subject agency?'
-      details : 'Details'
-      details_error_message : 'You must enter the complaint details'
-      desired_outcome : 'Desired outcome'
-      firstName_error_message : "You must enter a first name"
-      lastName_error_message : "You must enter a last name"
-      mandate: "Area(s)"
-      mandate_ids_error_message: "You must select at least one area"
-      area : "Area"
-      select_area : "Select area"
-      complaint_basis: "Subarea(s)"
-      complaint_basis_error_message : "You must select at least one subarea"
-      agency: "Agency(ies)"
-      assignees_history: "History of assignees"
-      documents: "Documents"
-      case_reference: "Case reference"
-      good_governance: "Good governance"
-      human_rights: "Human rights"
-      special_investigations_unit: "Special Investigations Unit"
-      open: "Open"
-      suspended : "Suspended"
-      closed: "Closed"
-      'on': 'on' # b/c on is a keyword in yaml and the translation borks
-      by: 'by'
-      select_assignee: 'Select assignee'
-      reassign: 'Reassign to...'
-      select_basis: 'Select complaint basis'
-      select_status: 'Select status'
-      select_agency: 'Select agency'
-      assignee: 'Assignee'
-      complaint_documents : 'Complaint documents'
-      date_received : "Date received"
-      first_name : "First name(s)"
-      last_name : "Last name"
-      chiefly_title : "Chiefly title"
-      male : "Male"
-      female : "Female"
-      other : "Other"
-      download : "Download"
-      delete : "Delete"
-      edit : "Edit"
-      communications : "Communications"
-      notes : "Notes"
-      reminders : "Reminders"
       title : "Title"
       filename : "File name"
       no_documents : "no documents"
 
       # filter controls:
-      search: "Search for complaints by:"
-      date_from: "Since date:"
-      date_to: "Before date:"
-      enter_complainant: "All or part of name"
-      enter_village: "All or part of village"
-      clear: "reset"
 
     index:
+      phone: "phone"
       heading: "Complaints"
       add_complaint: "Add complaint"
       face_to_face : "face to face"
-      phone: "phone"
       email: "email"
       letter: "letter"
       sent: "Sent"
@@ -95,7 +29,6 @@ en:
       communication_filetypes: "Filetypes permitted for communications"
       communication_filesize_max: "Maximum permitted communication file size"
       gg_subareas: "Good Governance Subareas"
-      siu_subareas: "Special Investigations Unit Subareas"
       cs_subareas: "Corporate Services Subareas"
       good_governance_subareas: "Good Governance Subareas"
       siu_subareas: "Special Investigations Unit Subareas"
@@ -106,3 +39,98 @@ en:
       empty: "None configured"
       abbrev: "abbreviation"
       full_name: "full name"
+
+  complaint:
+    add_file: "Add file"
+    agency: "Agency(ies)"
+    assignee: 'Assignee'
+    assignee_error_message: "You must designate an assignee"
+    assignees_history: "History of assignees"
+    by: 'by'
+    case_reference: "Case reference"
+    chiefly_title : "Chiefly title"
+    closed: "Closed"
+    communications : "Communications"
+    compact: 'Compact'
+    complainant: 'Complainant'
+    complained_to_subject_agency : 'Complained to subject agency?'
+    complaint_basis: "Subarea(s)"
+    complaint_basis_error_message : "You must select at least one subarea"
+    complaint_documents : 'Complaint documents'
+    current_assignee: 'Current assignee'
+    date_received : "Date received"
+    delete : "Delete"
+    desired_outcome : 'Desired outcome'
+    details : 'Details'
+    details_error_message : 'You must enter the complaint details'
+    dob: 'Date of birth'
+    dob_error_message: "You must enter the complainant's date of birth with format dd/mm/yyyy"
+    documents: "Documents"
+    download : "Download"
+    edit : "Edit"
+    email : "Email"
+    expand: 'Expand'
+    female : "Female"
+    firstName_error_message : "You must enter a first name"
+    first_name : "First name(s)"
+    gender : 'Gender'
+    lastName : "Last name"
+    lastName_error_message : "You must enter a last name"
+    male : "Male"
+    mandate: "Area(s)"
+    mandate_ids_error_message: "You must select at least one area"
+    no : "No"
+    notes : "Notes"
+    'on': 'on' # b/c on is a keyword in yaml and the translation borks
+    open: "Open"
+    other : "Other"
+    phone: 'Phone'
+    reminders : "Reminders"
+    required : "Required"
+    status: 'Status'
+    suspended : "Suspended"
+    village: 'Village'
+    yes : "Yes"
+    village_error_message : "You must enter a village"
+
+  filter_controls:
+    agency: "Agency(ies)"
+    area : "Area"
+    assignee: 'Assignee'
+    case_reference: "Case reference"
+    clear: "reset"
+    compact_all: 'Compact all'
+    complainant: 'Complainant'
+    complaint_basis: "Subarea(s)"
+    date_from: "Since date:"
+    date_to: "Before date:"
+    enter_complainant: "All or part of name"
+    enter_village: "All or part of village"
+    expand_all: 'Expand all'
+    good_governance: "Good governance"
+    human_rights: "Human rights"
+    phone: "phone"
+    search: "Search for complaints by:"
+    select_agency: 'Select agency'
+    select_area : "Select area"
+    select_assignee: 'Select assignee'
+    select_basis: 'Select complaint basis'
+    select_status: 'Select status'
+    special_investigations_unit: "Special Investigations Unit"
+    status: 'Status'
+    village: 'Village'
+
+  agencies:
+    no_mandates : 'None designated'
+
+  assignee_selector:
+    reassign: 'Reassign to...'
+    select_assignee: 'Select assignee'
+
+  complaint_bases:
+    good_governance: "Good governance"
+    human_rights: "Human rights"
+    special_investigations_unit: "Special Investigations Unit"
+
+  documents:
+    documents: "Documents"

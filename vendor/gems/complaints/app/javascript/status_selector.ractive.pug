@@ -1,8 +1,9 @@
-script#filter_select_template(type='text/ractive', src='./filter_select_template.pug').
+script#filter_select_template(type='text/ractive', src='./filter_select_template.html').
 
 | {{>filter_select_template}}
 
 script.
+  import Ractive from 'ractive'
   import Toggle from './toggle'
   import RactiveLocalMethods from '../../../../../app/assets/javascripts/ractive_local_methods'
 

@@ -10,4 +10,9 @@ environment.loaders.set('ractive_pug_component', {
   use: ['ractive-bin-loader', 'pug-html-loader']
 })
 
+environment.loaders.set('locales', {
+ test: /\.ya?ml$/,
+ loaders: ['json-loader', 'yaml-loader']
+})
+
 module.exports = environment

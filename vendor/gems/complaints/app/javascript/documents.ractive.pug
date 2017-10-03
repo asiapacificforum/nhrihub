@@ -5,12 +5,16 @@ script#documents_modal_template(type='template/ractive')
         .modal-header
           button.close('type'="button", 'data-dismiss'='modal')
             span &times
-          h4.modal-title#myModalLabel Docs
+          h4.modal-title#myModalLabel
+            | {{ t.documents }}
         .modal-body
           <attachedDocuments parent_type='{{parent_type}}' parent='{{parent}}' attached_documents='{{attached_documents}}' key='communication_document'>
         .modal-footer
 
 script.
+  import Ractive from 'ractive'
+  import I18n from './translations.js'
+
   export default new Ractive({
     el : '#documents',
     template : '#documents_modal_template',
@@ -20,4 +24,7 @@ script.
     showModal() {
       return $(this.find('#documents_modal')).modal('show');
     }
+    data : function(){ return {
+      t : I18n.t('documents')
+    }},
   });

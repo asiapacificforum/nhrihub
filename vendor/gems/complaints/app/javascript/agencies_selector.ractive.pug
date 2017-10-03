@@ -1,18 +1,19 @@
 .row
-  .col-md-12#agencies_select(:style = "padding-top:0;")
+  .col-md-12#agencies_select(style = "padding-top:0;")
     | {{#all_agencies_in_sixes:i}}
     .row.agency
       | {{#.}}
       .col-md-1
         label(:for = 'agency_{{.id}}')
-          span('data-toggle'="tooltip", 'data-placement'="bottom", :title='{{.full_name}}')
+          span('data-toggle'="tooltip", 'data-placement'="bottom", title='{{.full_name}}')
             | {{.name}}
       .col-md-1
-        input(:id='agency_{{.id}}', :type = 'checkbox', :name = '{{../../../agency_ids}}', :value = '{{.id}}')
+        input(id='agency_{{.id}}', type = 'checkbox', name = '{{../../../agency_ids}}', value = '{{.id}}')
       | {{/}}
     | {{/all_agencies_in_sixes}}
 
 
 script.
+  import Ractive from 'ractive'
   export default Ractive.extend({
     template : $TEMPLATE});

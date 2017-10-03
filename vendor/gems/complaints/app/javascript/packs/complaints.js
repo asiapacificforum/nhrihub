@@ -8,7 +8,6 @@
 // layout file, like app/views/layouts/application.html.erb
 
 import Ractive from 'ractive'
-import ConfirmDeleteModal from '../../../../../../app/javascript/confirm_delete_modal'
 
 //= require 'in_page_edit'
 //= require 'ractive_validator'
@@ -49,7 +48,6 @@ window.complaints_page_data = () =>
 import complaints_options from '../complaints_page.ractive.pug'
 import filter_criteria_datepicker from '../../../../../../app/assets/javascripts/filter_criteria_datepicker'
 
-import '../../../../../../app/assets/javascripts/single_month_datepicker.coffee'
 
 window.start_page = () => window.complaints = new Ractive(complaints_options);
 
@@ -68,5 +66,3 @@ window.onpopstate = function(event){
     return window.complaints.findComponent('filterControls').set_filter_from_query_string();
   }
 };
-
-console.log('Hello World from complaints')

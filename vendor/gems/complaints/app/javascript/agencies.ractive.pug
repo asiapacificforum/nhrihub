@@ -2,15 +2,21 @@
 <agency id='{{.}}' />
 | {{/agency_ids}}
 | {{^agency_ids}}
-div(style = 'padding-left:15px;') no mandates
+div(style = 'padding-left:15px;')
+  | {{ t.no_mandates }}
 | {{/agency_ids}}
 
 script.
+  import Ractive from 'ractive'
   import Agency from './agency'
+  import I18n from './translations.js'
 
   export default Ractive.extend({
     template : $TEMPLATE,
     components : {
       agency : Agency
-    }
+    },
+    data : function(){ return {
+      t : I18n.t('agencies')
+    }},
   });

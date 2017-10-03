@@ -2,7 +2,8 @@
   .col-md-2
     span.btn.btn-xs.btn-success.fileinput-button
       i.fa.fa-plus.fa-lg( style = "color:white")
-      span 't=add_document'
+      span
+        | {{ t.add_document }}
     input.hidden_fileinput(id = "{{key}}_fileinput", multiple = "multiple", name = "{{key}}_file", type = "file", "as-ractive_fileupload" = true)
   .col-md-10.fileupload_progress
     <progressBar />

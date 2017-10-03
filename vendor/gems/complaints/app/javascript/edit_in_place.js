@@ -1,3 +1,4 @@
+import Ractive from 'ractive'
 import InpageEdit from '../../../../../app/assets/javascripts/in_page_edit.coffee'
 
 const EditInPlace = function(node,id){

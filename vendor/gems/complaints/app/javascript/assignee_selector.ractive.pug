@@ -1,9 +1,9 @@
 select.form-control#assignee(value = '{{new_assignee_id}}', 'on-change'="@this.remove_error()")
   option(selected = true, disabled = true, style = "color:#333")
     | {{#if editing}}
-    reassign
+    | {{ t.reassign }}
     | {{else}}
-    | select assignee
+    | {{ t.select_assignee }}
     | {{/if}}
   | {{#all_staff}}
   option(value = '{{id}}')
@@ -11,8 +11,14 @@ select.form-control#assignee(value = '{{new_assignee_id}}', 'on-change'="@this.r
   | {{/all_staff}}
 
 script.
+  import Ractive from 'ractive'
+  import I18n from './translations.js'
+
   export default Ractive.extend({
     template : $TEMPLATE,
+    data : function(){ return {
+      t : I18n.t('assignee_selector')
+    }},
     remove_error() {
       return this.parent.remove_attribute_error('new_assignee_id');
     }
