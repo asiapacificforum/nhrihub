@@ -1,0 +1,316 @@
+|  {{#if !persisted }}
+|  {{> new_communication_template }}
+|  {{else}}
+|  {{> show_communication_template }}
+|  {{/if}}
+
+script#file_selector_template(type='text/ractive' src='../../../../../app/views/shared/file_selector/_file_selector.html')
+
+script#new_communication_template(type = 'text/ractive')
+  .form#new_communication(style = "margin-top:28px")
+    .row
+      .col-md-12
+        span.required_before
+          | {{ t.required }}
+    .row.form-group#date
+      label.control-label.col-sm-2
+        | {{ t.date }}
+      .col-sm-4
+        input#new_communication_date(type = 'text', "as-single_month_datepicker"=true, style = "width:150px", value = "{{formatted_date}}")
+    .row.form-group#sent_or_received
+      | {{> select_direction }}
+    .row.form-group#mode('class-has-error' = 'mode_error')
+      label.control-label.col-sm-2.required
+        | {{ t.method }}
+      .col-sm-8
+        label.radio-inline
+          input#email_mode(type='radio', name='{{mode}}', value='email', 'on-change'="@this.remove_errors('mode')")
+          | {{ t.email }}
+        label.radio-inline
+          input#phone_mode(type='radio', name='{{mode}}', value='phone', 'on-change'="@this.remove_errors('mode')")
+          | {{ t.phone }}
+        label.radio-inline
+          input#letter_mode(type='radio', name='{{mode}}', value='letter', 'on-change'="@this.remove_errors('mode')")
+          | {{ t.letter }}
+        label.radio-inline
+          input#face_to_face_mode(type='radio', name='{{mode}}', value='face to face', 'on-change'="@this.remove_errors('mode')")
+          | {{ t.face_to_face }}
+        span.help-block
+          | {{ t.method_error_message }}
+    .row#communicants
+      <communicants communicants='{{communicants}}' received_direction='{{received_direction}}' has_email='{{has_email}}' has_phone='{{has_phone}}' has_letter='{{has_letter}}' />
+    .row.form-group#note
+      label.control-label.col-sm-2
+        | {{ t.note }}
+      .col-sm-8
+        textarea.form-control#note(:rows = 3, value='{{note}}')
+    .panel.panel-default#communication_documents
+      .panel-heading
+        | {{ t.communication_documents }}
+      .panel-body
+        | {{> file_selector_template {key : 'communication_document'} }}
+        <attachedDocuments parent_type='{{parent_type}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' attached_documents='{{attached_documents}}' key='communication_document' />
+    .row
+      .col-sm-3.col-sm-offset-3(style = "text-align:center;")
+        .btn.btn-danger.btn-xs#cancel_communication("on-click" = "@this.cancel_communication()")
+          i.fa.fa-remove.fa-lg(style = "color:white")
+          span(style = "color:white")
+          | {{ t.cancel }}
+      .col-sm-3(style = "text-align:center;")
+        .btn.btn-success.btn-xs#save_communication(style = "color:white;", "on-click" = "@this.save_communication()")
+          i.fa.fa-check.fa-lg(style = "color:white")
+          span
+          | {{ t.save }}
+        span.help-block.has-error#save_error
+          | {{ save_error_message }}
+
+script#show_communication_template(type = 'text/ractive')
+  .communication.row
+    .col-md-12
+      .row
+        .col-md-2.date
+          | {{formatted_date}}
+        .col-md-2.by
+          | {{ user.first_last_name }}
+        .col-md-1(style='display:flex')
+          .mode
+            <modeIcon mode='{{mode}}' />
+          .direction(style = "padding-left:15px;")
+            <directionIcon direction='{{direction}}' />
+        .col-md-3('data-toggle'='edit')
+          <communicants communicants='{{communicants}}' />
+        .col-md-1.note('data-toggle'='edit')
+          .note_icon('data-toggle' = 'tooltip', :title = '{{ t.icon.note}} ', 'on-click'='@this.show_note()')
+        .col-md-1.documents
+          .fa.fa-file-text-o.counter#show_document_modal('on-click'="@this.show_document_modal()", 'data-count' = '{{document_count}}', 'data-toggle' = 'tooltip', :title = '{{ t.icon.documents }}', style = "position:relative;")
+        .col-md-1.delete
+          i.fa.fa-sm.fa-trash-o.delete_icon('on-click'='@this.show_confirm_delete_modal()', 'data-toggle' = 'tooltip', :title = '{{ t.icon.delete }}')
+
+script#select_direction(type = 'text/ractive')
+  label.control-label.col-sm-2
+    | {{ t.sent_or_received }}
+  .col-sm-2
+    label.radio-inline
+      input#sent( 'disabled'="{{face_to_face}}", type="radio", name="{{direction}}", value="sent", "on-change"="@this.validate_direction()".html_safe )
+      | {{ t.sent }}
+    label.radio-inline
+      input#received( 'disabled'="{{face_to_face}}", type="radio", name="{{direction}}", value="received", "on-change"="@this.validate_direction()".html_safe )
+      | {{ t.received }}
+  .col-sm-6
+    span.help-block('class-has-error'= 'direction_error', style = 'margin:0px')
+      | {{ t.sent_or_received_error_message }}
+    span.help-block#multiple_sender_error('class-has-error' = 'multiple_sender_error', style = 'margin:0px')
+      | {{ t.multiple_sender_error_message }}
+
+script(type='text/javascript').
+  import CommunicationDocuments from './communications_documents.ractive.pug'
+  import ModeIcon from './mode_icon.ractive.pug'
+  import DirectionIcon from './direction_icon.ractive.pug'
+  //import ProgressBar
+  import Communicants from './communicants.ractive.pug'
+  import Validator from '../../../../../app/javascript/validator'
+  import Note from '../../../../../app/javascript/single_note_modal.js'
+  import ConfirmDeleteModal from '../../../../../app/javascript/confirm_delete_modal'
+  import $ from 'jquery'
+  import 'jquery-ui/ui/widgets/datepicker'
+  import SingleMonthDatepicker from '../../../../../app/assets/javascripts/single_month_datepicker.coffee'
+  import '../../../../../app/assets/javascripts/file_input_decorator.coffee'
+  import I18n from './translations.js'
+  import documents from './documents.ractive.pug'
+  import RactiveLocalMethods from '../../../../../app/assets/javascripts/ractive_local_methods.coffee'
+  Ractive.decorators.single_month_datepicker = SingleMonthDatepicker
+
+
+  var Persistence = {
+    save_communication() {
+      const url = Routes.complaint_communications_path(current_locale, this.get('complaint_id'));
+      const data = this.formData();
+      if (this.validate()) {
+        $.ajax({
+          // thanks to http://stackoverflow.com/a/22987941/451893
+          //xhr: @start_progress_bar.bind(@)
+          method : 'post',
+          data,
+          url,
+          success : this.create_communication,
+          error : this.create_communication_error,
+          context : this,
+          processData : false,
+          contentType : false
+        });
+      }
+    }, // jQuery correctly sets the contentType and boundary values
+    validate() {
+      return this.validator.validate();
+    },
+    cancel_communication() {
+      this.parent.pop('communications');
+    },
+    start_progress_bar() {
+      this.findComponent('progressBar').start();
+    },
+    formData() {
+      return this.asFormData(this.get('persistent_attributes'));
+    }, // in ractive_local_methods, returns a FormData instance
+    update_persist(success, error, context) { // called by EditInPlace
+      if (this.validate()) {
+        const data = this.formData();
+        return $.ajax({
+          // thanks to http://stackoverflow.com/a/22987941/451893
+          //xhr: @start_progress_bar.bind(@)
+          method : 'put',
+          data,
+          url : this.get('url'),
+          success,
+          context,
+          processData : false,
+          contentType : false
+        }); // jQuery correctly sets the contentType and boundary values
+      }
+    },
+    delete_callback(response, statusText, jqxhr){
+      this.parent.set('communications',response);
+      this.get('parent').set('communications',response);
+    }, // @get('parent') is the complaint instance
+    create_communication(response, statusText, jqxhr){
+      this.parent.set('communications',response); // the communications collection
+      this.get('parent').set('communications',response);
+    }, // the complaint communications collection
+    create_communication_error(data){
+      this.set('save_error_message', this.translate('save_error', {status : data.status, message: data.statusText}));
+    }
+  };
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    oninit() {
+      this.set({
+        validation_criteria : {
+          mode: ['match',['email','phone','letter','face to face']],
+          direction: () => {
+            // return true if attribute is valid, validator handles the error attribute
+            if (!this.get('mode')) { return true; }
+            if (this.get('mode') === 'face to face') { return true; }
+            if (/sent|received/.test(this.get('direction'))) { return true; }
+            return false;
+          }, // mode is phone,email,or letter and there's no direction supplied
+          multiple_sender: () => {
+            return !((this.get('direction') === 'received') && ( this.get('communicants').length > 1));
+          },
+          communicant: () => {
+            const valid_communicants = _(this.findAllComponents('communicant')).map(communicant=> communicant.validate());
+            // validate() returns false for invalid communicant
+            return _(valid_communicants).all(valid=> valid);
+          }
+        }
+      });
+      return this.validator = new Validator(this);
+    },
+    components : {
+      attachedDocuments : CommunicationDocuments,
+      modeIcon : ModeIcon,
+      //directionIcon : DirectionIcon,
+      //progressBar : ProgressBar,
+      communicants : Communicants
+    },
+    computed : {
+      persisted() {
+        return !isNaN(parseInt(this.get('id')));
+      },
+      formatted_date : {
+        get() {
+          // date format example: "2017-07-20T07:00:00.000Z"
+          return $.datepicker.formatDate("M d, yy", new Date(this.get('date')) );
+        },
+        set(val){
+          const date = $.datepicker.parseDate( "M d, yy", val);
+          return this.set('date', date.toUTCString());
+        }
+      },
+      persistent_attributes() {
+        return ['complaint_id', 'direction', 'mode', 'date', 'note', 'attached_documents_attributes', 'communicants_attributes'];
+      },
+      url() {
+        return Routes.complaint_communication_path(current_locale, this.get('complaint_id'), this.get('id'));
+      },
+      document_count() {
+        return this.get('attached_documents').length;
+      },
+      face_to_face() {
+        return this.get('mode') === 'face to face';
+      },
+      has_email() {
+        return this.get('mode') === 'email';
+      },
+      has_phone() {
+        return this.get('mode') === 'phone';
+      },
+      has_letter() {
+        return this.get('mode') === 'letter';
+      },
+      received_direction() {
+        return this.get('direction') === 'received';
+      },
+      delete_confirmation_message() {
+        return i18n.delete_communication_confirmation_message;
+      }
+    },
+    persisted_attributes() {
+      return { communication : _.chain(this.get()).pick(this.get('persistent_attributes')).value() };
+    },
+    data() {
+      return {
+        serialization_key : 'communication',
+        t : I18n.t('communications.communication'),
+        I18n : I18n
+      };
+    },
+    translate(key,params){
+      return this.get('I18n').t(`communications.communication.${key}`,params)
+    },
+    remove_errors(field){
+      if (_.isUndefined(field)) { // after edit, failed save, and cancel, remove all errors
+        const error_attrs = _(_(this.get()).keys()).select(k=> k.match(/error/));
+        return _(error_attrs).each(a=> this.set(a,false));
+      } else { // user types into input or changes select
+        return this.set(field+"_error",false);
+      }
+    },
+    disable_direction() {
+      this.set('direction',null);
+      return this.remove_errors('mode');
+    },
+    add_file(file){
+      const attached_document = {
+        communication_id : this.get('id'),
+        file,
+        file_id : '',
+        file_id : null,
+        filename : file.name,
+        filesize : file.size,
+        id : null,
+        lastModifiedDate : file.lastModifiedDate,
+        maximum_filesize : this.get('maximum_filesize'),
+        original_type : file.type,
+        permitted_filetypes : this.get('permitted_filetypes'),
+        serialization_key : 'communication[communication_documents_attributes][]',
+        title: ''
+      };
+      // aargh hack due to ractive problem with @unshift here
+      // @unshift('attached_documents', attached_document) doesn't work but it should
+      const attached_documents = this.get('attached_documents');
+      attached_documents.unshift(attached_document);
+      return this.set('attached_documents', attached_documents);
+    },
+    show_document_modal() {
+      documents.set({attached_documents : this.get('attached_documents'), parent_type : 'communication'});
+      return documents.showModal();
+    },
+    validate_direction() {
+      this.validator.validate_attribute('direction');
+      return this.validator.validate_attribute('multiple_sender');
+    }})
+    .extend(RactiveLocalMethods)
+    .extend(ConfirmDeleteModal)
+    .extend(Persistence)
+    .extend(Note)

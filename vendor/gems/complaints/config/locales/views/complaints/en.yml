@@ -47,7 +47,7 @@ en:
     assignee_error_message: "You must designate an assignee"
     assignees_history: "History of assignees"
     by: 'by'
-    case_reference: "Case reference"
+    case_reference: "Ref"
     chiefly_title : "Chiefly title"
     closed: "Closed"
     communications : "Communications"

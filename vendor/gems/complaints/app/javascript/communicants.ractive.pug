@@ -1,0 +1,25 @@
+.col-md-12
+  | {{#communicants}}
+  <communicant id='{{id}}' name='{{name}}' received_direction='{{received_direction}}' has_email='{{has_email}}' has_phone='{{has_phone}}' has_letter='{{has_letter}}' />
+  | {{/communicants}}
+
+script.
+  import Communicant from './communicant.ractive.pug'
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    components : {
+      communicant : Communicant
+    },
+    add_communicant() {
+      const blank_inputs = _(this.findAllComponents('communicant')).any(communicant => {
+        return _.isEmpty(communicant.get('name').trim());
+      });
+      if (!blank_inputs) { return this.push('communicants',{name : ""}); }
+    },
+    remove_communicant(index){
+      this.splice('communicants',index,1);
+      return this.update('communicants');
+    }
+  });
+

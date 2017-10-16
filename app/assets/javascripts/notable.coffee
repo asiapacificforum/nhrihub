@@ -1,3 +1,7 @@
+import notes from '../../javascript/notes.ractive.pug'
+
+window.notes = notes
+
 @Notable =
   show_notes_panel : ->
     notes.set
@@ -5,3 +9,5 @@
       create_note_url : @get('create_note_url')
       parent : @
     $('#notes_modal').modal('show')
+
+export default @Notable

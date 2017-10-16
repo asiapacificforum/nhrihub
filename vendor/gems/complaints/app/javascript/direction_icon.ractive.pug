@@ -1,0 +1,12 @@
+script.
+  export default Ractive.extend({
+    template() {
+      switch (this.get('direction')) {
+        case "sent":     return "<div class='inactive-icon fa fa-share' data-toggle='tooltip' title='{{i18n.tooltip_messages.sent}}' />";
+        case "received": return "<div class='inactive-icon fa fa-reply' data-toggle='tooltip' title='{{i18n.tooltip_messages.received}}' />";
+        default: return "";
+      }
+    }
+  });
+
+

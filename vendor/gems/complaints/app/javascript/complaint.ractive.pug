@@ -197,7 +197,7 @@ script#show_complaint_template(type = 'text/ractive')
               .no_edit.in
                 | {{formatted_date}}
               .edit
-                input#date_received(type = 'text',  "as-single_month_datepicker"=true, value = "{{formatted_date}}", style = "position:relative; z-index:12")
+                input#date_received(type = 'text', as-single_month_datepicker=true, value = "{{formatted_date}}", style = "position:relative; z-index:12")
           .row
             .col-md-3
               label
@@ -218,17 +218,17 @@ script#show_complaint_template(type = 'text/ractive')
                   | {{#if date || user_name}}
                   | (
                   | {{#if user_name}}
-                  | {{ t.by }}
+                  | {{ t.by }} 
                   span.user_name
                     | {{user_name}}
                   | {{/if}}
                   | {{#if date && user_name}}
-                  | ,
+                  | ,&nbsp;
                   | {{/if}}
                   | {{#if date}}
-                  | {{ t.on }}
+                  | {{ t.on }} 
                   span.date
-                    | {{local(date)}}
+                    | {{ local(date) }}
                   | {{/if}}
                   | )
                   | {{/if}}
@@ -255,9 +255,9 @@ script#show_complaint_template(type = 'text/ractive')
             .col-md-9('data-toggle'='edit')
               .no_edit.in
                 span.chiefly_title
-                  | {{ chiefly_title }}
+                  | {{ chiefly_title }}&nbsp;
                 span.firstName
-                  | {{ firstName }}
+                  | {{ firstName }}&nbsp;
                 span.lastName
                   | {{ lastName }}
               .edit
@@ -518,7 +518,7 @@ script#show_complaint_template(type = 'text/ractive')
 | {{> new_complaint_template}}
 | {{/if}}
 
-script.
+script(type='text/javascript').
   import Ractive from 'ractive'
   import Mandates from './mandates'
   import MandatesSelector from './mandates_selector'
@@ -536,6 +536,10 @@ script.
   import './edit_in_place.js'
   import I18n from './translations.js'
   import Remindable from '../../../../../app/assets/javascripts/remindable.coffee'
+  import Notable from '../../../../../app/assets/javascripts/notable.coffee'
+  import Communications from './communications.ractive.pug'
+  import SingleMonthDatepicker from  '../../../../../app/assets/javascripts/single_month_datepicker.coffee'
+  Ractive.decorators.single_month_datepicker = SingleMonthDatepicker
 
   const FilterMatch = {
     include() {
@@ -847,7 +851,8 @@ script.
         //if _(@validator.attributes).includes(attr)
           //@validate_attribute(attr)
     data : function(){ return {
-      t : I18n.t('complaint')
+      t : I18n.t('complaint'),
+      local(){return this.get('date')}
     }},
     components : {
       mandates : Mandates,
@@ -913,5 +918,5 @@ script.
   .extend(ConfirmDeleteModal)
   .extend(FilterMatch)
   .extend(Remindable)
-  .extend(this.Notable)
-  .extend(this.Communications); // Remindable Notable and Communications are found in the _reminder.haml _note.haml and _communication.haml files
+  .extend(Notable)
+  .extend(Communications);

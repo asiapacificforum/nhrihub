@@ -5,7 +5,6 @@
 // 4. ensure that the object has a url attribute as a rack endpoint for delete
 // 5. ensure that the callback action for the delete method is called "delete_callback"
 // 6. ensure that the object does not have its own delete method
-#confirm_delete_modal_container
 
 .modal.fade#confirm-delete
   .modal-dialog.modal-sm
@@ -16,54 +15,51 @@
         a.btn.btn-sm.btn-danger.btn-ok#confirm('on-click' = 'delete_item()') delete`
 
 
-
 script.
-  //import Ractive from 'ractive'
- //$(function() {
-    //return window.confirm_delete_modal = new Ractive({
-      //el : '#confirm_delete_modal_container',
-      //template : '#confirm_delete_modal_template',
-      //data : {
-        //deletable : null,
-        //url : null,
-        //message : null,
-        //callback : null,
-        //local_data : null
-      //},
-      //show() {
-        //$(this.el).find('.modal#confirm-delete').modal('show');
-        //return $(this.el).find('.modal#confirm-delete').find('.modal-body').html(this.get('message'));
-      //},
-      //hide() {
-        //return $(this.el).find('.modal#confirm-delete').modal('hide');
-      //},
-      //success_callback(response, statusText, jqxhr){
-        //this.hide();
-        //this.get('unbound.callback').apply(this.get('deletable'),[response, statusText, jqxhr]);
-      //},
-      //error_callback() {
-        //return console.log("app/assets/javascripts/confirm_delete_modal error callback, shouldn't see this!");
-      //},
-      //delete_item() {
-        //let data;
-        //if (_.isEmpty(this.get('local_data'))) {
-          //data = [{name:'_method', value: 'delete'}];
-        //} else {
-          ////TODO this should be generalized
-          //data = [{name:'_method', value: 'delete'},{name:'monitor[type]', value:this.get('local_data').type}];
-        //}
-        //return $.ajax({
-          //url : this.get('url'),
-          //data,
-          //method : 'post',
-          //dataType : 'json',
-          //context : this,
-          //success : this.success_callback,
-          //error : this.error_callback
-        //});
-      //}
-    //});
-  //});
+  import Ractive from 'ractive'
+  var confirm_delete_modal = new Ractive({
+    el : '#confirm_delete_modal_container',
+    template : $TEMPLATE,
+    data : {
+      deletable : null,
+      url : null,
+      message : null,
+      callback : null,
+      local_data : null
+    },
+    show() {
+      $(this.el).find('.modal#confirm-delete').modal('show');
+      return $(this.el).find('.modal#confirm-delete').find('.modal-body').html(this.get('message'));
+    },
+    hide() {
+      return $(this.el).find('.modal#confirm-delete').modal('hide');
+    },
+    success_callback(response, statusText, jqxhr){
+      this.hide();
+      this.get('unbound.callback').apply(this.get('deletable'),[response, statusText, jqxhr]);
+    },
+    error_callback() {
+      return console.log("app/assets/javascripts/confirm_delete_modal error callback, shouldn't see this!");
+    },
+    delete_item() {
+      let data;
+      if (_.isEmpty(this.get('local_data'))) {
+        data = [{name:'_method', value: 'delete'}];
+      } else {
+        //TODO this should be generalized
+        data = [{name:'_method', value: 'delete'},{name:'monitor[type]', value:this.get('local_data').type}];
+      }
+      return $.ajax({
+        url : this.get('url'),
+        data,
+        method : 'post',
+        dataType : 'json',
+        context : this,
+        success : this.success_callback,
+        error : this.error_callback
+      });
+    }
+  });
 
   export default {
     show_confirm_delete_modal(local_data){

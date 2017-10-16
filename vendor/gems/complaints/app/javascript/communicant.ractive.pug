@@ -1,0 +1,101 @@
+| {{#if !persisted }}
+| {{> new_communicant_template }}
+| {{else}}
+| {{> show_communicant_template }}
+| {{/if}}
+
+script#new_communicant_template(type = 'text/ractive')
+  .row.new_communicant
+    .col-sm-12
+      .row
+        .col-sm-2
+          label
+            span('class-hidden'!='@index>0', 'class-required'!='@index==0')
+              | {{ t.communicant }}
+        .col-sm-4.form-group('class-has-error' = "name_error")
+          input.communicant(type = 'text', style = "width:100%", value="{{name}}", "on-keydown"="@this.remove_errors('name')")
+          span.help-block.name_error
+            | {{ t.name_error_message }}
+        .col-sm-1
+          button#add_communicant_button.btn.btn-xs.btn-success('class-disabled'="received_direction", 'class-hidden'!="@index>0", 'data-toggle'='tooltip', title="t.add_communicant")
+            i.fa.fa-plus.fa-lg#add_communicant(style='color:white;', 'on-click'='@this.add_communicant()')
+          i.fa.fa-remove.fa-lg.remove_communicant('class-hidden'!='@index==0', 'on-click'="@this.remove_communicant(@index)", 'data-toggle'='tooltip', title="t.remove_communicant")
+      | {{#has_email}}
+      .row.form-group('class-has-error' = 'email_error')
+        .col-sm-2.required
+          | {{ t.email }}
+        .col-sm-4
+          input#email_address(type = 'text', style = "width:100%", value = "{{email}}", 'on-keydown'="@this.remove_errors('email')")
+        span.help-block.email_error
+          | {{ t.email_error_message }}
+      | {{/has_email}}
+      | {{#has_phone}}
+      .row.form-group('class-has-error'='phone_error')
+        .col-sm-2.required
+          | {{ t.phone }}
+        .col-sm-4
+          input#phone(type = 'text', style = "width:100%", value = "{{phone}}", 'on-keydown'="@this.remove_errors('phone')")
+        span.help-block.phone_error
+          | {{ t.phone_error_message }}
+      | {{/has_phone}}
+      | {{#has_letter}}
+      .row.form-group('class-has-error'='address_error')
+        .col-sm-2.required
+          | {{ t.address }}
+        .col-sm-4
+          input#address(type = 'text', style = "width:100%", value = "{{address}}", 'on-keydown'="@this.remove_errors('address')")
+        span.help-block.address_error
+          | {{ t.address_error_message }}
+      | {{/has_letter}}
+
+script#show_communicant_template(type = 'text/ractive')
+  .with
+    | {{name}}
+
+
+script.
+  import Validator from '../../../../../app/javascript/validator'
+  import I18n from './translations.js'
+  import RactiveLocalMethods from '../../../../../app/assets/javascripts/ractive_local_methods.coffee'
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    oninit() {
+      this.set({
+        validation_criteria : {
+          name : 'notBlank',
+          email : ['notBlank', {if : () => this.get('has_email')}],
+          phone : ['notBlank', {if : () => this.get('has_phone')}],
+          address : ['notBlank', {if : () => this.get('has_letter')}]
+        }});
+      return this.validator = new Validator(this);
+    },
+    data() {
+      return {
+        t : I18n.t('communications.communication'),
+      };
+    },
+    computed : {
+      persisted() {
+        return !isNaN(parseInt(this.get('id')));
+      },
+      persistent_attributes() {
+        return ['name'];
+      },
+      serialization_key() {
+        return 'communication[communicants_attributes][]';
+      }
+    },
+    add_communicant() {
+      return this.parent.add_communicant();
+    },
+    remove_communicant(index){
+      return this.parent.remove_communicant(index);
+    },
+    validate() {
+      return this.validator.validate();
+    },
+    remove_errors(attribute){
+      return this.set(attribute+"_error",false);
+    }
+  }).extend(RactiveLocalMethods);

@@ -1,0 +1,21 @@
+| {{#if has_email }}
+.inactive-icon.fa.fa-at( data-toggle='tooltip' title='{{i18n.tooltip_messages.email}}')
+| {{/if}}
+| {{#if has_phone }}
+.class.inactive-icon.fa.fa-phone( data-toggle='tooltip' title='{{i18n.tooltip_messages.phone}}')
+| {{/if}}
+| {{#if has_letter }}
+.class.inactive-icon.fa.fa-envelope-o( data-toggle='tooltip' title='{{i18n.tooltip_messages.letter}}')
+| {{/if}}
+| {{#if face_to_face }}
+.class.inactive-icon.face_to_face( data-toggle='tooltip' title='{{i18n.tooltip_messages.face_to_face}}')
+  .fa
+  .fa
+  .fa
+| {{/if}}
+
+script.
+  export default Ractive.extend({
+    template : $TEMPLATE
+      }
+    )

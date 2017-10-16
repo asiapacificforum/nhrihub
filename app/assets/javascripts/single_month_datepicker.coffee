@@ -1,5 +1,6 @@
 import $ from 'jquery'
-import 'jquery-ui/ui/widgets/datepicker'
+import 'jquery-ui'
+window.jquery = $
 
 SingleMonthDatepicker = (node)->
   $(node).datepicker
@@ -17,4 +18,5 @@ SingleMonthDatepicker = (node)->
   teardown : ->
     $(node).datepicker('destroy')
 
-Ractive.decorators.single_month_datepicker = SingleMonthDatepicker
+#Ractive.decorators.single_month_datepicker = SingleMonthDatepicker
+export default SingleMonthDatepicker

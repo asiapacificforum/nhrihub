@@ -1,0 +1,71 @@
+div.modal.fade#communications_modal( tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="true" data-keyboard="true" style="z-index: 1050; display: none; padding-right: 15px;" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()")
+  div.modal-dialog.modal-xl
+    div.modal-content
+      div.modal-header
+        h4 Complaint Communications
+          | {{ t.communications }}
+          button.close(type="button" aria-label="Close" data-dismiss="modal")
+            span(aria-hidden="true") &times;
+      div.modal-body
+        i.fa.fa-plus.fa-sm#add_communication( data-toggle="tooltip" data-placement="bottom" title="add communication" 'on-click'='@this.new_communication()')
+        div#communications(style="margin-bottom:80px;")
+          | {{#communications}}
+          <communication parent='{{parent}}' communicants='{{communicants}}' id='{{id}}' maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' complaint_id='{{complaint_id}}' direction='{{direction}}' mode='{{mode}}' note='{{note}}' user='{{user}}' date='{{date}}' attached_documents='{{attached_documents}}' />
+          | {{/communications}}
+
+script.
+  import Communication from './communication.ractive.pug'
+
+  window.communications = new Ractive({
+    el : '#communication',
+    template : $TEMPLATE,
+    components : {
+      communication : Communication
+    },
+    data() {
+      return {
+        communications : [],
+        all_staff : window.all_staff,
+        i18n : window.i18n,
+        permitted_filetypes : window.source_communication_permitted_filetypes,
+        maximum_filesize : window.source_communication_maximum_filesize
+      };
+    },
+    new_communication() {
+      if (!this._new_communication_is_active()) {
+        const new_communication = {
+          id:null,
+          complaint_id:this.get('parent').get('id'),
+          mode : null,
+          direction : null,
+          date:new Date(),
+          attached_documents : [],
+          communicants : [{name: ""}],
+          note : ""
+        };
+        return this.push('communications',new_communication);
+      }
+    },
+    _new_communication_is_active() {
+      const communications = this.findAllComponents('communication');
+      return (communications.length > 0) && _.isNull( communications[communications.length - 1].get('id'));
+    },
+    onModalClose() {
+      if (this._new_communication_is_active()) {
+        return this.pop('communications');
+      }
+    }
+  });
+
+  export default {
+    show_communications_panel: function(){
+      communications.set({
+        communications : this.get('communications'),
+        create_communication_url : this.get('create_communication_url'),
+        parent : this,
+        permitted_filetypes : this.get('communication_permitted_filetypes'),
+        maximum_filesize : this.get('communication_maximum_filesize'),
+      })
+      $('#communications_modal').modal('show')
+    }
+  }

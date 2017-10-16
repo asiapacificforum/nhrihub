@@ -1,3 +1,5 @@
+import reminders from '../../javascript/reminders.ractive.pug'
+
 @Remindable =
   show_reminders_panel : ->
     reminders.set # copy this object's reminders into the global reminders object

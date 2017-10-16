@@ -1,0 +1,13 @@
+script.
+  import AttachedDocuments from '../../../../../app/javascript/attached_documents'
+
+  export default AttachedDocuments.extend({
+    oninit : function(){
+      this.set({
+        parent_type : 'communication',
+        parent_named_document_datalist : this.get('communication_named_document_titles')
+        })
+      }
+    })
+
+

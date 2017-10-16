@@ -27,3 +27,4 @@ en:
       add_communicant: "add another communicant"
       remove_communicant: "remove communicant"
       address: "Address"
+      save_error: "Save failed with: %{status}, %{message}"

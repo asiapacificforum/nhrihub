@@ -1,0 +1,152 @@
+| {{#if !persisted }}
+| {{> new_note_template }}
+| {{else}}
+| {{> show_note_template }}
+| {{/if}}
+
+script#new_note_template(type = 'text/ractive')
+  .form-horizontal#new_note
+    .row
+      .col-sm-2.col-md-offset-2
+        span.required_before
+          | {{ t.required }}
+    .form-group#text(class = '{{#text_error}}has-error{{/}}')
+      label.control-label.topaligned.col-sm-2.required
+        | {{ t.text }}
+      .col-sm-10
+        textarea.form-control#note_text(style="width:70%" name="note[text]" cols="78" rows="4" value='{{text}}' on-keydown="@this.remove_errors('text')")
+        span.help-block
+          | {{ t.note_text_error_message }}
+    .form-group
+      .col-sm-3.col-sm-offset-3(style = "text-align:center;")
+        .btn.btn-danger.btn-sm#cancel_note(on-click = "@this.cancel_note()")
+          i.fa.fa-remove.fa-lg(style = "color:white")
+          span(style = "color:white")
+            | {{ t.cancel }}
+      .col-sm-3(style = "text-align:center;")
+        .btn.btn-success.btn-sm#save_note(style = "color:white;", on-click = "@this.save_note()")
+          i.fa.fa-check.fa-lg(style = "color:white")
+          span
+            | {{ t.save }}
+
+script#show_note_template(type = 'text/ractive')
+  .note.row.editable_container(id = "note_editable{{id}}", 'as-note_edit'='id')
+    .col-md-1.date.form-group(style = "width:15%")
+      span
+       | {{ date }}
+    .col-md-6.text.form-group(class = '{{#text_error}}has-error{{/}}', style = "width:65%", 'data-toggle'='edit', 'data-id'='{{id}}', 'data-attribute'='text')
+      div
+        .fade.no_edit.in
+          span {{text}}
+        .fade.edit(style = "height:140px;")
+          textarea#note_text.form-control(name = 'note[text]', cols=78, rows=4, value = '{{text}}', 'on-keydown'="@this.remove_errors('text')")
+          span.help-block(style = "font-size:0.8em; padding-left:4px; position:relative; top:-8px; width:100%; background-color:#fff")
+            | {{ t.note_text_error_message }}
+    .col-md-1.icon.note_info(style = "width:5%")
+      i.fa.fa-info-circle.fa-lg('as-popover'=true)
+    .col-md-1.icon(style = "text-align:center; font-size:14px; height:20px; width:5%", 'data-toggle' = 'edit')
+      .fade.edit
+        i.fa.fa-remove.fa-lg#edit_cancel(style = "position:relative;")
+    .col-md-1.icon(style = "text-align:center; font-size:14px; width:5%", 'data-toggle' = 'edit')
+      .fade.edit
+        i.fa.fa-check.fa-lg#edit_save
+      .fade.no_edit.in(style = "left:-14px;")
+        i.fa.fa-pencil-square-o.fa-lg#edit_start
+    .col-md-1(style = "text-align:center; font-size:14px; width:5%;")
+      i.fa.fa-trash-o.fa-lg#delete_note('on-click' = '@this.show_confirm_delete_modal()', style = "position:relative; left:-12px; top:-2px;")
+
+
+script.
+  import ConfirmDeleteModal from './confirm_delete_modal'
+  import Notable from  '../assets/javascripts/notable.coffee'
+  import InpageEdit from '../assets/javascripts/in_page_edit.coffee'
+  import I18n from './notes_translations.js'
+
+  const NoteEdit = function(node,id){
+    const ractive = this;
+    this.edit = new InpageEdit({
+      on : node,
+      object : this,
+      focus_element : 'input.title',
+      success(response, textStatus, jqXhr) {
+        this.options.object.set(response);
+        return this.load();
+      },
+      error() {
+        return console.log("Changes were not saved, for some reason");
+      }
+    });
+    return {
+      teardown(id){},
+      update(id){}
+      };
+  };
+
+  Ractive.decorators.note_edit = NoteEdit;
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    t(ref){ return I18n.t('notes.note')[ref] },
+    computed : {
+      persisted() {
+        return !isNaN(parseInt(this.get('id')));
+      },
+      truncated_text() {
+        return this.get('text').split(' ').slice(0,4).join(' ')+"...";
+      },
+      delete_confirmation_message() {
+        return `${this.t('confirm_delete')}`+"'"+this.get('truncated_text')+"'"+"?";
+      }
+    },
+    save_note() {
+      const url = this.parent.get('create_note_url');
+      const data = $(this.find('#new_note')).find(':input').serializeArray();
+      if (this.validate(data)) {
+        return $.ajax({
+          type : 'post',
+          url,
+          data,
+          dataType : 'json',
+          success : this.create_note,
+          context : this
+        });
+      }
+    },
+    cancel_note() {
+      return this.parent.pop('notes');
+    },
+    delete_callback(response, statusText, jqxhr){
+      this.parent.set('notes',response);
+      return this.get('parent').set('notes',response);
+    },
+    validate() {
+      return this._validate('text');
+    },
+    _validate(field){
+      if (_.isString(this.get(field))) {
+        this.set(field, this.get(field).trim());
+      }
+      const value = this.get(field);
+      if (_.isArray(value) && (value.length === 0)) {
+        this.set(field+'_error',true);
+        return false;
+      } else if ((value === "") || _.isNull(value)) {
+        this.set(field+'_error',true);
+        return false;
+      } else {
+        return true;
+      }
+    },
+    create_note(response, statusText, jqxhr){
+      this.parent.set('notes',response);
+      return this.get('parent').set('notes',response);
+    },
+    remove_errors(field){
+      if (_.isUndefined(field)) { // after edit, failed save, and cancel, remove all errors
+        const error_attrs = _(_(this.get()).keys()).select(k=> k.match(/error/));
+        return _(error_attrs).each(a=> this.set(a,false));
+      } else { // user types into input or changes select
+        return this.set(field+"_error",false);
+      }
+    }}).extend(ConfirmDeleteModal);
+

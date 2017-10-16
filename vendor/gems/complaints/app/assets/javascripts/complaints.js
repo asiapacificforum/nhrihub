@@ -49,7 +49,6 @@ const EditInPlace = function(node,id){
     };
 };
 
-
 const Agency = Ractive.extend({
   template : '#agency_template',
   computed : {
@@ -485,7 +484,6 @@ window.start_page = () => window.complaints = new Ractive(complaints_options);
 
 Ractive.decorators.inpage_edit = EditInPlace;
 
-Ractive.prototype.local = gmt_date=> $.datepicker.formatDate("M d, yy", new Date(gmt_date));
 
 $(function() {
   start_page();

@@ -1,0 +1,61 @@
+#reminders_modal.modal.fade.in(tabindex='-1', role='dialog', aria-hidden='true', data-backdrop='true', data-keyboard='true', style='z-index: 1050; padding-right: 15px;')
+  .modal-dialog.modal-xl
+    .modal-content
+      .modal-header
+        h4
+          | {{ t.reminders }}
+          button.close(type='button', aria-label='Close', data-dismiss='modal')
+            span(aria-hidden='true') &times;
+      .modal-body
+        i#add_reminder.fa.fa-plus.fa-sm(on-click="@this.new_reminder()" data-toggle='tooltip', data-placement='bottom', title='add reminder')
+        #reminders(style = "margin-bottom:80px;")
+          .row
+            h5.col-md-1.tight(style = "width:10%;")
+              | {{ t.type }}
+            h5.col-md-1.tight(style = "width:18%;")
+              | {{ t.next }}
+            h5.col-md-1.tight(style = "width:8%;")
+              | {{ t.previous }}
+            h5.col-md-6.tight(style = "width:41%;")
+              | {{ t.text }}
+            h5.col-md-1.tight(style = "width:13%;")
+              | {{ t.recipient }}
+            h5.col-md-1.tight(style = "width:3%;")
+            h5.col-md-1.tight(style = "width:3%;")
+            h5.col-md-1.tight(style = "width:3%;")
+          | {{#reminders}}
+          <reminder parent='{{parent}}' id='{{id}}' url='{{url}}' reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next_date="{{next_date}}" previous_date="{{previous_date}}" recipient="{{recipient}}"/>
+          | {{/reminders}}
+
+
+script.
+  import I18n from './reminders_translations.js'
+  import Reminder from './reminder.ractive.pug'
+
+  export default new Ractive({
+      el: "#reminder",
+      template : $TEMPLATE,
+      data(){
+        return {
+          reminders : [],
+          t : I18n.t('reminders.reminder')
+        }
+      },
+      components : { reminder : Reminder },
+      new_reminder() {
+        if (!this._new_reminder_is_active()) {
+          return this.push('reminders',{id:null, type:null, frequency:null, text:'', remindable_id:this.get('id')});
+        }
+      },
+      _new_reminder_is_active() {
+        const reminders = this.findAllComponents('reminder');
+        return (reminders.length > 0) && _.isNull( reminders[reminders.length - 1].get('id'));
+      },
+      onModalClose() {
+        if (this._new_reminder_is_active()) {
+          this.pop('reminders');
+        }
+        return _(this.findAllComponents('reminder')).each(reminder=> reminder.terminate_edit());
+      }
+    });
+

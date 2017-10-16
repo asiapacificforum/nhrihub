@@ -48,7 +48,6 @@ window.complaints_page_data = () =>
 import complaints_options from '../complaints_page.ractive.pug'
 import filter_criteria_datepicker from '../../../../../../app/assets/javascripts/filter_criteria_datepicker'
 
-
 window.start_page = () => window.complaints = new Ractive(complaints_options);
 
 Ractive.prototype.local = gmt_date=> $.datepicker.formatDate("M d, yy", new Date(gmt_date));

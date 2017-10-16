@@ -1,0 +1,53 @@
+div.modal.fade#notes_modal( tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="true" data-keyboard="true" style="z-index: 1050; display: none;" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()")
+  div.modal-dialog.modal-xl
+    div.modal-content
+      div.modal-header
+        h4 Notes
+          button.close(type="button" aria-label="Close" data-dismiss="modal")
+            span(aria-hidden="true") &times;
+      div.modal-body
+        i.fa#add_note( data-toggle="tooltip" data-placement="bottom" title="add note")
+        div#notes( style="margin-bottom:80px;")
+          div.row
+            h5.col-md-1( style="width:15%;") Date
+            h5.col-md-1( style="width:70%;") Text
+        | {{#notes}}
+        <note url='{{url}}' parent='{{parent}}' id='{{id}}' date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' text='{{text}}'/>
+        | {{/notes}}
+
+
+#note
+
+script(type = 'text/javascript').
+  import I18n from './notes_translations.js'
+  import Note from './note.ractive.pug'
+  import Popover from './notes_popover.js'
+
+  Ractive.decorators.popover = Popover;
+
+  export default new Ractive({
+    el: '#note',
+    template : $TEMPLATE,
+    data(){
+      return {
+        notes : [],
+        fade : window.env !== "test",
+        t : I18n.t('notes.note')
+      }
+    },
+    components : { note : Note },
+    new_note() {
+      if (!this._new_note_is_active()) {
+        return this.push('notes',{id:null, type:null, frequency:null, text:'', notable_id:this.get('id')});
+      }
+    },
+    _new_note_is_active() {
+      const notes = this.findAllComponents('note');
+      return (notes.length > 0) && _.isNull( notes[notes.length - 1].get('id'));
+    },
+    onModalClose() {
+      if (this._new_note_is_active()) {
+        return this.pop('notes');
+      }
+    }
+  });

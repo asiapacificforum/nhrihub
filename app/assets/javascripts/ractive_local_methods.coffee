@@ -9,6 +9,7 @@
 # where the persistent_attributes may contain an attribute of the form "associated_model_attributes"
 # at which point this method is called recursively... passing in the formData object
 #Ractive.prototype.asFormData = (attributes,formData)->
+import String from './string.coffee'
 local_methods =
   asFormData : (attributes,formData)->
     unless typeof(formData)=='object'
@@ -81,4 +82,7 @@ local_methods =
       i = _(@get(array)).indexOf(item)
       @splice(array,i,1)
 
-module.exports = local_methods
+  local : (gmt_date)->
+    $.datepicker.formatDate("M d, yy", new Date(gmt_date))
+
+export default local_methods

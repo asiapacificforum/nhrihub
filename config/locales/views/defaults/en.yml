@@ -11,3 +11,4 @@ en:
     sure: 'Are you sure?'
     delete: 'Delete'
     invalid: 'Invalid'
+    required: 'Required'
