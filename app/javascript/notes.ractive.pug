@@ -11,9 +11,9 @@ div.modal.fade#notes_modal( tabindex="-1" role="dialog" aria-hidden="true" data-
           div.row
             h5.col-md-1( style="width:15%;") Date
             h5.col-md-1( style="width:70%;") Text
-        | {{#notes}}
-        <note url='{{url}}' parent='{{parent}}' id='{{id}}' date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' text='{{text}}'/>
-        | {{/notes}}
+          | {{#notes}}
+          <note url='{{url}}' parent='{{parent}}' id='{{id}}' date='{{date}}' author_name='{{author_name}}' updated_on='{{updated_on}}' editor_name='{{editor_name}}' text='{{text}}'/>
+          | {{/notes}}
 
 
 #note
@@ -22,6 +22,7 @@ script(type = 'text/javascript').
   import I18n from './notes_translations.js'
   import Note from './note.ractive.pug'
   import Popover from './notes_popover.js'
+  import Ractive from 'ractive'
 
   Ractive.decorators.popover = Popover;
 
