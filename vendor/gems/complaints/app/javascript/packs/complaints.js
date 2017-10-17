@@ -29,7 +29,7 @@ window.complaints_page_data = () =>
     all_mandates : source_all_mandates,
     complaint_bases : source_complaint_bases,
     all_agencies : source_all_agencies,
-    all_agencies_in_sixes : source_all_agencies_in_sixes,
+    all_agencies_in_sixes : _.chain(source_all_agencies).groupBy(function(el,i){return Math.floor(i/6)}).toArray().value(),
     all_users : source_all_users,
     filter_criteria : source_filter_criteria,
     all_good_governance_complaint_bases : source_all_good_governance_complaint_bases,
