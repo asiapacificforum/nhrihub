@@ -1,3 +1,5 @@
+import Ractive from 'ractive'
+
 const note = new Ractive({
   el : '#single_note',
   template : `
@@ -22,7 +24,7 @@ const note = new Ractive({
     </div> `
 });
 
-module.exports= {
+export default {
   show_note() {
     note.set({
       note : this.get('note')});
