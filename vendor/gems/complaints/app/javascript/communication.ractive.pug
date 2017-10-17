@@ -91,10 +91,10 @@ script#select_direction(type = 'text/ractive')
     | {{ t.sent_or_received }}
   .col-sm-2
     label.radio-inline
-      input#sent( 'disabled'="{{face_to_face}}", type="radio", name="{{direction}}", value="sent", "on-change"="@this.validate_direction()".html_safe )
+      input#sent( 'disabled'="{{face_to_face}}", type="radio", name="{{direction}}", value="sent", "on-change"="@this.validate_direction()" )
       | {{ t.sent }}
     label.radio-inline
-      input#received( 'disabled'="{{face_to_face}}", type="radio", name="{{direction}}", value="received", "on-change"="@this.validate_direction()".html_safe )
+      input#received( 'disabled'="{{face_to_face}}", type="radio", name="{{direction}}", value="received", "on-change"="@this.validate_direction()" )
       | {{ t.received }}
   .col-sm-6
     span.help-block('class-has-error'= 'direction_error', style = 'margin:0px')
@@ -118,6 +118,7 @@ script(type='text/javascript').
   import I18n from './translations.js'
   import documents from './documents.ractive.pug'
   import RactiveLocalMethods from '../../../../../app/assets/javascripts/ractive_local_methods.coffee'
+  import Ractive from 'ractive'
   Ractive.decorators.single_month_datepicker = SingleMonthDatepicker
 
 
@@ -125,10 +126,12 @@ script(type='text/javascript').
     save_communication() {
       const url = Routes.complaint_communications_path(current_locale, this.get('complaint_id'));
       const data = this.formData();
+      const headers = {'X-CSRF-Token' : $('meta[name=csrf-token]').attr('content')};
       if (this.validate()) {
         $.ajax({
           // thanks to http://stackoverflow.com/a/22987941/451893
           //xhr: @start_progress_bar.bind(@)
+          headers : headers,
           method : 'post',
           data,
           url,

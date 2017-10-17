@@ -29,7 +29,9 @@ class ComplaintsController < ApplicationController
     @communication_permitted_filetypes = CommunicationDocument.permitted_filetypes
     @statuses = ComplaintStatus.select(:id, :name).all
     respond_to do |format|
-      format.html
+      format.html do
+        render :index, :layout => 'application_webpack'
+      end
       format.docx do
         send_file ComplaintsReport.new(@complaints).docfile
       end

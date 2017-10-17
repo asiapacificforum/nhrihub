@@ -1,0 +1,44 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{'http-equiv' => "X-UA-Compatible", 'content' => "IE=edge"}
+    %meta{'name' => "viewport", 'content' => "width=device-width, initial-scale=1"}
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    %title=@title
+
+    = stylesheet_link_tag    'application', media: 'all'
+    = javascript_include_tag 'application_webpack'
+
+    - if Rails.env.test? || Rails.env.jstest?
+      = javascript_tag "$.fx.off = true;"
+      = javascript_tag "window.env = 'test'"
+    - if Rails.env.development?
+      = javascript_tag "window.env = 'dev'"
+    - if Rails.env.production?
+      = javascript_tag "window.env = 'production'"
+    - if Rails.env.staging?
+      = javascript_tag "window.env = 'staging'"
+
+    = csrf_meta_tags
+  %body{:role => :document, :class => ("no-animation" if Rails.env.test? || Rails.env.jstest?), :style => 'padding-top:80px;'}
+    - if logged_in?
+      - cache "#{current_user.roles.collect{|r| r.name+'_'+r.updated_at.to_s} }_#{StrategicPlan.pluck(:id).join()}" do
+        %nav.navbar.navbar-default.navbar-fixed-top
+          .container-fluid
+            .navbar-header
+              %a.navbar-brand{:href=>"#"}
+                // bootstrap renderer: https://github.com/pdf/simple-navigation-bootstrap
+            = render_navigation(level: 1..3, renderer: :bootstrap, expand_all: true)
+    - else
+      #banner
+        #main= t('banner.line_1')
+        #sub= t('banner.line_2')
+    //%ol.breadcrumb
+    //  %li Admin
+    //  %li User management
+    .container.theme-showcase{:role => :main}
+      = render :partial => "shared/flash_error"
+      #jflash
+      = yield
+    .attribution= attribution

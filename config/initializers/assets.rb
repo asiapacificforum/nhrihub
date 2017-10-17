@@ -8,6 +8,7 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 assets = [ 'in_page_edit.js',
            'flash.js',
+           'application_webpack.js', # temporary, whilst debugging webpack
            'internal_documents.js',
            'internal_documents.css',
            'jquery_datepicker.css',
