@@ -1,6 +1,7 @@
 import $ from 'jquery'
 import 'jquery-ui'
 window.jquery = $
+import Ractive from 'ractive'
 
 SingleMonthDatepicker = (node)->
   $(node).datepicker

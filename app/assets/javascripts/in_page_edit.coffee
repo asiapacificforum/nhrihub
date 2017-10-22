@@ -38,6 +38,7 @@
 #    Where the object implements its own stash/restore methods
 
 #= require 'user_input_manager'
+import UserInput from './user_input_manager.coffee'
 
 class @InpageEditElement
   constructor : (@el,@object,@attribute) ->
@@ -88,6 +89,8 @@ class @InpageEditElement
 
   hide : (element)->
     element.removeClass('in')
+
+InpageEditElement = @InpageEditElement
 
 class @InpageEdit
   constructor : (options)->

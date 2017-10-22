@@ -1,4 +1,5 @@
 import reminders from '../../javascript/reminders.ractive.pug'
+import 'bootstrap'
 
 @Remindable =
   show_reminders_panel : ->

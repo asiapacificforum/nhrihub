@@ -116,7 +116,7 @@
 
 
 script.
-  import Ractive from 'ractive'
+  //import Ractive from 'ractive'
   import GoodGovernanceComplaintBasisFilterSelect from './good_governance_complaint_basis_filter_select'
   import HumanRightsComplaintBasisFilterSelect from './human_rights_complaint_basis_filter_select'
   import SpecialInvestigationsUnitComplaintBasisFilterSelect from './special_investigations_unit_complaint_basis_filter_select'
@@ -124,7 +124,7 @@ script.
   import MandateFilterSelect from './mandate_filter_select'
   import AssigneeFilterSelect from './assignee_filter_select'
   import StatusSelector from './status_selector'
-  import I18n from './translations.js'
+  import translations from './translations.js'
 
   export default Ractive.extend({
     template : $TEMPLATE,
@@ -138,7 +138,7 @@ script.
       statusSelector : StatusSelector
     },
     data : function(){ return {
-      t : I18n.t('filter_controls')
+      t : translations.t('filter_controls')
     }},
     expand() {
       return this.parent.expand();

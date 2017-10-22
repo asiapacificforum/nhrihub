@@ -20,11 +20,14 @@ script#new_attached_document_template(type = 'text/ractive')
           | {{.}}
         | {{/named_document_datalist}}
       .errors.form-group(class = "{{#filesize_error}}has-error{{/}}")
-        span.help-block.error#filesize_error too large
+        span.help-block.error#filesize_error
+          | {{ t.too_large }}
       .errors.form-group(class = "{{#original_type_error}}has-error{{/}}")
-        span.help-block.error#original_type_error unpermitted type
+        span.help-block.error#original_type_error
+          | {{ t.unpermitted_type }}
       .errors.form-group(class = "{{#unconfigured_filetypes_error}}has-error{{/}}")
-        span.help-block.error#unconfigured_filetypes_error filetypes not configured
+        span.help-block.error#unconfigured_filetypes_error
+          | {{ t.noFileTypes }}
     .col-md-4.filename(style = "overflow-wrap:break-word")
       | {{filename}}
     .col-md-2
@@ -37,11 +40,15 @@ script#new_attached_document_template(type = 'text/ractive')
 |  {{/if}}
 
 script.
-  import Ractive from 'ractive';
   import Validator from '../validator'
+  import RactiveLocalMethods from '../../../app/assets/javascripts/ractive_local_methods.coffee'
+  import translations from './translations.js'
 
   export default Ractive.extend({
     template : $TEMPLATE,
+    data : function(){ return {
+      t : translations.t('error_messages'),
+    }},
     oninit() {
       this.set('validation_criteria', {
         filesize :
@@ -89,4 +96,6 @@ script.
     },
     download_attachment() {
       return window.location = this.get('url');
-    }}).extend(this.ConfirmDeleteModal);
+    }})
+    .extend(this.ConfirmDeleteModal)
+    .extend(RactiveLocalMethods);

@@ -519,7 +519,6 @@ script#show_complaint_template(type = 'text/ractive')
 | {{/if}}
 
 script(type='text/javascript').
-  import Ractive from 'ractive'
   import Mandates from './mandates'
   import MandatesSelector from './mandates_selector'
   import ComplaintBases from './complaint_bases'
@@ -531,15 +530,15 @@ script(type='text/javascript').
   import ComplaintDocuments from './complaint_documents'
   import ConfirmDeleteModal from '../../../../../app/javascript/confirm_delete_modal'
   import Validator from '../../../../../app/javascript/validator'
-  //import $ from 'jquery'
   import 'jquery-ui/ui/widgets/datepicker'
   import './edit_in_place.js'
-  import I18n from './translations.js'
+  import translations from './translations.js'
   import Remindable from '../../../../../app/assets/javascripts/remindable.coffee'
   import Notable from '../../../../../app/assets/javascripts/notable.coffee'
   import Communications from './communications.ractive.pug'
   import SingleMonthDatepicker from  '../../../../../app/assets/javascripts/single_month_datepicker.coffee'
   Ractive.decorators.single_month_datepicker = SingleMonthDatepicker
+  import '../../../../../app/assets/javascripts/local_node_modules/bootstrap-multimodal/js/multimodal.js'
 
   const FilterMatch = {
     include() {
@@ -833,6 +832,7 @@ script(type='text/javascript').
       }
     },
     oninit() {
+      console.log("init complaint");
       return this.set({
         editing : false,
         expanded:false,
@@ -851,7 +851,7 @@ script(type='text/javascript').
         //if _(@validator.attributes).includes(attr)
           //@validate_attribute(attr)
     data : function(){ return {
-      t : I18n.t('complaint'),
+      t : translations.t('complaint'),
       local(){return this.get('date')}
     }},
     components : {

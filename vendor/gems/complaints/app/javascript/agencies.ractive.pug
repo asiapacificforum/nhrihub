@@ -7,9 +7,9 @@ div(style = 'padding-left:15px;')
 | {{/agency_ids}}
 
 script.
-  import Ractive from 'ractive'
+  //import Ractive from 'ractive'
   import Agency from './agency'
-  import I18n from './translations.js'
+  import translations from './translations.js'
 
   export default Ractive.extend({
     template : $TEMPLATE,
@@ -17,6 +17,6 @@ script.
       agency : Agency
     },
     data : function(){ return {
-      t : I18n.t('agencies')
+      t : translations.t('agencies')
     }},
   });

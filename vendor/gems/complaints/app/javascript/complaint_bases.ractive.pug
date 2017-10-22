@@ -24,9 +24,9 @@
   | {{/special_investigations_unit_complaint_basis_ids}}
 
 script.
-  import Ractive from 'ractive'
+  //import Ractive from 'ractive'
   import ComplaintBasis from './complaint_basis'
-  import I18n from './translations.js'
+  import translations from './translations.js'
 
   export default Ractive.extend({
     template : $TEMPLATE,
@@ -34,6 +34,6 @@ script.
       complaintBasis : ComplaintBasis
     },
     data : function(){ return {
-      t : I18n.t('complaint_bases')
+      t : translations.t('complaint_bases')
     }},
   });

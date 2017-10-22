@@ -1,6 +1,7 @@
 en:
   notes:
     note:
+      add_note : "add note"
       note_text_error_message: "Text cannot be blank"
       notes: "Notes"
       date: "Date"

@@ -8,6 +8,7 @@
 // layout file, like app/views/layouts/application.html.erb
 
 import Ractive from 'ractive'
+import _ from 'underscore'
 
 // require 'in_page_edit'
 // require 'ractive_validator'
@@ -47,6 +48,12 @@ window.complaints_page_data = () =>
 
 import complaints_options from '../complaints_page.ractive.pug'
 import filter_criteria_datepicker from '../../../../../../app/assets/javascripts/filter_criteria_datepicker'
+
+console.log("set defaults");
+Ractive.defaults.data = {
+  all_users : complaints_page_data().all_users,
+  foo : "bar"
+}
 
 window.start_page = () => window.complaints = new Ractive(complaints_options);
 

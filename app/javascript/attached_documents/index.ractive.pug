@@ -13,6 +13,7 @@ div(style = 'padding-left:15px;') no documents
 script.
   import Ractive from 'ractive'
   import AttachedDocument from '../attached_document'
+  import RactiveLocalMethods from '../../../app/assets/javascripts/ractive_local_methods.coffee'
 
   export default Ractive.extend({
     template : $TEMPLATE,
@@ -24,5 +25,5 @@ script.
       const index = _(guids).indexOf(guid);
       return this.splice('attached_documents',index,1);
     }
-  });
+  }).extend(RactiveLocalMethods);
 

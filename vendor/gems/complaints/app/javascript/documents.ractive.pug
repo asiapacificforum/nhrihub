@@ -11,8 +11,8 @@
       .modal-footer
 
 script(type='text/javascript').
-  import Ractive from 'ractive'
-  import I18n from './translations.js'
+  //import Ractive from 'ractive'
+  import translations from './translations.js'
   import AttachedDocuments from '../../../../../app/javascript/attached_documents'
 
   export default new Ractive({
@@ -25,6 +25,6 @@ script(type='text/javascript').
       return $(this.find('#documents_modal')).modal('show');
     },
     data : function(){ return {
-      t : I18n.t('documents')
+      t : translations.t('documents')
     }},
   });

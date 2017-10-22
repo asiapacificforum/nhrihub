@@ -19,4 +19,8 @@ class @UserInputManager
     @user_input_claimant = null
     @undo = null
 
+UserInputManager = @UserInputManager
+
 @UserInput = new UserInputManager
+
+export default @UserInput

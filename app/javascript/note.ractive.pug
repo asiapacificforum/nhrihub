@@ -55,12 +55,12 @@ script#show_note_template(type = 'text/ractive')
     .col-md-1(style = "text-align:center; font-size:14px; width:5%;")
       i.fa.fa-trash-o.fa-lg#delete_note('on-click' = '@this.show_confirm_delete_modal()', style = "position:relative; left:-12px; top:-2px;")
 
-
 script.
   import ConfirmDeleteModal from './confirm_delete_modal'
   import Notable from  '../assets/javascripts/notable.coffee'
   import InpageEdit from '../assets/javascripts/in_page_edit.coffee'
-  import I18n from './notes_translations.js'
+  import translations from './notes_translations.js'
+  import csrf_header from './csrf'
 
   const NoteEdit = function(node,id){
     const ractive = this;
@@ -86,7 +86,11 @@ script.
 
   export default Ractive.extend({
     template : $TEMPLATE,
-    t(ref){ return I18n.t('notes.note')[ref] },
+    data(){
+      return {
+        t : translations.t('notes.note')
+      }
+    },
     computed : {
       persisted() {
         return !isNaN(parseInt(this.get('id')));
@@ -95,7 +99,7 @@ script.
         return this.get('text').split(' ').slice(0,4).join(' ')+"...";
       },
       delete_confirmation_message() {
-        return `${this.t('confirm_delete')}`+"'"+this.get('truncated_text')+"'"+"?";
+        return `${this.get('t')['confirm_delete']}`+"'"+this.get('truncated_text')+"'"+"?";
       }
     },
     save_note() {
@@ -104,6 +108,7 @@ script.
       if (this.validate(data)) {
         return $.ajax({
           type : 'post',
+          headers : csrf_header,
           url,
           data,
           dataType : 'json',
@@ -114,6 +119,9 @@ script.
     },
     cancel_note() {
       return this.parent.pop('notes');
+    },
+    terminate_edit(){
+      this.editor.edit_cancel($(this.find('*'))) 
     },
     delete_callback(response, statusText, jqxhr){
       this.parent.set('notes',response);

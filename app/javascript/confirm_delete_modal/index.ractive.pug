@@ -11,21 +11,26 @@
     .modal-content
       .modal-body
       .modal-footer
-        a.btn.btn-sm.btn-default#cancel(type = 'button', 'data-dismiss'='modal') cancel
-        a.btn.btn-sm.btn-danger.btn-ok#confirm('on-click' = 'delete_item()') delete`
-
+        a.btn.btn-sm.btn-default#cancel(type = 'button', 'data-dismiss'='modal')
+          | {{ t.cancel }}
+        a.btn.btn-sm.btn-danger.btn-ok#confirm('on-click' = 'delete_item()')
+          | {{ t.delete }}
 
 script.
-  import Ractive from 'ractive'
+  import '../../../app/assets/javascripts/local_node_modules/bootstrap-multimodal/js/multimodal'
+  import csrf_header from '../csrf'
+  import translations from  './translations.js'
+
   var confirm_delete_modal = new Ractive({
     el : '#confirm_delete_modal_container',
     template : $TEMPLATE,
-    data : {
+    data(){ return {
       deletable : null,
       url : null,
       message : null,
       callback : null,
-      local_data : null
+      local_data : null,
+      t : translations.t('defaults')}
     },
     show() {
       $(this.el).find('.modal#confirm-delete').modal('show');
@@ -51,6 +56,7 @@ script.
       }
       return $.ajax({
         url : this.get('url'),
+        headers : csrf_header,
         data,
         method : 'post',
         dataType : 'json',

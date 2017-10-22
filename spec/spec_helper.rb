@@ -144,9 +144,7 @@ RSpec.configure do |config| # rspec-expectations config goes here. You can use a
   end
 
   config.before(:suite) do
-  # compile front-end and load manifest
-    `bin/webpack`
-    Webpacker::Manifest.load
+    Webpacker.compile
   end
 
 # The settings below are suggested to provide a good initial experience

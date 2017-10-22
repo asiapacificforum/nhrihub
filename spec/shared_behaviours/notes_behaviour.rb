@@ -80,5 +80,14 @@ RSpec.shared_examples "notes" do
       cancel_edit.click
       expect(note_text.first.text).to eq original_text
     end
+
+    scenario "edit and close notes modal without making changes" do
+      original_text = note_text.first.text
+      edit_note.first.click
+      expect(note_text.first.text).to eq original_text
+      close_notes_modal
+      open_notes_modal
+      expect(page).not_to have_selector("#note_text")
+    end
   end
 end

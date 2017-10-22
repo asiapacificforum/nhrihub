@@ -55,8 +55,9 @@ script#show_communicant_template(type = 'text/ractive')
 
 script.
   import Validator from '../../../../../app/javascript/validator'
-  import I18n from './translations.js'
+  import translations from './translations.js'
   import RactiveLocalMethods from '../../../../../app/assets/javascripts/ractive_local_methods.coffee'
+  //import Ractive from 'ractive'
 
   export default Ractive.extend({
     template : $TEMPLATE,
@@ -72,7 +73,7 @@ script.
     },
     data() {
       return {
-        t : I18n.t('communications.communication'),
+        t : translations.t('communications.communication'),
       };
     },
     computed : {

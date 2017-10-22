@@ -11,13 +11,13 @@ select.form-control#assignee(value = '{{new_assignee_id}}', 'on-change'="@this.r
   | {{/all_staff}}
 
 script.
-  import Ractive from 'ractive'
-  import I18n from './translations.js'
+  //import Ractive from 'ractive'
+  import translations from './translations.js'
 
   export default Ractive.extend({
     template : $TEMPLATE,
     data : function(){ return {
-      t : I18n.t('assignee_selector')
+      t : translations.t('assignee_selector')
     }},
     remove_error() {
       return this.parent.remove_attribute_error('new_assignee_id');

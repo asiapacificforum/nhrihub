@@ -111,16 +111,15 @@ script(type='text/javascript').
   import Validator from '../../../../../app/javascript/validator'
   import Note from '../../../../../app/javascript/single_note_modal.js'
   import ConfirmDeleteModal from '../../../../../app/javascript/confirm_delete_modal'
-  import $ from 'jquery'
   import 'jquery-ui/ui/widgets/datepicker'
   import SingleMonthDatepicker from '../../../../../app/assets/javascripts/single_month_datepicker.coffee'
   import '../../../../../app/assets/javascripts/file_input_decorator.coffee'
   import I18n from './translations.js'
   import documents from './documents.ractive.pug'
   import RactiveLocalMethods from '../../../../../app/assets/javascripts/ractive_local_methods.coffee'
-  import Ractive from 'ractive'
+  //import Ractive from 'ractive'
   Ractive.decorators.single_month_datepicker = SingleMonthDatepicker
-
+  import csrf_header from '../../../../../app/javascript/csrf'
 
   var Persistence = {
     save_communication() {
@@ -131,7 +130,7 @@ script(type='text/javascript').
         $.ajax({
           // thanks to http://stackoverflow.com/a/22987941/451893
           //xhr: @start_progress_bar.bind(@)
-          headers : headers,
+          headers : csrf_header,
           method : 'post',
           data,
           url,

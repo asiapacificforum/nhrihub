@@ -10,6 +10,8 @@
 # at which point this method is called recursively... passing in the formData object
 #Ractive.prototype.asFormData = (attributes,formData)->
 import String from './string.coffee'
+import _ from 'underscore'
+
 local_methods =
   asFormData : (attributes,formData)->
     unless typeof(formData)=='object'

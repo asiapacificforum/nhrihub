@@ -15,15 +15,15 @@ export default function(node){
       return ractive.toHTML();
     },
     content() {
-      const data = Ractive.getNodeInfo(this).ractive.get();
+      const data = Ractive.getContext(this).ractive.get();
       _.extend(data,{t : I18n.t('notes.note.popover')})
       const ractive = new Ractive({
         template : `
-          <table style='width:200px;'>
-            <tr><td>{{ t.created_on }}</td><td>{{ date }}</td></tr>
-            <tr><td>{{ t.author }}</td><td>{{ author_name }}</td></tr>
-            <tr><td>{{ t.updated_on }}</td><td>{{ updated_on }}</td></tr>
-            <tr><td>{{ t.updated_by }}</td><td>{{ editor_name }}</td></tr>
+          <table id='details' style='width:200px;'>
+            <tr><td>{{ t.created_on }}</td><td id='created_on' >{{ date }}</td></tr>
+            <tr><td>{{ t.author }}</td><td id='author' >{{ author_name }}</td></tr>
+            <tr><td>{{ t.updated_on }}</td><td id='updated_on' >{{ updated_on }}</td></tr>
+            <tr><td>{{ t.updated_by }}</td><td id='editor' >{{ editor_name }}</td></tr>
           </table>
         `,
         data

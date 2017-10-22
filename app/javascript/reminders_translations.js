@@ -1,7 +1,5 @@
-import I18n from "i18n-js";
 import { en } from "../../config/locales/views/reminders/en.yml"
 import { en as defaults } from "../../config/locales/views/defaults/en.yml"
-import _ from 'underscore'
 
 var locale = I18n.locale = window.current_locale;
 if(typeof I18n.translations[locale] == 'undefined'){

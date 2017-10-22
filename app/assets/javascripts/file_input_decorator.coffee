@@ -1,3 +1,4 @@
+import Ractive from 'ractive'
 @FileInput = (node)->
   $(node).on 'change', (event)->
     add_file(event,@)

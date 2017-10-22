@@ -1,4 +1,7 @@
-const { environment } = require('@rails/webpacker')
+//const { environment } = require('@rails/webpacker')
+// I have a customized version of @rails webpacker that is tweaked to work with engines
+const { environment } = require('../../app/assets/javascripts/local_node_modules/@rails/webpacker')
+const webpack = require('webpack')
 
 environment.loaders.set('ractive_component', {
   test: /\.ractive\.html$/,
@@ -14,5 +17,17 @@ environment.loaders.set('locales', {
  test: /\.ya?ml$/,
  loaders: ['json-loader', 'yaml-loader']
 })
+
+environment.plugins.set(
+  'Provide',
+  new webpack.ProvidePlugin({
+    I18n : 'i18n-js',
+    Ractive : ['ractive','default'],
+    $ : 'jquery',
+    jQuery : 'jquery',
+    jquery : 'jquery',
+    _ : 'underscore'
+  })
+)
 
 module.exports = environment

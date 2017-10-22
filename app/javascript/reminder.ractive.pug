@@ -55,40 +55,12 @@ script#show_reminder_template(type = 'text/ractive')
 script#select_user(type='text/ractive').
   <select class="form-control" style="width:24%" name="reminder[user_id]" id="reminder_user_id">
     <option value="" selected="">Please select a recipient</option>
-    <option value="33">Faso Aishath</option>
-    <option value="15">Daren Auer</option>
-    <option value="8">Abdiel Aufderhar</option>
-    <option value="7">Melvina Bartell</option>
-    <option value="24">Ash Bowe</option>
-    <option value="5">Juana Breitenberg</option>
-    <option value="10">Jalen Collins</option>
-    <option value="9">Alfreda Cummerata</option>
-    <option value="31">pip Dargan</option>
-    <option value="3">Sabryna Dooley</option>
-    <option value="2">Delphia Eichmann</option>
-    <option value="30">Kieren Fitzpatrick</option>
-    <option value="13">August Franecki</option>
-    <option value="6">Christelle Hegmann</option>
-    <option value="17">Sabrina Hettinger</option>
-    <option value="11">Michale Kessler</option>
-    <option value="29">Mohamed Kheir</option>
-    <option value="18">Orville Koepp</option>
-    <option value="27">Jia Liu</option>
-    <option value="28">Dip Magar</option>
-    <option value="26">Chitralekha Massey</option>
-    <option value="16">Estella Mills</option>
-    <option value="19">Daniella Morissette</option>
-    <option value="23">Les Nightingill</option>
-    <option value="21">Laury Okuneva</option>
-    <option value="1">Marcus Ratke</option>
-    <option value="14">Khalil Rau</option>
-    <option value="12">Roma Rowe</option>
-    <option value="4">Lue Senger</option>
-    <option value="32">Kate Turner-Mann</option>
-    <option value="20">Daphne Will</option>
-    <option value="25">Neels van der Merwe</option>
+    {{#all_users}}
+    <option value="{{id}}">
+    | {{ name }}
+    </option>
+    {{/all_users}}
   </select>
-
 
 script#select_type(type='text/ractive').
   <select class="form-control" style="width:31%" name="reminder[reminder_type]" id="reminder_reminder_type">
@@ -250,7 +222,7 @@ script.
         return !isNaN(parseInt(this.get('id')));
       },
       delete_confirmation_message() {
-        return `${t('.confirm_delete')}`;
+        return this.get('t')['confirm_delete'];
       }
     },
     save_reminder() {

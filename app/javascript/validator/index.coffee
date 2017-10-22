@@ -1,3 +1,5 @@
+import _ from 'underscore'
+
 class Validator
   constructor : (validatee)->
     if typeof validatee != 'object'
