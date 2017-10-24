@@ -55,52 +55,6 @@ feature "complaints index", :js => true do
     end
   end
 
-  it "does not show status date if the date is missing" do
-    Complaint.first.status_changes.last.update_attribute(:change_date, nil)
-    visit complaints_path('en')
-    within first_complaint do
-      expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
-      status = Complaint.first.status_changes.first.status_humanized
-      name =   Complaint.first.status_changes.first.user.first_last_name
-      date =   Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%b %-e, %Y")
-      expect(all('#status_changes .status_change').first.text.gsub(/\s/,'')).to match "#{status} ( by #{name} , on #{date} )".gsub(/\s/,'')
-      status = Complaint.first.status_changes.last.status_humanized
-      name =   Complaint.first.status_changes.last.user.first_last_name
-      expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to match  "#{status} ( by #{name} )".gsub(/\s/,'')
-      expect(find('.lastName').text).to eq Complaint.first.lastName
-      expect(find('.firstName').text).to eq Complaint.first.firstName
-    end
-  end
-
-  it "does not show attribution name if the user name is missing" do
-    Complaint.first.status_changes.last.update_attribute(:user_id, nil)
-    visit complaints_path('en')
-    within first_complaint do
-      expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
-      status = Complaint.first.status_changes.first.status_humanized
-      name =   Complaint.first.status_changes.first.user.first_last_name
-      date =   Complaint.first.status_changes.first.change_date.getlocal.to_date.strftime("%b %-e, %Y")
-      expect(all('#status_changes .status_change').first.text.gsub(/\s/,'')).to match "#{status} ( by #{name}, on #{date} )".gsub(/\s/,'')
-      status = Complaint.first.status_changes.last.status_humanized
-      date =   Complaint.first.status_changes.last.change_date.getlocal.to_date.strftime("%b %-e, %Y")
-      expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to match "#{status} ( on #{date} )".gsub(/\s/,'')
-      expect(find('.lastName').text).to eq Complaint.first.lastName
-      expect(find('.firstName').text).to eq Complaint.first.firstName
-    end
-  end
-
-  it "does not show attribution name or date if the both are missing" do
-    Complaint.first.status_changes.last.update_attributes({:user_id => nil, :change_date => nil})
-    visit complaints_path('en')
-    within first_complaint do
-      expect(find('.current_assignee').text).to eq Complaint.first.assignees.first.first_last_name
-      status = Complaint.first.status_changes.last.status_humanized
-      expect(all('#status_changes .status_change').last.text.gsub(/\s/,'')).to eq "#{status}".gsub(/\s/,'')
-      expect(find('.lastName').text).to eq Complaint.first.lastName
-      expect(find('.firstName').text).to eq Complaint.first.firstName
-    end
-  end
-
   it "expands each complaint to show additional information" do
     within first_complaint do
       expand

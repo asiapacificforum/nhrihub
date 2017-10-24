@@ -53,17 +53,15 @@ script#show_reminder_template(type = 'text/ractive')
       i.fa.fa-trash-o.fa-lg#delete_reminder('on-click' = '@this.show_confirm_delete_modal()', :style = "position:relative; left:-12px; top:-2px;")
 
 script#select_user(type='text/ractive').
-  <select class="form-control" style="width:24%" name="reminder[user_id]" id="reminder_user_id">
+  <select class="form-control" style="width:24%" name="reminder[user_id]" id="reminder_user_id" value="{{user_id}}">
     <option value="" selected="">Please select a recipient</option>
     {{#all_users}}
-    <option value="{{id}}">
-    | {{ name }}
-    </option>
+    <option value="{{id}}"> {{ first_last_name }} </option>
     {{/all_users}}
   </select>
 
 script#select_type(type='text/ractive').
-  <select class="form-control" style="width:31%" name="reminder[reminder_type]" id="reminder_reminder_type">
+  <select class="form-control" style="width:31%" name="reminder[reminder_type]" id="reminder_reminder_type" value="{{reminder_type}}">
     <option value="" selected="">select type</option>
     <option value="one-time">one-time</option>
     <option value="daily">daily</option>
@@ -253,6 +251,7 @@ script.
       return type && text && user_id;
     },
     _validate(field){
+      console.log(field+" : "+this.get(field))
       if (_.isString(this.get(field))) {
         this.set(field, this.get(field).trim());
       }
@@ -260,7 +259,7 @@ script.
       if (_.isArray(value) && (value.length === 0)) {
         this.set(field+'_error',true);
         return false;
-      } else if ((value === "") || _.isNull(value)) {
+      } else if ((value === "") || _.isNull(value) || _.isUndefined(value)) {
         this.set(field+'_error',true);
         return false;
       } else {

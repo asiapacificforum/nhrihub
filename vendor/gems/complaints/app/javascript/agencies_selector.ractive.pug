@@ -4,7 +4,7 @@
     .row.agency
       | {{#.}}
       .col-md-1
-        label(:for = 'agency_{{.id}}')
+        label(for = 'agency_{{.id}}')
           span('data-toggle'="tooltip", 'data-placement'="bottom", title='{{.full_name}}')
             | {{.name}}
       .col-md-1
@@ -14,6 +14,5 @@
 
 
 script.
-  //import Ractive from 'ractive'
   export default Ractive.extend({
     template : $TEMPLATE});

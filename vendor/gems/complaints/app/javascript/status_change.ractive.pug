@@ -1,0 +1,24 @@
+.status_change
+  span.status_humanized
+    | {{status_humanized}} 
+  | (
+  | {{ t.by }} 
+  span.user_name
+    | {{user_name}}
+  | ,
+  | {{ t.on }} 
+  span.date
+    | {{ local(date) }}
+  | )
+
+script.
+  import translations from './translations.js'
+  import RactiveLocalMethods from '../../../../../app/assets/javascripts/ractive_local_methods.coffee'
+
+  export default Ractive.extend({
+    template : $TEMPLATE,
+    data : function(){ return {
+      t : translations.t('complaint'),
+    }},
+  }).extend(RactiveLocalMethods)
+

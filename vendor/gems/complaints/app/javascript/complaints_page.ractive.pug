@@ -6,7 +6,9 @@
 script.
   import Complaint from './complaint.ractive.pug'
   import FilterControls from './filter_controls.ractive.pug'
+  import UserInput from '../../../../../app/assets/javascripts/user_input_manager.coffee'
   window.$ = window.jQuery = $ // it's the only method I could get to work for making $ available globally!
+  window._ = _
 
   export default {
     el : '#complaints',

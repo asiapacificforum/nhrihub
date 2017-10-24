@@ -42,6 +42,7 @@ en:
 
   complaint:
     add_file: "Add file"
+    add_document: "Add document"
     agency: "Agency(ies)"
     assignee: 'Assignee'
     assignee_error_message: "You must designate an assignee"

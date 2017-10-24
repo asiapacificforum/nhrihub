@@ -43,8 +43,11 @@ script.
       this.hide();
       this.get('unbound.callback').apply(this.get('deletable'),[response, statusText, jqxhr]);
     },
-    error_callback() {
-      return console.log("app/assets/javascripts/confirm_delete_modal error callback, shouldn't see this!");
+    error_callback(jqXHR,textStatus,errorText) {
+      console.log("app/assets/javascripts/confirm_delete_modal error callback, shouldn't see this!");
+      console.log(console.dir(jqXHR));
+      console.log(textStatus);
+      console.log(errorText);
     },
     delete_item() {
       let data;
@@ -59,7 +62,6 @@ script.
         headers : csrf_header,
         data,
         method : 'post',
-        dataType : 'json',
         context : this,
         success : this.success_callback,
         error : this.error_callback
