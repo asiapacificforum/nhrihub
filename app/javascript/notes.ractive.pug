@@ -27,7 +27,7 @@ script(type = 'text/javascript').
 
   Ractive.decorators.popover = Popover;
 
-  export default new Ractive({
+  notes = new Ractive({
     el: '#note',
     template : $TEMPLATE,
     data(){
@@ -60,3 +60,5 @@ script(type = 'text/javascript').
       return (notes.length > 0) && _.isNull( notes[notes.length - 1].get('id'));
     },
   });
+
+  export { notes }

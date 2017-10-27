@@ -21,6 +21,9 @@ environment.loaders.set('locales', {
 environment.plugins.set(
   'Provide',
   new webpack.ProvidePlugin({
+    UserInput : ['user_input_manager.coffee','UserInput'],
+    InpageEdit : ['in_page_edit.coffee','InpageEdit'],
+    notes : ['notes.ractive.pug','notes'],
     I18n : 'i18n-js',
     Ractive : ['ractive','default'],
     $ : 'jquery',

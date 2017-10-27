@@ -5,6 +5,8 @@
 #= require 'remindable'
 #= require 'notable'
 #= require 'confirm_delete_modal'
+#= require 'filter_criteria_datepicker'
+
 $ ->
   Collection.EditInPlace = (node,id)->
     ractive = @

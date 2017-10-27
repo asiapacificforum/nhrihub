@@ -52,12 +52,12 @@
 | {{/complaint_bases.3}}
 
 script.
-  //import Ractive from 'ractive'
   export default Ractive.extend({
     template : $TEMPLATE,
     remove_error() {
       if (this.parent.get('complaint_basis_id_count') !== 0) {
         return this.parent.remove_attribute_error('complaint_basis_id_count');
       }
-    }
+    },
+    data(){ return {}}
   });

@@ -112,13 +112,12 @@ script(type='text/javascript').
   import Note from '../../../../../app/javascript/single_note_modal.js'
   import ConfirmDeleteModal from '../../../../../app/javascript/confirm_delete_modal'
   import 'jquery-ui/ui/widgets/datepicker'
-  import SingleMonthDatepicker from '../../../../../app/assets/javascripts/single_month_datepicker.coffee'
+  var SingleMonthDatepicker = require("exports-loader?SingleMonthDatepicker!single_month_datepicker.coffee")
+  Ractive.decorators.single_month_datepicker = SingleMonthDatepicker
   import '../../../../../app/assets/javascripts/file_input_decorator.coffee'
   import I18n from './translations.js'
   import documents from './documents.ractive.pug'
-  import RactiveLocalMethods from '../../../../../app/assets/javascripts/ractive_local_methods.coffee'
-  //import Ractive from 'ractive'
-  Ractive.decorators.single_month_datepicker = SingleMonthDatepicker
+  var RactiveLocalMethods = require("exports-loader?local_methods!ractive_local_methods")
   import csrf_header from '../../../../../app/javascript/csrf'
 
   var Persistence = {

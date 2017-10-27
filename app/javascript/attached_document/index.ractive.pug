@@ -41,7 +41,7 @@ script#new_attached_document_template(type = 'text/ractive')
 
 script.
   import Validator from '../validator'
-  import RactiveLocalMethods from '../../../app/assets/javascripts/ractive_local_methods.coffee'
+  var RactiveLocalMethods = require("exports-loader?local_methods!ractive_local_methods")
   import translations from './translations.js'
   import ConfirmDeleteModal from '../confirm_delete_modal'
 

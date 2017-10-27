@@ -7,48 +7,32 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-
-// require 'in_page_edit'
-// require 'ractive_validator'
-// require 'file_input_decorator'
-// require 'progress_bar'
-// require 'ractive_local_methods'
-// require 'string'
-// require 'jquery_datepicker'
-// require 'filter_criteria_datepicker'
-// require 'confirm_delete_modal'
-// require 'attached_documents'
-// require 'communication'
-// require 'notable'
-// require 'remindable'
-
 window.complaints_page_data = () =>
   ({
     complaints : source_complaints_data,
-    all_mandates : source_all_mandates,
-    complaint_bases : source_complaint_bases,
-    all_agencies : source_all_agencies,
-    all_agencies_in_sixes : _.chain(source_all_agencies).groupBy(function(el,i){return Math.floor(i/6)}).toArray().value(),
-    all_users : source_all_users,
     filter_criteria : source_filter_criteria,
-    all_good_governance_complaint_bases : source_all_good_governance_complaint_bases,
-    all_human_rights_complaint_bases : source_all_human_rights_complaint_bases,
-    all_special_investigations_unit_complaint_bases : source_all_special_investigations_unit_complaint_bases,
-    all_staff : source_all_staff,
-    permitted_filetypes : source_permitted_filetypes,
-    maximum_filesize : source_maximum_filesize,
-    communication_permitted_filetypes : source_communication_permitted_filetypes,
-    communication_maximum_filesize : source_communication_maximum_filesize,
-    statuses : source_statuses,
     next_case_reference : source_next_case_reference
   })
 ;
 
 import complaints_options from '../complaints_page.ractive.pug'
-import filter_criteria_datepicker from '../../../../../../app/assets/javascripts/filter_criteria_datepicker'
+var filter_criteria_datepicker = require("exports-loader?filter_criteria_datepicker!filter_criteria_datepicker")
 
 _.extend(Ractive.defaults.data, {
-  all_users : complaints_page_data().all_users,
+  all_users : source_all_users,
+  all_mandates : source_all_mandates,
+  complaint_bases : source_complaint_bases,
+  all_agencies : source_all_agencies,
+  all_agencies_in_sixes : _.chain(source_all_agencies).groupBy(function(el,i){return Math.floor(i/6)}).toArray().value(),
+  all_good_governance_complaint_bases : source_all_good_governance_complaint_bases,
+  all_human_rights_complaint_bases : source_all_human_rights_complaint_bases,
+  all_special_investigations_unit_complaint_bases : source_all_special_investigations_unit_complaint_bases,
+  all_staff : source_all_staff,
+  permitted_filetypes : source_permitted_filetypes,
+  maximum_filesize : source_maximum_filesize,
+  communication_permitted_filetypes : source_communication_permitted_filetypes,
+  communication_maximum_filesize : source_communication_maximum_filesize,
+  statuses : source_statuses,
   local : function(gmt_date){ return $.datepicker.formatDate("M d, yy", new Date(gmt_date)); }
 })
 

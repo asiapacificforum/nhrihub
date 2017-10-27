@@ -1,7 +1,4 @@
-import $ from 'jquery'
-import 'jquery-ui/ui/widgets/datepicker'
-
-filter_criteria_datepicker =
+filter_criteria_datepicker = @filter_criteria_datepicker =
   start : (collection)->
     $('#from').datepicker
       maxDate: new Date()
@@ -24,5 +21,3 @@ filter_criteria_datepicker =
       onClose: (selectedDate) ->
         unless selectedDate == ""
           collection.set_filter_criteria_to_date(selectedDate)
-
-export default filter_criteria_datepicker

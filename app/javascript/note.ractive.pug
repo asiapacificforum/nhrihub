@@ -58,7 +58,7 @@ script#show_note_template(type = 'text/ractive')
 script.
   import ConfirmDeleteModal from './confirm_delete_modal'
   import Notable from  '../assets/javascripts/notable.coffee'
-  import InpageEdit from '../assets/javascripts/in_page_edit.coffee'
+  var InpageEdit = require("exports-loader?InpageEdit!../assets/javascripts/in_page_edit.coffee")
   import translations from './notes_translations.js'
   import csrf_header from './csrf'
 

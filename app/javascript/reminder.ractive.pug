@@ -183,7 +183,7 @@ script#new_reminder_template(type = 'text/ractive')
 
 script.
   import ConfirmDeleteModal from '../javascript/confirm_delete_modal'
-  import InpageEdit from '../assets/javascripts/in_page_edit.coffee'
+  var InpageEdit = require("exports-loader?InpageEdit!../assets/javascripts/in_page_edit.coffee")
   import I18n from './reminders_translations.js'
 
   const PopoverEdit = function(node,id){

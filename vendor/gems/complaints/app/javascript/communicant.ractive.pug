@@ -56,8 +56,7 @@ script#show_communicant_template(type = 'text/ractive')
 script.
   import Validator from '../../../../../app/javascript/validator'
   import translations from './translations.js'
-  import RactiveLocalMethods from '../../../../../app/assets/javascripts/ractive_local_methods.coffee'
-  //import Ractive from 'ractive'
+  var RactiveLocalMethods = require("exports-loader?local_methods!ractive_local_methods")
 
   export default Ractive.extend({
     template : $TEMPLATE,

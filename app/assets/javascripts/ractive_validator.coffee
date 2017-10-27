@@ -18,7 +18,7 @@
 #      credit_card validation uses passed-in function
 #      unique_title must not be the same as any of the values in the array of existing titles
 
-class Validator
+class @Validator
   constructor : (validatee)->
     if typeof validatee != 'object'
       throw new Error "No ractive object has been provided to ractive validator"

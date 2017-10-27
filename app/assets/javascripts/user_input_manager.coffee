@@ -3,13 +3,13 @@ class @UserInputManager
     @user_input_claimant = null
     @undo = null
   claim_user_input_request : (user_input_claimant,undo)->
-    #console.log "claim ui with: "+undo
+    #console.log "claim ui with: #{undo}"
     if @user_input_claimant
       @terminate_user_input_request()
     @user_input_claimant = user_input_claimant
     @undo = undo
   terminate_user_input_request : ->
-    #console.log "terminate ui claim for: "+@undo
+    #console.log "terminate ui claim for: #{@undo}"
     if @user_input_is_active()
       @user_input_claimant[@undo]()
   user_input_is_active : ->
@@ -21,6 +21,4 @@ class @UserInputManager
 
 UserInputManager = @UserInputManager
 
-@UserInput = new UserInputManager
-
-export default @UserInput
+UserInput = @UserInput = new UserInputManager

@@ -32,7 +32,7 @@ script#new_complaint_template(type = 'text/ractive')
                 | {{ t.firstName_error_message }}
             .col-md-4.form-group('class-has-error' = 'lastName_error', style = 'padding-top:0px;')
               label.required(for = 'lastName', style = 'font-weight:normal') 
-                | {{ t.last_name }}
+                | {{ t.lastName }}
               input.form-control#lastName(value = '{{lastName}}', 'on-keydown'="@this.remove_attribute_error('lastName')")
               span.help-block.error#lastName_error 
                 | {{ t.lastName_error_message }}
@@ -125,7 +125,7 @@ script#new_complaint_template(type = 'text/ractive')
             | {{ t.mandate }}
         .col-md-10
           .row
-            <mandatesSelector mandate_ids='{{mandate_ids}}' all_mandates='{{all_mandates}}' />
+            <mandatesSelector mandate_ids='{{mandate_ids}}' />
           span.help-block.error#mandate_id_count_error 
             | {{ t.mandate_ids_error_message }}
       .row.form-group('class-has-error' = 'complaint_basis_id_count_error')
@@ -134,7 +134,7 @@ script#new_complaint_template(type = 'text/ractive')
             | {{ t.complaint_basis }}
         .col-md-10
           .row
-            <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' complaint_bases='{{complaint_bases}}' />
+            <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' />
           span.help-block.error#complaint_basis_id_count_error 
             | {{ t.complaint_basis_error_message }}
       .row
@@ -260,7 +260,7 @@ script#show_complaint_template(type = 'text/ractive')
                       | {{ t.firstName_error_message }}
                   .col-md-4.form-group('class-has-error' = 'lastName_error')
                     label.required(for = 'lastName')
-                      | {{ t.last_name }}
+                      | {{ t.lastName }}
                     input.form-control#lastName(value = '{{lastName}}', 'on-keydown'="@this.remove_attribute_error('lastName')")
                     span.help-block.error#lastName_error
                       | {{ t.lastName_error_message }}
@@ -451,7 +451,7 @@ script#show_complaint_template(type = 'text/ractive')
                 | {{ mandate_names }}
               .edit
                 .row
-                  <mandatesSelector mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' all_mandates='{{all_mandates}}' />
+                  <mandatesSelector mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' />
                 span.help-block.error#mandate_id_count_error
                   | {{ t.mandate_ids_error_message }}
       .row.collapse
@@ -467,7 +467,7 @@ script#show_complaint_template(type = 'text/ractive')
                 <complaintBases good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' />
               .edit
                 .row
-                  <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' complaint_bases='{{complaint_bases}}' />
+                  <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' />
               span.help-block.error#complaint_basis_id_count_error
                 | {{ t.complaint_basis_error_message }}
       .row.collapse('data-toggle'= 'edit')
@@ -520,18 +520,28 @@ script(type='text/javascript').
   import ConfirmDeleteModal from '../../../../../app/javascript/confirm_delete_modal'
   import Validator from '../../../../../app/javascript/validator'
   import 'jquery-ui/ui/widgets/datepicker'
-  import './edit_in_place.js'
+  var EditInPlace = require("exports-loader?EditInPlace!edit_in_place")
   import translations from './translations.js'
-  import Remindable from '../../../../../app/assets/javascripts/remindable.coffee'
-  import Notable from '../../../../../app/assets/javascripts/notable.coffee'
+  var Notable = require("exports-loader?Notable!../../../../../app/assets/javascripts/notable.coffee")
   import Communications from './communications.ractive.pug'
-  import SingleMonthDatepicker from  '../../../../../app/assets/javascripts/single_month_datepicker.coffee'
-  Ractive.decorators.single_month_datepicker = SingleMonthDatepicker
   import '../../../../../app/assets/javascripts/local_node_modules/bootstrap-multimodal/js/multimodal.js'
   import StatusChange from './status_change.ractive.pug'
-  import RactiveLocalMethods from '../../../../../app/assets/javascripts/ractive_local_methods.coffee'
+  var RactiveLocalMethods = require("exports-loader?local_methods!ractive_local_methods")
   import csrf_header from '../../../../../app/javascript/csrf'
-  import UserInput from '../../../../../app/assets/javascripts/user_input_manager.coffee'
+  import reminders from '../../../../../app/javascript/reminders.ractive.pug'
+  import 'bootstrap'
+
+  var Remindable = {
+    // copy this object's reminders into the global reminders object
+    show_reminders_panel : function(){
+        reminders.set({
+          reminders: this.get('reminders'),
+          create_reminder_url : this.get('create_reminder_url'),
+          parent : this
+          });
+        $('#reminders_modal').modal('show');
+      }
+    };
 
   const FilterMatch = {
     include() {

@@ -8,9 +8,6 @@
 #     @asFormData(@get('persistent_attributes')
 # where the persistent_attributes may contain an attribute of the form "associated_model_attributes"
 # at which point this method is called recursively... passing in the formData object
-#Ractive.prototype.asFormData = (attributes,formData)->
-import String from './string.coffee'
-import _ from 'underscore'
 
 local_methods =
   asFormData : (attributes,formData)->
@@ -35,10 +32,10 @@ local_methods =
       ar = attribute.split('_')
       ar.pop()
       ar = _(ar).map (val,i)->
-             #if i!=0
              if i == ar.length-1
                val.singularize().capitalize()
              else
+               debugger
                val.capitalize()
       # e.g. component = projectDocument
       # or component = communicant
@@ -87,4 +84,4 @@ local_methods =
   local : (gmt_date)->
     $.datepicker.formatDate("M d, yy", new Date(gmt_date))
 
-export default local_methods
+_(Ractive.prototype).extend(local_methods)

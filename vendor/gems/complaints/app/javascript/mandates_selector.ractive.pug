@@ -8,12 +8,12 @@ form
   |  {{/all_mandates}}
 
 script.
-  //import Ractive from 'ractive'
   export default Ractive.extend({
     template : $TEMPLATE,
     remove_error() {
       if (this.parent.get('mandate_id_count') !== 0) {
         return this.parent.remove_attribute_error('mandate_id_count');
       }
-    }
+    },
+    data(){ return {} },
   });

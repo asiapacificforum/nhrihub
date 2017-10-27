@@ -49,21 +49,6 @@
     .col-md-1{:style => "text-align:center; font-size:14px; width:5%;"}
       %i.fa.fa-trash-o.fa-lg#delete_note{'on-click' => '@this.show_confirm_delete_modal()'.html_safe, :style => "position:relative; left:-12px; top:-2px;"}
 
-%script#detailsContent{:type => 'text/ractive'}
-  %table#details{:style => 'width:200px'}
-    %tr
-      %td= t('.created_on')
-      %td#created_on {{ date }}
-    %tr
-      %td= t('.author')
-      %td#author {{ author_name }}
-    %tr
-      %td= t('.updated_on')
-      %td#updated_on {{ updated_on }}
-    %tr
-      %td= t('.updated_by')
-      %td#editor {{ editor_name }}
-
 %div#popover_template{:style=>"display: none"}
   .popover.fileDetails{:role=>"tooltip"}
     .arrow
@@ -71,7 +56,23 @@
     .popover-content
 
 %div#detailsTitle{:style=>"display: none"}
-  %span{:style => 'z-index:20'}= t('.details')
+  %span{:style => 'z-index:20'}= t('.popover.details')
+
+%script#detailsContent{:type => 'text/ractive'}
+  - scope = 'notes.note.popover'
+  %table#details{:style => 'width:200px'}
+    %tr
+      %td= t('created_on', :scope => scope)
+      %td#created_on {{ date }}
+    %tr
+      %td= t('author', :scope => scope)
+      %td#author {{ author_name }}
+    %tr
+      %td= t('updated_on', :scope => scope)
+      %td#updated_on {{ updated_on }}
+    %tr
+      %td= t('updated_by', :scope => scope)
+      %td#editor {{ editor_name }}
 
 #note
 
