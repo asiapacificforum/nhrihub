@@ -36,8 +36,8 @@ Ractive.components['modal-custom'] = Ractive.extend({
 		type: "",
 		onshow: "",
 		onclose: "",
-		keyboard: true,
-		backdrop: "static",
+		keyboard: "true",
+		backdrop: "true",
     fade : true
 	},
 	template: "<div class='modal' class-fade='fade' {{#id}}id='{{id}}'{{/id}} tabindex='-1' role='dialog' aria-hidden='true' data-backdrop='{{backdrop}}' data-keyboard='{{keyboard}}'><div class='modal-dialog {{#type}}modal-{{type}}{{/}}'><div class='modal-content'>{{yield}}</div></div></div>",

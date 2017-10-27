@@ -118,6 +118,8 @@
             context : @
       cancel_note : ->
         @parent.pop('notes')
+      terminate_edit : ->
+        @editor.edit_cancel($(@find('*')))
       delete_callback : (response, statusText, jqxhr)->
         @parent.set('notes',response)
         @get('parent').set('notes',response)
@@ -152,6 +154,16 @@
       data :
         notes : []
         fade : window.env != "test"
+      close : (ev)->
+        self = ev.data.self
+        if (self._new_note_is_active())
+          self.pop('notes')
+        self.terminate_edits()
+      terminate_edits : ->
+        notes = @findAllComponents('note')
+        _(notes).each((note)-> note.terminate_edit())
+      onrender : ->
+        $(@find("#notes_modal")).bind('hidden.bs.modal',{self : this}, @close)
       new_note : ->
         unless @_new_note_is_active()
           @push('notes',{id:null, type:null, frequency:null, text:'', notable_id:@get('id')})
@@ -182,7 +194,7 @@
     Ractive.components.note = Note
 
 %script#notes_template{:type => 'ractive/template'}
-  <modal-custom fade='{{fade}}' id="notes_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
+  <modal-custom fade='{{fade}}' id="notes_modal" type="xl" data-backdrop='true' data-keyboard='true' >
   <modal-header>
   <h4>#{t('.notes')}<modal-close/></h4>
   </modal-header>

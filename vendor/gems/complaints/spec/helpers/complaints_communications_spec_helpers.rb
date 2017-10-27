@@ -28,10 +28,8 @@ module ComplaintsCommunicationsSpecHelpers
 
   def set_datepicker(id,date)
     page.execute_script %Q{ $('##{id}').trigger('focus') } # trigger datepicker
-    # why jquery? not totally sure, but it seems that
-    # datepicker is not accessible under $
-    page.execute_script %Q{ jquery('##{id}').datepicker('setDate','#{date}') }
-    page.execute_script %Q{ jquery('##{id}').datepicker('hide') } # trigger the onClose handler
+    page.execute_script %Q{ $('##{id}').datepicker('setDate','#{date}') }
+    page.execute_script %Q{ $('##{id}').datepicker('hide') } # trigger the onClose handler
   end
 
   def communications
