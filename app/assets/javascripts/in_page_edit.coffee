@@ -112,12 +112,12 @@ class @InpageEdit
       $target = $(e.target)
       @edit_start($target)
 
-    $(@options.on).find("[id='edit_cancel']").on 'click', (e)=>
+    $(@options.on).find("*").on 'click', '#edit_cancel', (e)=>
       e.stopPropagation()
       $target = $(e.target)
       @edit_cancel($target)
 
-    $(@options.on).find("[id='edit_save']").on 'click', (e)=>
+    $(@options.on).find("*").on 'click', '#edit_save', (e)=>
       e.stopPropagation()
       $target = $(e.target)
       if $target.closest('.editable_container').get(0) == @root.get(0)
@@ -145,6 +145,8 @@ class @InpageEdit
 
   edit_start : ($target) ->
     if $target.closest('.editable_container').get(0) == @root.get(0)
+      if @options.before_edit_start
+        @options.before_edit_start()
       @context = $target.closest('.editable_container')
       if _.isFunction(@options.object.stash)
         @options.object.stash()

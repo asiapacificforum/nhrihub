@@ -1,6 +1,6 @@
 <filterControls expanded='{{expanded}}' filter_criteria='{{filter_criteria}}' />
 | {{#complaints}}
-<complaint new_assignee_id=null date_of_birth='{{date_of_birth}}' dob='{{dob}}' editing=false expanded=false agency_ids='{{agency_ids}}' assigns='{{assigns}}' attached_documents='{{attached_documents}}' case_reference='{{case_reference}}' chiefly_title='{{chiefly_title}}' communications='{{communications}}' complained_to_subject_agency='{{complained_to_subject_agency}}' complaint_named_documents_titles='{{complaint_named_documents_titles}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' date='{{date}}' date_received='{{date_received}}' desired_outcome='{{desired_outcome}}' details='{{details}}' date_of_birth='{{date_of_birth}}' email='{{email}}' employer='{{employer}}' firstName='{{firstName}}' filter_criteria='{{filter_criteria}}' gender='{{gender}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' lastName='{{lastName}}' mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' notes='{{notes}}' occupation='{{occupation}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}' age='{{age}}' />
+<complaint new_assignee_id='0' date_of_birth='{{date_of_birth}}' dob='{{dob}}' editing=false expanded=false agency_ids='{{agency_ids}}' assigns='{{assigns}}' attached_documents='{{attached_documents}}' case_reference='{{case_reference}}' chiefly_title='{{chiefly_title}}' communications='{{communications}}' complained_to_subject_agency='{{complained_to_subject_agency}}' complaint_named_documents_titles='{{complaint_named_documents_titles}}' complainant_error='{{complainant_error}}' current_assignee_id='{{current_assignee_id}}' current_assignee_name='{{current_assignee_name}}' current_status_humanized='{{current_status_humanized}}' date='{{date}}' date_received='{{date_received}}' desired_outcome='{{desired_outcome}}' details='{{details}}' date_of_birth='{{date_of_birth}}' email='{{email}}' employer='{{employer}}' firstName='{{firstName}}' filter_criteria='{{filter_criteria}}' gender='{{gender}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' id='{{id}}' lastName='{{lastName}}' mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' notes='{{notes}}' occupation='{{occupation}}' phone='{{phone}}' reminders='{{reminders}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' status_changes='{{status_changes}}' village='{{village}}' age='{{age}}' />
 | {{/complaints}}
 
 script.
@@ -36,7 +36,7 @@ script.
           attached_documents : [],
           current_assignee : "",
           current_assignee_id : "",
-          new_assignee_id : null,
+          new_assignee_id : "0",
           formatted_date : "",
           good_governance_complaint_basis_ids : [],
           human_rights_complaint_basis_ids : [],

@@ -1,4 +1,5 @@
 script#file_selector_template(type='text/ractive', src='file_selector_template.html')
+script#complaint_detail(type='text/ractive', src='complaint_detail.html')
 
 script#new_complaint_template(type = 'text/ractive')
   .row.well.well-sm.expandable_well.new_complaint.editable_container(intro = 'slide')
@@ -116,7 +117,7 @@ script#new_complaint_template(type = 'text/ractive')
           label.required 
             | {{ t.assignee }}
         .col-md-6
-          <assigneeSelector new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
+          <assigneeSelector editing=false new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
           span.help-block.error#new_assignee_id_error 
             | {{ t.assignee_error_message }}
       .row.form-group('class-has-error' = 'mandate_id_count_error')
@@ -191,7 +192,7 @@ script#show_complaint_template(type = 'text/ractive')
             .col-md-12
               label
                 | {{ t.case_reference }}
-              span.case_reference
+              span.case_reference(style='margin-left:12px;')
                 | {{ case_reference }}
         .col-md-7
           .row('data-toggle' = 'edit')
@@ -221,15 +222,15 @@ script#show_complaint_template(type = 'text/ractive')
                 | {{/status_changes}}
               .fade.edit#current_status
                 form
-                  span
+                  label(style='font-weight:normal; margin-right:12px')
                     | {{ t.open }}
-                  input#open(type = 'radio', name ='{{current_status_humanized}}', value ='Open')
-                  span
+                    input#open(type = 'radio', name ='{{current_status_humanized}}', value ='Open', style='margin-left:6px')
+                  label(style='font-weight:normal; margin-right:12px')
                     | {{ t.suspended }}
-                  input#suspended(type = 'radio', name ='{{current_status_humanized}}', value ='Suspended')
-                  span
+                    input#suspended(type = 'radio', name ='{{current_status_humanized}}', value ='Suspended', style='margin-left:6px')
+                  label(style='font-weight:normal')
                     | {{ t.closed }}
-                  input#closed(type = 'radio', name ='{{current_status_humanized}}', value ='Closed')
+                    input#closed(type = 'radio', name ='{{current_status_humanized}}', value ='Closed', style='margin-left:6px')
           .row
             .col-md-3('data-toggle' = 'edit')
               .no_edit.in
@@ -299,207 +300,9 @@ script#show_complaint_template(type = 'text/ractive')
                   i#expand('on-click'='@this.expand()', 'data-toggle'='tooltip', title= '{{ t.expand }}', style = "position:relative; top:3px;")
                   | {{/if}}
                 .edit
-      .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2.form-group('data-toggle'='edit', 'class-has-error' = 'dob_error')
-          .row.no_edit.in
-            .col-md-3
-              label
-                | {{ t.dob }}
-            .col-md-3
-              span.complainant_dob
-                | {{ date_of_birth }}
-            .col-md-2(style = "text-align:right")
-              label
-                | {{ t.gender }}
-            .col-md-4
-              span.gender
-                | {{gender}}
-          .row.edit
-            .col-md-3
-              label.required
-                | {{ t.dob }}
-              span dd/mm/yyyy
-            .col-md-2
-              input.form-control#dob(value = '{{dob}}', 'on-keydown'="@this.remove_attribute_error('dob')", style ="width:112px;")
-              span.help-block.error#dob_error
-                | {{ t.dob_error_message }}
-            .col-md-2(style = "text-align:right")
-              label
-                | {{ t.gender }}
-            .col-md-5
-              form
-                label(style = 'font-weight:normal')
-                  span(style = "margin-right:6px;")
-                    | {{ t.male }}
-                  input#m(type = 'radio', name ='{{gender}}', value ='M')
-                label(style = 'font-weight:normal')
-                  span(style = "margin-right:6px; margin-left:12px;")
-                    | {{ t.female }}
-                  input#f(type = 'radio', name ='{{gender}}', value ='F')
-                label(style = 'font-weight:normal')
-                  span(style = "margin-right:6px; margin-left:12px;")
-                    | {{ t.other }}
-                  input#o(type = 'radio', name ='{{gender}}', value ='O')
-      .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2.form-group('data-toggle'='edit')
-          .row
-            .col-md-3
-              label
-                | {{ t.email }}
-            .col-md-9
-              .no_edit.in
-                span.email
-                  | {{ email }}
-              .edit
-                input.form-control#email(value = '{{email}}')
-      .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2.form-group('data-toggle'='edit', 'class-has-error' = 'village_error')
-          .row
-            .col-md-3
-              .no_edit.in
-                label
-                  | {{ t.village }}
-              .edit
-                label.required
-                  | {{ t.village }}
-            .col-md-9
-              .no_edit.in
-                span.complainant_village
-                  | {{ village }}
-              .edit
-                input.form-control#village(value = '{{village}}', 'on-keydown'="@this.remove_attribute_error('village')")
-                span.help-block.error#village_error
-                  | {{ t.village_error_message }}
-      .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2('data-toggle'= 'edit')
-          .row
-            .col-md-3
-              label
-                | {{ t.phone }}
-            .col-md-9
-              .no_edit.in
-                span.complainant_phone
-                  | {{ phone }}
-              .edit
-                input.form-control#phone(value = '{{phone}}')
-      .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2.form-group('data-toggle'= 'edit', 'class-has-error' = 'details_error')
-          .row
-            .col-md-3
-              .no_edit.in
-                label
-                  | {{ t.details }}
-              .edit
-                label.required
-                  | {{ t.details }}
-            .col-md-9
-              .no_edit.in
-                span.complaint_details
-                  | {{ details }}
-              .edit
-                input.form-control#complaint_details(value = '{{details}}', 'on-keydown'="@this.remove_attribute_error('details')")
-                span.help-block.error#details_error
-                  | {{ t.details_error_message }}
-      .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2('data-toggle'= 'edit')
-          .row
-            .col-md-3
-              label
-                | {{ t.desired_outcome }}
-            .col-md-9
-              .no_edit.in
-                span.desired_outcome
-                  | {{ desired_outcome }}
-              .edit
-                input.form-control#desired_outcome(value = '{{desired_outcome}}')
-      .row.collapse.expanded_info
-        .col-md-7.col-md-offset-2('data-toggle'= 'edit')
-          .row
-            .col-md-3
-              label
-                | {{ t.complained_to_subject_agency }}
-            .col-md-2
-              .no_edit.in
-                span.complained_to_subject_agency
-                  | {{#if complained_to_subject_agency }} yes {{else}} no {{/if}}
-              .edit
-                form
-                  label(style = "font-weight:normal;") 
-                    | {{ t.yes }}
-                    input#complained_to_subject_agency_yes(type = 'radio', name = "{{complained_to_subject_agency}}", value = 'true')
-                  label(style = "font-weight:normal;") 
-                    | {{ t.no }}
-                    input#complained_to_subject_agency_no(type = 'radio', name = "{{complained_to_subject_agency}}", value = 'false')
-      .row.collapse
-        .col-md-2
-          | {{ t.assignees_history }}
-        .col-md-5('data-toggle'= 'edit')
-          <assignees assigns='{{assigns}}' />
-          .no_edit.in
-          .edit
-            <assigneeSelector new_assignee_id='{{new_assignee_id}}' all_staff='{{all_staff}}' />
-      .row.collapse
-        .col-md-12.form-group('data-toggle'= 'edit', 'class-has-error' = 'mandate_id_count_error')
-          .row
-            .col-md-2
-              .no_edit.in
-                | {{ t.mandate }}
-              .edit.required
-                | {{ t.mandate }}
-            .col-md-10
-              .no_edit.in#mandate
-                | {{ mandate_names }}
-              .edit
-                .row
-                  <mandatesSelector mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' />
-                span.help-block.error#mandate_id_count_error
-                  | {{ t.mandate_ids_error_message }}
-      .row.collapse
-        .col-md-12.form-group('data-toggle'= 'edit', 'class-has-error' = 'complaint_basis_id_count_error')
-          .row
-            .col-md-2
-              .no_edit.in
-                | {{ t.complaint_basis }}
-              .edit.required
-                | {{ t.complaint_basis }}
-            .col-md-10
-              .no_edit.in
-                <complaintBases good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' />
-              .edit
-                .row
-                  <complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' />
-              span.help-block.error#complaint_basis_id_count_error
-                | {{ t.complaint_basis_error_message }}
-      .row.collapse('data-toggle'= 'edit')
-        .col-md-2
-          | {{ t.agency }}
-        .col-md-10
-          .no_edit.in.comma-list#agencies(style = 'display:flex')
-            <agencies agency_ids='{{agency_ids}}' />
-          .edit
-            <agenciesSelector agency_ids='{{agency_ids}}' all_agencies_in_sixes='{{all_agencies_in_sixes}}' />
-      .row.collapse('data-toggle'= 'edit')
-        .col-md-2
-          | {{ t.documents }}
-        .col-md-10#complaint_documents
-          .edit(style = "padding-left:15px; padding-top:15px;")
-            | {{> file_selector_template {key : 'complaint'} }}
-          .no_edit.in
-          <attachedDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' key='complaint' attached_documents='{{attached_documents}}' />
-      .row.collapse('data-toggle'= 'edit', style = "margin-top:30px;")
-        .col-sm-3.col-sm-offset-3.edit(style = "text-align:center;")
-          .btn.btn-danger.btn-sm.edit_cancel#edit_cancel
-            i.fa.fa-remove.fa-lg(style = "color:white")
-            span(style = "color:white")
-              |  {{ t.cancel }}
-        .col-sm-3.edit(style = "text-align:center;")
-          .btn.btn-success.btn-sm.save_complaint#edit_save(style = "color:white;")
-            i.fa.fa-check.fa-lg(style = "color:white")
-            span
-              | {{ t.save }}
-          .form-group('class-has-error' = 'has_errors')
-            span#complaint_error.help-block.error
-              | {{ t.form_error }}
+      | {{#if expanded}}
+      | {{> complaint_detail }}
+      | {{/if}}
 
 | {{#if persisted }}
 | {{> show_complaint_template}}
@@ -664,6 +467,7 @@ script(type='text/javascript').
   const EditBackup = {
     stash() {
       const stashed_attributes = _(this.get()).pick(this.get('persistent_attributes'));
+      Object.assign(stashed_attributes, {attached_documents : this.get('attached_documents')});
       return this.stashed_instance = $.extend(true,{},stashed_attributes);
     },
     restore() {
@@ -711,6 +515,7 @@ script(type='text/javascript').
           // thanks to http://stackoverflow.com/a/22987941/451893
           //xhr: @progress_bar_create.bind(@)
           method : 'put',
+          headers : csrf_header,
           data,
           url : this.get('persisted') ? Routes.complaint_path(current_locale, this.get('id')) : undefined,
           success,
@@ -810,7 +615,7 @@ script(type='text/javascript').
           village : ['notBlank'],
           mandate_id_count : 'nonZero',
           complaint_basis_id_count : 'nonZero',
-          new_assignee_id : ['numeric', {if : () => !this.get('editing')}],
+          new_assignee_id : ['nonZero', {if : () => !this.get('editing')}],
           dob: () => {
             const date_regex = new RegExp(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); // dd/mm/yyyy
             const match = date_regex.exec(this.get('dob'));
@@ -854,8 +659,7 @@ script(type='text/javascript').
         //if _(@validator.attributes).includes(attr)
           //@validate_attribute(attr)
     data : function(){ return {
-      t : translations.t('complaint'),
-      local(){return this.get('date')}
+      t : translations.t('complaint')
     }},
     components : {
       mandates : Mandates,

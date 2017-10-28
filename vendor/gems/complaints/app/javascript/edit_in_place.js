@@ -11,9 +11,11 @@ const EditInPlace = function(node,id){
     error() {
       return console.log("Changes were not saved, for some reason");
     },
+    before_edit_start : () => {
+      ractive.expand();
+    },
     start_callback : () => {
       this.set('new_assignee_id',undefined);
-      return ractive.expand();
     }
   });
   return {

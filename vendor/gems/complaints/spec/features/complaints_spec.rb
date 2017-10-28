@@ -522,6 +522,7 @@ feature "complaints index", :js => true do
 
   it "edits a complaint, deleting a file" do
     edit_complaint
+    expect(page).to have_selector(".complaint .row.collapse.in", :count => 13) # make sure expanded info is fully rendered before proceeding with the deletion
     expect{delete_document; confirm_deletion; wait_for_ajax}.to change{ Complaint.first.complaint_documents.count }.by(-1).
                                           and change{ documents.count }.by(-1)
   end
@@ -542,6 +543,7 @@ feature "complaints index", :js => true do
     new_assignee_id = page.evaluate_script("complaints.findAllComponents('complaint')[0].get('new_assignee_id')")
     original_complaint = Complaint.first
     edit_complaint
+    expect(page).to have_selector(".complaint .row.collapse.in", :count => 13) # make sure expanded info is fully rendered before proceeding
     within first_complaint do
       fill_in('lastName', :with => "Normal")
       fill_in('firstName', :with => "Norman")
@@ -566,6 +568,7 @@ feature "complaints index", :js => true do
     edit_cancel
     sleep(0.5) # seems like a huge amount of time to wait for javascript, but this is what it takes for reliable operation in chrome
     edit_complaint
+    expect(page).to have_selector(".complaint .row.collapse.in", :count => 13) # make sure expanded info is fully rendered before proceeding
     within first_complaint do
       expect(page.find('#lastName').value).to eq original_complaint.lastName
       expect(page.find('#firstName').value).to eq original_complaint.firstName

@@ -35,7 +35,6 @@ local_methods =
              if i == ar.length-1
                val.singularize().capitalize()
              else
-               debugger
                val.capitalize()
       # e.g. component = projectDocument
       # or component = communicant

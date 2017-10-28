@@ -16,14 +16,6 @@
 #communication
 #single_note
 
--#= render :partial => 'reminders/reminder' # it's in the main app
--#= render :partial => 'notes/note'
--#= render :partial => 'notes/single_note'
--#= render :partial => 'shared/file_selector'
--#= render :partial => 'communications/communication'
--#= render :partial => 'complaints/complaints_templates'
--#= render :partial => 'complaints/documents_templates'
-
 :coffeescript
   case_reference = "#{params[:case_reference] ? params[:case_reference] : ''}"
   @source_all_good_governance_complaint_bases = #{@good_governance_complaint_bases.to_json.html_safe}

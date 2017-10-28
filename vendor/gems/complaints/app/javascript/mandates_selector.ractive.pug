@@ -3,7 +3,7 @@ form
   .col-md-2(style = "padding-top:0;")
     span
       | {{ name }}
-  .col-md-1.mandate(:style = "padding-top:0;")
+  .col-md-1.mandate(style = "padding-top:0;")
     input(type = 'checkbox', name = '{{mandate_ids}}', value = '{{ id }}', 'on-change'='@this.remove_error()', id = '{{key}}')
   |  {{/all_mandates}}
 

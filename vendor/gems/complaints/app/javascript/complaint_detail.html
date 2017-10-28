@@ -1,0 +1,209 @@
+<div class="row collapse expanded_info">
+  <div class="col-md-7 col-md-offset-2 form-group" data-toggle="edit" class-has-error="dob_error">
+    <div class="row no_edit in">
+      <div class="col-md-3">
+        <label>{{ t.dob }}</label>
+      </div>
+      <div class="col-md-3"><span class="complainant_dob">{{ date_of_birth }}</span></div>
+      <div class="col-md-2" style="text-align:right">
+        <label>{{ t.gender }}</label>
+      </div>
+      <div class="col-md-4"><span class="gender">{{gender}}</span></div>
+    </div>
+    <div class="row edit">
+      <div class="col-md-3">
+        <label class="required">{{ t.dob }}</label><span>dd/mm/yyyy</span>
+      </div>
+      <div class="col-md-2">
+        <input class="form-control" id="dob" value="{{dob}}" on-keydown="@this.remove_attribute_error('dob')" style="width:112px"/><span class="help-block error" id="dob_error">{{ t.dob_error_message }}</span>
+      </div>
+      <div class="col-md-2" style="text-align:right">
+        <label>{{ t.gender }}</label>
+      </div>
+      <div class="col-md-5">
+        <form>
+          <label style="font-weight:normal"><span style="margin-right:6px">{{ t.male }}</span>
+            <input id="m" type="radio" name="{{gender}}" value="M"/>
+          </label>
+          <label style="font-weight:normal"><span style="margin-right:6px; margin-left:12px">{{ t.female }}</span>
+            <input id="f" type="radio" name="{{gender}}" value="F"/>
+          </label>
+          <label style="font-weight:normal"><span style="margin-right:6px; margin-left:12px">{{ t.other }}</span>
+            <input id="o" type="radio" name="{{gender}}" value="O"/>
+          </label>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row collapse expanded_info">
+  <div class="col-md-7 col-md-offset-2 form-group" data-toggle="edit">
+    <div class="row">
+      <div class="col-md-3">
+        <label>{{ t.email }}</label>
+      </div>
+      <div class="col-md-9">
+        <div class="no_edit in"><span class="email">{{ email }}</span></div>
+        <div class="edit">
+          <input class="form-control" id="email" value="{{email}}"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row collapse expanded_info">
+  <div class="col-md-7 col-md-offset-2 form-group" data-toggle="edit" class-has-error="village_error">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="no_edit in">
+          <label>{{ t.village }}</label>
+        </div>
+        <div class="edit">
+          <label class="required">{{ t.village }}</label>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="no_edit in"><span class="complainant_village">{{ village }}</span></div>
+        <div class="edit">
+          <input class="form-control" id="village" value="{{village}}" on-keydown="@this.remove_attribute_error('village')"/><span class="help-block error" id="village_error">{{ t.village_error_message }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row collapse expanded_info">
+  <div class="col-md-7 col-md-offset-2" data-toggle="edit">
+    <div class="row">
+      <div class="col-md-3">
+        <label>{{ t.phone }}</label>
+      </div>
+      <div class="col-md-9">
+        <div class="no_edit in"><span class="complainant_phone">{{ phone }}</span></div>
+        <div class="edit">
+          <input class="form-control" id="phone" value="{{phone}}"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row collapse expanded_info">
+  <div class="col-md-7 col-md-offset-2 form-group" data-toggle="edit" class-has-error="details_error">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="no_edit in">
+          <label>{{ t.details }}</label>
+        </div>
+        <div class="edit">
+          <label class="required">{{ t.details }}</label>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="no_edit in"><span class="complaint_details">{{ details }}</span></div>
+        <div class="edit">
+          <input class="form-control" id="complaint_details" value="{{details}}" on-keydown="@this.remove_attribute_error('details')"/><span class="help-block error" id="details_error">{{ t.details_error_message }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row collapse expanded_info">
+  <div class="col-md-7 col-md-offset-2" data-toggle="edit">
+    <div class="row">
+      <div class="col-md-3">
+        <label>{{ t.desired_outcome }}</label>
+      </div>
+      <div class="col-md-9">
+        <div class="no_edit in"><span class="desired_outcome">{{ desired_outcome }}</span></div>
+        <div class="edit">
+          <input class="form-control" id="desired_outcome" value="{{desired_outcome}}"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row collapse expanded_info">
+  <div class="col-md-7 col-md-offset-2" data-toggle="edit">
+    <div class="row">
+      <div class="col-md-3">
+        <label>{{ t.complained_to_subject_agency }}</label>
+      </div>
+      <div class="col-md-3">
+        <div class="no_edit in"><span class="complained_to_subject_agency">{{#if complained_to_subject_agency }} yes {{else}} no {{/if}}</span></div>
+        <div class="edit">
+          <form>
+            <label style="font-weight:normal; margin-right:12px">
+               {{ t.yes }}
+              <input id="complained_to_subject_agency_yes" type="radio" name="{{complained_to_subject_agency}}" value="true" style='margin-left:6px' />
+            </label>
+            <label style="font-weight:normal">
+               {{ t.no }}
+              <input id="complained_to_subject_agency_no" type="radio" name="{{complained_to_subject_agency}}" value="false" style='margin-left:6px' />
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row collapse">
+  <div class="col-md-2">{{ t.assignees_history }}</div>
+  <div class="col-md-5" data-toggle="edit"><assignees assigns='{{assigns}}' />
+    <div class="no_edit in"></div>
+    <div class="edit"><assigneeSelector editing=true new_assignee_id='0' all_staff='{{all_staff}}' /></div>
+  </div>
+</div>
+<div class="row collapse">
+  <div class="col-md-12 form-group" data-toggle="edit" class-has-error="mandate_id_count_error">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="no_edit in">{{ t.mandate }}</div>
+        <div class="edit required">{{ t.mandate }}</div>
+      </div>
+      <div class="col-md-10">
+        <div class="no_edit in" id="mandate">{{ mandate_names }}</div>
+        <div class="edit">
+          <div class="row"><mandatesSelector mandate_id='{{mandate_id}}' mandate_ids='{{mandate_ids}}' /></div><span class="help-block error" id="mandate_id_count_error">{{ t.mandate_ids_error_message }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row collapse">
+  <div class="col-md-12 form-group" data-toggle="edit" class-has-error="complaint_basis_id_count_error">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="no_edit in">{{ t.complaint_basis }}</div>
+        <div class="edit required">{{ t.complaint_basis }}</div>
+      </div>
+      <div class="col-md-10">
+        <div class="no_edit in"><complaintBases good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' /></div>
+        <div class="edit">
+          <div class="row"><complaintBasesSelector special_investigations_unit_complaint_basis_ids='{{special_investigations_unit_complaint_basis_ids}}' strategic_plan_complaint_basis_ids='{{strategic_plan_complaint_basis_ids}}' human_rights_complaint_basis_ids='{{human_rights_complaint_basis_ids}}' good_governance_complaint_basis_ids='{{good_governance_complaint_basis_ids}}' /></div>
+        </div><span class="help-block error" id="complaint_basis_id_count_error">{{ t.complaint_basis_error_message }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row collapse" data-toggle="edit">
+  <div class="col-md-2">{{ t.agency }}</div>
+  <div class="col-md-10">
+    <div class="no_edit in comma-list" id="agencies" style="display:flex"><agencies agency_ids='{{agency_ids}}' /></div>
+    <div class="edit"><agenciesSelector agency_ids='{{agency_ids}}' all_agencies_in_sixes='{{all_agencies_in_sixes}}' /></div>
+  </div>
+</div>
+<div class="row collapse" data-toggle="edit">
+  <div class="col-md-2">{{ t.documents }}</div>
+  <div class="col-md-10" id="complaint_documents">
+    <div class="edit" style="padding-left:15px; padding-top:15px">{{> file_selector_template {key : 'complaint'} }}</div>
+    <div class="no_edit in"></div><attachedDocuments maximum_filesize='{{maximum_filesize}}' permitted_filetypes='{{permitted_filetypes}}' key='complaint' attached_documents='{{attached_documents}}' />
+  </div>
+</div>
+<div class="row collapse" data-toggle="edit" style="margin-top:30px">
+  <div class="col-sm-3 col-sm-offset-3 edit" style="text-align:center">
+    <div class="btn btn-danger btn-sm edit_cancel" id="edit_cancel"><i class="fa fa-remove fa-lg" style="color:white"></i><span style="color:white"> {{ t.cancel }}</span></div>
+  </div>
+  <div class="col-sm-3 edit" style="text-align:center">
+    <div class="btn btn-success btn-sm save_complaint" id="edit_save" style="color:white"><i class="fa fa-check fa-lg" style="color:white"></i><span>{{ t.save }}</span></div>
+    <div class="form-group" class-has-error="has_errors"><span class="help-block error" id="complaint_error">{{ t.form_error }}</span></div>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 select.form-control#assignee(value = '{{new_assignee_id}}', 'on-change'="@this.remove_error()")
-  option(selected = true, disabled = true, style = "color:#333")
+  option(value='0', disabled=true, style = "color:#333")
     | {{#if editing}}
     | {{ t.reassign }}
     | {{else}}
@@ -11,7 +11,6 @@ select.form-control#assignee(value = '{{new_assignee_id}}', 'on-change'="@this.r
   | {{/all_staff}}
 
 script.
-  //import Ractive from 'ractive'
   import translations from './translations.js'
 
   export default Ractive.extend({
