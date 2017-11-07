@@ -35,7 +35,7 @@
         .name{:style => "margin-bottom: 0px;"} {{ recipient.first_last_name }}
       .fade.edit{:style => "height:140px;"}
         =select :reminder, :user_id, options_for_select(recipient_options), {},
-          {:class=>'form-control', :value => '{{user_id}}', 'on-change'=>"@this.remove_errors('user_id')".html_safe, :style => "height:82px;"}
+          {:class=>'form-control', :value => '{{user_id}}', 'on-change'=>"@this.remove_errors('user_id')".html_safe, :style => "height:22px;"}
         %span.help-block{:style => "font-size:0.8em; padding-left:4px; position:relative; top:-6px; width:100%; background-color:#fff"}= t('.reminder_recipient_error_message')
     .col-md-1.icon.tight{:style => "text-align:center; font-size:14px; height:20px; width:3%", 'data-toggle' => 'edit'}
       .fade.edit
