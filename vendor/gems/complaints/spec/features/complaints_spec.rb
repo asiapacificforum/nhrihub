@@ -6,6 +6,10 @@ require 'complaints_spec_setup_helpers'
 require 'navigation_helpers'
 require 'complaints_spec_helpers'
 require 'upload_file_helpers'
+require 'complaints_context_notes_spec_helpers'
+require 'complaints_communications_spec_helpers'
+#require 'reminders_spec_common_helpers'
+#require 'complaints_reminders_setup_helpers'
 
 feature "complaints index", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
@@ -498,6 +502,8 @@ feature "complaints index", :js => true do
       expect(page.all('#complaint_documents .complaint_document .title').map(&:text)).to include "added complaint document"
     end
 
+    expect(page).to have_selector("#assignees .assignee .name", :text => User.staff.last.first_last_name )
+
     email = ActionMailer::Base.deliveries.last
     expect( email.subject ).to eq "Notification of complaint assignment"
     lines = Nokogiri::HTML(email.body.to_s).xpath(".//p").map(&:text)
@@ -591,7 +597,7 @@ feature "complaints index", :js => true do
       expect(page.find('#complained_to_subject_agency_yes')).not_to be_checked
       expect(find('#date_received').value).to eq original_complaint.date_received.strftime("%b %-e, %Y")
       new_assignee_id = page.evaluate_script("complaints.findAllComponents('complaint')[0].get('new_assignee_id')")
-      expect(new_assignee_id).to be_nil
+      expect(new_assignee_id).to be_zero
       expect(find('.current_assignee').text).to eq original_complaint.assignees.first.first_last_name
       expect(page.find(".mandate ##{original_complaint.mandates.first.key}")).to be_checked
       expect(page.find_field("ACC")).not_to be_checked
@@ -767,4 +773,77 @@ feature "complaints index", :js => true do
     expect(page.evaluate_script("window.location.search")).to eq "?case_reference=#{@complaint.case_reference}"
     expect(number_of_rendered_complaints).to eq 1
   end
+end
+
+feature "complaints cache expiration", :js => true do
+  include LoggedInEnAdminUserHelper # sets up logged in admin user
+  include ComplaintsSpecSetupHelpers
+  include NavigationHelpers
+  include ComplaintsSpecHelpers
+
+  feature "expiration by reminder" do
+    include ComplaintsRemindersSetupHelpers
+
+    scenario "add a reminder" do
+      add_a_reminder
+      expect(reminders_icon['data-count']).to eq "2"
+      visit complaints_path('en')
+      expect(reminders_icon['data-count']).to eq "2" # if cached complaint is rendered, this will still be "1"
+    end
+
+    scenario "edit a reminder" do
+      expect(page).to have_selector("#reminders .reminder .text", :text => "don't forget the fruit gums mum")
+      edit_reminder_icon.click
+      select("one-time", :from => :reminder_reminder_type)
+      select_date("Dec 31 #{Date.today.year}", :from => :reminder_start_date)
+      select(User.first.first_last_name, :from => :reminder_user_id)
+      fill_in(:reminder_text, :with => "have a nice day")
+      edit_reminder_save_icon.click
+      wait_for_ajax
+
+      visit complaints_path('en')
+      open_reminders_panel
+      expect(page.find("#reminders .reminder .text .in").text).to eq "have a nice day"
+    end
+  end
+
+  feature "expiration by note" do
+    include ComplaintsContextNotesSpecHelpers
+
+    scenario "add a note" do
+      add_a_note
+      expect(notes_icon['data-count']).to eq "3"
+      visit complaints_path('en')
+      expect(notes_icon['data-count']).to eq "3"
+    end
+
+    scenario "edit a note" do
+      edit_note.first.click
+      fill_in('note_text', :with => "carpe diem")
+      save_edit.click
+      wait_for_ajax
+
+      visit complaints_path('en')
+      open_notes_modal
+      expect(page).to have_selector('#notes .note .text .no_edit span', :text => 'carpe diem')
+    end
+  end
+
+  feature "expiration by communication" do
+    include ComplaintsCommunicationsSpecHelpers
+    scenario "add a communication" do
+      add_a_communication
+      expect(communication_icon['data-count']).to eq "2"
+      visit complaints_path('en')
+      expect(communication_icon['data-count']).to eq "2"
+    end
+
+    scenario "delete a communication" do
+      delete_a_communication
+      expect(communication_icon['data-count']).to eq "0"
+      visit complaints_path('en')
+      expect(communication_icon['data-count']).to eq "0"
+    end
+  end
+
 end

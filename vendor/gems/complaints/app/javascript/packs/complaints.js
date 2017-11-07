@@ -19,6 +19,7 @@ import complaints_options from '../complaints_page.ractive.pug'
 var filter_criteria_datepicker = require("exports-loader?filter_criteria_datepicker!filter_criteria_datepicker")
 
 _.extend(Ractive.defaults.data, {
+  fade: window.env!='test',
   all_users : source_all_users,
   all_mandates : source_all_mandates,
   complaint_bases : source_complaint_bases,

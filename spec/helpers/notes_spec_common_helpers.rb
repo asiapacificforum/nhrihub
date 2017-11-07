@@ -13,7 +13,7 @@ module NotesSpecCommonHelpers
   end
 
   def notes_icon
-    page.all('.show_notes')[0]
+    page.all('.show_notes')[-1]
   end
 
   def close_notes_modal

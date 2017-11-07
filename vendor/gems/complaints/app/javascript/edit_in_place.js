@@ -13,9 +13,6 @@ const EditInPlace = function(node,id){
     },
     before_edit_start : () => {
       ractive.expand();
-    },
-    start_callback : () => {
-      this.set('new_assignee_id',undefined);
     }
   });
   return {

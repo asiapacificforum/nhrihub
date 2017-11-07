@@ -1,9 +1,60 @@
 require 'rspec/core/shared_context'
 require 'application_helpers'
+require 'reminders_spec_common_helpers'
+require 'notes_spec_common_helpers'
+require 'complaints_reminders_setup_helpers'
 
 module ComplaintsSpecHelpers
   extend RSpec::Core::SharedContext
   include ApplicationHelpers
+  include RemindersSpecCommonHelpers
+  include NotesSpecCommonHelpers
+
+  def add_a_communication
+    visit complaints_path('en')
+    open_communications_modal
+    add_communication
+    expect(page).to have_selector('#new_communication')
+    within new_communication do
+      set_datepicker('new_communication_date',"May 19, 2016")
+      choose("Email")
+      choose("Sent")
+      expect(page).to have_selector("#email_address")
+      fill_in("email_address", :with => "norm@normco.com")
+      add_communicant
+      page.all('input.communicant')[0].set("Harry Harker")
+      page.all(:css, 'input#email_address')[0].set("harry@acme.com")
+      fill_in("note", :with => "Some note text")
+    end
+    save_communication
+  end
+
+  def delete_a_communication
+    page.find("#communications .communication .delete_icon").click
+    confirm_deletion
+    wait_for_ajax
+  end
+
+  def add_a_note
+    add_note.click
+    expect(page).to have_selector("#new_note #note_text")
+    fill_in(:note_text, :with => "nota bene")
+    save_note.click
+    wait_for_ajax
+    close_notes_modal
+  end
+
+  def add_a_reminder
+    new_reminder_button.click
+    select("one-time", :from => :reminder_reminder_type)
+    page.find('#reminder_start_date_1i') # forces wait until the element is available
+    select_date("Aug 19 2018", :from => :reminder_start_date)
+    select(User.first.first_last_name, :from => :reminder_user_id)
+    fill_in(:reminder_text, :with => "time to check the database")
+    save_reminder.click
+    wait_for_ajax
+    close_reminders_modal
+  end
 
   def click_the_download_icon
     scroll_to(page.all('#complaint_documents .complaint_document .fa-cloud-download')[0]).click
@@ -54,7 +105,8 @@ module ComplaintsSpecHelpers
   end
 
   def edit_second_complaint
-    # b/c where this is used, the first complaint has been removed whe this is called, so the second edit complaint is actually the first!
+    sleep(0.2) # while the first complaint edit panel is opening
+    # b/c where this is used, the first complaint edit icon has been removed when this is called, so the second edit complaint is actually the first!
     edit_first_complaint
   end
 

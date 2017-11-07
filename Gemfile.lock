@@ -172,6 +172,7 @@ GEM
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
     builder (3.2.3)
+    bulk_cache_fetcher (1.0.0)
     byebug (9.0.6)
     capistrano (3.8.1)
       airbrussh (>= 1.0.0)
@@ -467,6 +468,7 @@ DEPENDENCIES
   authengine!
   aws-sdk (~> 2)
   bootstrap-sass
+  bulk_cache_fetcher
   byebug
   capistrano (~> 3.8.1)
   capistrano-bundler

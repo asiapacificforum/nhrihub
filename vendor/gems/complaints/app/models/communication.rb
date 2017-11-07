@@ -1,5 +1,5 @@
 class Communication < ActiveRecord::Base
-  belongs_to :complaint
+  belongs_to :complaint, :touch => true
   belongs_to :user
   has_many :communication_documents, :dependent => :destroy
   accepts_nested_attributes_for :communication_documents

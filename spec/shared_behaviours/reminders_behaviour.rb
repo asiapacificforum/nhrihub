@@ -31,6 +31,21 @@ RSpec.shared_examples "reminders" do
         new_reminder_button.click
         expect(page.all('#new_reminder').count).to eq 1
       end
+
+      scenario "add cancelled by edit" do
+        new_reminder_button.click
+        expect(page).to have_selector("#new_reminder")
+        edit_reminder_icon.click
+        expect(page).not_to have_selector("#new_reminder")
+      end
+
+      scenario "add terminated by close reminders panel" do
+        new_reminder_button.click
+        expect(page).to have_selector("#new_reminder")
+        close_reminders_modal
+        open_reminders_panel
+        expect(page).not_to have_selector("#new_reminder")
+      end
     end
 
     feature "add reminder with errors", :js => true do
@@ -151,6 +166,21 @@ RSpec.shared_examples "reminders" do
         expect(page.find("#reminders .reminder .next .in").text).to eq next_date # i.e. no change
         expect(page.find("#reminders .reminder .text .in").text).to eq "don't forget the fruit gums mum"
         expect(page.find("#reminders .reminder .recipient .name").text).to eq original_recipient
+      end
+
+      scenario "edit cancelled by add" do
+        edit_reminder_icon.click
+        expect(page).to have_selector(".reminder .edit.in")
+        new_reminder_button.click
+        expect(page).not_to have_selector(".reminder .edit.in")
+      end
+
+      scenario "edit terminated by close reminders panel" do
+        edit_reminder_icon.click
+        expect(page).to have_selector(".reminder .edit.in")
+        close_reminders_modal
+        open_reminders_panel
+        expect(page).not_to have_selector(".reminder .edit.in")
       end
     end
 

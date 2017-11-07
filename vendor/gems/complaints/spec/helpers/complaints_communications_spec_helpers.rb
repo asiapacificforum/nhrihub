@@ -2,6 +2,21 @@ require 'rspec/core/shared_context'
 
 module ComplaintsCommunicationsSpecHelpers
   extend RSpec::Core::SharedContext
+
+  before do
+    populate_database
+    visit complaints_path('en')
+    open_communications_modal
+  end
+
+  def close_communications_modal
+    page.find("button.close").click
+  end
+
+  def communication_icon
+    page.all(".fa-comments-o")[0]
+  end
+
   def remove_last_communicant
     page.all(:xpath, ".//div[contains(@class,'new_communicant')]")[-1].find('i.remove_communicant').click
   end

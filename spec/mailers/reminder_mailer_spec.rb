@@ -32,5 +32,4 @@ RSpec.describe ReminderMailer, type: :mailer do
       expect(params.values.first).to eq ["some string"]
     end
   end
-
 end

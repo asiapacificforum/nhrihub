@@ -78,7 +78,7 @@ FactoryGirl.define do
 
     trait :with_comm do
       after(:create) do |complaint|
-        complaint.communications = [FactoryGirl.create(:communication, :date => DateTime.now), FactoryGirl.create(:communication, :date => DateTime.now.advance(:days => -7))]
+        complaint.communications = [FactoryGirl.create(:communication, :with_notes, :date => DateTime.now), FactoryGirl.create(:communication, :with_notes, :date => DateTime.now.advance(:days => -7))]
       end
     end
 

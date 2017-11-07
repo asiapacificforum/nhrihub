@@ -6,7 +6,7 @@
   {{/if}}
 
 %script#show_reminder_template{:type => 'text/ractive'}
-  .reminder.row.editable_container{:id => "reminder_editable{{id}}", 'as-popover_edit'=>'id'}
+  .reminder.row.editable_container{:id => "reminder_editable{{id}}", 'as-reminder_edit'=>'id'}
     .col-md-1.tight.reminder_type.form-group{:class => '{{#reminder_type_error}}has-error{{/}}', :style => "width:10%", 'data-toggle' => 'edit', 'data-id' => '{{id}}', 'data-attribute'=>'reminder_type'}
       .fade.no_edit.in
         %span {{ reminder_type }}
@@ -88,7 +88,7 @@
   $ ->
     Ractive.DEBUG = false
 
-    PopoverEdit = (node,id)->
+    ReminderEdit = (node,id)->
       ractive = @
       @edit = new InpageEdit
         on : node
@@ -99,29 +99,41 @@
           @load()
         error : ->
           console.log "Changes were not saved, for some reason"
+        before_edit_start : ->
+          @object.parent.terminate_add()
       return {
         teardown : (id)->
         update : (id)->
         }
 
-    Ractive.decorators.popover_edit = PopoverEdit
+    Ractive.decorators.reminder_edit = ReminderEdit
 
     window.reminders = new Ractive
       el: "#reminder"
       template : "#reminders_template"
       data :
         reminders : []
+      computed :
+        fade : -> window.env != 'test'
+      onrender : ->
+        $('body').on('hidden.bs.modal','#reminders_modal',@onModalClose.bind(@))
       new_reminder : ->
         unless @_new_reminder_is_active()
           @push('reminders',{id:null, type:null, frequency:null, text:'', remindable_id:@get('id')})
+          @terminate_edits()
       _new_reminder_is_active : ->
         reminders = @findAllComponents('reminder')
         (reminders.length > 0) && _.isNull( reminders[reminders.length - 1].get('id'))
       onModalClose : ->
+        @terminate_add()
+        @terminate_edits()
+      terminate_add : ->
         if @_new_reminder_is_active()
           @pop('reminders')
         _(@findAllComponents('reminder')).each (reminder)->
           reminder.terminate_edit()
+      terminate_edits : ->
+        _(@findAllComponents('reminder')).each (reminder)-> reminder.terminate_edit()
 
     Reminder = Ractive.extend
       template : '#reminder_template'
@@ -182,34 +194,26 @@
     return
 
 %script#reminders_template{:type => 'ractive/template'}
-  <modal-custom id="reminders_modal" type="xl" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()">
-  <modal-header>
-  <h4>#{t('.reminders')}<modal-close/></h4>
-  </modal-header>
-  <modal-body>
-  <i class="fa fa-plus fa-sm" id="add_reminder" on-click="@this.new_reminder()" data-toggle="tooltip" data-placement="bottom" title="add reminder"/>
-  #reminders{:style => "margin-bottom:80px;"}
-    .row
-      %h5.col-md-1.tight{:style => "width:10%;"}= t('.type')
-      %h5.col-md-1.tight{:style => "width:18%;"}= t('.next')
-      %h5.col-md-1.tight{:style => "width:8%;"}= t('.previous')
-      %h5.col-md-6.tight{:style => "width:41%;"}= t('.text')
-      %h5.col-md-1.tight{:style => "width:13%;"}= t('.recipient')
-      %h5.col-md-1.tight{:style => "width:3%;"}
-      %h5.col-md-1.tight{:style => "width:3%;"}
-      %h5.col-md-1.tight{:style => "width:3%;"}
-    {{#reminders}}
-    <reminder parent='{{parent}}' id='{{id}}' url='{{url}}' reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next_date="{{next_date}}" previous_date="{{previous_date}}" recipient="{{recipient}}"/>
-    {{/reminders}}
-  </modal-body>
-  </modal-custom>
-  <modal-custom id="rules_modal" type="xl">
-  <modal-header>
-  <h4>#{t('.rules')}<modal-close/></h4>
-  </modal-header>
-  <modal-body>
-  #rules{:style => "margin-bottom:80px;"}
-    .row
-      %h5.col-md-1.col-md-offset-4{:style => "width:25%;"} Not yet implemented
-  </modal-body>
-  </modal-custom>
+  #reminders_modal.modal.in{'tabindex'=>'-1', 'role'=>'dialog', 'aria-hidden'=>'true', 'data-backdrop'=>'true', 'data-keyboard'=>'true', 'class-fade'=>'fade', 'style'=>'z-index: 1050; padding-right: 15px;'}
+    .modal-dialog.modal-xl
+      .modal-content
+        .modal-header
+          %h4
+            = t('.reminders')
+            %button.close{'type'=>'button', 'aria-label'=>'Close', 'data-dismiss'=>'modal'}
+              %span{'aria-hidden'=>'true'} &times;
+        .modal-body
+          %i#add_reminder.fa.fa-plus.fa-sm{'on-click'=>"@this.new_reminder()", 'data-toggle'=>'tooltip', 'data-placement'=>'bottom', 'title'=>'add reminder'}
+          #reminders{'style' => "margin-bottom:80px;"}
+            .row
+              %h5.col-md-1.tight{'style' => "width:10%;"}= t('.type')
+              %h5.col-md-1.tight{'style' => "width:18%;"}= t('.next')
+              %h5.col-md-1.tight{'style' => "width:8%;"}= t('.previous')
+              %h5.col-md-6.tight{'style' => "width:41%;"}= t('.text')
+              %h5.col-md-1.tight{'style' => "width:13%;"}= t('.recipient')
+              %h5.col-md-1.tight{'style' => "width:3%;"}
+              %h5.col-md-1.tight{'style' => "width:3%;"}
+              %h5.col-md-1.tight{'style' => "width:3%;"}
+            {{#reminders}}
+            <reminder parent='{{parent}}' id='{{id}}' url='{{url}}' reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next_date="{{next_date}}" previous_date="{{previous_date}}" recipient="{{recipient}}" user_id="{{user_id}}"/>
+            {{/reminders}}

@@ -27,5 +27,9 @@ FactoryGirl.define do
     trait :complaint do
       notable_type "Complaint"
     end
+
+    trait :communication do
+      notable_type "Communication"
+    end
   end
 end

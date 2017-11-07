@@ -80,7 +80,7 @@ script#show_communication_template(type = 'text/ractive')
         .col-md-3('data-toggle'='edit')
           <communicants communicants='{{communicants}}' />
         .col-md-1.note('data-toggle'='edit')
-          .note_icon('data-toggle' = 'tooltip', :title = '{{ t.icon.note}} ', 'on-click'='@this.show_note()')
+          .note_icon.show_notes('data-toggle' = 'tooltip', :title = '{{ t.icon.note}} ', 'on-click'='@this.show_note()')
         .col-md-1.documents
           .fa.fa-file-text-o.counter#show_document_modal('on-click'="@this.show_document_modal()", 'data-count' = '{{document_count}}', 'data-toggle' = 'tooltip', :title = '{{ t.icon.documents }}', style = "position:relative;")
         .col-md-1.delete

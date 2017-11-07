@@ -15,7 +15,7 @@ class CaseReference
   end
 
   def <=>(other)
-    [year,sequence] <=> [other.year, other.sequence]
+    [other.year, other.sequence] <=> [year,sequence]
   end
 
   def next_ref

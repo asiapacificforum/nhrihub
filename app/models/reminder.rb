@@ -1,7 +1,7 @@
 class Reminder < ActiveRecord::Base
   include ActionDispatch::Routing::PolymorphicRoutes
   include Rails.application.routes.url_helpers
-  belongs_to :remindable, :polymorphic => true
+  belongs_to :remindable, :polymorphic => true, :touch => true
   belongs_to :user
   default_scope ->{ order(:id) }
 

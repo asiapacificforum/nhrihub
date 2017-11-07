@@ -11,19 +11,50 @@ class ComplaintsController < ApplicationController
                                      #:complaint_documents,
                                      #{:reminders => :user},
                                      #{:notes =>[:author, :editor]}).sort.reverse.to_a.to_json.html_safe
-    @complaints = Complaint.pluck(:id).collect do |id|
-                  Complaint.includes({:assigns => :assignee},
-                                     :mandates,
-                                     {:status_changes => [:user, :complaint_status]},
-                                     {:complaint_good_governance_complaint_bases=>:good_governance_complaint_basis},
-                                     {:complaint_special_investigations_unit_complaint_bases => :special_investigations_unit_complaint_basis},
-                                     {:complaint_human_rights_complaint_bases=>:human_rights_complaint_basis},
-                                     {:complaint_agencies => :agency},
-                                     {:communications => [:user, :communication_documents, :communicants]},
-                                     :complaint_documents,
-                                     {:reminders => :user},
-                                     {:notes =>[:author, :editor]}).find(id)
-    end.to_a.to_json.html_safe
+
+    #identifiers = {:cache_key_1 => 1, :cache_key_2 => 2, :cache_key_3 => 3}
+    identifiers = Complaint.select(:id, :updated_at, :case_reference).all.sort.inject({}) do |hash,complaint|
+      key = "complaint_#{complaint.id}_#{complaint.updated_at.strftime("%s.%6L")}"
+      hash[key]=complaint.id
+      hash
+    end
+
+    #BulkCacheFetcher.new(Rails.cache).fetch(identifiers) do |uncached_keys_and_ids|
+      #ids = uncached_keys_and_ids.values
+      #BlogPost.where(:id => ids).includes([:author, :comments])
+    #end
+    cache_fetcher = BulkCacheFetcher.new(Rails.cache)
+    complaints = cache_fetcher.fetch(identifiers) do |uncached_keys_and_ids|
+      ids = uncached_keys_and_ids.values
+      complaints = Complaint.includes({:assigns => :assignee},
+                                       :mandates,
+                                       {:status_changes => [:user, :complaint_status]},
+                                       {:complaint_good_governance_complaint_bases=>:good_governance_complaint_basis},
+                                       {:complaint_special_investigations_unit_complaint_bases => :special_investigations_unit_complaint_basis},
+                                       {:complaint_human_rights_complaint_bases=>:human_rights_complaint_basis},
+                                       {:complaint_agencies => :agency},
+                                       {:communications => [:user, :communication_documents, :communicants]},
+                                       :complaint_documents,
+                                       {:reminders => :user},
+                                       {:notes =>[:author, :editor]}).where(:id => ids).sort.map(&:to_json)
+    end
+
+    @complaints = "[#{complaints.join(", ").html_safe}]".html_safe
+
+    #@complaints = Complaint.pluck(:id).collect do |id|
+      #complaint = Complaint.includes({:assigns => :assignee},
+                                     #:mandates,
+                                     #{:status_changes => [:user, :complaint_status]},
+                                     #{:complaint_good_governance_complaint_bases=>:good_governance_complaint_basis},
+                                     #{:complaint_special_investigations_unit_complaint_bases => :special_investigations_unit_complaint_basis},
+                                     #{:complaint_human_rights_complaint_bases=>:human_rights_complaint_basis},
+                                     #{:complaint_agencies => :agency},
+                                     #{:communications => [:user, :communication_documents, :communicants]},
+                                     #:complaint_documents,
+                                     #{:reminders => :user},
+                                     #{:notes =>[:author, :editor]}).find(id).to_json
+    #end.join(", ").html_safe.prepend("[")<<("]")
+
     @mandates = Mandate.all.sort_by(&:name)
     @agencies = Agency.all
     @complaint_bases = [ StrategicPlans::ComplaintBasis.named_list,
@@ -70,6 +101,9 @@ class ComplaintsController < ApplicationController
     else
       head :internal_server_error
     end
+  rescue => e
+    logger.error e
+    head :internal_server_error
   end
 
   def destroy

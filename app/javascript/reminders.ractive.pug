@@ -1,4 +1,4 @@
-#reminders_modal.modal.fade.in(tabindex='-1', role='dialog', aria-hidden='true', data-backdrop='true', data-keyboard='true', style='z-index: 1050; padding-right: 15px;')
+#reminders_modal.modal.in(tabindex='-1', role='dialog', aria-hidden='true', data-backdrop='true', data-keyboard='true', class-fade='fade', style='z-index: 1050; padding-right: 15px;')
   .modal-dialog.modal-xl
     .modal-content
       .modal-header
@@ -24,14 +24,14 @@
             h5.col-md-1.tight(style = "width:3%;")
             h5.col-md-1.tight(style = "width:3%;")
           | {{#reminders}}
-          <reminder parent='{{parent}}' id='{{id}}' url='{{url}}' reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next_date="{{next_date}}" previous_date="{{previous_date}}" recipient="{{recipient}}"/>
+          <reminder parent='{{parent}}' id='{{id}}' url='{{url}}' reminder_type="{{reminder_type}}" frequency="{{frequency}}" text="{{text}}" next_date="{{next_date}}" previous_date="{{previous_date}}" recipient="{{recipient}}" user_id="{{user_id}}"/>
           | {{/reminders}}
 
 script.
   import I18n from './reminders_translations.js'
   import Reminder from './reminder.ractive.pug'
 
-  export default new Ractive({
+  var reminders = window.reminders = new Ractive({
       el: "#reminder",
       template : $TEMPLATE,
       data(){
@@ -40,10 +40,17 @@ script.
           t : I18n.t('reminders.reminder')
         }
       },
+      computed: {
+        fade : function(){ return window.env!='test' }
+      },
+      onrender(){
+        $('body').on('hidden.bs.modal','#reminders_modal',this.onModalClose.bind(this))
+      },
       components : { reminder : Reminder },
       new_reminder() {
         if (!this._new_reminder_is_active()) {
-          return this.push('reminders',{id:null, type:null, frequency:null, text:'', remindable_id:this.get('id')});
+          this.push('reminders',{id:null, type:null, frequency:null, text:'', remindable_id:this.get('id')});
+          this.terminate_edits();
         }
       },
       _new_reminder_is_active() {
@@ -51,10 +58,17 @@ script.
         return (reminders.length > 0) && _.isNull( reminders[reminders.length - 1].get('id'));
       },
       onModalClose() {
+        this.terminate_add();
+        this.terminate_edits();
+      },
+      terminate_add(){
         if (this._new_reminder_is_active()) {
           this.pop('reminders');
         }
-        return _(this.findAllComponents('reminder')).each(reminder=> reminder.terminate_edit());
+      },
+      terminate_edits(){
+        _(this.findAllComponents('reminder')).each(reminder=> reminder.terminate_edit());
       }
     });
 
+  export default reminders

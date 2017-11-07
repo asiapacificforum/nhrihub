@@ -31,7 +31,7 @@ describe "CaseReference comparing values" do
   end
 
   it "should sort by year and sequence" do
-    expect(@list.sort.map(&:ref)).to eq ["C16-1", "C16-15", "C17-1", "C17-10"]
+    expect(@list.sort.map(&:ref)).to eq ["C17-10","C17-1","C16-15","C16-1"]
   end
 
   it "should calculate the next value" do

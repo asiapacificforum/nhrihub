@@ -74,7 +74,8 @@ script.
       },
       error() {
         return console.log("Changes were not saved, for some reason");
-      }
+      },
+      headers : csrf_header
     });
     return {
       teardown(id){},

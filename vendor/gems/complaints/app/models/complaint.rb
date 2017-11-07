@@ -185,7 +185,7 @@ class Complaint < ActiveRecord::Base
   end
 
   def new_assignee_id=(id)
-    unless id.blank? || id=="null" || id=="undefined"
+    unless id.blank? || id=="null" || id=="undefined" || id=='0'
       self.assignees << User.find(id)
     end
   end

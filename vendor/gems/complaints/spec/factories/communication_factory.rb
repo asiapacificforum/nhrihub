@@ -8,5 +8,13 @@ FactoryGirl.define do
       communication.communication_documents << FactoryGirl.create(:communication_document)
       communication.communicants << FactoryGirl.create(:communicant)
     end
+
+    trait :with_notes do
+      after(:create) do |communication|
+        2.times do
+          FactoryGirl.create(:note, :communication, :notable_id => communication.id)
+        end
+      end
+    end
   end
 end

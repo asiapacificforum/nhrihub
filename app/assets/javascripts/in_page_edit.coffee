@@ -107,7 +107,7 @@ class @InpageEdit
       else
         $(@options.on).find('.editable_container')
 
-    $(@options.on).find("[id='edit_start']").on 'click', (e)=>
+    $(@options.on).find("*").on 'click', "#edit_start", (e)=>
       e.stopPropagation()
       $target = $(e.target)
       @edit_start($target)
@@ -135,13 +135,17 @@ class @InpageEdit
         if _.isFunction(@options.object.update_persist) # situations where a fileupload must be handled are delegated to the ractive object
           @options.object.update_persist(@_success,@options.error,@)
         else
-          $.ajax
+          ajax_options =
             url: url
             method : 'post'
             data : data
             success : @_success
             error : @options.error
             context : @
+          if @options.headers
+            ajax_options.headers = @options.headers
+
+          $.ajax ajax_options
 
   edit_start : ($target) ->
     if $target.closest('.editable_container').get(0) == @root.get(0)

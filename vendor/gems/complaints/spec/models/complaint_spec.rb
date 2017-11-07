@@ -135,7 +135,7 @@ describe "sort algorithm" do
   end
 
   it "should sort by ascending case reference" do
-    expect(Complaint.all.sort.pluck(:case_reference)).to eq ["C15-11","C16-1","C16-2","C16-5","C16-10","C17-4"]
+    expect(Complaint.all.sort.pluck(:case_reference)).to eq ["C17-4","C16-10","C16-5","C16-2","C16-1","C15-11"]
   end
 end
 

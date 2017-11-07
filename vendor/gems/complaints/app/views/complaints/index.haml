@@ -17,11 +17,11 @@
 #single_note
 
 :coffeescript
+  @source_complaints_data = #{@complaints}
   case_reference = "#{params[:case_reference] ? params[:case_reference] : ''}"
   @source_all_good_governance_complaint_bases = #{@good_governance_complaint_bases.to_json.html_safe}
   @source_all_human_rights_complaint_bases = #{@human_rights_complaint_bases.to_json.html_safe}
   @source_all_special_investigations_unit_complaint_bases = #{@special_investigations_unit_complaint_bases.to_json.html_safe}
-  @source_complaints_data = #{@complaints}
   @source_all_mandates = #{@mandates.to_json(:only=>[:id, :key], :methods=>:name).html_safe}
   @source_all_agencies = #{@agencies.to_json.html_safe}
   @source_complaint_bases = #{(@complaint_bases || []).map(&:to_h).to_json.html_safe}

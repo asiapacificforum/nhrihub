@@ -105,6 +105,7 @@ gem "rack-mini-profiler"
 gem "flamegraph"
 gem "stackprof", :require => false
 gem "webpacker"
+gem "bulk_cache_fetcher" # used in complaints module
 
 ### NHRI Modules:
 gem 'authengine', :path => 'vendor/gems/authengine'

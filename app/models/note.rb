@@ -4,7 +4,7 @@ class Note < ActiveRecord::Base
 
   belongs_to :author, :class_name => "User", :foreign_key => :author_id
   belongs_to :editor, :class_name => "User", :foreign_key => :editor_id
-  belongs_to :notable, :polymorphic => true
+  belongs_to :notable, :polymorphic => true, :touch => true
 
   default_scope ->{ order(:created_at => :desc) }
 

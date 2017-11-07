@@ -7,6 +7,8 @@ require 'download_helpers'
 require 'complaints_spec_helpers'
 require 'complaints_communications_spec_helpers'
 require 'upload_file_helpers'
+require 'notes_spec_common_helpers'
+require 'notes_behaviour'
 
 feature "complaints communications", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
@@ -15,17 +17,6 @@ feature "complaints communications", :js => true do
   include ComplaintsSpecHelpers
   include ComplaintsCommunicationsSpecHelpers
   include UploadFileHelpers
-
-  before do
-    populate_database
-    visit complaints_path('en')
-    # TODO this is better than the 'wait_for_model_open' and 'wait_for_modal_close' used elsewhere...
-    # refactor those instances and make this available everywhere
-    # or even make them automatic when visiting a page?
-    # or perhaps override the bootstrap css transitions in test mode?
-    page.execute_script("$('.fade').removeClass('fade')")
-    open_communications_modal
-  end
 
   it "should show a list of communicaitons" do
     expect(page).to have_selector('#communications_modal')
@@ -127,6 +118,14 @@ feature "complaints communications", :js => true do
     dismiss_the_note_modal
     # ensure reverse chronological order
     expect(page.all('#communications .communication .date').map(&:text)).to eq [DateTime.now.to_date.strftime("%b %-e, %Y"),"May 19, 2016"]
+  end
+
+  it "terminates adding with modal close" do
+    add_communication
+    expect(page).to have_selector("#communications #new_communication")
+    close_communications_modal
+    open_communications_modal
+    expect(page).not_to have_selector("#communications #new_communication")
   end
 
   it "should add a communication with multiple communicants, changing method midway" do
@@ -280,7 +279,6 @@ feature "complaints communications", :js => true do
 
 end
 
-
 feature "communications files", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ComplaintsSpecSetupHelpers
@@ -289,12 +287,6 @@ feature "communications files", :js => true do
   include ComplaintsCommunicationsSpecHelpers
   include UploadFileHelpers
   include DownloadHelpers
-
-  before do
-    populate_database
-    visit complaints_path('en')
-    open_communications_modal
-  end
 
   it "should validate file size when adding" do
     add_communication
@@ -329,5 +321,3 @@ feature "communications files", :js => true do
     expect(downloaded_file).to eq filename
   end
 end
-
-

@@ -1,4 +1,4 @@
-div.modal.fade#communications_modal( tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="true" data-keyboard="true" style="z-index: 1050; display: none; padding-right: 15px;" onclose="Ractive.getNodeInfo(this).ractive.parent.onModalClose()")
+div.modal#communications_modal( class-fade='fade' tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="true" data-keyboard="true" style="z-index: 1050; display: none; padding-right: 15px;" )
   div.modal-dialog.modal-xl
     div.modal-content
       div.modal-header
@@ -15,9 +15,6 @@ div.modal.fade#communications_modal( tabindex="-1" role="dialog" aria-hidden="tr
 
 script.
   import Communication from './communication.ractive.pug'
-  //import Ractive from 'ractive'
-  //import _ from 'underscore'
-  //import $ from 'jquery'
 
   window.communications = new Ractive({
     el : '#communication',
@@ -33,6 +30,12 @@ script.
         permitted_filetypes : window.source_communication_permitted_filetypes,
         maximum_filesize : window.source_communication_maximum_filesize
       };
+    },
+    computed:{
+      fade: function(){return window.env!='test'}
+    },
+    onrender(){
+      $(this.find('#communications_modal')).on('hidden.bs.modal',this.onModalClose.bind(this))
     },
     new_communication() {
       if (!this._new_communication_is_active()) {
