@@ -18,6 +18,10 @@ feature "complaints communications", :js => true do
   include ComplaintsCommunicationsSpecHelpers
   include UploadFileHelpers
 
+  before(:context) do
+    Webpacker.compile
+  end
+
   it "should show a list of communicaitons" do
     expect(page).to have_selector('#communications_modal')
     expect(page).to have_selector('#communications_modal #communications .communication', :count=>1)
@@ -287,6 +291,10 @@ feature "communications files", :js => true do
   include ComplaintsCommunicationsSpecHelpers
   include UploadFileHelpers
   include DownloadHelpers
+
+  before(:context) do
+    Webpacker.compile
+  end
 
   it "should validate file size when adding" do
     add_communication

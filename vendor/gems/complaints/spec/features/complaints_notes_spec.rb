@@ -11,6 +11,11 @@ feature "complaints notes", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ComplaintsContextNotesSpecHelpers
   include NotesSpecCommonHelpers
+
+  before(:context) do
+    Webpacker.compile
+  end
+
   it_behaves_like "notes"
 end
 

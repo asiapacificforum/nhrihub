@@ -8,6 +8,10 @@ require 'reminders_behaviour'
 feature "show reminders", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include ComplaintsRemindersSetupHelpers
+
+  before(:context) do
+    Webpacker.compile
+  end
   it_behaves_like "reminders"
 end
 

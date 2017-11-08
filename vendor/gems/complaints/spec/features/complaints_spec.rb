@@ -19,6 +19,10 @@ feature "complaints index", :js => true do
   include UploadFileHelpers
   include DownloadHelpers
 
+  before(:context) do
+    Webpacker.compile
+  end
+
   before do
     populate_database
     visit complaints_path('en')
@@ -780,6 +784,10 @@ feature "complaints cache expiration", :js => true do
   include ComplaintsSpecSetupHelpers
   include NavigationHelpers
   include ComplaintsSpecHelpers
+
+  before(:context) do
+    Webpacker.compile
+  end
 
   feature "expiration by reminder" do
     include ComplaintsRemindersSetupHelpers

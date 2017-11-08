@@ -143,9 +143,6 @@ RSpec.configure do |config| # rspec-expectations config goes here. You can use a
     mocks.verify_partial_doubles = true
   end
 
-  config.before(:suite) do
-    Webpacker.compile
-  end
 
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
