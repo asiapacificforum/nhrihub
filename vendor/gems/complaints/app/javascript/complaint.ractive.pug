@@ -224,7 +224,7 @@ script#show_complaint_template(type = 'text/ractive')
                 form
                   label(style='font-weight:normal; margin-right:12px')
                     | {{ t.evaluation }}
-                    input#open(type = 'radio', name ='{{current_status_humanized}}', value ='Under Evaluation', style='margin-left:6px')
+                    input#under_evaluation(type = 'radio', name ='{{current_status_humanized}}', value ='Under Evaluation', style='margin-left:6px')
                   label(style='font-weight:normal; margin-right:12px')
                     | {{ t.open }}
                     input#open(type = 'radio', name ='{{current_status_humanized}}', value ='Open', style='margin-left:6px')
