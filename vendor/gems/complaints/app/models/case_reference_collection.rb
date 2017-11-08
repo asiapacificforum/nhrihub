@@ -6,7 +6,7 @@ class CaseReferenceCollection
   end
 
   def highest_ref
-    @refs.sort.last unless @refs.empty?
+    @refs.sort.first unless @refs.empty?
   end
 
   def next_ref
