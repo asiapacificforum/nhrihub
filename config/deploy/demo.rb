@@ -53,7 +53,8 @@ set :branch, "master"
 role :app, "demo"
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, '~/www/nhri-hub.com'
+#set :deploy_to, '~/www/nhri-hub.com' # dev server -- no longer in use 11/12/17
+set :deploy_to, '/var/www/nhri-hub.com' # vps server
 
 # otherwise bundler runs as:
 # /bin/rvm default do bundle install --path ~/www/nhri-hub.com/shared/bundle --without development test --deployment --quiet as nhrihubc@nhrihub

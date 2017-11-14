@@ -1,7 +1,7 @@
 default: &default
   endpoint: 'https://acme-v01.api.letsencrypt.org/'
   email: 'codehacker@comcast.net'
-  domain: 'nhri-hub.com'
+  domain: 'nhri-hub.com www.nhri-hub.com mail.nhri-hub.com'
 
   # in Rails.root, path to private key
   private_key: 'key/keyfile.pem'
