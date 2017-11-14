@@ -1,7 +1,8 @@
 # If the environment differs from the stage name
 set :rails_env, 'production'
 set :site_name, 'demo'
-set :tmp_dir, "/home/nhrihubc/tmp_dir"
+#set :tmp_dir, "/home/nhrihubc/tmp_dir" # dev server
+set :tmp_dir, '/var/www/nhri-hub.com/tmp_dir' # vps server
 
 # .htaccess is required by passenger on this server
 append :linked_files, 'public/.htaccess', 'config/initializers/action_mailer.rb', 'vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb'
