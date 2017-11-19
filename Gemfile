@@ -52,6 +52,7 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-passenger'
   gem 'capistrano-faster-assets'
+  gem 'capistrano-yarn'
   # specify higher rev than required by capistrano in order to get
   # fixed connection pooling and faster deploys
   gem 'sshkit', '~> 1.5'
