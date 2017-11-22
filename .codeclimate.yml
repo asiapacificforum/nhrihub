@@ -29,6 +29,7 @@ exclude_paths:
   - "spec/**/*"
   - "**/spec/**/*"
   - "**/schema.rb"
+  - "app/assets/javascripts/ractive-1.0.0*
   - "app/assets/javascripts/ractive.js"
   - "app/assets/javascripts/ractive-bootstrap.js"
   - "app/assets/javascripts/u2f-api.js"
