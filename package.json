@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "@rails/webpacker": "^3.2.1",
+    "webpacker": "./app/assets/javascripts/local_node_modules/@rails/webpacker",
+    "bootstrap-multimodal": "./app/assets/javascripts/local_node_modules/bootstrap-multimodal",
     "bootstrap": "^3.3.7",
     "exports-loader": "^0.6.4",
     "expose-loader": "^0.7.3",
