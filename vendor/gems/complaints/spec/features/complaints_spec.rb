@@ -308,10 +308,11 @@ feature "complaints index", :js => true do
       end
       expect{save_complaint.click; wait_for_ajax}.to change{ Complaint.count }.by(1)
     end
-    expect(Complaint.pluck(:case_reference)).to eq ["c12-34", "C17-1", "C17-2", "C17-3", "C17-4", "C17-5", "C17-6", "C17-7", "C17-8", "C17-9", "C17-10", "C17-11", "C17-12", "C17-13", "C17-14", "C17-15"]
-    expect(page.all('.complaint .basic_info .case_reference').map(&:text)).to eq ["C17-15", "C17-14", "C17-13", "C17-12", "C17-11", "C17-10", "C17-9", "C17-8", "C17-7", "C17-6", "C17-5", "C17-4", "C17-3", "C17-2", "C17-1", "c12-34"]
+    year = Date.today.strftime("%y")
+    expect(Complaint.pluck(:case_reference)).to eq ["c12-34", "C#{year}-1", "C#{year}-2", "C#{year}-3", "C#{year}-4", "C#{year}-5", "C#{year}-6", "C#{year}-7", "C#{year}-8", "C#{year}-9", "C#{year}-10", "C#{year}-11", "C#{year}-12", "C#{year}-13", "C#{year}-14", "C#{year}-15"]
+    expect(page.all('.complaint .basic_info .case_reference').map(&:text)).to eq ["C#{year}-15", "C#{year}-14", "C#{year}-13", "C#{year}-12", "C#{year}-11", "C#{year}-10", "C#{year}-9", "C#{year}-8", "C#{year}-7", "C#{year}-6", "C#{year}-5", "C#{year}-4", "C#{year}-3", "C#{year}-2", "C#{year}-1", "c12-34"]
     add_complaint
-    expect(page.find('.new_complaint #case_reference').text).to eq "C17-16"
+    expect(page.find('.new_complaint #case_reference').text).to eq "C#{year}-16"
   end
 
   it "does not add a new complaint that is invalid" do
