@@ -96,7 +96,7 @@ private
   end
 
   def successful_login(user)
-    self.current_user = user
+    self.current_user = user # in authenticated_system.rb, sets session[:user_id]
     session_role = SessionRole.new
     session_role.add_roles(user.role_ids)
     session[:role] = Marshal.dump(session_role)

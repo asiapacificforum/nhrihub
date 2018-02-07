@@ -13,11 +13,13 @@ module AuthenticatedSystem
   # Accesses the current user from the session.  Set it to nil if login fails
   # so that future calls do not hit the database.
   def current_user
+    #puts "current_user: #{@current_user}"
     @current_user ||= (login_from_session || nil)
   end
 
   # Store the given user id in the session.
   def current_user=(new_user)
+    #puts "set current_user.id to #{new_user.id}"
     session[:user_id] = (new_user.nil? || new_user.is_a?(Symbol)) ? nil : new_user.id
     @current_user = new_user
   end
@@ -170,6 +172,7 @@ module AuthenticatedSystem
 
   # Called from #current_user.  First attempt to login by the user id stored in the session.
   def login_from_session
+    #puts "login_from_session #{session[:user_id]}"
     self.current_user = User.find(session[:user_id]) if session[:user_id]
   end
 

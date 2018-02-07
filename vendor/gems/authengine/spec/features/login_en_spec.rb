@@ -24,7 +24,7 @@ feature "Registered user logs in with valid credentials", :js => true do
   context "two factor authentication is required" do
     include RegisteredUserHelper
 
-    scenario "admin logs in" do
+    scenario "admin logs in", :driver => :chrome do
       visit "/en"
       configure_keystore
 
@@ -61,7 +61,7 @@ feature "Registered user logs in with valid credentials", :js => true do
       remove_user_two_factor_authentication_credentials('staff')
     end
 
-    scenario "admin logs in" do
+    scenario "admin logs in", :driver => :chrome do
       visit "/en"
 
       fill_in "User name", :with => "admin"
@@ -87,92 +87,92 @@ feature "Registered user logs in with valid credentials", :js => true do
   end
 end
 
-#feature "user logs in", :js => true do
-  #include RegisteredUserHelper
+feature "user logs in", :js => true do
+  include RegisteredUserHelper
 
-  #context "without registering their token" do
-    #before do
-      #User.where(:login => 'admin').first.update_attributes(:public_key_handle => nil)
-    #end
+  context "without registering their token" do
+    before do
+      User.where(:login => 'admin').first.update_attributes(:public_key_handle => nil)
+    end
 
-    #scenario "admin logs in" do
-      #visit "/en"
+    scenario "admin logs in" do
+      visit "/en"
 
-      #fill_in "User name", :with => "admin"
-      #fill_in "Password", :with => "password"
-      #login_button.click
-      #sleep(0.1) # javascript renders the flash message
+      fill_in "User name", :with => "admin"
+      fill_in "Password", :with => "password"
+      login_button.click
+      sleep(0.1) # javascript renders the flash message
 
-      #expect(flash_message).to eq "You must have a registered key token to log in"
-    #end
-  #end
+      expect(flash_message).to eq "You must have a registered key token to log in"
+    end
+  end
 
-  #context "without activating their account" do
-    #before do
-      #User.where(:login => 'admin').first.update_attributes(:activated_at => nil)
-    #end
+  context "without activating their account" do
+    before do
+      User.where(:login => 'admin').first.update_attributes(:activated_at => nil)
+    end
 
-    #scenario "admin logs in" do
-      #visit "/en"
+    scenario "admin logs in" do
+      visit "/en"
 
-      #fill_in "User name", :with => "admin"
-      #fill_in "Password", :with => "password"
-      #login_button.click
-      #sleep(0.1) # javascript renders the flash message
+      fill_in "User name", :with => "admin"
+      fill_in "Password", :with => "password"
+      login_button.click
+      sleep(0.1) # javascript renders the flash message
 
-      #expect(flash_message).to eq "Your account is not active, please check your email for the activation code."
-    #end
-  #end
+      expect(flash_message).to eq "Your account is not active, please check your email for the activation code."
+    end
+  end
 
-  #context "when their account has been disabled" do
-    #before do
-      #User.where(:login => 'admin').first.update_attributes(:enabled => false)
-    #end
+  context "when their account has been disabled" do
+    before do
+      User.where(:login => 'admin').first.update_attributes(:enabled => false)
+    end
 
-    #scenario "admin logs in" do
-      #visit "/en"
+    scenario "admin logs in" do
+      visit "/en"
 
-      #fill_in "User name", :with => "admin"
-      #fill_in "Password", :with => "password"
-      #login_button.click
-      #sleep(0.1) # javascript renders the flash message
+      fill_in "User name", :with => "admin"
+      fill_in "Password", :with => "password"
+      login_button.click
+      sleep(0.1) # javascript renders the flash message
 
-      #expect(flash_message).to eq "Your account has been disabled, please contact administrator."
-    #end
-  #end
-#end
+      expect(flash_message).to eq "Your account has been disabled, please contact administrator."
+    end
+  end
+end
 
-#feature "Registered user logs in with invalid credentials", :js => true do
-  #include RegisteredUserHelper
-  #scenario "enters bad password", :driver => :chrome do
-    #visit "/en"
-    #configure_keystore
+feature "Registered user logs in with invalid credentials", :js => true do
+  include RegisteredUserHelper
+  scenario "enters bad password", :driver => :chrome do
+    visit "/en"
+    configure_keystore
 
-    #fill_in "User name", :with => "admin"
-    #fill_in "Password", :with => "badpassword"
-    #login_button.click
+    fill_in "User name", :with => "admin"
+    fill_in "Password", :with => "badpassword"
+    login_button.click
 
-    #expect(flash_message).to have_text("Your username or password is incorrect.")
-    #expect(page_heading).to eq "Please log in"
-  #end
+    expect(flash_message).to have_text("Your username or password is incorrect.")
+    expect(page_heading).to eq "Please log in"
+  end
 
-  #scenario "enters bad user name", :driver => :chrome do
-    #visit "/en"
+  scenario "enters bad user name", :driver => :chrome do
+    visit "/en"
 
-    #fill_in "User name", :with => "notavaliduser"
-    #fill_in "Password", :with => "password"
-    #login_button.click
+    fill_in "User name", :with => "notavaliduser"
+    fill_in "Password", :with => "password"
+    login_button.click
 
-    #expect(flash_message).to have_text("Your username or password is incorrect.")
-    #expect(page_heading).to eq "Please log in"
-    #expect(page).not_to have_selector(".nav")
-  #end
-#end
+    expect(flash_message).to have_text("Your username or password is incorrect.")
+    expect(page_heading).to eq "Please log in"
+    expect(page).not_to have_selector(".nav")
+  end
+end
 
-#feature "User is not logged in but tries to access a page", :js => true do
-  #include RegisteredUserHelper
-  #scenario "visit a protected page", :driver => :chrome do
-    #visit "/en/nhri/icc"
-    #expect(page_heading).to eq "Please log in"
-  #end
-#end
+feature "User is not logged in but tries to access a page", :js => true do
+  include RegisteredUserHelper
+  scenario "visit a protected page", :driver => :chrome do
+    visit "/en/nhri/icc"
+    expect(page_heading).to eq "Please log in"
+  end
+end

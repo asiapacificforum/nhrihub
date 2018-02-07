@@ -48,8 +48,6 @@ feature "Manage organizations:", :js => true do
 end
 
 feature "Manage an existing organizations", :js => true do
-  #include ApplicationHelpers
-  #include RolePresetsHelper
   include OrganizationPresetsHelper
   include LoggedInEnAdminUserHelper # sets up logged in admin user
   include NavigationHelpers
