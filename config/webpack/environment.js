@@ -1,6 +1,6 @@
-//const { environment } = require('@rails/webpacker')
+const { environment } = require('@rails/webpacker')
 // I have a customized version of @rails webpacker that is tweaked to work with engines
-const { environment } = require('../../app/assets/javascripts/local_node_modules/@rails/webpacker')
+//const { environment } = require('../../app/assets/javascripts/local_node_modules/@rails/webpacker')
 const webpack = require('webpack')
 
 environment.loaders.set('ractive_component', {
