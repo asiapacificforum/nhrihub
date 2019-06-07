@@ -1,24 +1,24 @@
 require "rails_helper"
 require 'login_helpers'
 
-#feature "Unregistered user tries to log in", :js => true do
-  #scenario "navigation not available before user logs in", :driver => :chrome do
-    #visit "/en"
-    #expect(page_heading).to eq "Please log in"
-    #expect(page).not_to have_selector(".nav")
-  #end
+feature "Unregistered user tries to log in", :js => true do
+  scenario "navigation not available before user logs in", :driver => :chrome do
+    visit "/en"
+    expect(page_heading).to eq "Please log in"
+    expect(page).not_to have_selector(".nav")
+  end
 
-  #scenario "admin logs in", :driver => :chrome do
-    #visit "/en"
-    #fill_in "User name", :with => "admin"
-    #fill_in "Password", :with => "password"
-    #page.find('#sign_up').click
+  scenario "admin logs in", :driver => :chrome do
+    visit "/en"
+    fill_in "User name", :with => "admin"
+    fill_in "Password", :with => "password"
+    page.find('#sign_up').click
 
-    #expect(flash_message).to have_text("Your username or password is incorrect.")
-    #expect(page).not_to have_selector(".nav")
-    #expect(page_heading).to eq "Please log in"
-  #end
-#end
+    expect(flash_message).to have_text("Your username or password is incorrect.")
+    expect(page).not_to have_selector(".nav")
+    expect(page_heading).to eq "Please log in"
+  end
+end
 
 feature "Registered user logs in with valid credentials", :js => true do
   context "two factor authentication is required" do
@@ -36,9 +36,10 @@ feature "Registered user logs in with valid credentials", :js => true do
       expect(flash_message).to have_text("Logged in successfully")
       expect(navigation_menu).to include("Admin")
       expect(navigation_menu).to include("Logout")
+      click_link('Logout')
     end
 
-    scenario "staff member logs in", :driver => :chrome do
+    scenario "staff member logs in", :driver => :chrome, :js => true do
       visit "/en"
       configure_keystore
 
@@ -49,6 +50,7 @@ feature "Registered user logs in with valid credentials", :js => true do
       expect(flash_message).to have_text("Logged in successfully")
       expect(navigation_menu).not_to include("Admin")
       expect(navigation_menu).to include("Logout")
+      click_link('Logout')
     end
   end
 
@@ -71,6 +73,7 @@ feature "Registered user logs in with valid credentials", :js => true do
       expect(flash_message).to have_text("Logged in successfully")
       expect(navigation_menu).to include("Admin")
       expect(navigation_menu).to include("Logout")
+      click_link('Logout')
     end
 
     scenario "staff member logs in", :driver => :chrome do
@@ -83,6 +86,7 @@ feature "Registered user logs in with valid credentials", :js => true do
       expect(flash_message).to have_text("Logged in successfully")
       expect(navigation_menu).not_to include("Admin")
       expect(navigation_menu).to include("Logout")
+      click_link('Logout')
     end
   end
 end

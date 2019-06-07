@@ -1,8 +1,8 @@
 # If the environment differs from the stage name
 set :rails_env, 'production'
-set :site_name, 'demo'
-#set :tmp_dir, "/home/nhrihubc/tmp_dir" # dev server
-set :tmp_dir, '/var/www/nhri-hub.com/tmp_dir' # vps server
+set :site_name, 'demo' # ensures that the correct site_specific_linked_files are linked after deployment
+set :tmp_dir, "/home/nhrihub/tmp_dir" # dev server
+#set :tmp_dir, '/var/www/nhri-hub.com/tmp_dir' # vps server
 
 # .htaccess is required by passenger on this server
 append :linked_files, 'public/.htaccess', 'config/initializers/action_mailer.rb', 'vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb'
@@ -54,11 +54,11 @@ set :branch, "master"
 role :app, "demo"
 
 # Default deploy_to directory is /var/www/my_app_name
-#set :deploy_to, '~/www/nhri-hub.com' # dev server -- no longer in use 11/12/17
-set :deploy_to, '/var/www/nhri-hub.com' # vps server
+#set :deploy_to, '~/www/nhri-hub.com' # dev server
+set :deploy_to, '/home/nhrihub' # vps server
 
 # otherwise bundler runs as:
-# /bin/rvm default do bundle install --path ~/www/nhri-hub.com/shared/bundle --without development test --deployment --quiet as nhrihubc@nhrihub
+# /bin/rvm default do bundle install --path ~/www/nhri-hub.com/shared/bundle --without development test --deployment --quiet as nhrihub@nhrihub
 # which it shouldn't when rvm is not available
 #set :rvm_map_bins, []
 
@@ -89,12 +89,12 @@ set :deploy_to, '/var/www/nhri-hub.com' # vps server
 #     auth_methods: %w(publickey password)
 #     # password: 'please use keys'
 #   }
-server 'demo',
-  user: 'nhrihubc',
-  roles: %w{demo}#, db  would triggers whenever callback
+#server 'demo',
+  #user: 'nhrihub',
+  #roles: %w{demo}#, db  would triggers whenever callback
 # ssh_options configured in ~/.ssh/config
 #ssh_options: {
-#user: 'nhrihubc', # overrides user setting above
+#user: 'nhrihub', # overrides user setting above
 ##keys: %w(/Users/lesnightingill/.ssh/nhri-hub.com.keys/id_rsa),
 ##keys: ["/Users/lesnightingill/.ssh/github_keys/id_rsa"],
 #keys: ["/"],

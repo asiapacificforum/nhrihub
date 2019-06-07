@@ -34,6 +34,7 @@ feature "Registered user logs in with valid credentials", :js => true do
     expect(flash_message).to have_text("Connecté avec succès")
     expect(navigation_menu).to include("Admin")
     expect(navigation_menu).to include("Déconnecter")
+    click_link('Déconnecter')
   end
 
   scenario "staff member logs in", :driver => :chrome do
@@ -46,6 +47,7 @@ feature "Registered user logs in with valid credentials", :js => true do
     expect(flash_message).to have_text("Connecté avec succès")
     expect(navigation_menu).not_to include("Admin")
     expect(navigation_menu).to include("Déconnecter")
+    click_link('Déconnecter')
   end
 end
 

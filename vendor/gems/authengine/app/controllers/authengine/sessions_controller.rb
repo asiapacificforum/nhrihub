@@ -103,9 +103,11 @@ private
     Session.create_or_update(:session_id => session[:session_id], :user_id => session[:user_id], :login_date => Time.now)
     flash[:notice] = t('.success')
     return_to = session[:return_to]
+    puts "return to: #{session[:return_to]}"
     if return_to.nil?
       redirect_to home_path
     else
+      session[:return_to] = nil
       redirect_to return_to
     end
   end

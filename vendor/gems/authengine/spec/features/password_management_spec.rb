@@ -35,6 +35,7 @@ feature "Password management, admin resets user password", :js => true do
     fill_in "Password", :with => "shinynewsecret"
     login_button.click
     expect(flash_message).to eq "Logged in successfully"
+    click_link('Logout')
   end
 
   scenario "user enters different passwords" do
@@ -80,7 +81,6 @@ feature "Password management, admin resets user password", :js => true do
     visit(url_with_blank_password_reset_token  )
     expect(flash_message).to eq "Invalid password reset."
   end
-
 end
 
 feature "Password management, user forgets password", :js => true do

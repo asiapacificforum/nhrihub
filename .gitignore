@@ -64,3 +64,4 @@ config/site_specific_linked_files/ws/
 /public/packs
 /public/packs-test
 /node_modules
+.vimrc

@@ -86,7 +86,7 @@ module AuthenticatedSystem
       format.html do
         store_location
         flash.now[:error] = "You must be logged in to access this feature."
-        logger.info "in access_denied: redirect to session::new"
+        logger.info "in authenticated_system#access_denied: redirect to session::new"
         redirect_to :controller => 'authengine/sessions', :action => 'new'
       end
       format.xml do
