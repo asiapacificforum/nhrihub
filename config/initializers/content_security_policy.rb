@@ -1,5 +1,5 @@
 if Rails.env.development?
-  policy.script_src :self, :https, :unsafe_eval
+  #policy.script_src :self, :https, :unsafe_eval
 else
-  policy.script_src :self, :https
+  #policy.script_src :self, :https
 end
