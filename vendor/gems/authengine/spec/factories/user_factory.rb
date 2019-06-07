@@ -14,14 +14,14 @@ FactoryGirl.define do
     firstName {Faker::Name.first_name}
     lastName {Faker::Name.last_name}
 
-    if Organization.count > 20 # arbitrary number, but some threshold here prevents organization name collisions
-      organization_id { Organization.pluck(:id).sample }
-    else
-      until (organization = FactoryGirl.create(:organization)).valid?
-        organization_id organization.id
-        #association :organization, strategy: :create
-      end
-    end
+    #if Organization.count > 20 # arbitrary number, but some threshold here prevents organization name collisions
+      #organization_id { Organization.pluck(:id).sample }
+    #else
+      #until (organization = FactoryGirl.create(:organization)).valid?
+        #organization_id organization.id
+        ##association :organization, strategy: :create
+      #end
+    #end
 
     after(:create) do |user|
       user.update_attribute(:salt, '1641b615ad281759adf85cd5fbf17fcb7a3f7e87')
