@@ -18,5 +18,19 @@ environment.loaders.append('locales', {
  loaders: ['json-loader', 'yaml-loader']
 })
 
+environment.plugins.append(
+  'Provide',
+  new webpack.ProvidePlugin({
+    UserInput : ['user_input_manager.coffee','UserInput'],
+    InpageEdit : ['in_page_edit.coffee','InpageEdit'],
+    notes : ['notes.ractive.pug','notes'],
+    I18n : 'i18n-js',
+    Ractive : ['ractive','default'],
+    $ : 'jquery',
+    jQuery : 'jquery',
+    jquery : 'jquery',
+    _ : 'underscore'
+  })
+)
 
 module.exports = environment
