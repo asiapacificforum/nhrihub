@@ -3,28 +3,21 @@
 default: &default
   source_path: app/javascript
   source_entry_path: packs
+  # public_root_path overrides the path to `public/` folder
+  # (relative to the engine root)
   public_root_path: public
-  public_output_path: packs
-  cache_path: tmp/cache/webpacker
-  check_yarn_integrity: false
+  # use a different sub-folder name
+  public_output_path: complaints_packs
   webpack_compile_output: true
+
+  cache_path: tmp/cache/webpacker
 
   # Additional paths webpack should lookup modules
   # ['app/assets', 'engine/foo/app/assets']
-  resolved_paths: ['app/javascript','app/assets/javascripts']
+  resolved_paths: ['app/javascript','app/assets/javascripts','../../../app/assets/javascripts']
 
   # Reload manifest.json on all requests so we reload latest compiled packs
   cache_manifest: false
-
-  # Extract and emit a css file
-  extract_css: true
-
-  static_assets_extensions:
-    - .png
-    - .gif
-    - .jpeg
-    - .jpg
-    - .svg
 
   extensions:
     - .coffee
@@ -36,15 +29,17 @@ default: &default
     - .sass
     - .scss
     - .css
+    - .png
+    - .svg
+    - .gif
+    - .jpeg
+    - .jpg
     - .ractive.html
     - .ractive.pug
 
 development:
   <<: *default
   compile: true
-
-  # Verifies that correct packages and versions are installed by inspecting package.json, yarn.lock, and node_modules
-  check_yarn_integrity: true
 
   dev_server:
     host: localhost

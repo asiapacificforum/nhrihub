@@ -105,7 +105,7 @@ gem "rack-attack"
 gem "rack-mini-profiler"
 gem "flamegraph"
 gem "stackprof", :require => false
-gem "webpacker"
+gem "webpacker", '~> 4.0.7'
 gem "bulk_cache_fetcher" # used in complaints module
 
 ### NHRI Modules:

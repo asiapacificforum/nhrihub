@@ -1,13 +1,14 @@
-# a FormData object is passed-in for recursive conversions
-# where the FormData object of the parent should be used
-# e.g. in accepts_nested_attributes_for scenarios
-# attributes is an array of attribute names to be included in the FormData object
-# ractive instance must have an attribute 'serialization_key' to
-# populate the hash key for the FormData object
-# normally this is called like:
-#     @asFormData(@get('persistent_attributes')
-# where the persistent_attributes may contain an attribute of the form "associated_model_attributes"
-# at which point this method is called recursively... passing in the formData object
+
+ # a FormData object is passed-in for recursive conversions
+ # where the FormData object of the parent should be used
+ # e.g. in accepts_nested_attributes_for scenarios
+ # attributes is an array of attribute names to be included in the FormData object
+ # ractive instance must have an attribute 'serialization_key' to
+ # populate the hash key for the FormData object
+ # normally this is called like:
+ #     @asFormData(@get('persistent_attributes')
+ # where the persistent_attributes may contain an attribute of the form "associated_model_attributes"
+ # at which point this method is called recursively... passing in the formData object
 
 local_methods =
   asFormData : (attributes,formData)->

@@ -37,6 +37,7 @@
 #  2. Object stash
 #    Where the object implements its own stash/restore methods
 
+
 #= require 'user_input_manager'
 
 class @InpageEditElement
