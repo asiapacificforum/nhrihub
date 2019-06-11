@@ -1,6 +1,9 @@
-const { environment } = require('@rails/webpacker')
-// I have a customized version of @rails webpacker that is tweaked to work with engines
-//const { environment } = require('../../app/assets/javascripts/local_node_modules/@rails/webpacker')
+const { environment, config } = require('@rails/webpacker');
+const coffee =  require('./loaders/coffee')
+const { resolve } = require('path');
+
+environment.config.set('output.path', resolve(config.public_root_path, config.public_output_path));
+
 const webpack = require('webpack')
 
 environment.loaders.append('ractive_component', {
@@ -33,4 +36,5 @@ environment.plugins.append(
   })
 )
 
+environment.loaders.prepend('coffee', coffee)
 module.exports = environment

@@ -1,4 +1,5 @@
 const { environment } = require('@rails/webpacker')
+const coffee =  require('./loaders/coffee')
 // I have a customized version of @rails webpacker that is tweaked to work with engines
 //const { environment } = require('../../app/assets/javascripts/local_node_modules/@rails/webpacker')
 const webpack = require('webpack')
@@ -33,4 +34,5 @@ environment.plugins.append(
   })
 )
 
+environment.loaders.prepend('coffee', coffee)
 module.exports = environment
