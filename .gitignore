@@ -13,7 +13,7 @@
 
 # Ignore all logfiles and tempfiles.
 /log/*
-/tmp
+**/tmp
 
 /config/secrets.yml
 .DS_Store
@@ -31,7 +31,10 @@ config/locales/site_specific/fr.yml
 public/.htaccess
 public/assets
 public/packs
-node_modules
+/public/packs
+/public/packs-test
+/public/complaints_packs
+
 config/site_specific_linked_files/demo/config/database.yml
 config/database.yml
 config/site_specific_linked_files/demo/config/secrets.yml
@@ -61,7 +64,5 @@ docs/.sass-cache
 db/backups
 
 config/site_specific_linked_files/ws/
-/public/packs
-/public/packs-test
-/node_modules
+**/node_modules
 .vimrc
