@@ -14,5 +14,11 @@ module Complaints
           webpacker: Complaints.webpacker
         )
       end
+
+
+    config.middleware.use(
+      "Rack::Static",
+      urls: ["/complaints_packs"], root: "complaints/public"
+    )
   end
 end
