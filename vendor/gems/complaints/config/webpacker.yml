@@ -5,7 +5,7 @@ default: &default
   source_entry_path: packs
   # public_root_path overrides the path to `public/` folder
   # (relative to the engine root)
-  public_root_path: '../../../public'
+  public_root_path: public
   # use a different sub-folder name
   public_output_path: complaints_packs
   webpack_compile_output: true
