@@ -31,3 +31,28 @@ namespace :server do
 
 end
 
+namespace :deploy do
+  desc "Load the initial schema - it will WIPE your database, use with care"
+  task :db_schema_load do
+    on roles(:db) do
+      puts <<-EOF
+
+      ************************** WARNING ***************************
+      If you type [yes], rake db:schema:load will WIPE your database
+      any other input will cancel the operation.
+      **************************************************************
+
+      EOF
+      ask :answer, "Are you sure you want to WIPE your database?: "
+      if fetch(:answer) == 'yes'
+        within release_path do
+          with rails_env: :production do
+            rake 'db:schema:load'
+          end
+        end
+      else
+        puts "Cancelled."
+      end
+    end
+  end
+end

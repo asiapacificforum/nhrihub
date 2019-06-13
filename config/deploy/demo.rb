@@ -8,7 +8,7 @@ set :tmp_dir, "/home/nhrihub/tmp_dir" # dev server
 append :linked_files, 'public/.htaccess', 'config/initializers/action_mailer.rb', 'vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb'
 append :assets_roles, 'demo' # triggers asset precompilation if necessary
 
-set :migration_role, "demo" # triggers migration
+set :migration_role, "db" # triggers migration
 
 set :passenger_roles, "demo" # triggers passenger restart after update
 set :passenger_restart_with_touch, true # on this server, the more modern passenger restart doesn't work.
@@ -23,7 +23,7 @@ set :branch, "master"
 # server 'example.com', user: 'deploy', roles: %w{app db web}, my_property: :my_value
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
-
+server :demo, roles: %w{app db web}
 
 
 # role-based syntax
