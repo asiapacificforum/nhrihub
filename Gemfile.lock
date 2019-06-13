@@ -114,8 +114,6 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    acme-client (0.6.1)
-      faraday (~> 0.9, >= 0.9.1)
     actioncable (5.1.2)
       actionpack (= 5.1.2)
       nio4r (~> 2.0)
@@ -228,8 +226,6 @@ GEM
       railties (>= 3.0.0)
     faker (1.7.3)
       i18n (~> 0.5)
-    faraday (0.12.1)
-      multipart-post (>= 1.2, < 3)
     ffi (1.9.18)
     flamegraph (0.9.5)
     font-awesome-sass (4.7.0)
@@ -288,9 +284,6 @@ GEM
     kramdown (1.13.2)
     launchy (2.4.3)
       addressable (~> 2.3)
-    letsencrypt_plugin (0.0.10)
-      acme-client (~> 0.6.1)
-      rails (>= 4.2)
     libv8 (3.16.14.19)
     liquid (3.0.6)
     listen (3.0.8)
@@ -310,7 +303,6 @@ GEM
     mini_portile2 (2.2.0)
     minitest (5.10.2)
     multi_xml (0.6.0)
-    multipart-post (2.0.0)
     mustermann (1.0.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
@@ -501,7 +493,6 @@ DEPENDENCIES
   jquery-rails
   js-routes
   launchy
-  letsencrypt_plugin (~> 0.0.10)
   magic_lamp
   media!
   message_block!

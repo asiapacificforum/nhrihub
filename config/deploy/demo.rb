@@ -51,7 +51,6 @@ server :demo, roles: %w{app db web}
 
 #set :rvm_roles, :rvm
 #role :rvm, "web"
-role :app, "demo"
 
 # Default deploy_to directory is /var/www/my_app_name
 #set :deploy_to, '~/www/nhri-hub.com' # dev server

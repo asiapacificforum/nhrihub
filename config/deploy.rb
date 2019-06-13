@@ -1,5 +1,4 @@
 require 'byebug'
-set :whenever_command, "bundle exec whenever"
 
 # config valid only for current version of Capistrano
 lock '3.8.1'
@@ -101,23 +100,12 @@ namespace :deploy do
   end
 
 end
-#after "deploy:updated", 'whenever:update_crontab'
-#after "deploy:reverted", 'whenever:update_crontab'
 
 
 #these files change rarely, no need to upload them for every deploy
 #it saves time to skip this, and prevents inadvertent modification of server
 #before "deploy:check:linked_files", "deploy:copy_config"
 
-# could not get whenever gem's own update_crontab to work
-# as the release path was not set, so use this workaround
-namespace :deploy do
- task :update_crontab do
-   on roles(:all) do
-     within current_path do
-       execute :bundle, :exec, :whenever, "--update-crontab", "#{current_path}/config/schedule.rb"
-     end
-   end
- end
-end
-after 'deploy:symlink:release', 'deploy:update_crontab'
+#after "deploy:updated", 'whenever:update_crontab'
+#after "deploy:reverted", 'whenever:update_crontab'
+after 'deploy:symlink:release', 'whenever:update_crontab'
