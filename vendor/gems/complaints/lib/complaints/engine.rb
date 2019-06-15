@@ -17,7 +17,7 @@ module Complaints
 
 
     config.middleware.use(
-      "Rack::Static",
+      Rack::Static,
       urls: ["/complaints_packs"], root: "complaints/public"
     )
   end

@@ -88,7 +88,7 @@ gem 'faker'
 
 gem 'tzinfo-data' # so that we use the ruby tzinfo vs what is installed on the machine e.g. /usr/share/zoneinfo
 
-#gem 'letsencrypt_plugin', "~> 0.0.10"
+gem 'letsencrypt_plugin', "~> 0.0.10"
 
 gem "refile", :git => "https://github.com/refile/refile.git", :ref => "d7a42", require: "refile/rails" # for rails5 compatibility
 gem "sinatra", git: "https://github.com/sinatra/sinatra.git" #, :ref => "285275b42fa1bf096a5c9559b6cead2f31b65b66" # for rack 2 compatibility as required for rails5

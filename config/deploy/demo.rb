@@ -1,7 +1,7 @@
 # If the environment differs from the stage name
 set :rails_env, 'production'
 set :site_name, 'demo' # ensures that the correct site_specific_linked_files are linked after deployment
-set :tmp_dir, "/home/nhrihub/tmp_dir" # dev server
+set :tmp_dir, "/var/www/nhrihub/tmp_dir" # dev server
 #set :tmp_dir, '/var/www/nhri-hub.com/tmp_dir' # vps server
 
 # .htaccess is required by passenger on this server
@@ -54,7 +54,7 @@ server :demo, roles: %w{app db web}
 
 # Default deploy_to directory is /var/www/my_app_name
 #set :deploy_to, '~/www/nhri-hub.com' # dev server
-set :deploy_to, '/home/nhrihub' # vps server
+set :deploy_to, '/var/www/nhrihub' # vps server
 
 # otherwise bundler runs as:
 # /bin/rvm default do bundle install --path ~/www/nhri-hub.com/shared/bundle --without development test --deployment --quiet as nhrihub@nhrihub
