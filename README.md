@@ -37,7 +37,7 @@ Two-factor authentication is supported, using the [emerging FIDO standard](https
 
 At the this time (September 2016), only the Chrome browser supports this protocol, therefore this is the requirement for this application when two-factor authentication is enabled. Furthermore, the https transport layer protocol is required, necessitating a public-key certificate on the server, issued by a Chrome-recognized certification authority. Future support in other browsers has been announced.
 
-For convenience, the [letsencrypt_plugin](https://github.com/lgromanowski/letsencrypt-plugin) is bundled with the application, facilitating a command-line certificate request to the [Let's Encrypt](https://letsencrypt.org/) certification authority API. However there is no requirement to use Let's Encrypt certificates.
+For convenience, the [acme_plugin](https://github.com/lgromanowski/acme-plugin) is bundled with the application, facilitating a command-line certificate request to the [Let's Encrypt](https://letsencrypt.org/) certification authority API. However there is no requirement to use Let's Encrypt certificates.
 
 In some scenarios it is desirable to temporarily, or even permanently, disable the two-factor authentication feature. This is achieved by configuration of an environment variable from the config/env.yml file. This file is symlinked to the file of the same name in the shared/config directory in the capistrano file structure. If the file does not exist, two-factor authentication defaults to "enabled".
 
@@ -190,7 +190,7 @@ The following files are required by the app, and are not included in the source 
 * config/locales/site_specific/en.yml
 * config/locales/site_specific/fr.yml
 * key/keyfile.pem
-* shared/config/letsencrypt_plugin.yml
+* shared/config/acme_plugin.yml
 * shared/config/env.yml
 
 ## Configuring SSL

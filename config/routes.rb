@@ -63,7 +63,7 @@ Rails.application.routes.draw do
   # this route is specified as it's used in authengine as the place
   # where logged-in users first land
     get 'home', :to => 'home#index'
-    mount LetsencryptPlugin::Engine, at: '/'
+    mount AcmePlugin::Engine, at: '/'
     resources :csp_reports, :only => [:index, :create]
     get 'csp_reports/clear_all', :to => 'csp_reports#clear_all', :via => :get
     exceptions = [:not_found, :method_not_allowed, :not_implemented, :not_acceptable, :unprocessable_entity, :bad_request, :conflict]
