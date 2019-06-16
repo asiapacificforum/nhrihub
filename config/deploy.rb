@@ -31,7 +31,7 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml',
                                                  'config/locales/site_specific/en.yml',
                                                  'config/locales/site_specific/fr.yml',
                                                  'key/keyfile.pem',
-                                                 'config/letsencrypt_plugin.yml',
+                                                 'config/acme_plugin.yml',
                                                  'config/env.yml',
                                                  'app/assets/stylesheets/theme.scss')
 
