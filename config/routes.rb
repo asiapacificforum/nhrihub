@@ -57,13 +57,13 @@ Rails.application.routes.draw do
   # see https://github.com/crismali/magic_lamp
   mount MagicLamp::Genie, at: "/magic_lamp" if defined?(MagicLamp)
 
-  mount LetsencryptPlugin::Engine, at: '/'
   mount GlacierOnRails::Engine, at: '/'
 
   scope "/:locale" do
   # this route is specified as it's used in authengine as the place
   # where logged-in users first land
     get 'home', :to => 'home#index'
+    mount LetsencryptPlugin::Engine, at: '/'
     resources :csp_reports, :only => [:index, :create]
     get 'csp_reports/clear_all', :to => 'csp_reports#clear_all', :via => :get
     exceptions = [:not_found, :method_not_allowed, :not_implemented, :not_acceptable, :unprocessable_entity, :bad_request, :conflict]
@@ -73,6 +73,8 @@ Rails.application.routes.draw do
   end
   # Catch all requests without a locale and redirect to the default...
   # see https://dhampik.com/blog/rails-routes-tricks-with-locales for explanation
-  get "/*path", to: redirect("/#{I18n.default_locale}/%{path}", status: 302), constraints: {path: /(?!(#{I18n.available_locales.join("|")})).*/}, format: false
+  get "/*path", to: redirect("/#{I18n.default_locale}/%{path}", status: 302),
+                constraints: {path: /(?!(#{I18n.available_locales.join("|")})).*/},
+                format: false
   get '', to: redirect("/#{I18n.default_locale}")
 end
