@@ -1,6 +1,6 @@
-class CreateComplaintCommunicant < ActiveRecord::Migration
+class CreateComplaintCommunicant < ActiveRecord::Migration[4.2]
   def change
-    create_table :communicants do |t|
+    create_table :communicants, :force => true do |t|
       t.string :name
       t.string :title_key
       t.string :email
@@ -10,7 +10,7 @@ class CreateComplaintCommunicant < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :communication_communicants do |t|
+    create_table :communication_communicants, :force => true do |t|
       t.integer :communication_id
       t.integer :communicant_id
       t.timestamps

@@ -1,6 +1,6 @@
-class AddOutreachEventsTableAndAssociations < ActiveRecord::Migration
+class AddOutreachEventsTableAndAssociations < ActiveRecord::Migration[4.2]
   def change
-    create_table :outreach_events do |t|
+    create_table :outreach_events, :force => true do |t|
       t.string :title
       t.datetime :event_date
       t.integer :audience_type_id
@@ -12,25 +12,25 @@ class AddOutreachEventsTableAndAssociations < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :outreach_event_areas do |t|
+    create_table :outreach_event_areas, :force => true do |t|
       t.integer :outreach_event_id
       t.integer :area_id
       t.timestamps
     end
 
-    create_table :outreach_event_subareas do |t|
+    create_table :outreach_event_subareas, :force => true do |t|
       t.integer :outreach_event_id
       t.integer :subarea_id
       t.timestamps
     end
 
-    create_table :impact_ratings do |t|
+    create_table :impact_ratings, :force => true do |t|
       t.integer :rank
       t.string :text
       t.timestamps
     end
 
-    create_table :outreach_event_documents do |t|
+    create_table :outreach_event_documents, :force => true do |t|
       t.integer  :outreach_event_id
       t.string   :file_id,           limit: 255
       t.integer  :filesize
@@ -39,7 +39,7 @@ class AddOutreachEventsTableAndAssociations < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :audience_types do |t|
+    create_table :audience_types, :force => true do |t|
       t.string :short_type
       t.string :long_type
       t.timestamps

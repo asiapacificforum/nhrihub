@@ -1,6 +1,6 @@
-class CreateCommunicationDocument < ActiveRecord::Migration
+class CreateCommunicationDocument < ActiveRecord::Migration[4.2]
   def change
-    create_table :communication_documents do |t|
+    create_table :communication_documents, :force => true do |t|
       t.integer  "communication_id"
       t.string   "file_id",          limit: 255
       t.string   "title",            limit: 255

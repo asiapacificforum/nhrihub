@@ -1,6 +1,6 @@
-class CreateMediaAppearances < ActiveRecord::Migration
+class CreateMediaAppearances < ActiveRecord::Migration[4.2]
   def change
-    create_table :media_appearances do |t|
+    create_table :media_appearances, :force => true do |t|
       # stored, scanned document info:
       t.string   :file_id,           limit: 255
       t.integer  :filesize

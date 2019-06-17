@@ -1,6 +1,6 @@
-class AddAdvisoryCouncilMembersTable < ActiveRecord::Migration
+class AddAdvisoryCouncilMembersTable < ActiveRecord::Migration[4.2]
   def change
-    create_table :advisory_council_members do |t|
+    create_table :advisory_council_members, :force => true do |t|
       t.string :first_name
       t.string :last_name
       t.string :title

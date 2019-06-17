@@ -1,6 +1,6 @@
-class CreateAreas < ActiveRecord::Migration
+class CreateAreas < ActiveRecord::Migration[4.2]
   def change
-    create_table :areas do |t|
+    create_table :areas, :force => true do |t|
       t.text :name
       t.timestamps
     end

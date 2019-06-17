@@ -1,4 +1,4 @@
-class AddDocumentAttributesToInternalDocumentsTable < ActiveRecord::Migration
+class AddDocumentAttributesToInternalDocumentsTable < ActiveRecord::Migration[4.2]
   def change
     add_column :internal_documents, :title, :string
     add_column :internal_documents, :filesize, :integer

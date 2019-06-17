@@ -1,6 +1,6 @@
-class CreateTermsOfReferenceVersionsTable < ActiveRecord::Migration
+class CreateTermsOfReferenceVersionsTable < ActiveRecord::Migration[4.2]
   def change
-    create_table :terms_of_reference_versions do |t|
+    create_table :terms_of_reference_versions, :force => true do |t|
       t.string   "file_id",           limit: 255
       t.integer  "filesize"
       t.string   "original_filename", limit: 255

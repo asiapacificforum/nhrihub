@@ -1,6 +1,6 @@
-class CreateCommunication < ActiveRecord::Migration
+class CreateCommunication < ActiveRecord::Migration[4.2]
   def change
-    create_table :communications do |t|
+    create_table :communications, :force => true do |t|
       t.integer :complaint_id
       t.integer :user_id
       t.string :direction

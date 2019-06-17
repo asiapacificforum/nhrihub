@@ -1,6 +1,6 @@
-class AddPlannedResultsTable < ActiveRecord::Migration
+class AddPlannedResultsTable < ActiveRecord::Migration[4.2]
   def change
-    create_table :planned_results do |t|
+    create_table :planned_results, :force => true do |t|
       t.string :description
       t.integer :strategic_priority_id
       t.timestamps

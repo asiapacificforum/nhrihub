@@ -1,6 +1,6 @@
 class AddComplaintStatuses < ActiveRecord::Migration[5.0]
   def change
-    create_table :complaint_statuses do |t|
+    create_table :complaint_statuses, :force => true do |t|
       t.string :name
       t.timestamps
     end

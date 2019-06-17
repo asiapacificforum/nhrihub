@@ -1,4 +1,4 @@
-class CreateOrganizationsTable < ActiveRecord::Migration
+class CreateOrganizationsTable < ActiveRecord::Migration[4.2]
   def self.up
     create_table "organizations", force: true do |t|
       t.string   "name"

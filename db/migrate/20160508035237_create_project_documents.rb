@@ -1,4 +1,4 @@
-class CreateProjectDocuments < ActiveRecord::Migration
+class CreateProjectDocuments < ActiveRecord::Migration[4.2]
   def change
     create_table :project_documents do |t|
       t.integer  "project_id"

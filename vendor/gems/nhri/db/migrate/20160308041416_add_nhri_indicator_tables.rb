@@ -1,17 +1,17 @@
-class AddNhriIndicatorTables < ActiveRecord::Migration
+class AddNhriIndicatorTables < ActiveRecord::Migration[4.2]
   def change
-    create_table :headings do |t|
+    create_table :headings, :force => true do |t|
       t.string :title
       t.timestamps
     end
 
-    create_table :offences do |t|
+    create_table :offences, :force => true do |t|
       t.string :description
       t.integer :heading_id
       t.timestamps
     end
 
-    create_table :indicators do |t|
+    create_table :indicators, :force => true do |t|
       t.string :title
       t.integer :offence_id
       t.integer :heading_id
@@ -21,7 +21,7 @@ class AddNhriIndicatorTables < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :numeric_monitors do |t|
+    create_table :numeric_monitors, :force => true do |t|
       t.integer :indicator_id
       t.integer :author_id
       t.datetime :date
@@ -29,7 +29,7 @@ class AddNhriIndicatorTables < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :text_monitors do |t|
+    create_table :text_monitors, :force => true do |t|
       t.integer :indicator_id
       t.integer :author_id
       t.datetime :date
@@ -37,7 +37,7 @@ class AddNhriIndicatorTables < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :file_monitors do |t|
+    create_table :file_monitors, :force => true do |t|
       t.integer :indicator_id
       t.integer :user_id
       t.datetime "lastModifiedDate"

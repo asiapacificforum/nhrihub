@@ -1,6 +1,6 @@
-class CreateIccReferenceDocumentsTable < ActiveRecord::Migration
+class CreateIccReferenceDocumentsTable < ActiveRecord::Migration[4.2]
   def change
-    create_table :icc_reference_documents do |t|
+    create_table :icc_reference_documents, :force => true do |t|
       t.string   :source_url
       t.string   :title
       t.integer  :filesize

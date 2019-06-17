@@ -1,4 +1,4 @@
-class AddIndexAttributeToStrategicPlanTables < ActiveRecord::Migration
+class AddIndexAttributeToStrategicPlanTables < ActiveRecord::Migration[4.2]
   def change
     add_column :planned_results, :index, :string, :limit => 10
     add_column :outcomes, :index, :string, :limit => 10

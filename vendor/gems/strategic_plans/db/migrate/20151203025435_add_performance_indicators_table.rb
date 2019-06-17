@@ -1,6 +1,6 @@
-class AddPerformanceIndicatorsTable < ActiveRecord::Migration
+class AddPerformanceIndicatorsTable < ActiveRecord::Migration[4.2]
   def change
-    create_table :performance_indicators do |t|
+    create_table :performance_indicators, :force => true do |t|
       t.integer :activity_id
       t.text :description
       t.text :target

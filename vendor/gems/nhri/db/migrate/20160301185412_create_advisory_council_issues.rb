@@ -1,6 +1,6 @@
-class CreateAdvisoryCouncilIssues < ActiveRecord::Migration
+class CreateAdvisoryCouncilIssues < ActiveRecord::Migration[4.2]
   def change
-    create_table :advisory_council_issues do |t|
+    create_table :advisory_council_issues, :force => true do |t|
       t.string   "file_id",               limit: 255
       t.integer  "filesize"
       t.string   "original_filename",     limit: 255
@@ -16,14 +16,14 @@ class CreateAdvisoryCouncilIssues < ActiveRecord::Migration
       t.datetime "updated_at"
     end
 
-    create_table "issue_areas" do |t|
+    create_table "issue_areas", :force => true do |t|
       t.integer  "advisory_council_issue_id"
       t.integer  "area_id"
       t.datetime "created_at"
       t.datetime "updated_at"
     end
 
-    create_table "issue_subareas" do |t|
+    create_table "issue_subareas", :force => true do |t|
       t.integer  "advisory_council_issue_id"
       t.integer  "subarea_id"
       t.datetime "created_at"

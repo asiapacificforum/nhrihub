@@ -1,4 +1,4 @@
-class CreateAuthengineTables < ActiveRecord::Migration
+class CreateAuthengineTables < ActiveRecord::Migration[4.2]
   def self.up
     create_table "action_roles", force: true do |t|
       t.integer  "role_id",    limit: 8

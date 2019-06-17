@@ -1,6 +1,6 @@
-class CreateSubareas < ActiveRecord::Migration
+class CreateSubareas < ActiveRecord::Migration[4.2]
   def change
-    create_table :subareas do |t|
+    create_table :subareas, :force => true do |t|
       t.text :name
       t.text :full_name
       t.references :area
