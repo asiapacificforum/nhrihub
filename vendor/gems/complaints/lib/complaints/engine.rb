@@ -13,12 +13,13 @@ module Complaints
           ssl_verify_none: true,
           webpacker: Complaints.webpacker
         )
-      end
 
+      end # /initializer
 
-    config.middleware.use(
-      Rack::Static,
-      urls: ["/complaints_packs"], root: "complaints/public"
-    )
+      config.app_middleware.use(
+        Rack::Static,
+        urls: ["/complaints_packs"], root: "vendor/gems/complaints/public"
+      )
+
   end
 end
