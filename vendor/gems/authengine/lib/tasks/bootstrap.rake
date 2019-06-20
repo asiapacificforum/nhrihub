@@ -1,3 +1,4 @@
+require 'byebug'
 namespace :authengine do
   desc "send_email"
   task :send_email => :environment do
@@ -15,14 +16,18 @@ namespace :authengine do
       attributes = {:firstName => args[:firstName],
                     :lastName  => args[:lastName],
                     :email => args[:email]}
-      user = User.create(attributes)
-      puts "Creating account for #{attributes[:firstName]} #{attributes[:lastName]}, email #{attributes[:email]}"
-      locale = Rails.application.config.i18n.default_locale
-      puts "Activation link is: #{Rails.application.routes.url_helpers.authengine_activate_path(locale, user.activation_code)}"
-      role = Role.find_or_create_by(:name => 'admin')
-      Controller.update_table
-      ActionRole.bootstrap_access_for(role)
-      user.roles << role
+      begin
+        user = User.create!(attributes)
+        puts "Creating account for #{attributes[:firstName]} #{attributes[:lastName]}, email #{attributes[:email]}"
+        locale = Rails.application.config.i18n.default_locale
+        puts "Activation link is: #{Rails.application.routes.url_helpers.authengine_activate_path(locale, user.activation_code)}"
+        role = Role.find_or_create_by(:name => 'admin')
+        Controller.update_table
+        ActionRole.bootstrap_access_for(role)
+        user.roles << role
+      rescue ActiveRecord::RecordInvalid => e
+        puts "Failed to create user #{attributes[:firstName]} #{attributes[:lastName]}, there is already a user by that name in the database"
+      end
     end
   end
 end
