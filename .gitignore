@@ -59,6 +59,9 @@ lib/tasks/import.rake
 anomalous_case_references.txt
 docs/.sass-cache
 db/backups
+db/schema_bkp.rb
+db/structure_backup.sql
+
 
 config/site_specific_linked_files/ws/
 **/node_modules

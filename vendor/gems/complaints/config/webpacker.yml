@@ -49,7 +49,7 @@ development:
 
   dev_server:
     host: localhost
-    port: 3035
+    port: 3036
     hmr: false
     https: false
 
