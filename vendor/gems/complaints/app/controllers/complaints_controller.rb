@@ -7,22 +7,22 @@ class ComplaintsController < ApplicationController
     end
 
     cache_fetcher = BulkCacheFetcher.new(Rails.cache)
-    complaints = cache_fetcher.fetch(identifiers) do |uncached_keys_and_ids|
+    raw_complaints = cache_fetcher.fetch(identifiers) do |uncached_keys_and_ids|
       ids = uncached_keys_and_ids.values
-      complaints = Complaint.includes({:assigns => :assignee},
-                                       :mandates,
-                                       {:status_changes => [:user, :complaint_status]},
-                                       {:complaint_good_governance_complaint_bases=>:good_governance_complaint_basis},
-                                       {:complaint_special_investigations_unit_complaint_bases => :special_investigations_unit_complaint_basis},
-                                       {:complaint_human_rights_complaint_bases=>:human_rights_complaint_basis},
-                                       {:complaint_agencies => :agency},
-                                       {:communications => [:user, :communication_documents, :communicants]},
-                                       :complaint_documents,
-                                       {:reminders => :user},
-                                       {:notes =>[:author, :editor]}).where(:id => ids).sort.map(&:to_json)
+      Complaint.includes({:assigns => :assignee},
+                          :mandates,
+                          {:status_changes => [:user, :complaint_status]},
+                          {:complaint_good_governance_complaint_bases=>:good_governance_complaint_basis},
+                          {:complaint_special_investigations_unit_complaint_bases => :special_investigations_unit_complaint_basis},
+                          {:complaint_human_rights_complaint_bases=>:human_rights_complaint_basis},
+                          {:complaint_agencies => :agency},
+                          {:communications => [:user, :communication_documents, :communicants]},
+                          :complaint_documents,
+                          {:reminders => :user},
+                          {:notes =>[:author, :editor]}).where(:id => ids).sort
     end
 
-    @complaints = "[#{complaints.join(", ").html_safe}]".html_safe
+    @complaints = "[#{raw_complaints.map(&:to_json).join(", ").html_safe}]".html_safe
 
     @mandates = Mandate.all.sort_by(&:name)
     @agencies = Agency.all
@@ -46,7 +46,7 @@ class ComplaintsController < ApplicationController
         render :index, :layout => 'application_webpack'
       end
       format.docx do
-        send_file ComplaintsReport.new(@complaints).docfile
+        send_file ComplaintsReport.new(raw_complaints).docfile
       end
     end
   end
