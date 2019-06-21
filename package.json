@@ -21,6 +21,6 @@
     "yaml-loader": "^0.5.0"
   },
   "devDependencies": {
-    "webpack-dev-server": "^2.8.2"
+    "webpack-dev-server": "^3.4.1"
   }
 }
