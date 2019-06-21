@@ -1,6 +1,6 @@
 class ComplaintsController < ApplicationController
   def index
-    identifiers = Complaint.select(:id, :updated_at, :case_reference).all.sort.inject({}) do |hash,complaint|
+    identifiers = Complaint.select(:id, :updated_at).all.inject({}) do |hash,complaint|
       key = "complaint_#{complaint.id}_#{complaint.updated_at.strftime("%s.%6L")}"
       hash[key]=complaint.id
       hash
