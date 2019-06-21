@@ -329,7 +329,7 @@ GEM
     public_suffix (2.0.5)
     rack-attack (5.0.1)
       rack
-    rack-mini-profiler (0.10.5)
+    rack-mini-profiler (1.0.2)
       rack (>= 1.2.0)
     rack-proxy (0.6.5)
       rack
@@ -511,7 +511,7 @@ DEPENDENCIES
   projects!
   rack!
   rack-attack
-  rack-mini-profiler
+  rack-mini-profiler (~> 1.0.2)
   rack-protection
   rails (= 5.1.2)
   rails-settings-cached (~> 0.4.2)

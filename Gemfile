@@ -102,7 +102,7 @@ gem "surus", git: "https://github.com/asiapacificforum/surus.git", :ref => "36cb
 gem "aws-sdk", "~> 2"
 gem "glacier_on_rails", '= 0.9.9'
 gem "rack-attack"
-gem "rack-mini-profiler"
+gem "rack-mini-profiler", '~>1.0.2'
 gem "flamegraph"
 gem "stackprof", :require => false
 gem "webpacker", '~> 4.0.7'
