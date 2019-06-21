@@ -1,6 +1,11 @@
 class ChangeLetsencryptToAcme < ActiveRecord::Migration[5.1]
   def change
-  rename_table :letsencrypt_plugin_challenges, :acme_plugin_challenges
-  rename_table :letsencrypt_plugin_settings, :acme_plugin_settings
+    if table_exists? :letsencrypt_plugin_settings
+      rename_table :letsencrypt_plugin_challenges, :acme_plugin_challenges
+    end
+
+    if table_exists? :letsencrypt_plugin_settings
+      rename_table :letsencrypt_plugin_settings, :acme_plugin_settings
+    end
   end
 end
