@@ -328,14 +328,26 @@ script(type='text/javascript').
   import 'jquery-ui/ui/widgets/datepicker'
   var EditInPlace = require("exports-loader?EditInPlace!edit_in_place")
   import translations from './translations.js'
-  var Notable = require("exports-loader?Notable!../../../../../app/assets/javascripts/notable.coffee")
+  //var Notable = require("exports-loader?Notable!../../../../../app/assets/javascripts/notable.coffee")
   import Communications from './communications.ractive.pug'
   import '../../../../../app/assets/javascripts/local_node_modules/bootstrap-multimodal/js/multimodal.js'
   import StatusChange from './status_change.ractive.pug'
   var RactiveLocalMethods = require("exports-loader?local_methods!ractive_local_methods")
   import csrf_header from '../../../../../app/javascript/csrf'
   import reminders from '../../../../../app/javascript/reminders.ractive.pug'
+  import notes from '../../../../../app/javascript/notes.ractive.pug'
   import 'bootstrap'
+
+  var Notable = {
+    show_notes_panel: function() {
+      notes.set({
+        notes: this.get('notes'),
+        create_note_url: this.get('create_note_url'),
+        parent: this
+      });
+      $('#notes_modal').modal('show');
+    }
+  };
 
   var Remindable = {
     // copy this object's reminders into the global reminders object
