@@ -42,6 +42,7 @@ config/site_specific_linked_files/demo/key/keyfile.pem
 key/keyfile.pem
 config/site_specific_linked_files/current_config.yml
 vendor/gems/authengine/app/views/authengine/user_mailer/signup_notification.en.html.erb
+vendor/gems/complaints/tmp/**/*
 
 coverage
 TODO

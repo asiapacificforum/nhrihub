@@ -1,6 +1,6 @@
 module Complaints
   class Engine < ::Rails::Engine
-    initializer "webpacker.proxy" do |app|
+    initializer "complaints.webpacker.proxy" do |app|
         insert_middleware = begin
                             Complaints.webpacker.config.dev_server.present?
                           rescue

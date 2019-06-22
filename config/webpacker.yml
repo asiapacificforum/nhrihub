@@ -49,8 +49,22 @@ development:
   dev_server:
     host: localhost
     port: 3035
+    public_output_path: packs
+    public_path: public
+    public: localhost:3035
     hmr: false
     https: false
+    # Inline should be set to true if using HMR
+    inline: true
+    overlay: true
+    compress: true
+    disable_host_check: true
+    use_local_ip: false
+    quiet: false
+    headers:
+      'Access-Control-Allow-Origin': '*'
+    watch_options:
+      ignored: '**/node_modules/**'
 
 test:
   <<: *default
