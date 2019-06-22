@@ -151,10 +151,12 @@ script.
       return this.get('parent').set('notes',response);
     },
     remove_errors(field){
-      if (_.isUndefined(field)) { // after edit, failed save, and cancel, remove all errors
+      if (_.isUndefined(field)) {
+        // after edit, failed save, and cancel, remove all errors
         const error_attrs = _(_(this.get()).keys()).select(k=> k.match(/error/));
         return _(error_attrs).each(a=> this.set(a,false));
-      } else { // user types into input or changes select
+      } else {
+        // user types into input or changes select
         return this.set(field+"_error",false);
       }
     }}).extend(ConfirmDeleteModal);
