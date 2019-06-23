@@ -47,6 +47,7 @@ set :linked_dirs, fetch(:linked_dirs, []).push('certificates',
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
+set :default_env, {WEBPACKER_PRECOMPILE: false}
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
