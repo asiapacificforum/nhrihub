@@ -6,10 +6,7 @@ class ComplaintsController < ApplicationController
       hash
     end
 
-    cache_fetcher = BulkCacheFetcher.new(Rails.cache)
-    raw_complaints = cache_fetcher.fetch(identifiers) do |uncached_keys_and_ids|
-      ids = uncached_keys_and_ids.values
-      Complaint.includes({:assigns => :assignee},
+    all_complaints = Complaint.includes({:assigns => :assignee},
                           :mandates,
                           {:status_changes => [:user, :complaint_status]},
                           {:complaint_good_governance_complaint_bases=>:good_governance_complaint_basis},
@@ -20,9 +17,14 @@ class ComplaintsController < ApplicationController
                           :complaint_documents,
                           {:reminders => :user},
                           {:notes =>[:author, :editor]}).where(:id => ids).sort
+
+    cache_fetcher = BulkCacheFetcher.new(Rails.cache)
+    complaints = cache_fetcher.fetch(identifiers) do |uncached_keys_and_ids|
+      ids = uncached_keys_and_ids.values
+      all_complaints.map(&:to_json)
     end
 
-    @complaints = "[#{raw_complaints.map(&:to_json).join(", ").html_safe}]".html_safe
+    @complaints = "[#{complaints.join(", ").html_safe}]".html_safe
 
     @mandates = Mandate.all.sort_by(&:name)
     @agencies = Agency.all
@@ -46,7 +48,7 @@ class ComplaintsController < ApplicationController
         render :index, :layout => 'application_webpack'
       end
       format.docx do
-        send_file ComplaintsReport.new(raw_complaints).docfile
+        send_file ComplaintsReport.new(all_complaints).docfile
       end
     end
   end
