@@ -80,7 +80,11 @@ namespace :deploy do
     end
   end
 
-  before :starting, :ensure_stage
+  task :precompile_webpacker_packs do
+    invoke 'complaints:webpacker:local:compile'
+  end
+
+  before :starting, :ensure_stage, :precompile_webpacker_packs
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do

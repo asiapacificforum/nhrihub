@@ -28,6 +28,26 @@ namespace :complaints do
         end
       end
     end
+
+
+    namespace :local do
+      desc "Compile JavaScript packs locally into locally_precompiled_packs directory"
+      task compile: [:yarn_install, :environment] do
+        Webpacker.with_node_env("local_precompile") do
+          ensure_log_goes_to_stdout do
+            if Complaints.webpacker.commands.compile
+              config = Complaints.webpacker.config
+              public_output_path=config.public_output_path
+              exec "mv #{public_output_path} #{File.join(config.public_path,"locally_precompiled_packs")}"
+              # Successful compilation!
+            else
+              # Failed compilation
+              exit!
+            end
+          end
+        end
+      end #/task
+    end
   end
 end
 

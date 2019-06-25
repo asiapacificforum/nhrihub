@@ -82,5 +82,9 @@ production: &production
   # Cache manifest.json for performance
   cache_manifest: true
 
+local_precompile:
+  <<: *production
+  public_output_path: locally_precompiled_packs
+
 staging:
   <<: *production
