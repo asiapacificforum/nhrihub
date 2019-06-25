@@ -62,6 +62,9 @@ set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock co
 set :assets_roles, ["web", "app"]
 
 set :migration_role, "web"
+# Defaults to false
+# Skip migration if files in db/migrate were not modified
+set :conditionally_migrate, true
 
 
 namespace :deploy do
