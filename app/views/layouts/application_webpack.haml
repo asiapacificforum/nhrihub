@@ -42,3 +42,5 @@
       #jflash
       = yield
     .attribution= attribution
+    %script{id: 'simple-navigation-bootstrap-hack'}
+      $('.dropdown-toggle').removeAttr('data-target')
