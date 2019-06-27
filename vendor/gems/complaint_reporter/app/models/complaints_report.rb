@@ -7,6 +7,7 @@ class ComplaintsReport < WordReport
   TEMPLATE_PATH = 'app/views/complaint_reporter/complaints'
   SourceDoc = 'complaints_list.docx'
   attr_accessor :items
+
   def initialize(items)
     @items = items
     super()

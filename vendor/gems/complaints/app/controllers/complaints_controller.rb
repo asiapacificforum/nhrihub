@@ -1,13 +1,7 @@
 class ComplaintsController < ApplicationController
   def index
-    identifiers = Complaint.select(:id, :updated_at).all.inject({}) do |hash,complaint|
-      key = "complaint_#{complaint.id}_#{complaint.updated_at.strftime("%s.%6L")}"
-      hash[key]=complaint.id
-      hash
-    end
-
     cache_fetcher = BulkCacheFetcher.new(Rails.cache)
-    complaints = cache_fetcher.fetch(identifiers) do |uncached_keys_and_ids|
+    complaints = cache_fetcher.fetch(Complaint.cache_identifiers) do |uncached_keys_and_ids|
       ids = uncached_keys_and_ids.values
       all_complaints(ids).map(&:to_json)
     end
@@ -36,7 +30,7 @@ class ComplaintsController < ApplicationController
         render :index, :layout => 'application_webpack'
       end
       format.docx do
-        send_file ComplaintsReport.new(complaints).docfile
+        send_file ComplaintsReport.new(Complaint.all).docfile
       end
     end
   end

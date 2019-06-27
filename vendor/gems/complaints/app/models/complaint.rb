@@ -1,4 +1,7 @@
+require Complaints::Engine.root.join('app', 'domain_models', 'cache')
+
 class Complaint < ActiveRecord::Base
+  include Cache
   include Rails.application.routes.url_helpers
   has_many :complaint_good_governance_complaint_bases, :dependent => :destroy
   has_many :complaint_special_investigations_unit_complaint_bases, :dependent => :destroy
