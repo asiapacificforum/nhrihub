@@ -17,6 +17,7 @@
 
 /config/secrets.yml
 .DS_Store
+.NERDTreeBookmarks
 
 
 # capistrano configuration
