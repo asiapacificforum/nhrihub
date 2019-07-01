@@ -283,6 +283,7 @@ feature "user lost token replacement and registration", :js => true do
     fill_in "User name", :with => "staff"
     fill_in "Password", :with => "password"
     login_button.click
+    sleep(0.2)
     expect(flash_message).to eq "Logged in successfully"
 
   end

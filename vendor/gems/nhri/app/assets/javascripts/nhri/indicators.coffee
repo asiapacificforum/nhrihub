@@ -51,6 +51,7 @@ $ ->
       original_filename : -> @get('name')
       permitted_filetypes : -> window.permitted_filetypes
       maximum_filesize : -> window.maximum_filesize
+      valid_file_selected : -> @get('name') != undefined
     persistent_attributes : ->
         [ 'filesize', 'original_filename', 'original_type', 'file']
     formData : ->
@@ -113,6 +114,8 @@ $ ->
       serialization_key : -> 'monitor'
       delete_confirmation_message : ->
         delete_file_monitor_confirmation_message
+      valid_file_selected: ->
+        @findComponent('selectedFile').get('valid_file_selected')
     decorators :
       popover : MonitorPopover
     components :

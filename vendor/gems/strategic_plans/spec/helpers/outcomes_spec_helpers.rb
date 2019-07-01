@@ -31,6 +31,6 @@ module OutcomesSpecHelpers
   end
 
   def add_outcome
-    page.find(".new_outcome")
+    page.find("i.new_outcome")
   end
 end

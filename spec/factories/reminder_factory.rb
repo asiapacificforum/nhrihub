@@ -15,31 +15,31 @@ FactoryGirl.define do
     end
 
     trait :media_appearance do
-      reminder_type "MediaAppearance"
+      remindable_type "MediaAppearance"
     end
 
     trait :advisory_council_issue do
-      reminder_type "Nhri::AdvisoryCouncil::AdvisoryCouncilIssue"
+      remindable_type "Nhri::AdvisoryCouncil::AdvisoryCouncilIssue"
     end
 
     trait :indicator do
-      reminder_type "Nhri::Heading:Indicator"
+      remindable_type "Nhri::Heading:Indicator"
     end
 
     trait :project do
-      reminder_type "Project"
+      remindable_type "Project"
     end
 
     trait :complaint do
-      reminder_type "Complaint"
+      remindable_type "Complaint"
     end
 
     trait :performance_indicator do
-      reminder_type "PerformanceIndicator"
+      remindable_type "PerformanceIndicator"
     end
 
     trait :icc do
-      reminder_type "IccReferenceDocument"
+      remindable_type "IccReferenceDocument"
     end
   end
 end

@@ -1,0 +1,10 @@
+{
+  "complaints.js": "/packs-test/js/complaints-8c1e40ad8b1df2d46826.js",
+  "entrypoints": {
+    "complaints": {
+      "js": [
+        "/packs-test/js/complaints-8c1e40ad8b1df2d46826.js"
+      ]
+    }
+  }
+}

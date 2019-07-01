@@ -539,6 +539,7 @@ feature "complaints index", :js => true do
   end
 
   it "should download a complaint document file", :driver => :chrome do
+    sleep(0.2)
     expand
     @doc = ComplaintDocument.first
     filename = @doc.filename

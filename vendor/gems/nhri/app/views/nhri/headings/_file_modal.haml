@@ -34,7 +34,7 @@
             <selectedFile serialization_key='{{serialization_key}}' />
         .row
           .col-md-2
-            %span.btn.btn-success.btn-xs#save_monitor{'on-click' => "@this.save_file()".html_safe}= t('.save')
+            %span.btn.btn-success.btn-xs#save_monitor{:disabled => "{{^valid_file_selected}}disabled{{/}}", 'on-click' => "@this.save_file()".html_safe}= t('.save')
   </modal-body>
   </modal-custom>
 

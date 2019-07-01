@@ -86,7 +86,10 @@ feature "populate plannned result outcomes", :js => true do
       expect(page.find(".row.planned_result .row.outcome .col-md-2.description").text).to eq "1.1.1 Smarter thinking"
       expect(page.all(".row.planned_result .row.outcome").count).to eq 1
       # now check that we can still add an outcome
+      sleep(0.4) # not sure why this delay is necessary!
       add_outcome.click
+      page.find('#new_outcome')
+      expect(page).to have_selector('#new_outcome')
       expect(page).not_to have_selector("i.new_outcome")
       fill_in 'new_outcome_description', :with => "Achieve nirvana"
       expect{save_outcome.click; wait_for_ajax}.to change{Outcome.count}.from(1).to(2)
@@ -114,7 +117,10 @@ feature "actions on existing single outcome", :js => true do
     expect{ click_delete_outcome; confirm_deletion; wait_for_ajax}.to change{Outcome.count}.from(1).to(0)
     expect(page).not_to have_selector(".row.planned_result .row.outcome")
     # now check that we can still add an outcome
+    sleep(0.4) # not sure why this delay is necessary!
     add_outcome.click
+    page.find('#new_outcome')
+    expect(page).to have_selector('#new_outcome')
     expect(page).not_to have_selector("i.new_outcome")
     fill_in 'new_outcome_description', :with => "Achieve nirvana"
     expect{save_outcome.click; wait_for_ajax}.to change{Outcome.count}.from(0).to(1)
@@ -152,7 +158,10 @@ feature "actions on existing multiple outcomes", :js => true do
     expect{ click_delete_outcome; confirm_deletion; wait_for_ajax}.to change{Outcome.count}.from(2).to(1)
     expect(page.find(".row.planned_result  .row.outcome .col-md-2.description").text).to eq "1.1.1 cosmic harmony"
     # now check that we can still add an outcome
+    sleep(0.4) # not sure why this delay is necessary!
     add_outcome.click
+    page.find('#new_outcome')
+    expect(page).to have_selector('#new_outcome')
     expect(page).not_to have_selector("i.new_outcome")
     fill_in 'new_outcome_description', :with => "Achieve nirvana"
     expect{save_outcome.click; wait_for_ajax}.to change{Outcome.count}.from(1).to(2)
@@ -164,7 +173,10 @@ feature "actions on existing multiple outcomes", :js => true do
     expect{ click_delete_outcome; confirm_deletion; wait_for_ajax}.to change{Outcome.count}.from(2).to(1)
     expect(page.find(".row.planned_result .row.outcome .col-md-2.description").text).to eq "1.1.1 whirled peas"
     # now check that we can still add an outcome
+    sleep(0.4) # not sure why this delay is necessary!
     add_outcome.click
+    page.find('#new_outcome')
+    expect(page).to have_selector('#new_outcome')
     expect(page).not_to have_selector("i.new_outcome")
     fill_in 'new_outcome_description', :with => "Achieve nirvana"
     expect{save_outcome.click; wait_for_ajax}.to change{Outcome.count}.from(1).to(2)

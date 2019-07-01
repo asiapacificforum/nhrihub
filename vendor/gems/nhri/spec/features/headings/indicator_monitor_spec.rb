@@ -30,14 +30,12 @@ feature "monitors behaviour when indicator is configured to monitor with numeric
     hover_over_info_icon
     expect(author).to eq @user.first_last_name
     close_monitors_modal
-    wait_for_modal_close
     expect( monitor_icon_count ).to eq 3
   end
 
   scenario "closing the monitor modal also closes the add monitor fields" do
     add_monitor.click
     close_monitors_modal
-    wait_for_modal_close
     show_monitors.click
     # wait_for_modal_open
     expect(page).not_to have_selector("#new_monitor #monitor_value")
@@ -76,10 +74,8 @@ feature "monitors behaviour when indicator is configured to monitor with numeric
   scenario "delete a monitor" do
     expect{ delete_monitor.click; confirm_deletion; wait_for_ajax }.to change{Nhri::NumericMonitor.count}.from(2).to(1)
     close_monitors_modal
-    wait_for_modal_close
     expect( monitor_icon_count ).to eq 1
     show_monitors.click
-    # wait_for_modal_open
     expect(number_of_numeric_monitors).to eq Nhri::NumericMonitor.count
   end
 
@@ -107,14 +103,12 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
     hover_over_info_icon
     expect(author).to eq @user.first_last_name
     close_monitors_modal
-    wait_for_modal_close
     expect( monitor_icon_count ).to eq 3
   end
 
   scenario "closing the monitor modal also closes the add monitor fields" do
     add_monitor.click
     close_monitors_modal
-    wait_for_modal_close
     show_monitors.click
     # wait_for_modal_open
     expect(page).not_to have_selector("#new_monitor #monitor_description")
@@ -154,7 +148,6 @@ feature "monitors behaviour when indicator is configured to monitor with text fo
   scenario "delete a monitor" do
     expect{ delete_monitor.click; confirm_deletion; wait_for_ajax }.to change{Nhri::TextMonitor.count}.from(2).to(1)
     close_monitors_modal
-    wait_for_modal_close
     expect( monitor_icon_count ).to eq 1
     show_monitors.click
     # wait_for_modal_open
@@ -191,24 +184,35 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
     page.attach_file("monitor_file", upload_document, :visible => false)
     expect{ save_monitor.click; wait_for_ajax }.to change{Nhri::FileMonitor.count}.from(0).to(1)
     close_monitors_modal
-    wait_for_modal_close
     expect( monitor_icon_count ).to eq 1
   end
 
-  scenario "file upload, file delete, file upload should work as expected" do
+  scenario "file upload, then file delete, then file upload should succeed" do
     show_monitors.click
-    sleep(0.3) # css transition
     page.attach_file("monitor_file", upload_document, :visible => false)
     expect{ save_monitor.click; wait_for_ajax }.to change{Nhri::FileMonitor.count}.from(0).to(1)
     expect( Nhri::FileMonitor.first.original_filename).to eq "first_upload_file.pdf"
-    expect{ delete_monitor.click; confirm_deletion; wait_for_ajax }.to change{Nhri::FileMonitor.count}.to(0)
+    expect{ delete_monitor.click; confirm_deletion; wait_for_ajax }.to change{Nhri::FileMonitor.count}.from(1).to(0)
+    wait_until_delete_confirmation_overlay_is_removed
     page.attach_file("monitor_file", upload_document1, :visible => false)
+    expect(selected_file).to eq "first_upload_file1.pdf"
     expect{ save_monitor.click; wait_for_ajax }.to change{Nhri::FileMonitor.count}.from(0).to(1)
     expect( Nhri::FileMonitor.first.original_filename).to eq "first_upload_file1.pdf"
   end
 
-end
+  # b/c there was a bug!
+  scenario "file select, then remove selection, then click upload should give warning and no upload" do
+    show_monitors.click
+    expect(file_upload_button[:disabled]).to eq "true"
+    page.attach_file("monitor_file", upload_document, :visible => false)
+    expect(file_upload_button[:disabled]).to be_nil
+    expect(selected_file).to eq "first_upload_file.pdf"
+    deselect_file
+    expect(selected_file).to be_blank
+    expect(file_upload_button[:disabled]).to eq "true"
+  end
 
+end
 
 feature "monitors behaviour when indicator is configured to monitor with file format", :js => true do
   include LoggedInEnAdminUserHelper # sets up logged in admin user
@@ -261,7 +265,6 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
     page.attach_file("monitor_file", upload_document, :visible => false)
     expect(page).to have_selector('#selected_file', :text => 'first_upload_file.pdf')
     close_monitors_modal
-    wait_for_modal_close
     show_monitors.click
     # wait_for_modal_open
     expect(page).not_to have_selector('#selected_file', :text => 'first_upload_file.pdf')
@@ -281,7 +284,6 @@ feature "monitors behaviour when indicator is configured to monitor with file fo
     expect( monitor_icon_count ).to eq 1
     expect{ delete_monitor.click; confirm_deletion; wait_for_ajax }.to change{Nhri::FileMonitor.count}.by(-1)
     close_monitors_modal
-    wait_for_modal_close
     expect( monitor_icon_count ).to eq 0
     show_monitors.click
     # wait_for_modal_open

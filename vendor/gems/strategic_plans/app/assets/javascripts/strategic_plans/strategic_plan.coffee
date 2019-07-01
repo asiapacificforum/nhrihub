@@ -71,6 +71,7 @@ $ ->
     create_performance_indicator : (response, statusText, jqxhr)->
       UserInput.reset()
       @set(response)
+      @parent.show_add_performance_indicator()
     delete_callback : (resp, statusText, jqxhr)->
       UserInput.reset()
       @parent.set('performance_indicators',resp)
@@ -133,6 +134,7 @@ $ ->
     create_activity : (response, statusText, jqxhr)->
       UserInput.reset()
       @set(response)
+      @parent.show_add_activity()
     delete_callback : (resp, statusText, jqxhr)->
       UserInput.reset()
       @parent.set('activities', resp)
@@ -153,9 +155,17 @@ $ ->
             progress:""
       @push('performance_indicators', new_performance_indicator_attributes)
       UserInput.claim_user_input_request(@,'remove_performance_indicator_form')
+      @hide_add_performance_indicator()
+    _add_performance_indicator : ->
+      $(@.find('.performance_indicator_control'))
+    hide_add_performance_indicator : ->
+      @_add_performance_indicator().hide()
+    show_add_performance_indicator : ->
+      @_add_performance_indicator().show()
     remove_performance_indicator_form : ->
       if _.isNull(@findAllComponents('pi')[@get('performance_indicators').length-1].get('id'))
         @pop('performance_indicators')
+      @show_add_performance_indicator()
     edit_update : (activity)->
       @set(activity)
   .extend ConfirmDeleteModal
@@ -218,11 +228,19 @@ $ ->
                 #create_performance_indicator_url: ''
       @push('activities',new_activity_attributes)
       UserInput.claim_user_input_request(@,'remove_activity_form')
+      @hide_add_activity()
+    _add_activity : ->
+      $(@.find('.activity_control'))
+    hide_add_activity : ->
+      @_add_activity().hide()
+    show_add_activity : ->
+      @_add_activity().show()
     remove_activity_form : ->
       if _.isNull(@findAllComponents('activity')[@get('activities').length-1].get('id'))
         @pop('activities')
-    edit_update : (outcome)->
-      @set(outcome)
+      @show_add_activity()
+    edit_update : (activity)->
+      @set(activity)
   .extend ConfirmDeleteModal
 
   PlannedResult = Ractive.extend
@@ -292,9 +310,7 @@ $ ->
         @pop('outcomes')
       @show_add_outcome()
     _add_outcome : ->
-      $(@parent.el).
-        find('.new_outcome').
-        closest('.row')
+      $(@.find('.outcome_control'))
     hide_add_outcome : ->
       @_add_outcome().hide()
     show_add_outcome : ->

@@ -11,12 +11,12 @@ module ComplaintsSpecHelpers
   include NotesSpecCommonHelpers
 
   def add_a_communication
-    visit complaints_path('en')
     open_communications_modal
     add_communication
     expect(page).to have_selector('#new_communication')
     within new_communication do
       set_datepicker('new_communication_date',"May 19, 2016")
+      sleep(0.2)
       choose("Email")
       choose("Sent")
       expect(page).to have_selector("#email_address")
@@ -48,7 +48,7 @@ module ComplaintsSpecHelpers
     new_reminder_button.click
     select("one-time", :from => :reminder_reminder_type)
     page.find('#reminder_start_date_1i') # forces wait until the element is available
-    select_date("Aug 19 2018", :from => :reminder_start_date)
+    select_date("Aug 19 #{Date.today.year.next}", :from => :reminder_start_date)
     select(User.first.first_last_name, :from => :reminder_user_id)
     fill_in(:reminder_text, :with => "time to check the database")
     save_reminder.click
@@ -202,6 +202,7 @@ module ComplaintsSpecHelpers
   end
 
   def expand
+    sleep(0.4)
     all('.complaint #expand').first.click
   end
 
@@ -210,6 +211,7 @@ module ComplaintsSpecHelpers
   end
 
   def open_communications_modal
+    page.find('.case_reference', :text => Complaint.first.case_reference) # hack to make sure the page is loaded and rendered
     page.all('#complaints .complaint .fa-comments-o')[0].click
   end
 

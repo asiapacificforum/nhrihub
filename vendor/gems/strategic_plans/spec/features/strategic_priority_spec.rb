@@ -157,8 +157,10 @@ feature "deleting strategic priorities", :js => true do
     end
 
     scenario "delete a strategic priority" do
-      expect{ strategic_priority_delete_icon.first.click; confirm_deletion; wait_for_ajax }.to change{StrategicPriority.count}.from(2).to(1)
-                                                                                           .and change{ page.all('.strategic_priority').length }.from(2).to(1)
+      expect{ strategic_priority_delete_icon.first.click; confirm_deletion; wait_for_ajax }.
+        to change{StrategicPriority.count}.from(2).to(1)
+        .and change{ page.all('.strategic_priority').length }.from(2).to(1)
+      sleep(0.4)
       open_strategic_priority
       expect(page.find('.planned_result>.description #edit_start').text).to include PlannedResult.first.description
     end
@@ -178,6 +180,7 @@ feature "deleting strategic priorities", :js => true do
     scenario "delete a strategic priority" do
       expect{ second_strategic_priority_delete_icon.click; confirm_deletion; wait_for_ajax }.to change{StrategicPriority.count}.from(3).to(2)
       expect(page).to have_selector('.strategic_priority', :count => 2)
+      sleep(0.4)
       second_strategic_priority_edit_icon.click
       expect(page).to have_selector('div.edit.in input#strategic_priority_description')
     end

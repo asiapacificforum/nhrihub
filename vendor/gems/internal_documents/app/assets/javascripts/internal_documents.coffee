@@ -33,6 +33,7 @@ $ ->
       internal_document_uploader.findComponent('uploadDocuments').set('document_group_id', source.get('document_group_id'))
       UserInput.terminate_user_input_request()
       UserInput.reset()
+      console.log("doc group id is: #{source.get('document_group_id')}")
       $('input:file').trigger('click')
     return {
       teardown : ->

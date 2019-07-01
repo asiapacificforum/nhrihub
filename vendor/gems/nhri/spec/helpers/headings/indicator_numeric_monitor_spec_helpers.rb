@@ -24,8 +24,9 @@ module IndicatorNumericMonitorSpecHelpers
   end
 
   def close_monitors_modal
+    wait_until_delete_confirmation_overlay_is_removed
     page.find('#numeric_monitors_modal button.close').click
-    sleep(0.2) # css transition
+    wait_for_modal_close
   end
 
   def hover_over_info_icon

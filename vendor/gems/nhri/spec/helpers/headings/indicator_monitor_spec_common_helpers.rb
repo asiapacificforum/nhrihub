@@ -3,6 +3,19 @@ require 'rspec/core/shared_context'
 module IndicatorMonitorSpecCommonHelpers
   extend RSpec::Core::SharedContext
 
+  def wait_until_delete_confirmation_overlay_is_removed
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until delete_modal_overlay_removed?
+    end
+  end
+
+  def delete_modal_overlay_removed?
+    # this selector may be unreliable in the future, better to use an id field
+    len = page.evaluate_script("$(\".modal-backdrop[style='z-index: 1060\;']\").length")
+    len == 0
+  end
+
+
   def show_monitors
     sleep(0.3)
     page.find('.show_monitors')

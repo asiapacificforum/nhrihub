@@ -447,17 +447,20 @@ feature "internal document management", :js => true do
 
   scenario "delete primary file while archive files remain" do
     create_a_document_in_the_same_group(:revision => "1.0") # now there are revs 3,2.9,1 in the db
+    expect(DocumentGroup.count).to eq 6
     visit index_path
     expect(page_heading).to eq "Internal Documents"
     click_the_archive_icon
     page.find('.panel-heading .delete').click # that's the primary file
     confirm_deletion
-    wait_for_ajax # ajax, javascript
+    wait_for_ajax # ajax
+    sleep(0.4) # javascript
     # the previous highest rev archive file becomes primary:
     expect(page.find('.panel-heading td.revision .no_edit').text).to eq "2.9"
     # the previous lowest rev archive file remains in the archive
     expect(page.find('.panel-collapse td.revision .no_edit').text).to eq "1.0"
     expect(DocumentGroup.first.primary.revision).to eq "2.9"
+    expect(DocumentGroup.count).to eq 6
     # confirm that the archive accordion is opened after the deletion
     expect(page.find('.template-download')).to have_selector('.panel-body', :visible => true)
     expect(page.find('.template-download .panel-body')).to have_selector('h4', :text => 'Archive')
@@ -468,6 +471,7 @@ feature "internal document management", :js => true do
     page.find("#internal_document_title").set("some replacement file name")
     page.find('#internal_document_revision').set("3.5")
     expect{upload_replace_files_link.click; wait_for_ajax}.to change{InternalDocument.count}.from(2).to(3)
+    expect(DocumentGroup.count).to eq 6
     expect(page.all('.template-download').count).to eq 1
   end
 
@@ -584,6 +588,7 @@ feature "sequential operations", :js => true do
     expect(InternalDocument.count).to eq 5
     #delete a primary that has some archive files
     expect{click_delete_document; confirm_deletion; wait_for_ajax}.to change{InternalDocument.count}.by(-1)
+    sleep(0.4)
     click_the_archive_icon
     expect(page).to have_selector('table.internal_document.editable_container', :count => 4)
     #again delete a primary file

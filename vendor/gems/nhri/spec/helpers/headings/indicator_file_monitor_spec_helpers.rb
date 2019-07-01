@@ -2,6 +2,13 @@ require 'rspec/core/shared_context'
 
 module IndicatorFileMonitorSpecHelpers
   extend RSpec::Core::SharedContext
+  def file_upload_button
+    page.find('#save_monitor')
+  end
+
+  def selected_file
+    page.find("#selected_file_container #selected_file").text
+  end
 
   def number_of_file_monitors
     page.all('#monitors .monitor').count

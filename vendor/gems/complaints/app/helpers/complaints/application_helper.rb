@@ -5,7 +5,6 @@ module Complaints
     include ::Webpacker::Helper
 
     def webpacker_instance(name)
-      puts "trying to resolve the webpacker asset #{name}"
       if name == "complaints"
         Complaints.webpacker
       else

@@ -1,0 +1,10 @@
+{
+  "entrypoints": {
+    "shared": {
+      "js": [
+        "/packs-test/js/shared-ddad565faa379c7d7482.js"
+      ]
+    }
+  },
+  "shared.js": "/packs-test/js/shared-ddad565faa379c7d7482.js"
+}

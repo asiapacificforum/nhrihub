@@ -25,7 +25,7 @@ feature "populate activity performance indicators", :js => true do
     end
 
     scenario "add single performance indicator item" do
-      #expect(page).not_to have_selector("i.new_performance_indicator")
+      expect(page).not_to have_selector("i.new_performance_indicator")
       fill_in 'new_performance_indicator_description', :with => "steam rising"
       fill_in 'new_performance_indicator_target', :with => "88% achievement"
       expect{save_performance_indicator.click; wait_for_ajax}.to change{PerformanceIndicator.count}.from(0).to(1)
@@ -34,27 +34,27 @@ feature "populate activity performance indicators", :js => true do
     end
 
     scenario "try to save performance indicator with blank description field" do
-      #expect(page).not_to have_selector("i.new_performance_indicator")
+      expect(page).not_to have_selector("i.new_performance_indicator")
       expect{save_performance_indicator.click; wait_for_ajax}.not_to change{PerformanceIndicator.count}
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
     scenario "try to save performance indicator with whitespace description field" do
-      #expect(page).not_to have_selector("i.new_performance_indicator")
+      expect(page).not_to have_selector("i.new_performance_indicator")
       fill_in 'new_performance_indicator_description', :with => " "
       expect{save_performance_indicator.click; wait_for_ajax}.not_to change{PerformanceIndicator.count}
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
     scenario "add multiple performance indicator items" do
-      #expect(page).not_to have_selector("i.new_performance_indicator")
+      expect(page).not_to have_selector("i.new_performance_indicator")
       fill_in 'new_performance_indicator_description', :with => "steam rising"
       fill_in 'new_performance_indicator_target', :with => "88% achievement"
       expect{save_performance_indicator.click; wait_for_ajax}.to change{PerformanceIndicator.count}.from(0).to(1)
       expect(page).to have_selector(performance_indicator_selector + ".description", :text => "1.1.1.1 steam rising")
       expect(page).to have_selector(performance_indicator_selector + ".target", :text => "1.1.1.1 88% achievement")
       add_performance_indicator.click
-      #expect(page).not_to have_selector("i.new_performance_indicator")
+      expect(page).not_to have_selector("i.new_performance_indicator")
       fill_in 'new_performance_indicator_description', :with => "great insight"
       fill_in 'new_performance_indicator_target', :with => "full employment"
       expect{save_performance_indicator.click; wait_for_ajax}.to change{PerformanceIndicator.count}.from(1).to(2)
@@ -74,7 +74,7 @@ feature "populate activity performance indicators", :js => true do
     end
 
     scenario "add performance indicators item" do
-      #expect(page).not_to have_selector("i.new_performance_indicator")
+      expect(page).not_to have_selector("i.new_performance_indicator")
       fill_in 'new_performance_indicator_description', :with => "great insight"
       fill_in 'new_performance_indicator_target', :with => "full employment"
       expect{save_performance_indicator.click; wait_for_ajax}.to change{PerformanceIndicator.count}.from(1).to(2)

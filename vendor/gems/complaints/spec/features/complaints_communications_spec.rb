@@ -137,6 +137,7 @@ feature "complaints communications", :js => true do
     expect(page).to have_selector('#new_communication')
     within new_communication do
       set_datepicker('new_communication_date',"May 19, 2016")
+      sleep(0.4)
       choose("Email")
 
       page.all('input.communicant')[0].set("Harry Harker")

@@ -197,11 +197,12 @@ describe "#as_json" do
       expect(@complaints.first["case_reference"]).to eq Complaint.first.case_reference
       expect(@complaints.first["village"]).to eq Complaint.first.village
       expect(@complaints.first["phone"]).to eq Complaint.first.phone
-      expect(DateTime.parse @complaints.first["created_at"]).to eq Complaint.first.created_at.to_datetime
-      expect(DateTime.parse @complaints.first["updated_at"]).to eq Complaint.first.updated_at.to_datetime
+      # compare millisecond values, due to different precision in each value being compared
+      expect(DateTime.parse(@complaints.first["created_at"]).strftime("%Q")).to eq Complaint.first.created_at.to_datetime.strftime("%Q")
+      expect(DateTime.parse(@complaints.first["updated_at"]).strftime("%Q")).to eq Complaint.first.updated_at.to_datetime.strftime("%Q")
       expect(@complaints.first["desired_outcome"]).to eq Complaint.first.desired_outcome
       expect(@complaints.first["complained_to_subject_agency"]).to eq Complaint.first.complained_to_subject_agency
-      expect(@complaints.first["date_received"]).to eq Complaint.first.date_received
+      expect(@complaints.first["date_received"]).to eq Complaint.first.date_received.strftime
       expect(@complaints.first["imported"]).to eq Complaint.first.imported
       expect(@complaints.first["mandate_id"]).to eq Complaint.first.mandate_id
       expect(@complaints.first["email"]).to eq Complaint.first.email
@@ -223,7 +224,8 @@ describe "#as_json" do
       expect(@complaints.first["notes"].first.keys).to match_array ["author_id", "author_name", "created_at", "date", "editor_id", "editor_name", "id", "notable_id", "notable_type", "text", "updated_at", "updated_on", "url"]
       expect(@complaints.first["notes"].first["author_name"]).to eq Complaint.first.notes.first.author_name
       expect(@complaints.first["notes"].first["editor_name"]).to eq Complaint.first.notes.first.editor_name
-      expect(@complaints.first["notes"].first["url"]).to eq Rails.application.routes.url_helpers.complaint_note_path(:en,1,1)
+      url = Rails.application.routes.url_helpers.complaint_note_path(:en,@complaints.first["id"],@complaints.first["notes"].first["id"])
+      expect(@complaints.first["notes"].first["url"]).to eq url
       expect(@complaints.first["notes"].first["updated_on"]).to eq Complaint.first.notes.first.updated_on
       expect(@complaints.first["notes"].first["date"]).to eq Complaint.first.notes.first.date
       expect(@complaints.first["assigns"].first.keys).to match_array ["date", "name"]
@@ -237,7 +239,7 @@ describe "#as_json" do
       expect(@complaints.first["human_rights_complaint_basis_ids"]).to be_an Array
       expect(@complaints.first["current_assignee_id"]).to eq Complaint.first.current_assignee_id
       expect(@complaints.first["status_changes"].first.keys).to match_array ["date", "status_humanized", "user_name"]
-      expect(@complaints.first["status_changes"].first["date"]).to eq Complaint.first.status_changes.first.date
+      expect(DateTime.parse(@complaints.first["status_changes"].first["date"]).strftime("%Q")).to eq Complaint.first.status_changes.first.date.to_datetime.strftime("%Q")
       expect(@complaints.first["status_changes"].first["status_humanized"]).to eq Complaint.first.status_changes.first.status_humanized
       expect(@complaints.first["status_changes"].first["user_name"]).to eq Complaint.first.status_changes.first.user_name
       expect(@complaints.first["agency_ids"]).to be_an Array

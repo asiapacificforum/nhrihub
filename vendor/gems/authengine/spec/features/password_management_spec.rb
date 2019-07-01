@@ -34,6 +34,7 @@ feature "Password management, admin resets user password", :js => true do
     fill_in "User name", :with => "staff"
     fill_in "Password", :with => "shinynewsecret"
     login_button.click
+    sleep(0.2)
     expect(flash_message).to eq "Logged in successfully"
     click_link('Logout')
   end

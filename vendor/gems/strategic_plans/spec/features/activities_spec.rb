@@ -24,32 +24,32 @@ feature "populate plannned result activities", :js => true do
     end
 
     scenario "add single activity item" do
-      #expect(page).not_to have_selector("i.new_activity")
+      expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "think really hard"
       expect{save_activity.click; wait_for_ajax}.to change{Activity.count}.from(0).to(1)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.1 think really hard")
     end
 
     scenario "try to save activity with blank description field" do
-      #expect(page).not_to have_selector("i.new_activity")
+      expect(page).not_to have_selector("i.new_activity")
       expect{save_activity.click; wait_for_ajax}.not_to change{Activity.count}
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
     scenario "try to save activity with whitespace description field" do
-      #expect(page).not_to have_selector("i.new_activity")
+      expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => " "
       expect{save_activity.click; wait_for_ajax}.not_to change{Activity.count}
       expect(page).to have_selector("#description_error", :text => "You must enter a description")
     end
 
     scenario "add multiple activity items" do
-      #expect(page).not_to have_selector("i.new_activity")
+      expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "think really hard"
       expect{save_activity.click; wait_for_ajax}.to change{Activity.count}.from(0).to(1)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.1 think really hard")
       add_activity.click
-      #expect(page).not_to have_selector("i.new_activity")
+      expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "ruminate mightily"
       expect{save_activity.click; wait_for_ajax}.to change{Activity.count}.from(1).to(2)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.2 ruminate mightily")
@@ -66,7 +66,7 @@ feature "populate plannned result activities", :js => true do
     end
 
     scenario "add activities item" do
-      #expect(page).not_to have_selector("i.new_activity")
+      expect(page).not_to have_selector("i.new_activity")
       fill_in 'new_activity_description', :with => "work really hard"
       expect{save_activity.click; wait_for_ajax}.to change{Activity.count}.from(1).to(2)
       expect(page).to have_selector(activity_selector + ".description", :text => "1.1.1.2 work really hard")

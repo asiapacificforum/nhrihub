@@ -1,5 +1,3 @@
-window.notes = notes
-
 Notable = @Notable =
   show_notes_panel : ->
     notes.set

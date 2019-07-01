@@ -84,7 +84,7 @@ feature "when there are already some strategic plans", :js => true do
     confirm_deletion
     wait_for_ajax
     fill_in("strategic_plan_title", :with => "the plan for the planet")
-    expect{save_strategic_plan}.to change{StrategicPlan.count}.from(1).to(2)
+    expect{sleep(0.4); save_strategic_plan}.to change{StrategicPlan.count}.from(1).to(2)
   end
 
   scenario "add a duplicate and delete the original" do
@@ -94,6 +94,7 @@ feature "when there are already some strategic plans", :js => true do
     delete_plan
     confirm_deletion
     wait_for_ajax
+    sleep(0.4)
     save_strategic_plan
     expect(page).not_to have_selector("#unique_title_error", :text => "title already exists")
   end
