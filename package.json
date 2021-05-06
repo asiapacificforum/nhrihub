@@ -17,7 +17,7 @@
     "pug-html-loader": "^1.1.5",
     "ractive": "^0.9.4",
     "ractive-bin-loader": "^1.0.2",
-    "underscore": "^1.8.3",
+    "underscore": "^1.12.1",
     "yaml-loader": "^0.5.0"
   },
   "devDependencies": {
